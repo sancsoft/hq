@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HQ.DAL\HQ.DAL.csproj" />
     <ProjectReference Include="..\HQ.Dapper\HQ.Dapper.csproj" />
     <ProjectReference Include="..\HQ.Library\HQ.Library.csproj" />
   </ItemGroup>

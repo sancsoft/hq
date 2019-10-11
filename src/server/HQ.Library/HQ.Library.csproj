@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -6,11 +6,8 @@
 
   <ItemGroup>
     <Folder Include="Managers\" />
+    <Folder Include="DataAccess\" />
     <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\HQ.DAL\HQ.DAL.csproj" />
   </ItemGroup>
 
 </Project>
