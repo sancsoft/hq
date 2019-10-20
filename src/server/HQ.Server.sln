@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HQ.MemoryDAL", "HQ.MemoryDA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HQ.Utility", "HQ.Utility\HQ.Utility.csproj", "{708954C5-2460-4D75-84A2-23E9841ACC38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HQ.IdentityServer", "HQ.IdentityServer\HQ.IdentityServer.csproj", "{5A25CCD3-FDCC-4C9A-9F32-0F1B33DD8612}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{708954C5-2460-4D75-84A2-23E9841ACC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{708954C5-2460-4D75-84A2-23E9841ACC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{708954C5-2460-4D75-84A2-23E9841ACC38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A25CCD3-FDCC-4C9A-9F32-0F1B33DD8612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A25CCD3-FDCC-4C9A-9F32-0F1B33DD8612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A25CCD3-FDCC-4C9A-9F32-0F1B33DD8612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A25CCD3-FDCC-4C9A-9F32-0F1B33DD8612}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

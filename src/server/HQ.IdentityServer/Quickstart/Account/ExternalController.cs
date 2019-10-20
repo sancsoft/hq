@@ -119,7 +119,7 @@ namespace IdentityServer4.Quickstart.UI
             // this is typically used to store data needed for signout from those protocols.
             var additionalLocalClaims = new List<Claim>();
             var localSignInProps = new AuthenticationProperties();
-            ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
+            ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps, user, provider);
             ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);
             ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
 
@@ -286,7 +286,7 @@ namespace IdentityServer4.Quickstart.UI
         }
 
 
-        private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
+        private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps, ApplicationUser user, string provider)
         {
             // if the external system sent a session id claim, copy it over
             // so we can use it for single sign-out
@@ -297,11 +297,30 @@ namespace IdentityServer4.Quickstart.UI
             }
 
             // if the external provider issued an id_token, we'll keep it for signout
+            var tokens = new List<AuthenticationToken>();
+
             var id_token = externalResult.Properties.GetTokenValue("id_token");
             if (id_token != null)
             {
-                localSignInProps.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = id_token } });
+                tokens.Add(new AuthenticationToken { Name = "id_token", Value = id_token });
+                _userManager.SetAuthenticationTokenAsync(user, provider, "id_token", id_token);
             }
+
+            var refresh_token = externalResult.Properties.GetTokenValue("refresh_token");
+            if (refresh_token != null)
+            {
+                tokens.Add(new AuthenticationToken { Name = "refresh_token", Value = refresh_token });
+                _userManager.SetAuthenticationTokenAsync(user, provider, "refresh_token", refresh_token);
+            }
+
+            var access_token = externalResult.Properties.GetTokenValue("access_token");
+            if (id_token != null)
+            {
+                tokens.Add(new AuthenticationToken { Name = "access_token", Value = access_token });
+                _userManager.SetAuthenticationTokenAsync(user, provider, "access_token", access_token);
+            }
+
+            localSignInProps.StoreTokens(tokens);
         }
 
         private void ProcessLoginCallbackForWsFed(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)

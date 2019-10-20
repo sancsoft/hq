@@ -65,6 +65,21 @@ namespace HQ.IdentityServer
             }
 
             services.AddAuthentication()
+                .AddOpenIdConnect("demo", "Demo", options => {
+                    options.Authority = "https://demo.identityserver.io";
+                    // options.RequireHttpsMetadata = false;
+
+                    options.ClientId = "server.hybrid";
+                    options.ClientSecret = "secret";
+
+                    options.ResponseType = "code id_token";
+
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+
+                    options.Scope.Add("offline_access");
+                    options.Scope.Add("email");
+                })
                 .AddGoogle(options =>
                 {
                     // register your IdentityServer with Google at https://console.developers.google.com
