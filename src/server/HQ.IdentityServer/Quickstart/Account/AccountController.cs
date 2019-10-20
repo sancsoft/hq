@@ -188,7 +188,7 @@ namespace IdentityServer4.Quickstart.UI
             }
 
             // check if we need to trigger sign-out at an upstream identity provider
-            if (vm.TriggerExternalSignout)
+            if (vm.TriggerExternalSignout && false)
             {
                 // build a return URL so the upstream provider will redirect back
                 // to us after the user has logged out. this allows us to then
