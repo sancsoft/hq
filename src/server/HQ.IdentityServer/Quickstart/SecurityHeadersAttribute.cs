@@ -33,6 +33,9 @@ namespace IdentityServer4.Quickstart.UI
                 // also an example if you need client images to be displayed from twitter
                 // csp += "img-src 'self' https://pbs.twimg.com;";
 
+                // Allow base64 data: images
+                csp += "img-src 'self' data:;";
+
                 // once for standards compliant browsers
                 if (!context.HttpContext.Response.Headers.ContainsKey("Content-Security-Policy"))
                 {
