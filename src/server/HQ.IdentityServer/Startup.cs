@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Microsoft.AspNetCore.Authentication;
 
 namespace HQ.IdentityServer
 {
@@ -79,6 +80,26 @@ namespace HQ.IdentityServer
 
                     options.Scope.Add("offline_access");
                     options.Scope.Add("email");
+
+                    options.CallbackPath = "/signin-oidc-demo";
+                })
+                .AddOpenIdConnect("azuread", "Azure AD", options =>
+                {
+                    string tenantId = Configuration["AzureAD:TenantId"];
+                    options.Authority = $"https://login.microsoftonline.com/{tenantId}/v2.0";
+
+                    options.ClientId = Configuration["AzureAD:ClientId"];
+                    options.ClientSecret = Configuration["AzureAD:ClientSecret"];
+
+                    options.ResponseType = "code id_token";
+
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+
+                    options.Scope.Add("offline_access");
+                    options.Scope.Add("email");
+
+                    options.CallbackPath = "/signin-oidc-azuread";
                 })
                 .AddGoogle(options =>
                 {

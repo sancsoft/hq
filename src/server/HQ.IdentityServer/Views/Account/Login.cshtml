@@ -1,4 +1,7 @@
 ﻿@model LoginViewModel
+@{
+    Layout = "_LoginLayout";
+}
 
 <div class="login-page">
     <div class="page-header">
@@ -67,7 +70,7 @@
                             @foreach (var provider in Model.VisibleExternalProviders)
                             {
                                 <li>
-                                    <a class="btn btn-default"
+                                    <a class="btn btn-outline-secondary mb-1"
                                        asp-controller="External"
                                        asp-action="Challenge"
                                        asp-route-provider="@provider.AuthenticationScheme"
