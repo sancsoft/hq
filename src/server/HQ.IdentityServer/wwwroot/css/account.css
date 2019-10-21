@@ -1,0 +1,9 @@
+﻿body {
+    margin-top: 0;
+    background: url('../login_bg.jpg');
+    background-size: cover;
+}
+
+.account {
+    max-width: 750px;
+}

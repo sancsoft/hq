@@ -47,6 +47,13 @@ namespace IdentityServer4.Quickstart.UI
             _events = events;
         }
 
+        [HttpGet]
+        [Authorize]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Entry point into the login workflow
         /// </summary>
