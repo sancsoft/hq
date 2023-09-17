@@ -1,0 +1,52 @@
+name: .NET Server CD
+on:
+  push:
+    tags:
+    - v*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform/server/
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Write release version
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo Version: $VERSION
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+    - name: Build
+      run: dotnet build --no-restore --configuration Release /p:Version=${VERSION}
+    - name: Test
+      run: dotnet test --no-build --configuration Release --verbosity normal
+    - name: Publish API
+      run: dotnet publish --no-build --configuration Release --verbosity normal HQ.API/ --output dist/api/
+    - name: Publish Auth
+      run: dotnet publish --no-build --configuration Release --verbosity normal HQ.Auth/ --output dist/auth/
+    - name: Publish ConsoleTool
+      run: dotnet publish --no-build --configuration Release --verbosity normal HQ.ConsoleTool/ --output dist/console-tool/
+    - name: Upload API Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: platform-server-api
+        path: platform/server/dist/api/**
+        if-no-files-found: error
+    - name: Upload Auth Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: platform-server-auth
+        path: platform/server/dist/auth/**
+        if-no-files-found: error
+    - name: Upload ConsoleTool Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: platform-server-console-tool
+        path: platform/server/dist/console-tool/**
+        if-no-files-found: error

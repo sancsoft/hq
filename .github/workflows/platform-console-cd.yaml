@@ -1,0 +1,36 @@
+name: .NET Console CD
+on:
+  push:
+    tags:
+    - v*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform/console/
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Write release version
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo Version: $VERSION
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+    - name: Build
+      run: dotnet build --no-restore --configuration Release /p:Version=${VERSION}
+    - name: Test
+      run: dotnet test --no-build --configuration Release --verbosity normal
+    - name: Publish Client
+      run: dotnet publish --no-build --configuration Release --verbosity normal HQ.ConsoleClient/ --output dist/console-client/
+    - name: Upload Client Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: platform-console-client
+        path: platform/console/dist/console-client/**
+        if-no-files-found: error
