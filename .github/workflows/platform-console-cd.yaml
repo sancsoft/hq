@@ -1,7 +1,4 @@
 name: .NET Console CD
-concurrency:
-  group: platform-console-cd-${{ github.ref }}
-  cancel-in-progress: true
 on:
   push:
     tags:
@@ -28,7 +25,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore --configuration Release /p:Version=${VERSION}
     - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal --configuration Release
+      run: dotnet test --no-build --configuration Release --verbosity normal
     - name: Publish Client
       run: dotnet publish --no-build --configuration Release --verbosity normal HQ.ConsoleClient/ --output dist/console-client/
     - name: Upload Client Artifact

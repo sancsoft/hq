@@ -1,7 +1,4 @@
 name: Angular Web CD
-concurrency:
-  group: platform-web-cd-${{ github.ref }}
-  cancel-in-progress: true
 on:
   push:
     tags:
