@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using HQ.Auth.Data;
+using HQ.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
