@@ -7,9 +7,6 @@ concurrency:
 on:
   push:
 
-  pull_request:
-    branches: [ "master" ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,18 +16,16 @@ jobs:
         working-directory: platform/console/
     
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
+      - uses: actions/checkout@v3
+      
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - run: npm ci
 
-    - name: Build
-      run: dotnet build --no-restore
+      - run: npm run build --if-present
 
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - run: npm test
