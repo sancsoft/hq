@@ -4,8 +4,8 @@ concurrency:
   cancel-in-progress: true
 on:
   push:
-    # paths:
-    # - 'platform/web/**'
+    paths:
+    - 'platform/web/**'
 jobs:
   build:
     runs-on: ubuntu-latest
