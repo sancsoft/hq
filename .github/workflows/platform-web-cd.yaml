@@ -1,6 +1,6 @@
 name: Angular Web CD
 concurrency:
-  group: platform-web-ci-${{ github.ref }}
+  group: platform-web-cd-${{ github.ref }}
   cancel-in-progress: true
 on:
   push:
