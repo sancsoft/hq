@@ -1,7 +1,7 @@
 name: .NET Server CI
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: platform-server-ci-${{ github.ref }}
   cancel-in-progress: true
 
 on:

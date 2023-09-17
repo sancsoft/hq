@@ -1,7 +1,7 @@
 name: .NET Console CI
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: platform-console-ci-${{ github.ref }}
   cancel-in-progress: true
 
 on:
