@@ -3,7 +3,6 @@ concurrency:
   group: platform-server-ci-${{ github.ref }}
   cancel-in-progress: true
 on:
-  workflow_dispatch: 
   push:
     paths:
     - 'platform/server/**'
