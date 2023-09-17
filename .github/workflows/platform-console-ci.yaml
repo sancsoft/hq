@@ -1,4 +1,4 @@
-name: .NET
+name: .NET Console CI
 
 on:
   push:
