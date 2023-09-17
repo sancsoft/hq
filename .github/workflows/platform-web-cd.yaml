@@ -1,0 +1,32 @@
+name: Angular Web CD
+concurrency:
+  group: platform-web-ci-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  push:
+    tags:
+    - v*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform/web/
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: platform/web/package-lock.json
+    - name: Restore dependencies
+      run: npm ci
+    - name: Build
+      run: npm run build --if-present
+    - name: Upload Web Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: platform-web
+        path: platform/web/dist/hq/**
+        if-no-files-found: error
