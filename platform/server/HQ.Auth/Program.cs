@@ -1,17 +1,32 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HQ.Data;
+using HQ.Data.Models;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+var connectionString = builder.Configuration.GetConnectionString("HQ") ?? throw new InvalidOperationException("Connection string 'HQ' not found.");
+builder.Services.AddDbContext<HQDbContext>(options =>
+    options.UseNpgsql(connectionString)
+        .UseSnakeCaseNamingConvention());
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<Role>()
+    .AddEntityFrameworkStores<HQDbContext>();
+
+builder.Services.AddDataProtection()
+    .PersistKeysToDbContext<HQDbContext>()
+    .SetApplicationName("HQ");
+
+builder.Services.Configure<RouteOptions>(option =>
+{
+    option.LowercaseUrls = true;
+});
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -33,6 +48,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
