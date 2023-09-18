@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HQ.Data;
 using HQ.Data.Models;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,20 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<Role>()
     .AddEntityFrameworkStores<HQDbContext>();
+
+builder.Services.AddAuthentication()
+       .AddMicrosoftIdentityWebApp(options =>
+       {
+           builder.Configuration.Bind("AzureAd", options);
+           //options.GetClaimsFromUserInfoEndpoint = true;
+
+           //options.ResponseType = "code";
+
+           //options.SignInScheme = IdentityConstants.ExternalScheme;
+
+           options.Scope.Add("email");
+       }, cookieScheme: null, displayName: "Azure AD");
+
 
 builder.Services.AddDataProtection()
     .PersistKeysToDbContext<HQDbContext>()
