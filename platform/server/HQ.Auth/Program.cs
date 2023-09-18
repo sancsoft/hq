@@ -9,8 +9,51 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("HQ") ?? throw new InvalidOperationException("Connection string 'HQ' not found.");
 builder.Services.AddDbContext<HQDbContext>(options =>
+{
     options.UseNpgsql(connectionString)
-        .UseSnakeCaseNamingConvention());
+        .UseSnakeCaseNamingConvention();
+
+    options.UseOpenIddict<OpenIddictApplication, OpenIddictAuthorization, OpenIddictScope, OpenIddictToken, Guid>();
+});
+
+builder.Services.AddOpenIddict()
+    // Register the OpenIddict core components.
+    .AddCore(options =>
+    {
+        // Configure OpenIddict to use the Entity Framework Core stores and models.
+        // Note: call ReplaceDefaultEntities() to replace the default entities.
+        options.UseEntityFrameworkCore()
+            .UseDbContext<HQDbContext>()
+            .ReplaceDefaultEntities<OpenIddictApplication, OpenIddictAuthorization, OpenIddictScope, OpenIddictToken, Guid>();
+    })
+
+    // Register the OpenIddict server components.
+    .AddServer(options =>
+    {
+        // Enable the token endpoint.
+        options.SetTokenEndpointUris("connect/token");
+
+        // Enable the client credentials flow.
+        options.AllowClientCredentialsFlow();
+
+        // Register the signing and encryption credentials.
+        options.AddDevelopmentEncryptionCertificate()
+            .AddDevelopmentSigningCertificate();
+
+        // Register the ASP.NET Core host and configure the ASP.NET Core options.
+        options.UseAspNetCore()
+            .EnableTokenEndpointPassthrough();
+    })
+
+    // Register the OpenIddict validation components.
+    .AddValidation(options =>
+    {
+        // Import the configuration from the local OpenIddict server instance.
+        options.UseLocalServer();
+
+        // Register the ASP.NET Core host.
+        options.UseAspNetCore();
+    });
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

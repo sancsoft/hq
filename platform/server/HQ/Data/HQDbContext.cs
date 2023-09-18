@@ -14,6 +14,10 @@ public class HQDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRo
     }
 
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
+    public DbSet<OpenIddictApplication> OpenIddictApplications { get; set; } = null!;
+    public DbSet<OpenIddictAuthorization> OpenIddictAuthorizations { get; set; } = null!;
+    public DbSet<OpenIddictScope> OpenIddictScopes { get; set; } = null!;
+    public DbSet<OpenIddictToken> OpenIddictTokens { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

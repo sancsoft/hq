@@ -10,6 +10,8 @@
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.22" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.22" />
 		<PackageReference Include="Microsoft.Identity.Web" Version="2.13.4" />
+		<PackageReference Include="OpenIddict.AspNetCore" Version="4.8.0" />
+		<PackageReference Include="OpenIddict.EntityFrameworkCore" Version="4.8.0" />
 	</ItemGroup>
 
 	<ItemGroup>
