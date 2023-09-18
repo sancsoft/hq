@@ -65,7 +65,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push to ghcr
+      - name: Build and push Client to ghcr
         uses: docker/build-push-action@v3
         with:
           file: platform/console/HQ.ConsoleClient/Dockerfile
@@ -73,4 +73,4 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}-console-client:${{ steps.vars.outputs.tag }}
           build-args: |
-            VERSION=${{ steps.vars.outputs.versiontag }}
+            VERSION=${{ steps.vars.outputs.version }}
