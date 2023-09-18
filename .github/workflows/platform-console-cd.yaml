@@ -48,5 +48,6 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: platform-console-client
+          path: platform/console/dist/console-client/
       - name: Display structure of downloaded files
         run: ls -R
