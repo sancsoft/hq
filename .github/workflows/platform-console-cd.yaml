@@ -34,3 +34,18 @@ jobs:
         name: platform-console-client
         path: platform/console/dist/console-client/**
         if-no-files-found: error
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform/console/
+    permissions:
+      contents: 'read'
+      packages: 'write'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: platform-console-client
+      - name: Display structure of downloaded files
+        run: ls -R
