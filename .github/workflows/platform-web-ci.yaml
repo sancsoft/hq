@@ -3,6 +3,7 @@ concurrency:
   group: platform-web-ci-${{ github.ref }}
   cancel-in-progress: true
 on:
+  pull_request: 
   push:
     branches:
     - '**'
