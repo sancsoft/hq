@@ -3,6 +3,8 @@ using HQ.Data;
 using HQ.Data.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Identity.Web;
+using OpenIddict.Abstractions;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,10 +33,14 @@ builder.Services.AddOpenIddict()
     .AddServer(options =>
     {
         // Enable the token endpoint.
-        options.SetTokenEndpointUris("connect/token");
+        options.SetAuthorizationEndpointUris("connect/authorize")
+               .SetTokenEndpointUris("connect/token");
 
         // Enable the client credentials flow.
         options.AllowClientCredentialsFlow();
+        options.AllowAuthorizationCodeFlow();
+
+        options.DisableAccessTokenEncryption();
 
         // Register the signing and encryption credentials.
         options.AddDevelopmentEncryptionCertificate()
@@ -42,7 +48,8 @@ builder.Services.AddOpenIddict()
 
         // Register the ASP.NET Core host and configure the ASP.NET Core options.
         options.UseAspNetCore()
-            .EnableTokenEndpointPassthrough();
+            .EnableTokenEndpointPassthrough()
+            .EnableAuthorizationEndpointPassthrough();
     })
 
     // Register the OpenIddict validation components.
@@ -65,7 +72,7 @@ builder.Services.AddAuthentication()
        .AddMicrosoftIdentityWebApp(options =>
        {
            builder.Configuration.Bind("AzureAd", options);
-           //options.GetClaimsFromUserInfoEndpoint = true;
+           options.GetClaimsFromUserInfoEndpoint = true;
 
            //options.ResponseType = "code";
 
@@ -112,5 +119,25 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+using var scope = app.Services.CreateScope();
+var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+
+if (await manager.FindByClientIdAsync("console") is null)
+{
+    await manager.CreateAsync(new OpenIddictApplicationDescriptor
+    {
+        ClientId = "console",
+        ClientSecret = "388D45FA-B36B-4988-BA59-B187D329C207",
+        DisplayName = "My client application",
+        Permissions =
+        {
+            Permissions.Endpoints.Token,
+            Permissions.GrantTypes.ClientCredentials,
+            Permissions.GrantTypes.RefreshToken,
+            Permissions.ResponseTypes.IdTokenToken
+        }
+    });
+}
 
 app.Run();
