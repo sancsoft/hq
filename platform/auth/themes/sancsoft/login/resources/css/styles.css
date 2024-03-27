@@ -1,0 +1,40 @@
+.login-pf body {
+    background-image: url('../img/splash_bg.png');
+    background-size: cover;
+    background-position: top right;
+}
+
+div.kc-logo-text {
+    background-image: url(../img/logo.png);
+    background-repeat: no-repeat;
+    height: 68px;
+    width: 327px;
+    margin: 0 auto;
+}
+
+:root {
+    --pf-global--link--Color: #f17d15;
+    --pf-global--link--Color--hover: #af580a;
+    --pf-global--link--Color--visited: #af580a;
+    --pf-global--primary-color--100: #919191;
+    --pf-global--primary-color--200: #666;
+}
+
+.pf-c-form-control:focus {
+    --pf-c-form-control--BorderTopColor: #333;
+    --pf-c-form-control--BorderRightColor: #333;
+    --pf-c-form-control--BorderBottomColor: #333;
+    --pf-c-form-control--BorderLeftColor: #333;
+}
+
+.login-pf a {
+    color: var(--pf-global--link--Color);
+}
+
+.login-pf a:hover {
+    color: var(--pf-global--link--Color--hover);
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}
