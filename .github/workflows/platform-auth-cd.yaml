@@ -30,7 +30,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push Web to ghcr
+      - name: Build and push Auth to ghcr
         uses: docker/build-push-action@v3
         with:
           file: platform/auth/Dockerfile

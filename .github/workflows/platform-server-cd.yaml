@@ -28,8 +28,6 @@ jobs:
       run: dotnet test --no-build --configuration Release --verbosity normal
     - name: Publish API
       run: dotnet publish --no-build --configuration Release --verbosity normal HQ.API/ --output dist/api/
-    - name: Publish Auth
-      run: dotnet publish --no-build --configuration Release --verbosity normal HQ.Auth/ --output dist/auth/
     - name: Publish ConsoleTool
       run: dotnet publish --no-build --configuration Release --verbosity normal HQ.ConsoleTool/ --output dist/console-tool/
     - name: Upload API Artifact
@@ -37,12 +35,6 @@ jobs:
       with:
         name: platform-server-api
         path: platform/server/dist/api/**
-        if-no-files-found: error
-    - name: Upload Auth Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: platform-server-auth
-        path: platform/server/dist/auth/**
         if-no-files-found: error
     - name: Upload ConsoleTool Artifact
       uses: actions/upload-artifact@v3
@@ -70,10 +62,6 @@ jobs:
           path: platform/server/dist/api/
       - uses: actions/download-artifact@v3
         with:
-          name: platform-server-auth
-          path: platform/server/dist/auth/
-      - uses: actions/download-artifact@v3
-        with:
           name: platform-server-console-tool
           path: platform/server/dist/console-tool/
       - name: Set output
@@ -96,15 +84,6 @@ jobs:
           context: platform/server/dist/api/
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}-server-api:${{ steps.vars.outputs.tag }}
-          build-args: |
-            VERSION=${{ steps.vars.outputs.version }}
-      - name: Build and push Auth to ghcr
-        uses: docker/build-push-action@v3
-        with:
-          file: platform/server/HQ.Auth/Dockerfile
-          context: platform/server/dist/auth/
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}-server-auth:${{ steps.vars.outputs.tag }}
           build-args: |
             VERSION=${{ steps.vars.outputs.version }}
       - name: Build and push Console Tool to ghcr
