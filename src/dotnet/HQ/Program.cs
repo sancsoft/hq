@@ -7,6 +7,8 @@ app.Configure(config =>
     config.AddCommand<APICommand>("api")
         .WithDescription("Start HQ API");
 
+    config.AddCommand<WorkerCommand>("worker")
+        .WithDescription("Start worker");
 });
 
 return await app.RunAsync(args);
