@@ -5,7 +5,7 @@ var app = new CommandApp();
 app.Configure(config =>
 {
     config.AddCommand<APICommand>("api")
-        .WithDescription("Start HQ API");
+        .WithDescription("Start API");
 
     config.AddCommand<WorkerCommand>("worker")
         .WithDescription("Start worker");
