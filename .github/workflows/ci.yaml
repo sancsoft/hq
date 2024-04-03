@@ -1,0 +1,42 @@
+name: HQ CI
+
+on:
+  pull_request: 
+  push:
+    branches:
+    - '**'
+jobs:
+  build-dotnet:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/dotnet/
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+  build-angular-hq:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/angular/hq/
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Node.js 20.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20.x
+        cache: 'npm'
+        cache-dependency-path: src/angular/hq/package-lock.json
+    - name: Restore dependencies
+      run: npm ci
+    - name: Build
+      run: npm run build --if-present
