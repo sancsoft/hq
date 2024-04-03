@@ -107,7 +107,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push API to ghcr
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           file: src/dotnet/HQ.API/Dockerfile
           context: src/dotnet/dist/api/
@@ -149,7 +149,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push Console Tool to ghcr
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           file: src/dotnet/HQ.ConsoleTool/Dockerfile
           context: src/dotnet/dist/console-tool/
@@ -191,7 +191,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push Console Client to ghcr
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           file: src/dotnet/HQ.ConsoleClient/Dockerfile
           context: src/dotnet/dist/console-client/
@@ -233,7 +233,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push HQ to ghcr
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           file: src/angular/hq/Dockerfile
           context: src/angular/hq/dist/hq/browser/
@@ -273,7 +273,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push Auth to ghcr
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           file: src/auth/Dockerfile
           context: src/auth/
