@@ -1,7 +1,7 @@
 using HQ.Commands;
 using Spectre.Console.Cli;
 
-var app = new CommandApp();
+var app = new CommandApp<APICommand>();
 app.Configure(config =>
 {
     config.AddCommand<APICommand>("api")
