@@ -245,6 +245,9 @@ jobs:
             src=src/angular/hq/
   push-auth:
     runs-on: ubuntu-latest
+    needs:
+      - build-dotnet
+      - build-angular-hq
     defaults:
       run:
         working-directory: src/auth/
