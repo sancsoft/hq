@@ -10,4 +10,4 @@ ENV ASPNETCORE_URLS=http://+:80
 WORKDIR /app
 COPY ./ /app
 
-ENTRYPOINT ["dotnet", "HQ.API.dll"]
+ENTRYPOINT ["dotnet", "HQ.dll"]

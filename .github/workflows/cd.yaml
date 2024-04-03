@@ -26,29 +26,13 @@ jobs:
       run: dotnet build --no-restore --configuration Release /p:Version=${VERSION}
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
-    - name: Publish API
-      run: dotnet publish --no-build --configuration Release --verbosity normal HQ.API/ --output dist/api/
-    - name: Publish ConsoleTool
-      run: dotnet publish --no-build --configuration Release --verbosity normal HQ.ConsoleTool/ --output dist/console-tool/
-    - name: Publish ConsoleClient
-      run: dotnet publish --no-build --configuration Release --verbosity normal HQ.ConsoleClient/ --output dist/console-client/
-    - name: Upload API Artifact
+    - name: Publish HQ
+      run: dotnet publish --no-build --configuration Release --verbosity normal HQ/ --output dist/hq/
+    - name: Upload HQ Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: dotnet-api
-        path: src/dotnet/dist/api/**
-        if-no-files-found: error
-    - name: Upload ConsoleTool Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: dotnet-console-tool
-        path: src/dotnet/dist/console-tool/**
-        if-no-files-found: error
-    - name: Upload ConsoleClient Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: dotnet-console-client
-        path: src/dotnet/dist/console-client/**
+        name: dotnet-hq
+        path: src/dotnet/dist/hq/**
         if-no-files-found: error
   build-angular-hq:
     runs-on: ubuntu-latest
@@ -73,7 +57,7 @@ jobs:
         name: angular-hq
         path: src/angular/hq/dist/hq/browser/**
         if-no-files-found: error
-  push-dotnet-api:
+  push-dotnet-hq:
     runs-on: ubuntu-latest
     needs:
     - build-dotnet
@@ -91,8 +75,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: dotnet-api
-          path: src/dotnet/dist/api/
+          name: dotnet-hq
+          path: src/dotnet/dist/hq/
       - name: Set output
         id: vars
         run: |
@@ -106,97 +90,13 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push API to ghcr
+      - name: Build and push HQ to ghcr
         uses: docker/build-push-action@v5
         with:
-          file: src/dotnet/HQ.API/Dockerfile
-          context: src/dotnet/dist/api/
+          file: src/dotnet/HQ/Dockerfile
+          context: src/dotnet/dist/hq/
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}-dotnet-api:${{ steps.vars.outputs.tag }}
-          build-args: |
-            VERSION=${{ steps.vars.outputs.version }}
-  push-dotnet-console-tool:
-    runs-on: ubuntu-latest
-    needs:
-    - build-dotnet
-    - build-angular-hq
-    defaults:
-      run:
-        working-directory: src/dotnet/
-    permissions:
-      contents: 'read'
-      packages: 'write'
-    env:
-      REGISTRY: ghcr.io
-      REPO_NAME: ${{ github.repository }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: dotnet-console-tool
-          path: src/dotnet/dist/console-tool/
-      - name: Set output
-        id: vars
-        run: |
-          echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-          echo "version=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_OUTPUT
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push Console Tool to ghcr
-        uses: docker/build-push-action@v5
-        with:
-          file: src/dotnet/HQ.ConsoleTool/Dockerfile
-          context: src/dotnet/dist/console-tool/
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}-dotnet-console-tool:${{ steps.vars.outputs.tag }}
-          build-args: |
-            VERSION=${{ steps.vars.outputs.version }}
-  push-dotnet-console-client:
-    runs-on: ubuntu-latest
-    needs:
-    - build-dotnet
-    - build-angular-hq
-    defaults:
-      run:
-        working-directory: src/dotnet/
-    permissions:
-      contents: 'read'
-      packages: 'write'
-    env:
-      REGISTRY: ghcr.io
-      REPO_NAME: ${{ github.repository }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: dotnet-console-client
-          path: src/dotnet/dist/console-client/
-      - name: Set output
-        id: vars
-        run: |
-          echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
-          echo "version=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_OUTPUT
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push Console Client to ghcr
-        uses: docker/build-push-action@v5
-        with:
-          file: src/dotnet/HQ.ConsoleClient/Dockerfile
-          context: src/dotnet/dist/console-client/
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}-dotnet-console-client:${{ steps.vars.outputs.tag }}
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}-dotnet-hq:${{ steps.vars.outputs.tag }}
           build-args: |
             VERSION=${{ steps.vars.outputs.version }}
   push-angular-hq:

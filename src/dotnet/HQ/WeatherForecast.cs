@@ -1,4 +1,4 @@
-namespace HQ.API;
+namespace HQ;
 
 public class WeatherForecast
 {
