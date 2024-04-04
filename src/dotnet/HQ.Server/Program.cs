@@ -1,4 +1,4 @@
-using HQ.Commands;
+using HQ.Server.Commands;
 using Spectre.Console.Cli;
 
 var app = new CommandApp<APICommand>();

@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HQ", "HQ\HQ.csproj", "{9FCBE012-5108-4807-88BD-5E47DB75E01E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HQ.Server", "HQ.Server\HQ.Server.csproj", "{BAFE81CE-8BE4-405E-AF91-827AB2A7F968}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,12 +22,15 @@ Global
 		{EBC9C589-9AEF-4AC4-AC94-23F629E78D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBC9C589-9AEF-4AC4-AC94-23F629E78D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBC9C589-9AEF-4AC4-AC94-23F629E78D71}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9FCBE012-5108-4807-88BD-5E47DB75E01E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9FCBE012-5108-4807-88BD-5E47DB75E01E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9FCBE012-5108-4807-88BD-5E47DB75E01E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9FCBE012-5108-4807-88BD-5E47DB75E01E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAFE81CE-8BE4-405E-AF91-827AB2A7F968}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAFE81CE-8BE4-405E-AF91-827AB2A7F968}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAFE81CE-8BE4-405E-AF91-827AB2A7F968}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAFE81CE-8BE4-405E-AF91-827AB2A7F968}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5F0CEE74-769C-4858-A61B-99AED7968828}
 	EndGlobalSection
 EndGlobal

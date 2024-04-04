@@ -1,4 +1,4 @@
-﻿namespace HQ;
+﻿namespace HQ.Server;
 
 public class Worker : BackgroundService
 {

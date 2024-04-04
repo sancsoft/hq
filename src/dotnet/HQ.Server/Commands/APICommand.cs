@@ -1,6 +1,6 @@
 ﻿using Spectre.Console.Cli;
 
-namespace HQ.Commands;
+namespace HQ.Server.Commands;
 
 public class APICommand : AsyncCommand
 {
