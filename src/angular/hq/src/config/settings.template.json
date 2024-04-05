@@ -1,3 +1,8 @@
 {
-    "apiUrl": "${HQ_API_URL}"
+    "apiUrl": "${HQ_API_URL}",
+    "auth": {
+        "authorityUrl": "${HQ_AUTH_AUTHORITY_URL}",
+        "clientId": "${HQ_AUTH_CLIENT_ID}",
+        "scopes": "${HQ_AUTH_SCOPES}"
+    }
 }

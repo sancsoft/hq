@@ -313,6 +313,9 @@ section {
         </mat-form-field>
       </form>
       <h1 class="text-orange-400">Hello World</h1>
+      <button mat-raised-button color="primary" (click)="login()">Login</button>
+      <button mat-raised-button color="warn" (click)="logout()">Logout</button>
+      <pre>{{ oidcSecurityService.getUserData() | async | json }}</pre>
     </div>
   </main>
 </div>

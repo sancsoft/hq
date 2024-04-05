@@ -4,6 +4,11 @@ import { Observable, map, shareReplay } from 'rxjs';
 
 export interface AppSettings {
   apiUrl: string;
+  auth: {
+    authorityUrl: string;
+    clientId: string;
+    scopes: string;
+  }
 }
 
 @Injectable({

@@ -8,8 +8,7 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "none",
-          "skipTests": true,
-          "flat": true
+          "skipTests": true
         },
         "@schematics/angular:class": {
           "skipTests": true
