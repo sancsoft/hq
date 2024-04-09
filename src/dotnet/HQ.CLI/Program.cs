@@ -18,7 +18,7 @@ Directory.CreateDirectory(dataPath);
 var services = new ServiceCollection();
 
 // Setup logging
-var logLevel = LogLevel.Information;
+var logLevel = LogLevel.None;
 if(Enum.TryParse<LogLevel>(Environment.GetEnvironmentVariable("HQ_LOG_LEVEL"), true, out LogLevel envLogLevel))
 {
     logLevel = envLogLevel;
