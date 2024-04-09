@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using HQ.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

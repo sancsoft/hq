@@ -1,4 +1,4 @@
-namespace HQ.Server;
+namespace HQ.Abstractions;
 
 public class WeatherForecast
 {
