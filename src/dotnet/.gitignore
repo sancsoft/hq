@@ -486,3 +486,5 @@ $RECYCLE.BIN/
 appsettings.*.json
 sharedsettings.*.json
 app.db
+
+HQ.CLI/data/
