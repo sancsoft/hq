@@ -16,4 +16,8 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\HQ.Abstractions\HQ.Abstractions.csproj" />
+	</ItemGroup>
+
 </Project>
