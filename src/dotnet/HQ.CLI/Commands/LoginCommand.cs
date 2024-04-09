@@ -13,12 +13,14 @@ internal class LoginCommand : AsyncCommand<HQCommandSettings>
     private readonly ILogger<LoginCommand> _logger;
     private readonly HQConfig _config;
     private readonly IDataProtectionProvider _dataProtectionProvider;
+    private readonly HttpClient _httpClient;
 
-    public LoginCommand(ILogger<LoginCommand> logger, HQConfig config, IDataProtectionProvider dataProtectionProvider)
+    public LoginCommand(ILogger<LoginCommand> logger, HQConfig config, IDataProtectionProvider dataProtectionProvider, HttpClient httpClient)
     {
         _logger = logger;
         _config = config;
         _dataProtectionProvider = dataProtectionProvider;
+        _httpClient = httpClient;
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, HQCommandSettings settings)
@@ -29,12 +31,10 @@ internal class LoginCommand : AsyncCommand<HQCommandSettings>
             return 1;
         }
 
-        var client = new HttpClient();
-
-        var disco = await client.GetDiscoveryDocumentAsync(_config.AuthUrl.AbsoluteUri);
+        var disco = await _httpClient.GetDiscoveryDocumentAsync(_config.AuthUrl.AbsoluteUri);
         if (disco.IsError) throw new Exception(disco.Error);
 
-        var authorizeResponse = await client.RequestDeviceAuthorizationAsync(new DeviceAuthorizationRequest
+        var authorizeResponse = await _httpClient.RequestDeviceAuthorizationAsync(new DeviceAuthorizationRequest
         {
             Address = disco.DeviceAuthorizationEndpoint,
             ClientId = "hq",
@@ -74,7 +74,7 @@ Then enter the code:
         IdentityModel.Client.TokenResponse? response = null;
         do
         {
-            response = await client.RequestDeviceTokenAsync(new DeviceTokenRequest
+            response = await _httpClient.RequestDeviceTokenAsync(new DeviceTokenRequest
             {
                 Address = disco.TokenEndpoint,
 

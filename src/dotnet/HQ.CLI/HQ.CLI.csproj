@@ -10,8 +10,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="IdentityModel" Version="6.2.0" />
-		<PackageReference Include="IdentityModel.AspNetCore" Version="4.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="8.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
 		<PackageReference Include="Spectre.Console.Cli" Version="0.48.1-preview.0.38" />
@@ -27,6 +27,10 @@
 	<ItemGroup>
 	  <Folder Include="data\keys\" />
 	  <Folder Include="Settings\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\HQ.SDK\HQ.SDK.csproj" />
 	</ItemGroup>
 
 </Project>

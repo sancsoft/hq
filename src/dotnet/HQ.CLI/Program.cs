@@ -1,5 +1,6 @@
 ﻿using HQ.CLI;
 using HQ.CLI.Commands;
+using HQ.SDK;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,13 @@ if (OperatingSystem.IsWindows())
     dataProtectionBuilder.ProtectKeysWithDpapi();
 }
 
+services.AddSingleton<HQApiMessageHandler>();
+
+services.AddHttpClient<TestApiService>(client =>
+{
+    client.BaseAddress = config.ApiUrl;
+}).AddHttpMessageHandler<HQApiMessageHandler>();
+
 var registrar = new TypeRegistrar(services);
 var app = new CommandApp(registrar);
 app.Configure(config =>
@@ -50,6 +58,9 @@ app.Configure(config =>
 
     config.AddCommand<LoginCommand>("login")
         .WithDescription("Login to HQ CLI");
+
+    config.AddCommand<TestApiCommand>("test-api")
+        .WithDescription("Test API");
 });
 
 var rc = await app.RunAsync(args);
