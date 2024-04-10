@@ -3,7 +3,7 @@ using HQ.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HQ.Server.Controllers;
+namespace HQ.Server.API.Controllers;
 
 [Authorize]
 [ApiController]

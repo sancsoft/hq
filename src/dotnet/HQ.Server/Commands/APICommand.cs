@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using HQ.Server.API;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Spectre.Console.Cli;
@@ -13,6 +15,8 @@ public class APICommand : AsyncCommand
     {
         var args = context.Remaining.Raw.ToArray();
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddHealthChecks();
 
         // Add services to the container.
         builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
@@ -67,6 +71,13 @@ public class APICommand : AsyncCommand
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
+        
+        // Run all health checks
+        app.MapHealthChecks("/health/startup");
+
+        // Only run simple health check testing to see if server responds
+        app.MapHealthChecks("/healthz", new HealthCheckOptions { Predicate = _ => false });
+
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
