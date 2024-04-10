@@ -79,7 +79,7 @@ Then enter the code:
                 Address = disco.TokenEndpoint,
 
                 ClientId = "hq",
-                DeviceCode = authorizeResponse.DeviceCode
+                DeviceCode = authorizeResponse.DeviceCode!
             });
 
             // Console.WriteLine(response.Raw);

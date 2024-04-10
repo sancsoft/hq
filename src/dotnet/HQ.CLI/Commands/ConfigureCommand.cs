@@ -18,7 +18,7 @@ internal class ConfigureCommand : AsyncCommand<HQCommandSettings>
         _config = config;
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context, HQCommandSettings settings)
+    public override Task<int> ExecuteAsync(CommandContext context, HQCommandSettings settings)
     {
         _config.ApiUrl = AnsiConsole.Prompt(
             new TextPrompt<Uri>("Enter API URL:")
@@ -29,6 +29,6 @@ internal class ConfigureCommand : AsyncCommand<HQCommandSettings>
                 .ValidationErrorMessage("[red]That's not a valid Auth URL[/]")
                 .Validate(uri => uri.IsAbsoluteUri));
 
-        return 0;
+        return Task.FromResult(0);
     }
 }

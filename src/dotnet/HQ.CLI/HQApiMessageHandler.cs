@@ -27,12 +27,12 @@ namespace HQ.CLI
 
         private async Task<string> GetTokenAsync(CancellationToken cancellationToken, bool forceRefresh = false)
         {
-            var accessToken = _dataProtector.Unprotect(_config.AccessToken);
-            var refreshToken = _dataProtector.Unprotect(_config.RefreshToken);
+            var accessToken = _dataProtector.Unprotect(_config.AccessToken!);
+            var refreshToken = _dataProtector.Unprotect(_config.RefreshToken!);
 
             if ((_config.AccessTokenExpiresAt.HasValue && _config.AccessTokenExpiresAt.Value <= DateTime.UtcNow) || forceRefresh)
             {
-                var disco = await _httpClient.GetDiscoveryDocumentAsync(_config.AuthUrl.AbsoluteUri);
+                var disco = await _httpClient.GetDiscoveryDocumentAsync(_config.AuthUrl!.AbsoluteUri);
                 if (disco.IsError) throw new Exception(disco.Error);
 
                 var response = await _httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
@@ -45,7 +45,7 @@ namespace HQ.CLI
 
                 if (response.IsError) throw new Exception(response.Error);
 
-                accessToken = response.AccessToken;
+                accessToken = response.AccessToken!;
 
                 _config.RefreshToken = !String.IsNullOrEmpty(response.RefreshToken) ? _dataProtector.Protect(response.RefreshToken) : null;
                 _config.AccessToken = !String.IsNullOrEmpty(response.AccessToken) ? _dataProtector.Protect(response.AccessToken) : null; ;
