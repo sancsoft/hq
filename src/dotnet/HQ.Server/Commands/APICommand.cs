@@ -1,8 +1,11 @@
 ﻿using HQ.Server.API;
+using HQ.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using Spectre.Console.Cli;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -16,9 +19,10 @@ public class APICommand : AsyncCommand
         var args = context.Remaining.Raw.ToArray();
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddHealthChecks();
-
         // Add services to the container.
+        builder.Services.AddHealthChecks();
+        builder.Services.AddHQDbContext(builder.Configuration);
+
         builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
         builder.Services.AddSwaggerGen(c =>
         {

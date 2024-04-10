@@ -9,6 +9,9 @@ app.Configure(config =>
 
     config.AddCommand<WorkerCommand>("worker")
         .WithDescription("Start worker");
+
+    config.AddCommand<MigrateCommand>("migrate")
+        .WithDescription("Migrate database to latest version");
 });
 
 return await app.RunAsync(args);
