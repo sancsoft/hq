@@ -1,5 +1,6 @@
 ﻿using HQ.CLI;
 using HQ.CLI.Commands;
+using HQ.CLI.Commands.Clients;
 using HQ.SDK;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
@@ -44,7 +45,7 @@ if (OperatingSystem.IsWindows())
 
 services.AddSingleton<HQApiMessageHandler>();
 
-services.AddHttpClient<TestApiService>(client =>
+services.AddHttpClient<HQServiceV1>(client =>
 {
     client.BaseAddress = config.ApiUrl;
 }).AddHttpMessageHandler<HQApiMessageHandler>();
@@ -59,8 +60,13 @@ app.Configure(config =>
     config.AddCommand<LoginCommand>("login")
         .WithDescription("Login to HQ CLI");
 
-    config.AddCommand<TestApiCommand>("test-api")
-        .WithDescription("Test API");
+    config.AddBranch("get", branch =>
+    {
+        branch.AddCommand<GetClientsCommand>("client")
+            .WithAlias("clients")
+            .WithAlias("cl")
+            .WithDescription("Get clients");
+    });
 });
 
 var rc = await app.RunAsync(args);

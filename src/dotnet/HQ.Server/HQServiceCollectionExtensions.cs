@@ -1,4 +1,5 @@
-﻿using HQ.Server.Data;
+﻿using HQ.Server.API.Clients;
+using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -6,6 +7,13 @@ namespace HQ.Server
 {
     public static class HQServiceCollectionExtensions
     {
+        public static IServiceCollection AddHQServices(this IServiceCollection services)
+        {
+            services.AddScoped<ClientServiceV1>();
+
+            return services;
+        }
+
         public static IServiceCollection AddHQDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(configuration.GetConnectionString("HQ"));

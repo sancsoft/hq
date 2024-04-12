@@ -2,6 +2,7 @@
 using HQ.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -21,6 +22,7 @@ public class APICommand : AsyncCommand
 
         // Add services to the container.
         builder.Services.AddHealthChecks();
+        builder.Services.AddHQServices();
         builder.Services.AddHQDbContext(builder.Configuration);
 
         builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
@@ -45,7 +47,17 @@ public class APICommand : AsyncCommand
             });
         });
 
-        builder.Services.AddControllers();
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressMapClientErrors = true;
+            options.SuppressModelStateInvalidFilter = true;
+        });
+
+        builder.Services.AddControllers(options =>
+        {
+            options.Filters.Add<HQModelStateInvalidFilter>();
+        });
+
         builder.Services.AddApiVersioning(options =>
         {
             options.ReportApiVersions = true;
@@ -88,7 +100,6 @@ public class APICommand : AsyncCommand
             c.OAuthClientId("hq");
             c.OAuthScopes("openid", "profile", "email");
             c.OAuthUsePkce();
-            c.EnablePersistAuthorization();
 
             var descriptions = app.DescribeApiVersions();
 
