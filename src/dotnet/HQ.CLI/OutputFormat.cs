@@ -10,7 +10,8 @@ namespace HQ.CLI
     {
         Table,
         Wide,
+        CSV,
         Json,
-        CSV
+        YAML
     }
 }

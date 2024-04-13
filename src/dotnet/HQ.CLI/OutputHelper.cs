@@ -11,6 +11,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using YamlDotNet.Core;
+using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization;
 
 namespace HQ.CLI
 {
@@ -89,6 +92,13 @@ namespace HQ.CLI
 
                         return new Text(reader.ReadToEnd());
                     }
+                case OutputFormat.YAML:
+                    var serializer = new SerializerBuilder()
+                        .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                        .Build();
+
+                    var yaml = serializer.Serialize(_json);
+                    return new Text(yaml);
                 case OutputFormat.Json:
                 default:
                     var options = new JsonSerializerOptions()
