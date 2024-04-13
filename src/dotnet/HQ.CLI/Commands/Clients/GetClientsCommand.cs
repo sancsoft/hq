@@ -44,7 +44,7 @@ namespace HQ.CLI.Commands.Clients
             }
 
             AnsiConsole.Write(OutputHelper.Create(result.Value, result.Value.Records)
-                .WithColumn("ID", t => t.Id.ToString())
+                .WithColumn("ID", t => t.ClientId.ToString())
                 .WithColumn("NAME", t => t.Name)
                 .WithColumn("HOURLY RATE", t => t.HourlyRate?.ToString("C"))
                 .WithColumn("OFFICIAL NAME", t => t.OfficialName, table: false, wide: true)

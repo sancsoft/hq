@@ -92,7 +92,7 @@ public class ClientServiceV1
             .OrderByDescending(t => t.CreatedAt)
             .Select(t => new GetClientsV1.Record()
             {
-                Id = t.Id,
+                ClientId = t.Id,
                 CreatedAt = t.CreatedAt,
                 Name = t.Name,
                 OfficialName = t.OfficialName,
@@ -113,7 +113,7 @@ public class ClientServiceV1
 
         if (request.ClientId.HasValue)
         {
-            records = records.Where(t => t.Id == request.ClientId.Value);
+            records = records.Where(t => t.ClientId == request.ClientId.Value);
         }
 
         if (request.Skip.HasValue)

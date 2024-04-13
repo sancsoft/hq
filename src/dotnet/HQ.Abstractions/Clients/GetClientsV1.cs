@@ -18,7 +18,7 @@ public class GetClientsV1
     public class Response : PagedResponseV1<Record>;
     public class Record
     {
-        public Guid Id { get; set; }
+        public Guid ClientId { get; set; }
         public DateTime CreatedAt { get; set; }
         public string Name { get; set; } = null!;
         public string? OfficialName { get; set; }

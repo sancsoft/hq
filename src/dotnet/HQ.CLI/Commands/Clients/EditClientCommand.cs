@@ -46,9 +46,16 @@ namespace HQ.CLI.Commands.Clients
                 return 1;
             }
 
-            var editor = new JsonEditor<GetClientsV1.Record>(record, async (value) =>
+            var model = new UpdateClientV1.Request();
+            model.ClientId = record.ClientId;
+            model.Name = record.Name;
+            model.OfficialName = record.OfficialName;
+            model.BillingEmail = record.BillingEmail;
+            model.HourlyRate = record.HourlyRate;
+
+            var editor = new YAMLEditor<UpdateClientV1.Request>(model, async (value) =>
             {
-                return Result.Fail("Random error");
+                return await _hqService.UpdateClientV1(value);
             });
 
             var rc = await editor.Launch();

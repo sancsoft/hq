@@ -21,7 +21,7 @@ namespace HQ.SDK
             _httpClient = httpClient;
         }
 
-        private async Task<Result<TResponse?>> ExecuteRequest<TResponse>(string url, object request, CancellationToken ct = default)
+        private async Task<Result<TResponse?>> ExecuteRequest<TResponse>(string url, object request, CancellationToken ct = default) where TResponse : class
         {
             var response = await _httpClient.PostAsJsonAsync(url, request, ct);
             if (!response.IsSuccessStatusCode)
@@ -43,6 +43,11 @@ namespace HQ.SDK
                 }
 
                 return Result.Fail(errors);
+            }
+
+            if(response.Content.Headers.ContentLength.HasValue && response.Content.Headers.ContentLength == 0)
+            {
+                return Result.Ok<TResponse?>(null);
             }
 
             return await response.Content.ReadFromJsonAsync<TResponse>(ct);
