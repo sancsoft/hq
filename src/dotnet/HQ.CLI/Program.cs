@@ -54,18 +54,30 @@ var registrar = new TypeRegistrar(services);
 var app = new CommandApp(registrar);
 app.Configure(config =>
 {
-    config.AddCommand<ConfigureCommand>("configure")
-        .WithDescription("Configure HQ CLI");
+    config.SetHelpProvider(new HQHelpProvider(config.Settings));
 
-    config.AddCommand<LoginCommand>("login")
-        .WithDescription("Login to HQ CLI");
+    config.AddCommand<ConfigureCommand>("configure");
+    config.AddCommand<LoginCommand>("login");
 
     config.AddBranch("get", branch =>
     {
         branch.AddCommand<GetClientsCommand>("client")
             .WithAlias("clients")
-            .WithAlias("cl")
-            .WithDescription("Get clients");
+            .WithAlias("cl");
+    });
+
+    config.AddBranch("delete", branch =>
+    {
+        branch.AddCommand<DeleteClientCommand>("client")
+            .WithAlias("clients")
+            .WithAlias("cl");
+    });
+
+    config.AddBranch("edit", branch =>
+    {
+        branch.AddCommand<EditClientCommand>("client")
+            .WithAlias("clients")
+            .WithAlias("cl");
     });
 });
 

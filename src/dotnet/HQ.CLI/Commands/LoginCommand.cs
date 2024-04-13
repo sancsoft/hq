@@ -102,7 +102,7 @@ Then enter the code:
         _config.AccessToken = !String.IsNullOrEmpty(response.AccessToken) ? protector.Protect(response.AccessToken) : null; ;
         _config.AccessTokenExpiresAt = DateTime.UtcNow.AddSeconds(response.ExpiresIn);
 
-        AnsiConsole.MarkupLine("[green]Authentication successful![/] ");
+        AnsiConsole.MarkupLine("[green]Authentication successful![/]");
 
         return 0;
     }

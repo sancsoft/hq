@@ -24,7 +24,7 @@ namespace HQ.CLI
     {
         private readonly TJson _json;
         private readonly IEnumerable<TRow> _rows;
-        private List<(string Name, Func<TRow, string> Render, bool Table, bool CSV, bool Wide)> _columns = new();
+        private List<(string Name, Func<TRow, string?> Render, bool Table, bool CSV, bool Wide)> _columns = new();
 
         public OutputHelper(TJson json, IEnumerable<TRow> rows)
         {
@@ -34,7 +34,7 @@ namespace HQ.CLI
 
         public OutputHelper<TJson, TRow> WithColumn(string name, Func<TRow, string?> render, bool table = true, bool csv = true, bool wide = false)
         {
-            _columns.Add((name, (t) => render(t) ?? "<none>", table, csv, wide));
+            _columns.Add((name, (t) => render(t), table, csv, wide));
             return this;
         }
 
@@ -54,7 +54,7 @@ namespace HQ.CLI
 
                     foreach (var row in _rows)
                     {
-                        table.AddRow(columns.Select(t => new Text(t.Render(row))));
+                        table.AddRow(columns.Select(t => new Text(t.Render(row) ?? "<none>")));
                     }
 
                     table.Border(TableBorder.None);

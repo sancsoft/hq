@@ -12,6 +12,15 @@ using System.Threading.Tasks;
 
 namespace HQ.CLI.Commands.Clients
 {
+    internal class GetClientsSettings : HQCommandSettings
+    {
+        [CommandArgument(0, "[clientId]")]
+        public Guid? ClientId { get; set; }
+
+        [CommandOption("--search|-s")]
+        public string? Search { get; set; }
+    }
+
     internal class GetClientsCommand : AsyncCommand<GetClientsSettings>
     {
         private readonly HQServiceV1 _hqService;
@@ -35,12 +44,12 @@ namespace HQ.CLI.Commands.Clients
             }
 
             AnsiConsole.Write(OutputHelper.Create(result.Value, result.Value.Records)
+                .WithColumn("ID", t => t.Id.ToString())
                 .WithColumn("NAME", t => t.Name)
                 .WithColumn("HOURLY RATE", t => t.HourlyRate?.ToString("C"))
                 .WithColumn("OFFICIAL NAME", t => t.OfficialName, table: false, wide: true)
                 .WithColumn("BILLING EMAIL", t => t.BillingEmail, table: false, wide: true)
                 .WithColumn("CREATED", t => t.CreatedAt.ToString("O"), table: false, wide: true)
-                .WithColumn("ID", t => t.Id.ToString(), table: false, wide: true)
                 .Output(settings.Output)
             );
 
