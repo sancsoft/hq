@@ -11,7 +11,8 @@ public class DeleteClientV1
 {
     public class Request
     {
-        public Guid ClientId { get; set; }
+        public Guid? ClientId { get; set; }
+        public string? ClientIdOrName { get; set; }
     }
 
     public class Response : NoContentResponseV1

@@ -15,6 +15,20 @@ public class ClientServiceV1
         _context = context;
     }
 
+    private IQueryable<Client> FilterClientIdOrName(IQueryable<Client> records, string clientIdOrName)
+    {
+        if (Guid.TryParse(clientIdOrName, out Guid clientId))
+        {
+            records = records.Where(t => t.Id == clientId);
+        }
+        else
+        {
+            records = records.Where(t => t.Name.ToLower() == clientIdOrName.ToLower());
+        }
+
+        return records;
+    }
+
     public async Task<Result<CreateClientV1.Response>> CreateClientV1(CreateClientV1.Request request, CancellationToken ct = default)
     {
         var validationResult = Result.Merge(
@@ -72,7 +86,28 @@ public class ClientServiceV1
 
     public async Task<Result<DeleteClientV1.Response?>> DeleteClientV1(DeleteClientV1.Request request, CancellationToken ct = default)
     {
-        var client = await _context.Clients.FindAsync(request.ClientId, ct);
+        var validationResult = Result.Merge(
+            Result.FailIf(String.IsNullOrEmpty(request.ClientIdOrName) && !request.ClientId.HasValue, "ClientIdOrName or ClientId must be specified.")
+        );
+
+        if (validationResult.IsFailed)
+        {
+            return validationResult;
+        }
+
+        var records = _context.Clients.AsQueryable();
+
+        if (!String.IsNullOrEmpty(request.ClientIdOrName))
+        {
+            records = FilterClientIdOrName(records, request.ClientIdOrName);
+        }
+
+        if(request.ClientId.HasValue)
+        {
+            records = records.Where(t => t.Id == request.ClientId.Value);
+        }
+
+        var client = await records.SingleOrDefaultAsync(ct);
         if (client == null)
         {
             return Result.Ok<DeleteClientV1.Response?>(null);
@@ -101,6 +136,11 @@ public class ClientServiceV1
             });
 
         var total = await records.CountAsync(ct);
+
+        if(!String.IsNullOrEmpty(request.ClientIdOrName))
+        {
+            records = FilterClientIdOrName(records, request.ClientIdOrName);
+        }
 
         if (!string.IsNullOrEmpty(request.Search))
         {

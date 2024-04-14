@@ -14,8 +14,8 @@ namespace HQ.CLI.Commands.Clients
 {
     internal class GetClientsSettings : HQCommandSettings
     {
-        [CommandArgument(0, "[clientId]")]
-        public Guid? ClientId { get; set; }
+        [CommandArgument(0, "[clientIdOrName]")]
+        public string? ClientIdOrName { get; set; }
 
         [CommandOption("--search|-s")]
         public string? Search { get; set; }
@@ -35,7 +35,7 @@ namespace HQ.CLI.Commands.Clients
             var result = await _hqService.GetClientsV1(new()
             {
                 Search = settings.Search,
-                ClientId = settings.ClientId,
+                ClientIdOrName = settings.ClientIdOrName,
             });
 
             if (!result.IsSuccess || result.Value == null)

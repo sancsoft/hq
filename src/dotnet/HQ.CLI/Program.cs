@@ -79,6 +79,13 @@ app.Configure(config =>
             .WithAlias("clients")
             .WithAlias("cl");
     });
+
+    config.AddBranch("create", branch =>
+    {
+        branch.AddCommand<CreateClientCommand>("client")
+            .WithAlias("clients")
+            .WithAlias("cl");
+    });
 });
 
 var rc = await app.RunAsync(args);

@@ -13,6 +13,7 @@ public class GetClientsV1
     {
         public string? Search { get; set; }
         public Guid? ClientId { get; set; }
+        public string? ClientIdOrName { get; set; }
     }
 
     public class Response : PagedResponseV1<Record>;
