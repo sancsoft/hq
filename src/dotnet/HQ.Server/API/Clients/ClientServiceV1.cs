@@ -125,15 +125,7 @@ public class ClientServiceV1
         var records = _context.Clients
             .AsNoTracking()
             .OrderByDescending(t => t.CreatedAt)
-            .Select(t => new GetClientsV1.Record()
-            {
-                ClientId = t.Id,
-                CreatedAt = t.CreatedAt,
-                Name = t.Name,
-                OfficialName = t.OfficialName,
-                BillingEmail = t.BillingEmail,
-                HourlyRate = t.HourlyRate,
-            });
+            .AsQueryable();
 
         var total = await records.CountAsync(ct);
 
@@ -153,7 +145,7 @@ public class ClientServiceV1
 
         if (request.ClientId.HasValue)
         {
-            records = records.Where(t => t.ClientId == request.ClientId.Value);
+            records = records.Where(t => t.Id == request.ClientId.Value);
         }
 
         if (request.Skip.HasValue)
@@ -166,9 +158,19 @@ public class ClientServiceV1
             records = records.Take(request.Take.Value);
         }
 
+        var mapped = records.Select(t => new GetClientsV1.Record()
+        {
+            ClientId = t.Id,
+            CreatedAt = t.CreatedAt,
+            Name = t.Name,
+            OfficialName = t.OfficialName,
+            BillingEmail = t.BillingEmail,
+            HourlyRate = t.HourlyRate,
+        });
+
         var response = new GetClientsV1.Response()
         {
-            Records = await records.ToListAsync(ct),
+            Records = await mapped.ToListAsync(ct),
             Total = total
         };
 
