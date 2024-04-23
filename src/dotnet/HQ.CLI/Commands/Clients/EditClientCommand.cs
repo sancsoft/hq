@@ -46,17 +46,17 @@ namespace HQ.CLI.Commands.Clients
                 return 1;
             }
 
-            var model = new UpdateClientV1.Request();
+            var model = new UpsertClientV1.Request();
             model.ClientId = record.ClientId;
             model.Name = record.Name;
             model.OfficialName = record.OfficialName;
             model.BillingEmail = record.BillingEmail;
             model.HourlyRate = record.HourlyRate;
 
-            var editor = new YAMLEditor<UpdateClientV1.Request>(model, async (value) =>
+            var editor = new YAMLEditor<UpsertClientV1.Request>(model, async (value) =>
             {
                 value.ClientId = record.ClientId;
-                return await _hqService.UpdateClientV1(value);
+                return await _hqService.UpsertClientV1(value);
             });
 
             var rc = await editor.Launch();

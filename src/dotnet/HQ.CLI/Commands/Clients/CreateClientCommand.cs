@@ -28,11 +28,11 @@ namespace HQ.CLI.Commands.Clients
 
         public override async Task<int> ExecuteAsync(CommandContext context, CreateClientSettings settings)
         {
-            var model = new CreateClientV1.Request();
+            var model = new UpsertClientV1.Request();
 
-            var Createor = new YAMLEditor<CreateClientV1.Request>(model, async (value) =>
+            var Createor = new YAMLEditor<UpsertClientV1.Request>(model, async (value) =>
             {
-                return await _hqService.CreateClientV1(value);
+                return await _hqService.UpsertClientV1(value);
             });
 
             var rc = await Createor.Launch();

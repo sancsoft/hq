@@ -29,17 +29,10 @@ namespace HQ.Server.API.Clients
             _clientService.GetClientsV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
-        [HttpPost(nameof(CreateClientV1))]
-        [ProducesResponseType<CreateClientV1.Response>(StatusCodes.Status201Created)]
-        public Task<ActionResult> CreateClientV1([FromBody] CreateClientV1.Request request, CancellationToken ct = default) => 
-            _clientService.CreateClientV1(request, ct)
-            .ToActionResult(new HQResultEndpointProfile());
-
-        [HttpPost(nameof(UpdateClientV1))]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<ActionResult> UpdateClientV1([FromBody] UpdateClientV1.Request request, CancellationToken ct = default) =>
-            _clientService.UpdateClientV1(request, ct)
+        [HttpPost(nameof(UpsertClientV1))]
+        [ProducesResponseType<UpsertClientV1.Response>(StatusCodes.Status201Created)]
+        public Task<ActionResult> UpsertClientV1([FromBody] UpsertClientV1.Request request, CancellationToken ct = default) => 
+            _clientService.UpsertClientV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
         [HttpPost(nameof(DeleteClientV1))]

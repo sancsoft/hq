@@ -86,6 +86,13 @@ app.Configure(config =>
             .WithAlias("clients")
             .WithAlias("cl");
     });
+
+    config.AddBranch("import", branch =>
+    {
+        branch.AddCommand<ImportClientCommand>("client")
+            .WithAlias("clients")
+            .WithAlias("cl");
+    });
 });
 
 var rc = await app.RunAsync(args);

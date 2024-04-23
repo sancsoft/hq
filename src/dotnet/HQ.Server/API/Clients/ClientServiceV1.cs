@@ -29,11 +29,12 @@ public class ClientServiceV1
         return records;
     }
 
-    public async Task<Result<CreateClientV1.Response>> CreateClientV1(CreateClientV1.Request request, CancellationToken ct = default)
+    public async Task<Result<UpsertClientV1.Response>> UpsertClientV1(UpsertClientV1.Request request, CancellationToken ct = default)
     {
         var validationResult = Result.Merge(
             Result.FailIf(String.IsNullOrEmpty(request.Name), "Name is required."),
-            Result.FailIf(await _context.Clients.AnyAsync(t => t.Name == request.Name, ct), "Name must be unique.")
+            Result.FailIf(!request.ClientId.HasValue && await _context.Clients.AnyAsync(t => t.Name == request.Name, ct), "Name must be unique."),
+            Result.FailIf(request.ClientId.HasValue && await _context.Clients.AnyAsync(t => t.Id != request.ClientId && t.Name == request.Name, ct), "Name must be unique.")
         );
 
         if(validationResult.IsFailed)
@@ -41,47 +42,24 @@ public class ClientServiceV1
             return validationResult;
         }
 
-        var client = new Client();
+        var client = await _context.Clients.FindAsync(request.ClientId);
+        if(client == null)
+        {
+            client = new();
+            _context.Clients.Add(client);
+        }
+
         client.Name = request.Name;
         client.OfficialName = request.OfficialName;
         client.BillingEmail = request.BillingEmail;
         client.HourlyRate = request.HourlyRate;
 
-        await _context.Clients.AddAsync(client, ct);
         await _context.SaveChangesAsync(ct);
 
-        return new CreateClientV1.Response()
+        return new UpsertClientV1.Response()
         {
             ClientId = client.Id
         };
-    }
-
-    public async Task<Result<UpdateClientV1.Response?>> UpdateClientV1(UpdateClientV1.Request request, CancellationToken ct = default)
-    {
-        var validationResult = Result.Merge(
-            Result.FailIf(String.IsNullOrEmpty(request.Name), "Name is required."),
-            Result.FailIf(await _context.Clients.AnyAsync(t => t.Id != request.ClientId && t.Name == request.Name, ct), "Name must be unique.")
-        );
-
-        if (validationResult.IsFailed)
-        {
-            return validationResult;
-        }
-
-        var client = await _context.Clients.FindAsync(request.ClientId, ct);
-        if (client == null)
-        {
-            return Result.Ok<UpdateClientV1.Response?>(null);
-        }
-
-        client.Name = request.Name;
-        client.OfficialName = request.OfficialName;
-        client.BillingEmail = request.BillingEmail;
-        client.HourlyRate = request.HourlyRate;
-
-        await _context.SaveChangesAsync(ct);
-
-        return new UpdateClientV1.Response();
     }
 
     public async Task<Result<DeleteClientV1.Response?>> DeleteClientV1(DeleteClientV1.Request request, CancellationToken ct = default)

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization;
+using CsvHelper.Configuration;
 
 namespace HQ.CLI
 {
@@ -28,6 +29,7 @@ namespace HQ.CLI
         private readonly TJson _json;
         private readonly IEnumerable<TRow> _rows;
         private List<(string Name, Func<TRow, string?> Render, bool Table, bool CSV, bool Wide)> _columns = new();
+        private Type? _csvClassMap;
 
         public OutputHelper(TJson json, IEnumerable<TRow> rows)
         {
@@ -38,6 +40,13 @@ namespace HQ.CLI
         public OutputHelper<TJson, TRow> WithColumn(string name, Func<TRow, string?> render, bool table = true, bool csv = true, bool wide = false)
         {
             _columns.Add((name, (t) => render(t), table, csv, wide));
+            return this;
+        }
+
+        public OutputHelper<TJson, TRow> WithCSVClassMap<TMap>()
+            where TMap : ClassMap<TRow>
+        {
+            _csvClassMap = typeof(TMap);
             return this;
         }
 
@@ -70,24 +79,19 @@ namespace HQ.CLI
                         using var writer = new StreamWriter(stream);
                         using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
-                        foreach(var column in _columns.Where(t => t.CSV))
+                        if(_csvClassMap != null)
                         {
-                            csv.WriteField(column.Name);
+                            csv.Context.RegisterClassMap(_csvClassMap);
                         }
 
-                        csv.NextRecordAsync();
-
-                        foreach (var row in _rows)
+                        csv.WriteHeader<TRow>();
+                        
+                        if(_rows.Any())
                         {
-                            foreach (var column in _columns.Where(t => t.CSV))
-                            {
-                                csv.WriteField(column.Render(row));
-                            }
-                            
-                            csv.NextRecordAsync();
+                            csv.WriteRecords(_rows);
                         }
 
-                        writer.Flush();
+                        csv.Flush();
                         stream.Position = 0;
 
                         return new Text(reader.ReadToEnd());

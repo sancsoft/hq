@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace HQ.Abstractions.Clients;
 
-public class UpdateClientV1
+public class UpsertClientV1
 {
     public class Request
     {
-        public Guid ClientId { get; set; }
+        public Guid? ClientId { get; set; }
         public string Name { get; set; } = null!;
         public string? OfficialName { get; set; }
         public string? BillingEmail { get; set; }
@@ -20,5 +20,6 @@ public class UpdateClientV1
 
     public class Response : NoContentResponseV1
     {
+        public Guid ClientId { get; set; }
     }
 }

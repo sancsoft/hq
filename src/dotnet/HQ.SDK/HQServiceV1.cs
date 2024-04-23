@@ -56,11 +56,8 @@ namespace HQ.SDK
         public Task<Result<GetClientsV1.Response?>> GetClientsV1(GetClientsV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<GetClientsV1.Response>("/v1/clients/GetClientsV1", request, ct);
 
-        public Task<Result<CreateClientV1.Response?>> CreateClientV1(CreateClientV1.Request request, CancellationToken ct = default)
-            => ExecuteRequest<CreateClientV1.Response>("/v1/clients/CreateClientV1", request, ct);
-
-        public Task<Result<UpdateClientV1.Response?>> UpdateClientV1(UpdateClientV1.Request request, CancellationToken ct = default)
-            => ExecuteRequest<UpdateClientV1.Response>("/v1/clients/UpdateClientV1", request, ct);
+        public Task<Result<UpsertClientV1.Response?>> UpsertClientV1(UpsertClientV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertClientV1.Response>("/v1/clients/UpsertClientV1", request, ct);
 
         public Task<Result<DeleteClientV1.Response?>> DeleteClientV1(DeleteClientV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<DeleteClientV1.Response>("/v1/clients/DeleteClientV1", request, ct);
