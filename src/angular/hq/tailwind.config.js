@@ -1,40 +1,35 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
-  content: [
-    "./src/**/*.{html,ts}",
-  ],
+  content: ["./src/**/*.{html,ts}"],
   theme: {
     extend: {
       colors: {
-        orange: {
-          50: '#fef8ee',
-          100: '#fef0d6',
-          200: '#fbdcad',
-          300: '#f8c279',
-          400: '#f59e42',
-          500: '#f17d15',
-          600: '#e36713',
-          700: '#bc4f12',
-          800: '#963e16',
-          900: '#793515',
-          950: '#411909',  
+        transparent: "transparent",
+        current: "currentColor",
+        orange: "#F17D15",
+        "lt-blue": "#537BB5",
+        "dk-blue": "#28313E",
+        accent: "#B2EDF1",
+        black: "#000",
+        white: "#fff",
+        green: "#33B578",
+        red: "#852420",
+        yellow: "#CBC34E",
+        gray: {
+          100: "#E9E9E9",
+          200: "#B3B3B3",
+          300: "#707070",
+          400: "#3E3E3E",
+          500: "#313131",
+          600: "#242424",
         },
-        gold: {
-          50: '#fff9eb',
-          100: '#ffeec6',
-          200: '#ffda88',
-          300: '#ffc24a',
-          400: '#ffaf30',
-          500: '#f98507',
-          600: '#dd5f02',
-          700: '#b74006',
-          800: '#94300c',
-          900: '#7a280d',
-          950: '#461302',
-        }
-      }
+      },
+      fontFamily: {
+        sans: ['"Open Sans"', ...defaultTheme.fontFamily.sans],
+      },
     },
   },
   plugins: [],
-}
-
+};
