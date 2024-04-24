@@ -21,6 +21,8 @@ export class AppComponent {
   title = 'HQ';
   appSettingsService = inject(AppSettingsService);
   oidcSecurityService = inject(OidcSecurityService);
+
+  dropdownOpen = false;
   
   ngOnInit() {
     this.oidcSecurityService
