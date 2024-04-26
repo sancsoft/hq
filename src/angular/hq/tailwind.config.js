@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
@@ -6,7 +7,8 @@ module.exports = {
   theme: {
     fontFamily: {
       'rajdhani': ['rajdhani', 'sans-serif'],
-      'open-sans': ['open-sans', 'sans-serif']
+      'open-sans': ['open-sans', 'sans-serif'],
+      sans: ['"Open Sans"', ...defaultTheme.fontFamily.sans]
     },
     extend: {
       colors: {
@@ -72,11 +74,16 @@ module.exports = {
           '600': '#5d5d5d',
           '700': '#4f4f4f',
           '800': '#454545',
+          '850': '#313131',
           '900': '#3e3e3e',
           '950': '#262626',
         },
         'black-alt': "#242424",
-        'nav-disabled': "#707070"
+        'nav-disabled': "#707070",
+        teal: {
+          '200': '#B2EDF1',
+          '300': '#7adde6',
+        },
       }
     },
   },
