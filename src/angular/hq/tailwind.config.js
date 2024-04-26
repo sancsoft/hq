@@ -11,6 +11,13 @@ module.exports = {
       sans: ['"Open Sans"', ...defaultTheme.fontFamily.sans]
     },
     extend: {
+      fontSize: {
+        'xs': '10px'
+      },
+      spacing: {
+        '4': '20px',
+        '5': '30px',
+      },
       colors: {
         orange: {
           50: '#fef8ee',
