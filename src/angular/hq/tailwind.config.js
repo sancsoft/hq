@@ -75,7 +75,8 @@ module.exports = {
           '900': '#3e3e3e',
           '950': '#262626',
         },
-        'black-alt': "#242424"
+        'black-alt': "#242424",
+        'nav-disabled': "#707070"
       }
     },
   },
