@@ -1,25 +1,47 @@
 <div class="px-6">
-    <h1 class="font-rajdhani font-semibold text-3xl">[Client Name Here]</h1>
+  <h1 class="font-rajdhani font-semibold text-3xl">[Client Name Here]</h1>
 
-    <div class="grid gap-2 grid-flow-row lg:grid-flow-col lg:gap-7 auto-cols-max pt-3 text-sm">
-        <div class="text-gray-50">$105.00</div>
-        <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
-        <div class="text-gray-50">Official Name - Probably longer than the name</div>
+  <div
+    class="grid gap-2 grid-flow-row lg:grid-flow-col lg:gap-7 auto-cols-max pt-3"
+  >
+    <div class="text-gray-50">$105.00</div>
+    <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
+    <div class="text-gray-50">
+      Official Name - Probably longer than the name
     </div>
+  </div>
 </div>
 
 <div class="px-6 pt-3">
-    <div class="flex flex-col lg:flex-row justify-between items-center">
-        <div class="order-2 lg:order-1">
-            Search, Dropdown, Toggle Here
-        </div>
-        <div class="flex divide-x order-1 lg:order-2">
-            <a routerLink="projects" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 text-sm font-bold hover:bg-blue-900">Projects</a>
-            <a routerLink="quotes" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 text-sm font-bold hover:bg-blue-900">Quotes</a>
-            <a routerLink="services" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 text-sm font-bold hover:bg-blue-900">Services</a>
-            <a routerLink="invoices" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 text-sm font-bold hover:bg-blue-900">Invoices</a>
-        </div>
+  <div class="flex flex-col lg:flex-row justify-between items-center">
+    <div class="order-2 lg:order-1">Search, Dropdown, Toggle Here</div>
+    <div class="flex divide-x order-1 lg:order-2">
+      <a
+        routerLink="projects"
+        routerLinkActive="bg-blue-900"
+        class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+        >Projects</a
+      >
+      <a
+        routerLink="quotes"
+        routerLinkActive="bg-blue-900"
+        class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+        >Quotes</a
+      >
+      <a
+        routerLink="services"
+        routerLinkActive="bg-blue-900"
+        class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+        >Services</a
+      >
+      <a
+        routerLink="invoices"
+        routerLinkActive="bg-blue-900"
+        class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+        >Invoices</a
+      >
     </div>
+  </div>
 </div>
 
 <router-outlet></router-outlet>

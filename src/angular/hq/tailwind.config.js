@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
@@ -9,6 +10,9 @@ module.exports = {
       'open-sans': ['open-sans', 'sans-serif']
     },
     extend: {
+      fontFamily: {
+        sans: ['"Open Sans"', ...defaultTheme.fontFamily.sans,]
+      },
       colors: {
         orange: {
           50: '#fef8ee',
@@ -72,10 +76,15 @@ module.exports = {
           '600': '#5d5d5d',
           '700': '#4f4f4f',
           '800': '#454545',
+          '850': '#313131',
           '900': '#3e3e3e',
           '950': '#262626',
         },
-        'black-alt': "#242424"
+        'black-alt': "#242424",
+        teal: {
+          '200': '#B2EDF1',
+          '300': '#7adde6',
+        },
       }
     },
   },

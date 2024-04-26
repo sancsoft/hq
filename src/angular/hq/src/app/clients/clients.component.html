@@ -1,57 +1,121 @@
 <router-outlet></router-outlet>
 
-<table class="min-w-full border-collapse border">
-  <thead class="border">
-    <tr>
-      <th class="">Client Name</th>
-      <th class="">Rate</th>
-      <th class="">Billing Email</th>
-      <th class="">Official Name</th>
-      <th class=""><button>Client</button></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="">48HrBooks</td>
-      <td class="">$105.00</td>
-      <td class="">billiningEmail&#64;48HrBooks.com</td>
-      <td class="">Official Name - Probably longer than the Name</td>
-      <td><a>VIEW</a></td>
-    </tr>
-    <tr>
-      <td class="">ABB</td>
-      <td class="">$115.00</td>
-      <td class="">billiningEmail&#64;abb.com</td>
-      <td class="">Official Name - Probably longer than the Name</td>
-      <td><a>VIEW</a></td>
-    </tr>
-    <tr>
-      <td class="">JDM</td>
-      <td class="">$100.00</td>
-      <td class="">billiningEmail&#64;jdm.com</td>
-      <td class="">Official Name - Probably longer than the Name</td>
-      <td><a>VIEW</a></td>
-    </tr>
-    <tr>
-      <td class="">Milliken</td>
-      <td class="">$100.00</td>
-      <td class="">billiningEmail&#64;milliken.com</td>
-      <td class="">Official Name - Probably longer than the Name</td>
-      <td><a>VIEW</a></td>
-    </tr>
-    <tr>
-      <td class="">XB</td>
-      <td class="">$100.00</td>
-      <td class="">billiningEmail&#64;xb.com</td>
-      <td class="">Official Name - Probably longer than the Name</td>
-      <td><a>VIEW</a></td>
-    </tr>
-    <tr>
-      <td class="">Zomedica</td>
-      <td class="">$100.00</td>
-      <td class="">billiningEmail&#64;zomedica.com</td>
-      <td class="">Official Name - Probably longer than the Name</td>
-      <td><a>VIEW</a></td>
-    </tr>
-  </tbody>
-</table>
+<div class="overflow-hidden">
+    <div class="px-6">
+    <table class="min-w-full text-left">
+        <thead class="sticky top-0">
+        <tr>
+            <th scope="col" class="py-3 relative">Client Name
+                <div class="bg-blue-900 border-y border-steel-blue-600 absolute top-0 bottom-0 w-screen	-z-10 right-[100%]"></div>
+                <div class="bg-blue-900 border-y border-steel-blue-600 absolute top-0 bottom-0 w-screen	-z-10 left-0"></div>
+            </th>
+            <th scope="col" class="py-3">Official Name</th>
+            <th scope="col" class="py-3">Billing Email</th>
+            <th scope="col" colspan="2" class="py-3 text-right">
+                <button class="px-2 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-[2px] min-w-[120px] font-normal">Client</button>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="py-2 relative">48HrBooks
+                    <div class="bg-gray-850 border-b border-black absolute top-0 bottom-0 w-screen	-z-10 right-[100%]"></div>
+                    <div class="bg-gray-850 border-b border-black absolute top-0 bottom-0 w-screen	-z-10 left-0"></div>
+                </td>
+                <td class="py-2">$105.00</td>
+                <td class="py-2">billiningEmail&#64;48HrBooks.com</td>
+                <td class="py-2">Official Name - Probably longer than the Name</td>
+                <td class="py-2 text-right"><a href="#" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+            <tr>
+                <td class="py-2 relative">ABB
+                    <div class="bg-black-alt border-b border-black absolute top-0 bottom-0 w-screen	-z-10 right-[100%]"></div>
+                    <div class="bg-black-alt border-b border-black absolute top-0 bottom-0 w-screen	-z-10 left-0"></div>
+                </td>
+                <td class="py-2">$115.00</td>
+                <td class="py-2">billiningEmail&#64;abb.com</td>
+                <td class="py-2">Official Name - Probably longer than the Name</td>
+                <td class="py-2 text-right"><a href="#" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+            <tr>
+                <td class="py-2 relative">JDM
+                    <div class="bg-gray-850 border-b border-black absolute top-0 bottom-0 w-screen	-z-10 right-[100%]"></div>
+                    <div class="bg-gray-850 border-b border-black absolute top-0 bottom-0 w-screen	-z-10 left-0"></div>
+                </td>
+                <td class="py-2">$100.00</td>
+                <td class="py-2">billiningEmail&#64;jdm.com</td>
+                <td class="py-2">Official Name - Probably longer than the Name</td>
+                <td class="py-2 text-right"><a href="#" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+            <tr>
+                <td class="py-2 relative">Milliken
+                    <div class="bg-black-alt border-b border-black absolute top-0 bottom-0 w-screen	-z-10 right-[100%]"></div>
+                    <div class="bg-black-alt border-b border-black absolute top-0 bottom-0 w-screen	-z-10 left-0"></div>
+                </td>
+                <td class="py-2">$100.00</td>
+                <td class="py-2">billiningEmail&#64;milliken.com</td>
+                <td class="py-2">Official Name - Probably longer than the Name</td>
+                <td class="py-2 text-right"><a href="#" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+            <tr>
+                <td class="py-2 relative">XB
+                    <div class="bg-gray-850 border-b border-black absolute top-0 bottom-0 w-screen	-z-10 right-[100%]"></div>
+                    <div class="bg-gray-850 border-b border-black absolute top-0 bottom-0 w-screen	-z-10 left-0"></div>
+                </td>
+                <td class="py-2">$100.00</td>
+                <td class="py-2">billiningEmail&#64;xb.com</td>
+                <td class="py-2">Official Name - Probably longer than the Name</td>
+                <td class="py-2 text-right"><a href="#" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+            <tr>
+                <td class="py-2 relative">Zomedica
+                    <div class="bg-black-alt border-b border-black absolute top-0 bottom-0 w-screen	-z-10 right-[100%]"></div>
+                    <div class="bg-black-alt border-b border-black absolute top-0 bottom-0 w-screen	-z-10 left-0"></div>
+                </td>
+                <td class="py-2">$100.00</td>
+                <td class="py-2">billiningEmail&#64;zomedica.com</td>
+                <td class="py-2">Official Name - Probably longer than the Name</td>
+                <td class="py-2 text-right"><a href="#" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+            <tr>
+                <td class="py-2 relative">48HrBooks
+                    <div class="bg-gray-850 border-b border-black absolute top-0 bottom-0 w-screen	-z-10 right-[100%]"></div>
+                    <div class="bg-gray-850 border-b border-black absolute top-0 bottom-0 w-screen	-z-10 left-0"></div>
+                </td>
+                <td class="py-2">$105.00</td>
+                <td class="py-2">billiningEmail&#64;48HrBooks.com</td>
+                <td class="py-2">Official Name - Probably longer than the Name</td>
+                <td class="py-2 text-right"><a href="#" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="py-3 relative">
+                    <div class="flex">
+                        <div class="flex-none">
+                            <select class="bg-black-alt border border-gray-300 rounded py-1 px-2">
+                                <option value="20">20</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                            <span>items per page</span>
+                        </div>                        
+                    </div>                    
+                    <div class="bg-blue-900 border-y border-steel-blue-600 absolute top-0 bottom-0 w-screen	-z-10 right-[100%]"></div>
+                    <div class="bg-blue-900 border-y border-steel-blue-600 absolute top-0 bottom-0 w-screen	-z-10 left-0"></div>
+                </td>
+                <td class="py-3">
+                    <div class="flex items-center">
+                        <a href="#" class="mx-2 hover:text-gray-200">&lt;</a>
+                        <span class="mx-2">1</span>
+                        <a href="#" class="mx-2 hover:text-gray-200">2</a>
+                        <a href="#" class="mx-2 hover:text-gray-200">3</a>
+                        <a href="#" class="mx-2 hover:text-gray-200">4</a>
+                        <a href="#" class="mx-2 hover:text-gray-200">5</a>
+                        <a href="#" class="mx-2 hover:text-gray-200">&gt;</a>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    </div>
+</div>
