@@ -8,8 +8,84 @@
     </div>
 </div>
 
-<div class="px-5 pt-3">
-    <a routerLink="someId1">Some ID 1</a><br />
-    <a routerLink="someId2">Some ID 2</a><br />
-    <a routerLink="someId3">Some ID 3</a>
+<div class="px-5 pt-4 mb-[8px]">
+    <div class="flex flex-col lg:flex-row justify-between items-start">
+        <div class="flex items-center order-2 lg:order-1 gap-[20px]">
+            <!-- search bar -->
+            <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[395px]">
+                <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
+                    <i class="bi bi-search text-[14px]"></i>
+                </span>
+                <input type="text" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="">
+            </div>
+
+            <!-- select dropdown -->
+            <div class="grid relative w-[220px]">
+                <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                    <option>In Production</option>
+                    <option>Ongoing</option>
+                </select>
+                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                    <i class="bi bi-arrow-down-short text-[24px]"></i>
+                </span>
+            </div>
+
+            <!-- select dropdown -->
+            <div class="grid relative w-[220px]">
+                <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                    <option>First Name, Last Name</option>
+                    <option>First Name, Last Name</option>
+                </select>
+                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                    <i class="bi bi-arrow-down-short text-[24px]"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="min-w-full border-spacing-0 border-separate">
+    <thead>
+        <tr class="sticky top-0 text-left">
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Client Name</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Official Name</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Billing Email</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
+                <button class="px-2 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-[2px] min-w-[120px] font-normal">Client</button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]; track i)
+        {
+            <tr class="even:bg-gray-850 odd:bg-black-alt">
+                <td class="border-b border-black py-2 pl-5">Client {{ i }}</td>
+                <td class="border-b border-black py-2">$105.00</td>
+                <td class="border-b border-black py-2">billiningEmail&#64;client{{ i }}.com</td>
+                <td class="border-b border-black py-2">Official Name - Probably longer than the Name</td>
+                <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[i]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
+    <div>
+        <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2">
+            <option value="20">20</option>
+            <!-- Add more options as needed -->
+        </select>
+        <span>items per page</span>
+    </div>
+    <div class="flex items-center justify-center">
+        <a href="#" class="mx-2 hover:text-gray-200">&lt;</a>
+        <span class="mx-2">1</span>
+        <a href="#" class="mx-2 hover:text-gray-200">2</a>
+        <a href="#" class="mx-2 hover:text-gray-200">3</a>
+        <a href="#" class="mx-2 hover:text-gray-200">4</a>
+        <a href="#" class="mx-2 hover:text-gray-200">5</a>
+        <a href="#" class="mx-2 hover:text-gray-200">&gt;</a>
+    </div>
+    <div class="flex justify-end text-xs">
+        1-20 / 200 items
+    </div>
 </div>
