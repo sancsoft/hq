@@ -1,0 +1,32 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "login": {
+      "commandName": "Project",
+      "commandLineArgs": "login",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    },
+    "configure": {
+      "commandName": "Project",
+      "commandLineArgs": "configure",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    },
+    "client-list": {
+      "commandName": "Project",
+      "commandLineArgs": "client list -o json",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    }
+  }
+}
