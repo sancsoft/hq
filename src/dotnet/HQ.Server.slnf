@@ -1,0 +1,10 @@
+{
+  "solution": {
+    "path": "HQ.sln",
+    "projects": [
+      "HQ.Abstractions\\HQ.Abstractions.csproj",
+      "HQ.Server\\HQ.Server.csproj",
+      "HQ.Tests\\HQ.Tests.csproj"
+    ]
+  }
+}
