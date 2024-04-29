@@ -19,9 +19,18 @@
         "HQ_DATA_PATH": "./data"
       }
     },
-    "client-list": {
+    "get clients": {
       "commandName": "Project",
-      "commandLineArgs": "client list -o json",
+      "commandLineArgs": "get clients",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    },
+    "import clients": {
+      "commandName": "Project",
+      "commandLineArgs": "import clients -f ./data/clients.csv",
       "workingDirectory": "./",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",

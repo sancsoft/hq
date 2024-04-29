@@ -154,4 +154,12 @@ public class ClientServiceV1
 
         return response;
     }
+
+    public async Task<Result<ImportClientsV1.Response>> ImportClientsV1(ImportClientsV1.Request request, CancellationToken ct = default)
+    {
+        return new ImportClientsV1.Response()
+        {
+            Created = (int)request.File.Length
+        };
+    }
 }

@@ -85,6 +85,8 @@ namespace HQ.CLI
                         }
 
                         csv.WriteHeader<TRow>();
+
+                        csv.NextRecord();
                         
                         if(_rows.Any())
                         {

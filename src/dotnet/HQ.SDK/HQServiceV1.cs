@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,9 +22,9 @@ namespace HQ.SDK
             _httpClient = httpClient;
         }
 
-        private async Task<Result<TResponse?>> ExecuteRequest<TResponse>(string url, object request, CancellationToken ct = default) where TResponse : class
+        private async Task<Result<TResponse?>> HandleResponse<TResponse>(HttpResponseMessage response, CancellationToken ct = default)
+            where TResponse : class
         {
-            var response = await _httpClient.PostAsJsonAsync(url, request, ct);
             if (!response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -32,7 +33,7 @@ namespace HQ.SDK
                 {
                     case HttpStatusCode.BadRequest:
                         var badRequest = await response.Content.ReadFromJsonAsync<List<ErrorSummaryV1>>(ct);
-                        if(badRequest != null)
+                        if (badRequest != null)
                         {
                             errors.AddRange(badRequest.Select(t => t.Message));
                         }
@@ -45,12 +46,19 @@ namespace HQ.SDK
                 return Result.Fail(errors);
             }
 
-            if(response.Content.Headers.ContentLength.HasValue && response.Content.Headers.ContentLength == 0)
+            if (response.Content.Headers.ContentLength.HasValue && response.Content.Headers.ContentLength == 0)
             {
                 return Result.Ok<TResponse?>(null);
             }
 
             return await response.Content.ReadFromJsonAsync<TResponse>(ct);
+        }
+
+        private async Task<Result<TResponse?>> ExecuteRequest<TResponse>(string url, object request, CancellationToken ct = default)
+            where TResponse : class
+        {
+            var response = await _httpClient.PostAsJsonAsync(url, request, ct);
+            return await HandleResponse<TResponse>(response, ct);
         }
 
         public Task<Result<GetClientsV1.Response?>> GetClientsV1(GetClientsV1.Request request, CancellationToken ct = default)
@@ -61,5 +69,15 @@ namespace HQ.SDK
 
         public Task<Result<DeleteClientV1.Response?>> DeleteClientV1(DeleteClientV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<DeleteClientV1.Response>("/v1/clients/DeleteClientV1", request, ct);
+
+        public async Task<Result<ImportClientsV1.Response?>> ImportClientsV1(ImportClientsV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            multipartContent.Add(new StreamContent(request.File), "file", "clients.csv");
+
+            var response = await _httpClient.PostAsync("/v1/clients/ImportClientsV1", multipartContent, ct);
+
+            return await HandleResponse<ImportClientsV1.Response>(response, ct);
+        }
     }
 }

@@ -25,13 +25,13 @@ namespace HQ.Server.API.Clients
 
         [HttpPost(nameof(GetClientsV1))]
         [ProducesResponseType<GetClientsV1.Response>(StatusCodes.Status200OK)]
-        public Task<ActionResult> GetClientsV1([FromBody] GetClientsV1.Request request, CancellationToken ct = default) => 
+        public Task<ActionResult> GetClientsV1([FromBody] GetClientsV1.Request request, CancellationToken ct = default) =>
             _clientService.GetClientsV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
         [HttpPost(nameof(UpsertClientV1))]
         [ProducesResponseType<UpsertClientV1.Response>(StatusCodes.Status201Created)]
-        public Task<ActionResult> UpsertClientV1([FromBody] UpsertClientV1.Request request, CancellationToken ct = default) => 
+        public Task<ActionResult> UpsertClientV1([FromBody] UpsertClientV1.Request request, CancellationToken ct = default) =>
             _clientService.UpsertClientV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
@@ -41,5 +41,19 @@ namespace HQ.Server.API.Clients
         public Task<ActionResult> DeleteClientV1([FromBody] DeleteClientV1.Request request, CancellationToken ct = default) =>
             _clientService.DeleteClientV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+
+        [HttpPost(nameof(ImportClientsV1))]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public Task<ActionResult> ImportClientsV1(IFormFile file, CancellationToken ct = default) 
+        {
+            var request = new ImportClientsV1.Request();
+
+            using var stream = file.OpenReadStream();
+            request.File = stream;
+
+            return _clientService.ImportClientsV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
     }
 }
