@@ -38,8 +38,14 @@ namespace HQ.CLI.Commands.Clients
             };
 
             var response = await _hqService.ImportClientsV1(request);
+            if(response.IsFailed)
+            {
+                throw new Exception($"Error importing clinets:\n{String.Join(Environment.NewLine, response.Errors.Select(t => t.Message))}");
+            }
 
-            Console.WriteLine("{0} created, {1} updated", response.Value.Created, response.Value.Updated);
+            var result = response.Value!;
+
+            Console.WriteLine("{0} created, {1} updated", result.Created, result.Updated);
 
             return 0;
         }

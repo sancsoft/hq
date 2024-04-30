@@ -48,8 +48,8 @@ namespace HQ.Server.API.Clients
         public Task<ActionResult> ImportClientsV1(IFormFile file, CancellationToken ct = default) 
         {
             var request = new ImportClientsV1.Request();
-
-            using var stream = file.OpenReadStream();
+            var stream = file.OpenReadStream();
+            
             request.File = stream;
 
             return _clientService.ImportClientsV1(request, ct)
