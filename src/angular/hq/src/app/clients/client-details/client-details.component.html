@@ -1,0 +1,53 @@
+<div class="px-5">
+    <h1 class="font-rajdhani font-semibold text-3xl">[Client Name Here]</h1>
+
+    <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
+        <div class="text-gray-50">$105.00</div>
+        <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
+        <div class="text-gray-50">Official Name - Probably longer than the name</div>
+    </div>
+</div>
+
+<div class="px-5 pt-4">
+    <div class="flex flex-col xl:flex-row justify-between items-start gap-4">
+        <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+            <!-- search bar -->
+            <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]">
+                <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
+                    <i class="bi bi-search text-[14px]"></i>
+                </span>
+                <input type="text" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="">
+            </div>
+
+            <!-- select dropdown -->
+            <div class="grid relative w-full max-w-[220px]">
+                <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                    <option>In Production</option>
+                    <option>Ongoing</option>
+                </select>
+                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                    <i class="bi bi-arrow-down-short text-[24px]"></i>
+                </span>
+            </div>
+
+            <!-- toggle switch -->
+            <div class="inline-flex items-center">
+                <div class="text-[12px] mr-[10px] leading-none text-nowrap">Show current only</div>
+                <label class="relative inline-flex cursor-pointer items-center">
+                    <input id="switch" type="checkbox" class="peer sr-only" checked />
+                    <label for="switch" class="hidden"></label>
+                    <div class="peer h-[14px] w-[33px] rounded-full bg-slate-200 after:absolute after:left-[4px] after:top-[3px] after:h-[8px] after:w-[8px] after:rounded-full after:bg-gray-500 peer-checked:after:bg-white after:transition-all after:content-[''] peer-checked:bg-steel-blue-600 peer-checked:after:translate-x-full peer-checked:after:right-[12px]  peer-checked:after:left-auto"></div>
+                </label>
+                <div class="text-xs ml-[6px]">On</div>
+            </div>
+        </div>
+        <div class="flex divide-x ml-auto">
+            <a routerLink="projects" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Projects</a>
+            <a routerLink="quotes" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Quotes</a>
+            <a routerLink="services" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Services</a>
+            <a routerLink="invoices" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Invoices</a>
+        </div>
+    </div>
+</div>
+
+<router-outlet></router-outlet>

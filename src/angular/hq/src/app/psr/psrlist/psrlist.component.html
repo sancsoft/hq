@@ -1,0 +1,167 @@
+<div class="px-5">
+    <h1 class="font-rajdhani font-semibold text-3xl">PSR</h1>
+
+    <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
+        <div class="text-gray-50">$105.00</div>
+        <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
+        <div class="text-gray-50">Official Name - Probably longer than the name</div>
+    </div>
+</div>
+
+<div class="px-5 pt-4 mb-[8px]">
+    <div class="flex flex-col lg:flex-row justify-between items-start">
+        <div class="flex items-center order-2 lg:order-1 gap-[20px]">
+            <!-- search bar -->
+            <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[395px]">
+                <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
+                    <i class="bi bi-search text-[14px]"></i>
+                </span>
+                <input type="text" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="">
+            </div>
+
+            <!-- select dropdown -->
+            <div class="grid relative w-[220px]">
+                <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                    <option>In Production</option>
+                    <option>Ongoing</option>
+                </select>
+                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                    <i class="bi bi-arrow-down-short text-[24px]"></i>
+                </span>
+            </div>
+
+            <!-- select dropdown -->
+            <div class="grid relative w-[220px]">
+                <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                    <option>First Name, Last Name</option>
+                    <option>First Name, Last Name</option>
+                </select>
+                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                    <i class="bi bi-arrow-down-short text-[24px]"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="min-w-full border-spacing-0 border-separate">
+    <thead>
+        <tr class="sticky top-0 text-left">
+            <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">% Billable</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Hrs</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Date</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Chrg Code</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Staff</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Activity/Task</th>
+            <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+                <div class="flex items-center justify-between">
+                    Description
+                    <div class="flex space-x-2 pr-5">
+                        <button class="px-2 py-2 bg-transparent border border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded-[2px] min-w-[120px] font-normal">Accept All</button>
+                        <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded-[2px] min-w-[120px] font-normal">Accept</button>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Accepted -->
+        <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
+            <td class="border-b border-black py-2 bg-green-600 w-3"></td>
+            <td class="border-b border-black py-2 pl-3">                
+                <div class="w-11 inline-block text-right py-1 px-2 mr-2">100</div>
+                <span>%</span>
+            </td>
+            <td class="border-b border-black py-2">2.25</td>
+            <td class="border-b border-black py-2">3/23/2024</td>
+            <td class="border-b border-black py-2">P1006</td>
+            <td class="border-b border-black py-2">rlennox</td>
+            <td class="border-b border-black py-2">Support</td>
+            <td class="border-b border-black py-2">
+                <div class="flex space-x-2">
+                    <div class="inline-block w-full py-1 px-2 mr-2">Phil reported transactions werent posting to the cmp. Found an issue with the payment record create statement, posted a fix.</div>
+                    <!-- warning icon -->
+                    <div></div>
+
+                </div>
+            </td>
+            <td class="border-b border-black py-2 text-right pr-5">
+                <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">edit</a>
+            </td>
+        </tr>
+        <!-- Needs Attention -->
+        <tr class="even:bg-gray-850 odd:bg-black-alt">
+            <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
+            <td class="border-b border-black py-2 pl-3">                
+                <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80">
+                <span>%</span>
+            </td>
+            <td class="border-b border-black py-2">2.25</td>
+            <td class="border-b border-black py-2">3/23/2024</td>
+            <td class="border-b border-black py-2">P1006</td>
+            <td class="border-b border-black py-2">rlennox</td>
+            <td class="border-b border-black py-2">Support</td>
+            <td class="border-b border-black py-2">
+                <div class="flex space-x-2">
+                    <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="Testing bug fixes for mqtt site controller, updated environments.">
+                    <!-- warning icon -->
+                    <div></div>
+
+                </div>
+            </td>
+            <td class="border-b border-black py-2 text-right pr-5">
+                <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">accept</a>
+            </td>
+        </tr>
+        <!-- Default -->
+        <tr class="even:bg-gray-850 odd:bg-black-alt">
+            <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
+            <td class="border-b border-black py-2 pl-3">                
+                <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80">
+                <span>%</span>
+            </td>
+            <td class="border-b border-black py-2">2.25</td>
+            <td class="border-b border-black py-2">3/23/2024</td>
+            <td class="border-b border-black py-2">P1006</td>
+            <td class="border-b border-black py-2">rlennox</td>
+            <td class="border-b border-black py-2">Support</td>
+            <td class="border-b border-black py-2">
+                <div class="flex space-x-2">
+                    <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="PAX design review">
+                    <!-- warning icon -->
+                    <div></div>
+                </div>
+            </td>
+            <td class="border-b border-black py-2 text-right pr-5">
+                <div class="divide-x divide-teal-200">
+                    <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">reject</button>
+                    <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">accept</button>
+                </div>
+            </td>
+        </tr>
+        <!-- Error -->
+        <tr class="even:bg-gray-850 odd:bg-black-alt">
+            <td class="border-b border-black py-2 bg-red-850 w-3"></td>
+            <td class="border-b border-black py-2 pl-3">                
+                <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80">
+                <span>%</span>
+            </td>
+            <td class="border-b border-black py-2">2.25</td>
+            <td class="border-b border-black py-2">3/23/2024</td>
+            <td class="border-b border-black py-2">P1006</td>
+            <td class="border-b border-black py-2">rlennox</td>
+            <td class="border-b border-black py-2">Support</td>
+            <td class="border-b border-black py-2">
+                <div class="flex space-x-2">
+                    <div class="w-full py-1 px-2 mr-2">Assisting Jack with debugging NV200 issues, sealevel questions.</div>
+                    <!-- warning icon -->
+                    <div></div>
+
+                </div>
+            </td>
+            <td class="border-b border-black py-2 text-right pr-5">
+                <button disabled class="text-gray-450 uppercase">accept</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
