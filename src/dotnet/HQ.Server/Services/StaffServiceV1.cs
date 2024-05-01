@@ -1,5 +1,7 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using FluentResults;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Staff;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
@@ -88,6 +90,24 @@ public class StaffServiceV1
             records = records.Where(t => t.Id == request.Id.Value);
         }
 
+        if(request.Jurisdiciton.HasValue)
+        {
+            records = records.Where(t => t.Jurisdiciton == request.Jurisdiciton.Value);
+        }
+
+        var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
+        {
+            { Abstractions.Staff.GetStaffV1.SortColumn.CreatedAt, "Name" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.Name, "Name" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.WorkHours, "WorkHours" },
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+        records = request.SortDirection == SortDirection.Asc ?
+            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
         if (request.Skip.HasValue)
         {
             records = records.Skip(request.Skip.Value);
@@ -120,11 +140,17 @@ public class StaffServiceV1
 
     public async Task<Result<ImportStaffV1.Response>> ImportStaffV1(ImportStaffV1.Request request, CancellationToken ct = default)
     {
+        var conf = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+            TrimOptions = TrimOptions.Trim,
+            MissingFieldFound = null,
+            HeaderValidated = null
+        };
+
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
         using var reader = new StreamReader(request.File);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-
-        csv.Context.Configuration.HeaderValidated = null;
+        using var csv = new CsvReader(reader, conf);
 
         var allStaff = await _context.Staff.ToListAsync(ct);
         var staffById = allStaff.ToDictionary(t => t.Id);

@@ -15,6 +15,7 @@ using YamlDotNet.Core;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization;
 using CsvHelper.Configuration;
+using System.Text.Json.Serialization;
 
 namespace HQ.CLI
 {
@@ -110,7 +111,11 @@ namespace HQ.CLI
                     var options = new JsonSerializerOptions()
                     {
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        WriteIndented = true
+                        WriteIndented = true,
+                        Converters =
+                        {
+                            new JsonStringEnumConverter()
+                        }
                     };
 
                     return new JsonText(JsonSerializer.Serialize(_json, options));

@@ -1,10 +1,12 @@
-﻿using HQ.Abstractions.Staff;
+﻿using HQ.Abstractions.Enumerations;
+using HQ.Abstractions.Staff;
 using HQ.SDK;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using Spectre.Console.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -19,6 +21,17 @@ namespace HQ.CLI.Commands.Staff
 
         [CommandOption("--search|-s")]
         public string? Search { get; set; }
+
+        [CommandOption("--jurisdiciton|-j")]
+        public Jurisdiciton? Jurisdiciton { get; set; }
+
+        [CommandOption("--sort-direction|-D")]
+        [DefaultValue(SortDirection.Asc)]
+        public SortDirection SortDirection { get; set; }
+
+        [CommandOption("--sort-by|-S")]
+        [DefaultValue(GetStaffV1.SortColumn.Name)]
+        public GetStaffV1.SortColumn SortBy { get; set; }
     }
 
     internal class GetStaffCommand : AsyncCommand<GetStaffSettings>
@@ -35,7 +48,10 @@ namespace HQ.CLI.Commands.Staff
             var result = await _hqService.GetStaffV1(new()
             {
                 Search = settings.Search,
-                Id = settings.Id
+                Id = settings.Id,
+                SortBy = settings.SortBy,
+                SortDirection = settings.SortDirection,
+                Jurisdiciton = settings.Jurisdiciton
             });
 
             if (!result.IsSuccess || result.Value == null)

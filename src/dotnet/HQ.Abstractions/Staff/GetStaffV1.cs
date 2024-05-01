@@ -14,6 +14,17 @@ public class GetStaffV1
     {
         public string? Search { get; set; }
         public Guid? Id { get; set; }
+        public Jurisdiciton? Jurisdiciton { get; set; }
+
+        public SortColumn SortBy { get; set; } = SortColumn.Name;
+        public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+    }
+
+    public enum SortColumn
+    {
+        CreatedAt,
+        Name,
+        WorkHours
     }
 
     public class Response : PagedResponseV1<Record>;
