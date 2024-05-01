@@ -5,16 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HQ.Abstractions.Clients;
+namespace HQ.Abstractions.Projects;
 
-public class DeleteClientV1
+public class UpsertProjectV1
 {
     public class Request
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
     }
 
     public class Response : NoContentResponseV1
     {
+        public Guid Id { get; set; }
     }
 }

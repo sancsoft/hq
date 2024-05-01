@@ -15,8 +15,8 @@ namespace HQ.CLI.Commands.Clients
 {
     internal class EditClientSettings : HQCommandSettings
     {
-        [CommandArgument(0, "<clientIdOrName>")]
-        public string? ClientIdOrName { get; set; }
+        [CommandArgument(0, "<id>")]
+        public Guid Id { get; set; }
     }
 
     internal class EditClientCommand : AsyncCommand<EditClientSettings>
@@ -32,7 +32,7 @@ namespace HQ.CLI.Commands.Clients
         {
             var result = await _hqService.GetClientsV1(new()
             {
-                ClientIdOrName = settings.ClientIdOrName,
+                Id = settings.Id,
             });
 
             if (!result.IsSuccess || result.Value == null)
@@ -47,7 +47,7 @@ namespace HQ.CLI.Commands.Clients
             }
 
             var model = new UpsertClientV1.Request();
-            model.ClientId = record.ClientId;
+            model.Id = record.Id;
             model.Name = record.Name;
             model.OfficialName = record.OfficialName;
             model.BillingEmail = record.BillingEmail;
@@ -55,7 +55,7 @@ namespace HQ.CLI.Commands.Clients
 
             var editor = new YAMLEditor<UpsertClientV1.Request>(model, async (value) =>
             {
-                value.ClientId = record.ClientId;
+                value.Id = record.Id;
                 return await _hqService.UpsertClientV1(value);
             });
 

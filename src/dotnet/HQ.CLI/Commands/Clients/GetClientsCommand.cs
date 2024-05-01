@@ -14,8 +14,8 @@ namespace HQ.CLI.Commands.Clients
 {
     internal class GetClientsSettings : HQCommandSettings
     {
-        [CommandArgument(0, "[clientIdOrName]")]
-        public string? ClientIdOrName { get; set; }
+        [CommandArgument(0, "[id]")]
+        public Guid? Id { get; set; }
 
         [CommandOption("--search|-s")]
         public string? Search { get; set; }
@@ -35,7 +35,7 @@ namespace HQ.CLI.Commands.Clients
             var result = await _hqService.GetClientsV1(new()
             {
                 Search = settings.Search,
-                ClientIdOrName = settings.ClientIdOrName,
+                Id = settings.Id
             });
 
             if (!result.IsSuccess || result.Value == null)
@@ -44,7 +44,7 @@ namespace HQ.CLI.Commands.Clients
             }
 
             AnsiConsole.Write(OutputHelper.Create(result.Value, result.Value.Records)
-                .WithColumn("ID", t => t.ClientId.ToString())
+                .WithColumn("ID", t => t.Id.ToString())
                 .WithColumn("NAME", t => t.Name)
                 .WithColumn("HOURLY RATE", t => t.HourlyRate?.ToString("C"))
                 .WithColumn("OFFICIAL NAME", t => t.OfficialName, table: false, wide: true)

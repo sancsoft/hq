@@ -38,7 +38,6 @@ namespace HQ.CLI
                 var response = await _httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
                 {
                     Address = disco.TokenEndpoint,
-
                     ClientId = "hq",
                     RefreshToken = refreshToken
                 });

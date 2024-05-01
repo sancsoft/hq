@@ -14,8 +14,8 @@ namespace HQ.CLI.Commands.Clients
 {
     internal class DeleteClientSettings : HQCommandSettings
     {
-        [CommandArgument(0, "<clientIdOrName>")]
-        public string? ClientIdOrName { get; set; }
+        [CommandArgument(0, "<id>")]
+        public Guid Id { get; set; }
     }
 
     internal class DeleteClientCommand : AsyncCommand<DeleteClientSettings>
@@ -31,7 +31,7 @@ namespace HQ.CLI.Commands.Clients
         {
             var result = await _hqService.DeleteClientV1(new()
             {
-                ClientIdOrName = settings.ClientIdOrName,
+                Id = settings.Id
             });
 
             if (!result.IsSuccess || result.Value == null)

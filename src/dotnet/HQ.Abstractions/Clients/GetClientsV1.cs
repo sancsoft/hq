@@ -12,14 +12,13 @@ public class GetClientsV1
     public class Request : PagedRequestV1
     {
         public string? Search { get; set; }
-        public Guid? ClientId { get; set; }
-        public string? ClientIdOrName { get; set; }
+        public Guid? Id { get; set; }
     }
 
     public class Response : PagedResponseV1<Record>;
     public class Record
     {
-        public Guid ClientId { get; set; }
+        public Guid Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public string Name { get; set; } = null!;
         public string? OfficialName { get; set; }

@@ -11,7 +11,7 @@ public class UpsertClientV1
 {
     public class Request
     {
-        public Guid? ClientId { get; set; }
+        public Guid? Id { get; set; }
         public string Name { get; set; } = null!;
         public string? OfficialName { get; set; }
         public string? BillingEmail { get; set; }
@@ -20,6 +20,6 @@ public class UpsertClientV1
 
     public class Response : NoContentResponseV1
     {
-        public Guid ClientId { get; set; }
+        public Guid Id { get; set; }
     }
 }

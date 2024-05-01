@@ -18,26 +18,12 @@ public class ClientServiceV1
         _context = context;
     }
 
-    private IQueryable<Client> FilterClientIdOrName(IQueryable<Client> records, string clientIdOrName)
-    {
-        if (Guid.TryParse(clientIdOrName, out Guid clientId))
-        {
-            records = records.Where(t => t.Id == clientId);
-        }
-        else
-        {
-            records = records.Where(t => t.Name.ToLower() == clientIdOrName.ToLower());
-        }
-
-        return records;
-    }
-
     public async Task<Result<UpsertClientV1.Response>> UpsertClientV1(UpsertClientV1.Request request, CancellationToken ct = default)
     {
         var validationResult = Result.Merge(
             Result.FailIf(String.IsNullOrEmpty(request.Name), "Name is required."),
-            Result.FailIf(!request.ClientId.HasValue && await _context.Clients.AnyAsync(t => t.Name == request.Name, ct), "Name must be unique."),
-            Result.FailIf(request.ClientId.HasValue && await _context.Clients.AnyAsync(t => t.Id != request.ClientId && t.Name == request.Name, ct), "Name must be unique.")
+            Result.FailIf(!request.Id.HasValue && await _context.Clients.AnyAsync(t => t.Name == request.Name, ct), "Name must be unique."),
+            Result.FailIf(request.Id.HasValue && await _context.Clients.AnyAsync(t => t.Id != request.Id && t.Name == request.Name, ct), "Name must be unique.")
         );
 
         if(validationResult.IsFailed)
@@ -45,7 +31,7 @@ public class ClientServiceV1
             return validationResult;
         }
 
-        var client = await _context.Clients.FindAsync(request.ClientId);
+        var client = await _context.Clients.FindAsync(request.Id);
         if(client == null)
         {
             client = new();
@@ -61,34 +47,13 @@ public class ClientServiceV1
 
         return new UpsertClientV1.Response()
         {
-            ClientId = client.Id
+            Id = client.Id
         };
     }
 
     public async Task<Result<DeleteClientV1.Response?>> DeleteClientV1(DeleteClientV1.Request request, CancellationToken ct = default)
     {
-        var validationResult = Result.Merge(
-            Result.FailIf(String.IsNullOrEmpty(request.ClientIdOrName) && !request.ClientId.HasValue, "ClientIdOrName or ClientId must be specified.")
-        );
-
-        if (validationResult.IsFailed)
-        {
-            return validationResult;
-        }
-
-        var records = _context.Clients.AsQueryable();
-
-        if (!String.IsNullOrEmpty(request.ClientIdOrName))
-        {
-            records = FilterClientIdOrName(records, request.ClientIdOrName);
-        }
-
-        if(request.ClientId.HasValue)
-        {
-            records = records.Where(t => t.Id == request.ClientId.Value);
-        }
-
-        var client = await records.SingleOrDefaultAsync(ct);
+        var client = await _context.Clients.FindAsync(request.Id, ct);
         if (client == null)
         {
             return Result.Ok<DeleteClientV1.Response?>(null);
@@ -110,11 +75,6 @@ public class ClientServiceV1
 
         var total = await records.CountAsync(ct);
 
-        if(!String.IsNullOrEmpty(request.ClientIdOrName))
-        {
-            records = FilterClientIdOrName(records, request.ClientIdOrName);
-        }
-
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
@@ -124,9 +84,9 @@ public class ClientServiceV1
             );
         }
 
-        if (request.ClientId.HasValue)
+        if (request.Id.HasValue)
         {
-            records = records.Where(t => t.Id == request.ClientId.Value);
+            records = records.Where(t => t.Id == request.Id.Value);
         }
 
         if (request.Skip.HasValue)
@@ -141,7 +101,7 @@ public class ClientServiceV1
 
         var mapped = records.Select(t => new GetClientsV1.Record()
         {
-            ClientId = t.Id,
+            Id = t.Id,
             CreatedAt = t.CreatedAt,
             Name = t.Name,
             OfficialName = t.OfficialName,
@@ -171,7 +131,7 @@ public class ClientServiceV1
         var clientsByName = allClients.ToDictionary(t => t.Name, StringComparer.OrdinalIgnoreCase);
 
         var records = csv.GetRecords<UpsertClientV1.Request>()
-            .OrderByDescending(t => t.ClientId.HasValue)
+            .OrderByDescending(t => t.Id.HasValue)
             .ToList();
 
         var created = 0;
@@ -180,9 +140,9 @@ public class ClientServiceV1
         foreach(var record in records)
         {
             Client client;
-            if(record.ClientId.HasValue && clientsById.ContainsKey(record.ClientId.Value))
+            if(record.Id.HasValue && clientsById.ContainsKey(record.Id.Value))
             {
-                client = clientsById[record.ClientId.Value];
+                client = clientsById[record.Id.Value];
                 if(client.Name != record.Name)
                 {
                     clientsByName.Remove(client.Name);
