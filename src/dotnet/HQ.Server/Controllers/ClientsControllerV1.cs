@@ -3,10 +3,11 @@ using FluentResults.Extensions.AspNetCore;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Common;
 using HQ.API;
+using HQ.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HQ.Server.API.Clients
+namespace HQ.Server.Controllers
 {
     [Authorize]
     [ApiController]
@@ -45,11 +46,11 @@ namespace HQ.Server.API.Clients
         [HttpPost(nameof(ImportClientsV1))]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public Task<ActionResult> ImportClientsV1(IFormFile file, CancellationToken ct = default) 
+        public Task<ActionResult> ImportClientsV1(IFormFile file, CancellationToken ct = default)
         {
             var request = new ImportClientsV1.Request();
             var stream = file.OpenReadStream();
-            
+
             request.File = stream;
 
             return _clientService.ImportClientsV1(request, ct)

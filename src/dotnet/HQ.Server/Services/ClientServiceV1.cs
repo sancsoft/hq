@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Formats.Asn1;
 using System.Globalization;
 
-namespace HQ.Server.API.Clients;
+namespace HQ.Server.Services;
 
 public class ClientServiceV1
 {
@@ -21,18 +21,17 @@ public class ClientServiceV1
     public async Task<Result<UpsertClientV1.Response>> UpsertClientV1(UpsertClientV1.Request request, CancellationToken ct = default)
     {
         var validationResult = Result.Merge(
-            Result.FailIf(String.IsNullOrEmpty(request.Name), "Name is required."),
-            Result.FailIf(!request.Id.HasValue && await _context.Clients.AnyAsync(t => t.Name == request.Name, ct), "Name must be unique."),
-            Result.FailIf(request.Id.HasValue && await _context.Clients.AnyAsync(t => t.Id != request.Id && t.Name == request.Name, ct), "Name must be unique.")
+            Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
+            Result.FailIf(await _context.Clients.AnyAsync(t => t.Id != request.Id && t.Name == request.Name, ct), "Name must be unique.")
         );
 
-        if(validationResult.IsFailed)
+        if (validationResult.IsFailed)
         {
             return validationResult;
         }
 
         var client = await _context.Clients.FindAsync(request.Id);
-        if(client == null)
+        if (client == null)
         {
             client = new();
             _context.Clients.Add(client);
@@ -102,7 +101,6 @@ public class ClientServiceV1
         var mapped = records.Select(t => new GetClientsV1.Record()
         {
             Id = t.Id,
-            CreatedAt = t.CreatedAt,
             Name = t.Name,
             OfficialName = t.OfficialName,
             BillingEmail = t.BillingEmail,
@@ -128,7 +126,6 @@ public class ClientServiceV1
 
         var allClients = await _context.Clients.ToListAsync(ct);
         var clientsById = allClients.ToDictionary(t => t.Id);
-        var clientsByName = allClients.ToDictionary(t => t.Name, StringComparer.OrdinalIgnoreCase);
 
         var records = csv.GetRecords<UpsertClientV1.Request>()
             .OrderByDescending(t => t.Id.HasValue)
@@ -137,24 +134,14 @@ public class ClientServiceV1
         var created = 0;
         var updated = 0;
 
-        foreach(var record in records)
+        foreach (var record in records)
         {
+            // TODO: Validate
+
             Client client;
-            if(record.Id.HasValue && clientsById.ContainsKey(record.Id.Value))
+            if (record.Id.HasValue && clientsById.ContainsKey(record.Id.Value))
             {
                 client = clientsById[record.Id.Value];
-                if(client.Name != record.Name)
-                {
-                    clientsByName.Remove(client.Name);
-                    clientsByName[record.Name] = client;
-                }
-
-                updated++;
-            }
-            else if (clientsByName.ContainsKey(record.Name))
-            {
-                client = clientsByName[record.Name];
-
                 updated++;
             }
             else
@@ -171,7 +158,6 @@ public class ClientServiceV1
             client.HourlyRate = record.HourlyRate;
 
             clientsById[client.Id] = client;
-            clientsByName[client.Name] = client;
         }
 
         await _context.SaveChangesAsync(ct);

@@ -1,13 +1,14 @@
 ﻿using HQ.Abstractions.Common;
+using HQ.Abstractions.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HQ.Abstractions.Clients;
+namespace HQ.Abstractions.Staff;
 
-public class GetClientsV1
+public class GetStaffV1
 {
     public class Request : PagedRequestV1
     {
@@ -20,8 +21,10 @@ public class GetClientsV1
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
-        public string? OfficialName { get; set; }
-        public string? BillingEmail { get; set; }
-        public decimal? HourlyRate { get; set; }
+        public int WorkHours { get; set; }
+        public int VacationHours { get; set; }
+        public Jurisdiciton Jurisdiciton { get; set; }
+        public DateOnly? StartDate { get; set; }
+        public DateOnly? EndDate { get; set; }
     }
 }

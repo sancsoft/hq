@@ -1,4 +1,4 @@
-﻿using HQ.Server.Data.Enumerations;
+﻿using HQ.Abstractions.Enumerations;
 
 namespace HQ.Server.Data.Models;
 

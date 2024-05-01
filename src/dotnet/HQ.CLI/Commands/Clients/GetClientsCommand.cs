@@ -49,7 +49,6 @@ namespace HQ.CLI.Commands.Clients
                 .WithColumn("HOURLY RATE", t => t.HourlyRate?.ToString("C"))
                 .WithColumn("OFFICIAL NAME", t => t.OfficialName, table: false, wide: true)
                 .WithColumn("BILLING EMAIL", t => t.BillingEmail, table: false, wide: true)
-                .WithColumn("CREATED", t => t.CreatedAt.ToString("O"), table: false, wide: true)
                 .Output(settings.Output)
             );
 

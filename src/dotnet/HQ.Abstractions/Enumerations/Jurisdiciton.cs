@@ -1,4 +1,4 @@
-﻿namespace HQ.Server.Data.Enumerations;
+﻿namespace HQ.Abstractions.Enumerations;
 
 public enum Jurisdiciton
 {

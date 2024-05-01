@@ -1,5 +1,5 @@
-﻿using HQ.Server.API.Clients;
-using HQ.Server.Data;
+﻿using HQ.Server.Data;
+using HQ.Server.Services;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
