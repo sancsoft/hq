@@ -1,6 +1,7 @@
 ﻿using HQ.CLI;
 using HQ.CLI.Commands;
 using HQ.CLI.Commands.Clients;
+using HQ.CLI.Commands.Staff;
 using HQ.SDK;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
@@ -64,6 +65,9 @@ app.Configure(config =>
         branch.AddCommand<GetClientsCommand>("client")
             .WithAlias("clients")
             .WithAlias("cl");
+
+        branch.AddCommand<GetStaffCommand>("staff")
+            .WithAlias("st");
     });
 
     config.AddBranch("delete", branch =>
@@ -71,6 +75,9 @@ app.Configure(config =>
         branch.AddCommand<DeleteClientCommand>("client")
             .WithAlias("clients")
             .WithAlias("cl");
+
+        branch.AddCommand<DeleteStaffCommand>("staff")
+            .WithAlias("st");
     });
 
     config.AddBranch("edit", branch =>
@@ -78,6 +85,9 @@ app.Configure(config =>
         branch.AddCommand<EditClientCommand>("client")
             .WithAlias("clients")
             .WithAlias("cl");
+
+        branch.AddCommand<EditStaffCommand>("staff")
+            .WithAlias("st");
     });
 
     config.AddBranch("create", branch =>
@@ -85,6 +95,9 @@ app.Configure(config =>
         branch.AddCommand<CreateClientCommand>("client")
             .WithAlias("clients")
             .WithAlias("cl");
+
+        branch.AddCommand<CreateStaffCommand>("staff")
+            .WithAlias("st");
     });
 
     config.AddBranch("import", branch =>
@@ -92,6 +105,9 @@ app.Configure(config =>
         branch.AddCommand<ImportClientCommand>("client")
             .WithAlias("clients")
             .WithAlias("cl");
+
+        branch.AddCommand<ImportStaffCommand>("staff")
+            .WithAlias("st");
     });
 });
 

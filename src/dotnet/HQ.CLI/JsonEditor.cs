@@ -22,9 +22,9 @@ namespace HQ.CLI
         private readonly string _tempFilePath;
         private readonly JsonSerializerOptions _serializerOptions;
         private readonly string _defaultEditor;
-        private readonly Func<T, Task<Result>> _validator;
+        private readonly Func<T, Task<ResultBase>> _validator;
 
-        public JsonEditor(T source, Func<T, Task<Result>> validator)
+        public JsonEditor(T source, Func<T, Task<ResultBase>> validator)
         {
             _source = source;
             _sourceJson = JsonSerializer.Serialize(source);
@@ -47,7 +47,7 @@ namespace HQ.CLI
             }
         }
 
-        private async Task WriteTempFile(Result? result = null)
+        private async Task WriteTempFile(ResultBase? result = null)
         {
             var json = JsonSerializer.Serialize(_source, _serializerOptions);
             var file = new StringBuilder();

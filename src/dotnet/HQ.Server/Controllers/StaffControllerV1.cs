@@ -17,9 +17,9 @@ namespace HQ.Server.Controllers
     [ProducesResponseType<List<ErrorSummaryV1>>(StatusCodes.Status400BadRequest)]
     public class StaffControllerV1 : ControllerBase
     {
-        private readonly StafferviceV1 _staffervice;
+        private readonly StaffServiceV1 _staffervice;
 
-        public StaffControllerV1(StafferviceV1 staffervice)
+        public StaffControllerV1(StaffServiceV1 staffervice)
         {
             _staffervice = staffervice;
         }

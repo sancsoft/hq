@@ -9,11 +9,11 @@ using System.Globalization;
 
 namespace HQ.Server.Services;
 
-public class StafferviceV1
+public class StaffServiceV1
 {
     private readonly HQDbContext _context;
 
-    public StafferviceV1(HQDbContext context)
+    public StaffServiceV1(HQDbContext context)
     {
         _context = context;
     }

@@ -1,5 +1,5 @@
 ﻿using FluentResults;
-using HQ.Abstractions.Clients;
+using HQ.Abstractions.Projects;
 using HQ.SDK;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -11,36 +11,36 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace HQ.CLI.Commands.Clients
+namespace HQ.CLI.Commands.Projects
 {
-    internal class ImportClientSettings : HQCommandSettings
+    internal class ImportProjectSettings : HQCommandSettings
     {
         [CommandOption("--file|-f")]
         public FileInfo File { get; set; } = null!;
     }
 
-    internal class ImportClientCommand : AsyncCommand<ImportClientSettings>
+    internal class ImportProjectCommand : AsyncCommand<ImportProjectSettings>
     {
         private readonly HQServiceV1 _hqService;
 
-        public ImportClientCommand(HQServiceV1 hqService)
+        public ImportProjectCommand(HQServiceV1 hqService)
         {
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, ImportClientSettings settings)
+        public override async Task<int> ExecuteAsync(CommandContext context, ImportProjectSettings settings)
         {
             using var stream = settings.File.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
-            var request = new ImportClientsV1.Request()
+            var request = new ImportProjectsV1.Request()
             {
                 File = stream
             };
 
-            var response = await _hqService.ImportClientsV1(request);
+            var response = await _hqService.ImportProjectsV1(request);
             if(response.IsFailed)
             {
-                throw new Exception($"Error importing clients:\n{String.Join(Environment.NewLine, response.Errors.Select(t => t.Message))}");
+                throw new Exception($"Error importing project:\n{String.Join(Environment.NewLine, response.Errors.Select(t => t.Message))}");
             }
 
             var result = response.Value!;

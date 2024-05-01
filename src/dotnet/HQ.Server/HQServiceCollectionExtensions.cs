@@ -10,6 +10,8 @@ namespace HQ.Server
         public static IServiceCollection AddHQServices(this IServiceCollection services)
         {
             services.AddScoped<ClientServiceV1>();
+            services.AddScoped<StaffServiceV1>();
+            services.AddScoped<ProjectServiceV1>();
 
             return services;
         }

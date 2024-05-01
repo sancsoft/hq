@@ -107,6 +107,7 @@ public class ProjectServiceV1
         {
             Id = t.Id,
             ProjectNumber = t.ProjectNumber,
+            ChargeCode = String.Empty, // TODO: Link this directly to charge code? Model as 1-1?
             ClientId = t.ClientId,
             ClientName = t.Client.Name,
             ProjectManagerId = t.ProjectManagerId,

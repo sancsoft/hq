@@ -2,6 +2,8 @@
 using HQ.Abstractions;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Common;
+using HQ.Abstractions.Projects;
+using HQ.Abstractions.Staff;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +80,44 @@ namespace HQ.SDK
             var response = await _httpClient.PostAsync("/v1/clients/ImportClientsV1", multipartContent, ct);
 
             return await HandleResponse<ImportClientsV1.Response>(response, ct);
+        }
+
+        public Task<Result<GetStaffV1.Response?>> GetStaffV1(GetStaffV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<GetStaffV1.Response>("/v1/Staff/GetStaffV1", request, ct);
+
+        public Task<Result<UpsertStaffV1.Response?>> UpsertStaffV1(UpsertStaffV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertStaffV1.Response>("/v1/Staff/UpsertStaffV1", request, ct);
+
+        public Task<Result<DeleteStaffV1.Response?>> DeleteStaffV1(DeleteStaffV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<DeleteStaffV1.Response>("/v1/Staff/DeleteStaffV1", request, ct);
+
+        public async Task<Result<ImportStaffV1.Response?>> ImportStaffV1(ImportStaffV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            multipartContent.Add(new StreamContent(request.File), "file", "Staff.csv");
+
+            var response = await _httpClient.PostAsync("/v1/Staff/ImportStaffV1", multipartContent, ct);
+
+            return await HandleResponse<ImportStaffV1.Response>(response, ct);
+        }
+
+        public Task<Result<GetProjectsV1.Response?>> GetProjectsV1(GetProjectsV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<GetProjectsV1.Response>("/v1/Projects/GetProjectsV1", request, ct);
+
+        public Task<Result<UpsertProjectV1.Response?>> UpsertProjectV1(UpsertProjectV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertProjectV1.Response>("/v1/Projects/UpsertProjectV1", request, ct);
+
+        public Task<Result<DeleteProjectV1.Response?>> DeleteProjectV1(DeleteProjectV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<DeleteProjectV1.Response>("/v1/Projects/DeleteProjectV1", request, ct);
+
+        public async Task<Result<ImportProjectsV1.Response?>> ImportProjectsV1(ImportProjectsV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            multipartContent.Add(new StreamContent(request.File), "file", "Projects.csv");
+
+            var response = await _httpClient.PostAsync("/v1/Projects/ImportProjectsV1", multipartContent, ct);
+
+            return await HandleResponse<ImportProjectsV1.Response>(response, ct);
         }
     }
 }

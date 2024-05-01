@@ -29,6 +29,7 @@ public class GetProjectsV1
         public string Name { get; set; } = null!;
         public Guid? QuoteId { get; set; }
         public int? QuoteNumber { get; set; }
+        public string ChargeCode { get; set; } = null!;
         // Letter of engagement
         public decimal HourlyRate { get; set; }
         public decimal BookingHours { get; set; }
