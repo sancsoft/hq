@@ -52,5 +52,19 @@ export const routes: Routes = [
                 loadComponent: () => import('./psr/psrdetails/psrdetails.component').then(m => m.PSRDetailsComponent)
             }
         ]
+    },
+    {
+        path: 'projects',
+        loadComponent: () => import('./projects/projects.component').then(m => m.ProjectsComponent),
+        children: [
+            {
+                path: '',
+                loadComponent: () => import('./projects/project-list/project-list.component').then(m => m.ProjectListComponent),
+            },
+            {
+                path: ':psrId',
+                loadComponent: () => import('./projects/project-details/project-details.component').then(m => m.ProjectDetailsComponent)
+            }
+        ]
     }
 ];
