@@ -81,7 +81,7 @@ public class StaffServiceV1
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
-                t.Name.Contains(request.Search)
+                t.Name.ToLower().Contains(request.Search.ToLower())
             );
         }
 
@@ -97,7 +97,7 @@ public class StaffServiceV1
 
         var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
         {
-            { Abstractions.Staff.GetStaffV1.SortColumn.CreatedAt, "Name" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.CreatedAt, "CreatedAt" },
             { Abstractions.Staff.GetStaffV1.SortColumn.Name, "Name" },
             { Abstractions.Staff.GetStaffV1.SortColumn.WorkHours, "WorkHours" },
         };

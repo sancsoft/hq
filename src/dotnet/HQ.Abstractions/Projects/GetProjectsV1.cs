@@ -15,6 +15,15 @@ public class GetProjectsV1
     {
         public string? Search { get; set; }
         public Guid? Id { get; set; }
+
+        public SortColumn SortBy { get; set; } = SortColumn.Name;
+        public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+    }
+
+    public enum SortColumn
+    {
+        CreatedAt,
+        Name
     }
 
     public class Response : PagedResponseV1<Record>;

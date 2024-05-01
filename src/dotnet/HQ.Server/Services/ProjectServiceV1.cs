@@ -1,6 +1,8 @@
 ﻿using CsvHelper;
 using FluentResults;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Projects;
+using HQ.Abstractions.Staff;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -84,7 +86,7 @@ public class ProjectServiceV1
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
-                t.Name.Contains(request.Search)
+                t.Name.ToLower().Contains(request.Search.ToLower())
             );
         }
 
@@ -92,6 +94,18 @@ public class ProjectServiceV1
         {
             records = records.Where(t => t.Id == request.Id.Value);
         }
+
+        var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
+        {
+            { Abstractions.Projects.GetProjectsV1.SortColumn.CreatedAt, "CreatedAt" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.Name, "Name" },
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+        records = request.SortDirection == SortDirection.Asc ?
+            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
 
         if (request.Skip.HasValue)
         {

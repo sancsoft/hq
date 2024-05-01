@@ -1,6 +1,8 @@
 ﻿using CsvHelper;
 using FluentResults;
 using HQ.Abstractions.Clients;
+using HQ.Abstractions.Enumerations;
+using HQ.Abstractions.Projects;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -77,9 +79,9 @@ public class ClientServiceV1
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
-                t.Name.Contains(request.Search) ||
-                t.OfficialName != null && t.OfficialName.Contains(request.Search) ||
-                t.BillingEmail != null && t.BillingEmail.Contains(request.Search)
+                t.Name.ToLower().Contains(request.Search.ToLower()) ||
+                t.OfficialName != null && t.OfficialName.ToLower().Contains(request.Search.ToLower()) ||
+                t.BillingEmail != null && t.BillingEmail.ToLower().Contains(request.Search.ToLower())
             );
         }
 
@@ -87,6 +89,19 @@ public class ClientServiceV1
         {
             records = records.Where(t => t.Id == request.Id.Value);
         }
+
+        var sortMap = new Dictionary<GetClientsV1.SortColumn, string>()
+        {
+            { Abstractions.Clients.GetClientsV1.SortColumn.CreatedAt, "CreatedAt" },
+            { Abstractions.Clients.GetClientsV1.SortColumn.Name, "Name" },
+            { Abstractions.Clients.GetClientsV1.SortColumn.HourlyRate, "HourlyRate" },
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+        records = request.SortDirection == SortDirection.Asc ?
+            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
 
         if (request.Skip.HasValue)
         {
