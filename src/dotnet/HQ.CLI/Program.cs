@@ -62,78 +62,32 @@ app.Configure(config =>
     config.AddCommand<ConfigureCommand>("configure");
     config.AddCommand<LoginCommand>("login");
 
-    config.AddBranch("get", branch =>
-    {
-        branch.AddCommand<GetClientsCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
-
-        branch.AddCommand<GetStaffCommand>("staff")
-            .WithAlias("st");
-
-        branch.AddCommand<GetProjectsCommand>("project")
-            .WithAlias("projects")
-            .WithAlias("pr");
-
-        branch.AddCommand<GetChargeCodesCommand>("chargecode")
-            .WithAlias("code")
-            .WithAlias("cc");
+    config.AddBranch("staff", branch => {
+        branch.AddCommand<GetStaffCommand>("list").WithAlias("ls");
+        branch.AddCommand<DeleteStaffCommand>("delete").WithAlias("rm");
+        branch.AddCommand<EditStaffCommand>("edit");
+        branch.AddCommand<CreateStaffCommand>("create");
+        branch.AddCommand<ImportStaffCommand>("import");
     });
 
-    config.AddBranch("delete", branch =>
-    {
-        branch.AddCommand<DeleteClientCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
-
-        branch.AddCommand<DeleteStaffCommand>("staff")
-            .WithAlias("st");
-
-        branch.AddCommand<DeleteProjectCommand>("project")
-            .WithAlias("projects")
-            .WithAlias("pr");
+    config.AddBranch("client", branch => {
+        branch.AddCommand<GetClientsCommand>("list").WithAlias("ls");
+        branch.AddCommand<DeleteClientCommand>("delete").WithAlias("rm");
+        branch.AddCommand<EditClientCommand>("edit");
+        branch.AddCommand<CreateClientCommand>("create");
+        branch.AddCommand<ImportClientCommand>("import");
     });
 
-    config.AddBranch("edit", branch =>
-    {
-        branch.AddCommand<EditClientCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
-
-        branch.AddCommand<EditStaffCommand>("staff")
-            .WithAlias("st");
-
-        branch.AddCommand<EditProjectCommand>("project")
-            .WithAlias("projects")
-            .WithAlias("pr");
+    config.AddBranch("project", branch => {
+        branch.AddCommand<GetProjectsCommand>("list").WithAlias("ls");
+        branch.AddCommand<DeleteProjectCommand>("delete").WithAlias("rm");
+        branch.AddCommand<EditProjectCommand>("edit");
+        branch.AddCommand<CreateProjectCommand>("create");
+        branch.AddCommand<ImportProjectCommand>("import");
     });
 
-    config.AddBranch("create", branch =>
-    {
-        branch.AddCommand<CreateClientCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
-
-        branch.AddCommand<CreateStaffCommand>("staff")
-            .WithAlias("st");
-
-        branch.AddCommand<CreateProjectCommand>("project")
-            .WithAlias("projects")
-            .WithAlias("pr");
-    });
-
-    config.AddBranch("import", branch =>
-    {
-        branch.AddCommand<ImportClientCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
-
-        branch.AddCommand<ImportStaffCommand>("staff")
-            .WithAlias("st");
-
-        branch.AddCommand<ImportProjectCommand>("project")
-            .WithAlias("projects")
-            .WithAlias("pr");
+    config.AddBranch("code", branch => {
+        branch.AddCommand<GetChargeCodesCommand>("list").WithAlias("ls");
     });
 });
 
