@@ -1,5 +1,6 @@
 ﻿using HQ.CLI;
 using HQ.CLI.Commands;
+using HQ.CLI.Commands.ChargeCodes;
 using HQ.CLI.Commands.Clients;
 using HQ.CLI.Commands.Projects;
 using HQ.CLI.Commands.Staff;
@@ -73,6 +74,10 @@ app.Configure(config =>
         branch.AddCommand<GetProjectsCommand>("project")
             .WithAlias("projects")
             .WithAlias("pr");
+
+        branch.AddCommand<GetChargeCodesCommand>("chargecode")
+            .WithAlias("code")
+            .WithAlias("cc");
     });
 
     config.AddBranch("delete", branch =>

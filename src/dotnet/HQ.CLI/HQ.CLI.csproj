@@ -20,7 +20,6 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
 		<PackageReference Include="Spectre.Console.Cli" Version="0.48.1-preview.0.38" />
 		<PackageReference Include="Spectre.Console.Json" Version="0.48.0" />
-		<PackageReference Include="YamlDotNet" Version="15.1.2" />
 	</ItemGroup>
 
 	<ItemGroup>

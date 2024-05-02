@@ -12,6 +12,7 @@ namespace HQ.Server
             services.AddScoped<ClientServiceV1>();
             services.AddScoped<StaffServiceV1>();
             services.AddScoped<ProjectServiceV1>();
+            services.AddScoped<ChargeCodeServiceV1>();
 
             return services;
         }

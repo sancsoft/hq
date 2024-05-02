@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using HQ.Abstractions;
+using HQ.Abstractions.ChargeCodes;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Projects;
@@ -119,5 +120,8 @@ namespace HQ.SDK
 
             return await HandleResponse<ImportProjectsV1.Response>(response, ct);
         }
+
+        public Task<Result<GetChargeCodesV1.Response?>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<GetChargeCodesV1.Response>("/v1/ChargeCodes/GetChargeCodesV1", request, ct);
     }
 }
