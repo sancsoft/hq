@@ -11,7 +11,6 @@ namespace HQ.CLI
         Table,
         Wide,
         CSV,
-        Json,
-        YAML
+        Json
     }
 }

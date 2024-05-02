@@ -1,6 +1,15 @@
 ﻿{
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    },
     "login": {
       "commandName": "Project",
       "commandLineArgs": "login",
