@@ -19,6 +19,9 @@ module.exports = {
         '4': '20px',
         '5': '30px',
       },
+      borderRadius: {
+        DEFAULT: '2px',
+      },
       colors: {
         orange: {
           50: '#fef8ee',

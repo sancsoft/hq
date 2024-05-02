@@ -47,121 +47,45 @@
 <table class="min-w-full border-spacing-0 border-separate">
     <thead>
         <tr class="sticky top-0 text-left">
-            <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">% Billable</th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Hrs</th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Date</th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Chrg Code</th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Staff</th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Activity/Task</th>
-            <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                <div class="flex items-center justify-between">
-                    Description
-                    <div class="flex space-x-2 pr-5">
-                        <button class="px-2 py-2 bg-transparent border border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded-[2px] min-w-[120px] font-normal">Accept All</button>
-                        <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded-[2px] min-w-[120px] font-normal">Accept</button>
-                    </div>
-                </div>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Client Name</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Official Name</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Billing Email</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
+                <button class="px-2 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-[2px] min-w-[120px] font-normal">Client</button>
             </th>
         </tr>
     </thead>
     <tbody>
-        <!-- Accepted -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
-            <td class="border-b border-black py-2 bg-green-600 w-3"></td>
-            <td class="border-b border-black py-2 pl-3">                
-                <div class="w-11 inline-block text-right py-1 px-2 mr-2">100</div>
-                <span>%</span>
-            </td>
-            <td class="border-b border-black py-2">2.25</td>
-            <td class="border-b border-black py-2">3/23/2024</td>
-            <td class="border-b border-black py-2">P1006</td>
-            <td class="border-b border-black py-2">rlennox</td>
-            <td class="border-b border-black py-2">Support</td>
-            <td class="border-b border-black py-2">
-                <div class="flex space-x-2">
-                    <div class="inline-block w-full py-1 px-2 mr-2">Phil reported transactions werent posting to the cmp. Found an issue with the payment record create statement, posted a fix.</div>
-                    <!-- warning icon -->
-                    <div></div>
-
-                </div>
-            </td>
-            <td class="border-b border-black py-2 text-right pr-5">
-                <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">edit</a>
-            </td>
-        </tr>
-        <!-- Needs Attention -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-            <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
-            <td class="border-b border-black py-2 pl-3">                
-                <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80">
-                <span>%</span>
-            </td>
-            <td class="border-b border-black py-2">2.25</td>
-            <td class="border-b border-black py-2">3/23/2024</td>
-            <td class="border-b border-black py-2">P1006</td>
-            <td class="border-b border-black py-2">rlennox</td>
-            <td class="border-b border-black py-2">Support</td>
-            <td class="border-b border-black py-2">
-                <div class="flex space-x-2">
-                    <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="Testing bug fixes for mqtt site controller, updated environments.">
-                    <!-- warning icon -->
-                    <div></div>
-
-                </div>
-            </td>
-            <td class="border-b border-black py-2 text-right pr-5">
-                <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">accept</a>
-            </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-            <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-            <td class="border-b border-black py-2 pl-3">                
-                <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80">
-                <span>%</span>
-            </td>
-            <td class="border-b border-black py-2">2.25</td>
-            <td class="border-b border-black py-2">3/23/2024</td>
-            <td class="border-b border-black py-2">P1006</td>
-            <td class="border-b border-black py-2">rlennox</td>
-            <td class="border-b border-black py-2">Support</td>
-            <td class="border-b border-black py-2">
-                <div class="flex space-x-2">
-                    <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="PAX design review">
-                    <!-- warning icon -->
-                    <div></div>
-                </div>
-            </td>
-            <td class="border-b border-black py-2 text-right pr-5">
-                <div class="divide-x divide-teal-200">
-                    <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">reject</button>
-                    <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">accept</button>
-                </div>
-            </td>
-        </tr>
-        <!-- Error -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-            <td class="border-b border-black py-2 bg-red-850 w-3"></td>
-            <td class="border-b border-black py-2 pl-3">                
-                <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80">
-                <span>%</span>
-            </td>
-            <td class="border-b border-black py-2">2.25</td>
-            <td class="border-b border-black py-2">3/23/2024</td>
-            <td class="border-b border-black py-2">P1006</td>
-            <td class="border-b border-black py-2">rlennox</td>
-            <td class="border-b border-black py-2">Support</td>
-            <td class="border-b border-black py-2">
-                <div class="flex space-x-2">
-                    <div class="w-full py-1 px-2 mr-2">Assisting Jack with debugging NV200 issues, sealevel questions.</div>
-                    <!-- warning icon -->
-                    <div></div>
-
-                </div>
-            </td>
-            <td class="border-b border-black py-2 text-right pr-5">
-                <button disabled class="text-gray-450 uppercase">accept</button>
-            </td>
-        </tr>
+        @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]; track i)
+        {
+            <tr class="even:bg-gray-850 odd:bg-black-alt">
+                <td class="border-b border-black py-2 pl-5">Client {{ i }}</td>
+                <td class="border-b border-black py-2">$105.00</td>
+                <td class="border-b border-black py-2">billiningEmail&#64;client{{ i }}.com</td>
+                <td class="border-b border-black py-2">Official Name - Probably longer than the Name</td>
+                <td class="border-b border-black py-2 text-right pr-5"><a  class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+        }
     </tbody>
 </table>
+<div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
+    <div>
+        <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2">
+            <option value="20">20</option>
+            <!-- Add more options as needed -->
+        </select>
+        <span>items per page</span>
+    </div>
+    <div class="flex items-center justify-center">
+        <a href="#" class="mx-2 hover:text-gray-200">&lt;</a>
+        <span class="mx-2">1</span>
+        <a href="#" class="mx-2 hover:text-gray-200">2</a>
+        <a href="#" class="mx-2 hover:text-gray-200">3</a>
+        <a href="#" class="mx-2 hover:text-gray-200">4</a>
+        <a href="#" class="mx-2 hover:text-gray-200">5</a>
+        <a href="#" class="mx-2 hover:text-gray-200">&gt;</a>
+    </div>
+    <div class="flex justify-end text-xs">
+        1-20 / 200 items
+    </div>
+</div>
