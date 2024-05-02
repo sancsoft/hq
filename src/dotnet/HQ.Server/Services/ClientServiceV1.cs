@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using FluentResults;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Enumerations;
@@ -133,11 +134,17 @@ public class ClientServiceV1
 
     public async Task<Result<ImportClientsV1.Response>> ImportClientsV1(ImportClientsV1.Request request, CancellationToken ct = default)
     {
+        var conf = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+            TrimOptions = TrimOptions.Trim,
+            MissingFieldFound = null,
+            HeaderValidated = null
+        };
+
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
         using var reader = new StreamReader(request.File);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-
-        csv.Context.Configuration.HeaderValidated = null;
+        using var csv = new CsvReader(reader, conf);
 
         var allClients = await _context.Clients.ToListAsync(ct);
         var clientsById = allClients.ToDictionary(t => t.Id);

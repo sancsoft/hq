@@ -53,7 +53,7 @@ namespace HQ.CLI.Commands.Clients
             model.BillingEmail = record.BillingEmail;
             model.HourlyRate = record.HourlyRate;
 
-            var editor = new YAMLEditor<UpsertClientV1.Request>(model, async (value) =>
+            var editor = new JsonEditor<UpsertClientV1.Request>(model, async (value) =>
             {
                 value.Id = record.Id;
                 return await _hqService.UpsertClientV1(value);

@@ -62,7 +62,7 @@ namespace HQ.CLI.Commands.Projects
                 .WithColumn("CLIENT NAME", t => t.ClientName)
                 .WithColumn("PM", t => t.ProjectManagerName)
                 .WithColumn("START DATE", t => t.StartDate?.ToLongDateString(), table: false, wide: true)
-                .WithColumn("END DATE", t => t.StartDate?.ToLongDateString(), table: false, wide: true)
+                .WithColumn("END DATE", t => t.EndDate?.ToLongDateString(), table: false, wide: true)
                 .WithColumn("STATUS", t => null, table: false, wide: true)
                 .Output(settings.Output)
             );

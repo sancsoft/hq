@@ -58,7 +58,7 @@ namespace HQ.CLI.Commands.Projects
             model.StartDate = record.StartDate;
             model.EndDate = record.EndDate;
 
-            var editor = new YAMLEditor<UpsertProjectV1.Request>(model, async (value) =>
+            var editor = new JsonEditor<UpsertProjectV1.Request>(model, async (value) =>
             {
                 value.Id = record.Id;
                 return await _hqService.UpsertProjectV1(value);

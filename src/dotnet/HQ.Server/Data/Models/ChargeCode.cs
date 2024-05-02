@@ -12,6 +12,6 @@ public class ChargeCode : Base
     public Project? Project { get; set; }
     public Guid? QuoteId { get; set; }
     public Quote? Quote{ get; set; }
-    public Guid? ServiceId { get; set; }
-    public Service? Service { get; set; }
+    public Guid? ServiceAgreementId { get; set; }
+    public ServiceAgreement? ServiceAgreement { get; set; }
 }

@@ -15,7 +15,7 @@ public class UpsertProjectV1
     {
         public Guid? Id { get; set; }
         public Guid ClientId { get; set; }
-        public Guid ProjectManagerId { get; set; }
+        public Guid? ProjectManagerId { get; set; }
         public string Name { get; set; } = null!;
         public Guid? QuoteId { get; set; }
         public decimal HourlyRate { get; set; }

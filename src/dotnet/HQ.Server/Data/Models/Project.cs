@@ -7,8 +7,8 @@ public class Project : Base
     public int ProjectNumber { get; set; }
     public Guid ClientId { get; set; }
     public Client Client { get; set; } = null!;
-    public Guid ProjectManagerId { get; set; }
-    public Staff ProjectManager { get; set; } = null!;
+    public Guid? ProjectManagerId { get; set; }
+    public Staff? ProjectManager { get; set; }
     public string Name { get; set; } = null!;
     public Guid? QuoteId { get; set; }
     public Quote? Quote { get; set; }
@@ -17,5 +17,7 @@ public class Project : Base
     public decimal BookingHours { get; set; }
     public Period BookingPeriod { get; set; }
     public DateOnly? StartDate { get; set; }
+ 
     public DateOnly? EndDate { get; set; }
+    public ChargeCode? ChargeCode { get; set; }
 }

@@ -30,12 +30,12 @@ namespace HQ.CLI.Commands.Staff
         {
             var model = new UpsertStaffV1.Request();
 
-            var Createor = new YAMLEditor<UpsertStaffV1.Request>(model, async (value) =>
+            var editor = new JsonEditor<UpsertStaffV1.Request>(model, async (value) =>
             {
                 return await _hqService.UpsertStaffV1(value);
             });
 
-            var rc = await Createor.Launch();
+            var rc = await editor.Launch();
             return rc;
         }
     }

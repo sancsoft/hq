@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using FluentResults;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Projects;
@@ -77,6 +78,7 @@ public class ProjectServiceV1
             .Include(t => t.Client)
             .Include(t => t.ProjectManager)
             .Include(t => t.Quote)
+            .Include(t => t.ChargeCode)
             .AsNoTracking()
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
@@ -121,11 +123,11 @@ public class ProjectServiceV1
         {
             Id = t.Id,
             ProjectNumber = t.ProjectNumber,
-            ChargeCode = String.Empty, // TODO: Link this directly to charge code? Model as 1-1?
+            ChargeCode = t.ChargeCode != null ? t.ChargeCode.Code : null,
             ClientId = t.ClientId,
             ClientName = t.Client.Name,
             ProjectManagerId = t.ProjectManagerId,
-            ProjectManagerName = t.ProjectManager.Name,
+            ProjectManagerName = t.ProjectManager != null ? t.ProjectManager.Name : null,
             Name = t.Name,
             QuoteId = t.QuoteId,
             QuoteNumber = t.Quote != null ? t.Quote.QuoteNumber : null,
@@ -147,11 +149,17 @@ public class ProjectServiceV1
 
     public async Task<Result<ImportProjectsV1.Response>> ImportProjectsV1(ImportProjectsV1.Request request, CancellationToken ct = default)
     {
+        var conf = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+            TrimOptions = TrimOptions.Trim,
+            MissingFieldFound = null,
+            HeaderValidated = null
+        };
+
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
         using var reader = new StreamReader(request.File);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-
-        csv.Context.Configuration.HeaderValidated = null;
+        using var csv = new CsvReader(reader, conf);
 
         var allProjects = await _context.Projects.ToListAsync(ct);
         var projectsById = allProjects.ToDictionary(t => t.Id);

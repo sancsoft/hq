@@ -12,4 +12,5 @@ public class Quote : Base
     public decimal Value { get; set; }
     public QuoteStatus Status { get; set; }
     // PDF link
+    public ChargeCode? ChargeCode { get; set; }
 }

@@ -17,4 +17,5 @@ public class ServiceAgreement : Base
     public Period PricePeriod { get; set; }
     public DateOnly? StartDate { get; set; }
     public DateOnly? EndDate { get; set; }
+    public ChargeCode? ChargeCode { get; set; }
 }

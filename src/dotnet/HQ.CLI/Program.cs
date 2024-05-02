@@ -1,6 +1,7 @@
 ﻿using HQ.CLI;
 using HQ.CLI.Commands;
 using HQ.CLI.Commands.Clients;
+using HQ.CLI.Commands.Projects;
 using HQ.CLI.Commands.Staff;
 using HQ.SDK;
 using Microsoft.AspNetCore.DataProtection;
@@ -68,6 +69,10 @@ app.Configure(config =>
 
         branch.AddCommand<GetStaffCommand>("staff")
             .WithAlias("st");
+
+        branch.AddCommand<GetProjectsCommand>("project")
+            .WithAlias("projects")
+            .WithAlias("pr");
     });
 
     config.AddBranch("delete", branch =>
@@ -78,6 +83,10 @@ app.Configure(config =>
 
         branch.AddCommand<DeleteStaffCommand>("staff")
             .WithAlias("st");
+
+        branch.AddCommand<DeleteProjectCommand>("project")
+            .WithAlias("projects")
+            .WithAlias("pr");
     });
 
     config.AddBranch("edit", branch =>
@@ -88,6 +97,10 @@ app.Configure(config =>
 
         branch.AddCommand<EditStaffCommand>("staff")
             .WithAlias("st");
+
+        branch.AddCommand<EditProjectCommand>("project")
+            .WithAlias("projects")
+            .WithAlias("pr");
     });
 
     config.AddBranch("create", branch =>
@@ -98,6 +111,10 @@ app.Configure(config =>
 
         branch.AddCommand<CreateStaffCommand>("staff")
             .WithAlias("st");
+
+        branch.AddCommand<CreateProjectCommand>("project")
+            .WithAlias("projects")
+            .WithAlias("pr");
     });
 
     config.AddBranch("import", branch =>
@@ -108,6 +125,10 @@ app.Configure(config =>
 
         branch.AddCommand<ImportStaffCommand>("staff")
             .WithAlias("st");
+
+        branch.AddCommand<ImportProjectCommand>("project")
+            .WithAlias("projects")
+            .WithAlias("pr");
     });
 });
 
