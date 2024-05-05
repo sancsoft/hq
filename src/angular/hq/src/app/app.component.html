@@ -1,21 +1,22 @@
 <!-- header -->
-<header class="flex justify-between items-end xl:grid auto-cols-min xl:grid-cols-3 py-4 px-5">
-    <!-- col one -->
-    <div class="hidden xl:block">&nbsp;</div>
+<header class="flex items-end py-4 pr-5">
     <!-- col two -->
-    <nav class="nav flex flex-1 xl:justify-center h-[30px]">
-        <div class="px-[0.969rem] border-r border-r-gray-100"><a routerLink="/projects" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="inline-block text-center font-bold text-gray-100 border-b border-b-orange-500/0 px-3 py-1 min-w-[100px]">Projects</a></div>
-        <div class="px-[0.969rem] border-r border-r-gray-100"><a routerLink="/clients" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="inline-block text-center font-bold text-gray-100 border-b border-b-orange-500/0 px-3 py-1 min-w-[100px]">Clients</a></div>
-        <div class="px-[0.969rem] border-r border-r-gray-100"><a routerLink="/psr" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="inline-block text-center font-bold text-gray-100 border-b border-b-orange-500/0 px-3 py-1 min-w-[100px]">PSR</a></div>
-        <div class="px-[0.969rem]"><a routerLink="/my-stuff" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="inline-block text-center font-bold text-nav-disabled border-b border-b-orange-500/0 px-3 py-1 max-w-[100px]">My Stuff</a></div>
+    <nav class="nav flex flex-1 h-[30px]">
+        <div class="min-w-[100px]"><a routerLink="/clients" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap font-bold text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200">Clients</a></div>
+        <div class="min-w-[100px]"><a routerLink="/projects" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap font-bold text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200">Projects</a></div>
+        <div class="min-w-[100px]"><a routerLink="/quotes" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap font-bold text-nav-disabled border-b border-b-orange-500/0 px-3 py-1 cursor-not-allowed" aria-disabled="true">Quotes</a></div>
+        <div class="min-w-[100px]"><a routerLink="/services" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap font-bold text-nav-disabled border-b border-b-orange-500/0 px-3 py-1 cursor-not-allowed">Services</a></div>
+        <div class="min-w-[100px]"><a routerLink="/invoices" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap font-bold text-nav-disabled border-b border-b-orange-500/0 px-3 py-1 cursor-not-allowed">Invoices</a></div>
+        <div class="min-w-[100px]"><a routerLink="/psr" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap font-bold text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200">PSR</a></div>
+        <div class="min-w-[100px]"><a routerLink="/my-stuff" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap font-bold text-nav-disabled border-b border-b-orange-500/0 px-3 py-1 cursor-not-allowed">My Stuff</a></div>
     </nav>
     <!-- col three -->
-    <div class="flex column justify-end items-center">
+    <div class="flex column justify-end items-center ml-auto pl-9">
         <!-- my account dropdown menu -->
         <div class="inline-block pe-10">
             <div class="relative inline-block h-full">
                 <button class="block font-semibold text-xs h-full" (click)="dropdownOpen = !dropdownOpen">
-                    Last Name, First Name
+                    username
                     <span>
                         <i class="bi bi-caret-down-fill text-[8px]"></i>
                     </span>
@@ -36,7 +37,7 @@
 </div>
 
 <!-- footer -->
-<footer class="py-4 px-5">
+<footer class="py-2 px-5">
     <div class="flex justify-between">
         <div class="text-xs text-gray-50">&copy;Sanctuary Software Studio Inc.</div>
     </div>
