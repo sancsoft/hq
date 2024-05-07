@@ -62,12 +62,12 @@ export const routes: Routes = [
                 loadComponent: () => import('./projects/project-list/project-list.component').then(m => m.ProjectListComponent),
             },
             {
-                path: ':psrId',
-                loadComponent: () => import('./projects/project-details/project-details.component').then(m => m.ProjectDetailsComponent),
+                path: 'create',
+                loadComponent: () => import('./projects/project-create/project-create.component').then(m => m.ProjectCreateComponent)
             },
             {
-                path: ':project-create',
-                loadComponent: () => import('./projects/project-create/project-create.component').then(m => m.ProjectCreateComponent)
+                path: ':psrId',
+                loadComponent: () => import('./projects/project-details/project-details.component').then(m => m.ProjectDetailsComponent),
             }
         ]
     }
