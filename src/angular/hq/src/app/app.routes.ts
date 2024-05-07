@@ -63,7 +63,11 @@ export const routes: Routes = [
             },
             {
                 path: ':psrId',
-                loadComponent: () => import('./projects/project-details/project-details.component').then(m => m.ProjectDetailsComponent)
+                loadComponent: () => import('./projects/project-details/project-details.component').then(m => m.ProjectDetailsComponent),
+            },
+            {
+                path: ':project-create',
+                loadComponent: () => import('./projects/project-create/project-create.component').then(m => m.ProjectCreateComponent)
             }
         ]
     }
