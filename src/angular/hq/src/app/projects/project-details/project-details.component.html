@@ -1,0 +1,100 @@
+<div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
+    <div class="px-5">
+        <h1 class="font-rajdhani font-semibold text-3xl">Create Project</h1>
+
+        <div class="py-3">
+            <a href="#" class="text-gray-50 underline">Project List</a>
+        </div>
+    </div>
+
+    <div class="overflow-hidden flex-auto">
+        <div class="grid grid-cols-[1fr_405px] gap-0 relative">            
+            <main class="bg-black-alt overflow-y-auto h-[calc(100dvh-(245px + 36px <!--footer--> ))]">
+                <div class="bg-black-alt border-steel-blue-600 border-t pt-[23px] sticky top-0">
+                    <div class="flex border-b border-black">
+                        <a routerLink="projects" routerLinkActive="border-gray-100" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-transparent hover:border-gray-100">PM Report</a>
+                        <a routerLink="quotes" routerLinkActive="border-gray-100" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-transparent hover:border-gray-100">PSR</a>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h1 id="hq">HQ</h1>
+                    <p>An overview of the objects/entities in HQ that includes information to define object properties, outline UX content for wireframing, and software development.</p>
+                    <h2 id="book">Book</h2>
+                    <p>Book consists of expected billable work to be performed against projects. Book entries are created manually or are periodically generated based on project configuration.</p>
+                    <h3 id="properties">Properties</h3>
+                    <ul>
+                        <li>Charge Code </li>
+                        <li>Start Date </li>
+                        <li>End Date </li>
+                        <li>Hours</li>
+                    </ul>
+                    <h3 id="view">View</h3>
+                    <ul>
+                        <li>Display the project and book info </li>
+                        <li>Table of time associated with this book entry * Charge Code match </li>
+                        <li>Time entry between Start Date and End Date</li>
+                    </ul>
+                    <h2 id="book-and-bill">Book and Bill</h2>
+                    <p>Display a table of combination of the booked and billed hours for charge codes. The time resolution is in months. An example of this display will need to be put together. </p>
+                    <h2 id="client">Client</h2>
+                    <p>The client entity represents a SANCSOFT customer. </p>
+                    <h3 id="properties">Properties</h3>
+                    <ul>
+                        <li>Name: varchar(16)</li>
+                        <li>Official Name: varchar(max)</li>
+                        <li>Billing Email Address: varchar(max)</li>
+                        <li>Hourly Rate </li>
+                    </ul>
+                    <h3 id="list">List</h3>                
+                    <ul>
+                        <li>Name </li>
+                        <li>Official Name </li>
+                        <li>Hourly Rate </li>
+                        <li>Email Link </li>
+                    </ul>
+                    <h3 id="view">View</h3>
+                    <ul>
+                        <li>Title: Name </li>
+                        <li>Summary Information </li>
+                        <li>Official Name </li>
+                        <li>Email link </li>
+                        <li>Hourly Rate </li>
+                        <li>Invoice Summary </li>
+                        <li>This month to date </li>
+                        <li>Last month to date </li>
+                        <li>This year to date </li>
+                        <li>All time to date </li>
+                        <li>Project Table: This Client </li>
+                        <li>Status (open/closed/hold/other?) </li>
+                        <li>Charge Code (ex: X0000) </li>
+                        <li>Expanded Charge Code (ex: Client:Project:Code)</li>
+                        <li>Project Name: Project full name </li>
+                        <li>Last Month (hours worked/hours allocated) </li>
+                        <li>This Month (hours worked/hours allocated) </li>
+                        <li>Filter to open projects by default </li>
+                        <li>Quotes Table: This Client, Create Link </li>
+                        <li>Quote Number: Q0000 </li>
+                        <li>Quote Status: Draft, Waiting for Sale, Waiting for Client, Waiting for Staff,... </li>
+                        <li>Quote Name: trim to fit display </li>
+                        <li>Quote Date: revision date of quote </li>
+                        <li>Quote Value: estimated value of the quote (Numeric) </li>
+                        <li>Quote PDF link </li>
+                        <li>Services Table: This Client, Create Link * Charge Expanded Code </li>
+                        <li>Service Status </li>
+                        <li>Start - End date </li>
+                        <li>Price info </li>
+                        <li>Cost info </li>
+                        <li>Invoice Table: This Client </li>
+                        <li>Invoice Number </li>
+                        <li>Invoice Date </li>
+                        <li>Invoice Total </li>
+                        <li>Invoice PDF link</li>
+                    </ul>
+                </div>
+            </main>
+            <aside class="border-l border-black sticky top-0 overflow-y-auto h-[calc(100dvh-245px)]">
+                
+            </aside>
+        </div>
+    </div>
+</div>
