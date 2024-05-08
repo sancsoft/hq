@@ -91,6 +91,7 @@ public class ChargeCodeServiceV1
             ProjectName = t.Project != null ? t.Project.Name : null,
             QuoteName = t.Quote != null ? t.Quote.Name : null,
             ServiceAgreementName = t.ServiceAgreement != null ? t.ServiceAgreement.Name : null,
+            Description = t.Description
         });
 
         var response = new GetChargeCodesV1.Response()

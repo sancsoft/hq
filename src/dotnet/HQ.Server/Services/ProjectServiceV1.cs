@@ -88,35 +88,15 @@ public class ProjectServiceV1
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
-                t.Name.ToLower().Contains(request.Search.ToLower())
+                t.Name.ToLower().Contains(request.Search.ToLower()) || 
+                t.Client.Name.ToLower().Contains(request.Search.ToLower()) ||
+                (t.ChargeCode != null ? t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) : false)
             );
         }
 
         if (request.Id.HasValue)
         {
             records = records.Where(t => t.Id == request.Id.Value);
-        }
-
-        var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
-        {
-            { Abstractions.Projects.GetProjectsV1.SortColumn.CreatedAt, "CreatedAt" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.Name, "Name" },
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        records = request.SortDirection == SortDirection.Asc ?
-            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
-
-        if (request.Skip.HasValue)
-        {
-            records = records.Skip(request.Skip.Value);
-        }
-
-        if (request.Take.HasValue)
-        {
-            records = records.Take(request.Take.Value);
         }
 
         var mapped = records.Select(t => new GetProjectsV1.Record()
@@ -137,6 +117,29 @@ public class ProjectServiceV1
             StartDate = t.StartDate,
             EndDate = t.EndDate,
         });
+
+        var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
+        {
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode, "ChargeCode" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ClientName, "ClientName" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.Name, "Name" },
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+        mapped = request.SortDirection == SortDirection.Asc ?
+            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+        if (request.Skip.HasValue)
+        {
+            mapped = mapped.Skip(request.Skip.Value);
+        }
+
+        if (request.Take.HasValue)
+        {
+            mapped = mapped.Take(request.Take.Value);
+        }
 
         var response = new GetProjectsV1.Response()
         {

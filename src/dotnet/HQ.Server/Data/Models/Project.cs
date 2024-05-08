@@ -4,7 +4,7 @@ namespace HQ.Server.Data.Models;
 
 public class Project : Base
 {
-    public int ProjectNumber { get; set; }
+    public int? ProjectNumber { get; set; }
     public Guid ClientId { get; set; }
     public Client Client { get; set; } = null!;
     public Guid? ProjectManagerId { get; set; }

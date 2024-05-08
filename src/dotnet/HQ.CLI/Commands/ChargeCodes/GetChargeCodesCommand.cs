@@ -74,6 +74,7 @@ namespace HQ.CLI.Commands.ChargeCodes
                 .WithColumn("PROJECT NAME", t => t.ProjectName)
                 .WithColumn("QUOTE NAME", t => t.QuoteName)
                 .WithColumn("SERVICE AGREEMENT NAME", t => t.ServiceAgreementName)
+                .WithColumn("DESCRIPTION", t => t.Description, table: false, wide: true)
                 .Output(settings.Output)
             );
 

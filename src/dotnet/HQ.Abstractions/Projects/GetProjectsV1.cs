@@ -22,7 +22,8 @@ public class GetProjectsV1
 
     public enum SortColumn
     {
-        CreatedAt,
+        ChargeCode,
+        ClientName,
         Name
     }
 
@@ -30,7 +31,7 @@ public class GetProjectsV1
     public class Record
     {
         public Guid Id { get; set; }
-        public int ProjectNumber { get; set; }
+        public int? ProjectNumber { get; set; }
         public Guid ClientId { get; set; }
         public string ClientName { get; set; } = null!;
         public Guid? ProjectManagerId { get; set; }
@@ -38,7 +39,7 @@ public class GetProjectsV1
         public string Name { get; set; } = null!;
         public Guid? QuoteId { get; set; }
         public int? QuoteNumber { get; set; }
-        public string? ChargeCode { get; set; } = null!;
+        public string? ChargeCode { get; set; } 
         // Letter of engagement
         public decimal HourlyRate { get; set; }
         public decimal BookingHours { get; set; }

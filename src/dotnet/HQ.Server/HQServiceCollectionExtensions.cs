@@ -13,6 +13,7 @@ namespace HQ.Server
             services.AddScoped<StaffServiceV1>();
             services.AddScoped<ProjectServiceV1>();
             services.AddScoped<ChargeCodeServiceV1>();
+            services.AddScoped<VoltronServiceV1>();
 
             return services;
         }
