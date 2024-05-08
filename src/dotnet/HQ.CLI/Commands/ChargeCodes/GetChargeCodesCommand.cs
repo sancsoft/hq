@@ -30,7 +30,7 @@ namespace HQ.CLI.Commands.ChargeCodes
         [DefaultValue(GetChargeCodesV1.SortColumn.Code)]
         public GetChargeCodesV1.SortColumn SortBy { get; set; }
 
-        [CommandOption("--activey|-a")]
+        [CommandOption("--active|-a")]
         [DefaultValue(null)]
         public bool? Active { get; set; }
 
