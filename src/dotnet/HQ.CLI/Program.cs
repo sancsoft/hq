@@ -1,5 +1,6 @@
 ﻿using HQ.CLI;
 using HQ.CLI.Commands;
+using HQ.CLI.Commands.ChargeCode;
 using HQ.CLI.Commands.ChargeCodes;
 using HQ.CLI.Commands.Clients;
 using HQ.CLI.Commands.Projects;
@@ -88,6 +89,10 @@ app.Configure(config =>
 
     config.AddBranch("code", branch => {
         branch.AddCommand<GetChargeCodesCommand>("list").WithAlias("ls");
+    });
+
+    config.AddBranch("voltron", branch => {
+        branch.AddCommand<ImportVoltronTimeCommand>("import-time");
     });
 });
 

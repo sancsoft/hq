@@ -5,6 +5,7 @@ using HQ.Abstractions.Clients;
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Projects;
 using HQ.Abstractions.Staff;
+using HQ.Abstractions.Voltron;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,6 +120,23 @@ namespace HQ.SDK
             var response = await _httpClient.PostAsync("/v1/Projects/ImportProjectsV1", multipartContent, ct);
 
             return await HandleResponse<ImportProjectsV1.Response>(response, ct);
+        }
+
+        public async Task<Result<ImportVoltronTimeSheetsV1.Response?>> ImportVoltronTimeSheetsV1(ImportVoltronTimeSheetsV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            foreach(var file in request.Files)
+            {
+                multipartContent.Add(new StreamContent(file.Stream), "files", file.FileName);
+            }
+
+            multipartContent.Add(new StringContent(request.From.ToString("o"), Encoding.UTF8), nameof(request.From));
+            multipartContent.Add(new StringContent(request.To.ToString("o"), Encoding.UTF8), nameof(request.To));
+            multipartContent.Add(new StringContent(request.Replace.ToString(), Encoding.UTF8), nameof(request.Replace));
+
+            var response = await _httpClient.PostAsync("/v1/Voltron/ImportVoltronTimeSheetsV1", multipartContent, ct);
+
+            return await HandleResponse<ImportVoltronTimeSheetsV1.Response>(response, ct);
         }
 
         public Task<Result<GetChargeCodesV1.Response?>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)
