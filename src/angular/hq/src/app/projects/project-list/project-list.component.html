@@ -1,184 +1,127 @@
-<div class="h-[calc(100dvh-(var(--h-footer)+var(--h-header)))] fixed top-[--h-header] left-0 w-full flex flex-col">
-    <div class="px-5">
-        <h1 class="font-rajdhani font-semibold text-3xl">P1006: POS</h1>
+<div class="px-5">
+    <h1 class="font-rajdhani font-semibold text-3xl">Projects</h1>
 
-        <div class="flex flex-col xl:flex-row xl:justify-between xl:items-center">
-            <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-                <div class="text-gray-50">$105.00</div>
-                <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
-                <div class="text-gray-50"><a href="#" class="underline">Official Name - Probably longer than the name</a></div>
-            </div>
-
-            <div class="flex flex-row auto-cols-min gap-[2.983rem] pt-3 justify-end xl:pt-0">
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Start / End Date</div>
-                    <div class="text-right">MM/DD/YYYY - MM/DD/YYYY</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Last</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS This</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Total HRS</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Avail.</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Budget Avail.</div>
-                    <div class="text-right">17%</div>
-                </div>
-            </div>
-        </div>
+    <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
+        &nbsp;
     </div>
+</div>
 
-    <div class="px-5 mb-[8px]">
-        <div class="flex flex-col lg:flex-row justify-between items-start">
-            <div class="flex items-end order-2 lg:order-1 gap-[20px]">
-                <!-- search bar -->
-                <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[395px]">
+<div class="px-5 pt-4 mb-[8px]">
+    <div class="flex flex-col xl:flex-row justify-between items-start gap-4">
+        <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+            <!-- search bar -->
+            <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]">
                 <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
                     <i class="bi bi-search text-[14px]"></i>
                 </span>
-                <input
-                    type="text"
-                    class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
-                    name=""
-                />
-                </div>
-        
-                <!-- Is this a button? -->
-                <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[205px]">
-                <input
-                    type="text"
-                    class="w-[100%] block text-[14px] text-center px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
-                    name=""
-                    value="Activities"
-                />
-                </div>  
+                <input type="text" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="">
+            </div>
 
-                <div class="pl-[5vw]">
-                    <div>
-                        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Total Billed</div>
-                        <div class="text-right font-rajdhani font-semibold text-3xl">00000.00</div>
-                    </div>
-                </div>
-                
+            <!-- select dropdown -->
+            <div class="grid relative w-full max-w-[220px]">
+                <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                    <option>In Production</option>
+                    <option>Ongoing</option>
+                </select>
+                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                    <i class="bi bi-arrow-down-short text-[24px]"></i>
+                </span>
+            </div>
+
+            <!-- toggle switch -->
+            <div class="inline-flex items-center">
+                <div class="text-[12px] mr-[10px] leading-none text-nowrap">Show current only</div>
+                <label class="relative inline-flex cursor-pointer items-center">
+                    <input id="switch" type="checkbox" class="peer sr-only" checked />
+                    <label for="switch" class="hidden"></label>
+                    <div class="peer h-[14px] w-[33px] rounded-full bg-slate-200 after:absolute after:left-[4px] after:top-[3px] after:h-[8px] after:w-[8px] after:rounded-full after:bg-gray-500 peer-checked:after:bg-white after:transition-all after:content-[''] peer-checked:bg-steel-blue-600 peer-checked:after:translate-x-full peer-checked:after:right-[12px]  peer-checked:after:left-auto"></div>
+                </label>
+                <div class="text-xs ml-[6px]">On</div>
             </div>
         </div>
     </div>
-
-    <div class="overflow-hidden flex-auto">
-        <div class="grid grid-cols-[405px_1fr] gap-0 relative">
-            <aside class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))]">
-                <table class="min-w-full border-spacing-0 border-separate">
-                    <thead>
-                        <tr class="sticky top-0 text-left">
-                            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">PSR week of <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
-                            <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3">Total Hrs <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]; track i)
-                        {
-                            <tr class="even:bg-gray-850 odd:bg-black-alt">
-                                <td class="border-b border-black py-2 pl-5">MM/DD/YYYY</td>
-                                <td class="border-b border-black py-2">0000.00</td>
-                                <td class="border-b border-black py-2 text-right pr-5"><a class="text-teal-200 hover:text-teal-300">VIEW</a></td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </aside>
-            <main class="bg-black-alt overflow-y-auto h-[calc(100dvh-245px)]">
-                <div class="bg-black-alt border-steel-blue-600 border-t pt-[23px] sticky top-0">
-                    <div class="flex border-b border-black">
-                        <a routerLink="projects" routerLinkActive="border-gray-100" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-transparent hover:border-gray-100">PM Report</a>
-                        <a routerLink="quotes" routerLinkActive="border-gray-100" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-transparent hover:border-gray-100">PSR</a>
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h1 id="hq">HQ</h1>
-                    <p>An overview of the objects/entities in HQ that includes information to define object properties, outline UX content for wireframing, and software development.</p>
-                    <h2 id="book">Book</h2>
-                    <p>Book consists of expected billable work to be performed against projects. Book entries are created manually or are periodically generated based on project configuration.</p>
-                    <h3 id="properties">Properties</h3>
-                    <ul>
-                        <li>Charge Code </li>
-                        <li>Start Date </li>
-                        <li>End Date </li>
-                        <li>Hours</li>
-                    </ul>
-                    <h3 id="view">View</h3>
-                    <ul>
-                        <li>Display the project and book info </li>
-                        <li>Table of time associated with this book entry * Charge Code match </li>
-                        <li>Time entry between Start Date and End Date</li>
-                    </ul>
-                    <h2 id="book-and-bill">Book and Bill</h2>
-                    <p>Display a table of combination of the booked and billed hours for charge codes. The time resolution is in months. An example of this display will need to be put together. </p>
-                    <h2 id="client">Client</h2>
-                    <p>The client entity represents a SANCSOFT customer. </p>
-                    <h3 id="properties">Properties</h3>
-                    <ul>
-                        <li>Name: varchar(16)</li>
-                        <li>Official Name: varchar(max)</li>
-                        <li>Billing Email Address: varchar(max)</li>
-                        <li>Hourly Rate </li>
-                    </ul>
-                    <h3 id="list">List</h3>                
-                    <ul>
-                        <li>Name </li>
-                        <li>Official Name </li>
-                        <li>Hourly Rate </li>
-                        <li>Email Link </li>
-                    </ul>
-                    <h3 id="view">View</h3>
-                    <ul>
-                        <li>Title: Name </li>
-                        <li>Summary Information </li>
-                        <li>Official Name </li>
-                        <li>Email link </li>
-                        <li>Hourly Rate </li>
-                        <li>Invoice Summary </li>
-                        <li>This month to date </li>
-                        <li>Last month to date </li>
-                        <li>This year to date </li>
-                        <li>All time to date </li>
-                        <li>Project Table: This Client </li>
-                        <li>Status (open/closed/hold/other?) </li>
-                        <li>Charge Code (ex: X0000) </li>
-                        <li>Expanded Charge Code (ex: Client:Project:Code)</li>
-                        <li>Project Name: Project full name </li>
-                        <li>Last Month (hours worked/hours allocated) </li>
-                        <li>This Month (hours worked/hours allocated) </li>
-                        <li>Filter to open projects by default </li>
-                        <li>Quotes Table: This Client, Create Link </li>
-                        <li>Quote Number: Q0000 </li>
-                        <li>Quote Status: Draft, Waiting for Sale, Waiting for Client, Waiting for Staff,... </li>
-                        <li>Quote Name: trim to fit display </li>
-                        <li>Quote Date: revision date of quote </li>
-                        <li>Quote Value: estimated value of the quote (Numeric) </li>
-                        <li>Quote PDF link </li>
-                        <li>Services Table: This Client, Create Link * Charge Expanded Code </li>
-                        <li>Service Status </li>
-                        <li>Start - End date </li>
-                        <li>Price info </li>
-                        <li>Cost info </li>
-                        <li>Invoice Table: This Client </li>
-                        <li>Invoice Number </li>
-                        <li>Invoice Date </li>
-                        <li>Invoice Total </li>
-                        <li>Invoice PDF link</li>
-                    </ul>
-                </div>
-            </main>
-        </div>
-    </div>
 </div>
+
+<table class="min-w-full border-spacing-0 border-separate">
+    <thead>
+        <tr class="sticky top-0 text-left">
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Chrg Code <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Project Full Name <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Client Name <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">PM <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Start / End Date <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Status <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px]">Complete</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
+                <button routerLink="/projects/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
+                    <i class="bi bi-plus"></i>
+                    Project
+                </button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]; track i)
+        {
+            <tr class="even:bg-gray-850 odd:bg-black-alt">
+                <td class="border-b border-black py-2 pl-5">P0000</td>
+                <td class="border-b border-black py-2">[Project Full Name Here]</td>
+                <td class="border-b border-black py-2">Client {{ i }}</td>
+                <td class="border-b border-black py-2">jsarkaukas</td>
+                <td class="border-b border-black py-2">MM/DD/YYYY - MM/DD/YYYY</td>
+                <td class="border-b border-black py-2">In Production</td>
+                <td class="border-b border-black py-2">
+                    @if(i == 1)
+                    {
+                        <!-- progress bar -->
+                        <div class="w-[350px] bg-white border border-white h-[10px]">
+                            <div class="bg-gray-450 h-[8px] w-[25%]"></div>
+                        </div>
+                    }
+                    @else if(i == 2 )
+                    {
+                        <!-- progress bar red -->
+                        <div class="w-[350px] bg-gray-450 border border-red-850 h-[10px]">
+                            <div class="bg-red-850 h-[8px] w-[50%]"></div>
+                        </div>
+                    }
+                    @else
+                    {
+                        <!-- progress bar white -->
+                        <div class="w-[350px] bg-gray-450 border border-white h-[10px]">
+                            <div class="bg-white h-[8px] w-[75%]"></div>
+                        </div>
+                    }
+                </td>
+                <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[i]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+            </tr>
+        }
+    </tbody>
+  </table>
+  <div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
+    <div>
+        <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2">
+            <option value="20">20</option>
+            <!-- Add more options as needed -->
+        </select>
+        <span>items per page</span>
+    </div>
+    <div class="flex items-center justify-center">
+        <a href="#" class="px-1 py-1 mr-2 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">
+            <i class="bi bi-arrow-left-short text-[18px]"></i>
+        </a>
+        <!-- active start -->
+        <a href="#" class="px-2 py-1 font-semibold rounded bg-teal-200 text-blue-950 hover:bg-teal-300">1</a>
+        <!-- active end -->
+        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">3</a>
+        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">2</a>
+        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">4</a>
+        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">5</a>
+        <a href="#" class="px-1 py-1 ml-2 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">
+            <i class="bi bi-arrow-right-short text-[18px]"></i>
+        </a>
+    </div>
+    <div class="flex justify-end text-xs">
+        1-20 / 200 items
+    </div>
+  </div>
