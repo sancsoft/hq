@@ -117,4 +117,58 @@ html, body {
   height: 100%; 
   @apply text-gray-100;
 }
-body { margin: 0; font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif;  }
+body { margin: 0; font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif;}
+
+@-moz-document url-prefix() {
+  * {
+    scrollbar-width:thin;
+    scrollbar-color: #b3b3b3 #3e3e3e;
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  scrollbar-width:auto !important;
+  width: 10px !important;
+  height:10px !important;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply bg-gray-900;
+  border-radius: 0px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-50;
+  border-radius: 5px;
+  border:1px solid #000;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Scroll bar corner */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* remove the calendar date picker icon */
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    color:none;
+    background-color:none;
+    filter:opacity(0);
+    filter: alpha(opacity=0);
+    opacity:0;
+    -moz-opacity:0;
+    -webkit-opacity: 0; /* Chrome & Safari */
+    -webkit-filter: brightness(0);
+    -moz-brightness:0;
+    position:relative;
+    z-index:0;
+    background: transparent;
+}

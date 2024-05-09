@@ -15,6 +15,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./clients/client-list/client-list.component').then(m => m.ClientListComponent),
             },
             {
+                path: 'create',
+                loadComponent: () => import('./clients/client-create/client-create.component').then(m => m.ClientCreateComponent)
+            },
+            {
                 path: ':clientId',
                 loadComponent: () => import('./clients/client-details/client-details.component').then(m => m.ClientDetailsComponent),
                 children: [
