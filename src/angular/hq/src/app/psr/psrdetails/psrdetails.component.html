@@ -83,13 +83,13 @@
     <table class="min-w-full border-spacing-0 border-separate">
       <thead>
         <tr class="sticky top-0 text-left">
-          <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">% Billable </th>
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Hrs</th>
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Date <i class="bi bi-sort-down ml-2"></i></th>
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Chrg Code <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Staff <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Activity/Task <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-          <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+          <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 pr-2 text-nowrap">Billable Hrs</th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap">Hrs</th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap">Date <i class="bi bi-sort-down ml-1"></i></th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap">Chrg Code <i class="bi bi-arrow-down-up text-[12px] ml-1"></i></th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap">Staff <i class="bi bi-arrow-down-up text-[12px] ml-1"></i></th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap">Activity/Task <i class="bi bi-arrow-down-up text-[12px] ml-1"></i></th>
+          <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2">
             <div class="flex items-center justify-between">
               Description
               <div class="flex space-x-2 pr-5">
@@ -104,514 +104,91 @@
         <!-- Accepted -->
         <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
           <td class="border-b border-black py-2 bg-green-600 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <div class="w-11 inline-block text-right py-1 px-2 mr-2">100</div>
-            <span>%</span>
+          <td class="border-b border-black py-2 pl-3 pr-2">
+            <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" value="2.25" disabled/>
           </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <div class="inline-block w-full py-1 px-2 mr-2">
-                Phil reported transactions werent posting to the cmp. Found an issue
-                with the payment record create statement, posted a fix.
-              </div>
+          <td class="border-b border-black py-2 px-2">2.25</td>
+          <td class="border-b border-black py-2 px-2">3/23/2024</td>
+          <td class="border-b border-black py-2 px-2">P1006</td>
+          <td class="border-b border-black py-2 px-2">rlennox</td>
+          <td class="border-b border-black py-2 px-2">Support</td>
+          <td class="border-b border-black py-2 px-2 w-full">
+            <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" value="Phil reported transactions werent posting to the cmp. Found an issue with the payment record create statement, posted a fix." disabled />
+          </td>
+          <td class="border-b border-black py-2 pr-5">
+            <div class="flex flex-nowrap justify-between space-x-2 items-center">
               <!-- more info icon -->
               <div><i class="bi bi-three-dots"></i></div>
+              <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">edit</a>
             </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">edit</a>
           </td>
         </tr>
         <!-- Needs Attention -->
         <tr class="even:bg-gray-850 odd:bg-black-alt">
           <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input
-              class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right"
-              value="80"
-            />
-            <span>%</span>
+          <td class="border-b border-black py-2 pl-3 pr-2">
+            <input class="w-full bg-blue-900 border border-black rounded py-1 px-2" value="5" />
           </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
+          <td class="border-b border-black py-2 px-2">5.5</td>
+          <td class="border-b border-black py-2 px-2">12/23/2024</td>
+          <td class="border-b border-black py-2 px-2">P1006</td>
+          <td class="border-b border-black py-2 px-2">rlennox</td>
+          <td class="border-b border-black py-2 px-2">Support</td>
+          <td class="border-b border-black py-2 px-2 w-full">
               <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="Testing bug fixes for mqtt site controller, updated environments."/>
-              <!-- warning icon -->          
-              <div><i class="bi bi-exclamation-diamond-fill text-yellow-550"></i></div>
-            </div>
           </td>
           <td class="border-b border-black py-2 text-right pr-5">
-            <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">accept</a>
+            <div class="flex justify-between flex-nowrap space-x-2 items-center">
+              <!-- warning icon -->
+              <div><i class="bi bi-exclamation-diamond-fill text-yellow-550"></i></div>
+              <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">accept</a>
+            </div>            
           </td>
         </tr>
         <!-- Default -->
         <tr class="even:bg-gray-850 odd:bg-black-alt">
           <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
+          <td class="border-b border-black py-2 pl-3 pr-2">
+            <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="6.5"/>
           </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
+          <td class="border-b border-black py-2 px-2">8</td>
+          <td class="border-b border-black py-2 px-2">8/23/2024</td>
+          <td class="border-b border-black py-2 px-2">Q1234</td>
+          <td class="border-b border-black py-2 px-2">rlennox</td>
+          <td class="border-b border-black py-2 px-2">Support</td>
+          <td class="border-b border-black py-2 px-2 w-full">            
+              <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="PAX design review" />              
           </td>
           <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
+            <div class="flex justify-between flex-nowrap space-x-2 items-center">
+              <!-- warning icon -->          
+              <div>&nbsp;</div>
+              <div class="text-nowrap divide-x divide-teal-200">
+                <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">reject</button>
+                <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">accept</button>
+              </div>
             </div>
           </td>
         </tr>
         <!-- Error -->
         <tr class="even:bg-gray-850 odd:bg-black-alt">
           <td class="border-b border-black py-2 bg-red-850 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input
-              class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right"
-              value="80"
-            />
-            <span>%</span>
+          <td class="border-b border-black py-2 pl-3 pr-2">
+            <input class="w-full bg-blue-900 border border-black rounded py-1 px-2" value="3" />
           </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <div class="w-full py-1 px-2 mr-2">
-                Assisting Jack with debugging NV200 issues, sealevel questions.
-              </div>
+          <td class="border-b border-black py-2 px-2">3.75</td>
+          <td class="border-b border-black py-2 px-2">3/23/2024</td>
+          <td class="border-b border-black py-2 px-2">P1006</td>
+          <td class="border-b border-black py-2 px-2">rlennox</td>
+          <td class="border-b border-black py-2 px-2">Support</td>
+          <td class="border-b border-black py-2 px-2 w-full">
+            <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />
+          </td>
+          <td class="border-b border-black py-2 text-right pr-5">
+            <div class="flex justify-between flex-nowrap space-x-2 items-center">
               <!-- warning icon -->
               <div><i class="bi bi-exclamation-diamond-fill text-yellow-550"></i></div>
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <button disabled class="text-gray-450 uppercase">accept</button>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
-            </div>
-          </td>
-        </tr>
-        <!-- Default -->
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-          <td class="border-b border-black py-2 pl-3">
-            <input class="w-11 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right" value="80"/>
-            <span>%</span>
-          </td>
-          <td class="border-b border-black py-2">2.25</td>
-          <td class="border-b border-black py-2">3/23/2024</td>
-          <td class="border-b border-black py-2">P1006</td>
-          <td class="border-b border-black py-2">rlennox</td>
-          <td class="border-b border-black py-2">Support</td>
-          <td class="border-b border-black py-2">
-            <div class="flex space-x-2 items-center">
-              <input
-                class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                value="PAX design review"
-              />
-            </div>
-          </td>
-          <td class="border-b border-black py-2 text-right pr-5">
-            <div class="text-nowrap divide-x divide-teal-200">
-              <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-                reject
-              </button>
-              <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-                accept
-              </button>
+              <button disabled class="text-gray-450 uppercase">accept</button>
             </div>
           </td>
         </tr>
