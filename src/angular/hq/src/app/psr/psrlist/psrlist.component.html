@@ -47,28 +47,54 @@
 <table class="min-w-full border-spacing-0 border-separate">
     <thead>
         <tr class="sticky top-0 text-left">
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Client Name <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Official Name <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Billing Email <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Official Name <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
-                <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
-                    <i class="bi bi-plus"></i>
-                    Client
-                </button>
-            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Charge Code <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Project Full  Name <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">PM <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Total Hrs <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Has Available <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Status <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px]" colspan="2">Complete</th>
         </tr>
     </thead>
     <tbody>
         @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]; track i)
         {
-            <tr class="even:bg-gray-850 odd:bg-black-alt">
-                <td class="border-b border-black py-2 pl-5">Client {{ i }}</td>
-                <td class="border-b border-black py-2">$105.00</td>
-                <td class="border-b border-black py-2">billiningEmail&#64;client{{ i }}.com</td>
-                <td class="border-b border-black py-2">Official Name - Probably longer than the Name</td>
-                <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[i]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
-            </tr>
+            @if(i == 5)
+            {
+                <tr class="bg-red-850">
+                    <td class="border-b border-black py-2 pl-5">P0000</td>
+                    <td class="border-b border-black py-2">[Project Full Name Here]</td>
+                    <td class="border-b border-black py-2">jsarkaukas</td>
+                    <td class="border-b border-black py-2">00000.00</td>
+                    <td class="border-b border-black py-2">00000.00</td>
+                    <td class="border-b border-black py-2">In Progress</td>
+                    <td class="border-b border-black py-2">
+                        <!-- progress bar white -->
+                        <div class="w-[350px] bg-gray-450 border border-white h-[10px]">
+                            <div class="bg-white h-[8px] w-[75%]"></div>
+                        </div>
+                    </td>
+                    <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[i]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+                </tr>
+            }
+            @else
+            {
+                <tr class="even:bg-gray-850 odd:bg-black-alt">
+                    <td class="border-b border-black py-2 pl-5">P0000</td>
+                    <td class="border-b border-black py-2">[Project Full Name Here]</td>
+                    <td class="border-b border-black py-2">jsarkaukas</td>
+                    <td class="border-b border-black py-2">00000.00</td>
+                    <td class="border-b border-black py-2">00000.00</td>
+                    <td class="border-b border-black py-2">In Progress</td>
+                    <td class="border-b border-black py-2">
+                        <!-- progress bar white -->
+                        <div class="w-[350px] bg-gray-450 border border-white h-[10px]">
+                            <div class="bg-white h-[8px] w-[75%]"></div>
+                        </div>
+                    </td>
+                    <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[i]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+                </tr>
+            }
         }
     </tbody>
   </table>
