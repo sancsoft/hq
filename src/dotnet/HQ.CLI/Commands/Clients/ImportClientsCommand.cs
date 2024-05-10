@@ -15,7 +15,7 @@ namespace HQ.CLI.Commands.Clients
 {
     internal class ImportClientSettings : HQCommandSettings
     {
-        [CommandArgument(0, "<file>")]
+        [CommandOption("--file|-f")]
         public FileInfo File { get; set; } = null!;
     }
 
@@ -30,18 +30,24 @@ namespace HQ.CLI.Commands.Clients
 
         public override async Task<int> ExecuteAsync(CommandContext context, ImportClientSettings settings)
         {
-            Console.WriteLine("{0}: {1}", settings.File.FullName, settings.File.Exists);
+            using var stream = settings.File.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+            var request = new ImportClientsV1.Request()
+            {
+                File = stream
+            };
+
+            var response = await _hqService.ImportClientsV1(request);
+            if(response.IsFailed)
+            {
+                throw new Exception($"Error importing clients:\n{String.Join(Environment.NewLine, response.Errors.Select(t => t.Message))}");
+            }
+
+            var result = response.Value!;
+
+            Console.WriteLine("{0} created, {1} updated", result.Created, result.Updated);
 
             return 0;
-            var model = new UpsertClientV1.Request();
-
-            //var Createor = new YAMLEditor<UpsertClientV1.Request>(model, async (value) =>
-            //{
-            //    return await _hqService.UpsertClientV1(value);
-            //});
-
-            // var rc = await Createor.Launch();
-            // return rc;
         }
     }
 }

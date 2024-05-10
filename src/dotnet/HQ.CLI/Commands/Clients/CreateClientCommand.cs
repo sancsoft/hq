@@ -30,12 +30,12 @@ namespace HQ.CLI.Commands.Clients
         {
             var model = new UpsertClientV1.Request();
 
-            var Createor = new YAMLEditor<UpsertClientV1.Request>(model, async (value) =>
+            var editor = new JsonEditor<UpsertClientV1.Request>(model, async (value) =>
             {
                 return await _hqService.UpsertClientV1(value);
             });
 
-            var rc = await Createor.Launch();
+            var rc = await editor.Launch();
             return rc;
         }
     }

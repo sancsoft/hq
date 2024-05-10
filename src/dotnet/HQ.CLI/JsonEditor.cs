@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -22,9 +23,9 @@ namespace HQ.CLI
         private readonly string _tempFilePath;
         private readonly JsonSerializerOptions _serializerOptions;
         private readonly string _defaultEditor;
-        private readonly Func<T, Task<Result>> _validator;
+        private readonly Func<T, Task<ResultBase>> _validator;
 
-        public JsonEditor(T source, Func<T, Task<Result>> validator)
+        public JsonEditor(T source, Func<T, Task<ResultBase>> validator)
         {
             _source = source;
             _sourceJson = JsonSerializer.Serialize(source);
@@ -37,7 +38,11 @@ namespace HQ.CLI
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 ReadCommentHandling = JsonCommentHandling.Skip,
                 WriteIndented = true,
-                AllowTrailingCommas = true
+                AllowTrailingCommas = true,
+                Converters =
+                {
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                }
             };
             
             _defaultEditor = "vi";
@@ -47,7 +52,7 @@ namespace HQ.CLI
             }
         }
 
-        private async Task WriteTempFile(Result? result = null)
+        private async Task WriteTempFile(ResultBase? result = null)
         {
             var json = JsonSerializer.Serialize(_source, _serializerOptions);
             var file = new StringBuilder();

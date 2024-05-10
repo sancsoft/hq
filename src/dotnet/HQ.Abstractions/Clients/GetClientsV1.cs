@@ -1,4 +1,5 @@
 ﻿using HQ.Abstractions.Common;
+using HQ.Abstractions.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,23 @@ public class GetClientsV1
     public class Request : PagedRequestV1
     {
         public string? Search { get; set; }
-        public Guid? ClientId { get; set; }
-        public string? ClientIdOrName { get; set; }
+        public Guid? Id { get; set; }
+
+        public SortColumn SortBy { get; set; } = SortColumn.Name;
+        public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+    }
+
+    public enum SortColumn
+    {
+        CreatedAt,
+        Name,
+        HourlyRate
     }
 
     public class Response : PagedResponseV1<Record>;
     public class Record
     {
-        public Guid ClientId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public string? OfficialName { get; set; }
         public string? BillingEmail { get; set; }

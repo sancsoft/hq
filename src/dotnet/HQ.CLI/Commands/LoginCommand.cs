@@ -77,7 +77,6 @@ Then enter the code:
             response = await _httpClient.RequestDeviceTokenAsync(new DeviceTokenRequest
             {
                 Address = disco.TokenEndpoint,
-
                 ClientId = "hq",
                 DeviceCode = authorizeResponse.DeviceCode!
             });

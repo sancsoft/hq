@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "HQ.sln",
+    "projects": [
+      "HQ.CLI\\HQ.CLI.csproj",
+      "HQ.SDK\\HQ.SDK.csproj"
+    ]
+  }
+}

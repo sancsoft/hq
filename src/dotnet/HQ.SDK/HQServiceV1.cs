@@ -1,12 +1,17 @@
 ﻿using FluentResults;
 using HQ.Abstractions;
+using HQ.Abstractions.ChargeCodes;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Common;
+using HQ.Abstractions.Projects;
+using HQ.Abstractions.Staff;
+using HQ.Abstractions.Voltron;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,9 +26,9 @@ namespace HQ.SDK
             _httpClient = httpClient;
         }
 
-        private async Task<Result<TResponse?>> ExecuteRequest<TResponse>(string url, object request, CancellationToken ct = default) where TResponse : class
+        private async Task<Result<TResponse?>> HandleResponse<TResponse>(HttpResponseMessage response, CancellationToken ct = default)
+            where TResponse : class
         {
-            var response = await _httpClient.PostAsJsonAsync(url, request, ct);
             if (!response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -32,7 +37,7 @@ namespace HQ.SDK
                 {
                     case HttpStatusCode.BadRequest:
                         var badRequest = await response.Content.ReadFromJsonAsync<List<ErrorSummaryV1>>(ct);
-                        if(badRequest != null)
+                        if (badRequest != null)
                         {
                             errors.AddRange(badRequest.Select(t => t.Message));
                         }
@@ -45,12 +50,19 @@ namespace HQ.SDK
                 return Result.Fail(errors);
             }
 
-            if(response.Content.Headers.ContentLength.HasValue && response.Content.Headers.ContentLength == 0)
+            if (response.Content.Headers.ContentLength.HasValue && response.Content.Headers.ContentLength == 0)
             {
                 return Result.Ok<TResponse?>(null);
             }
 
             return await response.Content.ReadFromJsonAsync<TResponse>(ct);
+        }
+
+        private async Task<Result<TResponse?>> ExecuteRequest<TResponse>(string url, object request, CancellationToken ct = default)
+            where TResponse : class
+        {
+            var response = await _httpClient.PostAsJsonAsync(url, request, ct);
+            return await HandleResponse<TResponse>(response, ct);
         }
 
         public Task<Result<GetClientsV1.Response?>> GetClientsV1(GetClientsV1.Request request, CancellationToken ct = default)
@@ -61,5 +73,73 @@ namespace HQ.SDK
 
         public Task<Result<DeleteClientV1.Response?>> DeleteClientV1(DeleteClientV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<DeleteClientV1.Response>("/v1/clients/DeleteClientV1", request, ct);
+
+        public async Task<Result<ImportClientsV1.Response?>> ImportClientsV1(ImportClientsV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            multipartContent.Add(new StreamContent(request.File), "file", "clients.csv");
+
+            var response = await _httpClient.PostAsync("/v1/clients/ImportClientsV1", multipartContent, ct);
+
+            return await HandleResponse<ImportClientsV1.Response>(response, ct);
+        }
+
+        public Task<Result<GetStaffV1.Response?>> GetStaffV1(GetStaffV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<GetStaffV1.Response>("/v1/Staff/GetStaffV1", request, ct);
+
+        public Task<Result<UpsertStaffV1.Response?>> UpsertStaffV1(UpsertStaffV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertStaffV1.Response>("/v1/Staff/UpsertStaffV1", request, ct);
+
+        public Task<Result<DeleteStaffV1.Response?>> DeleteStaffV1(DeleteStaffV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<DeleteStaffV1.Response>("/v1/Staff/DeleteStaffV1", request, ct);
+
+        public async Task<Result<ImportStaffV1.Response?>> ImportStaffV1(ImportStaffV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            multipartContent.Add(new StreamContent(request.File), "file", "Staff.csv");
+
+            var response = await _httpClient.PostAsync("/v1/Staff/ImportStaffV1", multipartContent, ct);
+
+            return await HandleResponse<ImportStaffV1.Response>(response, ct);
+        }
+
+        public Task<Result<GetProjectsV1.Response?>> GetProjectsV1(GetProjectsV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<GetProjectsV1.Response>("/v1/Projects/GetProjectsV1", request, ct);
+
+        public Task<Result<UpsertProjectV1.Response?>> UpsertProjectV1(UpsertProjectV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertProjectV1.Response>("/v1/Projects/UpsertProjectV1", request, ct);
+
+        public Task<Result<DeleteProjectV1.Response?>> DeleteProjectV1(DeleteProjectV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<DeleteProjectV1.Response>("/v1/Projects/DeleteProjectV1", request, ct);
+
+        public async Task<Result<ImportProjectsV1.Response?>> ImportProjectsV1(ImportProjectsV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            multipartContent.Add(new StreamContent(request.File), "file", "Projects.csv");
+
+            var response = await _httpClient.PostAsync("/v1/Projects/ImportProjectsV1", multipartContent, ct);
+
+            return await HandleResponse<ImportProjectsV1.Response>(response, ct);
+        }
+
+        public async Task<Result<ImportVoltronTimeSheetsV1.Response?>> ImportVoltronTimeSheetsV1(ImportVoltronTimeSheetsV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            foreach(var file in request.Files)
+            {
+                multipartContent.Add(new StreamContent(file.Stream), "files", file.FileName);
+            }
+
+            multipartContent.Add(new StringContent(request.From.ToString("o"), Encoding.UTF8), nameof(request.From));
+            multipartContent.Add(new StringContent(request.To.ToString("o"), Encoding.UTF8), nameof(request.To));
+            multipartContent.Add(new StringContent(request.Replace.ToString(), Encoding.UTF8), nameof(request.Replace));
+
+            var response = await _httpClient.PostAsync("/v1/Voltron/ImportVoltronTimeSheetsV1", multipartContent, ct);
+
+            return await HandleResponse<ImportVoltronTimeSheetsV1.Response>(response, ct);
+        }
+
+        public Task<Result<GetChargeCodesV1.Response?>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<GetChargeCodesV1.Response>("/v1/ChargeCodes/GetChargeCodesV1", request, ct);
     }
 }

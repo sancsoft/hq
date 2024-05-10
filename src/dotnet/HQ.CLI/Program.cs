@@ -1,6 +1,10 @@
 ﻿using HQ.CLI;
 using HQ.CLI.Commands;
+using HQ.CLI.Commands.ChargeCode;
+using HQ.CLI.Commands.ChargeCodes;
 using HQ.CLI.Commands.Clients;
+using HQ.CLI.Commands.Projects;
+using HQ.CLI.Commands.Staff;
 using HQ.SDK;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
@@ -59,39 +63,36 @@ app.Configure(config =>
     config.AddCommand<ConfigureCommand>("configure");
     config.AddCommand<LoginCommand>("login");
 
-    config.AddBranch("get", branch =>
-    {
-        branch.AddCommand<GetClientsCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
+    config.AddBranch("staff", branch => {
+        branch.AddCommand<GetStaffCommand>("list").WithAlias("ls");
+        branch.AddCommand<DeleteStaffCommand>("delete").WithAlias("rm");
+        branch.AddCommand<EditStaffCommand>("edit");
+        branch.AddCommand<CreateStaffCommand>("create");
+        branch.AddCommand<ImportStaffCommand>("import");
     });
 
-    config.AddBranch("delete", branch =>
-    {
-        branch.AddCommand<DeleteClientCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
+    config.AddBranch("client", branch => {
+        branch.AddCommand<GetClientsCommand>("list").WithAlias("ls");
+        branch.AddCommand<DeleteClientCommand>("delete").WithAlias("rm");
+        branch.AddCommand<EditClientCommand>("edit");
+        branch.AddCommand<CreateClientCommand>("create");
+        branch.AddCommand<ImportClientCommand>("import");
     });
 
-    config.AddBranch("edit", branch =>
-    {
-        branch.AddCommand<EditClientCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
+    config.AddBranch("project", branch => {
+        branch.AddCommand<GetProjectsCommand>("list").WithAlias("ls");
+        branch.AddCommand<DeleteProjectCommand>("delete").WithAlias("rm");
+        branch.AddCommand<EditProjectCommand>("edit");
+        branch.AddCommand<CreateProjectCommand>("create");
+        branch.AddCommand<ImportProjectCommand>("import");
     });
 
-    config.AddBranch("create", branch =>
-    {
-        branch.AddCommand<CreateClientCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
+    config.AddBranch("code", branch => {
+        branch.AddCommand<GetChargeCodesCommand>("list").WithAlias("ls");
     });
 
-    config.AddBranch("import", branch =>
-    {
-        branch.AddCommand<ImportClientCommand>("client")
-            .WithAlias("clients")
-            .WithAlias("cl");
+    config.AddBranch("voltron", branch => {
+        branch.AddCommand<ImportVoltronTimeCommand>("import-time");
     });
 });
 

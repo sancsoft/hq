@@ -1,10 +1,13 @@
 ﻿using HQ.Abstractions.Clients;
+using HQ.Abstractions.Enumerations;
+using HQ.Abstractions.Projects;
 using HQ.SDK;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using Spectre.Console.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -14,11 +17,19 @@ namespace HQ.CLI.Commands.Clients
 {
     internal class GetClientsSettings : HQCommandSettings
     {
-        [CommandArgument(0, "[clientIdOrName]")]
-        public string? ClientIdOrName { get; set; }
+        [CommandArgument(0, "[id]")]
+        public Guid? Id { get; set; }
 
         [CommandOption("--search|-s")]
         public string? Search { get; set; }
+
+        [CommandOption("--sort-direction|-D")]
+        [DefaultValue(SortDirection.Asc)]
+        public SortDirection SortDirection { get; set; }
+
+        [CommandOption("--sort-by|-S")]
+        [DefaultValue(GetClientsV1.SortColumn.Name)]
+        public GetClientsV1.SortColumn SortBy { get; set; }
     }
 
     internal class GetClientsCommand : AsyncCommand<GetClientsSettings>
@@ -35,7 +46,9 @@ namespace HQ.CLI.Commands.Clients
             var result = await _hqService.GetClientsV1(new()
             {
                 Search = settings.Search,
-                ClientIdOrName = settings.ClientIdOrName,
+                Id = settings.Id,
+                SortBy = settings.SortBy,
+                SortDirection = settings.SortDirection,
             });
 
             if (!result.IsSuccess || result.Value == null)
@@ -44,12 +57,11 @@ namespace HQ.CLI.Commands.Clients
             }
 
             AnsiConsole.Write(OutputHelper.Create(result.Value, result.Value.Records)
-                .WithColumn("ID", t => t.ClientId.ToString())
+                .WithColumn("ID", t => t.Id.ToString())
                 .WithColumn("NAME", t => t.Name)
                 .WithColumn("HOURLY RATE", t => t.HourlyRate?.ToString("C"))
                 .WithColumn("OFFICIAL NAME", t => t.OfficialName, table: false, wide: true)
                 .WithColumn("BILLING EMAIL", t => t.BillingEmail, table: false, wide: true)
-                .WithColumn("CREATED", t => t.CreatedAt.ToString("O"), table: false, wide: true)
                 .Output(settings.Output)
             );
 

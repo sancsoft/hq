@@ -1,5 +1,5 @@
-﻿using HQ.Server.API.Clients;
-using HQ.Server.Data;
+﻿using HQ.Server.Data;
+using HQ.Server.Services;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -10,6 +10,10 @@ namespace HQ.Server
         public static IServiceCollection AddHQServices(this IServiceCollection services)
         {
             services.AddScoped<ClientServiceV1>();
+            services.AddScoped<StaffServiceV1>();
+            services.AddScoped<ProjectServiceV1>();
+            services.AddScoped<ChargeCodeServiceV1>();
+            services.AddScoped<VoltronServiceV1>();
 
             return services;
         }

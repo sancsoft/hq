@@ -1,0 +1,50 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    },
+    "login": {
+      "commandName": "Project",
+      "commandLineArgs": "login",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    },
+    "configure": {
+      "commandName": "Project",
+      "commandLineArgs": "configure",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    },
+    "get clients": {
+      "commandName": "Project",
+      "commandLineArgs": "get clients",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    },
+    "import clients": {
+      "commandName": "Project",
+      "commandLineArgs": "import clients -f ./data/clients.csv",
+      "workingDirectory": "./",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "HQ_DATA_PATH": "./data"
+      }
+    }
+  }
+}
