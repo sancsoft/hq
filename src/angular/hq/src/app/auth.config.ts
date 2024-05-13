@@ -8,7 +8,7 @@ export const authConfig: PassedInitialConfig = {
     useFactory: (appSettingsService: AppSettingsService) => new StsConfigHttpLoader(appSettingsService.appSettings$.pipe(
       map(appSettings => ({
         authority: appSettings.auth.authorityUrl,
-        redirectUrl: window.location.origin,
+        redirectUrl: window.location.origin + '/callback',
         postLogoutRedirectUri: window.location.origin,
         clientId: appSettings.auth.clientId,
         scope: appSettings.auth.scopes, 
