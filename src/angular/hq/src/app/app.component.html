@@ -1,44 +1,6 @@
-<!-- header -->
-<header class="flex items-end py-4 pr-5">
-    <!-- col two -->
-    <nav class="nav flex flex-1 h-[30px]">
-        <div class="min-w-[100px]"><a routerLink="/clients" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200">Clients</a></div>
-        <div class="min-w-[100px]"><a routerLink="/projects" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200">Projects</a></div>
-        <div class="min-w-[100px]"><a routerLink="/quotes" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap text-nav-disabled border-b border-b-orange-500/0 px-3 py-1 cursor-not-allowed" aria-disabled="true">Quotes</a></div>
-        <div class="min-w-[100px]"><a routerLink="/services" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap text-nav-disabled border-b border-b-orange-500/0 px-3 py-1 cursor-not-allowed">Services</a></div>
-        <div class="min-w-[100px]"><a routerLink="/invoices" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap text-nav-disabled border-b border-b-orange-500/0 px-3 py-1 cursor-not-allowed">Invoices</a></div>
-        <div class="min-w-[100px]"><a routerLink="/psr" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200">PSR</a></div>
-        <div class="min-w-[100px]"><a routerLink="/my-stuff" routerLinkActive="text-gray-100 border-b border-b-orange-500/100" class="block text-center whitespace-nowrap text-nav-disabled border-b border-b-orange-500/0 px-3 py-1 cursor-not-allowed">My Stuff</a></div>
-    </nav>
-    <!-- col three -->
-    <div class="flex column justify-end items-center ml-auto pl-9">
-        <!-- my account dropdown menu -->
-        <div class="inline-block pe-10">
-            <div class="relative inline-block h-full">
-                <button class="block font-semibold text-xs h-full" (click)="dropdownOpen = !dropdownOpen">
-                    username
-                    <span>
-                        <i class="bi bi-caret-down-fill text-[8px]"></i>
-                    </span>
-                </button>
-                <div [ngClass]="{ 'opacity-100 z-20': dropdownOpen, 'opacity-0 -z-10': !dropdownOpen }" class="absolute right-0 -z-10 mt-2 w-48 origin-top-right rounded-sm bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" tabindex="-1">
-                    <a routerLink="/"class="block px-4 py-2 text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">My Account</a>
-                    <a routerLink="/" class="block px-4 py-2 text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Sign out</a>
-                </div>
-            </div>
-        </div>
-        <div class="inline-block"><a routerLink="/"><img src="/assets/logo.svg" alt="Sanctuary Software Studio, Inc." style="height:30px;"></a></div>
-    </div>
-</header>
-
-<!-- router-outlet -->
-<div class="flex-1">
-    <router-outlet></router-outlet>
-</div>
-
-<!-- footer -->
-<footer class="py-2 px-5">
-    <div class="flex justify-between">
-        <div class="text-xs text-gray-50">&copy;Sanctuary Software Studio Inc.</div>
-    </div>
-</footer>
+@if(isAuthenticated$ | async)
+{
+    <hq-layout>
+        <router-outlet></router-outlet>
+    </hq-layout>
+}

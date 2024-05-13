@@ -9,33 +9,31 @@ import {FormsModule} from '@angular/forms';
 import { AppSettingsService } from './app-settings.service';
 import { CommonModule } from '@angular/common';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { Observable, filter, map } from 'rxjs';
+import { LayoutComponent } from './layout.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, MatButtonModule, MatDividerModule, MatIconModule, FormsModule, MatFormFieldModule, MatInputModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, LayoutComponent, RouterOutlet],
   templateUrl: './app.component.html'
 })
 export class AppComponent {
   title = 'HQ';
   appSettingsService = inject(AppSettingsService);
   oidcSecurityService = inject(OidcSecurityService);
-
-  dropdownOpen = false;
   
-  ngOnInit() {
+  isAuthenticated$: Observable<boolean>;
+
+  constructor() {
     this.oidcSecurityService
       .checkAuth()
       .subscribe(({ isAuthenticated, userData, accessToken, idToken, configId }) => { });
-  }
 
-  public login() {
-    this.oidcSecurityService.authorize();
+    this.isAuthenticated$ = this.oidcSecurityService.isAuthenticated$.pipe(
+        map(t => t.isAuthenticated)
+      );
   }
-
-  public logout() {
-    this.oidcSecurityService.logoff().subscribe((result) => console.log(result));
-  }  
 
 }

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 
 export const routes: Routes = [
     {
@@ -7,7 +8,12 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
     {
+        path: 'callback',
+        loadComponent: () => import('./callback.component').then(m => m.CallbackComponent),
+    },
+    {
         path: 'clients',
+        canActivate: [AutoLoginPartialRoutesGuard],
         loadComponent: () => import('./clients/clients.component').then(m => m.ClientsComponent),
         children: [
             {
@@ -45,6 +51,7 @@ export const routes: Routes = [
     },
     {
         path: 'psr',
+        canActivate: [AutoLoginPartialRoutesGuard],
         loadComponent: () => import('./psr/psr.component').then(m => m.PSRComponent),
         children: [
             {
@@ -59,6 +66,7 @@ export const routes: Routes = [
     },
     {
         path: 'projects',
+        canActivate: [AutoLoginPartialRoutesGuard],
         loadComponent: () => import('./projects/projects.component').then(m => m.ProjectsComponent),
         children: [
             {
