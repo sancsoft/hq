@@ -16,7 +16,7 @@ export enum SortColumn
     HourlyRate = 3
 }
 
-interface Record {
+export interface GetClientRecordV1 {
     id: string;
     name: string;
     officialName?: string;
@@ -24,5 +24,5 @@ interface Record {
     hourlyRate?: number;
 }
 
-export interface GetClientResponseV1 extends PagedResponseV1<Record> {
+export interface GetClientResponseV1 extends PagedResponseV1<GetClientRecordV1> {
 }
