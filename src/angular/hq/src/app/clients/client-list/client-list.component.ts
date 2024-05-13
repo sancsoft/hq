@@ -4,13 +4,14 @@ import { HQService } from '../../services/hq.service';
 import { GetClientRecordV1, SortColumn } from '../../models/clients/get-client-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { FormControl, FormControlDirective, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Observable, combineLatest, debounceTime, map, of, shareReplay, startWith, switchMap } from 'rxjs';
+import { Observable, combineLatest, debounceTime, map, of, shareReplay, startWith, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { PaginatorComponent } from '../../common/paginator/paginator.component';
 
 @Component({
   selector: 'hq-client-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, PaginatorComponent],
   templateUrl: './client-list.component.html'
 })
 export class ClientListComponent {
@@ -32,6 +33,7 @@ export class ClientListComponent {
     );
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
+      tap(t => this.page.setValue(1)),
       startWith(this.itemsPerPage.value)
     );
 
@@ -74,6 +76,10 @@ export class ClientListComponent {
     );
 
     this.records$.subscribe(console.log);
+  }
+
+  goToPage(page: number) {
+    this.page.setValue(page);
   }
 
 }

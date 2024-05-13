@@ -65,21 +65,7 @@
         </select>
         <span>items per page</span>
     </div>
-    <div class="flex items-center justify-center">
-        <a href="#" class="px-1 py-1 mr-2 font-semibold hover:bg-teal-200 hover:text-blue-950">
-            <i class="bi bi-arrow-left-short text-[18px]"></i>
-        </a>
-        <!-- active start -->
-        <a href="#" class="px-2 py-1 font-semibold rounded bg-teal-200 text-blue-950 hover:bg-teal-300">1</a>
-        <!-- active end -->
-        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">2</a>
-        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">3</a>
-        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">4</a>
-        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">5</a>
-        <a href="#" class="px-1 py-1 ml-2 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">
-            <i class="bi bi-arrow-right-short text-[18px]"></i>
-        </a>
-    </div>
+    <hq-paginator [total]="(totalRecords$ | async) ?? 0" [pageSize]="itemsPerPage.value" [currentPage]="page.value" (onPage)="goToPage($event)"></hq-paginator>
     <div class="flex justify-end text-xs">
         {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ | async }} items
     </div>
