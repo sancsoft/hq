@@ -21,9 +21,9 @@ public class GetClientsV1
 
     public enum SortColumn
     {
-        CreatedAt,
-        Name,
-        HourlyRate
+        CreatedAt = 1,
+        Name = 2,
+        HourlyRate = 3
     }
 
     public class Response : PagedResponseV1<Record>;

@@ -1,6 +1,7 @@
-import { PassedInitialConfig, StsConfigHttpLoader, StsConfigLoader } from 'angular-auth-oidc-client';
+import { AuthInterceptor, PassedInitialConfig, StsConfigHttpLoader, StsConfigLoader } from 'angular-auth-oidc-client';
 import { AppSettingsService } from './app-settings.service';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 export const authConfig: PassedInitialConfig = {
   loader: {
@@ -16,6 +17,7 @@ export const authConfig: PassedInitialConfig = {
         silentRenew: true,
         useRefreshToken: true,
         renewTimeBeforeTokenExpiresInSeconds: 30,
+        secureRoutes: [appSettings.apiUrl],
       }))
     )),
     deps: [AppSettingsService]

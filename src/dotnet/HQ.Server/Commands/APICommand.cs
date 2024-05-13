@@ -53,6 +53,11 @@ public class APICommand : AsyncCommand
             options.SuppressModelStateInvalidFilter = true;
         });
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAny", policy => policy.AllowAnyHeader().AllowAnyOrigin()); // TODO: Replace with explicit allow URLs
+        });
+
         builder.Services.AddControllers(options =>
         {
             options.Filters.Add<HQModelStateInvalidFilter>();
@@ -113,6 +118,8 @@ public class APICommand : AsyncCommand
         });
 
         app.UseHttpsRedirection();
+
+        app.UseCors("AllowAny");
 
         app.UseAuthentication();
         app.UseAuthorization();
