@@ -75,8 +75,6 @@ public class ClientServiceV1
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
 
-        var total = await records.CountAsync(ct);
-
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
@@ -90,6 +88,8 @@ public class ClientServiceV1
         {
             records = records.Where(t => t.Id == request.Id.Value);
         }
+
+        var total = await records.CountAsync(ct);
 
         var sortMap = new Dictionary<GetClientsV1.SortColumn, string>()
         {

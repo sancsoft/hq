@@ -29,11 +29,12 @@ export class ClientListComponent {
   constructor(private hqService: HQService) {
 
     const search$ = this.search.valueChanges.pipe(
+      tap(t => this.goToPage(1)),
       startWith(this.search.value)
     );
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      tap(t => this.page.setValue(1)),
+      tap(t => this.goToPage(1)),
       startWith(this.itemsPerPage.value)
     );
 
@@ -71,11 +72,9 @@ export class ClientListComponent {
       map(skip => skip + 1)
     );
 
-    this.takeToDisplay$ = combineLatest([skip$, itemsPerPage$]).pipe(
-      map(([skip, itemsPerPage]) => skip + itemsPerPage)
+    this.takeToDisplay$ = combineLatest([skip$, itemsPerPage$, this.totalRecords$]).pipe(
+      map(([skip, itemsPerPage, totalRecords]) => Math.min(skip + itemsPerPage, totalRecords))
     );
-
-    this.records$.subscribe(console.log);
   }
 
   goToPage(page: number) {
