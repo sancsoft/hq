@@ -19,6 +19,12 @@ export class HQService {
     );
   }
 
+  getClientV1(request:  Partial<GetClientRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap(apiUrl => this.http.post<GetClientResponseV1>(`${apiUrl}/v1/Clients/GetClientsV1`, request))
+    );
+  }
+
   upsertClientV1(request: Partial<UpsertClientRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap(apiUrl => this.http.post<UpsertClientResponseV1>(`${apiUrl}/v1/Clients/UpsertClientV1`, request)),
