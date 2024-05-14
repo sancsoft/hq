@@ -32,7 +32,7 @@ public class HQResultEndpointProfile : IAspNetCoreResultEndpointProfile
             return new NotFoundResult();
         }
 
-        if(value is NoContentResponseV1)
+        if (value is NoContentResponseV1)
         {
             return new NoContentResult();
         }
