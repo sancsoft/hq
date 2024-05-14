@@ -8,39 +8,63 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 })
 export class PaginatorComponent implements OnChanges {
 
+  paginationLength = 5;
+
   pages: number[] = [];
-  
-  previousPage? : number | null;
-  nextPage? : number | null;
+
+  totalPages!: number;
+
+  previousPage?: number | null;
+
+  nextPage?: number | null;
+
+
 
   @Input()
-  total?: number;
+  total!: number;
 
   @Input()
-  pageSize?: number;
+  pageSize!: number;
 
   @Input()
-  currentPage?: number;
+  currentPage!: number;
 
   @Output()
   onPage = new EventEmitter<number>();
 
+  showNextPageButton: boolean = false;
+
+  showPreviousPageButton: boolean = false;
+
+
   ngOnChanges(changes: SimpleChanges) {
-    if(this.total && this.pageSize && this.currentPage) {
-      const totalPages = Math.floor(this.total / this.pageSize);
-      this.pages = [];
-      for(var i = 0; i < totalPages; i++) {
-        this.pages.push(i+1);
-      }
+    this.updateVisiblePages();
+    this.updatePrevNextButtonPages();
+  }
 
-      if(this.currentPage > 1) {
-        this.previousPage = this.currentPage-1;
-      }
+  private updateVisiblePages(): void {
+    this.totalPages = Math.ceil(this.total / this.pageSize);
+    const length = Math.min(this.totalPages, this.paginationLength);
 
-      if(this.currentPage < totalPages) {
-        this.nextPage = this.currentPage + 1;
-      }
-    }
+
+    const startIndex = Math.max(
+      Math.min((this.currentPage - Math.ceil(length / 2)), (this.totalPages - length)),
+      0
+    );
+
+    this.pages = Array.from(
+      new Array(length).keys(),
+      (item) => item + startIndex + 1
+    );
+  }
+
+  private updatePrevNextButtonPages(): void {
+    this.previousPage = this.currentPage - 1;
+    this.nextPage = this.currentPage + 1;
+
+    this.showNextPageButton = this.currentPage < this.totalPages;
+
+    this.showPreviousPageButton = this.previousPage >= 1;
   }
 
   goToPage(page: number) {
