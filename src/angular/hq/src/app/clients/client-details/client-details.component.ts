@@ -5,6 +5,7 @@ import { HQService } from '../../services/hq.service';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { APIError } from '../../errors/apierror';
 import { ClientDetailsSummaryComponent } from './client-details-summary/client-details-summary.component';
+import { GetProjectRecordV1, GetProjectRecordsV1 } from '../../models/projects/get-project-v1';
 
 @Component({
   selector: 'hq-client-details',
@@ -12,40 +13,6 @@ import { ClientDetailsSummaryComponent } from './client-details-summary/client-d
   imports: [RouterOutlet, RouterLink, RouterLinkActive, ClientDetailsSummaryComponent],
   templateUrl: './client-details.component.html'
 })
-export class ClientDetailsComponent implements OnInit {
-  clientId?: string;
-  client?: GetClientRecordV1;
-  apiErrors: string[] = [];
+export class ClientDetailsComponent{
 
-  async ngOnInit(): Promise<void> {
-    this.route.paramMap.pipe(
-      switchMap(params => {
-        this.clientId = params.get('clientId') || undefined;
-        return this.getClient().pipe(
-          catchError(error => {
-            if (error instanceof APIError) {
-              this.apiErrors = error.errors;
-            } else {
-              this.apiErrors = ['An unexpected error has occurred.'];
-            }
-            return of(null);
-          })
-        );
-      })
-    ).subscribe(client => {
-      this.client = client ?? undefined;
-    });
-  }
-  constructor(private hqService: HQService, private router: Router, private route: ActivatedRoute) { }
-
-
-  private getClient(): Observable<GetClientRecordV1> {
-    const request = { "id": this.clientId };
-    return this.hqService.getClientsV1(request).pipe(
-      map(response => response.records[0]),
-      catchError(error => {
-        throw error;
-      })
-    );
-  }
 }

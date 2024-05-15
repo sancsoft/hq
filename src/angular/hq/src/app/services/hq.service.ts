@@ -5,6 +5,7 @@ import { AppSettingsService } from '../app-settings.service';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { UpsertClientRequestV1, UpsertClientResponseV1 } from '../models/clients/upsert-client-v1';
 import { APIError } from '../errors/apierror';
+import { GetProjectRecordsV1, GetProjectRequestV1, GetProjectResponseV1 } from '../models/projects/get-project-v1';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ import { APIError } from '../errors/apierror';
 export class HQService {
 
   constructor(private http: HttpClient, private appSettings: AppSettingsService) { }
-
+  // Clients
   getClientsV1(request:  Partial<GetClientRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap(apiUrl => this.http.post<GetClientResponseV1>(`${apiUrl}/v1/Clients/GetClientsV1`, request))
@@ -30,6 +31,13 @@ export class HQService {
 
         throw err;
       })
+    );
+  }
+
+  // Projects
+  getProjectsV1(request:  Partial<GetProjectRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap(apiUrl => this.http.post<GetProjectRecordsV1>(`${apiUrl}/v1/Projects/GetProjectsV1`, request))
     );
   }
 
