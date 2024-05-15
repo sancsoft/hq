@@ -21,14 +21,14 @@ interface Form {
   templateUrl: './client-edit.component.html'
 })
 
-export class ClientEditComponent implements OnInit{
+export class ClientEditComponent implements OnInit {
   clientId?: string;
-  ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.clientId = params.get('clientId') ?? undefined
-      console.log(this.clientId)
-      this.getClient();
-    })
+
+  constructor(private hqService: HQService, private router: Router, private route: ActivatedRoute) { }
+
+  async ngOnInit() {
+    this.clientId = await (await firstValueFrom(this.route.paramMap.pipe())).get('clientId') ?? undefined
+    this.getClient();
   }
   apiErrors?: string[];
 
@@ -52,33 +52,24 @@ export class ClientEditComponent implements OnInit{
     }),
   });
 
-  constructor(private hqService: HQService, private router: Router, private route: ActivatedRoute) {
-    // this.clientId = route.snapshot.params['clientId']
-    // console.log(this.clientId);
-    // this.form.get('name') ?.setValue("Test 2");
-
-  }
 
   private async getClient() {
-    try
-    {
-      const request = {"id": this.clientId}
-      const response = await firstValueFrom(this.hqService.getClientV1(request));
+    try {
+      const request = { "id": this.clientId }
+      const response = await firstValueFrom(this.hqService.getClientsV1(request));
       const client = response.records[0]
-      this.form.get('name') ?.setValue(client.name);
-      this.form.get('officialName') ?.setValue(client.officialName ?? null);
-      this.form.get('billingEmail') ?.setValue(client.billingEmail ?? null);
-      this.form.get('hourlyRate') ?.setValue(client.hourlyRate ?? null);
-
+      this.form.setValue({
+        name: client.name,
+        officialName: client.officialName ?? null,
+        billingEmail: client.billingEmail ?? null,
+        hourlyRate: client.hourlyRate ?? null
+      })
     }
-    catch(err)
-    {
-      if(err instanceof APIError)
-      {
+    catch (err) {
+      if (err instanceof APIError) {
         this.apiErrors = err.errors;
       }
-      else
-      {
+      else {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
@@ -86,25 +77,21 @@ export class ClientEditComponent implements OnInit{
 
   async submit() {
     this.form.markAsTouched();
-    if(this.form.invalid) {
+    if (this.form.invalid) {
       return;
     }
 
-    try
-    {
-      var request = {id: this.clientId, ... this.form.value}
+    try {
+      var request = { id: this.clientId, ... this.form.value }
       const response = await firstValueFrom(this.hqService.upsertClientV1(request));
       this.router.navigate(['../', response.id], { relativeTo: this.route });
     }
-    catch(err)
-    {
+    catch (err) {
       console.log(err);
-      if(err instanceof APIError)
-      {
+      if (err instanceof APIError) {
         this.apiErrors = err.errors;
       }
-      else
-      {
+      else {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
