@@ -4,11 +4,12 @@ import { firstValueFrom, switchMap, of, Observable, catchError, map } from 'rxjs
 import { HQService } from '../../services/hq.service';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { APIError } from '../../errors/apierror';
+import { ClientDetailsSummaryComponent } from './client-details-summary/client-details-summary.component';
 
 @Component({
   selector: 'hq-client-details',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ClientDetailsSummaryComponent],
   templateUrl: './client-details.component.html'
 })
 export class ClientDetailsComponent implements OnInit {
