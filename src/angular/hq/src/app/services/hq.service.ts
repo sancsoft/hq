@@ -13,7 +13,7 @@ export class HQService {
 
   constructor(private http: HttpClient, private appSettings: AppSettingsService) { }
 
-  getClientsV1(request: GetClientRequestV1) {
+  getClientsV1(request:  Partial<GetClientRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap(apiUrl => this.http.post<GetClientResponseV1>(`${apiUrl}/v1/Clients/GetClientsV1`, request))
     );
