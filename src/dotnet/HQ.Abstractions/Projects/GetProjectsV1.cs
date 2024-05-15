@@ -15,7 +15,7 @@ public class GetProjectsV1
     {
         public string? Search { get; set; }
         public Guid? Id { get; set; }
-
+        public Guid? clientId { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.Name;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }

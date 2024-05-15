@@ -83,12 +83,15 @@ public class ProjectServiceV1
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
 
-        var total = await records.CountAsync(ct);
+        if (request.clientId.HasValue)
+        {
+            records = records.Where(t => t.ClientId == request.clientId);
+        }
 
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
-                t.Name.ToLower().Contains(request.Search.ToLower()) || 
+                t.Name.ToLower().Contains(request.Search.ToLower()) ||
                 t.Client.Name.ToLower().Contains(request.Search.ToLower()) ||
                 (t.ChargeCode != null ? t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) : false)
             );
@@ -140,6 +143,8 @@ public class ProjectServiceV1
         {
             mapped = mapped.Take(request.Take.Value);
         }
+        
+        var total = await records.CountAsync(ct);
 
         var response = new GetProjectsV1.Response()
         {
