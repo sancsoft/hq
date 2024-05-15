@@ -1,11 +1,16 @@
 <div class="px-5">
-    <h1 class="font-rajdhani font-semibold text-3xl">[Client Name Here]</h1>
+    <h1 class="font-rajdhani font-semibold text-3xl">{{client?.name}}</h1>
 
     <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-        <div class="text-gray-50">$105.00</div>
-        <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
-        <div class="text-gray-50">Official Name - Probably longer than the name</div>
+        <div class="text-gray-50">hourly rate: ${{client?.hourlyRate}}</div>
+        <div class="text-gray-50">email: {{client?.billingEmail}}</div>
+        <div class="text-gray-50">official name: {{client?.officialName}}</div>
     </div>
+    @if(this.apiErrors) {
+      @for (error of this.apiErrors; track $index) {
+      <div class="text-red-700 text-xs leading-normal inline-block">{{ error }}</div>
+      }
+      }
 </div>
 
 <div class="px-5 pt-4">
