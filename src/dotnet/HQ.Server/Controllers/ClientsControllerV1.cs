@@ -31,7 +31,7 @@ namespace HQ.Server.Controllers
             .ToActionResult(new HQResultEndpointProfile());
 
         [HttpPost(nameof(UpsertClientV1))]
-        [ProducesResponseType<UpsertClientV1.Response>(StatusCodes.Status201Created)]
+        [ProducesResponseType<UpsertClientV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> UpsertClientV1([FromBody] UpsertClientV1.Request request, CancellationToken ct = default) =>
             _clientService.UpsertClientV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());

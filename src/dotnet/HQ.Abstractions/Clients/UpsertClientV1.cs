@@ -18,7 +18,7 @@ public class UpsertClientV1
         public decimal? HourlyRate { get; set; }
     }
 
-    public class Response : NoContentResponseV1
+    public class Response
     {
         public Guid Id { get; set; }
     }

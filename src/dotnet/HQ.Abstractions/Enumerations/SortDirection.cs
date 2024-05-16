@@ -8,7 +8,7 @@ namespace HQ.Abstractions.Enumerations
 {
     public enum SortDirection
     {
-        Asc,
-        Desc,
+        Asc = 1,
+        Desc = 2,
     }
 }

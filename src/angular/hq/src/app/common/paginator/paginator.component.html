@@ -1,0 +1,24 @@
+<div class="flex items-center justify-center">
+
+    @if(previousPage && showPreviousPageButton)
+    {
+        <button class="px-1 py-1 mr-2 font-semibold hover:bg-teal-200 hover:text-blue-950"  (click)="goToPage(previousPage)">
+            <i class="bi bi-arrow-left-short text-[18px]"></i>
+        </button>
+    }
+
+    @for (page of pages; track $index) {
+        @if(page == currentPage)
+        {
+            <button (click)="goToPage(page)" class="px-2 py-1 font-semibold rounded bg-teal-200 text-blue-950 hover:bg-teal-300">{{ page }}</button>
+        } @else {
+            <button (click)="goToPage(page)" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">{{ page }}</button>
+        }
+    }
+
+    @if(nextPage && showNextPageButton) {
+        <button class="px-1 py-1 ml-2 font-semibold rounded hover:bg-teal-200 hover:text-blue-950" (click)="goToPage(nextPage)">
+            <i class="bi bi-arrow-right-short text-[18px]"></i>
+        </button>
+    }
+</div>
