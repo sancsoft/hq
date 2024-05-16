@@ -86,5 +86,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./projects/project-details/project-details.component').then(m => m.ProjectDetailsComponent),
             }
         ]
+    },
+    {
+      path: 'quotes',
+      canActivate: [AutoLoginPartialRoutesGuard],
+      loadComponent: () => import('./quotes/quotes-list/quotes-list.component').then(m => m.QuotesListComponent)
     }
 ];
