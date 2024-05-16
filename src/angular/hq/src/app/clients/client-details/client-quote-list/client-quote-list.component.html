@@ -1,69 +1,50 @@
 <table class="min-w-full border-spacing-0 border-separate">
   <thead>
-    <tr class="sticky top-0 text-left">
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
-      >
-        Client Name
-      </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Official Name
-      </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Billing Email
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
-        colspan="2"
-      >
-        <button routerLink="/quotes/create"
-          class="px-2 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded min-w-[120px] font-normal"
-        >
-          <i class="bi bi-plus"></i>
-          Quote
-        </button>
-      </th>
-    </tr>
+      <tr class="sticky top-0 text-left">
+        <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Quote Name <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
+        <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Quote number <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+        <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Client Name <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+        <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Charge Code <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+        <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Value <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+        <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Status <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+        <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Created date <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
+              <button routerLink="/projects/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
+                  <i class="bi bi-plus"></i>
+                  Quote
+              </button>
+          </th>
+      </tr>
   </thead>
   <tbody>
-    @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10];
-    track i) {
-    <tr class="even:bg-gray-850 odd:bg-black-alt">
-      <td class="border-b border-black py-2 pl-5">Client {{ i }}</td>
-      <td class="border-b border-black py-2">$105.00</td>
-      <td class="border-b border-black py-2">
-        billiningEmail&#64;client{{ i }}.com
-      </td>
-      <td class="border-b border-black py-2">
-        Official Name - Probably longer than the Name
-      </td>
-      <td class="border-b border-black py-2 text-right pr-5">
-        <a class="text-teal-200 hover:text-teal-300">VIEW</a>
-      </td>
+    @for (quote of quotes$ | async; track $index) {
+      <tr class="even:bg-gray-850 odd:bg-black-alt">
+        <td class="border-b border-black py-2 pl-5">{{ quote.name ?? 'None' }}</td>
+        <td class="border-b border-black py-2 pl-5">{{ quote.quoteNumber ?? 'None' }}</td>
+              <td class="border-b border-black py-2">{{ quote.clientName ?? 'None' }}</td>
+              <td class="border-b border-black py-2">{{ quote.chargeCode ?? 'None' }}</td>
+              <td class="border-b border-black py-2">$ {{ quote.value ?? '0.0' }}</td>
+              <td class="border-b border-black py-2">{{ quote.status ?? '0.0' }}</td>
+              <td class="border-b border-black py-2">{{ quote.date ?? 'mm/dd/yyyy' }}</td>
+        <td class="border-b border-black py-2 text-right pr-5"><a class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+
     </tr>
     }
   </tbody>
 </table>
-<div
-  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
->
+<div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
   <div>
-    <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2">
-      <option value="20">20</option>
-      <!-- Add more options as needed -->
-    </select>
-    <span>items per page</span>
+      <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2" [formControl]="itemsPerPage">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="25">25</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+          <!-- Add more options as needed -->
+      </select>
+      <span>items per page</span>
   </div>
-  <div class="flex items-center justify-center">
-    <a href="#" class="mx-2 hover:text-gray-200">&lt;</a>
-    <span class="mx-2">1</span>
-    <a href="#" class="mx-2 hover:text-gray-200">2</a>
-    <a href="#" class="mx-2 hover:text-gray-200">3</a>
-    <a href="#" class="mx-2 hover:text-gray-200">4</a>
-    <a href="#" class="mx-2 hover:text-gray-200">5</a>
-    <a href="#" class="mx-2 hover:text-gray-200">&gt;</a>
+  <hq-paginator [total]="(totalRecords$ | async) ?? 0" [pageSize]="itemsPerPage.value" [currentPage]="page.value" (onPage)="goToPage($event)"></hq-paginator>
+  <div class="flex justify-end text-xs">
+      {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ | async }} items
   </div>
-  <div class="flex justify-end text-xs">1-20 / 200 items</div>
 </div>
