@@ -19,10 +19,10 @@
   <tbody>
     @for (quote of quotes$ | async; track $index) {
       <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black py-2 pl-5">{{ quote.name ?? 'None' }}</td>
+        <td class="border-b border-black py-2 pl-5">{{ quote.name}}</td>
         <td class="border-b border-black py-2 pl-5">{{ quote.quoteNumber ?? 'None' }}</td>
-              <td class="border-b border-black py-2">{{ quote.clientName ?? 'None' }}</td>
-              <td class="border-b border-black py-2">{{ quote.chargeCode ?? 'None' }}</td>
+              <td class="border-b border-black py-2">{{ quote.clientName }}</td>
+              <td class="border-b border-black py-2">{{ quote.chargeCode }}</td>
               <td class="border-b border-black py-2">$ {{ quote.value ?? '0.0' }}</td>
               <td class="border-b border-black py-2">{{ quote.status ?? '0.0' }}</td>
               <td class="border-b border-black py-2">{{ quote.date ?? 'mm/dd/yyyy' }}</td>

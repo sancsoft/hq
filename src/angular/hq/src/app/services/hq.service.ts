@@ -6,6 +6,7 @@ import { catchError, switchMap, throwError } from 'rxjs';
 import { UpsertClientRequestV1, UpsertClientResponseV1 } from '../models/clients/upsert-client-v1';
 import { APIError } from '../errors/apierror';
 import { GetProjectRecordsV1, GetProjectRequestV1, GetProjectResponseV1 } from '../models/projects/get-project-v1';
+import { GetQuotesRecordsV1, GetQuotesRequestV1 } from '../models/quotes/get-quotes-v1';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,13 @@ export class HQService {
   getProjectsV1(request:  Partial<GetProjectRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap(apiUrl => this.http.post<GetProjectRecordsV1>(`${apiUrl}/v1/Projects/GetProjectsV1`, request))
+    );
+  }
+
+  // Quotes
+  getQuotesV1(request:  Partial<GetQuotesRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap(apiUrl => this.http.post<GetQuotesRecordsV1>(`${apiUrl}/v1/Quotes/GetQuotesV1`, request))
     );
   }
 
