@@ -6,12 +6,13 @@ import { HQService } from '../../../services/hq.service';
 import { GetClientRecordV1 } from '../../../models/clients/get-client-v1';
 import { APIError } from '../../../errors/apierror';
 import { CommonModule } from '@angular/common';
+import { ErrorDisplayComponent } from '../../../errors/error-display/error-display.component';
 
 
 @Component({
   selector: 'hq-client-details-summary',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ErrorDisplayComponent],
   templateUrl: './client-details-summary.component.html',
 })
 export class ClientDetailsSummaryComponent implements OnInit {

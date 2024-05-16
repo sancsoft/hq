@@ -6,9 +6,5 @@
       <div class="text-gray-50">email: {{(client | async)?.billingEmail}}</div>
       <div class="text-gray-50">official name: {{(client | async)?.officialName}}</div>
   </div>
-  @if(this.apiErrors) {
-    @for (error of this.apiErrors; track $index) {
-    <div class="text-red-700 text-xs leading-normal inline-block">{{ error }}</div>
-    }
-    }
+  <hq-error-display [errors]="apiErrors"></hq-error-display>
 </div>
