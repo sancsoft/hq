@@ -87,7 +87,7 @@
                     <tbody>
                         @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]; track i)
                         {
-                            <tr [class.text-red-500]="(psrId$ | async) == i.toString()" class="even:bg-gray-850 odd:bg-black-alt">
+                            <tr [ngClass]="(psrId$ | async) == i.toString() ? 'bg-blue-900' : 'even:bg-gray-850 odd:bg-black-alt'">
                                 <td class="border-b border-black py-2 pl-5">MM/DD/YYYY</td>
                                 <td class="border-b border-black py-2">0000.00</td>
                                 <td class="border-b border-black py-2 text-right pr-5"><a class="text-teal-200 hover:text-teal-300" routerLink="report" [queryParams]="{psrId: i}">VIEW</a></td>
@@ -100,11 +100,11 @@
                 <!-- project details tabs -->
                 <div class="bg-black-alt border-steel-blue-600 border-t pt-[23px] sticky top-0 z-50">
                     <div class="flex border-b border-black">
-                        <a routerLink="details" [queryParams]="{psrId: psrId$ | async}" routerLinkActive="border-gray-100" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b border-transparent hover:border-gray-100">Details</a>
+                        <a routerLink="details" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaDetails="routerLinkActive" [ngClass]="(rlaDetails.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">Details</a>
                         @if(psrId$ | async)
                         {
-                            <a routerLink="report" [queryParams]="{psrId: psrId$ | async}" routerLinkActive="border-gray-100" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b border-transparent hover:border-gray-100">PM Report</a>
-                            <a routerLink="time" [queryParams]="{psrId: psrId$ | async}" routerLinkActive="border-gray-100" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b border-transparent hover:border-gray-100">PSR</a>
+                            <a routerLink="report" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaReport="routerLinkActive" [ngClass]="(rlaReport.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PM Report</a>
+                            <a routerLink="time" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaTime="routerLinkActive" [ngClass]="(rlaTime.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PSR</a>
                         }
                     </div>
                 </div>
