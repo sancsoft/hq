@@ -1,6 +1,7 @@
 using DocumentFormat.OpenXml.InkML;
 using FluentResults;
 using HQ.Abstractions;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.ServicesAgreement;
 using HQ.Server.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +57,11 @@ namespace HQ.Server.Services
                 PricePeriod = t.PricePeriod,
                 StartDate = t.StartDate,
                 EndDate = t.EndDate,
-                ChargeCode = t.ChargeCode.Code ?? null
+                ChargeCode = t.ChargeCode.Code ?? null,
+                ChargeCodeDescription = t.ChargeCode.Description ?? null,
+                QuoteStatus = (int?)(t.Quote.Status != null ? t.Quote.Status : (QuoteStatus)1),
+
+
 
             });
 

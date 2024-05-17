@@ -7,6 +7,7 @@ import { UpsertClientRequestV1, UpsertClientResponseV1 } from '../models/clients
 import { APIError } from '../errors/apierror';
 import { GetProjectRecordsV1, GetProjectRequestV1, GetProjectResponseV1 } from '../models/projects/get-project-v1';
 import { GetQuotesRecordsV1, GetQuotesRequestV1 } from '../models/quotes/get-quotes-v1';
+import { GetServicesRecordsV1, GetServicesRequestV1 } from '../models/Services/get-services-v1';
 
 @Injectable({
   providedIn: 'root'
@@ -48,5 +49,12 @@ export class HQService {
       switchMap(apiUrl => this.http.post<GetQuotesRecordsV1>(`${apiUrl}/v1/Quotes/GetQuotesV1`, request))
     );
   }
+
+    // Quotes
+    getServicesV1(request:  Partial<GetServicesRequestV1>) {
+      return this.appSettings.apiUrl$.pipe(
+        switchMap(apiUrl => this.http.post<GetServicesRecordsV1>(`${apiUrl}/v1/ServicesAgreement/GetServicesAgreementV1`, request))
+      );
+    }
 
 }

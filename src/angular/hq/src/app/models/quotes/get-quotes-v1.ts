@@ -3,18 +3,29 @@ import { PagedResponseV1 } from "../common/paged-response-v1";
 import { SortDirection } from "../common/sort-direction";
 
 export interface GetQuotesRequestV1 extends PagedRequestV1 {
-    search?: string;
-    id?: string;
-    clientId?: string;
-    sortBy: SortColumn;
-    sortDirection: SortDirection;
+  search?: string;
+  id?: string;
+  clientId?: string;
+  sortBy: SortColumn;
+  sortDirection: SortDirection;
 }
 
-export enum SortColumn
-{
-    CreatedAt = 1,
-    Name = 2,
-    HourlyRate = 3
+export enum SortColumn {
+  CreatedAt = 1,
+  Name = 2,
+  HourlyRate = 3
+}
+
+export enum QuoteStatus {
+  None = 0,
+  Draft = 1,
+  WaitingForSale = 2,
+  WaitingForClient = 3,
+  WaitingForStaff = 4,
+  InProduction = 5,
+  Completed = 6,
+  Closed = 7,
+  Lost = 8
 }
 
 export interface GetQuotesRecordV1 {
@@ -31,7 +42,7 @@ export interface GetQuotesRecordV1 {
 }
 
 export interface GetQuotesRecordsV1 {
-  records : [GetQuotesRecordV1];
+  records: [GetQuotesRecordV1];
   total: number | null;
 }
 
