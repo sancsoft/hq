@@ -107,10 +107,17 @@
                 </div>
                 <!-- Details content -->
                 <!-- remove/add class hidden to hide/view -->
-                <div class="pb-[27px] pt-[8px]">
+                <div class="pb-[27px] pt-[8px] relative">
+                    <div class="absolute top-[8px] right-0 px-4">
+                        <!-- edit/save button -->
+                        <button class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
+                            Edit
+                        </button>
+                    </div>
                     <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
                         <!-- left side -->
                         <div class="grid gap-[20px] pt-[12px] px-[27px]">
+
                             <!-- details view without form fields -->
                             <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]">
                                 <div class="">
@@ -363,15 +370,8 @@
                         </div>
                         <!-- right side -->
                         <div>
-                            <div class="flex flex-column justify-end items-center px-4 pb-[40px]">
-                                <!-- edit button-->
-                                <button class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
-                                    Edit
-                                </button>
-                            </div>
-
                             <!-- flex flex-col flex-grow -->
-                            <div class="bg-black px-[15px] mx-5 2xl:mx-0 w-fit 2xl:w-full">
+                            <div class="bg-black px-[15px] mx-5 2xl:mx-0 w-fit 2xl:w-full mt-[80px]">
                                 <!-- flex flex-grow -->
                                 <div class=" bg-white">
                                     <img src="https://fakeimg.pl/560x730/cccccc/909090?text=Quote" class="h-auto max-w-full mx-auto" />
