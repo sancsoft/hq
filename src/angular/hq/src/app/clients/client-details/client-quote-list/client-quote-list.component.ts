@@ -8,6 +8,7 @@ import { HQService } from '../../../services/hq.service';
 import { GetQuotesRecordV1, GetQuotesRecordsV1 } from '../../../models/quotes/get-quotes-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
+import { ClientDetailsService } from '../../client-details.service';
 
 @Component({
   selector: 'hq-client-quote-list',
@@ -28,7 +29,7 @@ export class ClientQuoteListComponent implements OnInit {
   takeToDisplay$: Observable<number>;
   totalRecords$: Observable<number> = this.quotes$.pipe(map(quotes => quotes.length));
 
-  constructor(private hqService: HQService, private route: ActivatedRoute) {
+  constructor(private hqService: HQService, private route: ActivatedRoute, private clientDetailService: ClientDetailsService) {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(startWith(this.itemsPerPage.value));
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
@@ -42,6 +43,10 @@ export class ClientQuoteListComponent implements OnInit {
     this.takeToDisplay$ = combineLatest([skip$, itemsPerPage$, this.totalRecords$]).pipe(
       map(([skip, itemsPerPage, totalRecords]) => Math.min(skip + itemsPerPage, totalRecords))
     );
+
+    this.clientDetailService.resetFilters();
+    this.clientDetailService.hideProjectStatus();
+    this.clientDetailService.hideCurrentOnly();
   }
 
   ngOnInit(): void {

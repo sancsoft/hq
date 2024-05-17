@@ -8,6 +8,7 @@ import { HQService } from '../../../services/hq.service';
 import { GetServicesRecordV1, GetServicesRecordsV1 } from '../../../models/Services/get-services-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
+import { ClientDetailsService } from '../../client-details.service';
 
 @Component({
   selector: 'hq-client-service-list',
@@ -29,7 +30,7 @@ export class ClientServiceListComponent implements OnInit {
   takeToDisplay$: Observable<number>;
   totalRecords$: Observable<number> = this.services$.pipe(map(services => services.length));
 
-  constructor(private hqService: HQService, private route: ActivatedRoute) {
+  constructor(private hqService: HQService, private route: ActivatedRoute, private clientDetailService: ClientDetailsService) {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(startWith(this.itemsPerPage.value));
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
@@ -43,6 +44,10 @@ export class ClientServiceListComponent implements OnInit {
     this.takeToDisplay$ = combineLatest([skip$, itemsPerPage$, this.totalRecords$]).pipe(
       map(([skip, itemsPerPage, totalRecords]) => Math.min(skip + itemsPerPage, totalRecords))
     );
+
+    this.clientDetailService.resetFilters();
+    this.clientDetailService.hideProjectStatus();
+    this.clientDetailService.hideCurrentOnly();
   }
 
   ngOnInit(): void {
