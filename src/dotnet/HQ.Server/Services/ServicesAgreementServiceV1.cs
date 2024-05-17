@@ -1,5 +1,6 @@
 using DocumentFormat.OpenXml.InkML;
 using FluentResults;
+using HQ.Abstractions;
 using HQ.Abstractions.ServicesAgreement;
 using HQ.Server.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -62,9 +63,9 @@ namespace HQ.Server.Services
 
             var sortMap = new Dictionary<GetServicesAgreementV1.SortColumn, string>()
         {
-            { Abstractions.ServicesAgreement.GetServicesAgreementV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.ServicesAgreement.GetServicesAgreementV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.ServicesAgreement.GetServicesAgreementV1.SortColumn.Name, "Name" },
+            { GetServicesAgreementV1.SortColumn.ChargeCode, "ChargeCode" },
+            { GetServicesAgreementV1.SortColumn.ClientName, "ClientName" },
+            { GetServicesAgreementV1.SortColumn.Name, "Name" },
         };
 
             var sortProperty = sortMap[request.SortBy];
