@@ -82,8 +82,31 @@ export const routes: Routes = [
                 loadComponent: () => import('./projects/project-create/project-create.component').then(m => m.ProjectCreateComponent)
             },
             {
-                path: ':psrId',
-                loadComponent: () => import('./projects/project-details/project-details.component').then(m => m.ProjectDetailsComponent),
+                path: ':projectId',
+                loadComponent: () => import('./projects/project-view/project-view.component').then(m => m.ProjectViewComponent),
+                children: [
+                    {
+                        path: '',
+                        redirectTo: 'details',
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'details',
+                        loadComponent: () => import('./projects/project-details/project-details.component').then(m => m.ProjectDetailsComponent),
+                    },
+                    {
+                        path: 'edit',
+                        loadComponent: () => import('./projects/project-edit/project-edit.component').then(m => m.ProjectEditComponent),
+                    },
+                    {
+                        path: 'report',
+                        loadComponent: () => import('./projects/project-report/project-report.component').then(m => m.ProjectReportComponent),
+                    },
+                    {
+                        path: 'time',
+                        loadComponent: () => import('./projects/project-time/project-time.component').then(m => m.ProjectTimeComponent),
+                    }
+                ]
             }
         ]
     }
