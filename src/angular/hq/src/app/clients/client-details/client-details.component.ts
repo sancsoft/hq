@@ -1,3 +1,4 @@
+import { ClientDetailsSearchFilterComponent } from './client-details-search-filter/client-details-search-filter.component';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
 import { firstValueFrom, switchMap, of, Observable, catchError, map } from 'rxjs';
@@ -10,7 +11,7 @@ import { GetProjectRecordV1, GetProjectRecordsV1 } from '../../models/projects/g
 @Component({
   selector: 'hq-client-details',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, ClientDetailsSummaryComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ClientDetailsSummaryComponent, ClientDetailsSearchFilterComponent],
   templateUrl: './client-details.component.html'
 })
 export class ClientDetailsComponent{

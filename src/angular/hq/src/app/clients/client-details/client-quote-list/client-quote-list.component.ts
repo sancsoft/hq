@@ -19,7 +19,6 @@ export class ClientQuoteListComponent implements OnInit {
   clientId?: string;
   quotes$ = new BehaviorSubject<GetQuotesRecordV1[]>([]);
   apiErrors: string[] = [];
-
   itemsPerPage = new FormControl(10, { nonNullable: true });
 
   page = new FormControl<number>(1, { nonNullable: true });
