@@ -4,12 +4,12 @@ import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { Observable, map } from 'rxjs';
 
 @Component({
-  selector: 'hq-project-details',
+  selector: 'hq-project-edit',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
-  templateUrl: './project-details.component.html'
+  templateUrl: './project-edit.component.html'
 })
-export class ProjectDetailsComponent {
+export class ProjectEditComponent {
   
   psrId$: Observable<string|null>;
 

@@ -1,0 +1,203 @@
+<!-- Details content -->
+<!-- remove/add class hidden to hide/view -->
+<div class="pb-[27px] pt-[8px] relative">
+    <div class="absolute top-[8px] right-0 px-4">
+        <!-- edit/save button -->
+        <button routerLink="../edit" [queryParams]="{psrId: psrId$ | async}" class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
+            Save
+        </button>
+    </div>
+    <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
+        <!-- left side -->
+        <div class="grid gap-[20px] pt-[12px] px-[27px]">
+            <!-- edit form / engagement form -->
+            <form class="grid gap-[20px]">
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                    <!-- column -->
+                    <div>
+                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Official Client name</div>
+                        <!-- select dropdown -->
+                        <div class="grid relative w-full max-w-[395px]">
+                            <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
+                                <option value="">Select Client</option>
+                                <option vallue="t">Client Name One</option>
+                                <option vallue="t">Client Name Two</option>
+                                <option vallue="t">Client Name Three</option>
+                            </select>
+                            <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                <i class="bi bi-arrow-right-short text-[24px]"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                    <!-- column -->
+                    <div>
+                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project Full Name</div>
+                        <!-- text input -->
+                        <input type="text" name="fullname" id="fullname" class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Project Full Name">
+                    </div>
+                    <!-- column -->
+                    <div>
+                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project Name - Concatenated</div>
+                        <!-- text input -->
+                        <input type="text" name="canatednated" id="canatednated" class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Project Name - Cancatenated">
+                    </div>
+                </div>
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)] pr-5">
+                    <!-- column -->
+                    <div>
+                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">PM</div>
+                        <!-- select dropdown -->
+                        <div class="grid relative w-full max-w-[220px]">
+                            <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
+                                <option value="bmcvicker">bmcvicker</option>
+                                <option vallue="ncross">ncross</option>
+                                <option vallue="rmaffit">rmaffit</option>
+                                <option vallue="alauro">alauro</option>
+                            </select>
+                            <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                <i class="bi bi-arrow-down-short text-[24px]"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- column -->
+                    <div>
+                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Rate</div>
+                        <div class="flex items-center">
+                            <!-- text input w/icon to left -->
+                            <div class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]">
+                                <span class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block">
+                                    <i class="bi bi-currency-dollar text-[14px]"></i>
+                                </span>
+                                <input type="text" name="" id="" class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded" placeholder="00.00">
+                            </div>
+                            <span class="ml-[8px] font-semibold">p / hr</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- section heading -->
+                <div class="border-b border-black mt-10">
+                    <div class="font-bold mb-[3px] px-2">Billing</div>
+                </div>
+
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5">
+                    <!-- column -->
+                    <div>
+                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Total Hours</div>
+                        <input type="text" name="" id="" class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Total hrs">
+                    </div>
+                    <!-- column -->
+                    <div>
+                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Period</div>
+                        <!-- select dropdown -->
+                        <div class="grid relative w-full max-w-[395px]">
+                            <!-- add border-red-700 class for input required/error -->
+                            <select name="test" id="test" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-red-700 text-gray-100 bg-blue-900 rounded h-[36px]">
+                                <option value="">Period?</option>
+                                <option vallue="">Period 1</option>
+                                <option vallue="">Period 2</option>
+                                <option vallue="">Period 3</option>
+                            </select>
+                            <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                <i class="bi bi-arrow-right-short text-[24px]"></i>
+                            </span>
+                            <!-- add/remove hidden class to show/hide error message -->
+                            <span class="text-red-700 text-xs leading-normal inline-block">Required: Error message here</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-row pr-5">
+                    <!-- column -->
+                    <div class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]">
+                        <!-- input date -->
+                        <div>
+                            <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Start Date</div>
+                            <div class="grid relative w-full max-w-[220px]">
+                                <input type="date" name="" id="" class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase">
+                                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                    <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div  class="flex align-middle justify-center items-center pt-4">-</div>
+                        <!-- input date -->
+                        <div>
+                            <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">End Date</div>
+                            <div class="grid relative w-full max-w-[220px]">
+                                <input type="date" name="" id="" class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase">
+                                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                    <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5">
+                    <!-- column -->
+                    <div>
+                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Value</div>
+                        <input type="text" name="" id="" class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Value">
+                    </div>
+                </div>
+                
+                <!-- engagement section  -->
+                <!-- section heading -->
+                <div class="border-b border-black mt-10">
+                    <div class="font-bold mb-[3px] px-2">Engagement</div>
+                </div>
+
+                <div class="grid gap-[20px] grid-flow-row pr-5">
+                    <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,100%)] max-w-[810px]">
+                        <div>
+                            <div class="flex items-center justify-between px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%]">
+                                <div>filename.ext</div>
+                                <div><a href="" class="px-2 text-red-850" title="Remove"><i class="bi bi-trash3-fill text-[18px]"></i></a></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <a href="#" class="inline-block p-2 hover:text-gray-50" title="Download"><i class="bi bi-cloud-download-fill"></i></a>
+                        </div>
+                    </div>
+                    
+                    <!-- row grid -->
+                    <div class="grid gap-[20px] grid-flow-col">
+                        <!-- column -->
+                        <div>
+                            <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Optional Notes</div>
+                            <!-- textarea -->
+                            <textarea class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded" placeholder="Optional Notes"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- right side -->
+        <div>
+            <!-- flex flex-col flex-grow -->
+            <div class="bg-black px-[15px] mx-5 2xl:mx-0 w-fit 2xl:w-full mt-[80px]">
+                <!-- flex flex-grow -->
+                <div class=" bg-white">
+                    <img src="https://fakeimg.pl/560x730/cccccc/909090?text=Quote" class="h-auto max-w-full mx-auto" />
+                </div>
+                <div class="grid grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] h-[30px] items-center">
+                    <div>&nbsp;</div>
+                    <div>
+                        <a href="" class="px-2 text-gray-50"><i class="bi bi-arrow-left-short text-[20px]"></i></a>
+                        <a href="" class="px-2 text-gray-100"><i class="bi bi-arrow-right-short text-[20px]"></i></a>
+                    </div>
+                    <div class="ml-auto text-gray-50 text-xs">1 / 2</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
