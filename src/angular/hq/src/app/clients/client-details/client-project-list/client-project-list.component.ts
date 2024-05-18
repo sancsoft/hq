@@ -84,11 +84,10 @@ export class ClientProjectListComponent {
 
     this.projects$ = response$.pipe(
       map((response) => {
-        console.log(response.records);
         return response.records;
       })
     );
-    this.projects$.subscribe((records) => console.log(records));
+    // this.projects$.subscribe((records) => console.log(records));
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
 

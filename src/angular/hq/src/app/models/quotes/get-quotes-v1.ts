@@ -3,7 +3,7 @@ import { PagedResponseV1 } from "../common/paged-response-v1";
 import { SortDirection } from "../common/sort-direction";
 
 export interface GetQuotesRequestV1 extends PagedRequestV1 {
-  search?: string;
+  search?: string | null;
   id?: string;
   clientId?: string;
   sortBy: SortColumn;

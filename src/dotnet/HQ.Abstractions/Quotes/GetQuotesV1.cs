@@ -31,7 +31,6 @@ namespace HQ.Abstractions.Quotes
             public string? ChargeCode { get; set; }
             public Guid ClientId { get; set; }
             public string ClientName { get; set; }
-
             public string Name { get; set; } = null!;
             public DateOnly Date { get; set; }
             public decimal Value { get; set; }

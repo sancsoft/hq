@@ -21,9 +21,9 @@ export class ClientDetailsService {
   constructor() {}
 
   resetFilters() {
-    this.search.reset();
-    this.projectStatus.reset();
-    this.currentOnly.reset();
+    this.search.setValue('');
+    this.projectStatus.setValue(ProjectStatus.InProduction);
+    this.currentOnly.setValue(true);
   }
 
   showProjectStatus() {

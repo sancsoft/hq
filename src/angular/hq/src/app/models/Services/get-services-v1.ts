@@ -4,7 +4,7 @@ import { SortDirection } from "../common/sort-direction";
 import { QuoteStatus } from "../quotes/get-quotes-v1";
 
 export interface GetServicesRequestV1 extends PagedRequestV1 {
-    search?: string;
+    search?: string | null;
     id?: string;
     clientId?: string;
     sortBy: SortColumn;
