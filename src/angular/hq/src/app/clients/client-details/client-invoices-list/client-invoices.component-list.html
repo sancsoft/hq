@@ -1,0 +1,84 @@
+<table class="min-w-full border-spacing-0 border-separate">
+  <thead>
+    <tr class="sticky top-0 text-left">
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+      >
+        Client Name
+        <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i>
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Invoices Number <i class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Total <i class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Total Approved Hours
+        <i class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Date <i class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+      </th>
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
+        colspan="2"
+      >
+        <button
+          routerLink="/invoices/create"
+          class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+        >
+          <i class="bi bi-plus"></i>
+          Invoices
+        </button>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (invoice of invoices$ | async; track $index) {
+    <tr class="even:bg-gray-850 odd:bg-black-alt">
+      <td class="border-b border-black py-2 pl-5">{{ invoice.clientName}}</td>
+      <td class="border-b border-black py-2 pl-5">
+        {{ invoice.invoiceNumber }}
+      </td>
+      <td class="border-b border-black py-2">{{ invoice.total }}</td>
+      <td class="border-b border-black py-2">
+        {{ invoice.TotalApprovedHours }}
+      </td>
+      <td class="border-b border-black py-2">{{ invoice.date}}</td>
+      <td class="border-b border-black py-2 text-right pr-5">
+        <a class="text-teal-200 hover:text-teal-300">VIEW</a>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+<div
+  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
+>
+  <div>
+    <select
+      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
+      [formControl]="itemsPerPage"
+    >
+      <option [ngValue]="10">10</option>
+      <option [ngValue]="25">25</option>
+      <option [ngValue]="50">50</option>
+      <option [ngValue]="100">100</option>
+      <!-- Add more options as needed -->
+    </select>
+    <span>items per page</span>
+  </div>
+  <hq-paginator
+    [total]="(totalRecords$ | async) ?? 0"
+    [pageSize]="itemsPerPage.value"
+    [currentPage]="page.value"
+    (onPage)="goToPage($event)"
+  ></hq-paginator>
+  <div class="flex justify-end text-xs">
+    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ |
+    async }} items
+  </div>
+</div>

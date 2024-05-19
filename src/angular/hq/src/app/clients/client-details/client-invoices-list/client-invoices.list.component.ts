@@ -1,43 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  map,
-  shareReplay,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
+import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import {
-  GetProjectRecordV1,
-  SortColumn,
-} from '../../../models/projects/get-project-v1';
-import { APIError } from '../../../errors/apierror';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Observable, startWith, combineLatest, map, tap, of, debounceTime, switchMap, shareReplay } from 'rxjs';
+import { SortColumn } from '../../../models/clients/get-client-v1';
+import { SortDirection } from '../../../models/common/sort-direction';
 import { HQService } from '../../../services/hq.service';
+import { ClientDetailsService } from '../../client-details.service';
+import { GetInvoicesRecordV1 } from '../../../models/Invoices/get-invoices-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
-import { ClientDetailsService } from '../../client-details.service';
-import { GetClientRequestV1 } from '../../../models/clients/get-client-v1';
-import { SortDirection } from '../../../models/common/sort-direction';
 
 @Component({
-  selector: 'hq-client-project-list',
+  selector: 'hq-client-invoices-list',
   standalone: true,
-  imports: [
-    RouterModule,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-  ],
-  templateUrl: './client-project-list.component.html',
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent],
+  templateUrl: './client-invoices.component-list.html',
 })
-export class ClientProjectListComponent implements OnInit {
-  ngOnInit(): void {
-  }
-  projects$: Observable<GetProjectRecordV1[]>;
+export class ClientInvoicesComponent {
+  clientId?: string;
+  invoices$: Observable<GetInvoicesRecordV1[]>;
   apiErrors: string[] = [];
 
   itemsPerPage = new FormControl(10, { nonNullable: true });
@@ -52,19 +33,9 @@ export class ClientProjectListComponent implements OnInit {
     private hqService: HQService,
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
-  ) {    
+  ) {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)
-    );
-
-    
-    const clientId$ = this.route.paramMap.pipe(
-      tap((params) => console.log('ParamMap emitted:', params)),
-      map((params) => {
-        const clientId = params.get('clientId');
-        console.log('clientId:', clientId);
-        return clientId;
-      })
     );
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
@@ -80,7 +51,6 @@ export class ClientProjectListComponent implements OnInit {
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
     const request$ = combineLatest({
-      clientId: clientId$,
       search: search$,
       skip: skip$,
       take: itemsPerPage$,
@@ -90,16 +60,15 @@ export class ClientProjectListComponent implements OnInit {
 
     const response$ = request$.pipe(
       debounceTime(500),
-      switchMap((request) => this.hqService.getProjectsV1(request)),
+      switchMap((request) => this.hqService.getInvoicesV1(request)),
       shareReplay(1)
     );
 
-    this.projects$ = response$.pipe(
+    this.invoices$ = response$.pipe(
       map((response) => {
         return response.records;
       })
     );
-    // this.projects$.subscribe((records) => console.log(records));
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
 
@@ -114,8 +83,8 @@ export class ClientProjectListComponent implements OnInit {
     );
 
     this.clientDetailService.resetFilters();
-    this.clientDetailService.showProjectStatus();
-    this.clientDetailService.showCurrentOnly();
+    this.clientDetailService.hideProjectStatus();
+    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {

@@ -16,6 +16,6 @@ import { ClientDetailsService } from '../client-details.service';
   templateUrl: './client-details.component.html',
   providers: [ClientDetailsService]
 })
-export class ClientDetailsComponent{
+export class ClientDetailsComponent {
 
 }
