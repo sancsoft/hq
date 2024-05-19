@@ -1,4 +1,5 @@
 ﻿using HQ.Server.Data;
+using HQ.Server.Invoices;
 using HQ.Server.Services;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -15,6 +16,7 @@ namespace HQ.Server
             services.AddScoped<QuoteServiceV1>();
             services.AddScoped<ChargeCodeServiceV1>();
             services.AddScoped<VoltronServiceV1>();
+            services.AddScoped<InvoicesServiceV1>();
             services.AddScoped<ServicesAgreementServiceV1>();
 
             return services;
