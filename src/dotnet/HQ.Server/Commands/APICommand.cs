@@ -85,6 +85,11 @@ public class APICommand : AsyncCommand
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
+            if(builder.Environment.IsDevelopment())
+            {
+                options.RequireHttpsMetadata = false;
+            }
+
             options.Authority = builder.Configuration["AUTH_ISSUER"] ?? throw new ArgumentNullException("Undefined AUTH_ISSUER");
             options.Audience = builder.Configuration["AUTH_AUDIENCE"] ?? throw new ArgumentNullException("Undefined AUTH_AUDIENCE");
         });

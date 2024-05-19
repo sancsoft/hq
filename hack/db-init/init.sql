@@ -1,0 +1,2 @@
+CREATE DATABASE hq OWNER postgres;
+CREATE DATABASE auth OWNER postgres;
