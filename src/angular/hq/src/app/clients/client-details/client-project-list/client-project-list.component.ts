@@ -39,6 +39,7 @@ export class ClientProjectListComponent implements OnInit {
   }
   projects$: Observable<GetProjectRecordV1[]>;
   apiErrors: string[] = [];
+  clientId?: string;
 
   itemsPerPage = new FormControl(10, { nonNullable: true });
 
@@ -58,14 +59,14 @@ export class ClientProjectListComponent implements OnInit {
     );
 
     
-    const clientId$ = this.route.paramMap.pipe(
-      tap((params) => console.log('ParamMap emitted:', params)),
-      map((params) => {
-        const clientId = params.get('clientId');
-        console.log('clientId:', clientId);
-        return clientId;
-      })
-    );
+    // const clientId$ = this.route.paramMap.pipe(
+    //   tap((params) => console.log('ParamMap emitted:', params)),
+    //   map((params) => {
+    //     const clientId = params.get('clientId');
+    //     console.log('clientId:', clientId);
+    //     return clientId;
+    //   })
+    // );
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
@@ -78,9 +79,10 @@ export class ClientProjectListComponent implements OnInit {
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
+    this.clientId = this.route.snapshot.queryParamMap.get('clientId') || undefined
 
     const request$ = combineLatest({
-      clientId: clientId$,
+      clientId: of(this.clientId),
       search: search$,
       skip: skip$,
       take: itemsPerPage$,

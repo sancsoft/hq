@@ -1,28 +1,37 @@
+import { SortColumn } from './../../models/projects/get-project-v1';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, startWith, combineLatest, map, tap, of, debounceTime, switchMap, shareReplay } from 'rxjs';
-import { SortColumn } from '../../../models/clients/get-client-v1';
-import { SortDirection } from '../../../models/common/sort-direction';
-import { HQService } from '../../../services/hq.service';
-import { ClientDetailsService } from '../../client-details.service';
-import { GetInvoicesRecordV1 } from '../../../models/Invoices/get-invoices-v1';
+import {
+  Observable,
+  startWith,
+  combineLatest,
+  map,
+  tap,
+  of,
+  debounceTime,
+  switchMap,
+  shareReplay,
+} from 'rxjs';
+
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../../common/paginator/paginator.component';
+import { ClientDetailsService } from '../../clients/client-details.service';
+import { PaginatorComponent } from '../../common/paginator/paginator.component';
+import { SortDirection } from '../../models/common/sort-direction';
+import { GetInvoicesRecordV1 } from '../../models/Invoices/get-invoices-v1';
+import { HQService } from '../../services/hq.service';
 
 @Component({
-  selector: 'hq-client-invoices-list',
+  selector: 'hq-client-list',
   standalone: true,
   imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent],
-  templateUrl: './client-invoices.component-list.html',
+  templateUrl: './invoices-list.component.html',
 })
-export class ClientInvoicesComponent {
-  clientId?: string;
+export class InvoicesListComponent {
   invoices$: Observable<GetInvoicesRecordV1[]>;
   apiErrors: string[] = [];
 
   itemsPerPage = new FormControl(10, { nonNullable: true });
-
   page = new FormControl<number>(1, { nonNullable: true });
 
   skipDisplay$: Observable<number>;
@@ -34,10 +43,8 @@ export class ClientInvoicesComponent {
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
   ) {
-    this.route.paramMap.subscribe((paramMap) => {
-      this.clientId = paramMap.get('clientId') || undefined
-      console.log(this.clientId); // Now clientId should have a value
-    });
+    console.log(this.route.snapshot);
+
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)
     );

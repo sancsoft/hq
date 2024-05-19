@@ -15,7 +15,6 @@ export class ClientDetailsSearchFilterComponent {
 
 
   constructor(private router: Router, private activatedRoute : ActivatedRoute, public clientDetailService: ClientDetailsService) {
-
   }
 
 

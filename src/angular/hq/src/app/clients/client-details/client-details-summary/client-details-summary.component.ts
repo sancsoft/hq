@@ -20,9 +20,11 @@ export class ClientDetailsSummaryComponent {
   apiErrors: string[] = [];
 
   constructor(private hqService: HQService, private route: ActivatedRoute) {
+   
     this.client$ = this.route.paramMap.pipe(
       switchMap((params) => {
         this.clientId = params.get('clientId') || undefined;
+        console.log(this.clientId);
         if (this.clientId) {
           const request = { id: this.clientId };
           return this.hqService.getClientsV1(request).pipe(
