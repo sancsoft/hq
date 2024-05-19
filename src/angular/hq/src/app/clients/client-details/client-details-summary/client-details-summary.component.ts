@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, shareReplay } from 'rxjs';
 import { switchMap, catchError, map } from 'rxjs/operators';
 import { HQService } from '../../../services/hq.service';
 import { GetClientRecordV1 } from '../../../models/clients/get-client-v1';
@@ -42,7 +42,8 @@ export class ClientDetailsSummaryComponent implements OnInit {
         } else {
           return of(null);
         }
-      })
+      }),
+      shareReplay(1)
     );
   }
 }
