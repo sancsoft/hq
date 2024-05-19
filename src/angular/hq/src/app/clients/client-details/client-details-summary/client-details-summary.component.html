@@ -1,10 +1,11 @@
 <div>
-  <h1 class="font-rajdhani font-semibold text-3xl">{{ (client | async)?.name }}</h1>
-
+  @if (client$ | async; as client) {
+  <h1 class="font-rajdhani font-semibold text-3xl">{{ client.name }}</h1>
   <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-      <div class="text-gray-50">hourly rate: ${{(client | async)?.hourlyRate}}</div>
-      <div class="text-gray-50">email: {{(client | async)?.billingEmail}}</div>
-      <div class="text-gray-50">official name: {{(client | async)?.officialName}}</div>
+    <div class="text-gray-50">hourly rate: ${{ client.hourlyRate }}</div>
+    <div class="text-gray-50">email: {{ client.billingEmail }}</div>
+    <div class="text-gray-50">official name: {{ client.officialName }}</div>
   </div>
   <hq-error-display [errors]="apiErrors"></hq-error-display>
+  }
 </div>

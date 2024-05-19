@@ -30,7 +30,7 @@ namespace HQ.Abstractions.Quotes
             public int QuoteNumber { get; set; }
             public string? ChargeCode { get; set; }
             public Guid ClientId { get; set; }
-            public string ClientName { get; set; }
+            public string ClientName { get; set; } = null!;
             public string Name { get; set; } = null!;
             public DateOnly Date { get; set; }
             public decimal Value { get; set; }
