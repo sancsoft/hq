@@ -56,7 +56,9 @@ namespace HQ.Server.Invoices
             var sortMap = new Dictionary<GetInvoicesV1.SortColumn, string>() {
                 { Abstractions.Invoices.GetInvoicesV1.SortColumn.ClientName, "ClientName" },
                 { Abstractions.Invoices.GetInvoicesV1.SortColumn.Total, "Total" },
-                { Abstractions.Invoices.GetInvoicesV1.SortColumn.TotalApprovedHours, "TotalApprovedHours" }
+                { Abstractions.Invoices.GetInvoicesV1.SortColumn.TotalApprovedHours, "TotalApprovedHours" },
+                { Abstractions.Invoices.GetInvoicesV1.SortColumn.Date, "Date" },
+                { Abstractions.Invoices.GetInvoicesV1.SortColumn.InvoiceNumber, "InvoiceNumber" }
             };
             var sortProperty = sortMap[request.SortBy];
 

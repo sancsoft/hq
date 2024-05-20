@@ -123,9 +123,10 @@ public class ProjectServiceV1
 
         var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
         {
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.Name, "Name" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectName, "ProjectName" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectManagerName, "ProjectManagerName" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.StartDate, "StartDate" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.EndDate, "EndDate" }
         };
 
         var sortProperty = sortMap[request.SortBy];
