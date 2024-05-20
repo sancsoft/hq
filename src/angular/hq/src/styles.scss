@@ -117,7 +117,42 @@ html, body {
   height: 100%; 
   @apply text-gray-100;
 }
+
 body { margin: 0; font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif;}
+
+.markdown {
+  h1 {
+    @apply font-rajdhani font-semibold text-3xl;
+  }
+  h2 {
+    @apply font-rajdhani font-semibold text-2xl;
+  }
+  h3 {
+    @apply font-rajdhani font-semibold text-xl;
+  }
+  h4 {
+    @apply font-rajdhani font-semibold text-lg;
+  }
+  h5 {
+    @apply font-rajdhani font-semibold text-base;
+  }
+  p {
+    @apply mb-[1rem];
+  }
+
+  ul {
+    @apply list-disc mb-[1rem] pl-[2rem];
+  }
+
+  ol {
+    @apply list-decimal mb-[1rem] pl-[2rem];
+  }
+
+  hr {
+    @apply mb-[1rem];
+  }
+}
+
 
 @-moz-document url-prefix() {
   * {
