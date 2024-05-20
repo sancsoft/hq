@@ -7,7 +7,7 @@
       "launchBrowser": false,
       "launchUrl": "swagger",
       "commandLineArgs": "api",
-      "applicationUrl": "http://localhost:5186",
+      "applicationUrl": "http://api.hq.localhost:5186",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

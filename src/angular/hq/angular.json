@@ -79,7 +79,10 @@
               "buildTarget": "HQ:build:production"
             },
             "development": {
-              "buildTarget": "HQ:build:development"
+              "buildTarget": "HQ:build:development",
+              "host": "hq.localhost",
+              "port": 4200,
+              "ssl": false
             }
           },
           "defaultConfiguration": "development"

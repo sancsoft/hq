@@ -11,8 +11,6 @@ namespace HQ.CLI.Commands;
 
 internal class LoginSettings : HQCommandSettings
 {
-        [CommandOption("-i|--insecure")]
-        public bool Insecure { get; set; }
 }
 
 internal class LoginCommand : AsyncCommand<LoginSettings>
@@ -41,7 +39,7 @@ internal class LoginCommand : AsyncCommand<LoginSettings>
         var request = new DiscoveryDocumentRequest();
         request.Address = _config.AuthUrl.AbsoluteUri;
 
-        if(settings.Insecure)
+        if(_config.Insecure)
         {
             request.Policy.RequireHttps = false;
             request.Policy.ValidateIssuerName = false;

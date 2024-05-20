@@ -2,6 +2,8 @@ version: '3'
 services:
   dotnet:
     image: mcr.microsoft.com/devcontainers/dotnet:8.0
+    links:
+    - auth:${HQ_AUTH_HOSTNAME}
     depends_on:
     - db
     - auth

@@ -14,5 +14,6 @@ namespace HQ.CLI
         public string? RefreshToken { get; set; }
         public string? AccessToken { get; set; }
         public DateTime? AccessTokenExpiresAt { get; set; }
+        public bool Insecure { get; set; }
     }
 }
