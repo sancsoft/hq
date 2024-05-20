@@ -15,7 +15,7 @@ namespace HQ.Server.Commands;
 
 public class APICommand : AsyncCommand
 {
-    public override Task<int> ExecuteAsync(CommandContext context)
+    public override async Task<int> ExecuteAsync(CommandContext context)
     {
         var args = context.Remaining.Raw.ToArray();
         var builder = WebApplication.CreateBuilder(args);
@@ -133,8 +133,17 @@ public class APICommand : AsyncCommand
 
         app.MapControllers();
 
+        if(builder.Environment.IsDevelopment())
+        {
+            var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+            await using var scope = serviceScopeFactory.CreateAsyncScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
+
+            await dbContext.Database.MigrateAsync();
+        }
+
         app.Run();
 
-        return Task.FromResult(0);
+        return 0;
     }
 }
