@@ -14,6 +14,7 @@ namespace HQ.Server
             services.AddScoped<ProjectServiceV1>();
             services.AddScoped<ChargeCodeServiceV1>();
             services.AddScoped<VoltronServiceV1>();
+            services.AddScoped<ProjectStatusReportServiceV1>();
 
             return services;
         }

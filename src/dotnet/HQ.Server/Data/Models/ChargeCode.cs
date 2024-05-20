@@ -15,4 +15,5 @@ public class ChargeCode : Base
     public Guid? ServiceAgreementId { get; set; }
     public ServiceAgreement? ServiceAgreement { get; set; }
     public string? Description { get; set; }
+    public ICollection<Time> Times { get; set; } = new List<Time>();
 }

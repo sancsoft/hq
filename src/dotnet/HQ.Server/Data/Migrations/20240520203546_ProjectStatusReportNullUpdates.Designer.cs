@@ -3,6 +3,7 @@ using System;
 using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    partial class HQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240520203546_ProjectStatusReportNullUpdates")]
+    partial class ProjectStatusReportNullUpdates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1119,7 +1122,7 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.Time", b =>
                 {
                     b.HasOne("HQ.Server.Data.Models.ChargeCode", "ChargeCode")
-                        .WithMany("Times")
+                        .WithMany()
                         .HasForeignKey("ChargeCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1159,11 +1162,6 @@ namespace HQ.Server.Data.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("HQ.Server.Data.Models.ChargeCode", b =>
-                {
-                    b.Navigation("Times");
                 });
 
             modelBuilder.Entity("HQ.Server.Data.Models.Project", b =>
