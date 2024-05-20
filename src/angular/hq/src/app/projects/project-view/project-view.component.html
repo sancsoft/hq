@@ -75,8 +75,8 @@
     </div>
 
     <div class="overflow-hidden flex-auto">
-        <div id="left-side" class="grid gap-0 relative" [ngClass]="{ 'grid-cols-[20px_1fr]': sideBarCollapsed, 'grid-cols-[405px_20px_1fr]': !sideBarCollapsed }">
-            <aside class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))]" [ngClass]="{ 'hidden': sideBarCollapsed, '': !sideBarCollapsed }">
+        <div id="left-side" class="grid gap-0 transition-all duration-200 ease-in-out relative" [ngClass]="{ 'grid-cols-[0px_20px_1fr]': sideBarCollapsed, 'grid-cols-[405px_20px_1fr]': !sideBarCollapsed }">
+            <aside class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out" [ngClass]="{ 'opacity-0': sideBarCollapsed, 'opacity-100': !sideBarCollapsed }">
                 <table class="min-w-full border-spacing-0 border-separate">
                     <thead>
                         <tr class="sticky top-0 text-left">
