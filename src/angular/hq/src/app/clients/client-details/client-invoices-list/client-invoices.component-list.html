@@ -3,23 +3,21 @@
     <tr class="sticky top-0 text-left">
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
-      >
-        Client Name
-        <!-- sorted by client name --><i (click) = "onSortClick(sortColumn.ClientName)" [ngClass]="{'bi bi-sort-up ml-2': ((sortOption$ | async) === sortColumn.ClientName && (sortDirection$ | async) === sortDirection.Asc) || (sortOption$ | async) != sortColumn.ClientName, 'bi bi-sort-down ml-2': (sortOption$ | async) === sortColumn.ClientName && (sortDirection$ | async) === sortDirection.Desc}"></i>
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        (click)="onSortClick(sortColumn.ClientName)">
+        Client Name <hq-sort-icon [column]="sortColumn.ClientName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Invoices Number <i (click) = "onSortClick(sortColumn.InvoiceNumber)" class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.InvoiceNumber)">
+        Invoices Number <hq-sort-icon [column]="sortColumn.InvoiceNumber" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Total <i (click) = "onSortClick(sortColumn.Total)" class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Total)">
+        Total <hq-sort-icon [column]="sortColumn.Total" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Total Approved Hours
-        <i (click) = "onSortClick(sortColumn.TotalApprovedHours)" class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.TotalApprovedHours)">
+        Total Approved Hours <hq-sort-icon [column]="sortColumn.TotalApprovedHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Date <i (click) = "onSortClick(sortColumn.Date)" class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Date)">
+        Date <hq-sort-icon [column]="sortColumn.Date" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
       </th>
       <th
         scope="col"

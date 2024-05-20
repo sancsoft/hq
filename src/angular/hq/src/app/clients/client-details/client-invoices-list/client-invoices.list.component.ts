@@ -20,11 +20,12 @@ import { ClientDetailsService } from '../../client-details.service';
 import { GetInvoicesRecordV1 } from '../../../models/Invoices/get-invoices-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
+import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 
 @Component({
   selector: 'hq-client-invoices-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent],
   templateUrl: './client-invoices.component-list.html',
 })
 export class ClientInvoicesComponent {
@@ -50,10 +51,11 @@ export class ClientInvoicesComponent {
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
   ) {
-    this.route.paramMap.subscribe((paramMap) => {
-      this.clientId = paramMap.get('clientId') || undefined;
-      console.log(this.clientId);
-    });
+
+    const clientId$ = this.route.parent!.params.pipe(
+      map(t => t['clientId'])
+    );
+
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ClientName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
@@ -79,6 +81,7 @@ export class ClientInvoicesComponent {
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
+      // clientId: clientId$
     });
 
     const response$ = request$.pipe(
