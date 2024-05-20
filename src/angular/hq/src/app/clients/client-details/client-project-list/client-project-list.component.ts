@@ -53,20 +53,20 @@ export class ClientProjectListComponent implements OnInit {
     private hqService: HQService,
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
-  ) {    
+  ) {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)
     );
 
-    
-    // const clientId$ = this.route.paramMap.pipe(
-    //   tap((params) => console.log('ParamMap emitted:', params)),
-    //   map((params) => {
-    //     const clientId = params.get('clientId');
-    //     console.log('clientId:', clientId);
-    //     return clientId;
-    //   })
-    // );
+
+    const clientId$ = this.route.paramMap.pipe(
+      tap((params) => console.log('ParamMap emitted:', params)),
+      map((params) => {
+        const clientId = params.get('clientId');
+        console.log('clientId:', clientId);
+        return clientId;
+      })
+    );
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
@@ -79,14 +79,13 @@ export class ClientProjectListComponent implements OnInit {
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
-    this.clientId = this.route.snapshot.queryParamMap.get('clientId') || undefined
 
     const request$ = combineLatest({
-      clientId: of(this.clientId),
+      clientId: clientId$,
       search: search$,
       skip: skip$,
       take: itemsPerPage$,
-      sortBy: of(SortColumn.Name),
+      sortBy: of(SortColumn.ProjectName),
       sortDirection: of(SortDirection.Asc),
     });
 

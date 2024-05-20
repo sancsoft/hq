@@ -1,4 +1,5 @@
-import { SortColumn } from './../../models/projects/get-project-v1';
+import { SortColumn } from './../../models/Invoices/get-invoices-v1';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -65,7 +66,7 @@ export class InvoicesListComponent {
       search: search$,
       skip: skip$,
       take: itemsPerPage$,
-      sortBy: of(SortColumn.Name),
+      sortBy: of(SortColumn.ClientName),
       sortDirection: of(SortDirection.Asc),
     });
 

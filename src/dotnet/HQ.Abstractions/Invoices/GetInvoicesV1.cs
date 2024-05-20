@@ -18,9 +18,11 @@ namespace HQ.Abstractions.Invoices
         }
         public enum SortColumn
         {
-            ClientName,
-            Total,
-            TotalApprovedHours
+            ClientName = 1,
+            InvoiceNumber = 2,
+            Total = 3,
+            TotalApprovedHours = 4,
+            Date = 5,
         }
 
         public class Response : PagedResponseV1<Record>;
@@ -28,7 +30,7 @@ namespace HQ.Abstractions.Invoices
         {
             public Guid Id { get; set; }
             public Guid ClientId { get; set; }
-            public required string  ClientName { get; set; }
+            public required string ClientName { get; set; }
             public DateOnly Date { get; set; }
             public string? InvoiceNumber { get; set; }
             public decimal Total { get; set; }

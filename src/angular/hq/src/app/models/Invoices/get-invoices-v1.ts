@@ -11,9 +11,11 @@ export interface GetInvoicesRequestV1 extends PagedRequestV1 {
 }
 
 export enum SortColumn {
-  CreatedAt = 1,
-  Name = 2,
-  HourlyRate = 3,
+  ClientName = 1,
+  InvoiceNumber = 2,
+  Total = 3,
+  TotalApprovedHours = 4,
+  Date = 5,
 }
 
 export interface GetInvoicesRecordV1 {
@@ -22,7 +24,7 @@ export interface GetInvoicesRecordV1 {
   date: Date;
   invoiceNumber: string;
   total: number;
-  TotalApprovedHours: number;
+  totalApprovedHours: number;
 }
 
 export interface GetInvoicesRecordsV1 {

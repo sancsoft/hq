@@ -12,9 +12,10 @@ export interface GetProjectRequestV1 extends PagedRequestV1 {
 
 export enum SortColumn
 {
-    CreatedAt = 1,
-    Name = 2,
-    HourlyRate = 3
+    ProjectName = 1,
+    ProjectManagerName = 2,
+    StartDate = 3,
+    EndDate = 4
 }
 
 export interface GetProjectRecordV1 {
