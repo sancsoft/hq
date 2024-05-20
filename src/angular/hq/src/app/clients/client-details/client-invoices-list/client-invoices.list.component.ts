@@ -25,36 +25,38 @@ import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component
 @Component({
   selector: 'hq-client-invoices-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent],
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    PaginatorComponent,
+    SortIconComponent,
+  ],
   templateUrl: './client-invoices.component-list.html',
 })
 export class ClientInvoicesComponent {
   clientId?: string;
-  invoices$: Observable<GetInvoicesRecordV1[]>;
   apiErrors: string[] = [];
-  sortColumn = SortColumn;
-  sortDirection = SortDirection;
-
-
-  itemsPerPage = new FormControl(10, { nonNullable: true });
-
-  page = new FormControl<number>(1, { nonNullable: true });
 
   skipDisplay$: Observable<number>;
   takeToDisplay$: Observable<number>;
   totalRecords$: Observable<number>;
+  invoices$: Observable<GetInvoicesRecordV1[]>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
+
+  itemsPerPage = new FormControl(10, { nonNullable: true });
+  page = new FormControl<number>(1, { nonNullable: true });
+
+  sortColumn = SortColumn;
+  sortDirection = SortDirection;
 
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
   ) {
-
-    const clientId$ = this.route.parent!.params.pipe(
-      map(t => t['clientId'])
-    );
+    const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
 
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ClientName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -81,7 +83,7 @@ export class ClientInvoicesComponent {
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
-      // clientId: clientId$
+      clientId: clientId$
     });
 
     const response$ = request$.pipe(
@@ -117,13 +119,16 @@ export class ClientInvoicesComponent {
     this.page.setValue(page);
   }
   onSortClick(sortColumn: SortColumn) {
-    if(this.sortOption$.value == sortColumn) {
-      this.sortDirection$.next(this.sortDirection$.value == SortDirection.Asc? SortDirection.Desc : SortDirection.Asc);
+    if (this.sortOption$.value == sortColumn) {
+      this.sortDirection$.next(
+        this.sortDirection$.value == SortDirection.Asc
+          ? SortDirection.Desc
+          : SortDirection.Asc
+      );
     } else {
       this.sortOption$.next(sortColumn);
       this.sortDirection$.next(SortDirection.Asc);
     }
     this.page.setValue(1);
   }
-
 }

@@ -19,9 +19,13 @@ namespace HQ.Abstractions.ServicesAgreement
         }
         public enum SortColumn
         {
-            ChargeCode,
-            ClientName,
-            Name
+            chargeCode = 1,
+            Price = 2,
+            Cost = 3,
+            StartDate = 4,
+            EndDate = 5,
+            Status = 6,
+            Name = 7
         }
 
         public class Response : PagedResponseV1<Record>;

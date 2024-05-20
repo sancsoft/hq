@@ -5,7 +5,7 @@ import { SortDirection } from "../common/sort-direction";
 export interface GetProjectRequestV1 extends PagedRequestV1 {
     search?: string | null;
     id?: string;
-    clientId?: string | null;
+    clientId?: string;
     sortBy: SortColumn;
     sortDirection: SortDirection;
 }

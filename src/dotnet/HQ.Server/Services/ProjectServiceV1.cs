@@ -123,7 +123,7 @@ public class ProjectServiceV1
 
         var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
         {
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectName, "ProjectName" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectName, "Name" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectManagerName, "ProjectManagerName" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.StartDate, "StartDate" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.EndDate, "EndDate" }

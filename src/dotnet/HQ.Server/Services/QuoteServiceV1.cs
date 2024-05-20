@@ -59,9 +59,10 @@ namespace HQ.Server.Services
 
             var sortMap = new Dictionary<GetQuotesV1.SortColumn, string>()
         {
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.ChargeCode, "ChargeCode" },
+            { Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteName, "Name" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.Name, "Name" },
+            { Abstractions.Quotes.GetQuotesV1.SortColumn.Value, "Value" },
+            { Abstractions.Quotes.GetQuotesV1.SortColumn.Status, "Status" },
         };
 
             var sortProperty = sortMap[request.SortBy];

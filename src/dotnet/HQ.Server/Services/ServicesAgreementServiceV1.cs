@@ -68,9 +68,14 @@ namespace HQ.Server.Services
 
             var sortMap = new Dictionary<GetServicesAgreementV1.SortColumn, string>()
         {
-            { GetServicesAgreementV1.SortColumn.ChargeCode, "ChargeCode" },
-            { GetServicesAgreementV1.SortColumn.ClientName, "ClientName" },
             { GetServicesAgreementV1.SortColumn.Name, "Name" },
+            { GetServicesAgreementV1.SortColumn.chargeCode, "ChargeCode" },
+            { GetServicesAgreementV1.SortColumn.StartDate, "StartDate" },
+            { GetServicesAgreementV1.SortColumn.EndDate, "EndDate" },
+            { GetServicesAgreementV1.SortColumn.Cost, "CostValue" },
+            { GetServicesAgreementV1.SortColumn.Price, "PriceValue" },
+            { GetServicesAgreementV1.SortColumn.Status, "QuoteStatus" }
+
         };
 
             var sortProperty = sortMap[request.SortBy];

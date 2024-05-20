@@ -11,9 +11,10 @@ export interface GetQuotesRequestV1 extends PagedRequestV1 {
 }
 
 export enum SortColumn {
-  CreatedAt = 1,
-  Name = 2,
-  HourlyRate = 3
+  QuoteName = 1,
+  ClientName = 2,
+  Value = 3,
+  Status = 4,
 }
 
 export enum QuoteStatus {

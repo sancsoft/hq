@@ -2,39 +2,70 @@ import { SortColumn } from './../../../models/quotes/get-quotes-v1';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, Observable, map, startWith, combineLatest, switchMap, of, catchError, debounceTime, shareReplay, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  map,
+  startWith,
+  combineLatest,
+  switchMap,
+  of,
+  catchError,
+  debounceTime,
+  shareReplay,
+  tap,
+} from 'rxjs';
 import { APIError } from '../../../errors/apierror';
 import { HQService } from '../../../services/hq.service';
-import { GetQuotesRecordV1, GetQuotesRecordsV1 } from '../../../models/quotes/get-quotes-v1';
+import {
+  GetQuotesRecordV1,
+  GetQuotesRecordsV1,
+} from '../../../models/quotes/get-quotes-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 import { ClientDetailsService } from '../../client-details.service';
 import { SortDirection } from '../../../models/common/sort-direction';
+import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 
 @Component({
   selector: 'hq-client-quote-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent],
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    PaginatorComponent,
+    SortIconComponent,
+  ],
   templateUrl: './client-quote-list.component.html',
 })
 export class ClientQuoteListComponent {
   clientId?: string;
-  quotes$: Observable<GetQuotesRecordV1[]>;
   apiErrors: string[] = [];
 
-  itemsPerPage = new FormControl(10, { nonNullable: true });
-
-  page = new FormControl<number>(1, { nonNullable: true });
-
+  quotes$: Observable<GetQuotesRecordV1[]>;
   skipDisplay$: Observable<number>;
   takeToDisplay$: Observable<number>;
   totalRecords$: Observable<number>;
+  sortOption$: BehaviorSubject<SortColumn>;
+  sortDirection$: BehaviorSubject<SortDirection>;
+
+  itemsPerPage = new FormControl(10, { nonNullable: true });
+  page = new FormControl<number>(1, { nonNullable: true });
+
+  sortColumn = SortColumn;
+  sortDirection = SortDirection;
 
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
   ) {
+    const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
+    
+    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.QuoteName);
+    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
+
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)
     );
@@ -55,8 +86,9 @@ export class ClientQuoteListComponent {
       search: search$,
       skip: skip$,
       take: itemsPerPage$,
-      sortBy: of(SortColumn.Name),
-      sortDirection: of(SortDirection.Asc),
+      sortBy: this.sortOption$,
+      sortDirection: this.sortDirection$,
+      clientId: clientId$
     });
 
     const response$ = request$.pipe(
@@ -90,5 +122,19 @@ export class ClientQuoteListComponent {
 
   goToPage(page: number) {
     this.page.setValue(page);
+  }
+
+  onSortClick(sortColumn: SortColumn) {
+    if (this.sortOption$.value == sortColumn) {
+      this.sortDirection$.next(
+        this.sortDirection$.value == SortDirection.Asc
+          ? SortDirection.Desc
+          : SortDirection.Asc
+      );
+    } else {
+      this.sortOption$.next(sortColumn);
+      this.sortDirection$.next(SortDirection.Asc);
+    }
+    this.page.setValue(1);
   }
 }

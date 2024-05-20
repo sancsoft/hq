@@ -1,3 +1,4 @@
+import { SortIconComponent } from './../../../common/sort-icon/sort-icon.component';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -8,34 +9,44 @@ import { GetServicesRecordV1, GetServicesRecordsV1 } from '../../../models/Servi
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 import { ClientDetailsService } from '../../client-details.service';
-import { SortColumn } from '../../../models/clients/get-client-v1';
+import { SortColumn } from '../../../models/Services/get-services-v1';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { QuoteStatus } from '../../../models/quotes/get-quotes-v1';
 
 @Component({
   selector: 'hq-client-service-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, PaginatorComponent, ReactiveFormsModule],
+  imports: [RouterLink, CommonModule, PaginatorComponent, ReactiveFormsModule, SortIconComponent],
   templateUrl: './client-service-list.component.html',
 })
 export class ClientServiceListComponent {
   clientId?: string;
-  services$: Observable<GetServicesRecordV1[]>;
   apiErrors: string[] = [];
 
-  itemsPerPage = new FormControl(10, { nonNullable: true });
-
-  page = new FormControl<number>(1, { nonNullable: true });
-
+  services$: Observable<GetServicesRecordV1[]>;
   skipDisplay$: Observable<number>;
   takeToDisplay$: Observable<number>;
   totalRecords$: Observable<number>;
+  sortOption$: BehaviorSubject<SortColumn>;
+  sortDirection$: BehaviorSubject<SortDirection>;
+
+
+  itemsPerPage = new FormControl(10, { nonNullable: true });
+  page = new FormControl<number>(1, { nonNullable: true });
+
+  sortColumn = SortColumn;
+  sortDirection = SortDirection;
+
 
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
   ) {
+    const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
+
+    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.chargeCode);
+    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)
     );
@@ -56,8 +67,9 @@ export class ClientServiceListComponent {
       search: search$,
       skip: skip$,
       take: itemsPerPage$,
-      sortBy: of(SortColumn.Name),
-      sortDirection: of(SortDirection.Asc),
+      sortBy: this.sortOption$,
+      sortDirection: this.sortDirection$,
+      clientId: clientId$
     });
 
     const response$ = request$.pipe(
@@ -95,5 +107,19 @@ export class ClientServiceListComponent {
 
   getQuoteStatusString(status: QuoteStatus): string {
     return QuoteStatus[status];
+  }
+
+  onSortClick(sortColumn: SortColumn) {
+    if (this.sortOption$.value == sortColumn) {
+      this.sortDirection$.next(
+        this.sortDirection$.value == SortDirection.Asc
+          ? SortDirection.Desc
+          : SortDirection.Asc
+      );
+    } else {
+      this.sortOption$.next(sortColumn);
+      this.sortDirection$.next(SortDirection.Asc);
+    }
+    this.page.setValue(1);
   }
 }

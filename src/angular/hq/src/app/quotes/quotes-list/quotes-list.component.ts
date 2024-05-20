@@ -48,7 +48,7 @@ export class QuotesListComponent {
       search: search$,
       skip: skip$,
       take: itemsPerPage$,
-      sortBy: of(SortColumn.Name),
+      sortBy: of(SortColumn.QuoteName),
       sortDirection: of(SortDirection.Asc)
     });
 

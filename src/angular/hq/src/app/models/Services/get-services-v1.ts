@@ -1,21 +1,23 @@
-import { PagedRequestV1 } from "../common/paged-request-v1";
-import { PagedResponseV1 } from "../common/paged-response-v1";
-import { SortDirection } from "../common/sort-direction";
-import { QuoteStatus } from "../quotes/get-quotes-v1";
+import { PagedRequestV1 } from '../common/paged-request-v1';
+import { PagedResponseV1 } from '../common/paged-response-v1';
+import { SortDirection } from '../common/sort-direction';
+import { QuoteStatus } from '../quotes/get-quotes-v1';
 
 export interface GetServicesRequestV1 extends PagedRequestV1 {
-    search?: string | null;
-    id?: string;
-    clientId?: string;
-    sortBy: SortColumn;
-    sortDirection: SortDirection;
+  search?: string | null;
+  id?: string;
+  clientId?: string;
+  sortBy: SortColumn;
+  sortDirection: SortDirection;
 }
 
-export enum SortColumn
-{
-    CreatedAt = 1,
-    Name = 2,
-    HourlyRate = 3
+export enum SortColumn {
+  chargeCode = 1,
+  Price = 2,
+  Cost = 3,
+  StartDate = 4,
+  EndDate = 5,
+  Status = 6,
 }
 
 export interface GetServicesRecordV1 {
@@ -36,11 +38,10 @@ export interface GetServicesRecordV1 {
   quoteStatus: QuoteStatus;
 }
 
-
 export interface GetServicesRecordsV1 {
-  records : [GetServicesRecordV1];
+  records: [GetServicesRecordV1];
   total: number | null;
 }
 
-export interface GetProjectResponseV1 extends PagedResponseV1<GetServicesRecordsV1> {
-}
+export interface GetProjectResponseV1
+  extends PagedResponseV1<GetServicesRecordsV1> {}

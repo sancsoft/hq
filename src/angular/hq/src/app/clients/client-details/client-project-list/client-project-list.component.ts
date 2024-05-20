@@ -1,3 +1,4 @@
+import { SortIconComponent } from './../../../common/sort-icon/sort-icon.component';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
@@ -31,15 +32,17 @@ import { SortDirection } from '../../../models/common/sort-direction';
     CommonModule,
     ReactiveFormsModule,
     PaginatorComponent,
+    SortIconComponent
   ],
   templateUrl: './client-project-list.component.html',
 })
 export class ClientProjectListComponent implements OnInit {
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
   projects$: Observable<GetProjectRecordV1[]>;
   apiErrors: string[] = [];
   clientId?: string;
+  sortColumn = SortColumn;
+  sortDirection = SortDirection;
 
   itemsPerPage = new FormControl(10, { nonNullable: true });
 
@@ -48,6 +51,8 @@ export class ClientProjectListComponent implements OnInit {
   skipDisplay$: Observable<number>;
   takeToDisplay$: Observable<number>;
   totalRecords$: Observable<number>;
+  sortOption$: BehaviorSubject<SortColumn>;
+  sortDirection$: BehaviorSubject<SortDirection>;
 
   constructor(
     private hqService: HQService,
@@ -58,15 +63,9 @@ export class ClientProjectListComponent implements OnInit {
       startWith(this.itemsPerPage.value)
     );
 
-
-    const clientId$ = this.route.paramMap.pipe(
-      tap((params) => console.log('ParamMap emitted:', params)),
-      map((params) => {
-        const clientId = params.get('clientId');
-        console.log('clientId:', clientId);
-        return clientId;
-      })
-    );
+    const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
+    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ProjectName);
+    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
@@ -85,8 +84,8 @@ export class ClientProjectListComponent implements OnInit {
       search: search$,
       skip: skip$,
       take: itemsPerPage$,
-      sortBy: of(SortColumn.ProjectName),
-      sortDirection: of(SortDirection.Asc),
+      sortBy: this.sortOption$,
+      sortDirection: this.sortDirection$,
     });
 
     const response$ = request$.pipe(
@@ -121,5 +120,18 @@ export class ClientProjectListComponent implements OnInit {
 
   goToPage(page: number) {
     this.page.setValue(page);
+  }
+  onSortClick(sortColumn: SortColumn) {
+    if (this.sortOption$.value == sortColumn) {
+      this.sortDirection$.next(
+        this.sortDirection$.value == SortDirection.Asc
+          ? SortDirection.Desc
+          : SortDirection.Asc
+      );
+    } else {
+      this.sortOption$.next(sortColumn);
+      this.sortDirection$.next(SortDirection.Asc);
+    }
+    this.page.setValue(1);
   }
 }

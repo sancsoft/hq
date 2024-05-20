@@ -13,14 +13,15 @@ namespace HQ.Abstractions.Quotes
             public string? Search { get; set; }
             public Guid? Id { get; set; }
             public Guid? clientId { get; set; }
-            public SortColumn SortBy { get; set; } = SortColumn.Name;
+            public SortColumn SortBy { get; set; } = SortColumn.QuoteName;
             public SortDirection SortDirection { get; set; } = SortDirection.Asc;
         }
         public enum SortColumn
         {
-            ChargeCode,
-            ClientName,
-            Name
+            QuoteName = 1,
+            ClientName = 2,
+            Value = 3,
+            Status = 4,
         }
 
         public class Response : PagedResponseV1<Record>;
