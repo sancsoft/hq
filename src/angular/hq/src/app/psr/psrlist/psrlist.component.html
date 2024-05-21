@@ -1,34 +1,18 @@
 <div class="px-5">
     <h1 class="font-rajdhani font-semibold text-3xl">PSR</h1>
 
-    <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
+    <!-- <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
         <div class="text-gray-50">$105.00</div>
         <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
         <div class="text-gray-50">Official Name - Probably longer than the name</div>
-    </div>
+    </div> -->
+
 </div>
 
 <div class="px-5 pt-4 mb-[8px]">
     <div class="flex flex-col lg:flex-row justify-between items-start">
         <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-            <!-- search bar -->
-            <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[395px]">
-                <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
-                    <i class="bi bi-search text-[14px]"></i>
-                </span>
-                <input type="text" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="">
-            </div>
-
-            <!-- select dropdown -->
-            <div class="grid relative w-[220px]">
-                <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
-                    <option>In Production</option>
-                    <option>Ongoing</option>
-                </select>
-                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                    <i class="bi bi-arrow-down-short text-[24px]"></i>
-                </span>
-            </div>
+            <hq-psr-details-search-filter></hq-psr-details-search-filter>
 
             <!-- select dropdown -->
             <div class="grid relative w-[220px]">
@@ -47,81 +31,62 @@
 <table class="min-w-full border-spacing-0 border-separate">
     <thead>
         <tr class="sticky top-0 text-left">
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Charge Code <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Project Full  Name <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">PM <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Total Hrs <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Has Available <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Status <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px]" colspan="2">Complete</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Charge Code <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectName)">Project Full  Name <!-- sorted by client name --><hq-sort-icon [column]="sortColumn.ProjectName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectManagerName)">PM <hq-sort-icon [column]="sortColumn.ProjectManagerName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.TotalHours)">Total Hrs <hq-sort-icon [column]="sortColumn.TotalHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.HoursAvailable)">Has Available <hq-sort-icon [column]="sortColumn.HoursAvailable" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Status)">Status <hq-sort-icon [column]="sortColumn.Status" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px] cursor-pointer" colspan="2" >Complete</th>
         </tr>
+
     </thead>
     <tbody>
-        @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]; track i)
+
+        @for((report of projectStatusReports$ | async); track $index)
         {
-            @if(i == 5)
-            {
-                <tr class="bg-red-850">
-                    <td class="border-b border-black py-2 pl-5">P0000</td>
-                    <td class="border-b border-black py-2">[Project Full Name Here]</td>
-                    <td class="border-b border-black py-2">jsarkaukas</td>
-                    <td class="border-b border-black py-2">00000.00</td>
-                    <td class="border-b border-black py-2">00000.00</td>
-                    <td class="border-b border-black py-2">In Progress</td>
-                    <td class="border-b border-black py-2">
-                        <!-- progress bar white -->
-                        <div class="w-[350px] bg-gray-450 border border-white h-[10px]">
-                            <div class="bg-white h-[8px] w-[75%]"></div>
-                        </div>
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[i]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
-                </tr>
-            }
-            @else
-            {
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 pl-5">P0000</td>
-                    <td class="border-b border-black py-2">[Project Full Name Here]</td>
-                    <td class="border-b border-black py-2">jsarkaukas</td>
-                    <td class="border-b border-black py-2">00000.00</td>
-                    <td class="border-b border-black py-2">00000.00</td>
-                    <td class="border-b border-black py-2">In Progress</td>
-                    <td class="border-b border-black py-2">
-                        <!-- progress bar white -->
-                        <div class="w-[350px] bg-gray-450 border border-white h-[10px]">
-                            <div class="bg-white h-[8px] w-[75%]"></div>
-                        </div>
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[i]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
-                </tr>
-            }
+          <tr class="even:bg-gray-850 odd:bg-black-alt">
+            <td class="border-b border-black py-2 pl-5">{{report.chargeCode}}</td>
+            <td class="border-b border-black py-2">{{report.projectName}}</td>
+            <td class="border-b border-black py-2">{{report.projectManagerName}}</td>
+            <td class="border-b border-black py-2">{{report.totalHours}}</td>
+            <td class="border-b border-black py-2">{{report.hoursAvailable}}</td>
+            <td class="border-b border-black py-2">{{getProjectSatusString(report.status)}}</td>
+            <td class="border-b border-black py-2">
+              <div class="w-[350px] bg-gray-500 border border-white h-[10px]">
+                <div class="bg-white h-[8px]" [style.width.%]="report.percentComplete * 100"></div>
+            </div>
+
+            </td>
+            <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[report.id]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+        </tr>
         }
     </tbody>
   </table>
-  <div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
-    <div>
-        <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2">
-            <option value="20">20</option>
-            <!-- Add more options as needed -->
-        </select>
-        <span>items per page</span>
-    </div>
-    <div class="flex items-center justify-center">
-        <a href="#" class="px-1 py-1 mr-2 font-semibold hover:bg-teal-200 hover:text-blue-950">
-            <i class="bi bi-arrow-left-short text-[18px]"></i>
-        </a>
-        <!-- active start -->
-        <a href="#" class="px-2 py-1 font-semibold rounded bg-teal-200 text-blue-950 hover:bg-teal-300">1</a>
-        <!-- active end -->
-        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">3</a>
-        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">2</a>
-        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">4</a>
-        <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">5</a>
-        <a href="#" class="px-1 py-1 ml-2 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">
-            <i class="bi bi-arrow-right-short text-[18px]"></i>
-        </a>
-    </div>
-    <div class="flex justify-end text-xs">
-        1-20 / 200 items
-    </div>
+  <div
+  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
+>
+  <div>
+    <select
+      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
+      [formControl]="itemsPerPage"
+    >
+      <option [ngValue]="10">10</option>
+      <option [ngValue]="25">25</option>
+      <option [ngValue]="50">50</option>
+      <option [ngValue]="100">100</option>
+      <!-- Add more options as needed -->
+    </select>
+    <span>items per page</span>
   </div>
+  <hq-paginator
+    [total]="(totalRecords$ | async) ?? 0"
+    [pageSize]="itemsPerPage.value"
+    [currentPage]="page.value"
+    (onPage)="goToPage($event)"
+  ></hq-paginator>
+  <div class="flex justify-end text-xs">
+    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ |
+    async }} items
+  </div>
+</div>
