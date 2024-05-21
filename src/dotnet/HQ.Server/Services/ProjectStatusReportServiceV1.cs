@@ -159,4 +159,61 @@ public class ProjectStatusReportServiceV1
 
         return response;
     }
+
+    public async Task<Result<GetProjectStatusReportTimeV1.Response>> GetProjectStatusReportTimeV1(GetProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
+    {
+        var records = _context.ProjectStatusReports
+            .AsNoTracking()
+            .Where(t => t.Id == request.ProjectStatusReportId)
+            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate))
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(request.Search))
+        {
+            records = records.Where(t =>
+                t.Staff.Name.ToLower().Contains(request.Search.ToLower()) ||
+                t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
+                t.Notes != null && t.Notes.ToLower().Contains(request.Search.ToLower())
+            );
+        }
+
+        var mapped = records
+            .Select(t => new GetProjectStatusReportTimeV1.Record()
+            {
+                Id = t.Id,
+                Activity = "TBD", // TODO: Schema update
+                Hours = t.Hours,
+                BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
+                ChargeCode = t.ChargeCode.Code,
+                Date = t.Date,
+                Description = t.Notes,
+                StaffName = t.Staff.Name
+            });
+
+        var total = await mapped.CountAsync(ct);
+
+        var sortMap = new Dictionary<GetProjectStatusReportTimeV1.SortColumn, string>()
+        {
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.BillableHours, "BillableHours" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Hours, "Hours" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Date, "Date" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.ChargeCode, "ChargeCode" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.StaffName, "StaffName" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Activity, "Activity" }
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+        mapped = request.SortDirection == SortDirection.Asc ?
+            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+        var response = new GetProjectStatusReportTimeV1.Response()
+        {
+            Records = await mapped.ToListAsync(ct),
+            Total = total
+        };
+
+        return response;
+    }
 }
