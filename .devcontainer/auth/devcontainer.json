@@ -5,9 +5,5 @@
     ],
     "service": "auth-dev",
     "shutdownAction": "none",
-    "workspaceFolder": "/workspace/src/auth/",
-    "forwardPorts": [
-        "auth:8080",
-        "db:5432"
-    ]
+    "workspaceFolder": "/workspace/src/auth/"
 }

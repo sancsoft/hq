@@ -12,8 +12,7 @@
         "install": "npm install && echo Done"
     },
     "forwardPorts": [
-        4200,
-        "auth:8080"
+        4200
     ],
     "customizations": {
         "vscode": {
