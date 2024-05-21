@@ -1,5 +1,6 @@
 ﻿using IdentityModel.Client;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -8,7 +9,11 @@ using static IdentityModel.OidcConstants;
 
 namespace HQ.CLI.Commands;
 
-internal class LoginCommand : AsyncCommand<HQCommandSettings>
+internal class LoginSettings : HQCommandSettings
+{
+}
+
+internal class LoginCommand : AsyncCommand<LoginSettings>
 {
     private readonly ILogger<LoginCommand> _logger;
     private readonly HQConfig _config;
@@ -23,7 +28,7 @@ internal class LoginCommand : AsyncCommand<HQCommandSettings>
         _httpClient = httpClient;
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context, HQCommandSettings settings)
+    public override async Task<int> ExecuteAsync(CommandContext context, LoginSettings settings)
     {
         if(String.IsNullOrEmpty(_config.AuthUrl?.AbsoluteUri))
         {
@@ -31,9 +36,19 @@ internal class LoginCommand : AsyncCommand<HQCommandSettings>
             return 1;
         }
 
-        var disco = await _httpClient.GetDiscoveryDocumentAsync(_config.AuthUrl.AbsoluteUri);
-        if (disco.IsError) throw new Exception(disco.Error);
+        var request = new DiscoveryDocumentRequest();
+        request.Address = _config.AuthUrl.AbsoluteUri;
 
+        if(_config.Insecure)
+        {
+            request.Policy.RequireHttps = false;
+            request.Policy.ValidateIssuerName = false;
+            request.Policy.ValidateEndpoints = false;
+        }
+
+        var disco = await _httpClient.GetDiscoveryDocumentAsync(request);
+        if (disco.IsError) throw new Exception(disco.Error);
+        
         var authorizeResponse = await _httpClient.RequestDeviceAuthorizationAsync(new DeviceAuthorizationRequest
         {
             Address = disco.DeviceAuthorizationEndpoint,

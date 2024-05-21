@@ -1,0 +1,25 @@
+{
+    "name": "HQ Angular Container",
+    "dockerComposeFile": [
+        "../../docker-compose.yml"
+    ],
+    "service": "hq",
+    "shutdownAction": "none",
+    "workspaceFolder": "/workspace/src/angular/hq/",
+    "postStartCommand": {
+        "chown": "sudo chown node: node_modules .angular && echo Done",
+        "configure": "envsubst < src/config/settings.template.json > src/config/settings.json && echo Done",
+        "install": "npm install && echo Done"
+    },
+    "forwardPorts": [
+        4200
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "angular.ng-template",
+                "bradlc.vscode-tailwindcss"            
+            ]
+        }
+    }
+}

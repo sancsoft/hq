@@ -1,0 +1,25 @@
+{
+    "name": "HQ .NET Container",
+    "dockerComposeFile": [
+        "../../docker-compose.yml"
+    ],
+    "service": "dotnet",
+    "shutdownAction": "none",
+    "workspaceFolder": "/workspace/src/dotnet/",
+    "postCreateCommand": {
+        "tool": "dotnet tool restore",
+        "restore": "dotnet restore"
+    },
+    "forwardPorts": [
+        5186,
+        "auth:8080",
+        "db:5432"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csdevkit"
+            ]
+        }
+    }
+}
