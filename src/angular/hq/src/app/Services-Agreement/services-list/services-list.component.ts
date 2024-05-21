@@ -1,31 +1,35 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Observable, debounceTime, switchMap, of, distinctUntilChanged, combineLatest, map, shareReplay, startWith, tap, BehaviorSubject } from 'rxjs';
-import { HQService } from '../../services/hq.service';
-import { GetQuotesRecordV1, GetQuotesRecordsV1, SortColumn } from '../../models/quotes/get-quotes-v1';
-import { SortDirection } from '../../models/common/sort-direction';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { ActivatedRoute } from '@angular/router';
+import { ClientDetailsSearchFilterComponent } from './../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
+import { Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Observable, BehaviorSubject, map, startWith, combineLatest, tap, debounceTime, switchMap, shareReplay } from 'rxjs';
 import { ClientDetailsService } from '../../clients/client-details.service';
+import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
+import { SortColumn } from '../../models/Services/get-services-v1';
+import { SortDirection } from '../../models/common/sort-direction';
+import { QuoteStatus } from '../../models/quotes/get-quotes-v1';
+import { HQService } from '../../services/hq.service';
+import { CommonModule } from '@angular/common';
+import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
 
 @Component({
-  selector: 'hq-quotes-list',
+  selector: 'hq-services-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent],
-  templateUrl: './quotes-list.component.html'
+  imports: [RouterLink, CommonModule, PaginatorComponent, ReactiveFormsModule, SortIconComponent, ClientDetailsSearchFilterComponent],
+  templateUrl: './services-list.component.html'
 })
-export class QuotesListComponent  {
+export class ServicesListComponent {
+  clientId?: string;
   apiErrors: string[] = [];
 
-  quotes$: Observable<GetQuotesRecordV1[]>;
+  services$: Observable<GetServicesRecordV1[]>;
   skipDisplay$: Observable<number>;
   takeToDisplay$: Observable<number>;
   totalRecords$: Observable<number>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
+
 
   itemsPerPage = new FormControl(10, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
@@ -33,15 +37,15 @@ export class QuotesListComponent  {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
 
+
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
   ) {
 
-    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.QuoteName);
+    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.chargeCode);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
-
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)
     );
@@ -68,11 +72,11 @@ export class QuotesListComponent  {
 
     const response$ = request$.pipe(
       debounceTime(500),
-      switchMap((request) => this.hqService.getQuotesV1(request)),
+      switchMap((request) => this.hqService.getServicesV1(request)),
       shareReplay(1)
     );
 
-    this.quotes$ = response$.pipe(
+    this.services$ = response$.pipe(
       map((response) => {
         return response.records;
       })
@@ -97,6 +101,10 @@ export class QuotesListComponent  {
 
   goToPage(page: number) {
     this.page.setValue(page);
+  }
+
+  getQuoteStatusString(status: QuoteStatus): string {
+    return QuoteStatus[status];
   }
 
   onSortClick(sortColumn: SortColumn) {

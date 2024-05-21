@@ -150,4 +150,12 @@ export const routes: Routes = [
         (m) => m.InvoicesListComponent
       ),
   },
+  {
+    path: 'services',
+    canActivate: [AutoLoginPartialRoutesGuard],
+    loadComponent: () =>
+      import('./Services-Agreement/services-list/services-list.component').then(
+        (m) => m.ServicesListComponent
+      ),
+  }
 ];

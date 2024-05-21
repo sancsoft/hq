@@ -2,10 +2,9 @@ import { SortIconComponent } from './../../../common/sort-icon/sort-icon.compone
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, Observable, map, startWith, combineLatest, switchMap, of, catchError, debounceTime, shareReplay, tap } from 'rxjs';
-import { APIError } from '../../../errors/apierror';
+import { BehaviorSubject, Observable, map, startWith, combineLatest, switchMap, debounceTime, shareReplay, tap } from 'rxjs';
 import { HQService } from '../../../services/hq.service';
-import { GetServicesRecordV1, GetServicesRecordsV1 } from '../../../models/Services/get-services-v1';
+import { GetServicesRecordV1 } from '../../../models/Services/get-services-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 import { ClientDetailsService } from '../../client-details.service';
