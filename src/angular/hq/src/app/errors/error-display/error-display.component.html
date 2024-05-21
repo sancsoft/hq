@@ -1,0 +1,7 @@
+<div>
+  @if(this.apiErrors) { @for (error of this.apiErrors; track $index) {
+  <div class="text-red-700 text-xs leading-normal inline-block">
+    {{ error }}
+  </div>
+  } }
+</div>

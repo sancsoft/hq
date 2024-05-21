@@ -1,10 +1,21 @@
 <table class="min-w-full border-spacing-0 border-separate">
   <thead>
       <tr class="sticky top-0 text-left">
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Client Name <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Official Name <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Billing Email <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Official Name <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+          <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        (click)="onSortClick(sortColumn.ProjectName)">
+        Project Name <hq-sort-icon [column]="sortColumn.ProjectName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectManagerName)">
+        Project Manager Name <hq-sort-icon [column]="sortColumn.ProjectManagerName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.StartDate)">
+        Start date <hq-sort-icon [column]="sortColumn.StartDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.EndDate)">
+        EndDate <hq-sort-icon [column]="sortColumn.EndDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+      </th>
           <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
               <button routerLink="/projects/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
                   <i class="bi bi-plus"></i>
@@ -14,42 +25,30 @@
       </tr>
   </thead>
   <tbody>
-      @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]; track i)
-      {
-          <tr class="even:bg-gray-850 odd:bg-black-alt">
-              <td class="border-b border-black py-2 pl-5">Client {{ i }}</td>
-              <td class="border-b border-black py-2">$105.00</td>
-              <td class="border-b border-black py-2">billiningEmail&#64;client{{ i }}.com</td>
-              <td class="border-b border-black py-2">Official Name - Probably longer than the Name</td>
-              <td class="border-b border-black py-2 text-right pr-5"><a class="text-teal-200 hover:text-teal-300">VIEW</a></td>
-          </tr>
-      }
+    @for (project of projects$ | async; track $index) {
+      <tr class="even:bg-gray-850 odd:bg-black-alt">
+        <td class="border-b border-black py-2 pl-5">{{project.name}}</td>
+        <td class="border-b border-black py-2">{{project.projectManagerName}}</td>
+        <td class="border-b border-black py-2">{{project.startDate}}</td>
+        <td class="border-b border-black py-2">{{project.endDate}}</td>
+        <td class="border-b border-black py-2 text-right pr-5"><a class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+    </tr>
+    }
   </tbody>
 </table>
 <div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
   <div>
-      <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2">
-          <option value="20">20</option>
+      <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2" [formControl]="itemsPerPage">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="25">25</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
           <!-- Add more options as needed -->
       </select>
       <span>items per page</span>
   </div>
-  <div class="flex items-center justify-center">
-      <a href="#" class="px-1 py-1 mr-2 font-semibold hover:bg-teal-200 hover:text-blue-950">
-          <i class="bi bi-arrow-left-short text-[18px]"></i>
-      </a>
-      <!-- active start -->
-      <a href="#" class="px-2 py-1 font-semibold rounded bg-teal-200 text-blue-950 hover:bg-teal-300">1</a>
-      <!-- active end -->
-      <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">3</a>
-      <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">2</a>
-      <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">4</a>
-      <a href="#" class="px-2 py-1 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">5</a>
-      <a href="#" class="px-1 py-1 ml-2 font-semibold rounded hover:bg-teal-200 hover:text-blue-950">
-          <i class="bi bi-arrow-right-short text-[18px]"></i>
-      </a>
-  </div>
+  <hq-paginator [total]="(totalRecords$ | async) ?? 0" [pageSize]="itemsPerPage.value" [currentPage]="page.value" (onPage)="goToPage($event)"></hq-paginator>
   <div class="flex justify-end text-xs">
-      1-20 / 200 items
+      {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ | async }} items
   </div>
 </div>

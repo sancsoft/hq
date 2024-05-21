@@ -1,46 +1,23 @@
-import { SortColumn } from './../../../models/quotes/get-quotes-v1';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import {
-  BehaviorSubject,
-  Observable,
-  map,
-  startWith,
-  combineLatest,
-  switchMap,
-  of,
-  catchError,
-  debounceTime,
-  shareReplay,
-  tap,
-} from 'rxjs';
-import { APIError } from '../../../errors/apierror';
-import { HQService } from '../../../services/hq.service';
-import {
-  GetQuotesRecordV1,
-  GetQuotesRecordsV1,
-} from '../../../models/quotes/get-quotes-v1';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../../common/paginator/paginator.component';
-import { ClientDetailsService } from '../../client-details.service';
-import { SortDirection } from '../../../models/common/sort-direction';
-import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Observable, debounceTime, switchMap, of, distinctUntilChanged, combineLatest, map, shareReplay, startWith, tap, BehaviorSubject } from 'rxjs';
+import { HQService } from '../../services/hq.service';
+import { GetQuotesRecordV1, GetQuotesRecordsV1, SortColumn } from '../../models/quotes/get-quotes-v1';
+import { SortDirection } from '../../models/common/sort-direction';
+import { PaginatorComponent } from '../../common/paginator/paginator.component';
+import { ActivatedRoute } from '@angular/router';
+import { ClientDetailsService } from '../../clients/client-details.service';
+import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
+import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
 
 @Component({
-  selector: 'hq-client-quote-list',
+  selector: 'hq-quotes-list',
   standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-  ],
-  templateUrl: './client-quote-list.component.html',
+  imports: [CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent],
+  templateUrl: './quotes-list.component.html'
 })
-export class ClientQuoteListComponent {
-  clientId?: string;
+export class QuotesListComponent  {
   apiErrors: string[] = [];
 
   quotes$: Observable<GetQuotesRecordV1[]>;
@@ -61,8 +38,7 @@ export class ClientQuoteListComponent {
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
   ) {
-    const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
-    
+
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.QuoteName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
@@ -88,7 +64,6 @@ export class ClientQuoteListComponent {
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
-      clientId: clientId$
     });
 
     const response$ = request$.pipe(

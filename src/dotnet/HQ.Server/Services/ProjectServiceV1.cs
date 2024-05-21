@@ -83,12 +83,15 @@ public class ProjectServiceV1
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
 
-        var total = await records.CountAsync(ct);
+        if (request.clientId.HasValue)
+        {
+            records = records.Where(t => t.ClientId == request.clientId);
+        }
 
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
-                t.Name.ToLower().Contains(request.Search.ToLower()) || 
+                t.Name.ToLower().Contains(request.Search.ToLower()) ||
                 t.Client.Name.ToLower().Contains(request.Search.ToLower()) ||
                 (t.ChargeCode != null ? t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) : false)
             );
@@ -120,9 +123,10 @@ public class ProjectServiceV1
 
         var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
         {
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.Name, "Name" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectName, "Name" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectManagerName, "ProjectManagerName" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.StartDate, "StartDate" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.EndDate, "EndDate" }
         };
 
         var sortProperty = sortMap[request.SortBy];
@@ -140,6 +144,8 @@ public class ProjectServiceV1
         {
             mapped = mapped.Take(request.Take.Value);
         }
+        
+        var total = await records.CountAsync(ct);
 
         var response = new GetProjectsV1.Response()
         {
