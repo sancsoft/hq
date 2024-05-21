@@ -29,6 +29,7 @@ import {
   GetInvoicesRecordV1,
   GetInvoicesRequestV1,
 } from '../models/Invoices/get-invoices-v1';
+import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -92,7 +93,7 @@ export class HQService {
     );
   }
 
-  // Quotes
+  // Services
   getServicesV1(request: Partial<GetServicesRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
@@ -110,6 +111,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetInvoicesRecordsV1>(
           `${apiUrl}/v1/Invoices/GetInvoicesV1`,
+          request
+        )
+      )
+    );
+  }
+
+  getPSRV1(request: Partial<GetPSRRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPSRRecordsV1>(
+          `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportsV1`,
           request
         )
       )
