@@ -29,6 +29,8 @@ internal class ConfigureCommand : AsyncCommand<HQCommandSettings>
                 .ValidationErrorMessage("[red]That's not a valid Auth URL[/]")
                 .Validate(uri => uri.IsAbsoluteUri));
 
+        _config.Insecure = AnsiConsole.Confirm("Insecure mode?", false);
+
         return Task.FromResult(0);
     }
 }

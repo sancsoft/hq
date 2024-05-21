@@ -32,7 +32,17 @@ namespace HQ.CLI
 
             if ((_config.AccessTokenExpiresAt.HasValue && _config.AccessTokenExpiresAt.Value <= DateTime.UtcNow) || forceRefresh)
             {
-                var disco = await _httpClient.GetDiscoveryDocumentAsync(_config.AuthUrl!.AbsoluteUri);
+                var request = new DiscoveryDocumentRequest();
+                request.Address = _config.AuthUrl!.AbsoluteUri;
+
+                if(_config.Insecure)
+                {
+                    request.Policy.RequireHttps = false;
+                    request.Policy.ValidateIssuerName = false;
+                    request.Policy.ValidateEndpoints = false;
+                }
+
+                var disco = await _httpClient.GetDiscoveryDocumentAsync(request);
                 if (disco.IsError) throw new Exception(disco.Error);
 
                 var response = await _httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest

@@ -12,6 +12,7 @@ import { Observable, map, tap } from 'rxjs';
 export class ProjectViewComponent {
 
   psrId$: Observable<string|null>;
+  sideBarCollapsed = false;
 
   constructor(private route: ActivatedRoute) {
     this.psrId$ = route.queryParams.pipe(

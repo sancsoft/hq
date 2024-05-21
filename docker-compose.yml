@@ -1,0 +1,65 @@
+version: '3'
+services:
+  dotnet:
+    image: mcr.microsoft.com/devcontainers/dotnet:8.0
+    links:
+    - auth:${HQ_AUTH_HOSTNAME}
+    depends_on:
+    - db
+    - auth
+    environment:
+    - DB_NAME=hq
+    - DB_HOST=db
+    - DB_USER=postgres
+    - DB_PASSWORD=${HQ_DB_PASSWORD}
+    - AUTH_ISSUER=${HQ_AUTH_URL}/realms/hq/
+    - AUTH_AUDIENCE=hq
+    volumes:
+    - .:/workspace:cached
+    command: sleep infinity
+  hq:
+    image: mcr.microsoft.com/devcontainers/typescript-node:20
+    volumes:
+    - .:/workspace:cached
+    - hq-node_modules:/workspace/src/angular/hq/node_modules/
+    - hq-angular:/workspace/src/angular/hq/.angular/
+    command: sleep infinity
+    environment:
+    - HQ_API_URL=${HQ_API_URL}
+    - HQ_AUTH_AUTHORITY_URL=${HQ_AUTH_URL}/realms/hq
+    - HQ_AUTH_CLIENT_ID=hq
+    - HQ_AUTH_SCOPES=openid profile email offline_access
+  auth:
+    build: src/auth/
+    depends_on:
+    - db
+    volumes:
+    - ./src/auth/import:/opt/keycloak/data/import
+    - ./src/auth/themes:/opt/keycloak/themes
+    environment:
+    - KEYCLOAK_ADMIN=admin
+    - KEYCLOAK_ADMIN_PASSWORD=${HQ_AUTH_ADMIN_PASSWORD}
+    - KC_HOSTNAME=${HQ_AUTH_HOSTNAME}
+    - KC_DB=postgres
+    - KC_DB_URL=jdbc:postgresql://db:5432/auth
+    - KC_DB_USERNAME=postgres
+    - KC_DB_PASSWORD=${HQ_DB_PASSWORD}
+    command: start-dev --import-realm
+  auth-dev:
+    image: mcr.microsoft.com/devcontainers/base:debian-12
+    volumes:
+    - .:/workspace:cached
+    command: sleep infinity
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${HQ_DB_PASSWORD}
+    volumes:
+    - db-data:/var/lib/postgresql/data
+    - ./hack/db-init:/docker-entrypoint-initdb.d
+
+volumes:
+  hq-node_modules:
+  hq-angular:
+  db-data:
