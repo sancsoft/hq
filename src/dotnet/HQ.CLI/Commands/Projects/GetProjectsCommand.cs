@@ -27,7 +27,7 @@ namespace HQ.CLI.Commands.Projects
         public SortDirection SortDirection { get; set; }
 
         [CommandOption("--sort-by|-S")]
-        [DefaultValue(GetProjectsV1.SortColumn.Name)]
+        [DefaultValue(GetProjectsV1.SortColumn.ProjectName)]
         public GetProjectsV1.SortColumn SortBy { get; set; }
     }
 

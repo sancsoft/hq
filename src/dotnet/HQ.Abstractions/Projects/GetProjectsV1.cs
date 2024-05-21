@@ -15,16 +15,17 @@ public class GetProjectsV1
     {
         public string? Search { get; set; }
         public Guid? Id { get; set; }
-
-        public SortColumn SortBy { get; set; } = SortColumn.Name;
+        public Guid? clientId { get; set; }
+        public SortColumn SortBy { get; set; } = SortColumn.ProjectName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }
 
     public enum SortColumn
     {
-        ChargeCode,
-        ClientName,
-        Name
+        ProjectName = 1,
+        ProjectManagerName = 2,
+        StartDate = 3,
+        EndDate = 4
     }
 
     public class Response : PagedResponseV1<Record>;
