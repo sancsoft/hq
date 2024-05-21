@@ -16,6 +16,7 @@ services:
     - AUTH_AUDIENCE=hq
     volumes:
     - .:/workspace:cached
+    - dotnet-nuget:/home/vscode/.nuget/
     command: sleep infinity
   hq:
     image: mcr.microsoft.com/devcontainers/typescript-node:20
@@ -60,6 +61,7 @@ services:
     - ./hack/db-init:/docker-entrypoint-initdb.d
 
 volumes:
+  dotnet-nuget:
   hq-node_modules:
   hq-angular:
   db-data:
