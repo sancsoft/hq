@@ -1,5 +1,6 @@
 import { PagedResponseV1 } from "../common/paged-response-v1";
 import { SortDirection } from "../common/sort-direction";
+import { TimeStatus } from "../common/time-status";
 
 export interface GetPSRTimeRequestV1 {
     ProjectStatusReportId: string;
@@ -19,6 +20,7 @@ export enum SortColumn {
 
 export interface GetPSRTimeRecordV1 {
     id: string;
+    status: TimeStatus;
     billableHours: number;
     hours: number;
     date: string;

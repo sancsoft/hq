@@ -181,6 +181,7 @@ public class ProjectStatusReportServiceV1
             .Select(t => new GetProjectStatusReportTimeV1.Record()
             {
                 Id = t.Id,
+                Status = t.Status,
                 Activity = "TBD", // TODO: Schema update
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,

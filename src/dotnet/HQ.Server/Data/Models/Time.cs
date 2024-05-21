@@ -16,4 +16,5 @@ public class Time : Base
     // Staff approving hours
     public Guid? InvoiceId { get; set; }
     public Invoice? Invoice { get; set; }
+    public TimeStatus Status { get; set; }
 }
