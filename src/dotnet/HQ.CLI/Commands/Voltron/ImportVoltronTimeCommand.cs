@@ -60,7 +60,8 @@ namespace HQ.CLI.Commands.ChargeCode
             Console.WriteLine("Processing {0} files", files.Count);
 
             var request = new ImportVoltronTimeSheetsV1.Request()
-            {                From = settings.From,
+            {                
+                From = settings.From,
                 To = settings.To,
                 Replace = settings.Replace,
                 Files = files.Select(t => (t.Name, (Stream)t.OpenRead())).ToList()

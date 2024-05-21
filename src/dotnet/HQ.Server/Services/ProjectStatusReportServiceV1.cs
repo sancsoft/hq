@@ -32,7 +32,7 @@ public class ProjectStatusReportServiceV1
             .ToListAsync(ct);
 
         DateOnly startDate = DateOnly.FromDateTime(DateTime.Today.AddDays(DayOfWeek.Monday - DateTime.Today.DayOfWeek - 7));
-        DateOnly endDate = startDate.AddDays(7);
+        DateOnly endDate = startDate.AddDays(6);
 
         foreach (var project in projects)
         {
@@ -97,18 +97,27 @@ public class ProjectStatusReportServiceV1
             records = records.Where(t => t.Project.ProjectManagerId == request.ProjectManagerId.Value);
         }
 
-        var mapped = records.Select(t => new GetProjectStatusReportsV1.Record()
-        {
-            Id = t.Id,
-            ChargeCode = t.Project.ChargeCode != null ? t.Project.ChargeCode.Code : null,
-            ProjectName = t.Project.Name,
-            ClientName= t.Project. Client.Name,
-            ProjectManagerName = t.Project.ProjectManager != null ? t.Project.ProjectManager.Name : null,
-            Status = t.Status,
-            TotalHours = t.Project.ChargeCode != null ? t.Project.ChargeCode.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate).Sum(t => t.Hours) : 0,
-            HoursAvailable = 0, // TODO: Calculate
-            PercentComplete = 0 // TODO: Calculate
-        });
+        var mapped = records
+            .Select(t => new {
+                Row = t,
+                Previous = _context.ProjectStatusReports.Where(x => x.ProjectId == t.ProjectId && x.StartDate < t.StartDate).OrderByDescending(x => x.StartDate).FirstOrDefault()
+            })
+            .Select(t => new GetProjectStatusReportsV1.Record()
+            {
+                Id = t.Row.Id,
+                StartDate = t.Row.StartDate,
+                EndDate = t.Row.EndDate,
+                ChargeCode = t.Row.Project.ChargeCode != null ? t.Row.Project.ChargeCode.Code : null,
+                ProjectName = t.Row.Project.Name,
+                ClientName= t.Row.Project. Client.Name,
+                ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
+                Status = t.Row.Status,
+                TotalHours = t.Row.Project.ChargeCode != null ? t.Row.Project.ChargeCode.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours) : 0,
+                LastId = t.Previous != null ? t.Previous.Id : null,
+                LastHours = t.Previous != null && t.Previous.Project.ChargeCode != null ? t.Previous.Project.ChargeCode.Times.Where(x => x.Date >= t.Previous.StartDate && x.Date <= t.Previous.EndDate).Sum(x => x.Hours) : null,
+                HoursAvailable = 0, // TODO: Calculate
+                PercentComplete = 0, // TODO: Calculate
+            });
 
         var totalHours = await mapped.SumAsync(t => t.TotalHours, ct);
         var total = await mapped.CountAsync(ct);
