@@ -57,9 +57,9 @@ namespace HQ.Server.Services
                 PricePeriod = t.PricePeriod,
                 StartDate = t.StartDate,
                 EndDate = t.EndDate,
-                ChargeCode = t.ChargeCode.Code ?? null,
-                ChargeCodeDescription = t.ChargeCode.Description ?? null,
-                QuoteStatus = (int?)(t.Quote.Status != null ? t.Quote.Status : (QuoteStatus)1),
+                ChargeCode = (t.ChargeCode != null) ? t.ChargeCode.Code : null,
+                ChargeCodeDescription = (t.ChargeCode != null) ? t.ChargeCode.Description : null,
+                QuoteStatus = (int?)(t.Quote != null ? t.Quote.Status : (QuoteStatus)1),
 
 
 

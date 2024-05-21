@@ -1,3 +1,5 @@
+import { ClientDetailsSearchFilterComponent } from './../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
+import { SortIconComponent } from './../../common/sort-icon/sort-icon.component';
 import { SortColumn } from './../../models/Invoices/get-invoices-v1';
 
 import { Component } from '@angular/core';
@@ -13,6 +15,7 @@ import {
   debounceTime,
   switchMap,
   shareReplay,
+  BehaviorSubject,
 } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
@@ -25,26 +28,32 @@ import { HQService } from '../../services/hq.service';
 @Component({
   selector: 'hq-client-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent],
   templateUrl: './invoices-list.component.html',
 })
 export class InvoicesListComponent {
-  invoices$: Observable<GetInvoicesRecordV1[]>;
   apiErrors: string[] = [];
-
-  itemsPerPage = new FormControl(10, { nonNullable: true });
-  page = new FormControl<number>(1, { nonNullable: true });
 
   skipDisplay$: Observable<number>;
   takeToDisplay$: Observable<number>;
   totalRecords$: Observable<number>;
+  invoices$: Observable<GetInvoicesRecordV1[]>;
+  sortOption$: BehaviorSubject<SortColumn>;
+  sortDirection$: BehaviorSubject<SortDirection>;
+
+  itemsPerPage = new FormControl(10, { nonNullable: true });
+  page = new FormControl<number>(1, { nonNullable: true });
+
+  sortColumn = SortColumn;
+  sortDirection = SortDirection;
 
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService
   ) {
-    console.log(this.route.snapshot);
+    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ClientName);
+    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)
@@ -66,8 +75,8 @@ export class InvoicesListComponent {
       search: search$,
       skip: skip$,
       take: itemsPerPage$,
-      sortBy: of(SortColumn.ClientName),
-      sortDirection: of(SortDirection.Asc),
+      sortBy: this.sortOption$,
+      sortDirection: this.sortDirection$,
     });
 
     const response$ = request$.pipe(
@@ -101,5 +110,19 @@ export class InvoicesListComponent {
 
   goToPage(page: number) {
     this.page.setValue(page);
+  }
+
+  onSortClick(sortColumn: SortColumn) {
+    if (this.sortOption$.value == sortColumn) {
+      this.sortDirection$.next(
+        this.sortDirection$.value == SortDirection.Asc
+          ? SortDirection.Desc
+          : SortDirection.Asc
+      );
+    } else {
+      this.sortOption$.next(sortColumn);
+      this.sortDirection$.next(SortDirection.Asc);
+    }
+    this.page.setValue(1);
   }
 }
