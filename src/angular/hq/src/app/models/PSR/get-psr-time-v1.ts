@@ -27,7 +27,7 @@ export interface GetPSRTimeRecordV1 {
     chargeCode: string;
     staffName: string;
     activity: string;
-    description?: string|null;
+    description?: string | undefined;
 }
 
 export interface GetPSRTimeV1 extends PagedResponseV1<GetPSRTimeRecordV1> {}

@@ -57,7 +57,6 @@ export class PSRDetailsComponent {
   sortDirection = SortDirection;
   timeStatus = TimeStatus;
 
-
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
@@ -159,7 +158,13 @@ export class PSRDetailsComponent {
 
       this.deselectAll();
       selected = timeIds.slice(startRowTimeIndex, endRowTimeIndex + 1);
-      const pendingTimes = await firstValueFrom(this.time$.pipe(map((t) => t.filter((t) => t.status == TimeStatus.Pending).map((t) => t.id))));
+      const pendingTimes = await firstValueFrom(
+        this.time$.pipe(
+          map((t) =>
+            t.filter((t) => t.status == TimeStatus.Pending).map((t) => t.id)
+          )
+        )
+      );
       selected = selected.filter((t) => pendingTimes.includes(t));
     }
 
@@ -208,7 +213,8 @@ export class PSRDetailsComponent {
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
     );
 
-    if (!time) {
+    if (!time || description.length < 1) {
+      alert('Please Enter a description');
       // TODO: Alert the users
       return;
     }
@@ -222,6 +228,8 @@ export class PSRDetailsComponent {
     };
 
     // TOOD: Call API
+    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    this.refresh$.next();
 
     console.log('Call update API', request);
   }
@@ -234,9 +242,12 @@ export class PSRDetailsComponent {
     const time = await firstValueFrom(
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
     );
+    // if (time) {
+    //   time.billableHours = roundedBillableHours;
+    // }
 
     if (!time || billableHours == '0' || billableHours == '') {
-      alert("Please Add a time to your billable hours")
+      alert('Please Add a time to your billable hours');
       return;
     }
 
@@ -248,8 +259,8 @@ export class PSRDetailsComponent {
       notes: time.description,
     };
     //  Call API
+    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request))
     this.refresh$.next();
-
 
     console.log('Call update API', request);
   }
