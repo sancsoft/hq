@@ -232,6 +232,13 @@ public class ProjectStatusReportServiceV1
         foreach(var time in times)
         {
             time.Status = TimeStatus.Accepted;
+            
+            // If the approved hours haven't been modified and we are approving, use the time hours
+            if(!time.HoursApproved.HasValue)
+            {
+                time.HoursApproved = time.Hours;
+            }
+
             approvedCount++;
         }
 
@@ -263,5 +270,27 @@ public class ProjectStatusReportServiceV1
         await _context.SaveChangesAsync(ct);
 
         return new RejectProjectStatusReportTimeV1.Response();
+    }
+
+    public async Task<Result<UpdateProjectStatusReportTimeV1.Response>> UpdateProjectStatusReportTimeV1(UpdateProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
+    {
+        var time = await _context.ProjectStatusReports
+            .AsNoTracking()
+            .Where(t => t.Id == request.ProjectStatusReportId)
+            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeId == x.Id))
+            .SingleOrDefaultAsync(ct);
+
+        if(time == null)
+        {
+            return Result.Fail("Unable to find time entry.");
+        }
+
+        time.Reference = request.Activity;
+        time.HoursApproved = request.BillableHours;
+        time.Notes = request.Notes;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new UpdateProjectStatusReportTimeV1.Response();
     }
 }

@@ -53,5 +53,11 @@ namespace HQ.Server.Controllers
         public Task<ActionResult> RejectProjectStatusReportTimeV1([FromBody] RejectProjectStatusReportTimeV1.Request request, CancellationToken ct = default) =>
             _ProjectStatusReportService.RejectProjectStatusReportTimeV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+
+        [HttpPost(nameof(UpdateProjectStatusReportTimeV1))]
+        [ProducesResponseType<UpdateProjectStatusReportTimeV1.Response>(StatusCodes.Status200OK)]
+        public Task<ActionResult> UpdateProjectStatusReportTimeV1([FromBody] UpdateProjectStatusReportTimeV1.Request request, CancellationToken ct = default) =>
+            _ProjectStatusReportService.UpdateProjectStatusReportTimeV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
     }
 }
