@@ -27,6 +27,7 @@ import { CommonModule } from '@angular/common';
 export class PSRDetailsComponent {
   apiErrors: string[] = [];
 
+  psrId$: Observable<string>;
   time$: Observable<GetPSRTimeRecordV1[]>;
   timeIds$: Observable<string[]>;
   sortOption$: BehaviorSubject<SortColumn>;
@@ -49,6 +50,7 @@ export class PSRDetailsComponent {
     // );
 
     const psrId$ = this.route.params.pipe(map((params) => params['psrId']));
+    this.psrId$ = psrId$;
 
     const request$ = combineLatest({
       // search: search$,
@@ -128,4 +130,34 @@ export class PSRDetailsComponent {
     this.selectedTimes$.next(selected);
     this.lastSelectedTime$.next(timeId);
   }
+
+  async accept(timeIds: string[]) {
+    const psrId = await firstValueFrom(this.psrId$);
+
+    if(timeIds.length == 0) {
+      return;
+    }
+
+    const response = await firstValueFrom(this.hqService.approvePSRTimeV1({
+      projectStatusReportId: psrId,
+      timeIds: timeIds
+    }));
+
+    console.log(`Accepted: ${response.approved}`);
+  }
+
+  async acceptSelected() {
+    const selected = await firstValueFrom(this.selectedTimes$);
+    await this.accept(selected);
+  }
+
+  async acceptAll() {
+    const allTime = await firstValueFrom(this.time$.pipe(map(t => t.map(x => x.id))));
+    await this.accept(allTime);
+  }
+
+  async acceptTime(timeId: string) {
+    await this.accept([timeId]);
+  }
+
 }

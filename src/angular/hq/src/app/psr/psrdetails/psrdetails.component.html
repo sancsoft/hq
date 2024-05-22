@@ -94,8 +94,8 @@
               Description
               <div class="flex space-x-2 pr-5">
                 <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="deselectAll()">Deselect All</button>
-                <button class="px-2 py-2 bg-transparent border border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">Accept All</button>
-                <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">Accept</button>
+                <button class="px-2 py-2 bg-transparent border border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptAll()">Accept All</button>
+                <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptSelected()">Accept</button>
               </div>
             </div>
           </th>
@@ -122,7 +122,7 @@
                 <div>&nbsp;</div>
                 <div class="text-nowrap divide-x divide-teal-200">
                   <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">reject</button>
-                  <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">accept</button>
+                  <button class="text-teal-200 hover:text-teal-300 uppercase pl-3" (click)="acceptTime(time.id)">accept</button>
                 </div>
               </div>
             </td>

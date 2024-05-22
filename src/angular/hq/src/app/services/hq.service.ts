@@ -31,6 +31,7 @@ import {
 } from '../models/Invoices/get-invoices-v1';
 import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
 import { GetPSRTimeRequestV1, GetPSRTimeV1 } from '../models/PSR/get-psr-time-v1';
+import { ApprovePSRTimeRequestV1, ApprovePSRTimeResponseV1 } from '../models/PSR/approve-psr-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -134,6 +135,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetPSRTimeV1>(
           `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportTimeV1`,
+          request
+        )
+      )
+    );
+  }
+
+  approvePSRTimeV1(request: Partial<ApprovePSRTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<ApprovePSRTimeResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/ApproveProjectStatusReportTimeRequestV1`,
           request
         )
       )
