@@ -31,7 +31,7 @@
                                 <div>
                                     <!-- select dropdown -->
                                     <div class="grid relative w-full max-w-[395px]">
-                                        <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
+                                        <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]" (click)="modalOpen = !modalOpen" (mousedown)="$event.preventDefault();">
                                             <option value="">Select Client</option>
                                             <option vallue="t">Client Name One</option>
                                             <option vallue="t">Client Name Two</option>
@@ -289,8 +289,7 @@
 </div>
 
 <!-- modal -->
-<!-- add class hidden to hide the modal / add class hidden to the backdrop div below to hide the backgdrop  -->
-<div class="hidden modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden">
+<div class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear" [ngClass]="{ 'opacity-100 visible': modalOpen, 'opacity-0 invisible': !modalOpen }">
     <!-- modal dialog -->
     <div class="modal-dialog max-w-full h-full mr-auto ml-auto text-black">
         <div class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto">
@@ -454,13 +453,12 @@
             
             <!--Footer-->
             <div class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900">
-                <button class="h-[36px] px-2 py-2 border border-transparent bg-transparent hover:bg-transparent hover:border-transparent text-white hover:text-gray-200 rounded w-full min-w-[100px] max-w-[100px] leading-[normal] mr-2">Cancel</button>
-                <button class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px] leading-[normal]">Okay</button>
+                <button class="h-[36px] px-2 py-2 border border-transparent bg-transparent hover:bg-transparent hover:border-transparent text-white hover:text-gray-200 rounded w-full min-w-[100px] max-w-[100px] leading-[normal] mr-2" (click)="modalOpen = !modalOpen">Cancel</button>
+                <button class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px] leading-[normal]" (click)="modalOpen = !modalOpen">Okay</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- modal backdrop/overlay -->
-<!-- add class hidden to hide backdrop  -->
-<div class="hidden modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black opacity-75"></div>
+<div class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear" [ngClass]="{ 'opacity-75 visible': modalOpen, 'opacity-0 invisible': !modalOpen }"></div>
