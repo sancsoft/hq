@@ -7,16 +7,19 @@ import {
 import {
   BehaviorSubject,
   Observable,
+  Subject,
   combineLatest,
   debounceTime,
   firstValueFrom,
   map,
+  merge,
   shareReplay,
   switchMap,
 } from 'rxjs';
 import { HQService } from '../../services/hq.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TimeStatus } from '../../models/common/time-status';
 
 @Component({
   selector: 'hq-psrdetails',
@@ -26,6 +29,8 @@ import { CommonModule } from '@angular/common';
 })
 export class PSRDetailsComponent {
   apiErrors: string[] = [];
+
+  refresh$ = new Subject<void>();
 
   psrId$: Observable<string>;
   time$: Observable<GetPSRTimeRecordV1[]>;
@@ -39,6 +44,7 @@ export class PSRDetailsComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  timeStatus = TimeStatus;
 
   constructor(private hqService: HQService, private route: ActivatedRoute) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
@@ -59,9 +65,16 @@ export class PSRDetailsComponent {
       sortDirection: this.sortDirection$,
     });
 
-    const response$ = request$.pipe(
+    const apiResponse$ = request$.pipe(
       debounceTime(500),
-      switchMap((request) => this.hqService.getPSRTimeV1(request)),
+      switchMap((request) => this.hqService.getPSRTimeV1(request))
+    );
+
+    const refresh$ = this.refresh$.pipe(
+      switchMap(() => apiResponse$)
+    );
+
+    const response$ = merge(apiResponse$, refresh$).pipe(
       shareReplay(1)
     );
 
@@ -73,7 +86,6 @@ export class PSRDetailsComponent {
     this.timeIds$ = this.time$.pipe(map((response) => {
       return response.map((t) => t.id);
     }))
-    this.timeIds$.subscribe((t) => console.log(t));
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -143,7 +155,8 @@ export class PSRDetailsComponent {
       timeIds: timeIds
     }));
 
-    console.log(`Accepted: ${response.approved}`);
+    this.refresh$.next();
+    this.deselectAll();
   }
 
   async acceptSelected() {
@@ -158,6 +171,52 @@ export class PSRDetailsComponent {
 
   async acceptTime(timeId: string) {
     await this.accept([timeId]);
+  }
+
+  async updateDescription(timeId: string, event: Event) {
+    const description = (event.target as HTMLInputElement).value;
+    const psrId = await firstValueFrom(this.psrId$);
+    const time = await firstValueFrom(this.time$.pipe(map(times => times.find(x => x.id == timeId))));
+    
+    if(!time) {
+      // TODO: Alert the users
+      return;
+    }
+
+    const request = {
+      projectStatusReportId: psrId,
+      timeId: timeId,
+      billableHours: time.billableHours,
+      activity: time.activity,
+      notes: description
+    };
+
+    // TOOD: Call API
+
+    console.log('Call update API', request);
+  }
+
+  async updateBillableHours(timeId: string, event: Event) {
+    const billableHours = (event.target as HTMLInputElement).value;
+    const psrId = await firstValueFrom(this.psrId$);
+    const time = await firstValueFrom(this.time$.pipe(map(times => times.find(x => x.id == timeId))));
+    
+    if(!time) {
+      // TODO: Alert the users
+      return;
+    }
+
+    const request = {
+      projectStatusReportId: psrId,
+      timeId: timeId,
+      billableHours: billableHours,
+      activity: time.activity,
+      notes: time.description
+    };
+
+    // TOOD: Call API
+
+    console.log('Call update API', request);
   }
 
 }
