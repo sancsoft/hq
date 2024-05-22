@@ -31,7 +31,7 @@
                                 <div>
                                     <!-- select dropdown -->
                                     <div class="grid relative w-full max-w-[395px]">
-                                        <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
+                                        <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]" (click)="modalOpen = !modalOpen" (mousedown)="$event.preventDefault();">
                                             <option value="">Select Client</option>
                                             <option vallue="t">Client Name One</option>
                                             <option vallue="t">Client Name Two</option>
@@ -287,3 +287,178 @@
         </div>
     </div>
 </div>
+
+<!-- modal -->
+<div class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear" [ngClass]="{ 'opacity-100 visible': modalOpen, 'opacity-0 invisible': !modalOpen }">
+    <!-- modal dialog -->
+    <div class="modal-dialog max-w-full h-full mr-auto ml-auto text-black">
+        <div class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto">
+            <!-- header -->
+            <div class="modal-header flex flex-shrink-0 items-center px-5 py-[15px] bg-blue-900 text-gray-100">
+                <div class="font-bold">Select Client</div>
+            </div>
+
+            <!--Body-->
+            <div class="modal-body relative flex-1 flex-shrink">
+                <!-- search bar -->
+                <div class="px-5 py-2 bg-gray-900">
+                    <div class="flex flex-col lg:flex-row justify-between items-start">
+                        <div class="flex items-center order-2 lg:order-1 gap-[20px]">
+                            <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[395px]">
+                                <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
+                                    <i class="bi bi-search text-[14px]"></i>
+                                </span>
+                                <input type="text" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900">
+                    <div class="overflow-auto h-[calc(100dvh-308px)]">
+                        <!-- table -->
+                        <table class="min-w-full border-spacing-0 border-separate">
+                            <thead>
+                                <tr class="sticky top-0 text-left">
+                                    <th scope="col" class="text-gray-100 bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Client Name <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
+                                    <th scope="col" class="text-gray-100 bg-blue-900 border-steel-blue-600 border-y py-3">Rate <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+                                    <th scope="col" class="text-gray-100 bg-blue-900 border-steel-blue-600 border-y py-3">Billing Email <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+                                    <th scope="col" class="text-gray-100 bg-blue-900 border-steel-blue-600 border-y py-3">Official Name <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-100">
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">Client Name Here</td>
+                                    <td class="border-b border-black py-2">$105.00</td>
+                                    <td class="border-b border-black py-2">billingEmail&#64;clientDomain.com</td>
+                                    <td class="border-b border-black py-2">Official Name - Probably longer than the Name</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <!-- selected row use class bg-blue-900 -->
+                                <tr class="bg-blue-900 cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                                <tr class="even:bg-gray-850 odd:bg-black-alt cursor-pointer">
+                                    <td class="border-b border-black py-2 pl-5">client.name</td>
+                                    <td class="border-b border-black py-2">client.hourlyRate</td>
+                                    <td class="border-b border-black py-2">client.billingEmail</td>
+                                    <td class="border-b border-black py-2">client.officialName</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
+                        <div class="text-white">
+                            <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2 text-white">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                            <span>items per page</span>
+                        </div>
+                        <!-- <hq-paginator [total]="(totalRecords$ | async) ?? 0" [pageSize]="itemsPerPage.value" [currentPage]="page.value" (onPage)="goToPage($event)"></hq-paginator>
+                        <div class="flex justify-end text-xs">
+                            {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ | async }} items
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            
+            <!--Footer-->
+            <div class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900">
+                <button class="h-[36px] px-2 py-2 border border-transparent bg-transparent hover:bg-transparent hover:border-transparent text-white hover:text-gray-200 rounded w-full min-w-[100px] max-w-[100px] leading-[normal] mr-2" (click)="modalOpen = !modalOpen">Cancel</button>
+                <button class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px] leading-[normal]" (click)="modalOpen = !modalOpen">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal backdrop/overlay -->
+<div class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear" [ngClass]="{ 'opacity-75 visible': modalOpen, 'opacity-0 invisible': !modalOpen }"></div>
