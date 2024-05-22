@@ -1,0 +1,39 @@
+@if (projectReportStatus$ | async; as psr) {
+  <div class="px-5">
+    <h1 class="font-rajdhani font-semibold text-3xl">{{psr.chargeCode}}: {{psr.projectName}}</h1>
+  </div>
+
+  <div class="px-5 flex flex-col xl:flex-row xl:justify-between xl:items-center">
+    <div class="pt-[2px]">
+      <div class="text-gray-50">{{psr.clientName}}</div>
+    </div>
+
+    <div class="flex flex-row auto-cols-min gap-[2.983rem] pt-3 justify-end xl:pt-0">
+      <div>
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Start / End Date</div>
+        <div class="text-right">{{psr.startDate}} - {{psr.endDate}}</div>
+      </div>
+      <div>
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Last</div>
+        <div class="text-right">{{psr.lastHours}}</div>
+      </div>
+      <div>
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS This</div>
+        <div class="text-right">{{psr.hoursAvailable}}</div>
+      </div>
+      <div>
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Total HRS</div>
+        <div class="text-right">{{psr.totalHours}}</div>
+      </div>
+      <div>
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Available</div>
+        <div class="text-right">{{psr.hoursAvailable}}</div>
+      </div>
+      <div>
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Complete</div>
+        <div class="text-right">{{psr.PercentComplete}}%</div>
+      </div>
+    </div>
+  </div>
+
+}
