@@ -17,4 +17,5 @@ public class Time : Base
     public Guid? InvoiceId { get; set; }
     public Invoice? Invoice { get; set; }
     public TimeStatus Status { get; set; }
+    public string? RejectionNotes { get; set; }
 }

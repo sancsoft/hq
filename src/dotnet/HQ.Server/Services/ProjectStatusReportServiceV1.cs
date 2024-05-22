@@ -1,7 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using FluentResults;
-using HQ.Abstractions.Clients;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.ProjectStatusReports;
 using HQ.Server.Data;
@@ -216,5 +215,53 @@ public class ProjectStatusReportServiceV1
         };
 
         return response;
+    }
+
+    public async Task<Result<ApproveProjectStatusReportTimeRequestV1.Response>> ApproveProjectStatusReportTimeRequestV1(ApproveProjectStatusReportTimeRequestV1.Request request, CancellationToken ct = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+        var approvedCount = 0;
+
+        var times = await _context.ProjectStatusReports
+            .AsNoTracking()
+            .Where(t => t.Id == request.ProjectStatusReportId)
+            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeIds.Contains(x.Id)))
+            .ToListAsync(ct);
+
+        foreach(var time in times)
+        {
+            time.Status = TimeStatus.Accepted;
+            approvedCount++;
+        }
+
+        await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+
+        return new ApproveProjectStatusReportTimeRequestV1.Response()
+        {
+            Approved = approvedCount
+        };
+    }
+
+    public async Task<Result<RejectProjectStatusReportTimeV1.Response>> RejectProjectStatusReportTimeV1(RejectProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
+    {
+        var time = await _context.ProjectStatusReports
+            .AsNoTracking()
+            .Where(t => t.Id == request.ProjectStatusReportId)
+            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeId == x.Id))
+            .SingleOrDefaultAsync(ct);
+
+        if(time == null)
+        {
+            return Result.Fail("Unable to find time entry.");
+        }
+
+        time.Status = TimeStatus.Rejected;
+        time.RejectionNotes = request.Notes;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new RejectProjectStatusReportTimeV1.Response();
     }
 }
