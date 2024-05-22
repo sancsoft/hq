@@ -1,7 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using FluentResults;
-using HQ.Abstractions.Clients;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.ProjectStatusReports;
 using HQ.Server.Data;
@@ -181,6 +180,7 @@ public class ProjectStatusReportServiceV1
             .Select(t => new GetProjectStatusReportTimeV1.Record()
             {
                 Id = t.Id,
+                Status = t.Status,
                 Activity = "TBD", // TODO: Schema update
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
@@ -215,5 +215,82 @@ public class ProjectStatusReportServiceV1
         };
 
         return response;
+    }
+
+    public async Task<Result<ApproveProjectStatusReportTimeRequestV1.Response>> ApproveProjectStatusReportTimeRequestV1(ApproveProjectStatusReportTimeRequestV1.Request request, CancellationToken ct = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+        var approvedCount = 0;
+
+        var times = await _context.ProjectStatusReports
+            .AsNoTracking()
+            .Where(t => t.Id == request.ProjectStatusReportId)
+            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeIds.Contains(x.Id)))
+            .ToListAsync(ct);
+
+        foreach(var time in times)
+        {
+            time.Status = TimeStatus.Accepted;
+            
+            // If the approved hours haven't been modified and we are approving, use the time hours
+            if(!time.HoursApproved.HasValue)
+            {
+                time.HoursApproved = time.Hours;
+            }
+
+            approvedCount++;
+        }
+
+        await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+
+        return new ApproveProjectStatusReportTimeRequestV1.Response()
+        {
+            Approved = approvedCount
+        };
+    }
+
+    public async Task<Result<RejectProjectStatusReportTimeV1.Response>> RejectProjectStatusReportTimeV1(RejectProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
+    {
+        var time = await _context.ProjectStatusReports
+            .AsNoTracking()
+            .Where(t => t.Id == request.ProjectStatusReportId)
+            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeId == x.Id))
+            .SingleOrDefaultAsync(ct);
+
+        if(time == null)
+        {
+            return Result.Fail("Unable to find time entry.");
+        }
+
+        time.Status = TimeStatus.Rejected;
+        time.RejectionNotes = request.Notes;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new RejectProjectStatusReportTimeV1.Response();
+    }
+
+    public async Task<Result<UpdateProjectStatusReportTimeV1.Response>> UpdateProjectStatusReportTimeV1(UpdateProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
+    {
+        var time = await _context.ProjectStatusReports
+            .AsNoTracking()
+            .Where(t => t.Id == request.ProjectStatusReportId)
+            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeId == x.Id))
+            .SingleOrDefaultAsync(ct);
+
+        if(time == null)
+        {
+            return Result.Fail("Unable to find time entry.");
+        }
+
+        time.Reference = request.Activity;
+        time.HoursApproved = request.BillableHours;
+        time.Notes = request.Notes;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new UpdateProjectStatusReportTimeV1.Response();
     }
 }

@@ -3,6 +3,7 @@ using System;
 using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    partial class HQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521203631_AddedStatusToTimes")]
+    partial class AddedStatusToTimes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -830,10 +833,6 @@ namespace HQ.Server.Data.Migrations
                     b.Property<string>("Reference")
                         .HasColumnType("text")
                         .HasColumnName("reference");
-
-                    b.Property<string>("RejectionNotes")
-                        .HasColumnType("text")
-                        .HasColumnName("rejection_notes");
 
                     b.Property<Guid>("StaffId")
                         .HasColumnType("uuid")

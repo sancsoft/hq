@@ -28,6 +28,7 @@ public class GetProjectStatusReportTimeV1
     public class Record
     {
         public Guid Id { get; set; }
+        public TimeStatus Status { get; set; }
         public decimal BillableHours { get; set; }
         public decimal Hours { get; set; }
         public DateOnly Date { get; set; }

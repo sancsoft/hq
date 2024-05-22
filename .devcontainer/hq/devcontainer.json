@@ -18,7 +18,8 @@
         "vscode": {
             "extensions": [
                 "angular.ng-template",
-                "bradlc.vscode-tailwindcss"            
+                "bradlc.vscode-tailwindcss",
+                "adrianwilczynski.csharp-to-typescript"
             ]
         }
     }

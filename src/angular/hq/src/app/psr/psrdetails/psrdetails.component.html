@@ -80,7 +80,7 @@
   </div>
 
   <div class="overflow-auto flex-auto">
-    <table class="min-w-full border-spacing-0 border-separate">
+    <table class="min-w-full border-spacing-0 border-separate select-none">
       <thead>
         <tr class="sticky top-0 text-left">
           <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 pr-2 text-nowrap">Billable Hrs</th>
@@ -93,6 +93,7 @@
             <div class="flex items-center justify-between">
               Description
               <div class="flex space-x-2 pr-5">
+                <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="deselectAll()">Deselect All</button>
                 <button class="px-2 py-2 bg-transparent border border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">Accept All</button>
                 <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">Accept</button>
               </div>
@@ -101,6 +102,34 @@
         </tr>
       </thead>
       <tbody>
+        @for (time of time$ | async; track time.id) {
+          <tr class="cursor-pointer" (click)="toggleTime(time.id)" [ngClass]="{ 'bg-blue-900': isSelected(time.id) | async, 'even:bg-gray-850 odd:bg-black-alt': !(isSelected(time.id) | async) }">
+            <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
+            <td class="border-b border-black py-2 pl-3 pr-2">
+              <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.billableHours"/>
+            </td>
+            <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
+            <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+            <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
+            <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
+            <td class="border-b border-black py-2 px-2">{{ time.activity }}</td>
+            <td class="border-b border-black py-2 px-2 w-full">            
+                <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description" />
+            </td>
+            <td class="border-b border-black py-2 text-right pr-5">
+              <div class="flex justify-between flex-nowrap space-x-2 items-center">
+                <!-- warning icon -->          
+                <div>&nbsp;</div>
+                <div class="text-nowrap divide-x divide-teal-200">
+                  <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">reject</button>
+                  <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">accept</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+      <tbody class="hidden">
         <!-- Accepted -->
         <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
           <td class="border-b border-black py-2 bg-green-600 w-3"></td>
