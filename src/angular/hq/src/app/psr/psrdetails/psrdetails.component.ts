@@ -1,3 +1,4 @@
+import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { SortDirection } from '../../models/common/sort-direction';
@@ -60,7 +61,8 @@ export class PSRDetailsComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private psrService: PsrService
+    private psrService: PsrService,
+    private hqSnackBarService: HQSnackBarService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -229,6 +231,7 @@ export class PSRDetailsComponent {
 
     // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    this.hqSnackBarService.showMessage("Test Title", "Test Description...")
     this.refresh$.next();
 
     console.log('Call update API', request);
