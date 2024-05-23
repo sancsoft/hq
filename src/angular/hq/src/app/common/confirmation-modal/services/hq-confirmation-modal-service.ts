@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class HQConfirmationModalService {
   private messageSource = new BehaviorSubject<string | null>(null);
-  private performAction = new BehaviorSubject<boolean | null>(null);
+  private performAction = new Subject<boolean | null>;
   currentMessage = this.messageSource.asObservable();
   cuurentAction = this.performAction.asObservable();
 
