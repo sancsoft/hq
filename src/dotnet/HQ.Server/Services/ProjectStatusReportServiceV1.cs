@@ -181,7 +181,7 @@ public class ProjectStatusReportServiceV1
             {
                 Id = t.Id,
                 Status = t.Status,
-                Activity = "TBD", // TODO: Schema update
+                Activity = null,
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
                 ChargeCode = t.ChargeCode.Code,
