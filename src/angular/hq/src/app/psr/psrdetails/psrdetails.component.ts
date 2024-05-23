@@ -84,7 +84,10 @@ export class PSRDetailsComponent {
       switchMap((request) => this.hqService.getPSRTimeV1(request))
     );
 
-    const refresh$ = this.refresh$.pipe(switchMap(() => apiResponse$));
+    const refresh$ = this.refresh$.pipe(
+      switchMap(() => apiResponse$),
+      tap(t => this.deselectAll())
+    );
 
     const response$ = merge(apiResponse$, refresh$).pipe(shareReplay(1));
 
@@ -187,7 +190,6 @@ export class PSRDetailsComponent {
     );
 
     this.refresh$.next();
-    this.deselectAll();
   }
 
   async acceptSelected() {

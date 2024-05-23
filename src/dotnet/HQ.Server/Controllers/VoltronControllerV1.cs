@@ -7,6 +7,7 @@ using HQ.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HQ.Abstractions.Staff;
+using HQ.Server.Authorization;
 
 namespace HQ.Server.Controllers
 {
@@ -25,6 +26,7 @@ namespace HQ.Server.Controllers
             _voltronService = VoltronService;
         }
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(ImportVoltronChargeCodesV1))]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -39,6 +41,7 @@ namespace HQ.Server.Controllers
                 .ToActionResult(new HQResultEndpointProfile());
         }
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(ImportVoltronTimeSheetsV1))]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

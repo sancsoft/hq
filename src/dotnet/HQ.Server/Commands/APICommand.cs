@@ -1,6 +1,8 @@
 ﻿using HQ.Server.API;
+using HQ.Server.Authorization;
 using HQ.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +55,8 @@ public class APICommand : AsyncCommand
             options.SuppressModelStateInvalidFilter = true;
         });
 
+        builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizationHandler>();
+
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAny", policy => policy.AllowAnyHeader().AllowAnyOrigin()); // TODO: Replace with explicit allow URLs
@@ -92,6 +96,28 @@ public class APICommand : AsyncCommand
 
             options.Authority = builder.Configuration["AUTH_ISSUER"] ?? throw new ArgumentNullException("Undefined AUTH_ISSUER");
             options.Audience = builder.Configuration["AUTH_AUDIENCE"] ?? throw new ArgumentNullException("Undefined AUTH_AUDIENCE");
+        });
+
+        builder.Services.AddAuthorization(options => {
+            options.AddPolicy(HQAuthorizationPolicies.Administrator, pb => pb
+                .RequireAuthenticatedUser()
+                .RequireRole("administrator"));
+
+            options.AddPolicy(HQAuthorizationPolicies.Executive, pb => pb
+                .RequireAuthenticatedUser()
+                .RequireRole("executive", "administrator"));
+
+            options.AddPolicy(HQAuthorizationPolicies.Partner, pb => pb
+                .RequireAuthenticatedUser()
+                .RequireRole("partner", "executive", "administrator"));
+
+            options.AddPolicy(HQAuthorizationPolicies.Manager, pb => pb
+                .RequireAuthenticatedUser()
+                .RequireRole("manager", "partner", "executive", "administrator"));
+
+            options.AddPolicy(HQAuthorizationPolicies.Staff, pb => pb
+                .RequireAuthenticatedUser()
+                .RequireRole("staff", "manager", "partner", "executive", "administrator"));
         });
 
         var app = builder.Build();

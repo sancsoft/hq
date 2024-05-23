@@ -6,6 +6,7 @@ using HQ.API;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HQ.Server.Services;
+using HQ.Server.Authorization;
 
 namespace HQ.Server.Controllers
 {
@@ -24,18 +25,21 @@ namespace HQ.Server.Controllers
             _staffervice = staffervice;
         }
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(GetStaffV1))]
         [ProducesResponseType<GetStaffV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> GetStaffV1([FromBody] GetStaffV1.Request request, CancellationToken ct = default) =>
             _staffervice.GetStaffV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Executive)]
         [HttpPost(nameof(UpsertStaffV1))]
         [ProducesResponseType<UpsertStaffV1.Response>(StatusCodes.Status201Created)]
         public Task<ActionResult> UpsertStaffV1([FromBody] UpsertStaffV1.Request request, CancellationToken ct = default) =>
             _staffervice.UpsertStaffV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Executive)]
         [HttpPost(nameof(DeleteStaffV1))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -43,6 +47,7 @@ namespace HQ.Server.Controllers
             _staffervice.DeleteStaffV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(ImportStaffV1))]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
