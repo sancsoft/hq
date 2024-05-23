@@ -181,13 +181,14 @@ public class ProjectStatusReportServiceV1
             {
                 Id = t.Id,
                 Status = t.Status,
-                Activity = "TBD", // TODO: Schema update
+                Activity = null,
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
                 ChargeCode = t.ChargeCode.Code,
                 Date = t.Date,
                 Description = t.Notes,
-                StaffName = t.Staff.Name
+                StaffName = t.Staff.Name,
+                CreatedAt = t.CreatedAt
             });
 
         var total = await mapped.CountAsync(ct);
@@ -204,13 +205,18 @@ public class ProjectStatusReportServiceV1
 
         var sortProperty = sortMap[request.SortBy];
 
-        mapped = request.SortDirection == SortDirection.Asc ?
+        var sorted = request.SortDirection == SortDirection.Asc ?
             mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
             mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
 
+        sorted = sorted
+            .ThenBy(t => t.Date)
+            .ThenBy(t => t.StaffName)
+            .ThenBy(t => t.CreatedAt);
+
         var response = new GetProjectStatusReportTimeV1.Response()
         {
-            Records = await mapped.ToListAsync(ct),
+            Records = await sorted.ToListAsync(ct),
             Total = total
         };
 

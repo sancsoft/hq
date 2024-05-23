@@ -34,7 +34,8 @@ public class GetProjectStatusReportTimeV1
         public DateOnly Date { get; set; }
         public string ChargeCode { get; set; } = null!;
         public string StaffName { get; set; } = null!;
-        public string Activity { get; set; } = null!;
+        public string? Activity { get; set; }
         public string? Description { get; set; } = null!;
+        public DateTime CreatedAt { get; set; }
     }
 }

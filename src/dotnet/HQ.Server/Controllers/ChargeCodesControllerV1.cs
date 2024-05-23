@@ -3,6 +3,7 @@ using FluentResults.Extensions.AspNetCore;
 using HQ.Abstractions.ChargeCodes;
 using HQ.Abstractions.Common;
 using HQ.API;
+using HQ.Server.Authorization;
 using HQ.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ namespace HQ.Server.Controllers
             _ChargeCodeService = ChargeCodeService;
         }
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(GetChargeCodesV1))]
         [ProducesResponseType<GetChargeCodesV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> GetChargeCodesV1([FromBody] GetChargeCodesV1.Request request, CancellationToken ct = default) =>

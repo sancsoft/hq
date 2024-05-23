@@ -3,6 +3,7 @@ using FluentResults.Extensions.AspNetCore;
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Invoices;
 using HQ.API;
+using HQ.Server.Authorization;
 using HQ.Server.Invoices;
 using HQ.Server.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,7 @@ namespace HQ.Server.Controllers
             _invoicesService = invoicesService;
         }
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(GetInvoicesV1))]
         [ProducesResponseType<GetInvoicesV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> GetInvoicesV1([FromBody] GetInvoicesV1.Request request, CancellationToken ct = default) =>
