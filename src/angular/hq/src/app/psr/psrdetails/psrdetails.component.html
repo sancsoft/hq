@@ -53,9 +53,13 @@
           </td>
           <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
           <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
-          <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
+          <td class="border-b border-black py-2 px-2">
+            <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.chargeCode"
+            (change)="updateChargeCode(time.id, $event)" /></td>
           <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-          <td class="border-b border-black py-2 px-2">{{ time.activity }}</td>
+          <td class="border-b border-black py-2 px-2">
+            <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.activity"
+            (change)="updateActivitiy(time.id, $event)" /></td>
           <td class="border-b border-black py-2 px-2 w-full">
             <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description"
               (change)="updateDescription(time.id, $event)" />

@@ -62,7 +62,7 @@ export class PSRDetailsComponent {
     private hqService: HQService,
     private route: ActivatedRoute,
     private psrService: PsrService,
-    private hqSnackBarService: HQSnackBarService,
+    private hqSnackBarService: HQSnackBarService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -88,7 +88,7 @@ export class PSRDetailsComponent {
 
     const refresh$ = this.refresh$.pipe(
       switchMap(() => apiResponse$),
-      tap(t => this.deselectAll())
+      tap((t) => this.deselectAll())
     );
 
     const response$ = merge(apiResponse$, refresh$).pipe(shareReplay(1));
@@ -229,11 +229,74 @@ export class PSRDetailsComponent {
       billableHours: time.billableHours,
       activity: time.activity,
       notes: description,
+      chargeCode: time.chargeCode,
     };
 
     // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
-    this.hqSnackBarService.showMessage("Test Title", "Test Description...")
+    this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.refresh$.next();
+
+    console.log('Call update API', request);
+  }
+
+  async updateActivitiy(timeId: string, event: Event) {
+    const activity = (event.target as HTMLInputElement).value;
+    const psrId = await firstValueFrom(this.psrId$);
+    const time = await firstValueFrom(
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
+    );
+
+    console.log(time, activity);
+    if (!time || activity.length < 1) {
+      alert('Please Enter a Activity Name');
+      // TODO: Alert the users
+      return;
+    }
+
+    const request = {
+      projectStatusReportId: psrId,
+      timeId: timeId,
+      billableHours: time.billableHours,
+      activity: activity,
+      notes: time.description,
+      chargeCode: time.chargeCode,
+    };
+
+    // TOOD: Call API
+    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.refresh$.next();
+
+    console.log('Call update API', request);
+  }
+
+  async updateChargeCode(timeId: string, event: Event) {
+    const chargeCode = (event.target as HTMLInputElement).value;
+    const psrId = await firstValueFrom(this.psrId$);
+    const time = await firstValueFrom(
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
+    );
+
+    console.log(time, chargeCode, "Charge Code: " + chargeCode);
+    if (!time || chargeCode.length < 1) {
+      alert('Please Enter a Activity Name');
+      // TODO: Alert the users
+      return;
+    }
+
+    const request = {
+      projectStatusReportId: psrId,
+      timeId: timeId,
+      billableHours: time.billableHours,
+      activity: time.activity,
+      notes: time.description,
+      chargeCode: chargeCode,
+    };
+
+    // TOOD: Call API
+    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
 
     console.log('Call update API', request);
@@ -262,9 +325,10 @@ export class PSRDetailsComponent {
       billableHours: roundedBillableHours,
       activity: time.activity,
       notes: time.description,
+      chargeCode: time.chargeCode,
     };
     //  Call API
-    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request))
+    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.refresh$.next();
 
     console.log('Call update API', request);
