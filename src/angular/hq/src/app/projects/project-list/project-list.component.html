@@ -1,5 +1,5 @@
 <div class="px-5">
-  <h1 class="font-rajdhani font-semibold text-3xl">PSR</h1>
+  <h1 class="font-rajdhani font-semibold text-3xl">Projects</h1>
 
   <!-- <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
         <div class="text-gray-50">$105.00</div>
@@ -125,9 +125,15 @@
       >
         Complete
       </th>
-    </tr>
-  </thead>
-  <tbody>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
+          <button routerLink="/projects/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
+              <i class="bi bi-plus"></i>
+              Project
+          </button>
+      </th>
+  </tr>
+</thead>
+<tbody>
     @for((project of projects$ | async); track $index) {
     <tr class="even:bg-gray-850 odd:bg-black-alt">
       <td class="border-b border-black py-2 pl-5">{{ project.chargeCode }}</td>
@@ -151,7 +157,7 @@
           ></div>
         </div>
       </td>
-      <td class="border-b border-black py-2 text-right pr-5">
+      <td></td>   <td class="border-b border-black py-2 text-right pr-5">
         <a [routerLink]="[project.id]" class="text-teal-200 hover:text-teal-300"
           >VIEW</a
         >
