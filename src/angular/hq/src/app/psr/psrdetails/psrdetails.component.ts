@@ -15,6 +15,7 @@ import {
   merge,
   shareReplay,
   switchMap,
+  tap,
 } from 'rxjs';
 import { HQService } from '../../services/hq.service';
 import { ActivatedRoute } from '@angular/router';
@@ -71,7 +72,8 @@ export class PSRDetailsComponent {
     );
 
     const refresh$ = this.refresh$.pipe(
-      switchMap(() => apiResponse$)
+      switchMap(() => apiResponse$),
+      tap(t => this.deselectAll())
     );
 
     const response$ = merge(apiResponse$, refresh$).pipe(
@@ -156,7 +158,6 @@ export class PSRDetailsComponent {
     }));
 
     this.refresh$.next();
-    this.deselectAll();
   }
 
   async acceptSelected() {
