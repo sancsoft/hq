@@ -79,7 +79,6 @@ export class PSRListComponent {
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
-    this.projectStatusReports$.subscribe((records) => { console.log(records); });
 
     this.takeToDisplay$ = combineLatest([
       skip$,

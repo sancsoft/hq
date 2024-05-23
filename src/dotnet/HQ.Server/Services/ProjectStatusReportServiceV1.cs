@@ -293,10 +293,7 @@ public class ProjectStatusReportServiceV1
         time.HoursApproved = request.BillableHours;
         time.Notes = request.Notes;
         time.Activity = request.Activity;
-        if (request.ChargeCodeId != null)
-        {
-            time.ChargeCodeId = new Guid(request.ChargeCodeId);
-        }
+        time.ChargeCodeId = request.ChargeCodeId;
 
 
         await _context.SaveChangesAsync(ct);
