@@ -1,3 +1,5 @@
+import { ConfirmationModalComponent } from './common/confirmation-modal/confirmation-modal.component';
+import { HqSnackBarComponent } from './common/hq-snack-bar/hq-snack-bar.component';
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterModule, RouterOutlet } from '@angular/router';
 import {MatIconModule} from '@angular/material/icon';
@@ -16,14 +18,14 @@ import { LayoutComponent } from './layout.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, LayoutComponent, RouterOutlet],
+  imports: [CommonModule, LayoutComponent, RouterOutlet, HqSnackBarComponent, ConfirmationModalComponent],
   templateUrl: './app.component.html'
 })
 export class AppComponent {
   title = 'HQ';
   appSettingsService = inject(AppSettingsService);
   oidcSecurityService = inject(OidcSecurityService);
-  
+
   isAuthenticated$: Observable<boolean>;
 
   constructor() {

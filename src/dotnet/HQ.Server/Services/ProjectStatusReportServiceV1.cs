@@ -97,7 +97,8 @@ public class ProjectStatusReportServiceV1
         }
 
         var mapped = records
-            .Select(t => new {
+            .Select(t => new
+            {
                 Row = t,
                 Previous = _context.ProjectStatusReports.Where(x => x.ProjectId == t.ProjectId && x.StartDate < t.StartDate).OrderByDescending(x => x.StartDate).FirstOrDefault()
             })
@@ -108,7 +109,7 @@ public class ProjectStatusReportServiceV1
                 EndDate = t.Row.EndDate,
                 ChargeCode = t.Row.Project.ChargeCode != null ? t.Row.Project.ChargeCode.Code : null,
                 ProjectName = t.Row.Project.Name,
-                ClientName= t.Row.Project. Client.Name,
+                ClientName = t.Row.Project.Client.Name,
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
                 Status = t.Row.Status,
                 TotalHours = t.Row.Project.ChargeCode != null ? t.Row.Project.ChargeCode.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours) : 0,
@@ -181,7 +182,7 @@ public class ProjectStatusReportServiceV1
             {
                 Id = t.Id,
                 Status = t.Status,
-                Activity = null,
+                Activity = t.Activity,
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
                 ChargeCode = t.ChargeCode.Code,
@@ -234,12 +235,12 @@ public class ProjectStatusReportServiceV1
             .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeIds.Contains(x.Id)))
             .ToListAsync(ct);
 
-        foreach(var time in times)
+        foreach (var time in times)
         {
             time.Status = TimeStatus.Accepted;
-            
+
             // If the approved hours haven't been modified and we are approving, use the time hours
-            if(!time.HoursApproved.HasValue)
+            if (!time.HoursApproved.HasValue)
             {
                 time.HoursApproved = time.Hours;
             }
@@ -263,7 +264,7 @@ public class ProjectStatusReportServiceV1
             .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeId == x.Id))
             .SingleOrDefaultAsync(ct);
 
-        if(time == null)
+        if (time == null)
         {
             return Result.Fail("Unable to find time entry.");
         }
@@ -283,7 +284,7 @@ public class ProjectStatusReportServiceV1
             .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeId == x.Id))
             .SingleOrDefaultAsync(ct);
 
-        if(time == null)
+        if (time == null)
         {
             return Result.Fail("Unable to find time entry.");
         }
@@ -291,6 +292,12 @@ public class ProjectStatusReportServiceV1
         time.Reference = request.Activity;
         time.HoursApproved = request.BillableHours;
         time.Notes = request.Notes;
+        time.Activity = request.Activity;
+        if (request.ChargeCodeId != null)
+        {
+            time.ChargeCodeId = new Guid(request.ChargeCodeId);
+        }
+
 
         await _context.SaveChangesAsync(ct);
 

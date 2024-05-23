@@ -1,3 +1,5 @@
+import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
+import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { SortDirection } from '../../models/common/sort-direction';
@@ -26,6 +28,16 @@ import { TimeStatus } from '../../models/common/time-status';
 import { PsrService } from '../psr-service';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { PsrDetailsSearchFilterComponent } from '../psr-details-search-filter/psr-details-search-filter.component';
+import {
+  GetChargeCodeRecordV1,
+  GetChargeCodesRequestV1,
+} from '../../models/charge-codes/get-chargecodes-v1';
+import { FormsModule } from '@angular/forms';
+
+export interface ChargeCodeViewModel {
+  id: string;
+  code: string;
+}
 
 @Component({
   selector: 'hq-psrdetails',
@@ -35,16 +47,19 @@ import { PsrDetailsSearchFilterComponent } from '../psr-details-search-filter/ps
     PsrDetailsHeaderComponent,
     SortIconComponent,
     PsrDetailsSearchFilterComponent,
+    FormsModule,
   ],
   templateUrl: './psrdetails.component.html',
 })
 export class PSRDetailsComponent {
   apiErrors: string[] = [];
+  chargeCodesViewModel: ChargeCodeViewModel[] = [];
 
   refresh$ = new Subject<void>();
 
   psrId$: Observable<string>;
   time$: Observable<GetPSRTimeRecordV1[]>;
+  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   timeIds$: Observable<string[]>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
@@ -60,7 +75,9 @@ export class PSRDetailsComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private psrService: PsrService
+    private psrService: PsrService,
+    private hqSnackBarService: HQSnackBarService,
+    private hqConfirmationModalService: HQConfirmationModalService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -83,10 +100,13 @@ export class PSRDetailsComponent {
       debounceTime(500),
       switchMap((request) => this.hqService.getPSRTimeV1(request))
     );
+    this.chargeCodes$ = this.hqService
+      .getChargeCodeseV1({})
+      .pipe(map((chargeCode) => chargeCode.records));
 
     const refresh$ = this.refresh$.pipe(
       switchMap(() => apiResponse$),
-      tap(t => this.deselectAll())
+      tap((t) => this.deselectAll())
     );
 
     const response$ = merge(apiResponse$, refresh$).pipe(shareReplay(1));
@@ -227,10 +247,95 @@ export class PSRDetailsComponent {
       billableHours: time.billableHours,
       activity: time.activity,
       notes: description,
+      chargeCode: time.chargeCode,
     };
 
     // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.refresh$.next();
+
+    console.log('Call update API', request);
+  }
+
+  async updateActivitiy(timeId: string, event: Event) {
+    const activity = (event.target as HTMLInputElement).value;
+    const psrId = await firstValueFrom(this.psrId$);
+    const time = await firstValueFrom(
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
+    );
+
+    console.log(time, activity);
+    if (!time || activity.length < 1) {
+      alert('Please Enter a Activity Name');
+      // TODO: Alert the users
+      return;
+    }
+
+    const request = {
+      projectStatusReportId: psrId,
+      timeId: timeId,
+      billableHours: time.billableHours,
+      activity: activity,
+      notes: time.description,
+      chargeCode: time.chargeCode,
+    };
+
+    // TOOD: Call API
+    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.refresh$.next();
+
+    console.log('Call update API', request);
+  }
+
+  async updateChargeCode(timeId: string, event: Event) {
+    const chargeCode = await firstValueFrom(
+      this.time$.pipe(
+        map((times) => times.find((x) => x.id == timeId)?.chargeCode)
+      )
+    ); // this is to get the charge code of the time
+    const psrId = await firstValueFrom(this.psrId$);
+    const time = await firstValueFrom(
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
+    );
+
+    console.log(time, chargeCode, 'Charge Code: ' + chargeCode);
+    if (!time || !chargeCode || chargeCode.length != 5) {
+      // this condition is to check if the charge code is valid
+      alert('Please Enter a Activity Name');
+      // TODO: Alert the users
+      return;
+    }
+    this.hqConfirmationModalService.showModal(
+      `Are you sure you want to change the charge code to ${chargeCode}?`,
+    );
+    const actionTaken = await firstValueFrom(
+      this.hqConfirmationModalService.cuurentAction
+    );
+    if (actionTaken != true) {
+      this.refresh$.next();
+      return;
+    }
+    const chargecodeId = await firstValueFrom(
+      this.chargeCodes$.pipe(
+        map((c) => c.find((x) => x.code == chargeCode)?.id)
+      )
+    );
+    console.log(chargeCode, chargecodeId);
+
+    const request = {
+      projectStatusReportId: psrId,
+      timeId: timeId,
+      billableHours: time.billableHours,
+      activity: time.activity,
+      notes: time.description,
+      chargeCodeId: chargecodeId,
+    };
+
+    // TOOD: Call API
+    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
 
     console.log('Call update API', request);
@@ -259,9 +364,10 @@ export class PSRDetailsComponent {
       billableHours: roundedBillableHours,
       activity: time.activity,
       notes: time.description,
+      chargeCode: time.chargeCode,
     };
     //  Call API
-    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request))
+    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.refresh$.next();
 
     console.log('Call update API', request);

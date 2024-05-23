@@ -53,9 +53,20 @@
           </td>
           <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
           <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
-          <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
+          <td class="border-b border-black py-2 px-2 text-black">
+            @if (chargeCodes$ | async ; as chargeCodes) {
+              <select  [(ngModel)]="time.chargeCode" (change)="updateChargeCode(time.id, $event)" class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                <option *ngFor="let c of chargeCodes" [ngValue]="c.code">{{c.code}}</option>
+
+              </select>
+            }
+
+            <!-- <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.chargeCode"
+            (change)="updateChargeCode(time.id, $event)" /></td> -->
           <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-          <td class="border-b border-black py-2 px-2">{{ time.activity }}</td>
+          <td class="border-b border-black py-2 px-2">
+            <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.activity"
+            (change)="updateActivitiy(time.id, $event)" /></td>
           <td class="border-b border-black py-2 px-2 w-full">
             <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description"
               (change)="updateDescription(time.id, $event)" />

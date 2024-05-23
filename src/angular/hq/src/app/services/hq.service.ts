@@ -1,4 +1,7 @@
-import { updatePSRTimeRequestV1, UpdatePSRTimeResponseV1 } from './../models/PSR/update-psr-time-v1';
+import {
+  updatePSRTimeRequestV1,
+  UpdatePSRTimeResponseV1,
+} from './../models/PSR/update-psr-time-v1';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
@@ -31,9 +34,22 @@ import {
   GetInvoicesRequestV1,
 } from '../models/Invoices/get-invoices-v1';
 import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
-import { GetPSRTimeRequestV1, GetPSRTimeV1 } from '../models/PSR/get-psr-time-v1';
-import { ApprovePSRTimeRequestV1, ApprovePSRTimeResponseV1 } from '../models/PSR/approve-psr-time-v1';
-import { RejectPSRTimeRequestV1, RejectPSRTimeResponseV1 } from '../models/PSR/reject-psr-time-v1';
+import {
+  GetPSRTimeRequestV1,
+  GetPSRTimeV1,
+} from '../models/PSR/get-psr-time-v1';
+import {
+  ApprovePSRTimeRequestV1,
+  ApprovePSRTimeResponseV1,
+} from '../models/PSR/approve-psr-time-v1';
+import {
+  RejectPSRTimeRequestV1,
+  RejectPSRTimeResponseV1,
+} from '../models/PSR/reject-psr-time-v1';
+import {
+  GetChargeCodesRequestV1,
+  GetChargeCodesResponseV1,
+} from '../models/charge-codes/get-chargecodes-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -175,6 +191,16 @@ export class HQService {
       )
     );
   }
+
+  getChargeCodeseV1(request: Partial<GetChargeCodesRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetChargeCodesResponseV1>(
+          `${apiUrl}/v1/ChargeCodes/GetChargeCodesV1`,
+          request
+        )
+      )
+    );
+  }
 }
 // UpdateProjectStatusReportTimeV1
-
