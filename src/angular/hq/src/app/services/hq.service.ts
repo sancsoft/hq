@@ -1,3 +1,4 @@
+import { updatePSRTimeRequestV1, UpdatePSRTimeResponseV1 } from './../models/PSR/update-psr-time-v1';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
@@ -31,6 +32,8 @@ import {
 } from '../models/Invoices/get-invoices-v1';
 import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
 import { GetPSRTimeRequestV1, GetPSRTimeV1 } from '../models/PSR/get-psr-time-v1';
+import { ApprovePSRTimeRequestV1, ApprovePSRTimeResponseV1 } from '../models/PSR/approve-psr-time-v1';
+import { RejectPSRTimeRequestV1, RejectPSRTimeResponseV1 } from '../models/PSR/reject-psr-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -139,4 +142,39 @@ export class HQService {
       )
     );
   }
+
+  approvePSRTimeV1(request: Partial<ApprovePSRTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<ApprovePSRTimeResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/ApproveProjectStatusReportTimeRequestV1`,
+          request
+        )
+      )
+    );
+  }
+
+  rejectPSRTimeV1(request: Partial<RejectPSRTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<RejectPSRTimeResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/RejectProjectStatusReportTimeV1`,
+          request
+        )
+      )
+    );
+  }
+
+  updatePSRTimeV1(request: Partial<updatePSRTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdatePSRTimeResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/UpdateProjectStatusReportTimeV1`,
+          request
+        )
+      )
+    );
+  }
 }
+// UpdateProjectStatusReportTimeV1
+

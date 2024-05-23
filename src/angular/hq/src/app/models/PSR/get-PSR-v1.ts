@@ -4,10 +4,10 @@ import { SortDirection } from '../common/sort-direction';
 
 export interface GetPSRRequestV1 extends PagedRequestV1 {
   search?: string | null;
-  id?: string;
+  id?: string | null;
   clientId?: string;
-  sortBy: SortColumn;
-  sortDirection: SortDirection;
+  sortBy?: SortColumn;
+  sortDirection?: SortDirection;
 }
 
 export enum SortColumn {

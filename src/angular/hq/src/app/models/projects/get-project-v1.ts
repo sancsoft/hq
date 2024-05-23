@@ -1,45 +1,50 @@
-import { PagedRequestV1 } from "../common/paged-request-v1";
-import { PagedResponseV1 } from "../common/paged-response-v1";
-import { SortDirection } from "../common/sort-direction";
+import { ProjectStatus } from '../../clients/client-details.service';
+import { PagedRequestV1 } from '../common/paged-request-v1';
+import { PagedResponseV1 } from '../common/paged-response-v1';
+import { SortDirection } from '../common/sort-direction';
+import { QuoteStatus } from '../quotes/get-quotes-v1';
 
 export interface GetProjectRequestV1 extends PagedRequestV1 {
-    search?: string | null;
-    id?: string;
-    clientId?: string;
-    sortBy: SortColumn;
-    sortDirection: SortDirection;
+  search?: string | null;
+  id?: string;
+  clientId?: string;
+  sortBy: SortColumn;
+  sortDirection: SortDirection;
 }
 
-export enum SortColumn
-{
-    ProjectName = 1,
-    ProjectManagerName = 2,
-    StartDate = 3,
-    EndDate = 4
+export enum SortColumn {
+  ProjectName = 1,
+  ProjectManagerName = 2,
+  StartDate = 3,
+  EndDate = 4,
+  ChargeCode = 5,
+  ClientName = 6,
+  Status = 7
 }
 
 export interface GetProjectRecordV1 {
-  id: string;
-  projectNumber: number;
-  clientId: string;
+  id: number;
+  projectNumber: string;
+  chargeCode: string | null;
+  clientId: number;
   clientName: string;
-  projectManagerId: string | null;
+  projectManagerId: number;
   projectManagerName: string | null;
   name: string;
-  quoteId: string | null;
+  quoteId: number | null;
   quoteNumber: string | null;
-  chargeCode: string;
   hourlyRate: number;
   bookingHours: number;
-  bookingPeriod: number;
-  startDate: Date | null;
-  endDate: Date | null;
+  bookingPeriod: string;
+  startDate: Date;
+  endDate: Date;
+  status: ProjectStatus
 }
 
 export interface GetProjectRecordsV1 {
-  records : [GetProjectRecordV1];
+  records: [GetProjectRecordV1];
   total: number | null;
 }
 
-export interface GetProjectResponseV1 extends PagedResponseV1<GetProjectRecordV1> {
-}
+export interface GetProjectResponseV1
+  extends PagedResponseV1<GetProjectRecordV1> {}

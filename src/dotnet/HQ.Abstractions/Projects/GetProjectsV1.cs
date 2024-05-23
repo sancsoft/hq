@@ -25,7 +25,10 @@ public class GetProjectsV1
         ProjectName = 1,
         ProjectManagerName = 2,
         StartDate = 3,
-        EndDate = 4
+        EndDate = 4,
+        ChargeCode = 5,
+        ClientName = 6,
+        Status = 7
     }
 
     public class Response : PagedResponseV1<Record>;
@@ -47,5 +50,6 @@ public class GetProjectsV1
         public Period BookingPeriod { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
+        public int Status { get; set; }
     }
 }

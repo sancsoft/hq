@@ -224,7 +224,6 @@ public class ProjectStatusReportServiceV1
         var approvedCount = 0;
 
         var times = await _context.ProjectStatusReports
-            .AsNoTracking()
             .Where(t => t.Id == request.ProjectStatusReportId)
             .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeIds.Contains(x.Id)))
             .ToListAsync(ct);
@@ -254,7 +253,6 @@ public class ProjectStatusReportServiceV1
     public async Task<Result<RejectProjectStatusReportTimeV1.Response>> RejectProjectStatusReportTimeV1(RejectProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
     {
         var time = await _context.ProjectStatusReports
-            .AsNoTracking()
             .Where(t => t.Id == request.ProjectStatusReportId)
             .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeId == x.Id))
             .SingleOrDefaultAsync(ct);
@@ -275,7 +273,6 @@ public class ProjectStatusReportServiceV1
     public async Task<Result<UpdateProjectStatusReportTimeV1.Response>> UpdateProjectStatusReportTimeV1(UpdateProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
     {
         var time = await _context.ProjectStatusReports
-            .AsNoTracking()
             .Where(t => t.Id == request.ProjectStatusReportId)
             .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeId == x.Id))
             .SingleOrDefaultAsync(ct);
