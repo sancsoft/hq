@@ -4,7 +4,7 @@ export interface updatePSRTimeRequestV1 {
   billableHours: number;
   activity: string;
   notes: string;
-  chargeCode: string;
+  chargeCodeId: string;
 }
 
 export interface UpdatePSRTimeResponseV1 {

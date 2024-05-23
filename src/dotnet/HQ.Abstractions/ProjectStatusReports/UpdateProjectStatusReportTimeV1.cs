@@ -9,7 +9,7 @@ public class UpdateProjectStatusReportTimeV1
         public decimal? BillableHours { get; set; }
         public string? Activity { get; set; }
         public string? Notes { get; set; }
-        public string? ChargeCode { get; set; }
+        public string? ChargeCodeId { get; set; }
 
     }
 
