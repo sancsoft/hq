@@ -7,6 +7,7 @@ using HQ.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HQ.Abstractions.ServicesAgreement;
+using HQ.Server.Authorization;
 
 namespace HQ.Server.Controllers
 {
@@ -25,6 +26,7 @@ namespace HQ.Server.Controllers
             _servicesAgreement = servicesAgreement;
         }
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(GetServicesAgreementV1))]
         [ProducesResponseType<GetServicesAgreementV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> ServicesAgreementV1([FromBody] GetServicesAgreementV1.Request request, CancellationToken ct = default) =>

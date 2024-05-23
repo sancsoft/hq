@@ -3,6 +3,7 @@ using FluentResults.Extensions.AspNetCore;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Common;
 using HQ.API;
+using HQ.Server.Authorization;
 using HQ.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,18 +25,21 @@ namespace HQ.Server.Controllers
             _clientService = clientService;
         }
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(GetClientsV1))]
         [ProducesResponseType<GetClientsV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> GetClientsV1([FromBody] GetClientsV1.Request request, CancellationToken ct = default) =>
-            _clientService.GetClientsV1(request, ct)
+             _clientService.GetClientsV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(UpsertClientV1))]
         [ProducesResponseType<UpsertClientV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> UpsertClientV1([FromBody] UpsertClientV1.Request request, CancellationToken ct = default) =>
             _clientService.UpsertClientV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(DeleteClientV1))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -43,6 +47,7 @@ namespace HQ.Server.Controllers
             _clientService.DeleteClientV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(ImportClientsV1))]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

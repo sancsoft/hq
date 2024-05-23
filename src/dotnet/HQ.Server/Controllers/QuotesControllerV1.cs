@@ -8,6 +8,7 @@ using FluentResults.Extensions.AspNetCore;
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Quotes;
 using HQ.API;
+using HQ.Server.Authorization;
 using HQ.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,7 @@ namespace HQ.Server.Controllers
             _quoteService = quoteService;
         }
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(GetQuotesV1))]
         [ProducesResponseType<GetQuotesV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> GetQuotesV1([FromBody] GetQuotesV1.Request request, CancellationToken ct = default) =>
