@@ -2,6 +2,7 @@
 using HQ.Server.Authorization;
 using HQ.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,8 @@ public class APICommand : AsyncCommand
             options.SuppressMapClientErrors = true;
             options.SuppressModelStateInvalidFilter = true;
         });
+
+        builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizationHandler>();
 
         builder.Services.AddCors(options =>
         {
