@@ -29,6 +29,11 @@ import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 
+export interface ClientNameId {
+  id: string;
+  name: string;
+}
+
 @Component({
   selector: 'hq-client-list',
   standalone: true,
@@ -41,11 +46,12 @@ import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
   ],
   templateUrl: './client-list.component.html',
 })
+
 export class ClientListComponent {
   @Input() showViewButtons: boolean = true;
   @Input() showEditButtons: boolean = true;
   @Input() SelectClientEnabled: boolean = false;
-  @Output() selectedClient = new EventEmitter<string>();
+  @Output() selectedClient = new EventEmitter<GetClientRecordV1>();
 
   search = new FormControl('', { nonNullable: true });
   itemsPerPage = new FormControl(10, { nonNullable: true });
@@ -60,7 +66,7 @@ export class ClientListComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
-  private currentClient$ = new BehaviorSubject<string | null>(null);
+  private currentClient$ = new BehaviorSubject<GetClientRecordV1 | null>(null);
 
   constructor(private hqService: HQService) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Name);
@@ -115,12 +121,12 @@ export class ClientListComponent {
   goToPage(page: number) {
     this.page.setValue(page);
   }
-  toggleClient(clientId: string) {
-    this.selectedClient.emit(clientId);
-    this.currentClient$.next(clientId);
+  toggleClient(client: GetClientRecordV1) {
+    this.selectedClient.emit(client);
+    this.currentClient$.next(client);
   }
   isClientSelected(clientId: string) {
-    return this.currentClient$.pipe(map((c) => c == clientId));
+    return this.currentClient$.pipe(map((c) => c?.id == clientId));
   }
 
   onSortClick(sortColumn: SortColumn) {

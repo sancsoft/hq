@@ -16,228 +16,240 @@
                             <a href="#" routerLink="projects" routerLinkActive="border-gray-100" class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a>
                         </div>
                         <div class="flex flex-column justify-center items-center">
-                            <button class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
+                            <button (click)="onSubmitProject()" class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
                                 Save
                             </button>
                         </div>
                     </div>
                 </div>
-                <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
-                    <div class="p-5 pr-0">
-                        <form class="grid gap-[20px]">
-                            <!-- row grid -->
-                            <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
-                                <!-- column -->
-                                <div>
-                                    <!-- select dropdown -->
-                                    <div class="grid relative w-full max-w-[395px]">
-                                        <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]" (click)="modalOpen = !modalOpen" (mousedown)="$event.preventDefault();">
-                                            <option value="">Select Client</option>
-                                            <option vallue="t">Client Name One</option>
-                                            <option vallue="t">Client Name Two</option>
-                                            <option vallue="t">Client Name Three</option>
-                                        </select>
-                                        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                                            <i class="bi bi-arrow-right-short text-[24px]"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- row grid -->
-                            <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
-                                <!-- column -->
-                                <div>
-                                    <!-- text input -->
-                                    <input type="text" name="fullname" id="fullname" class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Project Full Name">
-                                </div>
-                                <!-- column -->
-                                <div>
-                                    <!-- text input -->
-                                    <input type="text" name="canatednated" id="canatednated" class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Project Name - Cancatenated">
-                                </div>
-                            </div>
-                            <!-- row grid -->
-                            <div class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)] pr-5">
-                                <!-- column -->
-                                <div>
-                                    <!-- select dropdown -->
-                                    <div class="grid relative w-full max-w-[220px]">
-                                      @if (projectManagers$ | async; as projectManagers) {
-                                        <select  class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
-                                          <option  *ngFor="let projectManager of projectManagers"  [value] = "projectManager.name">{{projectManager.name}}</option>
-                                      </select>
-                                      }
-                                        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                                            <i class="bi bi-arrow-down-short text-[24px]"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <!-- column -->
-                                <div>
-                                    <div class="flex items-center">
-                                        <!-- text input w/icon to left -->
-                                        <div class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]">
-                                            <span class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block">
-                                                <i class="bi bi-currency-dollar text-[14px]"></i>
-                                            </span>
-                                            <input type="text" name="" id="" class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded" placeholder="00.00">
-                                        </div>
-                                        <span class="ml-[8px] font-semibold">p / hr</span>
-                                    </div>
-                                </div>
-                            </div>
+                <form [formGroup]="projectFormGroup" (ngSubmit)="onSubmitProject()">
 
-                            <!-- section heading -->
-                            <div class="border-b border-black mt-10">
-                                <div class="font-bold mb-[3px] px-2">Billing</div>
-                            </div>
-
-                            <!-- row grid -->
-                            <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5">
-                                <!-- column -->
-                                <div>
-                                    <input type="text" name="" id="" class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Total hrs">
-                                </div>
-                                <!-- column -->
-                                <div>
-                                    <!-- select dropdown -->
-                                    <div class="grid relative w-full max-w-[395px]">
-                                        <!-- add border-red-700 class for input required/error -->
-                                        <select name="test" id="test" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-red-700 text-gray-100 bg-blue-900 rounded h-[36px]">
-                                            <option value="">Period?</option>
-                                            <option vallue="">Period 1</option>
-                                            <option vallue="">Period 2</option>
-                                            <option vallue="">Period 3</option>
-                                        </select>
-                                        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                                            <i class="bi bi-arrow-right-short text-[24px]"></i>
-                                        </span>
-                                        <!-- add/remove hidden class to show/hide error message -->
-                                        <span class="text-red-700 text-xs leading-normal inline-block">Required: Error message here</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- row grid -->
-                            <div class="grid gap-[20px] grid-flow-row pr-5">
-                                <!-- column -->
-                                <div class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]">
-                                    <!-- input date -->
-                                    <div class="grid relative w-full max-w-[220px]">
-                                        <input type="date" name="" id="" class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase">
-                                        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                                            <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
-                                        </span>
-                                    </div>
-                                    <div  class="flex align-middle justify-center items-center">-</div>
-                                    <!-- input date -->
-                                    <div class="grid relative w-full max-w-[220px]">
-                                        <input type="date" name="" id="" class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase">
-                                        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                                            <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- row grid -->
-                            <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5">
-                                <!-- column -->
-                                <div>
-                                    <input type="text" name="" id="" class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Value">
-                                </div>
-                            </div>
-
-                            <!-- engagement tab form fields below: hidden for now incase we need these on another screen -->
-                            <div class="hidden">
+                    <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
+                        <div class="p-5 pr-0">
+                            <div class="grid gap-[20px]">
                                 <!-- row grid -->
                                 <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
                                     <!-- column -->
                                     <div>
                                         <!-- select dropdown -->
                                         <div class="grid relative w-full max-w-[395px]">
-                                            <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
-                                                <option value="">Equipment Type</option>
-                                                <option vallue="">Type 1</option>
-                                                <option vallue="">Type 2</option>
-                                                <option vallue="">Type 3</option>
-                                            </select>
+
+                                            <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]" (click)="modalOpen = !modalOpen" (mousedown)="$event.preventDefault();">
+                                              <option *ngIf="(selectedClientName | async) === null" value="">Select Client</option>
+
+                                             <option *ngIf="(selectedClientName | async) as clientId" [value]="clientId">{{ clientId }}</option>
+
+                                        </select>
                                             <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                                                <i class="bi bi-arrow-down-short text-[24px]"></i>
-                                            </span>
+                                            <i class="bi bi-arrow-right-short text-[24px]"></i>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- row grid -->
+                                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                                    <!-- column -->
+                                    <div>
+                                        <!-- text input -->
+                                        <input formControlName="name" type="text" name="fullname" id="fullname" class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Project Full Name">
+                                    </div>
+                                    <!-- column -->
+                                    <div class="hidden">
+                                        <!-- text input -->
+                                        <input type="text" name="canatednated" id="canatednated" class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Project Name - Cancatenated">
+                                    </div>
+                                </div>
+                                <!-- row grid -->
+                                <div class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)] pr-5">
+                                    <!-- column -->
+                                    <div>
+                                        <!-- select dropdown -->
+                                        <div class="grid relative w-full max-w-[220px]">
+                                            <ng-container *ngIf="projectManagers$ | async as projectManagers">
+                                                <select formControlName="projectManagerId" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
+                                                <option value="" disabled selected>Select Project Manager</option>
+                                                <option *ngFor="let projectManager of projectManagers" [value]="projectManager.id">{{projectManager.name}}</option>
+                                            </select>
+                                            </ng-container>
+                                            <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                            <i class="bi bi-arrow-down-short text-[24px]"></i>
+                                        </span>
                                         </div>
                                     </div>
                                     <!-- column -->
                                     <div>
-                                        <!-- div input -->
-                                        <div class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%] max-w-[395px]">
-                                            filename.ext
+                                        <div class="flex items-center">
+                                            <!-- text input w/icon to left -->
+                                            <div class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]">
+                                                <span class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block">
+                                                <i class="bi bi-currency-dollar text-[14px]"></i>
+                                            </span>
+                                                <input formControlName="hourlyRate" type="text" name="" id="" class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded" placeholder="00.00">
+                                            </div>
+                                            <span class="ml-[8px] font-semibold">p / hr</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- section heading -->
+                                <div class="border-b border-black mt-10">
+                                    <div class="font-bold mb-[3px] px-2">Billing</div>
+                                </div>
+
+                                <!-- row grid -->
+                                <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5">
+                                    <!-- column -->
+                                    <div>
+                                        <input formControlName="totalHours" type="text" name="" id="" class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Total hrs">
+                                    </div>
+                                    <!-- column -->
+                                    <div>
+                                        <!-- select dropdown -->
+                                        <div class="grid relative w-full max-w-[395px]">
+                                            <!-- add border-red-700 class for input required/error -->
+                                            <select formControlName="bookingPeriod" name="test" id="test" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border  text-gray-100 bg-blue-900 rounded h-[36px]">
+                                            <!-- <option value="Period?">Period?</option> -->
+                                            <option value="1">Week</option>
+                                            <option value="2">Month</option>
+                                            <option value="3">Quarter</option>
+                                            <option value="4">Year</option>
+
+                                        </select>
+                                            <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                            <i class="bi bi-arrow-right-short text-[24px]"></i>
+                                        </span>
+                                            <!-- add/remove hidden class to show/hide error message -->
+                                            <!-- <div *ngIf="period.touched && period.errors">
+                                                <span class="text-red-700 text-xs leading-normal inline-block">Required: Error message here</span>
+
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- row grid -->
-                                <div class="grid gap-[20px] grid-flow-col pr-5">
+                                <div class="grid gap-[20px] grid-flow-row pr-5">
+                                    <!-- column -->
+                                    <div class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]">
+                                        <!-- input date -->
+                                        <div class="grid relative w-full max-w-[220px]">
+                                            <input formControlName="startDate" type="date" name="" id="" class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase">
+                                            <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                            <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                                        </span>
+                                        </div>
+                                        <div class="flex align-middle justify-center items-center">-</div>
+                                        <!-- input date -->
+                                        <div class="grid relative w-full max-w-[220px]">
+                                            <input formControlName="endDate" type="date" name="" id="" class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase">
+                                            <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                            <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- row grid -->
+                                <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5">
                                     <!-- column -->
                                     <div>
-                                        <!-- textarea -->
-                                        <textarea class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded" placeholder="Optional Notes"></textarea>
+                                        <input type="text" name="" id="" class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Value">
+                                    </div>
+                                </div>
+
+                                <!-- engagement tab form fields below: hidden for now incase we need these on another screen -->
+                                <div class="hidden">
+                                    <!-- row grid -->
+                                    <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                                        <!-- column -->
+                                        <div>
+                                            <!-- select dropdown -->
+                                            <div class="grid relative w-full max-w-[395px]">
+                                                <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
+                                                <option value="">Equipment Type</option>
+                                                <option vallue="">Type 1</option>
+                                                <option vallue="">Type 2</option>
+                                                <option vallue="">Type 3</option>
+                                            </select>
+                                                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                                                <i class="bi bi-arrow-down-short text-[24px]"></i>
+                                            </span>
+                                            </div>
+                                        </div>
+                                        <!-- column -->
+                                        <div>
+                                            <!-- div input -->
+                                            <div class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%] max-w-[395px]">
+                                                filename.ext
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- row grid -->
+                                    <div class="grid gap-[20px] grid-flow-col pr-5">
+                                        <!-- column -->
+                                        <div>
+                                            <!-- textarea -->
+                                            <textarea class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded" placeholder="Optional Notes"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                    <div class="flex flex-col pt-5">
-                        <form class="grid gap-[20px]">
-                            <!-- row grid -->
-                            <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_98px_auto] px-5 2xl:px-0">
-                                <!-- column -->
-                                <div>
-                                    <!-- select dropdown -->
-                                    <div class="grid relative w-full max-w-[395px]">
-                                        <select class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
-                                            <option value="">Select Quote</option>
-                                            <option vallue="Q1000">Q1000</option>
-                                            <option vallue="Q1001">Q1001</option>
-                                            <option vallue="Q1002">Q1002</option>
-                                        </select>
-                                        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                        </div>
+                        <div class="flex flex-col pt-5">
+                            <div class="grid gap-[20px]">
+                                <!-- row grid -->
+                                <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_98px_auto] px-5 2xl:px-0">
+                                    <!-- column -->
+                                    <div>
+                                        <!-- select dropdown -->
+
+                                        <div class="grid relative w-full max-w-[395px]">
+                                            @if (quotes$ | async; as quotes) {
+                                            <select formControlName="quoteId" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
+                                          <option value="" disabled selected>Select a quote</option>
+                                              <option (change)="quoteSelected(quote)"  *ngFor="let quote of quotes" [value]="quote.id">{{quote.chargeCode}}</option>
+
+                                      </select> }
+
+                                            <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                                             <i class="bi bi-arrow-right-short text-[24px]"></i>
                                         </span>
+                                        </div>
+                                    </div>
+                                    <!-- column -->
+                                    <div>
+                                        <!-- div input -->
+                                        <div class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-full max-w-[98px]">
+                                            {{selectedQuoteChargeCode$ | async}}
+                                        </div>
+                                    </div>
+                                    <!-- column -->
+                                    <div class="flex items-center">
+                                        <a href="#" class="block p-2 hover:text-gray-50" title="Download"><i class="bi bi-cloud-download-fill"></i></a>
                                     </div>
                                 </div>
-                                <!-- column -->
-                                <div>
-                                    <!-- div input -->
-                                    <div class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-full max-w-[98px]">
-                                        Q1000
+                            </div>
+                            <!-- flex flex-col flex-grow -->
+                            <div class="bg-black mt-4 px-[15px] mx-5 2xl:mx-0 w-fit 2xl:w-full">
+                                <!-- flex flex-grow -->
+                                <div class=" bg-white">
+                                    <img src="https://fakeimg.pl/560x730/cccccc/909090?text=Quote" class="h-auto max-w-full mx-auto" />
+                                </div>
+                                <div class="grid grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] h-[30px] items-center">
+                                    <div>
+                                        <a href="" class="px-2 text-red-850"><i class="bi bi-trash3-fill text-[18px]"></i></a>
                                     </div>
+                                    <div>
+                                        <a href="" class="px-2 text-gray-50"><i class="bi bi-arrow-left-short text-[20px]"></i></a>
+                                        <a href="" class="px-2 text-gray-100"><i class="bi bi-arrow-right-short text-[20px]"></i></a>
+                                    </div>
+                                    <div class="ml-auto text-gray-50 text-xs">1 / 2</div>
                                 </div>
-                                <!-- column -->
-                                <div class="flex items-center">
-                                    <a href="#" class="block p-2 hover:text-gray-50" title="Download"><i class="bi bi-cloud-download-fill"></i></a>
-                                </div>
-                            </div>
-                        </form>
-                        <!-- flex flex-col flex-grow -->
-                        <div class="bg-black mt-4 px-[15px] mx-5 2xl:mx-0 w-fit 2xl:w-full">
-                            <!-- flex flex-grow -->
-                            <div class=" bg-white">
-                                <img src="https://fakeimg.pl/560x730/cccccc/909090?text=Quote" class="h-auto max-w-full mx-auto" />
-                            </div>
-                            <div class="grid grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] h-[30px] items-center">
-                                <div>
-                                    <a href="" class="px-2 text-red-850"><i class="bi bi-trash3-fill text-[18px]"></i></a>
-                                </div>
-                                <div>
-                                    <a href="" class="px-2 text-gray-50"><i class="bi bi-arrow-left-short text-[20px]"></i></a>
-                                    <a href="" class="px-2 text-gray-100"><i class="bi bi-arrow-right-short text-[20px]"></i></a>
-                                </div>
-                                <div class="ml-auto text-gray-50 text-xs">1 / 2</div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </main>
             <aside class="border-l border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(192px))]">
                 <div class="overflow-y-auto h-[275px]">
@@ -249,13 +261,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for(i of [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,7]; track i)
-                            {
-                                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                                    <td class="border-b border-black py-2 pl-5">MM/DD/YYYY</td>
-                                    <td class="border-b border-black py-2">0000.00</td>
-                                    <td class="border-b border-black py-2 text-right pr-5"><a class="text-teal-200 hover:text-teal-300">VIEW</a></td>
-                                </tr>
+                            @for(i of [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,7]; track i) {
+                            <tr class="even:bg-gray-850 odd:bg-black-alt">
+                                <td class="border-b border-black py-2 pl-5">MM/DD/YYYY</td>
+                                <td class="border-b border-black py-2">0000.00</td>
+                                <td class="border-b border-black py-2 text-right pr-5"><a class="text-teal-200 hover:text-teal-300">VIEW</a></td>
+                            </tr>
                             }
                         </tbody>
                     </table>
@@ -298,7 +309,7 @@
             </div>
 
             <!--Body-->
-           <hq-client-list (selectedClient) = "updateSelectedClient($event)" [SelectClientEnabled] = "true" [showViewButtons]="false" [showEditButtons] = "false"></hq-client-list>
+            <hq-client-list (selectedClient)="updateSelectedClient($event)" [SelectClientEnabled]="true" [showViewButtons]="false" [showEditButtons]="false"></hq-client-list>
 
             <!--Footer-->
             <div class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900">
