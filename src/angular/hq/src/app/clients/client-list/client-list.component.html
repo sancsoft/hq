@@ -21,40 +21,68 @@
 </div>
 
 <table class="min-w-full border-spacing-0 border-separate">
-    <thead>
-        <tr class="sticky top-0 text-left">
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">Client Name <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Rate <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Billing Email <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Official Name <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
-                <button routerLink="/clients/create" class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
-                    <i class="bi bi-plus"></i>
-                    Client
-                </button>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @for(client of records$ | async; track client.id)
-        {
-            <tr class="even:bg-gray-850 odd:bg-black-alt">
-                <td class="border-b border-black py-2 pl-5">{{ client.name }}</td>
-                <td class="border-b border-black py-2">{{ (client.hourlyRate | currency) ?? 'None' }}</td>
-                <td class="border-b border-black py-2">
-                    @if(client.billingEmail) {
-                        <a href="mailto:{{ client.billingEmail }}">{{ client.billingEmail}}</a>
-                    } @else {
-                        None
-                    }
-                </td>
-                <td class="border-b border-black py-2">{{ client.officialName ?? 'None' }}</td>
-                <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="['edit', client.id]" class="text-teal-200 hover:text-teal-300">EDIT</a></td>
-                <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[client.id]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
-            </tr>
-        }
-    </tbody>
+  <thead>
+      <tr class="sticky top-0 text-left">
+        <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        (click)="onSortClick(sortColumn.Name)">
+        Client Name <hq-sort-icon [column]="sortColumn.Name" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+      </th>
+      <th
+      scope="col"
+      class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+      (click)="onSortClick(sortColumn.HourlyRate)">
+      Rate <hq-sort-icon [column]="sortColumn.HourlyRate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+    </th>
+    <th
+    scope="col"
+    class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+    (click)="onSortClick(sortColumn.BillingEmail)">
+    Billing Email <hq-sort-icon [column]="sortColumn.BillingEmail" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+  </th>
+  <th
+    scope="col"
+    class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+    (click)="onSortClick(sortColumn.OfficialName)">
+    Official Name <hq-sort-icon [column]="sortColumn.OfficialName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+  </th>
+
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
+              <button routerLink="/clients/create" class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
+                  <i class="bi bi-plus"></i>
+                  Client
+              </button>
+          </th>
+      </tr>
+  </thead>
+  <tbody>
+      <ng-container *ngFor="let client of records$ | async; ">
+          <tr (click)="toggleClient(client.id)"  [ngClass]="{ 'bg-blue-900': (isClientSelected(client.id) | async), 'even:bg-gray-850 odd:bg-black-alt': !(isClientSelected(client.id) | async) || !SelectClientEnabled }">
+              <td  class="border-b border-black py-2 pl-5">{{ client.name }}</td>
+              <td class="border-b border-black py-2">{{ client.hourlyRate | currency: 'USD' : 'symbol' : '1.2-2' : 'en-US' || 'None' }}</td>
+              <td class="border-b border-black py-2">
+                  <ng-container *ngIf="client.billingEmail; else noEmail">
+                      <a href="mailto:{{ client.billingEmail }}">{{ client.billingEmail }}</a>
+                  </ng-container>
+                  <ng-template #noEmail>None</ng-template>
+              </td>
+              <td class="border-b border-black py-2">{{ client.officialName || 'None' }}</td>
+              <ng-container *ngIf="showEditButtons">
+                  <td class="border-b border-black py-2 text-right pr-5">
+                      <a [routerLink]="['edit', client.id]" class="text-teal-200 hover:text-teal-300">EDIT</a>
+                  </td>
+              </ng-container>
+              <ng-container *ngIf="showViewButtons">
+                  <td class="border-b border-black py-2 text-right pr-5">
+                      <a [routerLink]="[client.id]" class="text-teal-200 hover:text-teal-300">VIEW</a>
+                  </td>
+              </ng-container>
+          </tr>
+      </ng-container>
+  </tbody>
 </table>
+
 <div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
     <div>
         <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2" [formControl]="itemsPerPage">

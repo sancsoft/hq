@@ -50,6 +50,7 @@ import {
   GetChargeCodesRequestV1,
   GetChargeCodesResponseV1,
 } from '../models/charge-codes/get-chargecodes-v1';
+import { GetStaffV1Request, GetStaffV1Response } from '../models/staff-members/get-staff-member-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -197,6 +198,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetChargeCodesResponseV1>(
           `${apiUrl}/v1/ChargeCodes/GetChargeCodesV1`,
+          request
+        )
+      )
+    );
+  }
+
+  getStaffMembersV1(request: Partial<GetStaffV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetStaffV1Response>(
+          `${apiUrl}/v1/Staff/GetStaffV1`,
           request
         )
       )

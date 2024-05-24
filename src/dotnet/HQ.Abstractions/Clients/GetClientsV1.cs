@@ -23,7 +23,9 @@ public class GetClientsV1
     {
         CreatedAt = 1,
         Name = 2,
-        HourlyRate = 3
+        HourlyRate = 3,
+        BillingEmail = 4,
+        OfficialName = 5,
     }
 
     public class Response : PagedResponseV1<Record>;
