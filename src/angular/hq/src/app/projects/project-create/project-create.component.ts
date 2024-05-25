@@ -13,10 +13,12 @@ import {
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { ClientListComponent } from '../../clients/client-list/client-list.component';
@@ -25,7 +27,7 @@ import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { UpsertProjectRequestV1 } from '../../models/projects/upsert-project-v1';
-import { BrowserModule } from '@angular/platform-browser';
+import { Router, ActivatedRoute } from '@angular/router';
 
 export enum Period {
   Week = 1,
@@ -52,19 +54,25 @@ export class ProjectCreateComponent {
   selectedQuote$ = new Observable<string>();
   quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
 
-  apiErrors?: string[];
+  apiErrors: string[] = [];
   selectedClientName = new BehaviorSubject<string | null>(null);
-  projectFormGroup = new FormGroup({
-    clientId: new FormControl(''),
-    name: new FormControl('', Validators.required),
-    projectManagerId: new FormControl(''),
-    hourlyRate: new FormControl(0, [Validators.required, Validators.min(0)]),
-    totalHours: new FormControl('', [Validators.required, Validators.min(0)]),
-    bookingPeriod: new FormControl(0, [Validators.required, Validators.min(0)]),
-    quoteId: new FormControl('', Validators.required),
-    startDate: new FormControl(new Date(), Validators.required),
-    endDate: new FormControl(new Date(), Validators.required),
-  });
+  projectFormGroup = new FormGroup(
+    {
+      clientId: new FormControl(''),
+      name: new FormControl('', Validators.required),
+      projectManagerId: new FormControl(''),
+      hourlyRate: new FormControl(0, [Validators.required, Validators.min(0)]),
+      totalHours: new FormControl('', [Validators.required, Validators.min(0)]),
+      bookingPeriod: new FormControl(0, [
+        Validators.required,
+        Validators.min(0),
+      ]),
+      quoteId: new FormControl('', Validators.required),
+      startDate: new FormControl(new Date(), Validators.required),
+      endDate: new FormControl(new Date(), Validators.required),
+    },
+    { validators: this.dateRangeValidator }
+  );
 
   // PDF VIEWER
   page: number = 1;
@@ -73,7 +81,11 @@ export class ProjectCreateComponent {
 
   modalOpen$ = new BehaviorSubject<boolean>(false);
 
-  constructor(private hqService: HQService) {
+  constructor(
+    private hqService: HQService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     const response$ = this.hqService.getStaffMembersV1({});
     const quotesResponse$ = this.hqService.getQuotesV1({});
 
@@ -112,11 +124,13 @@ export class ProjectCreateComponent {
   }
 
   async onSubmitProject() {
-    console.log('test');
     console.log(this.projectFormGroup);
-
     try {
-      if (this.projectFormGroup.valid && this.projectFormGroup.dirty) {
+      if (
+        this.projectFormGroup.valid &&
+        this.projectFormGroup.touched &&
+        this.projectFormGroup.dirty
+      ) {
         const request = this.projectFormGroup.value;
         request.bookingPeriod = Number(request.bookingPeriod);
         console.log('Sending Request:', request);
@@ -124,11 +138,16 @@ export class ProjectCreateComponent {
           this.hqService.upsertProjectV1(request)
         );
         console.log(response);
+        this.router.navigate(['../', response.id], { relativeTo: this.route });
+      } else {
+        this.apiErrors.push(
+          'Please correct the errors in the form before submitting.'
+        );
       }
-      // this.router.navigate(['../', response.id], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
+        console.log(this.apiErrors);
       } else {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
@@ -162,5 +181,13 @@ export class ProjectCreateComponent {
 
   prevPage() {
     this.page--;
+  }
+
+  dateRangeValidator(group: AbstractControl): ValidationErrors | null {
+    const startDate = group.get('startDate')?.value;
+    const endDate = group.get('endDate')?.value;
+    return startDate && endDate && startDate > endDate
+      ? { invalidDateRange: true }
+      : null;
   }
 }

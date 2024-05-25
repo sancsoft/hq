@@ -29,6 +29,7 @@
                 >Details</a
               >
             </div>
+
             <div class="flex flex-column justify-center items-center">
               <button
                 (click)="onSubmitProject()"
@@ -39,6 +40,11 @@
             </div>
           </div>
         </div>
+        @if(this.apiErrors) { @for (error of this.apiErrors; track $index) {
+        <div class="text-red-700 text-xs leading-normal inline-block">
+          {{ error }}
+        </div>
+        } }
         <form [formGroup]="projectFormGroup" (ngSubmit)="onSubmitProject()">
           <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
             <div class="p-5 pr-0">
@@ -93,7 +99,37 @@
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                       placeholder="Project Full Name"
                     />
+                    <div
+                      *ngIf="
+                        projectFormGroup.get('name')?.touched &&
+                        projectFormGroup.get('name')?.errors
+                      "
+                    >
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('name')?.errors?.['required']"
+                      >
+                        Project full name is required.
+                      </span>
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('name')?.errors?.['minlength']"
+                      >
+                        Project full name must be at least
+                        {{ projectFormGroup.get('name')?.errors?.['minlength']?.requiredLength }}
+                        characters long.
+                      </span>
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('name')?.errors?.['maxlength']"
+                      >
+                        Project full name cannot be more than
+                        {{ projectFormGroup.get('name')?.errors?.['maxlength']?.requiredLength }}
+                        characters long.
+                      </span>
+                    </div>
                   </div>
+
                   <!-- column -->
                   <div class="hidden">
                     <!-- text input -->
@@ -162,6 +198,47 @@
                       </div>
                       <span class="ml-[8px] font-semibold">p / hr</span>
                     </div>
+                    <div
+                      *ngIf="
+                        projectFormGroup.get('hourlyRate')?.touched &&
+                        projectFormGroup.get('hourlyRate')?.errors
+                      "
+                    >
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('hourlyRate')?.errors?.['required']"
+                      >
+                        Hourly rate is required.
+                      </span>
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('hourlyRate')?.errors?.['min']"
+                      >
+                        Minimum value for hourly rate is
+                        {{ projectFormGroup.get('hourlyRate')?.errors?.['min']?.min
+
+
+
+
+
+
+                        }}.
+                      </span>
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('hourlyRate')?.errors?.['max']"
+                      >
+                        Maximum value for hourly rate is
+                        {{ projectFormGroup.get('hourlyRate')?.errors?.['max']?.max
+
+
+
+
+
+
+                        }}.
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -184,7 +261,51 @@
                       class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                       placeholder="Total hrs"
                     />
+                    <div
+                      *ngIf="
+                        projectFormGroup.get('totalHours')?.touched &&
+                        projectFormGroup.get('totalHours')?.errors
+                      "
+                    >
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('totalHours')?.errors?.['required']"
+                      >
+                        Total hours is required.
+                      </span>
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('totalHours')?.errors?.['min']"
+                      >
+                        Minimum value for total hours is
+                        {{ projectFormGroup.get('totalHours')?.errors?.['min']?.min
+
+
+
+
+
+
+
+                        }}.
+                      </span>
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('totalHours')?.errors?.['max']"
+                      >
+                        Maximum value for total hours is
+                        {{ projectFormGroup.get('totalHours')?.errors?.['max']?.max
+
+
+
+
+
+
+
+                        }}.
+                      </span>
+                    </div>
                   </div>
+
                   <!-- column -->
                   <div>
                     <!-- select dropdown -->
@@ -208,10 +329,17 @@
                         <i class="bi bi-arrow-right-short text-[24px]"></i>
                       </span>
                       <!-- add/remove hidden class to show/hide error message -->
-                      <!-- <div *ngIf="period.touched && period.errors">
-                                                <span class="text-red-700 text-xs leading-normal inline-block">Required: Error message here</span>
-
-                                            </div> -->
+                      <div
+                        *ngIf="
+                          projectFormGroup.get('bookingPeriod')?.touched &&
+                          projectFormGroup.get('bookingPeriod')?.errors
+                        "
+                      >
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                          >Required: Error message here</span
+                        >
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -227,8 +355,6 @@
                       <input
                         formControlName="startDate"
                         type="date"
-                        name=""
-                        id=""
                         class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
                       />
                       <span
@@ -239,16 +365,35 @@
                         ></i>
                       </span>
                     </div>
+                    <div
+                      *ngIf="
+                        projectFormGroup.get('startDate')?.touched &&
+                        projectFormGroup.get('startDate')?.errors
+                      "
+                    >
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('startDate')?.errors?.['required']"
+                      >
+                        Start date is required.
+                      </span>
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.errors?.['invalidDateRange']"
+                      >
+                        Start date cannot be after end date.
+                      </span>
+                    </div>
+
                     <div class="flex align-middle justify-center items-center">
                       -
                     </div>
+
                     <!-- input date -->
                     <div class="grid relative w-full max-w-[220px]">
                       <input
                         formControlName="endDate"
                         type="date"
-                        name=""
-                        id=""
                         class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
                       />
                       <span
@@ -257,6 +402,25 @@
                         <i
                           class="bi bi-arrow-down-short text-[24px] bg-blue-900"
                         ></i>
+                      </span>
+                    </div>
+                    <div
+                      *ngIf="
+                        projectFormGroup.get('endDate')?.touched &&
+                        projectFormGroup.get('endDate')?.errors
+                      "
+                    >
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('endDate')?.errors?.['required']"
+                      >
+                        End date is required.
+                      </span>
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.errors?.['invalidDateRange']"
+                      >
+                        End date cannot be before start date.
                       </span>
                     </div>
                   </div>
@@ -358,6 +522,19 @@
                         class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
                       >
                         <i class="bi bi-arrow-right-short text-[24px]"></i>
+                      </span>
+                    </div>
+                    <div
+                      *ngIf="
+                        projectFormGroup.get('quoteId')?.touched &&
+                        projectFormGroup.get('quoteId')?.errors
+                      "
+                    >
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('quoteId')?.errors?.['required']"
+                      >
+                        Quote selection is required.
                       </span>
                     </div>
                   </div>
