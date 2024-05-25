@@ -22,6 +22,8 @@ import { ClientListComponent } from '../../clients/client-list/client-list.compo
 import { GetQuotesRecordV1 } from '../../models/quotes/get-quotes-v1';
 import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
+import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
+import { UpsertProjectRequestV1 } from '../../models/projects/upsert-project-v1';
 
 export enum Period {
   Week = 1,
@@ -37,14 +39,14 @@ export enum Period {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ClientListComponent,
+    SelectableClientListComponent,
   ],
   templateUrl: './project-create.component.html',
 })
 export class ProjectCreateComponent {
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
-  selectedQuoteChargeCode$ = new BehaviorSubject<string>('');
+  selectedQuote$ = new Observable<string>();
 
   apiErrors?: string[];
   selectedClientName = new BehaviorSubject<string | null>(null);
@@ -60,7 +62,8 @@ export class ProjectCreateComponent {
     endDate: new FormControl(new Date(), Validators.required),
   });
 
-  modalOpen = false;
+  modalOpen$ = new BehaviorSubject<boolean>(false);
+
   constructor(private hqService: HQService) {
     const response$ = this.hqService.getStaffMembersV1({});
     const quotesResponse$ = this.hqService.getQuotesV1({});
@@ -88,9 +91,15 @@ export class ProjectCreateComponent {
   projectManagerSelected(id: string) {
     this.projectFormGroup.get('projectManagerId')?.setValue(id);
   }
-  quoteSelected(quote: GetQuotesRecordV1) {
-    this.selectedQuoteChargeCode$.next(quote.chargeCode);
-    console.log(this.selectedQuoteChargeCode$);
+  quoteSelected(event: any) {
+    let quoteId = event.value;
+    this.selectedQuote$ = this.quotes$.pipe(
+      map((quotes) => {
+        console.log(quotes);
+        const quote = quotes.find((quote) => quote.id === quoteId);
+        return quote ? quote.chargeCode : 'Quote not found';
+      })
+    );
   }
 
   async onSubmitProject() {
@@ -98,13 +107,14 @@ export class ProjectCreateComponent {
     console.log(this.projectFormGroup);
 
     try {
-
-      if (this.projectFormGroup.valid) {
+      if (this.projectFormGroup.valid && this.projectFormGroup.dirty) {
         const request = this.projectFormGroup.value;
-      console.log('Sending Request:', request);
-      const response = await firstValueFrom(this.hqService.upsertProjectV1(request));
-      console.log(response);
-
+        request.bookingPeriod = Number(request.bookingPeriod)
+        console.log('Sending Request:', request);
+        const response = await firstValueFrom(
+          this.hqService.upsertProjectV1(request)
+        );
+        console.log(response);
       }
       // this.router.navigate(['../', response.id], { relativeTo: this.route });
     } catch (err) {
@@ -113,11 +123,23 @@ export class ProjectCreateComponent {
       } else {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
-
-      // this.form.markAsTouched();
-      // if(this.form.invalid) {
-      //   return;
-      // }
     }
   }
+  openModal() {
+    this.modalOpen$.next(true);
+  }
+
+  closeModal() {
+    this.modalOpen$.next(false);
+  }
+
+  modalOkClicked() {
+    this.closeModal();
+  }
+  modalCancelClicked() {
+    this.selectedClientName.next(null);
+    this.closeModal();
+  }
+
+
 }
