@@ -1,3 +1,4 @@
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
@@ -24,6 +25,7 @@ import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { UpsertProjectRequestV1 } from '../../models/projects/upsert-project-v1';
+import { BrowserModule } from '@angular/platform-browser';
 
 export enum Period {
   Week = 1,
@@ -40,6 +42,7 @@ export enum Period {
     FormsModule,
     ReactiveFormsModule,
     SelectableClientListComponent,
+    PdfViewerModule,
   ],
   templateUrl: './project-create.component.html',
 })
@@ -47,6 +50,7 @@ export class ProjectCreateComponent {
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
   selectedQuote$ = new Observable<string>();
+  quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
 
   apiErrors?: string[];
   selectedClientName = new BehaviorSubject<string | null>(null);
@@ -61,6 +65,11 @@ export class ProjectCreateComponent {
     startDate: new FormControl(new Date(), Validators.required),
     endDate: new FormControl(new Date(), Validators.required),
   });
+
+  // PDF VIEWER
+  page: number = 1;
+  totalPages?: number;
+  isLoaded: boolean = false;
 
   modalOpen$ = new BehaviorSubject<boolean>(false);
 
@@ -109,7 +118,7 @@ export class ProjectCreateComponent {
     try {
       if (this.projectFormGroup.valid && this.projectFormGroup.dirty) {
         const request = this.projectFormGroup.value;
-        request.bookingPeriod = Number(request.bookingPeriod)
+        request.bookingPeriod = Number(request.bookingPeriod);
         console.log('Sending Request:', request);
         const response = await firstValueFrom(
           this.hqService.upsertProjectV1(request)
@@ -141,5 +150,17 @@ export class ProjectCreateComponent {
     this.closeModal();
   }
 
+  // PDF VIEWER
+  afterLoadComplete(pdfData: any) {
+    this.totalPages = pdfData.numPages;
+    this.isLoaded = true;
+  }
 
+  nextPage() {
+    this.page++;
+  }
+
+  prevPage() {
+    this.page--;
+  }
 }

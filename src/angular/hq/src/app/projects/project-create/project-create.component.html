@@ -387,10 +387,19 @@
               >
                 <!-- flex flex-grow -->
                 <div class="bg-white">
-                  <img
+                  <pdf-viewer
+                    [src]="quotePdfURL"
+                    [render-text]="true"
+                    [original-size]="false"
+                    style="height: 700px; width: 600px"
+                    [show-all]="false"
+                    [page]="page"
+                    (after-load-complete)="afterLoadComplete($event)"
+                  ></pdf-viewer>
+                  <!-- <img
                     src="https://fakeimg.pl/560x730/cccccc/909090?text=Quote"
                     class="h-auto max-w-full mx-auto"
-                  />
+                  /> -->
                 </div>
                 <div
                   class="grid grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] h-[30px] items-center"
@@ -401,14 +410,22 @@
                     ></a>
                   </div>
                   <div>
-                    <a href="" class="px-2 text-gray-50"
-                      ><i class="bi bi-arrow-left-short text-[20px]"></i
-                    ></a>
-                    <a href="" class="px-2 text-gray-100"
-                      ><i class="bi bi-arrow-right-short text-[20px]"></i
-                    ></a>
+                    <button
+                      (click)="prevPage()"
+                      [disabled]="page === 1"
+                      [ngClass]="{ 'text-gray-50': page === 1 }"
+                      class="px-2 bi bi-arrow-left-short text-[20px]"
+                    ></button>
+                    <button
+                      (click)="nextPage()"
+                      [disabled]="page === totalPages"
+                      [ngClass]="{ 'text-gray-50': page === totalPages }"
+                      class="px-2 bi bi-arrow-right-short text-[20px]"
+                    ></button>
                   </div>
-                  <div class="ml-auto text-gray-50 text-xs">1 / 2</div>
+                  <div class="ml-auto text-gray-50 text-xs">
+                    {{ page }} / {{ totalPages }}
+                  </div>
                 </div>
               </div>
             </div>
