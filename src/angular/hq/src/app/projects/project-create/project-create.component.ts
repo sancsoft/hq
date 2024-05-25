@@ -137,7 +137,7 @@ export class ProjectCreateComponent {
         const response = await firstValueFrom(
           this.hqService.upsertProjectV1(request)
         );
-        console.log(response);
+        console.log(response.id);
         this.router.navigate(['../', response.id], { relativeTo: this.route });
       } else {
         this.apiErrors.push(
@@ -145,6 +145,7 @@ export class ProjectCreateComponent {
         );
       }
     } catch (err) {
+      console.log(err);
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
         console.log(this.apiErrors);
