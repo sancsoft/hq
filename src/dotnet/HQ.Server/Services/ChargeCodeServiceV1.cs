@@ -102,4 +102,70 @@ public class ChargeCodeServiceV1
 
         return response;
     }
+
+    public async Task<ChargeCode> GenerateNewChargeCode(WorkType workType)
+    {
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            var latestChargeCode = await _context.ChargeCodes.FromSqlRaw("SELECT TOP 1 * FROM ChargeCodes WITH (UPDLOCK, ROWLOCK) ORDER BY Code DESC")
+        .FirstOrDefaultAsync();
+            string nextChargeCode = "";
+            if (latestChargeCode == null)
+            {
+                switch (workType)
+                {
+                    case WorkType.Project:
+                        nextChargeCode = "P0000";
+                        break;
+                    case WorkType.Quote:
+                        nextChargeCode = "Q0000";
+                        break;
+                    case WorkType.Service:
+                        nextChargeCode = "S0000";
+                        break;
+
+                }
+            }
+            else
+            {
+                var latestChargeNumber = int.Parse(latestChargeCode.Code.Substring(1));
+                var nextChargeNumber = latestChargeNumber + 1;
+                switch (workType)
+                {
+                    case WorkType.Project:
+                        nextChargeCode = "P" + nextChargeNumber;
+                        break;
+                    case WorkType.Quote:
+                        nextChargeCode = "Q" + nextChargeNumber;
+                        break;
+                    case WorkType.Service:
+                        nextChargeCode = "S" + nextChargeNumber;
+                        break;
+                }
+            }
+            var newChargeCode = new ChargeCode
+            {
+                Code = nextChargeCode,
+                Billable = true,
+                Active = true
+            };
+            _context.ChargeCodes.Add(newChargeCode);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+            return newChargeCode;
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+}
+
+public enum WorkType
+{
+    Project,
+    Quote,
+    Service
 }

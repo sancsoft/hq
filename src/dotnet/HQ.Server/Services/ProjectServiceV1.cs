@@ -53,7 +53,8 @@ public class ProjectServiceV1
 
         return new UpsertProjectV1.Response()
         {
-            Id = project.Id
+            Id = project.Id,
+            ChargeCode = "P12345"
         };
     }
 

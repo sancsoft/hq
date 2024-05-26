@@ -28,5 +28,6 @@ public class UpsertProjectV1
     public class Response : NoContentResponseV1
     {
         public Guid Id { get; set; }
+        public string ChargeCode { get; set; } = null!;
     }
 }
