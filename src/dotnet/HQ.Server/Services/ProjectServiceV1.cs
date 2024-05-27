@@ -62,6 +62,7 @@ public class ProjectServiceV1
                     Code = nextCode,
                     Billable = true,
                     Active = true,
+                    ProjectId = project.Id
                 };
                 _context.ChargeCodes.Add(newChargeCode);
 
