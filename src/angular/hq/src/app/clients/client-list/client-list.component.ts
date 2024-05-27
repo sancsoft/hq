@@ -48,9 +48,6 @@ export interface ClientNameId {
 })
 
 export class ClientListComponent {
-  @Input() showViewButtons: boolean = true;
-  @Input() showEditButtons: boolean = true;
-  @Input() SelectClientEnabled: boolean = false;
   @Output() selectedClient = new EventEmitter<GetClientRecordV1>();
 
   search = new FormControl('', { nonNullable: true });

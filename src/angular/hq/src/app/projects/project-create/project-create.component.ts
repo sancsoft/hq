@@ -1,4 +1,4 @@
-import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { PdfViewerComponent } from './../../common/pdf-viewer/pdf-viewer.component';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
@@ -44,7 +44,8 @@ export enum Period {
     FormsModule,
     ReactiveFormsModule,
     SelectableClientListComponent,
-    PdfViewerModule,
+    PdfViewerComponent,
+
   ],
   templateUrl: './project-create.component.html',
 })
@@ -69,17 +70,14 @@ export class ProjectCreateComponent {
         Validators.required,
         Validators.min(0),
       ]),
-      quoteId: new FormControl('', Validators.required),
+      quoteId: new FormControl(null),
       startDate: new FormControl(new Date(), Validators.required),
       endDate: new FormControl(new Date(), Validators.required),
     },
     { validators: this.dateRangeValidator }
   );
 
-  // PDF VIEWER
-  page: number = 1;
-  totalPages?: number;
-  isLoaded: boolean = false;
+
 
   modalOpen$ = new BehaviorSubject<boolean>(false);
 
@@ -173,19 +171,7 @@ export class ProjectCreateComponent {
     this.closeModal();
   }
 
-  // PDF VIEWER
-  afterLoadComplete(pdfData: any) {
-    this.totalPages = pdfData.numPages;
-    this.isLoaded = true;
-  }
 
-  nextPage() {
-    this.page++;
-  }
-
-  prevPage() {
-    this.page--;
-  }
 
   dateRangeValidator(group: AbstractControl): ValidationErrors | null {
     const startDate = group.get('startDate')?.value;

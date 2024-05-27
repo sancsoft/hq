@@ -150,9 +150,7 @@
                   <div>
                     <!-- select dropdown -->
                     <div class="grid relative w-full max-w-[220px]">
-                      <ng-container
-                        *ngIf="projectManagers$ | async as projectManagers"
-                      >
+                      @if ((projectManagers$ | async); as projectManagers) {
                         <select
                           formControlName="projectManagerId"
                           class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
@@ -167,7 +165,7 @@
                             {{ projectManager.name }}
                           </option>
                         </select>
-                      </ng-container>
+                      } 
                       <span
                         class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
                       >
@@ -563,54 +561,7 @@
                 </div>
               </div>
               <!-- flex flex-col flex-grow -->
-              <div
-                class="bg-black mt-4 px-[15px] mx-5 2xl:mx-0 w-fit 2xl:w-full"
-              >
-                <!-- flex flex-grow -->
-                <div class="bg-white">
-                  <pdf-viewer
-                    [src]="quotePdfURL"
-                    [render-text]="true"
-                    [original-size]="false"
-                    style="height: 700px; width: 600px"
-                    [show-all]="false"
-                    [page]="page"
-                    (after-load-complete)="afterLoadComplete($event)"
-                  ></pdf-viewer>
-                  <!-- <img
-                    src="https://fakeimg.pl/560x730/cccccc/909090?text=Quote"
-                    class="h-auto max-w-full mx-auto"
-                  /> -->
-                </div>
-                <div
-                  class="grid grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] h-[30px] items-center"
-                >
-                  <div>
-                    <a href="" class="px-2 text-red-850"
-                      ><i class="bi bi-trash3-fill text-[18px]"></i
-                    ></a>
-                  </div>
-                  <div>
-                    <button
-                      type="button"
-                      (click)="prevPage()"
-                      [disabled]="page === 1"
-                      [ngClass]="{ 'text-gray-50': page === 1 }"
-                      class="px-2 bi bi-arrow-left-short text-[20px]"
-                    ></button>
-                    <button
-                      type="button"
-                      (click)="nextPage()"
-                      [disabled]="page === totalPages"
-                      [ngClass]="{ 'text-gray-50': page === totalPages }"
-                      class="px-2 bi bi-arrow-right-short text-[20px]"
-                    ></button>
-                  </div>
-                  <div class="ml-auto text-gray-50 text-xs">
-                    {{ page }} / {{ totalPages }}
-                  </div>
-                </div>
-              </div>
+              <hq-pdf-viewer [pdfURL]="quotePdfURL"></hq-pdf-viewer>
             </div>
           </div>
         </form>

@@ -1,29 +1,21 @@
-import { PagedRequestV1 } from "../common/paged-request-v1";
-import { PagedResponseV1 } from "../common/paged-response-v1";
-
-export enum SortDirection {
-  Asc = "ASC",
-  Desc = "DESC",
-}
-
+import { PagedRequestV1 } from '../common/paged-request-v1';
+import { PagedResponseV1 } from '../common/paged-response-v1';
+import { SortDirection } from '../common/sort-direction';
 
 export enum Jurisdiciton {
-  Federal = "FEDERAL",
-  State = "STATE",
-  Local = "LOCAL",
+  USA = 1,
+  Colombia = 2,
 }
 
-
-
 export enum StaffSortColumn {
-  CreatedAt = "CreatedAt",
-  Name = "Name",
-  WorkHours = "WorkHours",
+  CreatedAt = 'CreatedAt',
+  Name = 'Name',
+  WorkHours = 'WorkHours',
 }
 
 export interface GetStaffV1Request extends PagedRequestV1 {
   search?: string;
-  id?: string; 
+  id?: string;
   jurisdiciton?: Jurisdiciton;
   sortBy?: StaffSortColumn;
   sortDirection?: SortDirection;

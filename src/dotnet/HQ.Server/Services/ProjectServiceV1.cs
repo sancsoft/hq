@@ -56,18 +56,21 @@ public class ProjectServiceV1
                 project.StartDate = request.StartDate;
                 project.EndDate = request.EndDate;
 
-                await _context.SaveChangesAsync(ct);
-
-                var nextCode = await _chargeCodeServiceV1.GenerateNewChargeCode(WorkType.Project, ct);
+                var latestProjectNumber = _context.Projects.Max((p) => p.ProjectNumber);
+                var newProjectNumber = latestProjectNumber + 1;
+                var newCode = "P" + newProjectNumber;
                 var newChargeCode = new ChargeCode
                 {
-                    Code = nextCode,
+                    Code = newCode,
                     Billable = true,
                     Active = true,
                     ProjectId = project.Id
                 };
-                _context.ChargeCodes.Add(newChargeCode);
-
+                if (project.QuoteId == null)
+                {
+                    project.ProjectNumber = newProjectNumber;
+                    _context.ChargeCodes.Add(newChargeCode);
+                }
                 await _context.SaveChangesAsync(ct);
 
                 await transaction.CommitAsync(ct);
@@ -75,7 +78,6 @@ public class ProjectServiceV1
                 var response = new UpsertProjectV1.Response()
                 {
                     Id = project.Id,
-                    ChargeCode = newChargeCode.Code
                 };
                 return Result.Ok(response);
             }
