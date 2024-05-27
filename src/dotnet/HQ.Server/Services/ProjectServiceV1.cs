@@ -15,48 +15,75 @@ namespace HQ.Server.Services;
 public class ProjectServiceV1
 {
     private readonly HQDbContext _context;
+    private readonly ChargeCodeServiceV1 _chargeCodeServiceV1;
 
-    public ProjectServiceV1(HQDbContext context)
+
+    public ProjectServiceV1(ChargeCodeServiceV1 chargeCodeServiceV1, HQDbContext context)
     {
+        _chargeCodeServiceV1 = chargeCodeServiceV1;
         _context = context;
     }
 
     public async Task<Result<UpsertProjectV1.Response>> UpsertProjectV1(UpsertProjectV1.Request request, CancellationToken ct = default)
     {
-        var validationResult = Result.Merge(
-            Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required.")
-        );
-
-        if (validationResult.IsFailed)
+        using (var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, ct))
         {
-            return validationResult;
+            try
+            {
+                var validationResult = Result.Merge(
+                    Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required.")
+                );
+
+                if (validationResult.IsFailed)
+                {
+                    return validationResult;
+                }
+
+                var project = await _context.Projects.FindAsync(request.Id);
+                if (project == null)
+                {
+                    project = new Project();
+                    _context.Projects.Add(project);
+                }
+
+                project.ClientId = request.ClientId;
+                project.ProjectManagerId = request.ProjectManagerId;
+                project.Name = request.Name;
+                project.QuoteId = request.QuoteId;
+                project.HourlyRate = request.HourlyRate;
+                project.BookingHours = request.BookingHours;
+                project.BookingPeriod = request.BookingPeriod;
+                project.StartDate = request.StartDate;
+                project.EndDate = request.EndDate;
+
+                var nextCode = await _chargeCodeServiceV1.GenerateNewChargeCode(WorkType.Project);
+                var newChargeCode = new ChargeCode
+                {
+                    Code = nextCode,
+                    Billable = true,
+                    Active = true,
+                };
+                _context.ChargeCodes.Add(newChargeCode);
+
+                await _context.SaveChangesAsync(ct);
+
+                await transaction.CommitAsync(ct);
+
+                var response = new UpsertProjectV1.Response()
+                {
+                    Id = project.Id,
+                    ChargeCode = newChargeCode.Code
+                };
+                return Result.Ok(response);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(ct);
+                return Result.Fail(new Error("An error occurred while upserting the project.").CausedBy(ex));
+            }
         }
-
-        var project = await _context.Projects.FindAsync(request.Id);
-        if (project == null)
-        {
-            project = new();
-            _context.Projects.Add(project);
-        }
-
-        project.ClientId = request.ClientId;
-        project.ProjectManagerId = request.ProjectManagerId;
-        project.Name = request.Name;
-        project.QuoteId = request.QuoteId;
-        project.HourlyRate = request.HourlyRate;
-        project.BookingHours = request.BookingHours;
-        project.BookingPeriod = request.BookingPeriod;
-        project.StartDate = request.StartDate;
-        project.EndDate = request.EndDate;
-
-        await _context.SaveChangesAsync(ct);
-
-        return new UpsertProjectV1.Response()
-        {
-            Id = project.Id,
-            ChargeCode = "P12345"
-        };
     }
+
 
     public async Task<Result<DeleteProjectV1.Response?>> DeleteProjectV1(DeleteProjectV1.Request request, CancellationToken ct = default)
     {
@@ -149,7 +176,7 @@ public class ProjectServiceV1
         {
             mapped = mapped.Take(request.Take.Value);
         }
-        
+
         var total = await records.CountAsync(ct);
 
         var response = new GetProjectsV1.Response()

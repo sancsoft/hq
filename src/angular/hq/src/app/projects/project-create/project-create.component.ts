@@ -55,7 +55,9 @@ export class ProjectCreateComponent {
   quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
 
   apiErrors: string[] = [];
-  selectedClientName = new BehaviorSubject<string | null>(null);
+  selectedClientName$ = new BehaviorSubject<string | null>(null);
+  generatedChargeCode$ = new BehaviorSubject<string | null>(null);
+
   projectFormGroup = new FormGroup(
     {
       clientId: new FormControl(''),
@@ -107,7 +109,7 @@ export class ProjectCreateComponent {
   updateSelectedClient(client: GetClientRecordV1) {
     console.log(client);
     this.projectFormGroup.get('clientId')?.setValue(client.id);
-    this.selectedClientName.next(client.name);
+    this.selectedClientName$.next(client.name);
   }
   projectManagerSelected(id: string) {
     this.projectFormGroup.get('projectManagerId')?.setValue(id);
@@ -137,6 +139,7 @@ export class ProjectCreateComponent {
         const response = await firstValueFrom(
           this.hqService.upsertProjectV1(request)
         );
+        this.generatedChargeCode$.next(response.chargeCode)
         console.log(response.id);
         this.router.navigate(['../', response.id], { relativeTo: this.route });
       } else {
@@ -166,7 +169,7 @@ export class ProjectCreateComponent {
     this.closeModal();
   }
   modalCancelClicked() {
-    this.selectedClientName.next(null);
+    this.selectedClientName$.next(null);
     this.closeModal();
   }
 

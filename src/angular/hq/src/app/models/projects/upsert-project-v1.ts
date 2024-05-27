@@ -14,4 +14,5 @@ export interface UpsertProjectRequestV1 {
 
 export interface UpsertProjectResponsetV1 {
   id: string;
+  chargeCode: string;
 }

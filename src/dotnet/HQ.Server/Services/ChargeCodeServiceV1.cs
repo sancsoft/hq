@@ -103,13 +103,22 @@ public class ChargeCodeServiceV1
         return response;
     }
 
-    public async Task<ChargeCode> GenerateNewChargeCode(WorkType workType)
+    public async Task<string> GenerateNewChargeCode(WorkType workType)
     {
-        using var transaction = await _context.Database.BeginTransactionAsync();
+        using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+        string prefix = workType switch
+        {
+            WorkType.Project => "P",
+            WorkType.Quote => "Q",
+            WorkType.Service => "S",
+            _ => throw new ArgumentOutOfRangeException(nameof(workType), workType, null)
+        };
         try
         {
-            var latestChargeCode = await _context.ChargeCodes.FromSqlRaw("SELECT TOP 1 * FROM ChargeCodes WITH (UPDLOCK, ROWLOCK) ORDER BY Code DESC")
-        .FirstOrDefaultAsync();
+            var latestChargeCode = await _context.ChargeCodes
+            .Where(c => c.Code.StartsWith(prefix))
+                    .OrderByDescending(c => c.Code)
+                    .FirstOrDefaultAsync();
             string nextChargeCode = "";
             if (latestChargeCode == null)
             {
@@ -144,16 +153,8 @@ public class ChargeCodeServiceV1
                         break;
                 }
             }
-            var newChargeCode = new ChargeCode
-            {
-                Code = nextChargeCode,
-                Billable = true,
-                Active = true
-            };
-            _context.ChargeCodes.Add(newChargeCode);
-            await _context.SaveChangesAsync();
             await transaction.CommitAsync();
-            return newChargeCode;
+            return nextChargeCode;
         }
         catch
         {
