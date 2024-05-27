@@ -56,7 +56,9 @@ public class ProjectServiceV1
                 project.StartDate = request.StartDate;
                 project.EndDate = request.EndDate;
 
-                var nextCode = await _chargeCodeServiceV1.GenerateNewChargeCode(WorkType.Project);
+                await _context.SaveChangesAsync(ct);
+
+                var nextCode = await _chargeCodeServiceV1.GenerateNewChargeCode(WorkType.Project, ct);
                 var newChargeCode = new ChargeCode
                 {
                     Code = nextCode,

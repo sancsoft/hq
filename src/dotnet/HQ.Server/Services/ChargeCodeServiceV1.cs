@@ -103,9 +103,9 @@ public class ChargeCodeServiceV1
         return response;
     }
 
-    public async Task<string> GenerateNewChargeCode(WorkType workType)
+    public async Task<string> GenerateNewChargeCode(WorkType workType, CancellationToken ct = default)
     {
-        using var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+       
         string prefix = workType switch
         {
             WorkType.Project => "P",
@@ -118,7 +118,7 @@ public class ChargeCodeServiceV1
             var latestChargeCode = await _context.ChargeCodes
             .Where(c => c.Code.StartsWith(prefix))
                     .OrderByDescending(c => c.Code)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(ct);
             string nextChargeCode = "";
             if (latestChargeCode == null)
             {
@@ -153,12 +153,10 @@ public class ChargeCodeServiceV1
                         break;
                 }
             }
-            await transaction.CommitAsync();
             return nextChargeCode;
         }
         catch
         {
-            await transaction.RollbackAsync();
             throw;
         }
     }
