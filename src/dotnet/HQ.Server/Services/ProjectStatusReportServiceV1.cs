@@ -237,11 +237,18 @@ public class ProjectStatusReportServiceV1
                 ChargeCode = t.ChargeCode.Code,
                 Date = t.Date,
                 Description = t.Notes,
+                StaffId = t.Staff.Id,
                 StaffName = t.Staff.Name,
                 CreatedAt = t.CreatedAt
             });
 
         var total = await mapped.CountAsync(ct);
+        var staff = mapped.GroupBy(t => new { t.StaffId, t.StaffName })
+            .Select(t => new GetProjectStatusReportTimeV1.StaffRecord() {
+                Id = t.Key.StaffId,
+                Name = t.Key.StaffName,
+                TotalHours = t.Sum(t => t.Hours)
+            });
 
         var sortMap = new Dictionary<GetProjectStatusReportTimeV1.SortColumn, string>()
         {
@@ -267,6 +274,7 @@ public class ProjectStatusReportServiceV1
         var response = new GetProjectStatusReportTimeV1.Response()
         {
             Records = await sorted.ToListAsync(ct),
+            Staff = await staff.ToListAsync(ct),
             Total = total
         };
 
