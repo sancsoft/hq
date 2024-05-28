@@ -31,62 +31,63 @@
 <table class="min-w-full border-spacing-0 border-separate">
     <thead>
         <tr class="sticky top-0 text-left">
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Charge Code <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectName)">Project Full  Name <!-- sorted by client name --><hq-sort-icon [column]="sortColumn.ProjectName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectManagerName)">PM <hq-sort-icon [column]="sortColumn.ProjectManagerName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.TotalHours)">Total Hrs <hq-sort-icon [column]="sortColumn.TotalHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.HoursAvailable)">Has Available <hq-sort-icon [column]="sortColumn.HoursAvailable" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Status)">Status <hq-sort-icon [column]="sortColumn.Status" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px] cursor-pointer" colspan="2" >Complete</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Charge Code
+                <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectName)">Project Full Name
+                <!-- sorted by client name -->
+                <hq-sort-icon [column]="sortColumn.ProjectName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectManagerName)">PM
+                <hq-sort-icon [column]="sortColumn.ProjectManagerName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.TotalHours)">Total Hrs
+                <hq-sort-icon [column]="sortColumn.TotalHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.HoursAvailable)">Has Available
+                <hq-sort-icon [column]="sortColumn.HoursAvailable" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Status)">Status
+                <hq-sort-icon [column]="sortColumn.Status" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px] cursor-pointer" colspan="2">Complete</th>
         </tr>
 
     </thead>
     <tbody>
 
-        @for((report of projectStatusReports$ | async); track $index)
-        {
-          <tr class="even:bg-gray-850 odd:bg-black-alt">
+        @for((report of projectStatusReports$ | async); track $index) {
+        <tr class="even:bg-gray-850 odd:bg-black-alt">
             <td class="border-b border-black py-2 pl-5">{{report.chargeCode}}</td>
             <td class="border-b border-black py-2">{{report.projectName}}</td>
             <td class="border-b border-black py-2">{{report.projectManagerName}}</td>
-            <td class="border-b border-black py-2">{{report.totalHours}}</td>
-            <td class="border-b border-black py-2">{{report.hoursAvailable}}</td>
+            <td class="border-b border-black py-2">{{report.totalHours | number: '0.2-2'}}</td>
+            <td class="border-b border-black py-2">{{report.hoursAvailable | number: '0.2-2'}}</td>
             <td class="border-b border-black py-2">{{getProjectSatusString(report.status)}}</td>
             <td class="border-b border-black py-2">
-              <div class="w-[350px] bg-gray-500 border border-white h-[10px]">
-                <div class="bg-white h-[8px]" [style.width.%]="report.percentComplete * 100"></div>
-            </div>
+                <div class="w-[350px] bg-gray-500 border border-white h-[10px]">
+                    <div class="bg-white h-[8px]" [style.width.%]="report.percentComplete * 100"></div>
+                </div>
 
             </td>
             <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[report.id]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
         </tr>
         }
     </tbody>
-  </table>
-  <div
-  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
->
-  <div>
-    <select
-      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="itemsPerPage"
-    >
+</table>
+<div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
+    <div>
+        <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2" [formControl]="itemsPerPage">
       <option [ngValue]="10">10</option>
       <option [ngValue]="25">25</option>
       <option [ngValue]="50">50</option>
       <option [ngValue]="100">100</option>
       <!-- Add more options as needed -->
     </select>
-    <span>items per page</span>
-  </div>
-  <hq-paginator
-    [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="itemsPerPage.value"
-    [currentPage]="page.value"
-    (onPage)="goToPage($event)"
-  ></hq-paginator>
-  <div class="flex justify-end text-xs">
-    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ |
-    async }} items
-  </div>
+        <span>items per page</span>
+    </div>
+    <hq-paginator [total]="(totalRecords$ | async) ?? 0" [pageSize]="itemsPerPage.value" [currentPage]="page.value" (onPage)="goToPage($event)"></hq-paginator>
+    <div class="flex justify-end text-xs">
+        {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ | async }} items
+    </div>
 </div>
