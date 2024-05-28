@@ -16,6 +16,7 @@ import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { HQService } from '../../services/hq.service';
+import { QuoteStatus } from '../../models/common/quote-status';
 
 @Component({
   selector: 'hq-quotes-create',
@@ -100,14 +101,4 @@ export class QuotesCreateComponent {
     this.selectedClientName$.next(null);
     this.closeModal();
   }
-}
-export enum QuoteStatus {
-  Draft = 1,
-  WaitingForSale = 2,
-  WaitingForClient = 3,
-  WaitingForStaff = 4,
-  InProduction = 5,
-  Completed = 6,
-  Closed = 7,
-  Lost = 8,
 }

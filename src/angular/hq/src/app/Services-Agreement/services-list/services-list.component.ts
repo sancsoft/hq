@@ -7,11 +7,11 @@ import { ClientDetailsService } from '../../clients/client-details.service';
 import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
 import { SortColumn } from '../../models/Services/get-services-v1';
 import { SortDirection } from '../../models/common/sort-direction';
-import { QuoteStatus } from '../../models/quotes/get-quotes-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
+import { QuoteStatus } from '../../models/common/quote-status';
 
 @Component({
   selector: 'hq-services-list',

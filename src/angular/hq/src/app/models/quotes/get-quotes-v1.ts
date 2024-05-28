@@ -17,17 +17,7 @@ export enum SortColumn {
   Status = 4,
 }
 
-export enum QuoteStatus {
-  None = 0,
-  Draft = 1,
-  WaitingForSale = 2,
-  WaitingForClient = 3,
-  WaitingForStaff = 4,
-  InProduction = 5,
-  Completed = 6,
-  Closed = 7,
-  Lost = 8
-}
+
 
 export interface GetQuotesRecordV1 {
   id: string;
