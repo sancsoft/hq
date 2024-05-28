@@ -1,22 +1,32 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Net;
+using System.Text.Json.Serialization;
 using System.Web;
 using FluentResults;
 using HQ.Abstractions.Users;
+using HQ.Server.Data;
 using HQ.Server.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services;
 
 public class UserServiceV1
 {
     private readonly HttpClient _httpClient;
+    private readonly HQDbContext _context;
 
-    public UserServiceV1(HttpClient httpClient)
+    public UserServiceV1(HttpClient httpClient, HQDbContext context)
     {
         _httpClient = httpClient;
+        _context = context;
     }
 
     public async Task<Result<UpsertUserV1.Response>> UpsertUserV1(UpsertUserV1.Request request, CancellationToken ct = default)
     {
+        if(request.StaffId.HasValue && !await _context.Staff.AnyAsync(t => t.Id == request.StaffId.Value))
+        {
+            return Result.Fail("Invalid StaffId");
+        }
+
         var user = new KeycloakUserRepresentation();
         if(request.Id.HasValue)
         {
@@ -53,6 +63,15 @@ public class UserServiceV1
         var upsertUserResponse = request.Id.HasValue ? await _httpClient.PutAsJsonAsync($"users/{request.Id.Value}", user, ct) : await  _httpClient.PostAsJsonAsync("users", user, ct);
         if(!upsertUserResponse.IsSuccessStatusCode)
         {
+            if(upsertUserResponse.StatusCode == HttpStatusCode.Conflict)
+            {
+                var error = await upsertUserResponse.Content.ReadFromJsonAsync<KeycloakError>();
+                if(error != null && !String.IsNullOrEmpty(error.ErrorMessage))
+                {
+                    return Result.Fail(error.ErrorMessage);
+                }
+            }
+
             return Result.Fail("Error upserting user.");
         }
 
@@ -218,6 +237,12 @@ public class UserServiceV1
             Total = count,
             Records = records
         };
+    }
+
+    private class KeycloakError
+    {
+        [JsonPropertyName("errorMessage")]
+        public string ErrorMessage { get; set; } = null!;
     }
 
     private class KeycloakGroupRepresentation
