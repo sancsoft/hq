@@ -15,6 +15,7 @@ public class Project : Base
     // Letter of engagement
     public decimal HourlyRate { get; set; }
     public decimal BookingHours { get; set; }
+    public decimal? TotalHours { get; set; }
     public Period BookingPeriod { get; set; }
     public DateOnly? StartDate { get; set; }
  

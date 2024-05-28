@@ -103,6 +103,7 @@ public class VoltronServiceV1
 
         var response = new ImportVoltronChargeCodesV1.Response();
         var records = GetChargeCodeRecord(request.File);
+        var allStaff = await _context.Staff.ToDictionaryAsync(t => t.Name, t => t);
 
         foreach(var chargeCodes in records.GroupBy(t => t.Client.ToLower()))
         {
@@ -151,7 +152,7 @@ public class VoltronServiceV1
                         break;
                 }
 
-                var project = await _context.Projects.SingleOrDefaultAsync(t => t.ClientId == client.Id && t.Name.ToLower() == projectRow.Project.ToLower());
+                var project = await _context.Projects.SingleOrDefaultAsync(t => t.ChargeCode != null && t.ChargeCode.Code == projectRow.Code);
                 if (project == null)
                 {
                     project = new();
@@ -162,6 +163,31 @@ public class VoltronServiceV1
                 else
                 {
                     response.ProjectsUpdated++;
+                }
+
+                if(!String.IsNullOrEmpty(projectRow.ProjectManager))
+                {
+                    var staff = allStaff.ContainsKey(projectRow.ProjectManager.ToLower()) ? allStaff[projectRow.ProjectManager.ToLower()] : null;
+                    if(staff != null)
+                    {
+                        project.ProjectManagerId = staff.Id;
+                    }
+                }
+
+                if(projectRow.HourlyRate.HasValue)
+                {
+                    project.HourlyRate = projectRow.HourlyRate.Value;
+                }
+
+                if(projectRow.HoursPerMonth.HasValue)
+                {
+                    project.BookingHours = projectRow.HoursPerMonth.Value;
+                    project.BookingPeriod = Period.Month;
+                }
+
+                if(projectRow.QuoteTotalHours.HasValue)
+                {
+                    project.TotalHours = projectRow.QuoteTotalHours.Value;
                 }
 
                 project.ClientId = client.Id;
@@ -190,7 +216,7 @@ public class VoltronServiceV1
                     quote.ClientId = client.Id;
                     quote.QuoteNumber = quoteNumber;
                     quote.Name = projectRow.Project;
-                    
+
                     project.QuoteId = quote.Id;
                     chargeCode.QuoteId = quote.Id;
                 }
@@ -316,18 +342,32 @@ public class VoltronServiceV1
             var billable = row.Cell(4).Value.ToString().Trim() == "Yes";
             var active = row.Cell(5).Value.ToString().Trim() == "Yes";
             var description = row.Cell(6).Value.ToString().Trim();
+            var projectManager = row.Cell(7).Value.ToString().Trim();
+            var hoursPerMonth = ParseDecimal(row.Cell(8).Value.ToString().Trim());
+            var quoteTotalHours = ParseDecimal(row.Cell(9).Value.ToString().Trim());
+            var hourlyRate = ParseDecimal(row.Cell(10).Value.ToString().Trim());
 
             if (chargeCodes.Any(t => t.Code == code))
             {
                 continue;
             }
 
-            chargeCodes.Add(new ChargeCodeRecord(code, client, project, billable, active, description));
+            chargeCodes.Add(new ChargeCodeRecord(code, client, project, billable, active, description, projectManager, hoursPerMonth, quoteTotalHours, hourlyRate));
         }
 
         return chargeCodes;
     }
 
+    private decimal? ParseDecimal(string? stringValue)
+    {
+        if(!String.IsNullOrEmpty(stringValue) && decimal.TryParse(stringValue, out decimal decimalValue))
+        {
+            return decimalValue;
+        }
+
+        return null;
+    }
+
     private record TimeRecord(string Staff, DateOnly Date, string ChargeCode, decimal Hours, string Notes);
-    private record ChargeCodeRecord(string Code, string Client, string Project, bool Billable, bool Active, string? Description);
+    private record ChargeCodeRecord(string Code, string Client, string Project, bool Billable, bool Active, string? Description, string? ProjectManager, decimal? HoursPerMonth, decimal? QuoteTotalHours, decimal? HourlyRate);
 }
