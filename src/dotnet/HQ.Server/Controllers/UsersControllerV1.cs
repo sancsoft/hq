@@ -31,5 +31,12 @@ namespace HQ.Server.Controllers
         public Task<ActionResult> GetUsersV1([FromBody] GetUsersV1.Request request, CancellationToken ct = default) =>
              _userService.GetUsersV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(UpsertUserV1))]
+        [ProducesResponseType<UpsertUserV1.Response>(StatusCodes.Status200OK)]
+        public Task<ActionResult> UpsertUserV1([FromBody] UpsertUserV1.Request request, CancellationToken ct = default) =>
+             _userService.UpsertUserV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
     }
 }
