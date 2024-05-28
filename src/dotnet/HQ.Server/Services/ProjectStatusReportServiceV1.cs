@@ -248,7 +248,8 @@ public class ProjectStatusReportServiceV1
                 Id = t.Key.StaffId,
                 Name = t.Key.StaffName,
                 TotalHours = t.Sum(t => t.Hours)
-            });
+            })
+            .OrderBy(t => t.Name);
 
         var sortMap = new Dictionary<GetProjectStatusReportTimeV1.SortColumn, string>()
         {
