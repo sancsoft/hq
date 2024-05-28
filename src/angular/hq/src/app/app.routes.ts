@@ -207,4 +207,20 @@ export const routes: Routes = [
         (m) => m.ServicesListComponent
       ),
   },
+  {
+    path: 'users',
+    canActivate: [AutoLoginPartialRoutesGuard],
+    loadComponent: () =>
+      import('./users/users.component').then((m) => m.UsersComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./users/users-list/users-list.component').then(
+            (m) => m.UsersListComponent
+          ),
+      },
+
+    ]
+  }
 ];
