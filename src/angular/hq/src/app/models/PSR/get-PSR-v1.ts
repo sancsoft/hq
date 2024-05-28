@@ -1,4 +1,5 @@
 import { ProjectStatus } from '../../clients/client-details.service';
+import { Period } from '../../projects/project-create/project-create.component';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
@@ -55,7 +56,7 @@ export interface GetPSRRecordV1 {
   bookingEndDate: Date;
   totalStartDate: Date;
   totalEndDate: Date;
-  bookingPeriod: Date;
+  bookingPeriod: Period;
   lastId?: string;
   lastHours?: number;
 }

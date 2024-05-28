@@ -82,7 +82,7 @@ public class GetProjectStatusReportsV1
         /// </summary>
         public decimal BookingAvailableHours { get; set; }
         public ProjectStatus Status { get; set; }
-        public decimal TotalPercentComplete { get; set; }
+        public decimal? TotalPercentComplete { get; set; }
         public decimal BookingPercentComplete { get; set; }
         public DateOnly? TotalStartDate { get; set; }
         public DateOnly? TotalEndDate { get; set; }

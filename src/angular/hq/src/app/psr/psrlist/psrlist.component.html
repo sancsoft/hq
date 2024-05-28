@@ -100,7 +100,7 @@
                     </div>
                 }
                 <div class="flex justify-between gap-2 text-xs">
-                    <span>{{ report.bookingHours }} hrs</span>
+                    <span class="lowercase">{{ report.bookingHours | number: '0.2-2' }} hrs this {{ getPeriodName(report.bookingPeriod) }}</span>
                     <span>{{ report.bookingPercentComplete | percent }}</span>
                 </div>
             </td>
@@ -113,8 +113,8 @@
                     }
                     @else
                     {
-                        <span>N/A</span>
-                        <span>N/A</span>
+                        <span>-</span>
+                        <span>-</span>
                     }
                 </div>
                 @if(report.totalPercentComplete && report.totalPercentComplete > 1)
@@ -130,8 +130,8 @@
                     </div>
                 }
                 <div class="flex justify-between gap-2 text-xs">
-                    <span>{{ report.totalHours }} hrs</span>
-                    <span>{{ report.totalPercentComplete | percent }}</span>
+                    <span>{{ report.totalHours | number: '0.2-2' }} hrs total</span>
+                    <span>{{ report.totalPercentComplete ? (report.totalPercentComplete | percent) : '-' }}</span>
                 </div>
             </td>
             <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[report.id]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>

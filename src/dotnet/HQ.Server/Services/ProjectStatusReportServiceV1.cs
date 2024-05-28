@@ -147,7 +147,7 @@ public class ProjectStatusReportServiceV1
                 LastHours = t.Previous != null && t.Previous.Project.ChargeCode != null ? t.Previous.Project.ChargeCode.Times.Where(x => x.Date >= t.Previous.StartDate && x.Date <= t.Previous.EndDate).Sum(x => x.Hours) : null,
                 BookingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate).Sum(x => x.Hours),
                 BookingAvailableHours = t.Row.Project.BookingHours - t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate).Sum(x => x.Hours),
-                TotalPercentComplete = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? 0 : t.Row.Project.ChargeCode!.Times.Sum(x => x.Hours) / t.Row.Project.TotalHours.Value,
+                TotalPercentComplete = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? null : t.Row.Project.ChargeCode!.Times.Sum(x => x.Hours) / t.Row.Project.TotalHours.Value,
                 BookingPercentComplete = t.Row.Project.BookingHours == 0 ? 0 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate).Sum(x => x.Hours) / t.Row.Project.BookingHours,
                 TotalStartDate = t.Row.Project.ChargeCode.Times.Min(t => t.Date),
                 TotalEndDate = t.Row.Project.ChargeCode.Times.Max(t => t.Date)

@@ -24,6 +24,7 @@ import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { PsrDetailsSearchFilterComponent } from '../psr-details-search-filter/psr-details-search-filter.component';
 import { PsrService } from '../psr-service';
+import { Period } from '../../projects/project-create/project-create.component';
 
 @Component({
   selector: 'hq-psrlist',
@@ -140,5 +141,9 @@ export class PSRListComponent {
   }
   getProjectSatusString(status: ProjectStatus): string {
     return ProjectStatus[status];
+  }
+
+  getPeriodName(period: Period) {
+    return Period[period];
   }
 }
