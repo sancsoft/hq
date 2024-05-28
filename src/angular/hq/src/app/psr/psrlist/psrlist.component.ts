@@ -48,6 +48,8 @@ export class PSRListComponent {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
+  Math = Math;
+
   itemsPerPage = new FormControl(10, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
 
@@ -132,7 +134,7 @@ export class PSRListComponent {
       );
     } else {
       this.sortOption$.next(sortColumn);
-      this.sortDirection$.next(SortDirection.Asc);
+      this.sortDirection$.next(SortDirection.Desc);
     }
     this.page.setValue(1);
   }

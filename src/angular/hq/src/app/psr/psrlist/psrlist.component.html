@@ -34,7 +34,14 @@
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Charge Code
                 <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectName)">Project Full Name
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.StartDate)">Week
+                <hq-sort-icon [column]="sortColumn.StartDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ClientName)">Client Name
+                <!-- sorted by client name -->
+                <hq-sort-icon [column]="sortColumn.ClientName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectName)">Project Name
                 <!-- sorted by client name -->
                 <hq-sort-icon [column]="sortColumn.ProjectName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
@@ -44,13 +51,21 @@
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.TotalHours)">Total Hrs
                 <hq-sort-icon [column]="sortColumn.TotalHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.HoursAvailable)">Has Available
-                <hq-sort-icon [column]="sortColumn.HoursAvailable" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ThisHours)">This Hrs
+                <hq-sort-icon [column]="sortColumn.ThisHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.TotalAvailableHours)">Hrs Available
+                <hq-sort-icon [column]="sortColumn.TotalAvailableHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Status)">Status
                 <hq-sort-icon [column]="sortColumn.Status" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px] cursor-pointer" colspan="2">Complete</th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.BookingPercentComplete)">Booking %
+                <hq-sort-icon [column]="sortColumn.BookingPercentComplete" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" colspan="2" (click)="onSortClick(sortColumn.TotalPercentComplete)">Total %
+                <hq-sort-icon [column]="sortColumn.TotalPercentComplete" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
         </tr>
 
     </thead>
@@ -59,16 +74,65 @@
         @for((report of projectStatusReports$ | async); track $index) {
         <tr class="even:bg-gray-850 odd:bg-black-alt">
             <td class="border-b border-black py-2 pl-5">{{report.chargeCode}}</td>
+            <td class="border-b border-black py-2">{{report.startDate}}</td>
+            <td class="border-b border-black py-2">{{report.clientName}}</td>
             <td class="border-b border-black py-2">{{report.projectName}}</td>
             <td class="border-b border-black py-2">{{report.projectManagerName}}</td>
             <td class="border-b border-black py-2">{{report.totalHours | number: '0.2-2'}}</td>
-            <td class="border-b border-black py-2">{{report.hoursAvailable | number: '0.2-2'}}</td>
+            <td class="border-b border-black py-2">{{report.thisHours | number: '0.2-2'}}</td>
+            <td class="border-b border-black py-2">{{report.totalAvailableHours | number: '0.2-2'}}</td>
             <td class="border-b border-black py-2">{{getProjectSatusString(report.status)}}</td>
-            <td class="border-b border-black py-2">
-                <div class="w-[350px] bg-gray-500 border border-white h-[10px]">
-                    <div class="bg-white h-[8px]" [style.width.%]="report.percentComplete * 100"></div>
+            <td width="200" class="border-b border-black py-2 pe-2">
+                <div class="flex justify-between gap-2 text-xs">
+                    <span>{{ report.bookingStartDate }}</span>
+                    <span>{{ report.bookingEndDate }}</span>
                 </div>
-
+                @if(report.bookingPercentComplete && report.bookingPercentComplete > 1)
+                {
+                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]">
+                        <div class="bg-red-850 h-[8px]"[style.width.%]="Math.min(report.bookingPercentComplete - 1, 1) * 100"></div>
+                    </div>
+                }
+                @else
+                {
+                    <div class="w-full bg-gray-500 border border-white h-[10px]">
+                        <div class="bg-white h-[8px]" [style.width.%]="(report.bookingPercentComplete ?? 0) * 100"></div>
+                    </div>
+                }
+                <div class="flex justify-between gap-2 text-xs">
+                    <span>{{ report.bookingHours }} hrs</span>
+                    <span>{{ report.bookingPercentComplete | percent }}</span>
+                </div>
+            </td>
+            <td width="200" class="border-b border-black py-2">
+                <div class="flex justify-between gap-2 text-xs">
+                    @if(report.totalStartDate && report.totalEndDate)
+                    {
+                        <span>{{ report.totalStartDate }}</span>
+                        <span>{{ report.totalEndDate }}</span>
+                    }
+                    @else
+                    {
+                        <span>N/A</span>
+                        <span>N/A</span>
+                    }
+                </div>
+                @if(report.totalPercentComplete && report.totalPercentComplete > 1)
+                {
+                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]">
+                        <div class="bg-red-850 h-[8px]"[style.width.%]="Math.min(report.totalPercentComplete - 1, 1) * 100"></div>
+                    </div>
+                }
+                @else
+                {
+                    <div class="w-full bg-gray-500 border border-white h-[10px]">
+                        <div class="bg-white h-[8px]" [style.width.%]="(report.totalPercentComplete ?? 0) * 100"></div>
+                    </div>
+                }
+                <div class="flex justify-between gap-2 text-xs">
+                    <span>{{ report.totalHours }} hrs</span>
+                    <span>{{ report.totalPercentComplete | percent }}</span>
+                </div>
             </td>
             <td class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[report.id]" class="text-teal-200 hover:text-teal-300">VIEW</a></td>
         </tr>
