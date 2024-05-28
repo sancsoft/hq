@@ -37,5 +37,12 @@ namespace HQ.Server.Controllers
         public Task<ActionResult> GetQuotesV1([FromBody] GetQuotesV1.Request request, CancellationToken ct = default) =>
             _quoteService.GetQuotesV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(UpsertQuotesV1))]
+        [ProducesResponseType<UpsertQuotestV1.Response>(StatusCodes.Status200OK)]
+        public Task<ActionResult> UpsertQuotesV1([FromBody] UpsertQuotestV1.Request request, CancellationToken ct = default) =>
+        _quoteService.UpsertQuoteV1(request, ct)
+        .ToActionResult(new HQResultEndpointProfile());
     }
 }

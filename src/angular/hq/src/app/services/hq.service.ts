@@ -50,6 +50,18 @@ import {
   GetChargeCodesRequestV1,
   GetChargeCodesResponseV1,
 } from '../models/charge-codes/get-chargecodes-v1';
+import {
+  GetStaffV1Request,
+  GetStaffV1Response,
+} from '../models/staff-members/get-staff-member-v1';
+import {
+  UpsertProjectRequestV1,
+  UpsertProjectResponsetV1,
+} from '../models/projects/upsert-project-v1';
+import {
+  UpsertQuoteRequestV1,
+  UpsertQuoteResponsetV1,
+} from '../models/quotes/upsert-quote-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -197,6 +209,39 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetChargeCodesResponseV1>(
           `${apiUrl}/v1/ChargeCodes/GetChargeCodesV1`,
+          request
+        )
+      )
+    );
+  }
+
+  getStaffMembersV1(request: Partial<GetStaffV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetStaffV1Response>(
+          `${apiUrl}/v1/Staff/GetStaffV1`,
+          request
+        )
+      )
+    );
+  }
+
+  upsertProjectV1(request: Partial<UpsertProjectRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertProjectResponsetV1>(
+          `${apiUrl}/v1/Projects/UpsertProjectV1`,
+          request
+        )
+      )
+    );
+  }
+
+  upsertQuoteV1(request: Partial<UpsertQuoteRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertQuoteResponsetV1>(
+          `${apiUrl}/v1/Quotes/UpsertQuotesV1`,
           request
         )
       )

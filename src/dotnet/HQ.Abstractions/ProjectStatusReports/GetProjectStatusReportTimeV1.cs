@@ -9,7 +9,7 @@ public class GetProjectStatusReportTimeV1
     {
         public Guid ProjectStatusReportId { get; set; }
         public string? Search { get; set; }
-
+        public string? ProjectManagerId { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.StaffName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }

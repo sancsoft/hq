@@ -6,7 +6,7 @@ import { HQService } from '../../services/hq.service';
 import { GetQuotesRecordV1, GetQuotesRecordsV1, SortColumn } from '../../models/quotes/get-quotes-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { ClientDetailsService } from '../../clients/client-details.service';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
@@ -14,7 +14,7 @@ import { ClientDetailsSearchFilterComponent } from '../../clients/client-details
 @Component({
   selector: 'hq-quotes-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent],
   templateUrl: './quotes-list.component.html'
 })
 export class QuotesListComponent  {

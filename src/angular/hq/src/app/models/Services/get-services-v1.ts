@@ -1,7 +1,7 @@
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
+import { QuoteStatus } from '../common/quote-status';
 import { SortDirection } from '../common/sort-direction';
-import { QuoteStatus } from '../quotes/get-quotes-v1';
 
 export interface GetServicesRequestV1 extends PagedRequestV1 {
   search?: string | null;

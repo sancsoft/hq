@@ -116,8 +116,6 @@ export class PSRDetailsComponent {
         return response.records;
       })
     );
-    console.log(1);
-    this.time$.subscribe((t) => console.log(t));
     this.timeIds$ = this.time$.pipe(
       map((response) => {
         return response.map((t) => t.id);
@@ -240,6 +238,11 @@ export class PSRDetailsComponent {
       // TODO: Alert the users
       return;
     }
+    const chargecodeId = await firstValueFrom(
+      this.chargeCodes$.pipe(
+        map((c) => c.find((x) => x.code == time.chargeCode)?.id)
+      )
+    );
 
     const request = {
       projectStatusReportId: psrId,
@@ -247,7 +250,7 @@ export class PSRDetailsComponent {
       billableHours: time.billableHours,
       activity: time.activity,
       notes: description,
-      chargeCode: time.chargeCode,
+      chargeCodeId: chargecodeId
     };
 
     // TOOD: Call API
@@ -255,7 +258,6 @@ export class PSRDetailsComponent {
     this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
 
-    console.log('Call update API', request);
   }
 
   async updateActivitiy(timeId: string, event: Event) {
@@ -265,12 +267,16 @@ export class PSRDetailsComponent {
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
     );
 
-    console.log(time, activity);
     if (!time || activity.length < 1) {
       alert('Please Enter a Activity Name');
       // TODO: Alert the users
       return;
     }
+    const chargecodeId = await firstValueFrom(
+      this.chargeCodes$.pipe(
+        map((c) => c.find((x) => x.code == time.chargeCode)?.id)
+      )
+    );
 
     const request = {
       projectStatusReportId: psrId,
@@ -278,7 +284,7 @@ export class PSRDetailsComponent {
       billableHours: time.billableHours,
       activity: activity,
       notes: time.description,
-      chargeCode: time.chargeCode,
+      chargeCodeId: chargecodeId
     };
 
     // TOOD: Call API
@@ -286,7 +292,6 @@ export class PSRDetailsComponent {
     this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
 
-    console.log('Call update API', request);
   }
 
   async updateChargeCode(timeId: string, event: Event) {
@@ -300,7 +305,6 @@ export class PSRDetailsComponent {
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
     );
 
-    console.log(time, chargeCode, 'Charge Code: ' + chargeCode);
     if (!time || !chargeCode || chargeCode.length != 5) {
       // this condition is to check if the charge code is valid
       alert('Please Enter a Activity Name');
@@ -322,7 +326,6 @@ export class PSRDetailsComponent {
         map((c) => c.find((x) => x.code == chargeCode)?.id)
       )
     );
-    console.log(chargeCode, chargecodeId);
 
     const request = {
       projectStatusReportId: psrId,
@@ -338,25 +341,28 @@ export class PSRDetailsComponent {
     this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
 
-    console.log('Call update API', request);
   }
 
   async updateBillableHours(timeId: string, event: Event) {
     const billableHours = (event.target as HTMLInputElement).value;
     const roundedBillableHours = this.roundToNextQuarter(billableHours);
-    console.log(roundedBillableHours);
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
     );
-    // if (time) {
-    //   time.billableHours = roundedBillableHours;
-    // }
+    if (time) {
+      time.billableHours = roundedBillableHours;
+    }
 
     if (!time || billableHours == '0' || billableHours == '') {
       alert('Please Add a time to your billable hours');
       return;
     }
+    const chargecodeId = await firstValueFrom(
+      this.chargeCodes$.pipe(
+        map((c) => c.find((x) => x.code == time.chargeCode)?.id)
+      )
+    );
 
     const request = {
       projectStatusReportId: psrId,
@@ -364,20 +370,17 @@ export class PSRDetailsComponent {
       billableHours: roundedBillableHours,
       activity: time.activity,
       notes: time.description,
-      chargeCode: time.chargeCode,
+      chargeCodeId: chargecodeId
     };
     //  Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.refresh$.next();
 
-    console.log('Call update API', request);
   }
 
   // Reject
   async reject(timeId: string) {
     const psrId = await firstValueFrom(this.psrId$);
-    console.log(timeId);
-
     if (timeId === '') {
       return;
     }

@@ -10,7 +10,7 @@ import { PaginatorComponent } from '../../../common/paginator/paginator.componen
 import { ClientDetailsService } from '../../client-details.service';
 import { SortColumn } from '../../../models/Services/get-services-v1';
 import { SortDirection } from '../../../models/common/sort-direction';
-import { QuoteStatus } from '../../../models/quotes/get-quotes-v1';
+import { QuoteStatus } from '../../../models/common/quote-status';
 
 @Component({
   selector: 'hq-client-service-list',

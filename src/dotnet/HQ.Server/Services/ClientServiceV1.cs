@@ -96,6 +96,8 @@ public class ClientServiceV1
             { Abstractions.Clients.GetClientsV1.SortColumn.CreatedAt, "CreatedAt" },
             { Abstractions.Clients.GetClientsV1.SortColumn.Name, "Name" },
             { Abstractions.Clients.GetClientsV1.SortColumn.HourlyRate, "HourlyRate" },
+            { Abstractions.Clients.GetClientsV1.SortColumn.BillingEmail, "BillingEmail" },
+            { Abstractions.Clients.GetClientsV1.SortColumn.OfficialName, "OfficialName" },
         };
 
         var sortProperty = sortMap[request.SortBy];

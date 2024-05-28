@@ -1,3 +1,4 @@
+
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
@@ -35,7 +36,7 @@ export interface ClientNameId {
 }
 
 @Component({
-  selector: 'hq-client-list',
+  selector: 'hq-selectable-client-list',
   standalone: true,
   imports: [
     CommonModule,
@@ -44,10 +45,12 @@ export interface ClientNameId {
     PaginatorComponent,
     SortIconComponent,
   ],
-  templateUrl: './client-list.component.html',
+  templateUrl: './selectable-client-list.component.html',
 })
-
-export class ClientListComponent {
+export class SelectableClientListComponent {
+  @Input() showViewButtons: boolean = true;
+  @Input() showEditButtons: boolean = true;
+  @Input() SelectClientEnabled: boolean = false;
   @Output() selectedClient = new EventEmitter<GetClientRecordV1>();
 
   search = new FormControl('', { nonNullable: true });

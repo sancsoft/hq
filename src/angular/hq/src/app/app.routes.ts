@@ -105,55 +105,91 @@ export const routes: Routes = [
       },
     ],
   },
-    {
-        path: 'projects',
-        canActivate: [AutoLoginPartialRoutesGuard],
-        loadComponent: () => import('./projects/projects.component').then(m => m.ProjectsComponent),
+  {
+    path: 'projects',
+    canActivate: [AutoLoginPartialRoutesGuard],
+    loadComponent: () =>
+      import('./projects/projects.component').then((m) => m.ProjectsComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./projects/project-list/project-list.component').then(
+            (m) => m.ProjectListComponent
+          ),
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('./projects/project-create/project-create.component').then(
+            (m) => m.ProjectCreateComponent
+          ),
+      },
+      {
+        path: ':projectId',
+        loadComponent: () =>
+          import('./projects/project-view/project-view.component').then(
+            (m) => m.ProjectViewComponent
+          ),
         children: [
-            {
-                path: '',
-                loadComponent: () => import('./projects/project-list/project-list.component').then(m => m.ProjectListComponent),
-            },
-            {
-                path: 'create',
-                loadComponent: () => import('./projects/project-create/project-create.component').then(m => m.ProjectCreateComponent)
-            },
-            {
-                path: ':projectId',
-                loadComponent: () => import('./projects/project-view/project-view.component').then(m => m.ProjectViewComponent),
-                children: [
-                    {
-                        path: '',
-                        redirectTo: 'details',
-                        pathMatch: 'full'
-                    },
-                    {
-                        path: 'details',
-                        loadComponent: () => import('./projects/project-details/project-details.component').then(m => m.ProjectDetailsComponent),
-                    },
-                    {
-                        path: 'edit',
-                        loadComponent: () => import('./projects/project-edit/project-edit.component').then(m => m.ProjectEditComponent),
-                    },
-                    {
-                        path: 'report',
-                        loadComponent: () => import('./projects/project-report/project-report.component').then(m => m.ProjectReportComponent),
-                    },
-                    {
-                        path: 'time',
-                        loadComponent: () => import('./projects/project-time/project-time.component').then(m => m.ProjectTimeComponent),
-                    }
-                ]
-            }
-        ]
-    },
+          {
+            path: '',
+            redirectTo: 'details',
+            pathMatch: 'full',
+          },
+          {
+            path: 'details',
+            loadComponent: () =>
+              import(
+                './projects/project-details/project-details.component'
+              ).then((m) => m.ProjectDetailsComponent),
+          },
+          {
+            path: 'edit',
+            loadComponent: () =>
+              import('./projects/project-edit/project-edit.component').then(
+                (m) => m.ProjectEditComponent
+              ),
+          },
+          {
+            path: 'report',
+            loadComponent: () =>
+              import('./projects/project-report/project-report.component').then(
+                (m) => m.ProjectReportComponent
+              ),
+          },
+          {
+            path: 'time',
+            loadComponent: () =>
+              import('./projects/project-time/project-time.component').then(
+                (m) => m.ProjectTimeComponent
+              ),
+          },
+        ],
+      },
+    ],
+  },
   {
     path: 'quotes',
     canActivate: [AutoLoginPartialRoutesGuard],
     loadComponent: () =>
-      import('./quotes/quotes-list/quotes-list.component').then(
-        (m) => m.QuotesListComponent
-      ),
+      import('./quotes/quotes.component').then((m) => m.QuotesComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./quotes/quotes-list/quotes-list.component').then(
+            (m) => m.QuotesListComponent
+          ),
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('./quotes/quotes-create/quotes-create.component').then(
+            (m) => m.QuotesCreateComponent
+          ),
+      },
+    ],
   },
   {
     path: 'invoices',
@@ -170,5 +206,5 @@ export const routes: Routes = [
       import('./Services-Agreement/services-list/services-list.component').then(
         (m) => m.ServicesListComponent
       ),
-  }
+  },
 ];

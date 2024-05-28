@@ -176,7 +176,11 @@ public class ProjectStatusReportServiceV1
                 t.Notes != null && t.Notes.ToLower().Contains(request.Search.ToLower())
             );
         }
-
+        if (!string.IsNullOrEmpty(request.ProjectManagerId))
+        {
+            records = records.Where(t => t.StaffId.Equals(request.ProjectManagerId));
+        }
+      
         var mapped = records
             .Select(t => new GetProjectStatusReportTimeV1.Record()
             {
@@ -293,10 +297,7 @@ public class ProjectStatusReportServiceV1
         time.HoursApproved = request.BillableHours;
         time.Notes = request.Notes;
         time.Activity = request.Activity;
-        if (request.ChargeCodeId != null)
-        {
-            time.ChargeCodeId = new Guid(request.ChargeCodeId);
-        }
+        time.ChargeCodeId = request.ChargeCodeId;
 
 
         await _context.SaveChangesAsync(ct);

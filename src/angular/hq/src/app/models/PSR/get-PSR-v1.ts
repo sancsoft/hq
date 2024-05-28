@@ -7,6 +7,7 @@ export interface GetPSRRequestV1 extends PagedRequestV1 {
   id?: string | null;
   clientId?: string;
   sortBy?: SortColumn;
+  projectManagerId?: string | null;
   sortDirection?: SortDirection;
 }
 
