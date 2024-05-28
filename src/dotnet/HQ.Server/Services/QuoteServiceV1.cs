@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentResults;
 using HQ.Abstractions.Quotes;
 using HQ.Server.Data;
+using HQ.Server.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services
@@ -15,6 +16,65 @@ namespace HQ.Server.Services
         public QuoteServiceV1(HQDbContext context)
         {
             this._context = context;
+        }
+
+        public async Task<Result<UpsertQuotestV1.Response>> UpsertQuoteV1(UpsertQuotestV1.Request request, CancellationToken ct = default)
+        {
+            using (var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, ct))
+            {
+                try
+                {
+                    var validationResult = Result.Merge(
+                        Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required.")
+                    );
+
+                    if (validationResult.IsFailed)
+                    {
+                        return validationResult;
+                    }
+
+                    var quote = await _context.Quotes.FindAsync(request.Id);
+                    if (quote == null)
+                    {
+                        quote = new Quote();
+                        _context.Quotes.Add(quote);
+                    }
+
+                    quote.ClientId = request.ClientId;
+                    quote.Name = request.Name;
+                    quote.Value = request.Value;
+                    quote.Date = request.Date;
+                    quote.Status = request.Status;
+
+
+                    var latestChargeCode = _context.Quotes.Max((q) => q.ChargeCode.Code);
+                    var latestQuoteNumber = int.Parse(latestChargeCode.Substring(1));
+                    var newQuoteCode = "Q" + (latestQuoteNumber + 1);
+
+                    var newChargeCode = new ChargeCode
+                    {
+                        Code = newQuoteCode,
+                        Billable = true,
+                        Active = true,
+                        QuoteId = quote.Id
+                    };
+
+                    _context.ChargeCodes.Add(newChargeCode);
+                    await _context.SaveChangesAsync(ct);
+                    await transaction.CommitAsync(ct);
+
+                    var response = new UpsertQuotestV1.Response()
+                    {
+                        Id = quote.Id,
+                    };
+                    return Result.Ok(response);
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync(ct);
+                    return Result.Fail(new Error("An error occurred while upserting the quote.").CausedBy(ex));
+                }
+            }
         }
 
         public async Task<Result<GetQuotesV1.Response>> GetQuotesV1(GetQuotesV1.Request request, CancellationToken ct = default)
