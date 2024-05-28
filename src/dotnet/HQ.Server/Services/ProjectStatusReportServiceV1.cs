@@ -47,6 +47,29 @@ public class ProjectStatusReportServiceV1
             psr.ProjectId = project.Id;
             psr.ProjectManagerId = project.ProjectManagerId;
             psr.Status = ProjectStatus.Unknown;
+            psr.BookingPeriod = project.BookingPeriod;
+
+            switch(project.BookingPeriod)
+            {
+                case Period.Year:
+                    psr.BookingStartDate = new DateOnly(startDate.Year, 1, 1);
+                    psr.BookingEndDate = new DateOnly(startDate.Year, 1, 1).AddYears(1).AddDays(-1);
+                    break;
+                case Period.Quarter:
+                    var quarter = (startDate.Month + 2) / 3;
+                    psr.BookingStartDate = new DateOnly(startDate.Year, quarter, 1);
+                    psr.BookingEndDate = new DateOnly(startDate.Year, quarter, 1).AddMonths(3).AddDays(-1);
+                    break;
+                case Period.Month:
+                    psr.BookingStartDate = new DateOnly(startDate.Year, startDate.Month, 1);
+                    psr.BookingEndDate = new DateOnly(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
+                    break;
+                case Period.Week:
+                default:
+                    psr.BookingStartDate = psr.StartDate;
+                    psr.BookingEndDate = psr.EndDate;
+                    break;
+            }
 
             _context.ProjectStatusReports.Add(psr);
             createdCount++;
@@ -76,8 +99,9 @@ public class ProjectStatusReportServiceV1
         {
             records = records.Where(t =>
                 t.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
-                t.Project.ChargeCode != null && t.Project.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
-                t.Project.ProjectManager != null && t.Project.ProjectManager.Name.ToLower().Contains(request.Search.ToLower())
+                t.Project.Client.Name!.ToLower().Contains(request.Search.ToLower()) ||
+                t.Project.ChargeCode!.Code.ToLower().Contains(request.Search.ToLower()) ||
+                t.Project.ProjectManager!.Name.ToLower().Contains(request.Search.ToLower())
             );
         }
 
@@ -112,11 +136,21 @@ public class ProjectStatusReportServiceV1
                 ClientName = t.Row.Project.Client.Name,
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
                 Status = t.Row.Status,
-                TotalHours = t.Row.Project.ChargeCode != null ? t.Row.Project.ChargeCode.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours) : 0,
+                BookingPeriod = t.Row.BookingPeriod,
+                BookingStartDate = t.Row.BookingStartDate,
+                BookingEndDate = t.Row.BookingEndDate,
+                TotalHours = t.Row.Project.ChargeCode!.Times.Sum(x => x.Hours),
+                TotalAvailableHours = t.Row.Project.TotalHours != null ? t.Row.Project.TotalHours.Value - t.Row.Project.ChargeCode!.Times.Sum(x => x.Hours) : null,
+                ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
+                ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 LastId = t.Previous != null ? t.Previous.Id : null,
                 LastHours = t.Previous != null && t.Previous.Project.ChargeCode != null ? t.Previous.Project.ChargeCode.Times.Where(x => x.Date >= t.Previous.StartDate && x.Date <= t.Previous.EndDate).Sum(x => x.Hours) : null,
-                HoursAvailable = 0, // TODO: Calculate
-                PercentComplete = 0, // TODO: Calculate
+                BookingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate).Sum(x => x.Hours),
+                BookingAvailableHours = t.Row.Project.BookingHours - t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate).Sum(x => x.Hours),
+                TotalPercentComplete = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? 0 : t.Row.Project.ChargeCode!.Times.Sum(x => x.Hours) / t.Row.Project.TotalHours.Value,
+                BookingPercentComplete = t.Row.Project.BookingHours == 0 ? 0 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate).Sum(x => x.Hours) / t.Row.Project.BookingHours,
+                TotalStartDate = t.Row.Project.ChargeCode.Times.Min(t => t.Date),
+                TotalEndDate = t.Row.Project.ChargeCode.Times.Max(t => t.Date)
             });
 
         var totalHours = await mapped.SumAsync(t => t.TotalHours, ct);
@@ -124,14 +158,25 @@ public class ProjectStatusReportServiceV1
 
         var sortMap = new Dictionary<GetProjectStatusReportsV1.SortColumn, string>()
         {
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.StartDate, "StartDate" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.EndDate, "EndDate" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ClientName, "ClientName" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectName, "ProjectName" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ClientName, "ClientName" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectManagerName, "ProjectManagerName" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalHours, "TotalHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.HoursAvailable, "HoursAvailable" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.Status, "Status" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.PercentComplete, "PercentComplete" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPeriod, "BookingPeriod" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingStartDate, "BookingStartDate" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingEndDate, "BookingEndDate" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalHours, "TotalHours" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalAvailableHours, "TotalAvailableHours" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ThisHours, "ThisHours" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ThisPendingHours, "ThisPendingHours" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.LastHours, "LastHours" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingHours, "BookingHours" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingAvailableHours, "BookingAvailableHours" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalPercentComplete, "TotalPercentComplete" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPercentComplete, "BookingPercentComplete" },
         };
 
         var sortProperty = sortMap[request.SortBy];

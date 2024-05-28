@@ -48,6 +48,8 @@ export class PSRListComponent {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
+  Math = Math;
+
   itemsPerPage = new FormControl(10, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
 

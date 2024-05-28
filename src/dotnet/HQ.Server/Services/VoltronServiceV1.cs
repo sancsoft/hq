@@ -182,14 +182,18 @@ public class VoltronServiceV1
                 if(projectRow.HoursPerMonth.HasValue)
                 {
                     project.BookingHours = projectRow.HoursPerMonth.Value;
-                    project.BookingPeriod = Period.Month;
                 }
 
-                if(projectRow.QuoteTotalHours.HasValue)
+                if(projectRow.QuoteTotalHours.HasValue && projectRow.QuoteTotalHours.Value > 0)
                 {
                     project.TotalHours = projectRow.QuoteTotalHours.Value;
                 }
+                else
+                {
+                    project.TotalHours = null;
+                }
 
+                project.BookingPeriod = Period.Month;
                 project.ClientId = client.Id;
                 project.Name = projectRow.Project;
 
