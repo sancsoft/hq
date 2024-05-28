@@ -18,6 +18,7 @@ export const authConfig: PassedInitialConfig = {
         useRefreshToken: true,
         renewTimeBeforeTokenExpiresInSeconds: 30,
         ignoreNonceAfterRefresh: true,
+        renewUserInfoAfterTokenRenew: true,
         secureRoutes: [appSettings.apiUrl],
       }))
     )),
