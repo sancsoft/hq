@@ -1,32 +1,19 @@
 <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
-  <div class="px-5">
-    <h1 class="font-rajdhani font-semibold text-3xl">Create Quote</h1>
+    <div class="px-5">
+        <h1 class="font-rajdhani font-semibold text-3xl">Create Quote</h1>
 
-    <div class="py-3">
-      <a href="/quotes" class="text-gray-50 underline">Quote List</a>
+        <div class="py-3">
+            <a href="/quotes" class="text-gray-50 underline">Quote List</a>
+        </div>
     </div>
-  </div>
 
-  <div class="overflow-hidden flex-auto">
-    <div
-      class="grid gap-0 relative"
-    >
-      <main
-        class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]"
-      >
-        <div
-          class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
-        >
-          <div
-            class="w-full flex flex-row border-b border-black justify-between pe-5"
-          >
-            <div class="flex pt-[23px]">
-              <a
-                href="#"
-                routerLink="quotes"
-                routerLinkActive="border-gray-100"
-                class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
-                >Details</a
+    <div class="overflow-hidden flex-auto">
+        <div class="grid gap-0 relative">
+            <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
+                <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
+                    <div class="w-full flex flex-row border-b border-black justify-between pe-5">
+                        <div class="flex pt-[23px]">
+                            <a href="#" routerLink="quotes" routerLinkActive="border-gray-100" class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a
               >
             </div>
 
@@ -62,19 +49,15 @@
                         (click)="openModal()"
                         (mousedown)="$event.preventDefault()"
                       >
+                      @if ((selectedClientName$ | async) === null) {
+                        <option value="">Select Client</option>
+                      }
+                      @if (selectedClientName$ | async; as clientId) {
                         <option
-                          *ngIf="(selectedClientName$ | async) === null"
-                          value=""
-                        >
-                          Select Client
-                        </option>
-
-                        <option
-                          *ngIf="selectedClientName$ | async as clientId"
-                          [value]="clientId"
-                        >
-                          {{ clientId }}
-                        </option>
+                        [value]="clientId">
+                        {{ clientId }}
+                      </option>
+                      }
                       </select>
                       <span
                         class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
@@ -99,35 +82,36 @@
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                       placeholder="Quote Name"
                     />
-                    <div
-                      *ngIf="
-                        quoteFormGroup.get('name')?.touched &&
-                        quoteFormGroup.get('name')?.errors
-                      "
-                    >
+
+                    @if (quoteFormGroup.get('name')?.touched &&
+                    quoteFormGroup.get('name')?.errors) {
+                      @if (quoteFormGroup.get('name')?.errors?.['required']) {
                       <span
                         class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="quoteFormGroup.get('name')?.errors?.['required']"
                       >
                         Quote name is required.
                       </span>
+                    }
+                    @if (quoteFormGroup.get('name')?.errors?.['minlength']) {
                       <span
                         class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="quoteFormGroup.get('name')?.errors?.['minlength']"
                       >
                         Quote name must be at least
                         {{ quoteFormGroup.get('name')?.errors?.['minlength']?.requiredLength }}
                         characters long.
                       </span>
+                    }
+                    @if (quoteFormGroup.get('name')?.errors?.['maxlength']) {
                       <span
                         class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="quoteFormGroup.get('name')?.errors?.['maxlength']"
                       >
                         Quote name cannot be more than
                         {{ quoteFormGroup.get('name')?.errors?.['maxlength']?.requiredLength }}
                         characters long.
                       </span>
-                    </div>
+                    }
+                    }
+                    <!-- </div> -->
                   </div>
 
                   <!-- column -->
@@ -154,7 +138,7 @@
                         formControlName="status"
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
                       >
-                        <option value="" disabled selected >
+                        <option value="" selected disabled >
                           Select Quote Status
                         </option>
                         <option [value]="quoteStatus.Draft">
@@ -211,63 +195,34 @@
                         />
                       </div>
                     </div>
-                    <div
-                      *ngIf="
-                        quoteFormGroup.get('value')?.touched &&
-                        quoteFormGroup.get('value')?.errors
-                      "
-                    >
-                      <span
+                    @if (quoteFormGroup.get('value')?.touched &&
+                    quoteFormGroup.get('value')?.errors) {
+                      @if (quoteFormGroup.get('value')?.errors?.['required']) {
+                        <span
                         class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="quoteFormGroup.get('value')?.errors?.['required']"
                       >
                         value is required.
                       </span>
-                      <span
+                      }
+                      @if (quoteFormGroup.get('value')?.errors?.['min']) {
+                        <span
                         class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="quoteFormGroup.get('value')?.errors?.['min']"
                       >
                         Minimum value is
                         {{ quoteFormGroup.get('value')?.errors?.['min']?.min
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         }}.
                       </span>
-                      <span
+                      }
+                      @if (quoteFormGroup.get('value')?.errors?.['max']) {
+                        <span
                         class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="quoteFormGroup.get('hourlyRate')?.errors?.['max']"
                       >
-                        Maximum value for hourly rate is
-                        {{ quoteFormGroup.get('hourlyRate')?.errors?.['max']?.max
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        Maximum value is
+                        {{ quoteFormGroup.get('value')?.errors?.['max']?.max
                         }}.
                       </span>
-                    </div>
+                      }
+                    }
                   </div>
                 </div>
 
@@ -295,13 +250,12 @@
 
                     @if (quoteFormGroup.get('date')?.touched &&
                     quoteFormGroup.get('date')?.errors) {
-                    <span
+                      @if (quoteFormGroup.get('date')?.errors?.['required']) {}
+                      <span
                       class="text-red-700 text-xs leading-normal inline-block"
-                      *ngIf="quoteFormGroup.get('date')?.errors?.['required']"
                     >
                       date is required.
                     </span>
-
                     }
                   </div>
                 </div>
@@ -373,73 +327,50 @@
                       title="Download"
                       ><i class="bi bi-cloud-upload-fill"></i
                     ></a>
-                  </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <!-- flex flex-col flex-grow -->
-              <!-- <hq-pdf-viewer [pdfURL]="quotePdfURL"></hq-pdf-viewer> -->
-            </div>
-          </div>
-        </form>
-      </main>
+                <!-- flex flex-col flex-grow -->
+                <!-- <hq-pdf-viewer [pdfURL]="quotePdfURL"></hq-pdf-viewer> -->
+        </div>
     </div>
-  </div>
+    </form>
+    </main>
+</div>
+</div>
 </div>
 
 <!-- modal -->
-<div
-  class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear"
-  [ngClass]="{
+<div class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear" [ngClass]="{
     'opacity-100 visible': (modalOpen$ | async),
     'opacity-0 invisible': !(modalOpen$ | async)
-  }"
->
-  <!-- modal dialog -->
-  <div class="modal-dialog max-w-full mr-auto ml-auto text-black">
-    <div
-      class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto"
-    >
-      <!-- header -->
-      <div
-        class="modal-header flex flex-shrink-0 items-center px-5 py-[15px] bg-blue-900 text-gray-100"
-      >
-        <div class="font-bold">Select Client</div>
-      </div>
+  }">
+    <!-- modal dialog -->
+    <div class="modal-dialog max-w-full mr-auto ml-auto text-black">
+        <div class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto">
+            <!-- header -->
+            <div class="modal-header flex flex-shrink-0 items-center px-5 py-[15px] bg-blue-900 text-gray-100">
+                <div class="font-bold">Select Client</div>
+            </div>
 
-      <!--Body-->
-      <hq-selectable-client-list
-        (selectedClient)="updateSelectedClient($event)"
-        [SelectClientEnabled]="true"
-        [showViewButtons]="false"
-        [showEditButtons]="false"
-      ></hq-selectable-client-list>
+            <!--Body-->
+            <hq-selectable-client-list (selectedClient)="updateSelectedClient($event)" [SelectClientEnabled]="true" [showViewButtons]="false" [showEditButtons]="false"></hq-selectable-client-list>
 
-      <!--Footer-->
-      <div
-        class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900"
-      >
-        <button
-          class="h-[36px] px-2 py-2 border border-transparent bg-transparent hover:bg-transparent hover:border-transparent text-white hover:text-gray-200 rounded w-full min-w-[100px] max-w-[100px] leading-[normal] mr-2"
-          (click)="modalCancelClicked()"
-        >
+            <!--Footer-->
+            <div class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900">
+                <button class="h-[36px] px-2 py-2 border border-transparent bg-transparent hover:bg-transparent hover:border-transparent text-white hover:text-gray-200 rounded w-full min-w-[100px] max-w-[100px] leading-[normal] mr-2" (click)="modalCancelClicked()">
           Cancel
         </button>
-        <button
-          class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px] leading-[normal]"
-          (click)="modalOkClicked()"
-        >
+                <button class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px] leading-[normal]" (click)="modalOkClicked()">
           Okay
         </button>
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- modal backdrop/overlay -->
-<div
-  class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear"
-  [ngClass]="{
+<div class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear" [ngClass]="{
     'opacity-75 visible': (modalOpen$ | async),
     'opacity-0 invisible': !(modalOpen$ | async)
-  }"
-></div>
+  }"></div>
