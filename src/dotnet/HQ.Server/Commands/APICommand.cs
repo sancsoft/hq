@@ -1,6 +1,8 @@
-﻿using HQ.Server.API;
+﻿using Duende.AccessTokenManagement.OpenIdConnect;
+using HQ.Server.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
+using HQ.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -78,6 +80,8 @@ public class APICommand : AsyncCommand
                 options.SubstituteApiVersionInUrl = true;
             });
 
+        builder.Services.AddDistributedMemoryCache();
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -119,6 +123,13 @@ public class APICommand : AsyncCommand
                 .RequireAuthenticatedUser()
                 .RequireRole("staff", "manager", "partner", "executive", "administrator"));
         });
+    
+        builder.Services.AddOpenIdConnectAccessTokenManagement();
+        builder.Services.AddHttpClient<UserServiceV1>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AUTH_ADMIN_URL"] ?? throw new ArgumentNullException("Undefined AUTH_ADMIN_URL"));
+            })
+            .AddUserAccessTokenHandler();
 
         var app = builder.Build();
 
