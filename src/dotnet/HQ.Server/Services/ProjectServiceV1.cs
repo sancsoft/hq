@@ -69,6 +69,7 @@ public class ProjectServiceV1
                 if (project.QuoteId == null)
                 {
                     project.ProjectNumber = newProjectNumber;
+                    project.ChargeCode = newChargeCode;
                     _context.ChargeCodes.Add(newChargeCode);
                 }
                 await _context.SaveChangesAsync(ct);

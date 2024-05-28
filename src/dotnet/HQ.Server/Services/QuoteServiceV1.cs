@@ -47,18 +47,18 @@ namespace HQ.Server.Services
                     quote.Status = request.Status;
 
 
-                    var latestChargeCode = _context.Quotes.Max((q) => q.ChargeCode.Code);
-                    var latestQuoteNumber = int.Parse(latestChargeCode.Substring(1));
-                    var newQuoteCode = "Q" + (latestQuoteNumber + 1);
-
+                    var latestQuoteNumber = _context.Quotes.Max((q) => q.QuoteNumber);
+                    var newQuoteNumber = latestQuoteNumber + 1;
+                    var newCode = "Q" + newQuoteNumber;
                     var newChargeCode = new ChargeCode
                     {
-                        Code = newQuoteCode,
+                        Code = newCode,
                         Billable = true,
                         Active = true,
                         QuoteId = quote.Id
                     };
-
+                    quote.ChargeCode = newChargeCode;
+                    quote.QuoteNumber = newQuoteNumber;
                     _context.ChargeCodes.Add(newChargeCode);
                     await _context.SaveChangesAsync(ct);
                     await transaction.CommitAsync(ct);

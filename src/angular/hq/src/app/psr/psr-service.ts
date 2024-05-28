@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ProjectStatus } from '../clients/client-details.service';
-import { BehaviorSubject } from 'rxjs';
-
-
+import { BehaviorSubject, Observable, map } from 'rxjs';
+import { GetStaffV1Record } from '../models/staff-members/get-staff-member-v1';
+import { HQService } from '../services/hq.service';
 
 export enum ActivityName {
   Support = 0,
@@ -20,16 +20,27 @@ export class PsrService {
 
   projectStatus = new FormControl<ProjectStatus>(ProjectStatus.InProduction);
   activityName = new FormControl<ActivityName>(ActivityName.Development);
-
+  projectManager = new FormControl<string | null>(null);
 
   ProjectStatus = ProjectStatus;
   ActivityName = ActivityName;
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
+  showProjectManagers$ = new BehaviorSubject<boolean>(true);
+  projectManagers$: Observable<GetStaffV1Record[]>;
+
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
 
+  constructor(private hqService: HQService) {
+    const response$ = this.hqService.getStaffMembersV1({});
+    this.projectManagers$ = response$.pipe(
+      map((response) => {
+        return response.records;
+      })
+    );
 
-  constructor() {}
+
+  }
 
   resetFilter() {
     this.search.setValue('');
@@ -53,5 +64,11 @@ export class PsrService {
   }
   hideRoaster() {
     this.showRoaster$.next(false);
+  }
+  showProjectManagers() {
+    this.showProjectManagers$.next(true);
+  }
+  hideProjectManagers() {
+    this.showProjectManagers$.next(false);
   }
 }

@@ -1,8 +1,21 @@
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, startWith, combineLatest, map, tap, debounceTime, switchMap, shareReplay } from 'rxjs';
-import { ClientDetailsService, ProjectStatus } from '../../clients/client-details.service';
+import {
+  Observable,
+  BehaviorSubject,
+  startWith,
+  combineLatest,
+  map,
+  tap,
+  debounceTime,
+  switchMap,
+  shareReplay,
+} from 'rxjs';
+import {
+  ClientDetailsService,
+  ProjectStatus,
+} from '../../clients/client-details.service';
 import { GetPSRRecordV1, SortColumn } from '../../models/PSR/get-PSR-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
@@ -15,8 +28,15 @@ import { PsrService } from '../psr-service';
 @Component({
   selector: 'hq-psrlist',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, PsrDetailsSearchFilterComponent],
-  templateUrl: './psrlist.component.html'
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    PaginatorComponent,
+    SortIconComponent,
+    PsrDetailsSearchFilterComponent,
+  ],
+  templateUrl: './psrlist.component.html',
 })
 export class PSRListComponent {
   apiErrors: string[] = [];
@@ -55,12 +75,18 @@ export class PSRListComponent {
       tap((t) => this.goToPage(1)),
       startWith(psrService.search.value)
     );
+    const selectedProjectManagerId$ =
+      psrService.projectManager.valueChanges.pipe(
+        tap((t) => this.goToPage(1)),
+        startWith(psrService.projectManager.value)
+      );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
     const request$ = combineLatest({
       search: search$,
       skip: skip$,
+      projectManagerId: selectedProjectManagerId$,
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
@@ -91,7 +117,6 @@ export class PSRListComponent {
     );
 
     this.psrService.resetFilter();
-
   }
 
   goToPage(page: number) {
