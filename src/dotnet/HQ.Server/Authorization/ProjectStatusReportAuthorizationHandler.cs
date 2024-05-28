@@ -15,10 +15,9 @@ public class ProjectStatusReportAuthorizationHandler : AuthorizationHandler<Oper
         _context = context;
     }
 
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, ProjectStatusReport resource)
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, ProjectStatusReport resource)
     {
-        // TODO: Add staffId to claims
-        var staffId = Guid.Empty; // context.User.Identity.GetStaffId();
+        var staffId = context.User.GetStaffId();
 
         var isManager = context.User.IsInRole("manager");
         var isPartner = context.User.IsInRole("partner");
@@ -31,7 +30,7 @@ public class ProjectStatusReportAuthorizationHandler : AuthorizationHandler<Oper
             case nameof(ProjectStatusReportOperation.RejectTime):
             case nameof(ProjectStatusReportOperation.UpdateTime):
             {
-                if((resource.ProjectManagerId.HasValue && isManager && staffId == resource.ProjectManagerId) || isPartner || isExecutive || isAdmin)
+                if((staffId.HasValue && resource.ProjectManagerId.HasValue && isManager && staffId == resource.ProjectManagerId) || isPartner || isExecutive || isAdmin)
                 {
                     context.Succeed(requirement);
                 }
@@ -39,5 +38,7 @@ public class ProjectStatusReportAuthorizationHandler : AuthorizationHandler<Oper
                 break;
             }
         }
+
+        return Task.CompletedTask;
     }
 }
