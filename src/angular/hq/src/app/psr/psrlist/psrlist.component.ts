@@ -134,7 +134,7 @@ export class PSRListComponent {
       );
     } else {
       this.sortOption$.next(sortColumn);
-      this.sortDirection$.next(SortDirection.Desc);
+      this.sortDirection$.next(SortDirection.Asc);
     }
     this.page.setValue(1);
   }
