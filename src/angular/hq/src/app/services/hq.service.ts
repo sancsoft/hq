@@ -63,6 +63,7 @@ import {
   UpsertQuoteResponsetV1,
 } from '../models/quotes/upsert-quote-v1';
 import { GetUsersRequestV1, GetUsersResponseV1 } from '../models/users/get-users-v1';
+import { UpsertUserRequestV1, UpsertUserResponseV1 } from '../models/users/upsert-users-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -254,6 +255,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetUsersResponseV1>(
           `${apiUrl}/v1/Users/GetUsersV1`,
+          request
+        )
+      )
+    );
+  }
+
+  upsertUsersV1(request: Partial<UpsertUserRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertUserResponseV1>(
+          `${apiUrl}/v1/Users/UpsertUserV1`,
           request
         )
       )

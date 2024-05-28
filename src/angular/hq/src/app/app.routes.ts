@@ -220,7 +220,13 @@ export const routes: Routes = [
             (m) => m.UsersListComponent
           ),
       },
-
-    ]
-  }
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('./users/users-create/users-create.component').then(
+            (m) => m.UsersCreateComponent
+          ),
+      },
+    ],
+  },
 ];

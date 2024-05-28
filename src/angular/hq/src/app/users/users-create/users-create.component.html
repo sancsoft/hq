@@ -1,0 +1,136 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
+        <div class="px-5">
+            <h1 class="font-rajdhani font-semibold text-3xl">Create User</h1>
+
+            <div class="py-3">
+                <a href="/users" class="text-gray-50 underline">User List</a>
+            </div>
+        </div>
+
+        <div class="overflow-hidden flex-auto">
+            <div class="grid gap-0 relative">
+                <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
+                    <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
+                        <div class="w-full flex flex-row border-b border-black justify-between pe-5">
+                            <div class="flex pt-[23px]">
+                                <a href="#" routerLink="projects" routerLinkActive="border-gray-100" class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a
+                >
+              </div>
+              <div class="flex flex-column justify-center items-center">
+                <button
+                  type="submit"
+                  class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="grid flex-1">
+            <div class="p-5 pr-0">
+              <form class="grid gap-[20px]">
+                @if(this.apiErrors) { @for (error of this.apiErrors; track
+                $index) {
+                <div class="text-red-700 text-xs leading-normal inline-block">
+                  {{ error }}
+                </div>
+                } }
+
+                <!-- row grid -->
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"
+                >
+                  <!-- column -->
+                  <div>
+                    <!-- text input -->
+                    <input
+                      [class.border-red-700]="
+                        form.controls.firstName.errors && form.touched
+                      "
+                      type="text"
+                      name="fullname"
+                      id="fullname"
+                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+                      placeholder="Client Name"
+                      formControlName="name"
+                    />
+                    @if(form.controls.firstName.errors && form.touched) {
+                    @if(form.controls.firstName.errors['required']) {
+                    <span
+                      class="text-red-700 text-xs leading-normal inline-block"
+                      >First Name is required.</span
+                    >
+                    } }
+                  </div>
+                  <!-- column -->
+                  <div>
+                    <!-- text input -->
+                    <input
+                      [class.border-red-700]="
+                        form.controls.LastName.errors && form.touched
+                      "
+                      type="text"
+                      name="canatednated"
+                      id="canatednated"
+                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+                      placeholder="Last Name"
+                      formControlName="lastName"
+                    />
+                  </div>
+                  @if(form.controls.LastName.errors && form.touched) {
+                    @if(form.controls.LastName.errors['required']) {
+                    <span
+                      class="text-red-700 text-xs leading-normal inline-block"
+                      >Last Name is required.</span
+                    >
+                    } }
+                </div>
+                <!-- row grid -->
+                <div
+                  class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5"
+                >
+                  <!-- column -->
+                  <div>
+                    <!-- email input -->
+                    <input
+                      [class.border-red-700]="
+                        form.controls.email.errors && form.touched
+                      "
+                      type="email"
+                      name="canatednated"
+                      id="canatednated"
+                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+                      placeholder="Email Address"
+                      formControlName="email"
+                    />
+                    @if(form.controls.email?.errors && form.touched) {
+                    @if(form.controls.email?.errors?.['email']) {
+                    <span
+                      class="text-red-700 text-xs leading-normal inline-block"
+                      >Email address is invalid.</span
+                    >
+                    } }
+                  </div>
+                  <!-- column -->
+                  <div>
+                    <div>Enabled?</div>
+                    <div class="grid relative w-full max-w-[220px]">
+                      <select  class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                          <option [value]="true" >Yes</option>
+                          <option [value]="false">No</option>
+                      </select>
+                      <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                          <i class="bi bi-arrow-down-short text-[24px]"></i>
+                      </span>
+                  </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+</form>
