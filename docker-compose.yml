@@ -14,6 +14,7 @@ services:
     - DB_PASSWORD=${HQ_DB_PASSWORD}
     - AUTH_ISSUER=${HQ_AUTH_ISSUER}
     - AUTH_AUDIENCE=${HQ_AUTH_AUDIENCE}
+    - AUTH_ADMIN_URL=${HQ_AUTH_ADMIN_URL}
     volumes:
     - .:/workspace:cached
     - dotnet-nuget:/home/vscode/.nuget/
