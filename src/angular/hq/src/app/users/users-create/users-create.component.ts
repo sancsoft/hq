@@ -1,64 +1,74 @@
+import { GetStaffV1Record } from './../../models/staff-members/get-staff-member-v1';
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
+import { CommonModule } from '@angular/common';
 
 interface Form {
   firstName: FormControl<string | null>;
-  LastName: FormControl<string | null>;
+  lastName: FormControl<string | null>;
   email: FormControl<string | null>;
-  StaffId: FormControl<string | null>;
-  Enabled: FormControl<boolean | null>;
-  IsStaff: FormControl<boolean | null>;
-  IsManager: FormControl<boolean | null>;
-  IsPartner: FormControl<boolean | null>;
-  IsExecutive: FormControl<boolean | null>;
-  IsAdministrator: FormControl<boolean | null>;
+  staffId: FormControl<string | null>;
+  enabled: FormControl<boolean | null>;
+  isStaff: FormControl<boolean | null>;
+  isManager: FormControl<boolean | null>;
+  isPartner: FormControl<boolean | null>;
+  isExecutive: FormControl<boolean | null>;
+  isAdministrator: FormControl<boolean | null>;
 }
 
 @Component({
   selector: 'hq-users-create',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './users-create.component.html',
 })
 export class UsersCreateComponent {
   apiErrors?: string[];
+  staffMembers$: Observable<GetStaffV1Record[]>;
+  showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
 
   form = new FormGroup<Form>({
-    firstName: new FormControl('', {
+    firstName: new FormControl(null, {
       validators: [Validators.required, Validators.minLength(1)],
     }),
-    LastName: new FormControl(null, {
+    lastName: new FormControl(null, {
       validators: [Validators.required, Validators.minLength(1)],
     }),
     email: new FormControl(null, {
       validators: [Validators.required, Validators.email],
     }),
-    StaffId: new FormControl(null),
-    Enabled: new FormControl(false, {
+    staffId: new FormControl(null),
+    enabled: new FormControl(false, {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    IsStaff: new FormControl(false, {
+    isStaff: new FormControl(false, {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    IsManager: new FormControl(false, {
+    isManager: new FormControl(false, {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    IsPartner: new FormControl(false, {
+    isPartner: new FormControl(false, {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    IsExecutive: new FormControl(false, {
+    isExecutive: new FormControl(false, {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    IsAdministrator: new FormControl(false, {
+    isAdministrator: new FormControl(false, {
       nonNullable: true,
       validators: [Validators.required],
     }),
@@ -68,20 +78,41 @@ export class UsersCreateComponent {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    const response$ = this.hqService.getStaffMembersV1({});
+    this.staffMembers$ = response$.pipe(
+      map((response) => {
+        return response.records;
+      })
+    );
+
+    this.form.controls.isStaff.valueChanges.subscribe((value) => {
+      this.showStaffMembers$.next(value);
+      if(value) {
+        this.form.controls.staffId.setValidators([Validators.required]);
+        this.form.controls.staffId.updateValueAndValidity();
+
+      } else {
+        this.form.controls.staffId.clearValidators();
+        this.form.controls.staffId.updateValueAndValidity();
+      }
+    });
+  }
 
   async submit() {
     this.form.markAsTouched();
+    console.log(this.form.value);
     if (this.form.invalid) {
       return;
     }
+    console.log('Form is valid');
 
     try {
       const request = this.form.value;
       const response = await firstValueFrom(
         this.hqService.upsertUsersV1(request)
       );
-      this.router.navigate(['../', response.id], { relativeTo: this.route });
+      // this.router.navigate(['../', response.id], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
