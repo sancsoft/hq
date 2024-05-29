@@ -83,7 +83,7 @@
             <td class="border-b border-black py-2">{{report.totalAvailableHours | number: '0.2-2'}}</td>
             <td class="border-b border-black py-2">{{getProjectSatusString(report.status)}}</td>
             <td width="200" class="border-b border-black py-2 pe-2">
-                <div class="flex justify-between gap-2 text-xs">
+                <div class="flex justify-between gap-2 text-xs text-gray-400">
                     <span>{{ report.bookingStartDate }}</span>
                     <span>{{ report.bookingEndDate }}</span>
                 </div>
@@ -99,13 +99,13 @@
                         <div class="bg-white h-[8px]" [style.width.%]="(report.bookingPercentComplete ?? 0) * 100"></div>
                     </div>
                 }
-                <div class="flex justify-between gap-2 text-xs">
+                <div class="flex justify-between gap-2 text-xs text-gray-400">
                     <span class="lowercase">{{ report.bookingHours | number: '0.2-2' }} hrs this {{ getPeriodName(report.bookingPeriod) }}</span>
                     <span>{{ report.bookingPercentComplete | percent }}</span>
                 </div>
             </td>
             <td width="200" class="border-b border-black py-2">
-                <div class="flex justify-between gap-2 text-xs">
+                <div class="flex justify-between gap-2 text-xs text-gray-400">
                     @if(report.totalStartDate && report.totalEndDate)
                     {
                         <span>{{ report.totalStartDate }}</span>
@@ -129,7 +129,7 @@
                         <div class="bg-white h-[8px]" [style.width.%]="(report.totalPercentComplete ?? 0) * 100"></div>
                     </div>
                 }
-                <div class="flex justify-between gap-2 text-xs">
+                <div class="flex justify-between gap-2 text-xs text-gray-400">
                     <span>{{ report.totalHours | number: '0.2-2' }} hrs total</span>
                     <span>{{ report.totalPercentComplete != null ? (report.totalPercentComplete | percent) : '-' }}</span>
                 </div>
