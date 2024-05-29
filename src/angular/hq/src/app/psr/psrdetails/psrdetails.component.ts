@@ -35,6 +35,7 @@ import {
   GetChargeCodesRequestV1,
 } from '../../models/charge-codes/get-chargecodes-v1';
 import { FormsModule } from '@angular/forms';
+import { SelectableChargeCodeComponent } from '../selectable-charge-code/selectable-charge-code.component';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -50,6 +51,7 @@ export interface ChargeCodeViewModel {
     SortIconComponent,
     PsrDetailsSearchFilterComponent,
     FormsModule,
+    SelectableChargeCodeComponent
   ],
   templateUrl: './psrdetails.component.html',
 })
@@ -58,6 +60,8 @@ export class PSRDetailsComponent {
   chargeCodesViewModel: ChargeCodeViewModel[] = [];
 
   refresh$ = new Subject<void>();
+  modalOpen$ = new BehaviorSubject<boolean>(false);
+  selectedChargeCodeId$ = new Subject<string | null>();
 
   psrId$: Observable<string>;
   time$: Observable<GetPSRTimeRecordV1[]>;
@@ -304,7 +308,11 @@ export class PSRDetailsComponent {
     this.refresh$.next();
   }
 
-  async updateChargeCode(timeId: string, event: Event) {
+  selectedChargeCode(selectedChargeCode: GetChargeCodeRecordV1) {
+    this.selectedChargeCodeId$.next(selectedChargeCode.id);
+  }
+
+  async updateChargeCode(timeId: string, chargeCodeId: string) {
     const chargeCode = await firstValueFrom(
       this.time$.pipe(
         map((times) => times.find((x) => x.id == timeId)?.chargeCode)
@@ -321,21 +329,21 @@ export class PSRDetailsComponent {
       // TODO: Alert the users
       return;
     }
-    this.hqConfirmationModalService.showModal(
-      `Are you sure you want to change the charge code to ${chargeCode}?`
-    );
-    const actionTaken = await firstValueFrom(
-      this.hqConfirmationModalService.cuurentAction
-    );
-    if (actionTaken != true) {
-      this.refresh$.next();
-      return;
-    }
-    const chargecodeId = await firstValueFrom(
-      this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == chargeCode)?.id)
-      )
-    );
+    // this.hqConfirmationModalService.showModal(
+    //   `Are you sure you want to change the charge code to ${chargeCode}?`
+    // );
+    // const actionTaken = await firstValueFrom(
+    //   this.hqConfirmationModalService.cuurentAction
+    // );
+    // if (actionTaken != true) {
+    //   this.refresh$.next();
+    //   return;
+    // }
+    // const chargecodeId = await firstValueFrom(
+    //   this.chargeCodes$.pipe(
+    //     map((c) => c.find((x) => x.code == chargeCode)?.id)
+    //   )
+    // );
 
     const request = {
       projectStatusReportId: psrId,
@@ -343,7 +351,7 @@ export class PSRDetailsComponent {
       billableHours: time.billableHours,
       task: time.task,
       notes: time.description,
-      chargeCodeId: chargecodeId,
+      chargeCodeId: chargeCodeId,
     };
 
     // TOOD: Call API
@@ -419,5 +427,28 @@ export class PSRDetailsComponent {
   }
   roundToNextQuarter(num: string | number) {
     return Math.ceil(Number(num) * 4) / 4;
+  }
+
+  async openModal(id: string) {
+    this.modalOpen$.next(true);
+    const selectedValueId = await firstValueFrom(this.selectedChargeCodeId$);
+    console.log(selectedValueId);
+    this.modalOpen$.next(true);
+
+  }
+
+  closeModal() {
+    this.modalOpen$.next(false);
+  }
+
+  async modalOkClicked() {
+    this.modalOpen$.next(true);
+    const selectedValueId = await firstValueFrom(this.selectedChargeCodeId$);
+    console.log(selectedValueId);
+    this.closeModal();
+  }
+  modalCancelClicked() {
+    // this.selectedClientName$.next(null);
+    this.closeModal();
   }
 }

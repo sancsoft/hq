@@ -14,27 +14,40 @@
             <thead>
                 <tr class="sticky top-0 text-left">
                     <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 pr-2 text-nowrap">
-                        Approved Hrs</th>
-                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap">Hrs</th>
-                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.Date)">Date
+                        Approved Hrs
+                    </th>
+                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap">
+                        Hrs
+                    </th>
+                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.Date)">
+                        Date
                         <hq-sort-icon [column]="sortColumn.Date" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
                     </th>
-                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.ChargeCode)">Chrg Code
+                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.ChargeCode)">
+                        Chrg Code
                         <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
                     </th>
-                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.StaffName)">Staff
+                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.StaffName)">
+                        Staff
                         <hq-sort-icon [column]="sortColumn.StaffName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
                     </th>
-                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.Activity)">Activity/Task
+                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.Activity)">
+                        Activity/Task
                         <hq-sort-icon [column]="sortColumn.Activity" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
                     </th>
                     <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2">
                         <div class="flex items-center justify-between">
                             Description
                             <div class="flex space-x-2 pr-5">
-                                <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="deselectAll()">Deselect All</button>
-                                <button class="px-2 py-2 bg-transparent border border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptAll()">Accept All</button>
-                                <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptSelected()">Accept</button>
+                                <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="deselectAll()">
+                  Deselect All
+                </button>
+                                <button class="px-2 py-2 bg-transparent border border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptAll()">
+                  Accept All
+                </button>
+                                <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptSelected()">
+                  Accept
+                </button>
                             </div>
                         </div>
                     </th>
@@ -42,7 +55,10 @@
             </thead>
             <tbody>
                 @for (time of time$ | async; track time.id) { @switch (time.status) { @case (timeStatus.Pending) {
-                <tr [ngClass]="{ 'bg-blue-900': isSelected(time.id) | async, 'even:bg-gray-850 odd:bg-black-alt': !(isSelected(time.id) | async) }">
+                <tr [ngClass]="{
+            'bg-blue-900': isSelected(time.id) | async,
+            'even:bg-gray-850 odd:bg-black-alt': !(isSelected(time.id) | async)
+          }">
                     <td (click)="toggleTime(time.id)" class="border-b border-black py-2 bg-gray-450 w-3 cursor-pointer"></td>
                     <td class="border-b border-black py-2 pl-3 pr-2">
                         <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.billableHours" (change)="updateBillableHours(time.id, $event)" />
@@ -50,30 +66,37 @@
                     <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
                     <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
                     <td class="border-b border-black py-2 px-2 text-black">
+                        <!-- select dropdown -->
+
                         @if (chargeCodes$ | async ; as chargeCodes) {
-                        <select [(ngModel)]="time.chargeCode" (change)="updateChargeCode(time.id, $event)" class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
-                <option *ngFor="let c of chargeCodes" [ngValue]="c.code">{{c.code}}</option>
+                        <select (click)="openModal(time.id)" (mousedown)="$event.preventDefault()" class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+              <option [ngValue]="time.chargeCode">
+                {{ time.chargeCode }}
+              </option>
+            </select> }
+                    </td>
 
-              </select> }
-
-                        <!-- <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.chargeCode"
-            (change)="updateChargeCode(time.id, $event)" /></td> -->
-                        <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-                        <td class="border-b border-black py-2 px-2">
-                            <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.task" (change)="updateTask(time.id, $event)" /></td>
-                        <td class="border-b border-black py-2 px-2 w-full">
-                            <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description" (change)="updateDescription(time.id, $event)" />
-                        </td>
-                        <td class="border-b border-black py-2 text-right pr-5">
-                            <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                                <!-- warning icon -->
-                                <div>&nbsp;</div>
-                                <div class="text-nowrap divide-x divide-teal-200">
-                                    <button class="text-teal-200 hover:text-teal-300 uppercase pr-3" (click)="reject(time.id)">reject</button>
-                                    <button class="text-teal-200 hover:text-teal-300 uppercase pl-3" (click)="acceptTime(time.id)">accept</button>
-                                </div>
+                    <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
+                    <td class="border-b border-black py-2 px-2">
+                        <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.task" (change)="updateTask(time.id, $event)" />
+                    </td>
+                    <td class="border-b border-black py-2 px-2 w-full">
+                        <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description" (change)="updateDescription(time.id, $event)" />
+                    </td>
+                    <td class="border-b border-black py-2 text-right pr-5">
+                        <div class="flex justify-between flex-nowrap space-x-2 items-center">
+                            <!-- warning icon -->
+                            <div>&nbsp;</div>
+                            <div class="text-nowrap divide-x divide-teal-200">
+                                <button class="text-teal-200 hover:text-teal-300 uppercase pr-3" (click)="reject(time.id)">
+                  reject
+                </button>
+                                <button class="text-teal-200 hover:text-teal-300 uppercase pl-3" (click)="acceptTime(time.id)">
+                  accept
+                </button>
                             </div>
-                        </td>
+                        </div>
+                    </td>
                 </tr>
                 } @case (timeStatus.Accepted) {
                 <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
@@ -93,133 +116,255 @@
                         <div class="flex flex-nowrap justify-between space-x-2 items-center">
                             <!-- more info icon -->
                             <div><i class="bi bi-three-dots"></i></div>
-                            <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">edit</a>
-                        </div>
-                    </td>
-                </tr>
-                } @case (timeStatus.Rejected) {
+                            <a href="# " class="text-teal-200 hover:text-teal-300 uppercase">edit</a
+              >
+            </div>
+          </td>
+        </tr>
+        } @case (timeStatus.Rejected) {
 
-                <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
-                    <td class="border-b border-black py-2 bg-red-600 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">
-                        <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.billableHours" disabled />
-                    </td>
-                    <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
-                    <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
-                    <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
-                    <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-                    <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
-                    <td class="border-b border-black py-2 px-2 w-full">
-                        <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.description" disabled />
-                    </td>
-                    <td class="border-b border-black py-2 pr-5">
-                        <div class="flex flex-nowrap justify-between space-x-2 items-center">
-                            <!-- more info icon -->
-                            <div><i class="bi bi-three-dots"></i></div>
-                            <a class="text-gray-400 cursor-not-allowed opacity-50 uppercase">accept</a>
+        <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
+          <td class="border-b border-black py-2 bg-red-600 w-3"></td>
+          <td class="border-b border-black py-2 pl-3 pr-2">
+            <input
+              class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2"
+              [value]="time.billableHours"
+              disabled
+            />
+          </td>
+          <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
+          <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+          <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
+          <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
+          <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
+          <td class="border-b border-black py-2 px-2 w-full">
+            <input
+              class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2"
+              [value]="time.description"
+              disabled
+            />
+          </td>
+          <td class="border-b border-black py-2 pr-5">
+            <div
+              class="flex flex-nowrap justify-between space-x-2 items-center"
+            >
+              <!-- more info icon -->
+              <div><i class="bi bi-three-dots"></i></div>
+              <a class="text-gray-400 cursor-not-allowed opacity-50 uppercase"
+                >accept</a
+              >
+            </div>
+          </td>
+        </tr>
 
-                        </div>
-                    </td>
-                </tr>
+        } @case (timeStatus.RejectedPendingReview) {
 
-                } @case (timeStatus.RejectedPendingReview) {
-
-                <tr [ngClass]="{ 'bg-blue-900': isSelected(time.id) | async, 'even:bg-gray-850 odd:bg-black-alt': !(isSelected(time.id) | async) }">
-                    <td (click)="toggleTime(time.id)" class="border-b border-black py-2 bg-yellow-450 w-3 cursor-pointer"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">
-                        <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.billableHours" (change)="updateBillableHours(time.id, $event)" />
-                    </td>
-                    <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
-                    <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
-                    <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
-                    <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-                    <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
-                    <td class="border-b border-black py-2 px-2 w-full">
-                        <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description" (change)="updateDescription(time.id, $event)" />
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                        <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                            <!-- warning icon -->
-                            <div>&nbsp;</div>
-                            <div class="text-nowrap divide-x divide-teal-200">
-                                <button class="text-teal-200 hover:text-teal-300 uppercase pl-3" (click)="acceptTime(time.id)">accept</button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                } } }
-            </tbody>
-            <tbody class="hidden">
-                <!-- Needs Attention -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">
-                        <input class="w-full bg-blue-900 border border-black rounded py-1 px-2" value="5" />
-                    </td>
-                    <td class="border-b border-black py-2 px-2">5.5</td>
-                    <td class="border-b border-black py-2 px-2">12/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">P1006</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">
-                        <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="Testing bug fixes for mqtt site controller, updated environments." />
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                        <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                            <!-- warning icon -->
-                            <div><i class="bi bi-exclamation-diamond-fill text-yellow-550"></i></div>
-                            <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">accept</a>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">
-                        <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="6.5" />
-                    </td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">
-                        <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" value="PAX design review" />
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                        <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                            <!-- warning icon -->
-                            <div>&nbsp;</div>
-                            <div class="text-nowrap divide-x divide-teal-200">
-                                <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">reject</button>
-                                <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">accept</button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Error -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-red-850 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">
-                        <input class="w-full bg-blue-900 border border-black rounded py-1 px-2" value="3" />
-                    </td>
-                    <td class="border-b border-black py-2 px-2">3.75</td>
-                    <td class="border-b border-black py-2 px-2">3/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">P1006</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">
-                        <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                        <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                            <!-- warning icon -->
-                            <div><i class="bi bi-exclamation-diamond-fill text-yellow-550"></i></div>
-                            <button disabled class="text-gray-450 uppercase">accept</button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <tr
+          [ngClass]="{
+            'bg-blue-900': isSelected(time.id) | async,
+            'even:bg-gray-850 odd:bg-black-alt': !(isSelected(time.id) | async)
+          }"
+        >
+          <td
+            (click)="toggleTime(time.id)"
+            class="border-b border-black py-2 bg-yellow-450 w-3 cursor-pointer"
+          ></td>
+          <td class="border-b border-black py-2 pl-3 pr-2">
+            <input
+              class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+              [value]="time.billableHours"
+              (change)="updateBillableHours(time.id, $event)"
+            />
+          </td>
+          <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
+          <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+          <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
+          <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
+          <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
+          <td class="border-b border-black py-2 px-2 w-full">
+            <input
+              class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+              [value]="time.description"
+              (change)="updateDescription(time.id, $event)"
+            />
+          </td>
+          <td class="border-b border-black py-2 text-right pr-5">
+            <div
+              class="flex justify-between flex-nowrap space-x-2 items-center"
+            >
+              <!-- warning icon -->
+              <div>&nbsp;</div>
+              <div class="text-nowrap divide-x divide-teal-200">
+                <button
+                  class="text-teal-200 hover:text-teal-300 uppercase pl-3"
+                  (click)="acceptTime(time.id)"
+                >
+                  accept
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        } } }
+      </tbody>
+      <tbody class="hidden">
+        <!-- Needs Attention -->
+        <tr class="even:bg-gray-850 odd:bg-black-alt">
+          <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
+          <td class="border-b border-black py-2 pl-3 pr-2">
+            <input
+              class="w-full bg-blue-900 border border-black rounded py-1 px-2"
+              value="5 "
+            />
+          </td>
+          <td class="border-b border-black py-2 px-2">5.5</td>
+          <td class="border-b border-black py-2 px-2">12/23/2024</td>
+          <td class="border-b border-black py-2 px-2">P1006</td>
+          <td class="border-b border-black py-2 px-2">rlennox</td>
+          <td class="border-b border-black py-2 px-2">Support</td>
+          <td class="border-b border-black py-2 px-2 w-full">
+            <input
+              class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+              value="Testing bug fixes for mqtt site controller, updated environments. "
+            />
+          </td>
+          <td class="border-b border-black py-2 text-right pr-5">
+            <div
+              class="flex justify-between flex-nowrap space-x-2 items-center"
+            >
+              <!-- warning icon -->
+              <div>
+                <i class="bi bi-exclamation-diamond-fill text-yellow-550"></i>
+              </div>
+              <a href="# " class="text-teal-200 hover:text-teal-300 uppercase"
+                >accept</a
+              >
+            </div>
+          </td>
+        </tr>
+        <!-- Default -->
+        <tr class="even:bg-gray-850 odd:bg-black-alt">
+          <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
+          <td class="border-b border-black py-2 pl-3 pr-2">
+            <input
+              class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+              value="6.5 "
+            />
+          </td>
+          <td class="border-b border-black py-2 px-2">8</td>
+          <td class="border-b border-black py-2 px-2">8/23/2024</td>
+          <td class="border-b border-black py-2 px-2">Q1234</td>
+          <td class="border-b border-black py-2 px-2">rlennox</td>
+          <td class="border-b border-black py-2 px-2">Support</td>
+          <td class="border-b border-black py-2 px-2 w-full">
+            <input
+              class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+              value="PAX design review "
+            />
+          </td>
+          <td class="border-b border-black py-2 text-right pr-5">
+            <div
+              class="flex justify-between flex-nowrap space-x-2 items-center"
+            >
+              <!-- warning icon -->
+              <div>&nbsp;</div>
+              <div class="text-nowrap divide-x divide-teal-200">
+                <button
+                  class="text-teal-200 hover:text-teal-300 uppercase pr-3"
+                >
+                  reject
+                </button>
+                <button
+                  class="text-teal-200 hover:text-teal-300 uppercase pl-3"
+                >
+                  accept
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <!-- Error -->
+        <tr class="even:bg-gray-850 odd:bg-black-alt">
+          <td class="border-b border-black py-2 bg-red-850 w-3"></td>
+          <td class="border-b border-black py-2 pl-3 pr-2">
+            <input
+              class="w-full bg-blue-900 border border-black rounded py-1 px-2"
+              value="3 "
+            />
+          </td>
+          <td class="border-b border-black py-2 px-2">3.75</td>
+          <td class="border-b border-black py-2 px-2">3/23/2024</td>
+          <td class="border-b border-black py-2 px-2">P1006</td>
+          <td class="border-b border-black py-2 px-2">rlennox</td>
+          <td class="border-b border-black py-2 px-2">Support</td>
+          <td class="border-b border-black py-2 px-2 w-full">
+            <input
+              class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2"
+              value="Assisting Jack with debugging NV200 issues, sealevel questions. "
+              disabled
+            />
+          </td>
+          <td class="border-b border-black py-2 text-right pr-5">
+            <div
+              class="flex justify-between flex-nowrap space-x-2 items-center"
+            >
+              <!-- warning icon -->
+              <div>
+                <i class="bi bi-exclamation-diamond-fill text-yellow-550"></i>
+              </div>
+              <button disabled class="text-gray-450 uppercase">accept</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
+
+<!-- modal -->
+<div
+  class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear"
+  [ngClass]="{
+    'opacity-100 visible': (modalOpen$ | async),
+    'opacity-0 invisible': !(modalOpen$ | async)
+  }"
+>
+  <!-- modal dialog -->
+  <div
+    class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear"
+    [ngClass]="{
+      'opacity-100 visible': (modalOpen$ | async),
+      'opacity-0 invisible': !(modalOpen$ | async)
+    }"
+  >
+    <!-- modal dialog -->
+    <div class="modal-dialog max-w-full mr-auto ml-auto text-black">
+      <div
+        class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto overflow-y-auto h-[90vh]"
+      >
+        <!-- header -->
+        <div
+          class="modal-header flex flex-shrink-0 items-center px-5 py-[15px] bg-blue-900 text-gray-100"
+        >
+          <div class="font-bold">Select Quote</div>
+        </div>
+
+        <!-- Body -->
+        <div class="overflow-y-auto">
+          <hq-selectable-charge-code (selectedChargeCode)="selectedChargeCode($event)"></hq-selectable-charge-code>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal backdrop/overlay -->
+<div
+  class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear"
+  [ngClass]="{
+    'opacity-75 visible': (modalOpen$ | async),
+    'opacity-0 invisible': !(modalOpen$ | async)
+  }"
+></div>

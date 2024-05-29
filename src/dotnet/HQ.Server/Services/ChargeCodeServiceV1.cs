@@ -54,33 +54,6 @@ public class ChargeCodeServiceV1
         {
             records = records.Where(t => t.Billable == request.Billable.Value);
         }
-
-        var sortMap = new Dictionary<GetChargeCodesV1.SortColumn, string>()
-        {
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code, "Code" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Billable, "Billable" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Active, "Active" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName, "Project.Name" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName, "Quote.Name" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName, "ServiceAgreement.Name" },
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        records = request.SortDirection == SortDirection.Asc ?
-            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
-
-        if (request.Skip.HasValue)
-        {
-            records = records.Skip(request.Skip.Value);
-        }
-
-        if (request.Take.HasValue)
-        {
-            records = records.Take(request.Take.Value);
-        }
-
         var mapped = records.Select(t => new GetChargeCodesV1.Record()
         {
             Id = t.Id,
@@ -93,6 +66,34 @@ public class ChargeCodeServiceV1
             ServiceAgreementName = t.ServiceAgreement != null ? t.ServiceAgreement.Name : null,
             Description = t.Description
         });
+
+        var sortMap = new Dictionary<GetChargeCodesV1.SortColumn, string>()
+        {
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code, "Code" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Billable, "Billable" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Active, "Active" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName, "ProjectName" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName, "QuoteName" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName, "ServiceAgreementName" },
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+        mapped = request.SortDirection == SortDirection.Asc ?
+            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+        if (request.Skip.HasValue)
+        {
+            mapped = mapped.Skip(request.Skip.Value);
+        }
+
+        if (request.Take.HasValue)
+        {
+            mapped = mapped.Take(request.Take.Value);
+        }
+
+
 
         var response = new GetChargeCodesV1.Response()
         {
