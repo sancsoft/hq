@@ -9,7 +9,6 @@ public class Time : Base
     public Staff Staff { get; set; } = null!;
     public Guid ChargeCodeId { get; set; }
     public ChargeCode ChargeCode { get; set; } = null!;
-    public string? Reference { get; set; }
     public decimal Hours { get; set; }
     public string? Notes { get; set; }
     public decimal? HoursApproved { get; set; }
@@ -17,6 +16,8 @@ public class Time : Base
     public Guid? InvoiceId { get; set; }
     public Invoice? Invoice { get; set; }
     public TimeStatus Status { get; set; }
-    public string? Activity { get; set; }
+    public string? Task { get; set; }
+    public Guid? ActivityId { get; set; }
+    public ProjectActivity? Activity { get; set; }
     public string? RejectionNotes { get; set; }
 }

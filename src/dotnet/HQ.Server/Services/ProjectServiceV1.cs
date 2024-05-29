@@ -258,4 +258,20 @@ public class ProjectServiceV1
             Updated = updated
         };
     }
+
+    public async Task<Result<GetProjectActivitiesV1.Response>> GetProjectActivitiesV1(GetProjectActivitiesV1.Request request, CancellationToken ct = default)
+    {
+        var records = _context.ProjectActivities.Where(t => t.ProjectId == request.ProjectId)
+            .Select(t => new GetProjectActivitiesV1.Record() {
+                Id = t.Id,
+                Name = t.Name,
+                Sequence = t.Sequence
+            })
+            .OrderBy(t => t.Name);
+
+        return new GetProjectActivitiesV1.Response()
+        {
+            Records = await records.ToListAsync(ct)
+        };
+    }
 }

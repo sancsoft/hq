@@ -15,6 +15,7 @@ namespace HQ.Server.Data
         public DbSet<Plan> Plans { get; set; } = null!;
         public DbSet<Point> Points { get; set; } = null!;
         public DbSet<Project> Projects { get; set; } = null!;
+        public DbSet<ProjectActivity> ProjectActivities { get; set; } = null!;
         public DbSet<ProjectStatusReport> ProjectStatusReports { get; set; } = null!;
         public DbSet<Quote> Quotes { get; set; } = null!;
         public DbSet<Service> Services { get; set; } = null!;
