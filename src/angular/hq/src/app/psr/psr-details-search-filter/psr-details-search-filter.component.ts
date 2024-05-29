@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { PsrService } from './../psr-service';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { PsrDetailsService } from '../psr-details-service';
 
 @Component({
   selector: 'hq-psr-details-search-filter',
@@ -10,6 +11,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
   templateUrl: './psr-details-search-filter.component.html'
 })
 export class PsrDetailsSearchFilterComponent {
-  constructor(public psrService: PsrService) { }
+  constructor(public psrDetailsService: PsrDetailsService) { }
 
 }

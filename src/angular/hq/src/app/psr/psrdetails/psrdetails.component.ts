@@ -1,3 +1,4 @@
+import { PsrDetailsService } from './../psr-details-service';
 import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
@@ -13,6 +14,7 @@ import {
   Subject,
   combineLatest,
   debounceTime,
+  first,
   firstValueFrom,
   map,
   merge,
@@ -75,23 +77,28 @@ export class PSRDetailsComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private psrService: PsrService,
+    private PsrDetailsService: PsrDetailsService,
     private hqSnackBarService: HQSnackBarService,
     private hqConfirmationModalService: HQConfirmationModalService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
-    const search$ = psrService.search.valueChanges.pipe(
-      startWith(psrService.search.value)
+    const search$ = PsrDetailsService.search.valueChanges.pipe(
+      startWith(PsrDetailsService.search.value)
     );
 
     const psrId$ = this.route.params.pipe(map((params) => params['psrId']));
+    const staffMemberId$ = PsrDetailsService.staffMember.valueChanges.pipe(
+      startWith(PsrDetailsService.staffMember.value)
+    );
+
     this.psrId$ = psrId$;
 
     const request$ = combineLatest({
       search: search$,
       projectStatusReportId: psrId$,
+      projectManagerId: staffMemberId$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
     });
@@ -100,12 +107,16 @@ export class PSRDetailsComponent {
       debounceTime(500),
       switchMap((request) => this.hqService.getPSRTimeV1(request))
     );
-    this.chargeCodes$ = this.hqService
-      .getChargeCodeseV1({})
-      .pipe(
-        map((chargeCode) => chargeCode.records),
-        shareReplay(1)
-      );
+    apiResponse$.pipe(
+      first()
+    ).subscribe((response) => {
+      PsrDetailsService.staffMembers$.next(response.staff);
+    });
+
+    this.chargeCodes$ = this.hqService.getChargeCodeseV1({}).pipe(
+      map((chargeCode) => chargeCode.records),
+      shareReplay(1)
+    );
 
     const refresh$ = this.refresh$.pipe(
       switchMap(() => apiResponse$),
@@ -124,7 +135,6 @@ export class PSRDetailsComponent {
         return response.map((t) => t.id);
       })
     );
-    psrService.hideProjectStatus();
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -253,14 +263,13 @@ export class PSRDetailsComponent {
       billableHours: time.billableHours,
       task: time.task,
       notes: description,
-      chargeCodeId: chargecodeId
+      chargeCodeId: chargecodeId,
     };
 
     // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
-
   }
 
   async updateTask(timeId: string, event: Event) {
@@ -273,7 +282,7 @@ export class PSRDetailsComponent {
     if (!time) {
       return;
     }
-    
+
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
         map((c) => c.find((x) => x.code == time.chargeCode)?.id)
@@ -286,14 +295,13 @@ export class PSRDetailsComponent {
       billableHours: time.billableHours,
       task: task,
       notes: time.description,
-      chargeCodeId: chargecodeId
+      chargeCodeId: chargecodeId,
     };
 
     // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
-
   }
 
   async updateChargeCode(timeId: string, event: Event) {
@@ -314,7 +322,7 @@ export class PSRDetailsComponent {
       return;
     }
     this.hqConfirmationModalService.showModal(
-      `Are you sure you want to change the charge code to ${chargeCode}?`,
+      `Are you sure you want to change the charge code to ${chargeCode}?`
     );
     const actionTaken = await firstValueFrom(
       this.hqConfirmationModalService.cuurentAction
@@ -342,7 +350,6 @@ export class PSRDetailsComponent {
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
-
   }
 
   async updateBillableHours(timeId: string, event: Event) {
@@ -372,12 +379,11 @@ export class PSRDetailsComponent {
       billableHours: roundedBillableHours,
       task: time.task,
       notes: time.description,
-      chargeCodeId: chargecodeId
+      chargeCodeId: chargecodeId,
     };
     //  Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.refresh$.next();
-
   }
 
   // Reject
