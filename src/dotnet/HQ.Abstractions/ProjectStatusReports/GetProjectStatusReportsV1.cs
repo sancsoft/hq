@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace HQ.Abstractions.ProjectStatusReports;
@@ -83,6 +84,8 @@ public class GetProjectStatusReportsV1
         public decimal BookingAvailableHours { get; set; }
         public ProjectStatus Status { get; set; }
         public decimal? TotalPercentComplete { get; set; }
+        [JsonIgnore]
+        public decimal? TotalPercentCompleteSort { get; set; }
         public decimal BookingPercentComplete { get; set; }
         public DateOnly? TotalStartDate { get; set; }
         public DateOnly? TotalEndDate { get; set; }

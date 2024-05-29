@@ -148,6 +148,7 @@ public class ProjectStatusReportServiceV1
                 BookingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate).Sum(x => x.Hours),
                 BookingAvailableHours = t.Row.Project.BookingHours - t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate).Sum(x => x.Hours),
                 TotalPercentComplete = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? null : t.Row.Project.ChargeCode!.Times.Sum(x => x.Hours) / t.Row.Project.TotalHours.Value,
+                TotalPercentCompleteSort = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? -1 : t.Row.Project.ChargeCode!.Times.Sum(x => x.Hours) / t.Row.Project.TotalHours.Value,
                 BookingPercentComplete = t.Row.Project.BookingHours == 0 ? 0 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate).Sum(x => x.Hours) / t.Row.Project.BookingHours,
                 TotalStartDate = t.Row.Project.ChargeCode.Times.Min(t => t.Date),
                 TotalEndDate = t.Row.Project.ChargeCode.Times.Max(t => t.Date)
@@ -175,15 +176,22 @@ public class ProjectStatusReportServiceV1
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.LastHours, "LastHours" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingHours, "BookingHours" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingAvailableHours, "BookingAvailableHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalPercentComplete, "TotalPercentComplete" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalPercentComplete, "TotalPercentCompleteSort" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPercentComplete, "BookingPercentComplete" },
         };
 
         var sortProperty = sortMap[request.SortBy];
 
-        mapped = request.SortDirection == SortDirection.Asc ?
+        var sorted = request.SortDirection == SortDirection.Asc ?
             mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
             mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+        sorted = sorted
+            .ThenBy(t => t.StartDate)
+            .ThenBy(t => t.ClientName)
+            .ThenBy(t => t.ProjectName);
+        
+        mapped = sorted;
 
         if (request.Skip.HasValue)
         {
