@@ -15,7 +15,7 @@
             <hq-psr-details-search-filter></hq-psr-details-search-filter>
 
             <!-- select dropdown -->
-            <div class="grid relative w-[220px]">
+            <!-- <div class="grid relative w-[220px]">
                 <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
                     <option>First Name, Last Name</option>
                     <option>First Name, Last Name</option>
@@ -23,7 +23,7 @@
                 <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                     <i class="bi bi-arrow-down-short text-[24px]"></i>
                 </span>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -87,17 +87,14 @@
                     <span>{{ report.bookingStartDate }}</span>
                     <span>{{ report.bookingEndDate }}</span>
                 </div>
-                @if(report.bookingPercentComplete && report.bookingPercentComplete > 1)
-                {
-                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]">
-                        <div class="bg-red-850 h-[8px]"[style.width.%]="Math.min(report.bookingPercentComplete - 1, 1) * 100"></div>
-                    </div>
-                }
-                @else
-                {
-                    <div class="w-full bg-gray-500 border border-white h-[10px]">
-                        <div class="bg-white h-[8px]" [style.width.%]="(report.bookingPercentComplete ?? 0) * 100"></div>
-                    </div>
+                @if(report.bookingPercentComplete && report.bookingPercentComplete > 1) {
+                <div class="w-full bg-gray-450 border border-red-850 h-[10px]">
+                    <div class="bg-red-850 h-[8px]" [style.width.%]="Math.min(report.bookingPercentComplete - 1, 1) * 100"></div>
+                </div>
+                } @else {
+                <div class="w-full bg-gray-500 border border-white h-[10px]">
+                    <div class="bg-white h-[8px]" [style.width.%]="(report.bookingPercentComplete ?? 0) * 100"></div>
+                </div>
                 }
                 <div class="flex justify-between gap-2 text-xs text-gray-400">
                     <span class="lowercase">{{ report.bookingHours | number: '0.2-2' }} hrs this {{ getPeriodName(report.bookingPeriod) }}</span>
@@ -106,28 +103,20 @@
             </td>
             <td width="200" class="border-b border-black py-2">
                 <div class="flex justify-between gap-2 text-xs text-gray-400">
-                    @if(report.totalStartDate && report.totalEndDate)
-                    {
-                        <span>{{ report.totalStartDate }}</span>
-                        <span>{{ report.totalEndDate }}</span>
-                    }
-                    @else
-                    {
-                        <span>-</span>
-                        <span>-</span>
-                    }
+                    @if(report.totalStartDate && report.totalEndDate) {
+                    <span>{{ report.totalStartDate }}</span>
+                    <span>{{ report.totalEndDate }}</span> } @else {
+                    <span>-</span>
+                    <span>-</span> }
                 </div>
-                @if(report.totalPercentComplete && report.totalPercentComplete > 1)
-                {
-                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]">
-                        <div class="bg-red-850 h-[8px]"[style.width.%]="Math.min(report.totalPercentComplete - 1, 1) * 100"></div>
-                    </div>
-                }
-                @else
-                {
-                    <div class="w-full bg-gray-500 border border-white h-[10px]">
-                        <div class="bg-white h-[8px]" [style.width.%]="(report.totalPercentComplete ?? 0) * 100"></div>
-                    </div>
+                @if(report.totalPercentComplete && report.totalPercentComplete > 1) {
+                <div class="w-full bg-gray-450 border border-red-850 h-[10px]">
+                    <div class="bg-red-850 h-[8px]" [style.width.%]="Math.min(report.totalPercentComplete - 1, 1) * 100"></div>
+                </div>
+                } @else {
+                <div class="w-full bg-gray-500 border border-white h-[10px]">
+                    <div class="bg-white h-[8px]" [style.width.%]="(report.totalPercentComplete ?? 0) * 100"></div>
+                </div>
                 }
                 <div class="flex justify-between gap-2 text-xs text-gray-400">
                     <span>{{ report.totalHours | number: '0.2-2' }} hrs total</span>

@@ -120,6 +120,13 @@ export class PSRListComponent {
     );
 
     this.psrService.resetFilter();
+    this.psrService.hideActivityName();
+    this.psrService.hideProjectManagers();
+    this.psrService.hideProjectStatus();
+    this.psrService.hideRoaster();
+
+
+
   }
 
   goToPage(page: number) {
