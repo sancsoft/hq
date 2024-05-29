@@ -32,6 +32,13 @@ namespace HQ.Server.Controllers
             _projectService.GetProjectsV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetProjectActivitiesV1))]
+        [ProducesResponseType<GetProjectActivitiesV1.Response>(StatusCodes.Status200OK)]
+        public Task<ActionResult> GetProjectActivitiesV1([FromBody] GetProjectActivitiesV1.Request request, CancellationToken ct = default) =>
+            _projectService.GetProjectActivitiesV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(UpsertProjectV1))]
         [ProducesResponseType<UpsertProjectV1.Response>(StatusCodes.Status201Created)]
