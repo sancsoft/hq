@@ -239,7 +239,7 @@ public class ProjectStatusReportServiceV1
             {
                 Id = t.Id,
                 Status = t.Status,
-                Activity = t.Activity,
+                Task = t.Task,
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
                 ChargeCode = t.ChargeCode.Code,
@@ -247,7 +247,9 @@ public class ProjectStatusReportServiceV1
                 Description = t.Notes,
                 StaffId = t.Staff.Id,
                 StaffName = t.Staff.Name,
-                CreatedAt = t.CreatedAt
+                ActivityId = t.ActivityId,
+                ActivityName = t.Activity != null ? t.Activity.Name : null,
+                CreatedAt = t.CreatedAt,
             });
 
         var total = await mapped.CountAsync(ct);
@@ -355,12 +357,11 @@ public class ProjectStatusReportServiceV1
             return Result.Fail("Unable to find time entry.");
         }
 
-        time.Reference = request.Activity;
         time.HoursApproved = request.BillableHours;
         time.Notes = request.Notes;
-        time.Activity = request.Activity;
+        time.Task = request.Task;
+        time.ActivityId = request.ActivityId;
         time.ChargeCodeId = request.ChargeCodeId;
-
 
         await _context.SaveChangesAsync(ct);
 

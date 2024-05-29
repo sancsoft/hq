@@ -2,7 +2,8 @@ export interface updatePSRTimeRequestV1 {
   projectStatusReportId: string;
   timeId: string;
   billableHours: number;
-  activity: string;
+  activityId?: string|null;
+  task?: string|null;
   notes: string;
   chargeCodeId: string;
 }

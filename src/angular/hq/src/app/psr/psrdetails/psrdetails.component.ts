@@ -102,7 +102,10 @@ export class PSRDetailsComponent {
     );
     this.chargeCodes$ = this.hqService
       .getChargeCodeseV1({})
-      .pipe(map((chargeCode) => chargeCode.records));
+      .pipe(
+        map((chargeCode) => chargeCode.records),
+        shareReplay(1)
+      );
 
     const refresh$ = this.refresh$.pipe(
       switchMap(() => apiResponse$),
@@ -248,7 +251,7 @@ export class PSRDetailsComponent {
       projectStatusReportId: psrId,
       timeId: timeId,
       billableHours: time.billableHours,
-      activity: time.activity,
+      task: time.task,
       notes: description,
       chargeCodeId: chargecodeId
     };
@@ -260,18 +263,17 @@ export class PSRDetailsComponent {
 
   }
 
-  async updateActivitiy(timeId: string, event: Event) {
-    const activity = (event.target as HTMLInputElement).value;
+  async updateTask(timeId: string, event: Event) {
+    const task = (event.target as HTMLInputElement).value;
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
     );
 
-    if (!time || activity.length < 1) {
-      alert('Please Enter a Activity Name');
-      // TODO: Alert the users
+    if (!time) {
       return;
     }
+    
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
         map((c) => c.find((x) => x.code == time.chargeCode)?.id)
@@ -282,7 +284,7 @@ export class PSRDetailsComponent {
       projectStatusReportId: psrId,
       timeId: timeId,
       billableHours: time.billableHours,
-      activity: activity,
+      task: task,
       notes: time.description,
       chargeCodeId: chargecodeId
     };
@@ -331,7 +333,7 @@ export class PSRDetailsComponent {
       projectStatusReportId: psrId,
       timeId: timeId,
       billableHours: time.billableHours,
-      activity: time.activity,
+      task: time.task,
       notes: time.description,
       chargeCodeId: chargecodeId,
     };
@@ -368,7 +370,7 @@ export class PSRDetailsComponent {
       projectStatusReportId: psrId,
       timeId: timeId,
       billableHours: roundedBillableHours,
-      activity: time.activity,
+      task: time.task,
       notes: time.description,
       chargeCodeId: chargecodeId
     };
