@@ -9,6 +9,7 @@ export interface GetChargeCodesRequestV1 extends PagedRequestV1 {
   sortBy: SortColumn;
   sortDirection: SortDirection;
   projectId?: string | null,
+  clientId?: string | null,
   billable?: boolean;
   active?: boolean;
 }

@@ -55,6 +55,7 @@ public class GetProjectStatusReportsV1
     {
         public Guid Id { get; set; }
         public string? ChargeCode { get; set; }
+        public Guid ClientId { get; set; }
         public string ClientName { get; set; } = null!;
         public string ProjectName { get; set; } = null!;
         public Guid ProjectId { get; set; }

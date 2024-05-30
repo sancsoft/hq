@@ -38,6 +38,7 @@ export enum SortColumn {
 export interface GetPSRRecordV1 {
   id: string;
   chargeCode?: string;
+  clientId: string;
   clientName: string;
   projectName: string;
   projectId: string;

@@ -58,6 +58,10 @@ public class ChargeCodeServiceV1
             records = records.Where(t => t.ProjectId.Equals(request.ProjectId));
         }
 
+        if(request.ClientId.HasValue) {
+            records = records.Where(t => t.Project!.ClientId == request.ClientId.Value);
+        }
+
         var sortMap = new Dictionary<GetChargeCodesV1.SortColumn, string>()
         {
             { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code, "Code" },

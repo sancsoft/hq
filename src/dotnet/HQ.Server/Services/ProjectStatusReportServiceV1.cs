@@ -134,6 +134,7 @@ public class ProjectStatusReportServiceV1
                 ChargeCode = t.Row.Project.ChargeCode != null ? t.Row.Project.ChargeCode.Code : null,
                 ProjectName = t.Row.Project.Name,
                 ProjectId = t.Row.Project.Id,
+                ClientId = t.Row.Project.Client.Id,
                 ClientName = t.Row.Project.Client.Name,
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
                 Status = t.Row.Status,

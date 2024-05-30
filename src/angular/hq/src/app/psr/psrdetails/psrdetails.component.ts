@@ -113,9 +113,19 @@ export class PSRDetailsComponent {
       PsrDetailsService.staffMembers$.next(response.staff);
     });
 
+    const psr$ = psrId$.pipe(
+      switchMap(psrId => this.hqService.getPSRV1({ id: psrId })),
+      map(t => t.records[0])
+    );
+
+    const clientId$ = psr$.pipe(
+      map(t => t.clientId)
+    );
+
     const chargeCodeRequest$ = combineLatest({
-      projectId: this.projectId$,
+      clientId: clientId$
     });
+    
     const chargeCodeResponse$ = chargeCodeRequest$.pipe(
       debounceTime(500),
       switchMap((req) => this.hqService.getChargeCodeseV1(req))

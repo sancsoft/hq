@@ -15,6 +15,7 @@ namespace HQ.Abstractions.ChargeCodes
             public string? Search { get; set; }
             public Guid? Id { get; set; }
             public Guid? ProjectId { get; set; }
+            public Guid? ClientId { get; set; }
 
             public SortColumn SortBy { get; set; } = SortColumn.Code;
             public SortDirection SortDirection { get; set; } = SortDirection.Asc;
