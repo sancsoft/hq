@@ -40,6 +40,7 @@ export interface GetPSRRecordV1 {
   chargeCode?: string;
   clientName: string;
   projectName: string;
+  projectId: string;
   projectManagerName?: string;
   totalHours: number;
   totalAvailableHours?: number;

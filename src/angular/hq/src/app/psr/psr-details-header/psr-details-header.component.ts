@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { GetPSRRequestV1 } from './../../models/PSR/get-PSR-v1';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import {
   Observable,
   combineLatest,
@@ -22,6 +22,7 @@ import { HQService } from '../../services/hq.service';
 export class PsrDetailsHeaderComponent {
   projectReportStatus$: Observable<GetPSRRecordV1>;
   projectReportId$: Observable<string | null>;
+  @Output() projectId = new EventEmitter<string>();
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -44,5 +45,10 @@ export class PsrDetailsHeaderComponent {
         return response.records[0];
       })
     );
+    this.projectReportStatus$.subscribe((psr) => {
+      if (psr && psr.projectId) {
+        this.projectId.emit(psr.projectId);
+      }
+    });
   }
 }

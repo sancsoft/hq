@@ -56,7 +56,7 @@ export interface ChargeCodeViewModel {
 export class PSRDetailsComponent {
   apiErrors: string[] = [];
   chargeCodesViewModel: ChargeCodeViewModel[] = [];
-
+  projectId$ = new BehaviorSubject<string | null>(null);
   refresh$ = new Subject<void>();
 
   psrId$: Observable<string>;
@@ -107,13 +107,20 @@ export class PSRDetailsComponent {
       debounceTime(500),
       switchMap((request) => this.hqService.getPSRTimeV1(request))
     );
-    apiResponse$.pipe(
-      first()
-    ).subscribe((response) => {
+
+    apiResponse$.pipe(first()).subscribe((response) => {
       PsrDetailsService.staffMembers$.next(response.staff);
     });
 
-    this.chargeCodes$ = this.hqService.getChargeCodeseV1({}).pipe(
+    const chargeCodeRequest$ = combineLatest({
+      projectId: this.projectId$,
+    });
+    const chargeCodeResponse$ = chargeCodeRequest$.pipe(
+      debounceTime(500),
+      switchMap((req) => this.hqService.getChargeCodeseV1(req))
+    );
+
+    this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),
       shareReplay(1)
     );
@@ -419,5 +426,9 @@ export class PSRDetailsComponent {
   }
   roundToNextQuarter(num: string | number) {
     return Math.ceil(Number(num) * 4) / 4;
+  }
+
+  onProjectIdEmitted(id: string) {
+    this.projectId$.next(id);
   }
 }

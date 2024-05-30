@@ -57,6 +57,8 @@ public class GetProjectStatusReportsV1
         public string? ChargeCode { get; set; }
         public string ClientName { get; set; } = null!;
         public string ProjectName { get; set; } = null!;
+        public Guid ProjectId { get; set; }
+
         public string? ProjectManagerName { get; set; }
         /// <summary>
         /// Total hours across all time.
@@ -77,7 +79,7 @@ public class GetProjectStatusReportsV1
         /// <summary>
         /// Booking hours from project period.
         /// </summary>
-        public decimal BookingHours { get; set;}
+        public decimal BookingHours { get; set; }
         /// <summary>
         /// Booking available hours from project period.
         /// </summary>

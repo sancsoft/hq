@@ -1,5 +1,5 @@
 <div class="h-[calc(100dvh-(var(--h-footer)+var(--h-header)))] fixed top-[--h-header] left-0 w-full flex flex-col">
-    <hq-psr-details-header></hq-psr-details-header>
+    <hq-psr-details-header (projectId)="onProjectIdEmitted($event)"></hq-psr-details-header>
 
     <div class="px-5 pt-3 mb-[8px]">
         <div class="flex flex-col lg:flex-row justify-between items-start">
