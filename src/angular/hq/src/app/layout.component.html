@@ -37,7 +37,8 @@
 
 <!-- footer -->
 <footer class="py-2 px-5">
-    <div class="flex justify-between">
-        <div class="text-xs text-gray-50">&copy;Sanctuary Software Studio Inc.</div>
+    <div class="flex justify-between text-xs text-gray-50">
+        <div>&copy;Sanctuary Software Studio Inc.</div>
+        <div>v{{ appSettingsService.version$ | async }}</div>
     </div>
 </footer>
