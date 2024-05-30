@@ -3,17 +3,19 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgModel } from '@angular/forms';
 import { PsrService } from '../psr-service';
 import {
   BehaviorSubject,
+  Observable,
   Subject,
   combineLatest,
   debounceTime,
   map,
   switchMap,
 } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { APIError } from '../../errors/apierror';
 
 @Component({
   selector: 'hq-psrreport',
@@ -27,9 +29,11 @@ export class PSRReportComponent {
   code: string = '';
 
   report$ = new Subject<string | null>();
+  psrId$: Observable<string>;
 
   constructor(
     private hqService: HQService,
+    private router: Router,
     private route: ActivatedRoute,
     psrService: PsrService
   ) {
@@ -39,6 +43,7 @@ export class PSRReportComponent {
     const psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId'])
     );
+    this.psrId$ = psrId$;
     const request$ = combineLatest({
       projectStatusReportId: psrId$,
       report: this.report$,
@@ -52,8 +57,7 @@ export class PSRReportComponent {
         this.code = psrResponse.report;
       }
     });
-    // this.report$.subscribe((response => console.log(response)));
-    // psrId$.subscribe((response => console.log(response)));
+
     const apiResponse$ = request$.pipe(
       debounceTime(1000),
       switchMap((request) =>
@@ -73,4 +77,28 @@ export class PSRReportComponent {
   updateReport(value: string) {
     this.report$.next(value);
   }
+  onReportSubmit() {
+    const request$ = combineLatest({
+      projectStatusReportId: this.psrId$,
+    });
+    const apiResponse$ = request$.pipe(
+      switchMap((request) =>
+        this.hqService.submitProjectStatusReportV1(request)
+      )
+    );
+    apiResponse$.subscribe({
+      next: (response) => {
+        this.router.navigate(['../'], { relativeTo: this.route });
+
+      },
+      error: (err) => {
+        if(err instanceof APIError)
+          {
+            window.alert(err.errors.join('\n'));
+
+          }
+      },
+    });
+  }
+
 }

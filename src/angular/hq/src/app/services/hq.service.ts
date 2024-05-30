@@ -1,4 +1,8 @@
 import {
+  SubmitPSRRequestV1,
+  SubmitPSRResponseV1,
+} from './../models/PSR/submit-psr';
+import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
@@ -63,7 +67,10 @@ import {
   UpsertQuoteRequestV1,
   UpsertQuoteResponsetV1,
 } from '../models/quotes/upsert-quote-v1';
-import {updatePSRmarkDownRequestV1, UpdatePSRMarkDownResponseV1 } from '../models/PSR/update-psr-markdown';
+import {
+  updatePSRmarkDownRequestV1,
+  UpdatePSRMarkDownResponseV1,
+} from '../models/PSR/update-psr-markdown';
 
 @Injectable({
   providedIn: 'root',
@@ -250,7 +257,9 @@ export class HQService {
     );
   }
 
-  updateProjectStatusReportMarkdownV1(request: Partial<updatePSRmarkDownRequestV1>) {
+  updateProjectStatusReportMarkdownV1(
+    request: Partial<updatePSRmarkDownRequestV1>
+  ) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<UpdatePSRMarkDownResponseV1>(
@@ -258,6 +267,23 @@ export class HQService {
           request
         )
       )
+    );
+  }
+
+  submitProjectStatusReportV1(request: Partial<SubmitPSRRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<SubmitPSRResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/SubmitProjectStatusReportV1`,
+          request
+        )
+      ),
+      catchError((err: HttpErrorResponse) => {
+        if (err.status == 400) {
+          return throwError(() => new APIError(err.error));
+        }
+        throw err;
+      })
     );
   }
 }
