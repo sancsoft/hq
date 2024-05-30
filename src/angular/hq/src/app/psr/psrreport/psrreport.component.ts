@@ -12,6 +12,8 @@ import {
   combineLatest,
   debounceTime,
   map,
+  skip,
+  startWith,
   switchMap,
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,8 +26,7 @@ import { APIError } from '../../errors/apierror';
   templateUrl: './psrreport.component.html',
 })
 export class PSRReportComponent {
-  // Monaco Editor settings
-  editorOptions = { theme: 'vs-dark', language: 'markdown' };
+  editorOptions$: Observable<any>;
   code: string = '';
 
   report$ = new Subject<string | null>();
@@ -52,6 +53,18 @@ export class PSRReportComponent {
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
       map((t) => t.records[0])
     );
+    // Editor options
+    this.editorOptions$ = psr$.pipe(
+      map((psr) => {
+        return {
+          theme: 'vs-dark',
+          language: 'markdown',
+          domReadOnly: psr.submittedAt != null,
+          readOnly: psr.submittedAt != null,
+        };
+      }),
+      startWith({ theme: 'vs-dark', language: 'markdown' })
+    );
     psr$.subscribe((psrResponse) => {
       if (psrResponse.report) {
         this.code = psrResponse.report;
@@ -60,6 +73,7 @@ export class PSRReportComponent {
 
     const apiResponse$ = request$.pipe(
       debounceTime(1000),
+      skip(1),
       switchMap((request) =>
         this.hqService.updateProjectStatusReportMarkdownV1(request)
       )
@@ -89,7 +103,7 @@ export class PSRReportComponent {
       );
       apiResponse$.subscribe({
         next: (response) => {
-          window.alert("Report submitted successfully")
+          window.alert('Report submitted successfully');
         },
         error: (err) => {
           if (err instanceof APIError) {

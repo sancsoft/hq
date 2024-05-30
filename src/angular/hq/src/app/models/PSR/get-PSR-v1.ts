@@ -62,6 +62,7 @@ export interface GetPSRRecordV1 {
   bookingPeriod: Period;
   lastId?: string;
   lastHours?: number;
+  submittedAt?: Date | null;
 }
 
 export interface GetPSRRecordsV1 {
