@@ -16,6 +16,7 @@ import {
   skip,
   startWith,
   switchMap,
+  take,
   takeUntil,
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -95,12 +96,13 @@ export class PSRReportComponent {
   updateReport(value: string) {
     this.report$.next(value);
   }
-  onReportSubmit() {
+   onReportSubmit() {
     if (window.confirm('Are you sure you want to submit this report?')) {
       const request$ = combineLatest({
         projectStatusReportId: this.psrId$,
       });
       const apiResponse$ = request$.pipe(
+        take(1),
         switchMap((request) =>
           this.hqService.submitProjectStatusReportV1(request)
         )
