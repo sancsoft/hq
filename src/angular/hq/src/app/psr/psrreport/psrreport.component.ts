@@ -8,6 +8,7 @@ import { PsrService } from '../psr-service';
 import {
   BehaviorSubject,
   Observable,
+  ReplaySubject,
   Subject,
   combineLatest,
   debounceTime,
@@ -15,6 +16,7 @@ import {
   skip,
   startWith,
   switchMap,
+  takeUntil,
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
@@ -28,6 +30,7 @@ import { APIError } from '../../errors/apierror';
 export class PSRReportComponent {
   editorOptions$: Observable<any>;
   code: string = '';
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   report$ = new Subject<string | null>();
   psrId$: Observable<string>;
@@ -74,6 +77,7 @@ export class PSRReportComponent {
     const apiResponse$ = request$.pipe(
       debounceTime(1000),
       skip(1),
+      takeUntil(this.destroyed$),
       switchMap((request) =>
         this.hqService.updateProjectStatusReportMarkdownV1(request)
       )
@@ -112,5 +116,9 @@ export class PSRReportComponent {
         },
       });
     }
+  }
+  ngOnDestory() {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 }
