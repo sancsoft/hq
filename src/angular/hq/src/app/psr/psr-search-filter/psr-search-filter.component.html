@@ -1,4 +1,5 @@
 <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+    @if(psrService.showSearch$ | async) {
     <!-- search bar -->
     <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]">
         <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
@@ -6,8 +7,7 @@
     </span>
         <input type="text" [formControl]="psrService.search" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="" />
     </div>
-
-    @if(psrService.staffMembers$) {
+    } @if(psrService.staffMembers$ && psrService.showStaffMembers$ | async){
     <div class="grid relative w-full max-w-[220px]">
         <select [formControl]="psrService.staffMember" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
     <option  [ngValue]="null">Select Staff Member</option>

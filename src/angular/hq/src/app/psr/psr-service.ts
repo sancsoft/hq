@@ -27,6 +27,8 @@ export class PsrService {
   ProjectStatus = ProjectStatus;
   ActivityName = ActivityName;
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
+  showSearch$ = new BehaviorSubject<boolean>(true);
+  showStaffMembers$ = new BehaviorSubject<boolean>(true);
 
 
   showActivityName$ = new BehaviorSubject<boolean>(true);
@@ -45,6 +47,19 @@ export class PsrService {
   showProjectStatus() {
     this.showProjectStatus$.next(true);
   }
+  showSearch() {
+    this.showSearch$.next(true);
+   }
+
+   hideSearch() {
+    this.showSearch$.next(false);
+   }
+   showStaffMembers() {
+    this.showStaffMembers$.next(true);
+   }
+   hideStaffMembers() {
+    this.showStaffMembers$.next(false);
+   }
   hideProjectStatus() {
     this.showProjectStatus$.next(false);
   }

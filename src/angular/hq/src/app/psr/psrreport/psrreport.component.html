@@ -4,5 +4,9 @@
             <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="true">Submit</button>
         </div>
     </div>
-    <textarea class="bg-black-alt w-full outline-none p-5 flex-grow"></textarea>
+    <!-- <textarea class="bg-black-alt w-full outline-none p-5 flex-grow"></textarea> -->
+    <div class="h-full">
+        <ngx-monaco-editor style="height: 100%" [options]="editorOptions" [(ngModel)]="code"></ngx-monaco-editor>
+
+    </div>
 </div>

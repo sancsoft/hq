@@ -38,6 +38,7 @@ import {
   GetChargeCodesRequestV1,
 } from '../../models/charge-codes/get-chargecodes-v1';
 import { FormsModule } from '@angular/forms';
+import { PsrService } from '../psr-service';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -57,4 +58,6 @@ export interface ChargeCodeViewModel {
   ],
   templateUrl: './psrdetails.component.html',
 })
-export class PSRDetailsComponent {}
+export class PSRDetailsComponent {
+  constructor(psrService: PsrService) {}
+}
