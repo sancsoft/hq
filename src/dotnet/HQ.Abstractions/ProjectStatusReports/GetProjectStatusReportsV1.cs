@@ -54,6 +54,7 @@ public class GetProjectStatusReportsV1
     public class Record
     {
         public Guid Id { get; set; }
+        public DateTime? SubmittedAt { get; set; }
         public string? ChargeCode { get; set; }
         public Guid ClientId { get; set; }
         public string ClientName { get; set; } = null!;
