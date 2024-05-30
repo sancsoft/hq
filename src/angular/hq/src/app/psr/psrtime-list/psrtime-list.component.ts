@@ -346,13 +346,18 @@ export class PSRTimeListComponent {
       // TODO: Alert the users
       return;
     }
-    this.hqConfirmationModalService.showModal(
-      `Are you sure you want to change the charge code to ${chargeCode}?`
-    );
-    const actionTaken = await firstValueFrom(
-      this.hqConfirmationModalService.cuurentAction
-    );
-    if (actionTaken != true) {
+    // this.hqConfirmationModalService.showModal(
+    //   `Are you sure you want to change the charge code to ${chargeCode}?`
+    // );
+    // const actionTaken = await firstValueFrom(
+    //   this.hqConfirmationModalService.cuurentAction
+    // );
+    // if (actionTaken != true) {
+    //   this.refresh$.next();
+    //   return;
+    // }
+    const changeChargeCode = window.prompt(`Are you sure you want to change the charge code to ${chargeCode}?`)
+    if(changeChargeCode == null) {
       this.refresh$.next();
       return;
     }
