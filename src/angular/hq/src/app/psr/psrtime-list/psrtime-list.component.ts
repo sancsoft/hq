@@ -1,4 +1,3 @@
-import { PsrDetailsService } from './../psr-details-service';
 import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
@@ -24,17 +23,22 @@ import {
   tap,
 } from 'rxjs';
 import { HQService } from '../../services/hq.service';
-import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TimeStatus } from '../../models/common/time-status';
-import { PsrService } from '../psr-service';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { PsrDetailsSearchFilterComponent } from '../psr-details-search-filter/psr-details-search-filter.component';
+import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import {
   GetChargeCodeRecordV1,
   GetChargeCodesRequestV1,
 } from '../../models/charge-codes/get-chargecodes-v1';
 import { FormsModule } from '@angular/forms';
+import { PsrService } from '../psr-service';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -48,10 +52,10 @@ export interface ChargeCodeViewModel {
     CommonModule,
     PsrDetailsHeaderComponent,
     SortIconComponent,
-    PsrDetailsSearchFilterComponent,
+    PsrSearchFilterComponent,
     FormsModule,
   ],
-  templateUrl: './psrtime-list.component.html'
+  templateUrl: './psrtime-list.component.html',
 })
 export class PSRTimeListComponent {
   apiErrors: string[] = [];
@@ -77,20 +81,22 @@ export class PSRTimeListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private PsrDetailsService: PsrDetailsService,
+    private PsrService: PsrService,
     private hqSnackBarService: HQSnackBarService,
     private hqConfirmationModalService: HQConfirmationModalService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
-    const search$ = PsrDetailsService.search.valueChanges.pipe(
-      startWith(PsrDetailsService.search.value)
+    const search$ = PsrService.search.valueChanges.pipe(
+      startWith(PsrService.search.value)
     );
 
-    const psrId$ = this.route.parent!.params.pipe(map((params) => params['psrId']));
-    const staffMemberId$ = PsrDetailsService.staffMember.valueChanges.pipe(
-      startWith(PsrDetailsService.staffMember.value)
+    const psrId$ = this.route.parent!.params.pipe(
+      map((params) => params['psrId'])
+    );
+    const staffMemberId$ = PsrService.staffMember.valueChanges.pipe(
+      startWith(PsrService.staffMember.value)
     );
 
     this.psrId$ = psrId$;
@@ -109,22 +115,20 @@ export class PSRTimeListComponent {
     );
 
     apiResponse$.pipe(first()).subscribe((response) => {
-      PsrDetailsService.staffMembers$.next(response.staff);
+      PsrService.staffMembers$.next(response.staff);
     });
 
     const psr$ = psrId$.pipe(
-      switchMap(psrId => this.hqService.getPSRV1({ id: psrId })),
-      map(t => t.records[0])
+      switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
+      map((t) => t.records[0])
     );
 
-    const clientId$ = psr$.pipe(
-      map(t => t.clientId)
-    );
+    const clientId$ = psr$.pipe(map((t) => t.clientId));
 
     const chargeCodeRequest$ = combineLatest({
-      clientId: clientId$
+      clientId: clientId$,
     });
-    
+
     const chargeCodeResponse$ = chargeCodeRequest$.pipe(
       debounceTime(500),
       switchMap((req) => this.hqService.getChargeCodeseV1(req))
@@ -436,7 +440,7 @@ export class PSRTimeListComponent {
       this.hqService.rejectPSRTimeV1({
         projectStatusReportId: psrId,
         timeId: timeId,
-        notes: notes
+        notes: notes,
       })
     );
     console.log(response);

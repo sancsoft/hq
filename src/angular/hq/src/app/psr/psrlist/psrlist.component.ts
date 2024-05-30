@@ -11,6 +11,7 @@ import {
   debounceTime,
   switchMap,
   shareReplay,
+  first,
 } from 'rxjs';
 import {
   ClientDetailsService,
@@ -22,9 +23,9 @@ import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { PsrService } from '../psr-service';
 import { Period } from '../../projects/project-create/project-create.component';
-import { PsrListSearchFilterComponent } from '../psr-list-search-filter/psr-list-search-filter.component';
+import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
+import { PsrService } from '../psr-service';
 
 @Component({
   selector: 'hq-psrlist',
@@ -35,7 +36,7 @@ import { PsrListSearchFilterComponent } from '../psr-list-search-filter/psr-list
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    PsrListSearchFilterComponent,
+    PsrSearchFilterComponent,
   ],
   templateUrl: './psrlist.component.html',
 })
@@ -81,12 +82,17 @@ export class PSRListComponent {
 
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
+    const staffMemberId$ = psrService.staffMember.valueChanges.pipe(
+      startWith(psrService.staffMember.value)
+    );
+
 
     const request$ = combineLatest({
       search: search$,
       skip: skip$,
       take: itemsPerPage$,
       sortBy: this.sortOption$,
+      projectManagerId: staffMemberId$,
       sortDirection: this.sortDirection$,
     });
 
@@ -95,6 +101,21 @@ export class PSRListComponent {
       switchMap((request) => this.hqService.getPSRV1(request)),
       shareReplay(1)
     );
+
+    const staffMembersResponse$ = this.hqService.getStaffMembersV1({}).pipe(
+      map(response => response.records),
+      map(records => records.map(record => ({
+          id: record.id,
+          name: record.name,
+          totalHours: record.workHours
+      })))
+  );
+
+  staffMembersResponse$.pipe(first()).subscribe((response) => {
+    psrService.staffMembers$.next(response);
+  });
+
+
 
     this.projectStatusReports$ = response$.pipe(
       map((response) => {
