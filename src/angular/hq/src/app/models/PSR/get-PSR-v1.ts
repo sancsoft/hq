@@ -54,8 +54,8 @@ export interface GetPSRRecordV1 {
   endDate: Date;
   bookingStartDate: Date;
   bookingEndDate: Date;
-  totalStartDate: Date;
-  totalEndDate: Date;
+  totalStartDate?: Date;
+  totalEndDate?: Date;
   bookingPeriod: Period;
   lastId?: string;
   lastHours?: number;

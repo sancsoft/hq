@@ -31,7 +31,7 @@
 <table class="min-w-full border-spacing-0 border-separate">
     <thead>
         <tr class="sticky top-0 text-left">
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Charge Code
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Chrg Code
                 <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.StartDate)">Week
@@ -83,19 +83,15 @@
             <td class="border-b border-black py-2">{{report.totalAvailableHours | number: '0.2-2'}}</td>
             <td class="border-b border-black py-2">{{getProjectSatusString(report.status)}}</td>
             <td width="200" class="border-b border-black py-2 pe-2">
-                <div class="flex justify-between gap-2 text-xs text-gray-400">
-                    <span>{{ report.bookingStartDate }}</span>
-                    <span>{{ report.bookingEndDate }}</span>
-                </div>
                 @if(report.bookingPercentComplete && report.bookingPercentComplete > 1)
                 {
-                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]">
+                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]" title="{{ report.bookingStartDate }} - {{ report.bookingEndDate }}">
                         <div class="bg-red-850 h-[8px]"[style.width.%]="Math.min(report.bookingPercentComplete - 1, 1) * 100"></div>
                     </div>
                 }
                 @else
                 {
-                    <div class="w-full bg-gray-500 border border-white h-[10px]">
+                    <div class="w-full bg-gray-500 border border-white h-[10px]" title="{{ report.bookingStartDate }} - {{ report.bookingEndDate }}">
                         <div class="bg-white h-[8px]" [style.width.%]="(report.bookingPercentComplete ?? 0) * 100"></div>
                     </div>
                 }
@@ -105,27 +101,15 @@
                 </div>
             </td>
             <td width="200" class="border-b border-black py-2">
-                <div class="flex justify-between gap-2 text-xs text-gray-400">
-                    @if(report.totalStartDate && report.totalEndDate)
-                    {
-                        <span>{{ report.totalStartDate }}</span>
-                        <span>{{ report.totalEndDate }}</span>
-                    }
-                    @else
-                    {
-                        <span>-</span>
-                        <span>-</span>
-                    }
-                </div>
                 @if(report.totalPercentComplete && report.totalPercentComplete > 1)
                 {
-                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]">
+                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]" title="{{ report.totalStartDate ?? '-' }} - {{ report.totalEndDate ?? '-' }}">
                         <div class="bg-red-850 h-[8px]"[style.width.%]="Math.min(report.totalPercentComplete - 1, 1) * 100"></div>
                     </div>
                 }
                 @else
                 {
-                    <div class="w-full bg-gray-500 border border-white h-[10px]">
+                    <div class="w-full bg-gray-500 border border-white h-[10px]" title="{{ report.totalStartDate ?? '-' }} - {{ report.totalEndDate ?? '-' }}">
                         <div class="bg-white h-[8px]" [style.width.%]="(report.totalPercentComplete ?? 0) * 100"></div>
                     </div>
                 }
