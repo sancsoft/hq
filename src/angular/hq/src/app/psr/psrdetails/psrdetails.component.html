@@ -69,7 +69,7 @@
                         <!-- select dropdown -->
 
                         @if (chargeCodes$ | async ; as chargeCodes) {
-                        <select (click)="openModal(time.id)" (mousedown)="$event.preventDefault()" class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                        <select (mousedown)="$event.preventDefault()" class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
               <option [ngValue]="time.chargeCode">
                 {{ time.chargeCode }}
               </option>
