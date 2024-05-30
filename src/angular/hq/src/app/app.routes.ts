@@ -102,6 +102,27 @@ export const routes: Routes = [
           import('./psr/psrdetails/psrdetails.component').then(
             (m) => m.PSRDetailsComponent
           ),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'time'
+          },
+          {
+            path: 'time',
+            loadComponent: () =>
+              import('./psr/psrtime-list/psrtime-list.component').then(
+                (m) => m.PSRTimeListComponent
+              ),
+          },
+          {
+            path: 'report',
+            loadComponent: () =>
+              import('./psr/psrreport/psrreport.component').then(
+                (m) => m.PSRReportComponent
+              ),
+          }
+        ]
       },
     ],
   },
