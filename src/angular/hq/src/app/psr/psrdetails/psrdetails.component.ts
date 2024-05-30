@@ -404,11 +404,24 @@ export class PSRDetailsComponent {
     if (timeId === '') {
       return;
     }
+    // Show modal with notes
+    this.hqConfirmationModalService.showModal(
+      `Are you sure you want to change reject this time?`,
+      true
+    );
+    const actionTaken = await firstValueFrom(
+      this.hqConfirmationModalService.cuurentAction
+    );
+    if (actionTaken != true) {
+      this.refresh$.next();
+      return;
+    }
 
     const response = await firstValueFrom(
       this.hqService.rejectPSRTimeV1({
         projectStatusReportId: psrId,
         timeId: timeId,
+        notes: this.hqConfirmationModalService.getNotes()
       })
     );
     console.log(response);
