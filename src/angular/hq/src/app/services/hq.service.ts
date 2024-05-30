@@ -63,6 +63,7 @@ import {
   UpsertQuoteRequestV1,
   UpsertQuoteResponsetV1,
 } from '../models/quotes/upsert-quote-v1';
+import {updatePSRmarkDownRequestV1, UpdatePSRMarkDownResponseV1 } from '../models/PSR/update-psr-markdown';
 
 @Injectable({
   providedIn: 'root',
@@ -243,6 +244,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpsertQuoteResponsetV1>(
           `${apiUrl}/v1/Quotes/UpsertQuotesV1`,
+          request
+        )
+      )
+    );
+  }
+
+  updateProjectStatusReportMarkdownV1(request: Partial<updatePSRmarkDownRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdatePSRMarkDownResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/UpdateProjectStatusReportMarkdownV1`,
           request
         )
       )

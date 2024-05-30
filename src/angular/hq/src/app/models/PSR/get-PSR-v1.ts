@@ -42,6 +42,7 @@ export interface GetPSRRecordV1 {
   clientName: string;
   projectName: string;
   projectId: string;
+  report?: string;
   projectManagerName?: string;
   totalHours: number;
   totalAvailableHours?: number;
