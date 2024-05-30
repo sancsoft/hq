@@ -22,9 +22,9 @@ import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { PsrDetailsSearchFilterComponent } from '../psr-details-search-filter/psr-details-search-filter.component';
 import { PsrService } from '../psr-service';
 import { Period } from '../../projects/project-create/project-create.component';
+import { PsrListSearchFilterComponent } from '../psr-list-search-filter/psr-list-search-filter.component';
 
 @Component({
   selector: 'hq-psrlist',
@@ -35,7 +35,7 @@ import { Period } from '../../projects/project-create/project-create.component';
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    PsrDetailsSearchFilterComponent,
+    PsrListSearchFilterComponent,
   ],
   templateUrl: './psrlist.component.html',
 })
@@ -78,18 +78,13 @@ export class PSRListComponent {
       tap((t) => this.goToPage(1)),
       startWith(psrService.search.value)
     );
-    const selectedProjectManagerId$ =
-      psrService.projectManager.valueChanges.pipe(
-        tap((t) => this.goToPage(1)),
-        startWith(psrService.projectManager.value)
-      );
+
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
     const request$ = combineLatest({
       search: search$,
       skip: skip$,
-      projectManagerId: selectedProjectManagerId$,
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,

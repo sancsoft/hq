@@ -35,6 +35,7 @@ import {
 } from '../models/Invoices/get-invoices-v1';
 import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
 import {
+  GetPSRTimeRecordsV1,
   GetPSRTimeRequestV1,
   GetPSRTimeV1,
 } from '../models/PSR/get-psr-time-v1';
@@ -163,7 +164,7 @@ export class HQService {
   getPSRTimeV1(request: Partial<GetPSRTimeRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<GetPSRTimeV1>(
+        this.http.post<GetPSRTimeRecordsV1>(
           `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportTimeV1`,
           request
         )

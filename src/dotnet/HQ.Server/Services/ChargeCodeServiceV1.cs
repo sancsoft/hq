@@ -28,7 +28,6 @@ public class ChargeCodeServiceV1
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
 
-        var total = await records.CountAsync(ct);
 
         if (!string.IsNullOrEmpty(request.Search))
         {
@@ -53,6 +52,10 @@ public class ChargeCodeServiceV1
         if (request.Billable.HasValue)
         {
             records = records.Where(t => t.Billable == request.Billable.Value);
+        }
+
+        if(request.ProjectId.HasValue) {
+            records = records.Where(t => t.ProjectId.Equals(request.ProjectId));
         }
 
         var sortMap = new Dictionary<GetChargeCodesV1.SortColumn, string>()
@@ -93,6 +96,7 @@ public class ChargeCodeServiceV1
             ServiceAgreementName = t.ServiceAgreement != null ? t.ServiceAgreement.Name : null,
             Description = t.Description
         });
+        var total = await records.CountAsync(ct);
 
         var response = new GetChargeCodesV1.Response()
         {
