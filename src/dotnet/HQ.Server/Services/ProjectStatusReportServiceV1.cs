@@ -129,6 +129,7 @@ public class ProjectStatusReportServiceV1
             .Select(t => new GetProjectStatusReportsV1.Record()
             {
                 Id = t.Row.Id,
+                Report = t.Row.Report,
                 StartDate = t.Row.StartDate,
                 EndDate = t.Row.EndDate,
                 ChargeCode = t.Row.Project.ChargeCode != null ? t.Row.Project.ChargeCode.Code : null,

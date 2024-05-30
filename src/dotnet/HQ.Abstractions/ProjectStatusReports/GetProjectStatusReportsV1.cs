@@ -59,6 +59,7 @@ public class GetProjectStatusReportsV1
         public string ClientName { get; set; } = null!;
         public string ProjectName { get; set; } = null!;
         public Guid ProjectId { get; set; }
+        public string? Report { get; set; }
 
         public string? ProjectManagerName { get; set; }
         /// <summary>
