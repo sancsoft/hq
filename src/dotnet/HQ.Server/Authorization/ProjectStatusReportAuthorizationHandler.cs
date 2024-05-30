@@ -29,6 +29,8 @@ public class ProjectStatusReportAuthorizationHandler : AuthorizationHandler<Oper
             case nameof(ProjectStatusReportOperation.ApproveTime):
             case nameof(ProjectStatusReportOperation.RejectTime):
             case nameof(ProjectStatusReportOperation.UpdateTime):
+            case nameof(ProjectStatusReportOperation.SubmitReport):
+            case nameof(ProjectStatusReportOperation.UpdateReportMarkdown):
             {
                 if((staffId.HasValue && resource.ProjectManagerId.HasValue && isManager && staffId == resource.ProjectManagerId) || isPartner || isExecutive || isAdmin)
                 {

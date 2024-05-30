@@ -129,6 +129,8 @@ public class ProjectStatusReportServiceV1
             .Select(t => new GetProjectStatusReportsV1.Record()
             {
                 Id = t.Row.Id,
+                Report = t.Row.Report,
+                SubmittedAt = t.Row.SubmittedAt,
                 StartDate = t.Row.StartDate,
                 EndDate = t.Row.EndDate,
                 ChargeCode = t.Row.Project.ChargeCode != null ? t.Row.Project.ChargeCode.Code : null,
@@ -368,5 +370,57 @@ public class ProjectStatusReportServiceV1
         await _context.SaveChangesAsync(ct);
 
         return new UpdateProjectStatusReportTimeV1.Response();
+    }
+
+    public async Task<Result<UpdateProjectStatusReportMarkdownV1.Response>> UpdateProjectStatusReportMarkdownV1(UpdateProjectStatusReportMarkdownV1.Request request, CancellationToken ct = default)
+    {
+        var psr = await _context.ProjectStatusReports.FindAsync(request.ProjectStatusReportId);
+        if(psr == null)
+        {
+            return Result.Fail("Unable to find project status report.");
+        }
+
+        if(psr.SubmittedAt.HasValue)
+        {
+            return Result.Fail("Project status report has already been submitted.");
+        }
+
+        psr.Report = request.Report;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new UpdateProjectStatusReportMarkdownV1.Response()
+        {
+            ProjectStatusReportId = psr.Id
+        };
+    }
+
+    public async Task<Result<SubmitProjectStatusReportV1.Response>> SubmitProjectStatusReportV1(SubmitProjectStatusReportV1.Request request, CancellationToken ct = default)
+    {
+        var psr = await _context.ProjectStatusReports.FindAsync(request.ProjectStatusReportId);
+        if(psr == null)
+        {
+            return Result.Fail("Unable to find project status report.");
+        }
+
+        if(psr.SubmittedAt.HasValue)
+        {
+            return Result.Fail("Project status report has already been submitted.");
+        }
+
+        if(await _context.Times.AnyAsync(t => t.ChargeCode.ProjectId == psr.ProjectId && t.Date >= psr.StartDate && t.Date <= psr.EndDate && t.Status != TimeStatus.Accepted, ct))
+        {
+            return Result.Fail("Project status report has pending time entries that need reviewed.");
+        }
+
+        psr.SubmittedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new SubmitProjectStatusReportV1.Response()
+        {
+            ProjectStatusReportId = psr.Id,
+            SubmittedAt = psr.SubmittedAt.Value
+        };
     }
 }
