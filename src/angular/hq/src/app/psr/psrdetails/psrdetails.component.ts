@@ -405,14 +405,20 @@ export class PSRDetailsComponent {
       return;
     }
     // Show modal with notes
-    this.hqConfirmationModalService.showModal(
-      `Are you sure you want to change reject this time?`,
-      true
-    );
-    const actionTaken = await firstValueFrom(
-      this.hqConfirmationModalService.cuurentAction
-    );
-    if (actionTaken != true) {
+    // this.hqConfirmationModalService.showModal(
+    //   `Are you sure you want to change reject this time?`,
+    //   true
+    // );
+    // const actionTaken = await firstValueFrom(
+    //   this.hqConfirmationModalService.cuurentAction
+    // );
+    const notes = window.prompt('Enter Notes');
+    console.log(notes);
+    // if (actionTaken != true) {
+    //   this.refresh$.next();
+    //   return;
+    // }
+    if (notes == null) {
       this.refresh$.next();
       return;
     }
@@ -421,7 +427,7 @@ export class PSRDetailsComponent {
       this.hqService.rejectPSRTimeV1({
         projectStatusReportId: psrId,
         timeId: timeId,
-        notes: this.hqConfirmationModalService.getNotes()
+        notes: notes
       })
     );
     console.log(response);
