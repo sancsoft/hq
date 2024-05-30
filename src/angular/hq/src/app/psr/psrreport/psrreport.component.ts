@@ -78,27 +78,25 @@ export class PSRReportComponent {
     this.report$.next(value);
   }
   onReportSubmit() {
-    const request$ = combineLatest({
-      projectStatusReportId: this.psrId$,
-    });
-    const apiResponse$ = request$.pipe(
-      switchMap((request) =>
-        this.hqService.submitProjectStatusReportV1(request)
-      )
-    );
-    apiResponse$.subscribe({
-      next: (response) => {
-        this.router.navigate(['../'], { relativeTo: this.route });
-
-      },
-      error: (err) => {
-        if(err instanceof APIError)
-          {
+    if (window.confirm('Are you sure you want to submit this report?')) {
+      const request$ = combineLatest({
+        projectStatusReportId: this.psrId$,
+      });
+      const apiResponse$ = request$.pipe(
+        switchMap((request) =>
+          this.hqService.submitProjectStatusReportV1(request)
+        )
+      );
+      apiResponse$.subscribe({
+        next: (response) => {
+          window.alert("Report submitted successfully")
+        },
+        error: (err) => {
+          if (err instanceof APIError) {
             window.alert(err.errors.join('\n'));
-
           }
-      },
-    });
+        },
+      });
+    }
   }
-
 }
