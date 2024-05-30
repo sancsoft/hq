@@ -12,7 +12,7 @@
 <div class="px-5 pt-4 mb-[8px]">
     <div class="flex flex-col lg:flex-row justify-between items-start">
         <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-            <hq-psr-list-search-filter></hq-psr-list-search-filter>
+            <hq-psr-search-filter></hq-psr-search-filter>
 
             <!-- select dropdown -->
             <!-- <div class="grid relative w-[220px]">
@@ -83,17 +83,14 @@
             <td class="border-b border-black py-2">{{report.totalAvailableHours | number: '0.2-2'}}</td>
             <td class="border-b border-black py-2">{{getProjectSatusString(report.status)}}</td>
             <td width="200" class="border-b border-black py-2 pe-2">
-                @if(report.bookingPercentComplete && report.bookingPercentComplete > 1)
-                {
-                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]" title="{{ report.bookingStartDate }} - {{ report.bookingEndDate }}">
-                        <div class="bg-red-850 h-[8px]"[style.width.%]="Math.min(report.bookingPercentComplete - 1, 1) * 100"></div>
-                    </div>
-                }
-                @else
-                {
-                    <div class="w-full bg-gray-500 border border-white h-[10px]" title="{{ report.bookingStartDate }} - {{ report.bookingEndDate }}">
-                        <div class="bg-white h-[8px]" [style.width.%]="(report.bookingPercentComplete ?? 0) * 100"></div>
-                    </div>
+                @if(report.bookingPercentComplete && report.bookingPercentComplete > 1) {
+                <div class="w-full bg-gray-450 border border-red-850 h-[10px]" title="{{ report.bookingStartDate }} - {{ report.bookingEndDate }}">
+                    <div class="bg-red-850 h-[8px]" [style.width.%]="Math.min(report.bookingPercentComplete - 1, 1) * 100"></div>
+                </div>
+                } @else {
+                <div class="w-full bg-gray-500 border border-white h-[10px]" title="{{ report.bookingStartDate }} - {{ report.bookingEndDate }}">
+                    <div class="bg-white h-[8px]" [style.width.%]="(report.bookingPercentComplete ?? 0) * 100"></div>
+                </div>
                 }
                 <div class="flex justify-between gap-2 text-xs text-gray-400">
                     <span class="lowercase">{{ report.bookingHours | number: '0.2-2' }} hrs this {{ getPeriodName(report.bookingPeriod) }}</span>
@@ -101,17 +98,14 @@
                 </div>
             </td>
             <td width="200" class="border-b border-black py-2">
-                @if(report.totalPercentComplete && report.totalPercentComplete > 1)
-                {
-                    <div class="w-full bg-gray-450 border border-red-850 h-[10px]" title="{{ report.totalStartDate ?? '-' }} - {{ report.totalEndDate ?? '-' }}">
-                        <div class="bg-red-850 h-[8px]"[style.width.%]="Math.min(report.totalPercentComplete - 1, 1) * 100"></div>
-                    </div>
-                }
-                @else
-                {
-                    <div class="w-full bg-gray-500 border border-white h-[10px]" title="{{ report.totalStartDate ?? '-' }} - {{ report.totalEndDate ?? '-' }}">
-                        <div class="bg-white h-[8px]" [style.width.%]="(report.totalPercentComplete ?? 0) * 100"></div>
-                    </div>
+                @if(report.totalPercentComplete && report.totalPercentComplete > 1) {
+                <div class="w-full bg-gray-450 border border-red-850 h-[10px]" title="{{ report.totalStartDate ?? '-' }} - {{ report.totalEndDate ?? '-' }}">
+                    <div class="bg-red-850 h-[8px]" [style.width.%]="Math.min(report.totalPercentComplete - 1, 1) * 100"></div>
+                </div>
+                } @else {
+                <div class="w-full bg-gray-500 border border-white h-[10px]" title="{{ report.totalStartDate ?? '-' }} - {{ report.totalEndDate ?? '-' }}">
+                    <div class="bg-white h-[8px]" [style.width.%]="(report.totalPercentComplete ?? 0) * 100"></div>
+                </div>
                 }
                 <div class="flex justify-between gap-2 text-xs text-gray-400">
                     <span>{{ report.totalHours | number: '0.2-2' }} hrs total</span>

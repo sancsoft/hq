@@ -1,4 +1,3 @@
-import { PsrDetailsService } from './../psr-details-service';
 import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
@@ -24,17 +23,22 @@ import {
   tap,
 } from 'rxjs';
 import { HQService } from '../../services/hq.service';
-import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TimeStatus } from '../../models/common/time-status';
-import { PsrService } from '../psr-service';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { PsrDetailsSearchFilterComponent } from '../psr-details-search-filter/psr-details-search-filter.component';
+import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import {
   GetChargeCodeRecordV1,
   GetChargeCodesRequestV1,
 } from '../../models/charge-codes/get-chargecodes-v1';
 import { FormsModule } from '@angular/forms';
+import { PsrService } from '../psr-service';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -47,13 +51,13 @@ export interface ChargeCodeViewModel {
   imports: [
     CommonModule,
     PsrDetailsHeaderComponent,
-    PsrDetailsSearchFilterComponent,
+    PsrSearchFilterComponent,
     RouterLink,
     RouterLinkActive,
-    RouterOutlet
+    RouterOutlet,
   ],
   templateUrl: './psrdetails.component.html',
 })
 export class PSRDetailsComponent {
-
+  constructor(psrService: PsrService) {}
 }

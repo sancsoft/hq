@@ -42,6 +42,7 @@ export interface GetPSRRecordV1 {
   clientName: string;
   projectName: string;
   projectId: string;
+  report?: string;
   projectManagerName?: string;
   totalHours: number;
   totalAvailableHours?: number;
@@ -61,6 +62,7 @@ export interface GetPSRRecordV1 {
   bookingPeriod: Period;
   lastId?: string;
   lastHours?: number;
+  submittedAt?: Date | null;
 }
 
 export interface GetPSRRecordsV1 {
