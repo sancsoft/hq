@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -40,7 +40,7 @@ import { PsrService } from '../psr-service';
   ],
   templateUrl: './psrlist.component.html',
 })
-export class PSRListComponent {
+export class PSRListComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];
 
   skipDisplay$: Observable<number>;
@@ -57,6 +57,14 @@ export class PSRListComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  ngOnInit(): void {
+    this.psrService.resetFilter();
+    this.psrService.showSearch();
+    this.psrService.showStaffMembers();
+  }
+  ngOnDestroy(): void {
+    this.psrService.resetFilter();
+  }
 
   constructor(
     private hqService: HQService,
@@ -80,12 +88,10 @@ export class PSRListComponent {
       startWith(psrService.search.value)
     );
 
-
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
     const staffMemberId$ = psrService.staffMember.valueChanges.pipe(
       startWith(psrService.staffMember.value)
     );
-
 
     const request$ = combineLatest({
       search: search$,
@@ -102,20 +108,22 @@ export class PSRListComponent {
       shareReplay(1)
     );
 
-    const staffMembersResponse$ = this.hqService.getStaffMembersV1({}).pipe(
-      map(response => response.records),
-      map(records => records.map(record => ({
-          id: record.id,
-          name: record.name,
-          totalHours: record.workHours
-      })))
-  );
+    const staffMembersResponse$ = this.hqService
+      .getStaffMembersV1({ isAssignedProjectManager: true })
+      .pipe(
+        map((response) => response.records),
+        map((records) =>
+          records.map((record) => ({
+            id: record.id,
+            name: record.name,
+            totalHours: record.workHours,
+          }))
+        )
+      );
 
-  staffMembersResponse$.pipe(first()).subscribe((response) => {
-    psrService.staffMembers$.next(response);
-  });
-
-
+    staffMembersResponse$.pipe(first()).subscribe((response) => {
+      psrService.staffMembers$.next(response);
+    });
 
     this.projectStatusReports$ = response$.pipe(
       map((response) => {

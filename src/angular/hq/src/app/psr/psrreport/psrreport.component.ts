@@ -1,6 +1,6 @@
 import { HQService } from './../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, NgModel } from '@angular/forms';
@@ -28,7 +28,7 @@ import { APIError } from '../../errors/apierror';
   imports: [FormsModule, CommonModule, MonacoEditorModule],
   templateUrl: './psrreport.component.html',
 })
-export class PSRReportComponent {
+export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<any>;
   code: string = '';
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -36,15 +36,23 @@ export class PSRReportComponent {
   report$ = new Subject<string | null>();
   psrId$: Observable<string>;
 
+  ngOnInit(): void {
+    this.psrService.resetFilter();
+    this.psrService.hideSearch();
+    this.psrService.hideStaffMembers();
+  }
+  ngOnDestroy(): void {
+    this.psrService.resetFilter();
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
+
   constructor(
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
-    psrService: PsrService
+    private psrService: PsrService
   ) {
-    psrService.hideSearch();
-    psrService.hideStaffMembers();
-
     const psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId'])
     );
@@ -96,7 +104,7 @@ export class PSRReportComponent {
   updateReport(value: string) {
     this.report$.next(value);
   }
-   onReportSubmit() {
+  onReportSubmit() {
     if (window.confirm('Are you sure you want to submit this report?')) {
       const request$ = combineLatest({
         projectStatusReportId: this.psrId$,
@@ -118,9 +126,5 @@ export class PSRReportComponent {
         },
       });
     }
-  }
-  ngOnDestory() {
-    this.destroyed$.next(true);
-    this.destroyed$.complete();
   }
 }

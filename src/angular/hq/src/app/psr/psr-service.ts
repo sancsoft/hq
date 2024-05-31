@@ -30,36 +30,34 @@ export class PsrService {
   showSearch$ = new BehaviorSubject<boolean>(true);
   showStaffMembers$ = new BehaviorSubject<boolean>(true);
 
-
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
 
-  constructor(private hqService: HQService) {
-
-
-
-  }
+  constructor(private hqService: HQService) {}
 
   resetFilter() {
     this.search.setValue('');
     this.projectStatus.setValue(ProjectStatus.InProduction);
+    this.activityName.setValue(ActivityName.Development);
+    this.staffMember.setValue(null);
+    this.roaster.setValue('');
   }
   showProjectStatus() {
     this.showProjectStatus$.next(true);
   }
   showSearch() {
     this.showSearch$.next(true);
-   }
+  }
 
-   hideSearch() {
+  hideSearch() {
     this.showSearch$.next(false);
-   }
-   showStaffMembers() {
+  }
+  showStaffMembers() {
     this.showStaffMembers$.next(true);
-   }
-   hideStaffMembers() {
+  }
+  hideStaffMembers() {
     this.showStaffMembers$.next(false);
-   }
+  }
   hideProjectStatus() {
     this.showProjectStatus$.next(false);
   }
@@ -76,5 +74,4 @@ export class PsrService {
   hideRoaster() {
     this.showRoaster$.next(false);
   }
-
 }
