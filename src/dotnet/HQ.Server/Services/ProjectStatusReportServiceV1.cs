@@ -35,7 +35,7 @@ public class ProjectStatusReportServiceV1
 
         foreach (var project in projects)
         {
-            if (await _context.ProjectStatusReports.AnyAsync(t => t.StartDate == startDate && t.EndDate == endDate, ct))
+            if (await _context.ProjectStatusReports.AnyAsync(t => t.ProjectId == project.Id && t.StartDate == startDate && t.EndDate == endDate, ct))
             {
                 skippedCount++;
                 continue;
