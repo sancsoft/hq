@@ -4,6 +4,7 @@ import { SortDirection } from "../common/sort-direction";
 
 export interface GetUsersRequestV1 extends PagedRequestV1 {
   search?: string | null;
+  id?: string | null;
 
 }
 

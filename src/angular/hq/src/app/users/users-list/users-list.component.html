@@ -1,100 +1,125 @@
 <div class="px-5">
-    <h1 class="font-rajdhani font-semibold text-3xl">Users</h1>
+  <h1 class="font-rajdhani font-semibold text-3xl">Users</h1>
 
-    <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
+  <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
 <div class="px-5 pt-4 pb-2">
-    <hq-client-details-search-filter></hq-client-details-search-filter>
+  <hq-client-details-search-filter></hq-client-details-search-filter>
 </div>
 <table class="min-w-full border-spacing-0 border-separate">
-    <thead>
-        <tr class="sticky top-0 text-left">
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
-                First Name
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                Last Name
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                Email Address
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                Enabled
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                Administrator
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                Executive
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                Manager
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                Partner
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                Staff
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
-                <button routerLink="/users/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
+  <thead>
+    <tr class="sticky top-0 text-left">
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+      >
+        First Name
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Last Name
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Email Address
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Enabled
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Administrator
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Executive
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Manager
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Partner
+      </th>
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Staff
+      </th>
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
+        colspan="2"
+      >
+        <button
+          routerLink="/users/create"
+          class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+        >
           <i class="bi bi-plus"></i>
           User
         </button>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (user of users$ | async; track $index) {
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
-            <td class="border-b border-black py-2 pl-5">
-                {{ user.firstName ?? "None" }}
-            </td>
-            <td class="border-b border-black py-2 pl-5">
-                {{ user.lastName ?? "None" }}
-            </td>
-            <td class="border-b border-black py-2">
-                <a href="mailto:{{ user.email }}">{{ user.email }}</a>
-            </td>
-            <td class="border-b border-black py-2">
-                {{ user.enabled ? "Yes " : "No " }}
-            </td>
-            <td class="border-b border-black py-2">
-                {{ user.isAdministrator ? "Yes " : "No " }}
-            </td>
-            <td class="border-b border-black py-2">
-                {{ user.isExecutive ? "Yes " : "No " }}
-            </td>
-            <td class="border-b border-black py-2">
-                {{ user.isManager ? "Yes " : "No " }}
-            </td>
-            <td class="border-b border-black py-2">
-                {{ user.isPartner ? "Yes " : "No " }}
-            </td>
-            <td class="border-b border-black py-2">
-                {{ user.isStaff ? "Yes " : "No " }}
-            </td>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (user of users$ | async; track $index) {
+    <tr class="even:bg-gray-850 odd:bg-black-alt">
+      <td class="border-b border-black py-2 pl-5">
+        {{ user.firstName ?? "None" }}
+      </td>
+      <td class="border-b border-black py-2 pl-5">
+        {{ user.lastName ?? "None" }}
+      </td>
+      <td class="border-b border-black py-2">
+        <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+      </td>
+      <td class="border-b border-black py-2">
+        {{ user.enabled ? "Yes " : "No " }}
+      </td>
+      <td class="border-b border-black py-2">
+        {{ user.isAdministrator ? "Yes " : "No " }}
+      </td>
+      <td class="border-b border-black py-2">
+        {{ user.isExecutive ? "Yes " : "No " }}
+      </td>
+      <td class="border-b border-black py-2">
+        {{ user.isManager ? "Yes " : "No " }}
+      </td>
+      <td class="border-b border-black py-2">
+        {{ user.isPartner ? "Yes " : "No " }}
+      </td>
+      <td class="border-b border-black py-2">
+        {{ user.isStaff ? "Yes " : "No " }}
+      </td>
 
-            <td class="border-b border-black py-2 text-right pr-5">
-                <a class="text-teal-200 hover:text-teal-300 cursor-pointer">EDIT</a>
-            </td>
-        </tr>
-        }
-    </tbody>
+      <td class="border-b border-black py-2 text-right pr-5">
+        <a
+          [routerLink]="['edit', user.id]"
+          class="text-teal-200 hover:text-teal-300 cursor-pointer"
+          >EDIT</a
+        >
+      </td>
+    </tr>
+    }
+  </tbody>
 </table>
-<div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
-    <div>
-        <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2" [formControl]="itemsPerPage">
+<div
+  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
+>
+  <div>
+    <select
+      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
+      [formControl]="itemsPerPage"
+    >
       <option [ngValue]="20">20</option>
       <option [ngValue]="25">25</option>
       <option [ngValue]="50">50</option>
       <option [ngValue]="100">100</option>
       <!-- Add more options as needed -->
     </select>
-        <span>items per page</span>
-    </div>
-    <hq-paginator [total]="(totalRecords$ | async) ?? 0" [pageSize]="itemsPerPage.value" [currentPage]="page.value" (onPage)="goToPage($event)"></hq-paginator>
-    <div class="flex justify-end text-xs">
-        {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ | async }} items
-    </div>
+    <span>items per page</span>
+  </div>
+  <hq-paginator
+    [total]="(totalRecords$ | async) ?? 0"
+    [pageSize]="itemsPerPage.value"
+    [currentPage]="page.value"
+    (onPage)="goToPage($event)"
+  ></hq-paginator>
+  <div class="flex justify-end text-xs">
+    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
+    {{ totalRecords$ | async }} items
+  </div>
 </div>

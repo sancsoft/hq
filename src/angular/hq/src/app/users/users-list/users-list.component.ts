@@ -15,7 +15,7 @@ import { GetUsersRecordV1 } from '../../models/users/get-users-v1';
 @Component({
   selector: 'hq-users-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent, RouterLink],
 
   templateUrl: './users-list.component.html'
 })

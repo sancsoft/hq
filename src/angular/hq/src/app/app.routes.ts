@@ -1,3 +1,4 @@
+import { UsersEditComponent } from './users/users-edit/users-edit.component';
 import { Routes } from '@angular/router';
 import { AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 export const routes: Routes = [
@@ -245,6 +246,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./users/users-create/users-create.component').then(
             (m) => m.UsersCreateComponent
+          ),
+      },
+      {
+        path: 'edit/:userId',
+        loadComponent: () =>
+          import('./users/users-edit/users-edit.component').then(
+            (m) => m.UsersEditComponent
           ),
       },
     ],
