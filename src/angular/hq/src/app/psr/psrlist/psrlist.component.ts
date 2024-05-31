@@ -12,6 +12,7 @@ import {
   switchMap,
   shareReplay,
   first,
+  firstValueFrom,
 } from 'rxjs';
 import {
   ClientDetailsService,
@@ -26,6 +27,7 @@ import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { Period } from '../../projects/project-create/project-create.component';
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import { PsrService } from '../psr-service';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
   selector: 'hq-psrlist',
@@ -57,10 +59,16 @@ export class PSRListComponent implements OnInit, OnDestroy {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
-  ngOnInit(): void {
+  
+  async ngOnInit() {
     this.psrService.resetFilter();
     this.psrService.showSearch();
     this.psrService.showStaffMembers();
+
+    const staffId = await firstValueFrom(this.oidcSecurityService.userData$.pipe(map(t => t.userData?.staff_id)));
+    if(staffId) {
+      this.psrService.staffMember.setValue(staffId);
+    }
   }
   ngOnDestroy(): void {
     this.psrService.resetFilter();
@@ -69,7 +77,8 @@ export class PSRListComponent implements OnInit, OnDestroy {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private psrService: PsrService
+    private psrService: PsrService,
+    private oidcSecurityService: OidcSecurityService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ChargeCode);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);

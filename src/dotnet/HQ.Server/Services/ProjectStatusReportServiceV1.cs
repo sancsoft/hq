@@ -309,6 +309,11 @@ public class ProjectStatusReportServiceV1
 
         foreach (var time in times)
         {
+            if(time.Status != TimeStatus.Pending && time.Status != TimeStatus.RejectedPendingReview)
+            {
+                continue;
+            }
+
             time.Status = TimeStatus.Accepted;
 
             // If the approved hours haven't been modified and we are approving, use the time hours
