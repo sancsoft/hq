@@ -1,3 +1,4 @@
+import { UpsertStaffMemberResponseV1 } from './../models/staff-members/upsert-staff-member-v1';
 import {
   SubmitPSRRequestV1,
   SubmitPSRResponseV1,
@@ -80,6 +81,7 @@ import {
   updatePSRmarkDownRequestV1,
   UpdatePSRMarkDownResponseV1,
 } from '../models/PSR/update-psr-markdown';
+import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff-member-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -294,6 +296,18 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpsertUserResponseV1>(
           `${apiUrl}/v1/Users/UpsertUserV1`,
+          request
+        )
+      )
+    );
+  }
+
+  upsertStaffV1(request: Partial<UpsertStaffMemberRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertStaffMemberResponseV1>(
+          `${apiUrl}/v1/Staff/UpsertStaffV1
+          `,
           request
         )
       )

@@ -22,7 +22,7 @@ public class UpsertStaffV1
         public DateOnly? EndDate { get; set; }
     }
 
-    public class Response : NoContentResponseV1
+    public class Response
     {
         public Guid Id { get; set; }
     }
