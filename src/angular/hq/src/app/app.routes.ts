@@ -257,4 +257,33 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'staff',
+    canActivate: [AutoLoginPartialRoutesGuard],
+    loadComponent: () =>
+      import('./users/users.component').then((m) => m.UsersComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./staff/staff-list/staff-list.component').then(
+            (m) => m.StaffListComponent
+          ),
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('./staff/staff-create/staff-create.component').then(
+            (m) => m.StaffCreateComponent
+          ),
+      },
+      {
+        path: 'edit/:staffId',
+        loadComponent: () =>
+          import('./staff/staff-edit/staff-edit.component').then(
+            (m) => m.StaffEditComponent
+          ),
+      },
+    ],
+  }
 ];
