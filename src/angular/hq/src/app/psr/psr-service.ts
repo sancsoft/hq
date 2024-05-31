@@ -23,12 +23,16 @@ export class PsrService {
   projectStatus = new FormControl<ProjectStatus>(ProjectStatus.InProduction);
   activityName = new FormControl<ActivityName>(ActivityName.Development);
   staffMember = new FormControl<string | null>(null);
+  isSubmitted = new FormControl<boolean | null>(null);
 
   ProjectStatus = ProjectStatus;
   ActivityName = ActivityName;
+
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
   showSearch$ = new BehaviorSubject<boolean>(true);
   showStaffMembers$ = new BehaviorSubject<boolean>(true);
+  showIsSubmitted$ = new BehaviorSubject<boolean>(true);
+
 
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
@@ -73,5 +77,11 @@ export class PsrService {
   }
   hideRoaster() {
     this.showRoaster$.next(false);
+  }
+  showIsSubmitted() {
+    this.showIsSubmitted$.next(true);
+  }
+  hideIsSubmitted() {
+    this.showIsSubmitted$.next(false);
   }
 }

@@ -7,7 +7,7 @@
     </span>
         <input type="text" [formControl]="psrService.search" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="" />
     </div>
-    } @if(psrService.staffMembers$ && psrService.showStaffMembers$ | async){
+    } @if(psrService.staffMembers$ && psrService.showStaffMembers$ | async) {
     <div class="grid relative w-full max-w-[220px]">
         <select [formControl]="psrService.staffMember" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
     <option  [ngValue]="null">Select Staff Member</option>
@@ -21,6 +21,22 @@
         <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
       <i class="bi bi-arrow-down-short text-[24px]"></i>
     </span>
+    </div>
+    } @if(psrService.showIsSubmitted$ | async) {
+    <div class="grid relative w-full max-w-[220px]">
+        <select [formControl]="psrService.isSubmitted" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+      <option  [ngValue]="null">Is Submitted?</option>
+
+        <option [ngValue]="true">
+         Yes
+        </option>
+        <option [ngValue]="false">
+          No
+         </option>
+      </select>
+        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+        <i class="bi bi-arrow-down-short text-[24px]"></i>
+      </span>
     </div>
     } @if (psrService.showRoaster$ | async) {
     <!-- <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[205px]">

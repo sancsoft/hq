@@ -11,6 +11,7 @@ export interface GetPSRRequestV1 extends PagedRequestV1 {
   sortBy?: SortColumn;
   projectManagerId?: string | null;
   sortDirection?: SortDirection;
+  isSubmitted?: boolean | null;
 }
 
 export enum SortColumn {
