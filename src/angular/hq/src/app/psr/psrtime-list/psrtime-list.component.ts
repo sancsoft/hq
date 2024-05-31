@@ -1,7 +1,13 @@
 import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
-import { Component, HostListener, ViewChild } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { SortDirection } from '../../models/common/sort-direction';
 import {
   GetPSRTimeRecordV1,
@@ -57,7 +63,7 @@ export interface ChargeCodeViewModel {
   ],
   templateUrl: './psrtime-list.component.html',
 })
-export class PSRTimeListComponent {
+export class PSRTimeListComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];
   chargeCodesViewModel: ChargeCodeViewModel[] = [];
   refresh$ = new Subject<void>();
@@ -77,26 +83,35 @@ export class PSRTimeListComponent {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   timeStatus = TimeStatus;
+  ngOnInit(): void {
+    this.psrService.resetFilter();
+    this.psrService.showSearch();
+    this.psrService.showStaffMembers();
+  }
+  ngOnDestroy(): void {
+    this.psrService.resetFilter();
+  }
 
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private PsrService: PsrService,
+    private psrService: PsrService,
     private hqSnackBarService: HQSnackBarService,
     private hqConfirmationModalService: HQConfirmationModalService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
-    const search$ = PsrService.search.valueChanges.pipe(
-      startWith(PsrService.search.value)
+    const search$ = psrService.search.valueChanges.pipe(
+      startWith(psrService.search.value)
     );
 
     const psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId'])
     );
-    const staffMemberId$ = PsrService.staffMember.valueChanges.pipe(
-      startWith(PsrService.staffMember.value)
+    psrService.staffMember.reset;
+    const staffMemberId$ = psrService.staffMember.valueChanges.pipe(
+      startWith(psrService.staffMember.value)
     );
 
     this.psrId$ = psrId$;
@@ -115,7 +130,7 @@ export class PSRTimeListComponent {
     );
 
     apiResponse$.pipe(first()).subscribe((response) => {
-      PsrService.staffMembers$.next(response.staff);
+      psrService.staffMembers$.next(response.staff);
     });
 
     const psr$ = psrId$.pipe(
@@ -251,7 +266,10 @@ export class PSRTimeListComponent {
 
   async acceptAll() {
     const allTime = await firstValueFrom(
-      this.time$.pipe(map((t) => t.map((x) => x.id)))
+      this.time$.pipe(
+        map((t) => t.filter((x) => x.status == TimeStatus.Pending)),
+        map((filteredArray) => filteredArray.map((x) => x.id))
+      )
     );
     await this.accept(allTime);
   }
@@ -356,8 +374,10 @@ export class PSRTimeListComponent {
     //   this.refresh$.next();
     //   return;
     // }
-    const changeChargeCode = window.prompt(`Are you sure you want to change the charge code to ${chargeCode}?`)
-    if(changeChargeCode == null) {
+    const changeChargeCode = window.confirm(
+      `Are you sure you want to change the charge code to ${chargeCode}?`
+    );
+    if (!changeChargeCode) {
       this.refresh$.next();
       return;
     }
