@@ -255,6 +255,7 @@ public class ProjectStatusReportServiceV1
             {
                 Id = t.Id,
                 Status = t.Status,
+                RejectionNotes = t.RejectionNotes,
                 Task = t.Task,
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,

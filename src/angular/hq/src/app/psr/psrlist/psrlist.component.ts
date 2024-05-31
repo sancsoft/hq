@@ -107,7 +107,7 @@ export class PSRListComponent implements OnInit, OnDestroy {
     );
     const isSubmitted$ = psrService.isSubmitted.valueChanges.pipe(
       startWith(psrService.staffMember.value),
-      map(value => !!value)
+      map((value) => (value === null ? null : Boolean(value)))
     );
 
     const request$ = combineLatest({
@@ -117,7 +117,7 @@ export class PSRListComponent implements OnInit, OnDestroy {
       sortBy: this.sortOption$,
       projectManagerId: staffMemberId$,
       sortDirection: this.sortDirection$,
-      isSubmitted: isSubmitted$
+      isSubmitted: isSubmitted$,
     });
 
     const response$ = request$.pipe(

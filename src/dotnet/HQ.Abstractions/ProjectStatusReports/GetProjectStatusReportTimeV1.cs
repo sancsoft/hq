@@ -42,6 +42,7 @@ public class GetProjectStatusReportTimeV1
         public TimeStatus Status { get; set; }
         public decimal BillableHours { get; set; }
         public decimal Hours { get; set; }
+        public string? RejectionNotes { get; set; } = null!;
         public DateOnly Date { get; set; }
         public string ChargeCode { get; set; } = null!;
         public Guid StaffId { get; set; }
