@@ -14,6 +14,8 @@ namespace HQ.Abstractions.ChargeCodes
         {
             public string? Search { get; set; }
             public Guid? Id { get; set; }
+            public Guid? ProjectId { get; set; }
+            public Guid? ClientId { get; set; }
 
             public SortColumn SortBy { get; set; } = SortColumn.Code;
             public SortDirection SortDirection { get; set; } = SortDirection.Asc;
@@ -23,12 +25,12 @@ namespace HQ.Abstractions.ChargeCodes
 
         public enum SortColumn
         {
-            Code,
-            Billable,
-            Active,
-            ProjectName,
-            QuoteName,
-            ServiceAgreementName
+            Code = 1,
+            Billable = 2,
+            Active = 3,
+            ProjectName = 4,
+            QuoteName = 5,
+            ServiceAgreementName = 6
         }
 
         public class Response : PagedResponseV1<Record>;

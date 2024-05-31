@@ -9,7 +9,7 @@ public class GetProjectStatusReportTimeV1
     {
         public Guid ProjectStatusReportId { get; set; }
         public string? Search { get; set; }
-        public string? ProjectManagerId { get; set; }
+        public Guid? ProjectManagerId { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.StaffName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }
@@ -24,7 +24,18 @@ public class GetProjectStatusReportTimeV1
         Activity = 6
     }
 
-    public class Response : PagedResponseV1<Record>;
+    public class Response : PagedResponseV1<Record>
+    {
+        public List<StaffRecord> Staff { get; set; } = new();
+    }
+
+    public class StaffRecord
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+        public decimal TotalHours { get; set; }
+    }
+
     public class Record
     {
         public Guid Id { get; set; }
@@ -33,8 +44,11 @@ public class GetProjectStatusReportTimeV1
         public decimal Hours { get; set; }
         public DateOnly Date { get; set; }
         public string ChargeCode { get; set; } = null!;
+        public Guid StaffId { get; set; }
         public string StaffName { get; set; } = null!;
-        public string? Activity { get; set; }
+        public string? Task { get; set; }
+        public Guid? ActivityId { get; set; }
+        public string? ActivityName { get; set; }
         public string? Description { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
     }

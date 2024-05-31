@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -11,6 +11,8 @@ import {
   debounceTime,
   switchMap,
   shareReplay,
+  first,
+  firstValueFrom,
 } from 'rxjs';
 import {
   ClientDetailsService,
@@ -22,8 +24,10 @@ import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { PsrDetailsSearchFilterComponent } from '../psr-details-search-filter/psr-details-search-filter.component';
+import { Period } from '../../projects/project-create/project-create.component';
+import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import { PsrService } from '../psr-service';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
   selector: 'hq-psrlist',
@@ -34,11 +38,11 @@ import { PsrService } from '../psr-service';
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    PsrDetailsSearchFilterComponent,
+    PsrSearchFilterComponent,
   ],
   templateUrl: './psrlist.component.html',
 })
-export class PSRListComponent {
+export class PSRListComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];
 
   skipDisplay$: Observable<number>;
@@ -48,16 +52,33 @@ export class PSRListComponent {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
-  itemsPerPage = new FormControl(10, { nonNullable: true });
+  Math = Math;
+
+  itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  
+  async ngOnInit() {
+    this.psrService.resetFilter();
+    this.psrService.showSearch();
+    this.psrService.showStaffMembers();
+
+    const staffId = await firstValueFrom(this.oidcSecurityService.userData$.pipe(map(t => t.userData?.staff_id)));
+    if(staffId) {
+      this.psrService.staffMember.setValue(staffId);
+    }
+  }
+  ngOnDestroy(): void {
+    this.psrService.resetFilter();
+  }
 
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private psrService: PsrService
+    private psrService: PsrService,
+    private oidcSecurityService: OidcSecurityService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ChargeCode);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -75,20 +96,18 @@ export class PSRListComponent {
       tap((t) => this.goToPage(1)),
       startWith(psrService.search.value)
     );
-    const selectedProjectManagerId$ =
-      psrService.projectManager.valueChanges.pipe(
-        tap((t) => this.goToPage(1)),
-        startWith(psrService.projectManager.value)
-      );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
+    const staffMemberId$ = psrService.staffMember.valueChanges.pipe(
+      startWith(psrService.staffMember.value)
+    );
 
     const request$ = combineLatest({
       search: search$,
       skip: skip$,
-      projectManagerId: selectedProjectManagerId$,
       take: itemsPerPage$,
       sortBy: this.sortOption$,
+      projectManagerId: staffMemberId$,
       sortDirection: this.sortDirection$,
     });
 
@@ -97,6 +116,23 @@ export class PSRListComponent {
       switchMap((request) => this.hqService.getPSRV1(request)),
       shareReplay(1)
     );
+
+    const staffMembersResponse$ = this.hqService
+      .getStaffMembersV1({ isAssignedProjectManager: true })
+      .pipe(
+        map((response) => response.records),
+        map((records) =>
+          records.map((record) => ({
+            id: record.id,
+            name: record.name,
+            totalHours: record.workHours,
+          }))
+        )
+      );
+
+    staffMembersResponse$.pipe(first()).subscribe((response) => {
+      psrService.staffMembers$.next(response);
+    });
 
     this.projectStatusReports$ = response$.pipe(
       map((response) => {
@@ -138,5 +174,9 @@ export class PSRListComponent {
   }
   getProjectSatusString(status: ProjectStatus): string {
     return ProjectStatus[status];
+  }
+
+  getPeriodName(period: Period) {
+    return Period[period];
   }
 }

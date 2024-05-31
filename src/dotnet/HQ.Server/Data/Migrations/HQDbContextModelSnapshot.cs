@@ -522,6 +522,18 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("booked_time");
 
+                    b.Property<DateOnly>("BookingEndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("booking_end_date");
+
+                    b.Property<int>("BookingPeriod")
+                        .HasColumnType("integer")
+                        .HasColumnName("booking_period");
+
+                    b.Property<DateOnly>("BookingStartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("booking_start_date");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -803,9 +815,9 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<string>("Activity")
-                        .HasColumnType("text")
-                        .HasColumnName("activity");
+                    b.Property<Guid?>("ActivityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("activity_id");
 
                     b.Property<Guid>("ChargeCodeId")
                         .HasColumnType("uuid")
@@ -835,10 +847,6 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("notes");
 
-                    b.Property<string>("Reference")
-                        .HasColumnType("text")
-                        .HasColumnName("reference");
-
                     b.Property<string>("RejectionNotes")
                         .HasColumnType("text")
                         .HasColumnName("rejection_notes");
@@ -851,12 +859,19 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
+                    b.Property<string>("Task")
+                        .HasColumnType("text")
+                        .HasColumnName("task");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_times");
+
+                    b.HasIndex("ActivityId")
+                        .HasDatabaseName("ix_times_activity_id");
 
                     b.HasIndex("ChargeCodeId")
                         .HasDatabaseName("ix_times_charge_code_id");
@@ -1006,7 +1021,7 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.ProjectActivity", b =>
                 {
                     b.HasOne("HQ.Server.Data.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("Activities")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1086,6 +1101,11 @@ namespace HQ.Server.Data.Migrations
 
             modelBuilder.Entity("HQ.Server.Data.Models.Time", b =>
                 {
+                    b.HasOne("HQ.Server.Data.Models.ProjectActivity", "Activity")
+                        .WithMany()
+                        .HasForeignKey("ActivityId")
+                        .HasConstraintName("fk_times_project_activity_activity_id");
+
                     b.HasOne("HQ.Server.Data.Models.ChargeCode", "ChargeCode")
                         .WithMany("Times")
                         .HasForeignKey("ChargeCodeId")
@@ -1105,6 +1125,8 @@ namespace HQ.Server.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_times_staff_staff_id");
 
+                    b.Navigation("Activity");
+
                     b.Navigation("ChargeCode");
 
                     b.Navigation("Invoice");
@@ -1119,6 +1141,8 @@ namespace HQ.Server.Data.Migrations
 
             modelBuilder.Entity("HQ.Server.Data.Models.Project", b =>
                 {
+                    b.Navigation("Activities");
+
                     b.Navigation("ChargeCode");
                 });
 

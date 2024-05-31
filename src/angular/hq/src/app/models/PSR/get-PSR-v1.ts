@@ -1,3 +1,5 @@
+import { ProjectStatus } from '../../clients/client-details.service';
+import { Period } from '../../projects/project-create/project-create.component';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
@@ -12,31 +14,55 @@ export interface GetPSRRequestV1 extends PagedRequestV1 {
 }
 
 export enum SortColumn {
-  ChargeCode = 1,
-  ClientName = 2,
-  ProjectName = 3,
-  ProjectManagerName = 4,
-  TotalHours = 5,
-  HoursAvailable = 6,
+  StartDate = 1,
+  EndDate = 2,
+  ChargeCode = 3,
+  ProjectName = 4,
+  ClientName = 5,
+  ProjectManagerName = 6,
   Status = 7,
-  PercentComplete = 8,
+  BookingPeriod = 8,
+  BookingStartDate = 9,
+  BookingEndDate = 10,
+  TotalHours = 11,
+  TotalAvailableHours = 12,
+  ThisHours = 13,
+  ThisPendingHours = 14,
+  LastHours = 15,
+  BookingHours = 16,
+  BookingAvailableHours = 17,
+  TotalPercentComplete = 18,
+  BookingPercentComplete = 19
 }
 
 export interface GetPSRRecordV1 {
   id: string;
-  startDate: Date;
-  endDate: Date;
-  chargeCode: string;
+  chargeCode?: string;
+  clientId: string;
   clientName: string;
   projectName: string;
-  projectManagerName: string;
+  projectId: string;
+  report?: string;
+  projectManagerName?: string;
   totalHours: number;
-  status: number;
-  percentComplete: number;
-  lastHours: number;
-  LastId: string;
-  hoursAvailable: number;
-  PercentComplete: number;
+  totalAvailableHours?: number;
+  thisHours: number;
+  thisPendingHours: number;
+  bookingHours: number;
+  bookingAvailableHours: number;
+  status: ProjectStatus;
+  totalPercentComplete?: number;
+  bookingPercentComplete?: number;
+  startDate: Date;
+  endDate: Date;
+  bookingStartDate: Date;
+  bookingEndDate: Date;
+  totalStartDate?: Date;
+  totalEndDate?: Date;
+  bookingPeriod: Period;
+  lastId?: string;
+  lastHours?: number;
+  submittedAt?: Date | null;
 }
 
 export interface GetPSRRecordsV1 {

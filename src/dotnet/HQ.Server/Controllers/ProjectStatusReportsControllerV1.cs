@@ -135,5 +135,61 @@ namespace HQ.Server.Controllers
             return await _ProjectStatusReportService.UpdateProjectStatusReportTimeV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
         }
+
+        [Authorize(HQAuthorizationPolicies.Manager)]
+        [HttpPost(nameof(UpdateProjectStatusReportMarkdownV1))]
+        [ProducesResponseType<UpdateProjectStatusReportMarkdownV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> UpdateProjectStatusReportMarkdownV1([FromBody] UpdateProjectStatusReportMarkdownV1.Request request, CancellationToken ct = default)
+        {
+            var psr = await _context.ProjectStatusReports
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
+
+            if(psr == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(User, psr, ProjectStatusReportOperation.UpdateReportMarkdown);
+
+            if(!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            return await _ProjectStatusReportService.UpdateProjectStatusReportMarkdownV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+        }
+
+        [Authorize(HQAuthorizationPolicies.Manager)]
+        [HttpPost(nameof(SubmitProjectStatusReportV1))]
+        [ProducesResponseType<SubmitProjectStatusReportV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> SubmitProjectStatusReportV1([FromBody] SubmitProjectStatusReportV1.Request request, CancellationToken ct = default)
+        {
+            var psr = await _context.ProjectStatusReports
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
+
+            if(psr == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(User, psr, ProjectStatusReportOperation.SubmitReport);
+
+            if(!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            return await _ProjectStatusReportService.SubmitProjectStatusReportV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+        }
     }
 }

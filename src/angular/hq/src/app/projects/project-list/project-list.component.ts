@@ -16,13 +16,13 @@ import { ProjectStatus } from '../../clients/client-details.service';
 import { SortColumn } from '../../models/projects/get-project-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
-import { PsrService } from '../../psr/psr-service';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { PsrDetailsSearchFilterComponent } from '../../psr/psr-details-search-filter/psr-details-search-filter.component';
+import { PsrSearchFilterComponent } from '../../psr/psr-search-filter/psr-search-filter.component';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
+import { PsrService } from '../../psr/psr-service';
 
 @Component({
   selector: 'hq-project-list',
@@ -33,7 +33,7 @@ import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    PsrDetailsSearchFilterComponent,
+    PsrSearchFilterComponent,
   ],
   templateUrl: './project-list.component.html',
 })
@@ -47,7 +47,7 @@ export class ProjectListComponent {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
-  itemsPerPage = new FormControl(10, { nonNullable: true });
+  itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
 
   sortColumn = SortColumn;

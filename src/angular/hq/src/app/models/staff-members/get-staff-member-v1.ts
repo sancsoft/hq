@@ -16,6 +16,7 @@ export enum StaffSortColumn {
 export interface GetStaffV1Request extends PagedRequestV1 {
   search?: string;
   id?: string;
+  isAssignedProjectManager?: boolean;
   jurisdiciton?: Jurisdiciton;
   sortBy?: StaffSortColumn;
   sortDirection?: SortDirection;

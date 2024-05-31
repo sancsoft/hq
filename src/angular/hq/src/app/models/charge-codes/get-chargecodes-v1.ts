@@ -8,18 +8,20 @@ export interface GetChargeCodesRequestV1 extends PagedRequestV1 {
   id?: string;
   sortBy: SortColumn;
   sortDirection: SortDirection;
+  projectId?: string | null,
+  clientId?: string | null,
   billable?: boolean;
   active?: boolean;
 }
 
 // Enum for specifying the sortable columns in charge code requests
 export enum SortColumn {
-  Code = 'CODE',
-  Billable = 'BILLABLE',
-  Active = 'ACTIVE',
-  ProjectName = 'PROJECT_NAME',
-  QuoteName = 'QUOTE_NAME',
-  ServiceAgreementName = 'SERVICE_AGREEMENT_NAME'
+  Code = 1,
+  Billable = 2,
+  Active = 3,
+  ProjectName = 4,
+  QuoteName = 5,
+  ServiceAgreementName = 6
 }
 
 // Interface representing a single charge code record

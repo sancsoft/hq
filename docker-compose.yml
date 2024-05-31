@@ -31,6 +31,7 @@ services:
     - HQ_AUTH_AUTHORITY_URL=${HQ_AUTH_ISSUER}
     - HQ_AUTH_CLIENT_ID=hq
     - HQ_AUTH_SCOPES=openid profile email offline_access
+    - VERSION=0.0.0
   auth:
     build: src/auth/
     depends_on:

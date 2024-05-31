@@ -1,4 +1,8 @@
 import {
+  SubmitPSRRequestV1,
+  SubmitPSRResponseV1,
+} from './../models/PSR/submit-psr';
+import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
@@ -35,6 +39,7 @@ import {
 } from '../models/Invoices/get-invoices-v1';
 import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
 import {
+  GetPSRTimeRecordsV1,
   GetPSRTimeRequestV1,
   GetPSRTimeV1,
 } from '../models/PSR/get-psr-time-v1';
@@ -62,8 +67,19 @@ import {
   UpsertQuoteRequestV1,
   UpsertQuoteResponsetV1,
 } from '../models/quotes/upsert-quote-v1';
-import { GetUsersRequestV1, GetUsersResponseV1 } from '../models/users/get-users-v1';
-import { UpsertUserRequestV1, UpsertUserResponseV1 } from '../models/users/upsert-users-v1';
+import {
+  GetUsersRequestV1,
+  GetUsersResponseV1,
+} from '../models/users/get-users-v1';
+import {
+  UpsertUserRequestV1,
+  UpsertUserResponseV1,
+} from '../models/users/upsert-users-v1';
+
+import {
+  updatePSRmarkDownRequestV1,
+  UpdatePSRMarkDownResponseV1,
+} from '../models/PSR/update-psr-markdown';
 
 @Injectable({
   providedIn: 'root',
@@ -165,7 +181,7 @@ export class HQService {
   getPSRTimeV1(request: Partial<GetPSRTimeRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<GetPSRTimeV1>(
+        this.http.post<GetPSRTimeRecordsV1>(
           `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportTimeV1`,
           request
         )
@@ -260,6 +276,18 @@ export class HQService {
       )
     );
   }
+  updateProjectStatusReportMarkdownV1(
+    request: Partial<updatePSRmarkDownRequestV1>
+  ) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdatePSRMarkDownResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/UpdateProjectStatusReportMarkdownV1`,
+          request
+        )
+      )
+    );
+  }
 
   upsertUsersV1(request: Partial<UpsertUserRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
@@ -269,6 +297,22 @@ export class HQService {
           request
         )
       )
+    );
+  }
+  submitProjectStatusReportV1(request: Partial<SubmitPSRRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<SubmitPSRResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/SubmitProjectStatusReportV1`,
+          request
+        )
+      ),
+      catchError((err: HttpErrorResponse) => {
+        if (err.status == 400) {
+          return throwError(() => new APIError(err.error));
+        }
+        throw err;
+      })
     );
   }
 }

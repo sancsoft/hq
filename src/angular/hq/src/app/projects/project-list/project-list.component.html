@@ -1,7 +1,7 @@
 <div class="px-5">
-  <h1 class="font-rajdhani font-semibold text-3xl">Projects</h1>
+    <h1 class="font-rajdhani font-semibold text-3xl">Projects</h1>
 
-  <!-- <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
+    <!-- <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
         <div class="text-gray-50">$105.00</div>
         <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
         <div class="text-gray-50">Official Name - Probably longer than the name</div>
@@ -9,157 +9,91 @@
 </div>
 
 <div class="px-5 pt-4 mb-[8px]">
-  <div class="flex flex-col lg:flex-row justify-between items-start">
-    <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-      <hq-psr-details-search-filter></hq-psr-details-search-filter>
+    <div class="flex flex-col lg:flex-row justify-between items-start">
+        <div class="flex items-center order-2 lg:order-1 gap-[20px]">
+            <hq-psr-search-filter></hq-psr-search-filter>
 
-      <!-- select dropdown -->
-      <div class="grid relative w-[220px]">
-        <select
-          class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-        >
+            <!-- select dropdown -->
+            <div class="grid relative w-[220px]">
+                <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
           <option>First Name, Last Name</option>
           <option>First Name, Last Name</option>
         </select>
-        <span
-          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-        >
+                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
           <i class="bi bi-arrow-down-short text-[24px]"></i>
         </span>
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <table class="min-w-full border-spacing-0 border-separate">
-  <thead>
-    <tr class="sticky top-0 text-left">
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.ChargeCode)"
-      >
-        Charge Code
-        <hq-sort-icon
-          [column]="sortColumn.ChargeCode"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ProjectName)"
-      >
-        Project Full Name
-        <!-- sorted by client name --><hq-sort-icon
-          [column]="sortColumn.ProjectName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ClientName)"
-      >
-        Client Name
-        <hq-sort-icon
-          [column]="sortColumn.ProjectManagerName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ProjectManagerName)"
-      >
-        PM
-        <hq-sort-icon
-          [column]="sortColumn.ProjectManagerName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.StartDate)"
-      >
-        Start Date
-        <hq-sort-icon
-          [column]="sortColumn.StartDate"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.EndDate)"
-      >
-        End Date
-        <hq-sort-icon
-          [column]="sortColumn.EndDate"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.Status)"
-      >
-        Status
-        <hq-sort-icon
-          [column]="sortColumn.Status"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px] cursor-pointer"
-        colspan="2"
-      >
-        Complete
-      </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
-          <button routerLink="/projects/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
+    <thead>
+        <tr class="sticky top-0 text-left">
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">
+                Charge Code
+                <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectName)">
+                Project Full Name
+                <!-- sorted by client name -->
+                <hq-sort-icon [column]="sortColumn.ProjectName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ClientName)">
+                Client Name
+                <hq-sort-icon [column]="sortColumn.ProjectManagerName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectManagerName)">
+                PM
+                <hq-sort-icon [column]="sortColumn.ProjectManagerName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.StartDate)">
+                Start Date
+                <hq-sort-icon [column]="sortColumn.StartDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.EndDate)">
+                End Date
+                <hq-sort-icon [column]="sortColumn.EndDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Status)">
+                Status
+                <hq-sort-icon [column]="sortColumn.Status" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px] cursor-pointer" colspan="2">
+                Complete
+            </th>
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
+                <button routerLink="/projects/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
               <i class="bi bi-plus"></i>
               Project
           </button>
-      </th>
-  </tr>
-</thead>
-<tbody>
-    @for((project of projects$ | async); track $index) {
-    <tr class="even:bg-gray-850 odd:bg-black-alt">
-      <td class="border-b border-black py-2 pl-5">{{ project.chargeCode }}</td>
-      <td class="border-b border-black py-2">{{ project.name }}</td>
-      <td class="border-b border-black py-2">{{ project.clientName }}</td>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for((project of projects$ | async); track $index) {
+        <tr class="even:bg-gray-850 odd:bg-black-alt">
+            <td class="border-b border-black py-2 pl-5">{{ project.chargeCode }}</td>
+            <td class="border-b border-black py-2">{{ project.name }}</td>
+            <td class="border-b border-black py-2">{{ project.clientName }}</td>
 
-      <td class="border-b border-black py-2">
-        {{ project.projectManagerName }}
-      </td>
-      <td class="border-b border-black py-2">{{ project.startDate }}</td>
-      <td class="border-b border-black py-2">{{ project.endDate }}</td>
-      <td class="border-b border-black py-2">
-        {{ getProjectSatusString(project.status) }}
-      </td>
-      <td class="border-b border-black py-2">
-        <div class="w-[350px] bg-gray-500 border border-white h-[10px]">
-            <!-- Todo: add percentage -->
-          <div
-            class="bg-white h-[8px]"
-            [style.width.%]="0 * 100"
-          ></div>
-        </div>
-      </td>
-      <td></td>   <td class="border-b border-black py-2 text-right pr-5">
-        <a [routerLink]="[project.id]" class="text-teal-200 hover:text-teal-300"
-          >VIEW</a
+            <td class="border-b border-black py-2">
+                {{ project.projectManagerName }}
+            </td>
+            <td class="border-b border-black py-2">{{ project.startDate }}</td>
+            <td class="border-b border-black py-2">{{ project.endDate }}</td>
+            <td class="border-b border-black py-2">
+                {{ getProjectSatusString(project.status) }}
+            </td>
+            <td class="border-b border-black py-2">
+                <div class="w-[350px] bg-gray-500 border border-white h-[10px]">
+                    <!-- Todo: add percentage -->
+                    <div class="bg-white h-[8px]" [style.width.%]="0 * 100"></div>
+                </div>
+            </td>
+            <td></td>
+            <td class="border-b border-black py-2 text-right pr-5">
+                <a [routerLink]="[project.id]" class="text-teal-200 hover:text-teal-300">VIEW</a
         >
       </td>
     </tr>
@@ -175,7 +109,7 @@
       [formControl]="itemsPerPage"
     >
       <option [ngValue]="10">10</option>
-      <option [ngValue]="25">25</option>
+      <option [ngValue]="20">20</option>
       <option [ngValue]="50">50</option>
       <option [ngValue]="100">100</option>
       <!-- Add more options as needed -->

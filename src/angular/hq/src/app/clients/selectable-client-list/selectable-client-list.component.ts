@@ -54,7 +54,7 @@ export class SelectableClientListComponent {
   @Output() selectedClient = new EventEmitter<GetClientRecordV1>();
 
   search = new FormControl('', { nonNullable: true });
-  itemsPerPage = new FormControl(10, { nonNullable: true });
+  itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
 
   records$: Observable<GetClientRecordV1[]>;

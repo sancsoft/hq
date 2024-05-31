@@ -95,6 +95,18 @@ public class StaffServiceV1
             records = records.Where(t => t.Jurisdiciton == request.Jurisdiciton.Value);
         }
 
+        if(request.IsAssignedProjectManager.HasValue)
+        {
+            if(request.IsAssignedProjectManager.Value)
+            {
+                records = records.Where(t => _context.Projects.Any(x => x.ProjectManagerId == t.Id));
+            }
+            else
+            {
+                records = records.Where(t => !_context.Projects.Any(x => x.ProjectManagerId == t.Id));
+            }
+        }
+
         var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
         {
             { Abstractions.Staff.GetStaffV1.SortColumn.CreatedAt, "CreatedAt" },

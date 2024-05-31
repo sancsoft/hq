@@ -15,23 +15,23 @@
       </div>
       <div>
         <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Last</div>
-        <div class="text-right">{{psr.lastHours}}</div>
+        <div class="text-right">{{(psr.lastHours | number:'1.2-2') ?? '-'}}</div>
       </div>
       <div>
         <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS This</div>
-        <div class="text-right">{{psr.hoursAvailable}}</div>
+        <div class="text-right">{{psr.thisHours | number:'1.2-2'}}</div>
       </div>
       <div>
         <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Total HRS</div>
-        <div class="text-right">{{psr.totalHours}}</div>
+        <div class="text-right">{{psr.totalHours | number:'1.2-2'}}</div>
       </div>
       <div>
         <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Available</div>
-        <div class="text-right">{{psr.hoursAvailable}}</div>
+        <div class="text-right">{{psr.totalAvailableHours | number:'1.2-2'}}</div>
       </div>
       <div>
         <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Complete</div>
-        <div class="text-right">{{psr.PercentComplete}}%</div>
+        <div class="text-right">{{psr.totalPercentComplete | percent:'1.2-2'}}</div>
       </div>
     </div>
   </div>

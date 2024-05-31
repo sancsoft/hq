@@ -50,7 +50,7 @@ export class ClientQuoteListComponent {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
-  itemsPerPage = new FormControl(10, { nonNullable: true });
+  itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
 
   sortColumn = SortColumn;
