@@ -57,7 +57,7 @@
                 @if (chargeCodes$ | async ; as chargeCodes) {
                 <select [(ngModel)]="time.chargeCode" (change)="updateChargeCode(time.id, $event)" class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
           <option *ngFor="let c of chargeCodes" [ngValue]="c.code">
-            {{ c.code }}
+            {{ c.code }}: {{ c.projectName }}
           </option>
         </select> }
 
