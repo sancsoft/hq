@@ -57,8 +57,8 @@ public class ProjectStatusReportServiceV1
                     break;
                 case Period.Quarter:
                     var quarter = (startDate.Month + 2) / 3;
-                    psr.BookingStartDate = new DateOnly(startDate.Year, quarter, 1);
-                    psr.BookingEndDate = new DateOnly(startDate.Year, quarter, 1).AddMonths(3).AddDays(-1);
+                    psr.BookingStartDate = new DateOnly(startDate.Year, (quarter - 1) * 3 + 1, 1);
+                    psr.BookingEndDate = psr.BookingStartDate.AddMonths(3).AddDays(-1);
                     break;
                 case Period.Month:
                     psr.BookingStartDate = new DateOnly(startDate.Year, startDate.Month, 1);
