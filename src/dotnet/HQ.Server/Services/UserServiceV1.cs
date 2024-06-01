@@ -164,7 +164,7 @@ public class UserServiceV1
         var query = HttpUtility.ParseQueryString(string.Empty);
         if(!String.IsNullOrEmpty(request.Search))
         {
-            query["search"] = request.Search;
+            query["search"] = "*" + request.Search.Replace(" ", "*") + "*";
         }
 
         if(request.Skip.HasValue)
