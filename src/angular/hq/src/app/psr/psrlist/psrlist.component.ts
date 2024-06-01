@@ -59,15 +59,19 @@ export class PSRListComponent implements OnInit, OnDestroy {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
-  
+
   async ngOnInit() {
     this.psrService.resetFilter();
     this.psrService.showSearch();
     this.psrService.showStaffMembers();
-
-    const staffId = await firstValueFrom(this.oidcSecurityService.userData$.pipe(map(t => t.userData?.staff_id)));
-    if(staffId) {
+    this.psrService.showIsSubmitted();
+    const staffId = await firstValueFrom(
+      this.oidcSecurityService.userData$.pipe(map((t) => t.userData?.staff_id))
+    );
+    if (staffId) {
       this.psrService.staffMember.setValue(staffId);
+    } else {
+      console.log('ERROR: Could not find staff');
     }
   }
   ngOnDestroy(): void {
@@ -101,6 +105,10 @@ export class PSRListComponent implements OnInit, OnDestroy {
     const staffMemberId$ = psrService.staffMember.valueChanges.pipe(
       startWith(psrService.staffMember.value)
     );
+    const isSubmitted$ = psrService.isSubmitted.valueChanges.pipe(
+      startWith(psrService.staffMember.value),
+      map((value) => (value === null ? null : Boolean(value)))
+    );
 
     const request$ = combineLatest({
       search: search$,
@@ -109,6 +117,7 @@ export class PSRListComponent implements OnInit, OnDestroy {
       sortBy: this.sortOption$,
       projectManagerId: staffMemberId$,
       sortDirection: this.sortDirection$,
+      isSubmitted: isSubmitted$,
     });
 
     const response$ = request$.pipe(
@@ -139,6 +148,25 @@ export class PSRListComponent implements OnInit, OnDestroy {
         return response.records;
       })
     );
+    // psrService.isSubmitted.valueChanges.subscribe((submitted) => {
+    //   this.projectStatusReports$ = response$.pipe(
+    //     map((response) => {
+    //       return response.records;
+    //     }),
+    //     map((reports) =>
+    //       reports.filter((report) => {
+    //         console.log(report.submittedAt);
+    //         if (submitted === null) {
+    //           return true;
+    //         } else if (submitted) {
+    //           return report.submittedAt !== null;
+    //         } else {
+    //           return report.submittedAt === null;
+    //         }
+    //       })
+    //     )
+    //   );
+    // });
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
 

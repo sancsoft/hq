@@ -26,6 +26,7 @@ export interface GetPSRTimeRecordV1 {
   date: string;
   chargeCode: string;
   staffName: string;
+  rejectionNotes: string | null;
   task?: string | null;
   activityName?: string | null;
   activityId?: string | null;

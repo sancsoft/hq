@@ -40,6 +40,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.psrService.resetFilter();
     this.psrService.hideSearch();
     this.psrService.hideStaffMembers();
+    this.psrService.hideIsSubmitted();
   }
   ngOnDestroy(): void {
     this.psrService.resetFilter();

@@ -49,7 +49,7 @@ public class ProjectStatusReportServiceV1
             psr.Status = ProjectStatus.Unknown;
             psr.BookingPeriod = project.BookingPeriod;
 
-            switch(project.BookingPeriod)
+            switch (project.BookingPeriod)
             {
                 case Period.Year:
                     psr.BookingStartDate = new DateOnly(startDate.Year, 1, 1);
@@ -118,6 +118,18 @@ public class ProjectStatusReportServiceV1
         if (request.ProjectManagerId.HasValue)
         {
             records = records.Where(t => t.Project.ProjectManagerId == request.ProjectManagerId.Value);
+        }
+        if (request.IsSubmitted != null)
+        {
+            if (request.IsSubmitted == true)
+            {
+                records = records.Where(t => t.SubmittedAt != null);
+            }
+            else
+            {
+                records = records.Where(t => t.SubmittedAt == null);
+
+            }
         }
 
         var mapped = records
@@ -194,7 +206,7 @@ public class ProjectStatusReportServiceV1
             .ThenBy(t => t.StartDate)
             .ThenBy(t => t.ClientName)
             .ThenBy(t => t.ProjectName);
-        
+
         mapped = sorted;
 
         if (request.Skip.HasValue)
@@ -237,12 +249,13 @@ public class ProjectStatusReportServiceV1
         {
             records = records.Where(t => t.StaffId.Equals(request.ProjectManagerId));
         }
-      
+
         var mapped = records
             .Select(t => new GetProjectStatusReportTimeV1.Record()
             {
                 Id = t.Id,
                 Status = t.Status,
+                RejectionNotes = t.RejectionNotes,
                 Task = t.Task,
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
@@ -258,7 +271,8 @@ public class ProjectStatusReportServiceV1
 
         var total = await mapped.CountAsync(ct);
         var staff = mapped.GroupBy(t => new { t.StaffId, t.StaffName })
-            .Select(t => new GetProjectStatusReportTimeV1.StaffRecord() {
+            .Select(t => new GetProjectStatusReportTimeV1.StaffRecord()
+            {
                 Id = t.Key.StaffId,
                 Name = t.Key.StaffName,
                 TotalHours = t.Sum(t => t.Hours)
@@ -309,7 +323,7 @@ public class ProjectStatusReportServiceV1
 
         foreach (var time in times)
         {
-            if(time.Status != TimeStatus.Pending && time.Status != TimeStatus.RejectedPendingReview)
+            if (time.Status != TimeStatus.Pending && time.Status != TimeStatus.RejectedPendingReview)
             {
                 continue;
             }
@@ -380,12 +394,12 @@ public class ProjectStatusReportServiceV1
     public async Task<Result<UpdateProjectStatusReportMarkdownV1.Response>> UpdateProjectStatusReportMarkdownV1(UpdateProjectStatusReportMarkdownV1.Request request, CancellationToken ct = default)
     {
         var psr = await _context.ProjectStatusReports.FindAsync(request.ProjectStatusReportId);
-        if(psr == null)
+        if (psr == null)
         {
             return Result.Fail("Unable to find project status report.");
         }
 
-        if(psr.SubmittedAt.HasValue)
+        if (psr.SubmittedAt.HasValue)
         {
             return Result.Fail("Project status report has already been submitted.");
         }
@@ -403,17 +417,17 @@ public class ProjectStatusReportServiceV1
     public async Task<Result<SubmitProjectStatusReportV1.Response>> SubmitProjectStatusReportV1(SubmitProjectStatusReportV1.Request request, CancellationToken ct = default)
     {
         var psr = await _context.ProjectStatusReports.FindAsync(request.ProjectStatusReportId);
-        if(psr == null)
+        if (psr == null)
         {
             return Result.Fail("Unable to find project status report.");
         }
 
-        if(psr.SubmittedAt.HasValue)
+        if (psr.SubmittedAt.HasValue)
         {
             return Result.Fail("Project status report has already been submitted.");
         }
 
-        if(await _context.Times.AnyAsync(t => t.ChargeCode.ProjectId == psr.ProjectId && t.Date >= psr.StartDate && t.Date <= psr.EndDate && t.Status != TimeStatus.Accepted, ct))
+        if (await _context.Times.AnyAsync(t => t.ChargeCode.ProjectId == psr.ProjectId && t.Date >= psr.StartDate && t.Date <= psr.EndDate && t.Status != TimeStatus.Accepted, ct))
         {
             return Result.Fail("Project status report has pending time entries that need reviewed.");
         }

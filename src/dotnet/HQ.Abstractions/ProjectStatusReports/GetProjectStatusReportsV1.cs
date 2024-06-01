@@ -18,7 +18,7 @@ public class GetProjectStatusReportsV1
         public Guid? Id { get; set; }
         public Guid? ProjectId { get; set; }
         public Guid? ProjectManagerId { get; set; }
-
+        public bool? IsSubmitted { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.ChargeCode;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }
