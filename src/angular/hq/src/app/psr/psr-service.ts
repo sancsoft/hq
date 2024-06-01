@@ -23,7 +23,7 @@ export class PsrService {
   projectStatus = new FormControl<ProjectStatus>(ProjectStatus.InProduction);
   activityName = new FormControl<ActivityName>(ActivityName.Development);
   staffMember = new FormControl<string | null>(null);
-  isSubmitted = new FormControl<boolean | null>(null);
+  isSubmitted = new FormControl<boolean | null>(false);
 
   ProjectStatus = ProjectStatus;
   ActivityName = ActivityName;
