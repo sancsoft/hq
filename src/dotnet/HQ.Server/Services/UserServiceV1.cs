@@ -162,36 +162,56 @@ public class UserServiceV1
     public async Task<Result<GetUsersV1.Response>> GetUsersV1(GetUsersV1.Request request, CancellationToken ct = default)
     {
         var query = HttpUtility.ParseQueryString(string.Empty);
-        if(!String.IsNullOrEmpty(request.Search))
+
+        int count = 0;
+        List<KeycloakUserRepresentation> users = [];
+
+        if(request.Id.HasValue)
         {
-            query["search"] = request.Search;
+            var getResponse = await _httpClient.GetAsync($"users/{request.Id}", ct);
+            if(getResponse.IsSuccessStatusCode)
+            {
+                var user = await getResponse.Content.ReadFromJsonAsync<KeycloakUserRepresentation>(ct);;
+                if(user != null)
+                {
+                    count = 1;
+                    users.Add(user);
+                }                
+            }
         }
-
-        if(request.Skip.HasValue)
+        else
         {
-            query["first"] = request.Skip.Value.ToString();
-        }
+            if(!String.IsNullOrEmpty(request.Search))
+            {
+                query["search"] = "*" + request.Search.Replace(" ", "*") + "*";
+            }
 
-        if(request.Take.HasValue)
-        {
-            query["max"] = request.Take.Value.ToString();
-        }
+            if(request.Skip.HasValue)
+            {
+                query["first"] = request.Skip.Value.ToString();
+            }
 
-        var qs = query.ToString();
+            if(request.Take.HasValue)
+            {
+                query["max"] = request.Take.Value.ToString();
+            }
 
-        var listResponse = await _httpClient.GetAsync($"users?{qs}", ct);
-        var countResponse = await _httpClient.GetAsync($"users/count?{qs}", ct);
+            var qs = query.ToString();
 
-        if(!listResponse.IsSuccessStatusCode || !countResponse.IsSuccessStatusCode)
-        {
-            return Result.Fail("Error reading users from auth server.");
-        }
+            var listResponse = await _httpClient.GetAsync($"users?{qs}", ct);
+            var countResponse = await _httpClient.GetAsync($"users/count?{qs}", ct);
 
-        var count = await countResponse.Content.ReadFromJsonAsync<int>(ct);
-        var users = await listResponse.Content.ReadFromJsonAsync<List<KeycloakUserRepresentation>>(ct);
-        if(users == null)
-        {
-            return Result.Fail("Error parsing users response from auth server.");
+            if(!listResponse.IsSuccessStatusCode || !countResponse.IsSuccessStatusCode)
+            {
+                return Result.Fail("Error reading users from auth server.");
+            }
+
+            count = await countResponse.Content.ReadFromJsonAsync<int>(ct);
+            users = await listResponse.Content.ReadFromJsonAsync<List<KeycloakUserRepresentation>>(ct);
+            if(users == null)
+            {
+                return Result.Fail("Error parsing users response from auth server.");
+            }
         }
 
         // TODO: Optimize this to run in parallel
