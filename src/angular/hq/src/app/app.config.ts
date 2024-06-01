@@ -8,19 +8,22 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular
 import { AuthInterceptor, authInterceptor, provideAuth } from 'angular-auth-oidc-client';
 import { authConfig } from './auth.config';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { MarkdownModule, provideMarkdown } from 'ngx-markdown';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimationsAsync(),
-    importProvidersFrom(MonacoEditorModule.forRoot()),
+    importProvidersFrom(MonacoEditorModule.forRoot(), MarkdownModule.forRoot()),
+    provideMarkdown(),
     provideHttpClient(withInterceptors([authInterceptor()])),
     provideAuth(authConfig),
     {
-        provide: APP_INITIALIZER,
-        useFactory: (appSettingsService: AppSettingsService) => () => appSettingsService.appSettings$,
-        multi: true,
-        deps: [AppSettingsService],
+      provide: APP_INITIALIZER,
+      useFactory: (appSettingsService: AppSettingsService) => () =>
+        appSettingsService.appSettings$,
+      multi: true,
+      deps: [AppSettingsService],
     },
-],
+  ],
 };

@@ -1,0 +1,29 @@
+
+
+.reset-styles h1 {
+  @apply text-2xl font-bold my-4;
+}
+
+.reset-styles h2 {
+  @apply text-xl font-semibold my-3;
+}
+
+.reset-styles h3 {
+  @apply text-lg font-medium my-2;
+}
+
+.reset-styles p {
+  @apply my-4;
+}
+
+.reset-styles ul {
+  @apply list-disc my-4 pl-6;
+}
+
+.reset-styles ol {
+  @apply list-decimal my-4 pl-6;
+}
+
+.reset-styles blockquote {
+  @apply border-l-4 border-gray-300 pl-4 my-4;
+}
