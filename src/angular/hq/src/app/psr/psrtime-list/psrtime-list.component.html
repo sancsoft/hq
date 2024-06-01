@@ -4,7 +4,7 @@
             <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 pr-2 text-nowrap">
                 Approved Hrs
             </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap">
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap text-right">
                 Hrs
             </th>
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.Date)">
@@ -49,13 +49,13 @@
       }">
             <td (click)="toggleTime(time.id)" class="border-b border-black py-2 bg-gray-450 w-3 cursor-pointer"></td>
             <td class="border-b border-black py-2 pl-3 pr-2">
-                <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.billableHours" (change)="updateBillableHours(time.id, $event)" />
+                <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none" [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" (change)="updateBillableHours(time.id, $event)" type="number" step="0.25" min="0" />
             </td>
-            <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
+            <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
             <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
             <td class="border-b border-black py-2 px-2 text-black">
                 @if (chargeCodes$ | async ; as chargeCodes) {
-                <select [(ngModel)]="time.chargeCode" (change)="updateChargeCode(time.id, $event)" class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                <select [(ngModel)]="time.chargeCode" (change)="updateChargeCode(time.id, $event)" class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
           <option *ngFor="let c of chargeCodes" [ngValue]="c.code">
             {{ c.code }}
           </option>
@@ -87,13 +87,14 @@
                 </div>
             </td>
         </tr>
-        } @case (timeStatus.Accepted) {
+        }
+        @case (timeStatus.Accepted) {
         <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
             <td class="border-b border-black py-2 bg-green-600 w-3"></td>
             <td class="border-b border-black py-2 pl-3 pr-2">
-                <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.billableHours" disabled />
+                <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right" [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" disabled />
             </td>
-            <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
+            <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
             <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
             <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
             <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
@@ -109,18 +110,19 @@
         </div>
       </td>
     </tr>
-    } @case (timeStatus.Rejected) {
+    }
+    @case (timeStatus.Rejected) {
 
     <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
       <td class="border-b border-black py-2 bg-red-600 w-3"></td>
       <td class="border-b border-black py-2 pl-3 pr-2">
         <input
-          class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2"
-          [value]="time.billableHours"
+          class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right"
+          [value]="(time.billableHours | number:'1.2-2')?.replace(',','')"
           disabled
         />
       </td>
-      <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
+      <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
       <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
       <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
       <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
@@ -146,7 +148,8 @@
       </td>
     </tr>
 
-    } @case (timeStatus.RejectedPendingReview) {
+    }
+    @case (timeStatus.RejectedPendingReview) {
 
     <tr
       [ngClass]="{
@@ -160,12 +163,12 @@
       ></td>
       <td class="border-b border-black py-2 pl-3 pr-2">
         <input
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-          [value]="time.billableHours"
+          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right"
+          [value]="(time.billableHours | number:'1.2-2')?.replace(',','')"
           (change)="updateBillableHours(time.id, $event)"
         />
       </td>
-      <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
+      <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
       <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
       <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
       <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>

@@ -84,8 +84,8 @@ export class PSRListComponent implements OnInit, OnDestroy {
     private psrService: PsrService,
     private oidcSecurityService: OidcSecurityService
   ) {
-    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ChargeCode);
-    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
+    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ThisHours);
+    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Desc);
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)

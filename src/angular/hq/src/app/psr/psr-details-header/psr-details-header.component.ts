@@ -12,6 +12,7 @@ import {
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
 import { ActivatedRoute } from '@angular/router';
 import { HQService } from '../../services/hq.service';
+import { Period } from '../../projects/project-create/project-create.component';
 
 @Component({
   selector: 'hq-psr-details-header',
@@ -44,5 +45,9 @@ export class PsrDetailsHeaderComponent {
         return response.records[0];
       })
     );
+  }
+
+  getPeriodName(period: Period) {
+    return Period[period];
   }
 }
