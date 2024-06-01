@@ -6,6 +6,7 @@ public class GetUsersV1
 {
     public class Request : PagedRequestV1
     {
+        public Guid? Id { get; set; }
         public string? Search { get; set; }
     }
 
