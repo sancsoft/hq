@@ -31,8 +31,11 @@
 <table class="min-w-full border-spacing-0 border-separate table-fixed">
     <thead>
         <tr class="sticky top-0 text-left select-none">
-            <th width="140" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Chrg Code
+            <th width="100" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Code
                 <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th width="90" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.StartDate)">Week
+                <hq-sort-icon [column]="sortColumn.StartDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
             <th width="170" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ClientName)">Client Name
                 <hq-sort-icon [column]="sortColumn.ClientName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
@@ -70,8 +73,9 @@
     <tbody>
 
         @for((report of projectStatusReports$ | async); track report.id) {
-        <tr class="even:bg-gray-850 odd:bg-black-alt">
+        <tr [class]="report.isLate ? 'bg-red-950' : 'even:bg-gray-850 odd:bg-black-alt'">
             <td class="border-b border-black py-2 pl-5">{{report.chargeCode}}</td>
+            <td class="border-b border-black py-2">{{report.startDate}}</td>
             <td class="border-b border-black py-2">{{report.clientName}}</td>
             <td class="border-b border-black py-2">{{report.projectName}}</td>
             <td class="border-b border-black py-2">{{report.projectManagerName}}</td>
@@ -91,7 +95,7 @@
                 </div>
                 }
                 <div class="flex justify-between gap-2 text-xs text-gray-300">
-                    <span class="lowercase">{{ report.bookingHours | number: '0.2-2' }} hrs this {{ getPeriodName(report.bookingPeriod) }}</span>
+                    <span class="lowercase">{{ report.bookingHours | number: '0.2-2' }} hrs this {{ getPeriodName(report.bookingPeriod) }} to date</span>
                     <span>{{ report.bookingPercentComplete | percent }}</span>
                 </div>
             </td>

@@ -101,5 +101,6 @@ public class GetProjectStatusReportsV1
         public Period BookingPeriod { get; set; }
         public Guid? LastId { get; set; }
         public decimal? LastHours { get; set; }
+        public bool IsLate { get; set; }
     }
 }

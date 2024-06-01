@@ -84,8 +84,8 @@ export class PSRListComponent implements OnInit, OnDestroy {
     private psrService: PsrService,
     private oidcSecurityService: OidcSecurityService
   ) {
-    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ThisHours);
-    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Desc);
+    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ChargeCode);
+    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)
@@ -102,12 +102,13 @@ export class PSRListComponent implements OnInit, OnDestroy {
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
+    
     const staffMemberId$ = psrService.staffMember.valueChanges.pipe(
       startWith(psrService.staffMember.value)
     );
+    
     const isSubmitted$ = psrService.isSubmitted.valueChanges.pipe(
-      startWith(psrService.staffMember.value),
-      map((value) => (value === null ? null : Boolean(value)))
+      startWith(psrService.isSubmitted.value)
     );
 
     const request$ = combineLatest({

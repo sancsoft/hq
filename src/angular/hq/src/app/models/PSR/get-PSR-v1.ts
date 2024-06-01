@@ -64,6 +64,7 @@ export interface GetPSRRecordV1 {
   lastId?: string;
   lastHours?: number;
   submittedAt?: Date | null;
+  isLate: boolean;
 }
 
 export interface GetPSRRecordsV1 {

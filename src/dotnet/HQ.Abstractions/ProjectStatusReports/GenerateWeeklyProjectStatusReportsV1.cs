@@ -10,6 +10,7 @@ public class GenerateWeeklyProjectStatusReportsV1
 {
     public class Request
     {
+        public DateOnly? ForWeek { get; set; }
     }
 
     public class Response
