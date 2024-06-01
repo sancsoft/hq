@@ -142,7 +142,7 @@ export class UsersEditComponent implements OnInit {
       const response = await firstValueFrom(
         this.hqService.upsertUsersV1(request)
       );
-      this.router.navigate(['../', response.id], { relativeTo: this.route });
+      this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       console.log(err);
       if (err instanceof APIError) {

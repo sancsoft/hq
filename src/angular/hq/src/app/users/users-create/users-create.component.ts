@@ -112,7 +112,7 @@ export class UsersCreateComponent {
       const response = await firstValueFrom(
         this.hqService.upsertUsersV1(request)
       );
-      // this.router.navigate(['../', response.id], { relativeTo: this.route });
+      this.router.navigate(['../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
