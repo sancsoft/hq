@@ -4,7 +4,7 @@ import { AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'clients',
+    redirectTo: 'psr',
     pathMatch: 'full'
   },
   {
