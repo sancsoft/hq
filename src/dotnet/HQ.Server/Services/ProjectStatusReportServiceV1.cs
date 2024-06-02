@@ -390,6 +390,30 @@ public class ProjectStatusReportServiceV1
         return new RejectProjectStatusReportTimeV1.Response();
     }
 
+    public async Task<Result<UnapproveProjectStatusReportTimeV1.Response>> UnapproveProjectStatusReportTimeV1(UnapproveProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
+    {
+        var time = await _context.ProjectStatusReports
+            .Where(t => t.Id == request.ProjectStatusReportId)
+            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && request.TimeId == x.Id))
+            .SingleOrDefaultAsync(ct);
+
+        if (time == null)
+        {
+            return Result.Fail("Unable to find time entry.");
+        }
+
+        if(time.Status != TimeStatus.Accepted)
+        {
+            return Result.Fail("Time entry is not accepted.");
+        }
+
+        time.Status = TimeStatus.Pending;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new UnapproveProjectStatusReportTimeV1.Response();
+    }
+
     public async Task<Result<UpdateProjectStatusReportTimeV1.Response>> UpdateProjectStatusReportTimeV1(UpdateProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
     {
         var time = await _context.ProjectStatusReports

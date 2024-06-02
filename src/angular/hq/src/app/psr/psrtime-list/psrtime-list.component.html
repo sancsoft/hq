@@ -2,7 +2,7 @@
     <thead>
         <tr class="sticky top-0 text-left">
             <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 pr-2 text-nowrap">
-                Approved Hrs
+                Appr Hrs
             </th>
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap text-right">
                 Hrs
@@ -42,160 +42,145 @@
         </tr>
     </thead>
     <tbody>
-        @for (time of time$ | async; track time.id) { @switch (time.status) { @case (timeStatus.Pending) {
-        <tr [ngClass]="{
-        'bg-blue-900': isSelected(time.id) | async,
-        'even:bg-gray-850 odd:bg-black-alt': !(isSelected(time.id) | async)
-      }">
-            <td (click)="toggleTime(time.id)" class="border-b border-black py-2 bg-gray-450 w-3 cursor-pointer"></td>
-            <td class="border-b border-black py-2 pl-3 pr-2">
-                <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none" [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" (change)="updateBillableHours(time.id, $event)" type="number" step="0.25" min="0" />
-            </td>
-            <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
-            <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
-            <td class="border-b border-black py-2 px-2 text-black">
-                @if (chargeCodes$ | async ; as chargeCodes) {
-                <select [(ngModel)]="time.chargeCode" (change)="updateChargeCode(time.id, $event)" class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]">
-          <option *ngFor="let c of chargeCodes" [ngValue]="c.code">
-            {{ c.code }}: {{ c.projectName }}
-          </option>
-        </select> }
-
-                <!-- <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.chargeCode"
-    (change)="updateChargeCode(time.id, $event)" /></td> -->
-            </td>
-
-            <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-            <td class="border-b border-black py-2 px-2">
-                <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.task" (change)="updateTask(time.id, $event)" />
-            </td>
-            <td class="border-b border-black py-2 px-2 w-full">
-                <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description" (change)="updateDescription(time.id, $event)" />
-            </td>
-            <td class="border-b border-black py-2 text-right pr-5">
-                <div class="flex justify-between flex-nowrap space-x-2 items-center">
+        @for (time of time$ | async; track time.id) { 
+          @switch (time.status) { 
+            @case (timeStatus.Pending) {
+              <tr [ngClass]="{
+                            'bg-blue-900': isSelected(time.id) | async,
+                            'even:bg-gray-850 odd:bg-black-alt': !(isSelected(time.id) | async)
+                            }">
+                <td (click)="toggleTime(time.id)" class="border-b border-black py-2 bg-gray-450 w-3 cursor-pointer"></td>
+                <td class="border-b border-black py-2 pl-3 pr-2">
+                  <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
+                    [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" (change)="updateBillableHours(time.id, $event)"
+                    type="number" step="0.25" min="0" />
+                </td>
+                <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+                <td class="border-b border-black py-2 px-2 text-black">
+                  @if (chargeCodes$ | async; as chargeCodes) {
+                  <select [(ngModel)]="time.chargeCode" (change)="updateChargeCode(time.id, $event)"
+                    class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]">
+                    <option *ngFor="let c of chargeCodes" [ngValue]="c.code">
+                      {{ c.code }}: {{ c.projectName }}
+                    </option>
+                  </select>
+                  }
+                </td>
+                <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
+                <td class="border-b border-black py-2 px-2">
+                  <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.task"
+                    (change)="updateTask(time.id, $event)" />
+                </td>
+                <td class="border-b border-black py-2 px-2 w-full">
+                  <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description"
+                    (change)="updateDescription(time.id, $event)" />
+                </td>
+                <td class="border-b border-black py-2 text-right pr-5">
+                  <div class="flex justify-between flex-nowrap space-x-2 items-center">
                     <!-- warning icon -->
                     <div>&nbsp;</div>
                     <div class="text-nowrap divide-x divide-teal-200">
-                        <button class="text-teal-200 hover:text-teal-300 uppercase pr-3" (click)="reject(time.id)">
-              reject
-            </button>
-                        <button class="text-teal-200 hover:text-teal-300 uppercase pl-3" (click)="acceptTime(time.id)">
-              accept
-            </button>
+                      <button class="text-teal-200 hover:text-teal-300 uppercase pr-3" (click)="reject(time.id)">reject</button>
+                      <button class="text-teal-200 hover:text-teal-300 uppercase pl-3" (click)="acceptTime(time.id)">accept</button>
                     </div>
-                </div>
-            </td>
-        </tr>
-        }
-        @case (timeStatus.Accepted) {
-        <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
-            <td class="border-b border-black py-2 bg-green-600 w-3"></td>
-            <td class="border-b border-black py-2 pl-3 pr-2">
-                <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right" [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" disabled />
-            </td>
-            <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
-            <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
-            <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
-            <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-            <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
-            <td class="border-b border-black py-2 px-2 w-full">
-                <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.description" disabled />
-            </td>
-            <td class="border-b border-black py-2 pr-5">
-                <div class="flex flex-nowrap justify-between space-x-2 items-center">
+                  </div>
+                </td>
+              </tr>
+            }
+            @case (timeStatus.Accepted) {
+              <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
+                <td class="border-b border-black py-2 bg-green-600 w-3"></td>
+                <td class="border-b border-black py-2 pl-3 pr-2">
+                  <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right"
+                    [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" disabled />
+                </td>
+                <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
+                <td class="border-b border-black py-2 px-2 w-full">
+                  <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.description"
+                    disabled />
+                </td>
+                <td class="border-b border-black py-2 pr-5">
+                  <div class="flex flex-nowrap justify-between space-x-2 items-center">
                     <div></div>
-                    <a href="#" class="text-teal-200 hover:text-teal-300 uppercase">edit</a
-          >
-        </div>
-      </td>
-    </tr>
-    }
-    @case (timeStatus.Rejected) {
-
-    <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
-      <td class="border-b border-black py-2 bg-red-600 w-3"></td>
-      <td class="border-b border-black py-2 pl-3 pr-2">
-        <input
-          class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right"
-          [value]="(time.billableHours | number:'1.2-2')?.replace(',','')"
-          disabled
-        />
-      </td>
-      <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
-      <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
-      <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
-      <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-      <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
-      <td class="border-b border-black py-2 px-2 w-full">
-        <input
-          class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2"
-          [value]="time.description"
-          disabled
-        />
-      </td>
-      <td class="border-b border-black py-2 pr-5">
-        <div class="flex flex-nowrap justify-between space-x-2 items-center">
-          <!-- more info icon -->
-          <!-- warning icon -->
-          <div>
-            <i [title] = "time.rejectionNotes ?? ''" class="bi bi-exclamation-diamond-fill text-yellow-550"></i>
-          </div>
-          <a class="text-gray-400 cursor-not-allowed opacity-50 uppercase"
-            >accept</a
-          >
-        </div>
-      </td>
-    </tr>
-
-    }
-    @case (timeStatus.RejectedPendingReview) {
-
-    <tr
-      [ngClass]="{
-        'bg-blue-900': isSelected(time.id) | async,
-        'even:bg-gray-850 odd:bg-black-alt': !(isSelected(time.id) | async)
-      }"
-    >
-      <td
-        (click)="toggleTime(time.id)"
-        class="border-b border-black py-2 bg-yellow-450 w-3 cursor-pointer"
-      ></td>
-      <td class="border-b border-black py-2 pl-3 pr-2">
-        <input
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right"
-          [value]="(time.billableHours | number:'1.2-2')?.replace(',','')"
-          (change)="updateBillableHours(time.id, $event)"
-        />
-      </td>
-      <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
-      <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
-      <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
-      <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-      <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
-      <td class="border-b border-black py-2 px-2 w-full">
-        <input
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-          [value]="time.description"
-          (change)="updateDescription(time.id, $event)"
-        />
-      </td>
-      <td class="border-b border-black py-2 text-right pr-5">
-        <div class="flex justify-between flex-nowrap space-x-2 items-center">
-          <!-- warning icon -->
-          <div>&nbsp;</div>
-          <div class="text-nowrap divide-x divide-teal-200">
-            <button
-              class="text-teal-200 hover:text-teal-300 uppercase pl-3"
-              (click)="acceptTime(time.id)"
-            >
-              accept
-            </button>
-          </div>
-        </div>
-      </td>
-    </tr>
-    } } }
+                    <button  (click)="unacceptTime(time.id)" class="text-teal-200 hover:text-teal-300 uppercase">edit</button>
+                  </div>
+                </td>
+              </tr>
+            }
+            @case (timeStatus.Rejected) {
+              <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
+                <td class="border-b border-black py-2 bg-red-600 w-3"></td>
+                <td class="border-b border-black py-2 pl-3 pr-2">
+                  <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right"
+                    [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" disabled />
+                </td>
+                <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
+                <td class="border-b border-black py-2 px-2 w-full">
+                  <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.description"
+                    disabled />
+                </td>
+                <td class="border-b border-black py-2 pr-5">
+                  <div class="flex flex-nowrap justify-between space-x-2 items-center">
+                    <!-- more info icon -->
+                    <!-- warning icon -->
+                    @if(time.rejectionNotes)
+                    {
+                      <div>
+                        <i [title]="time.rejectionNotes" class="bi bi-exclamation-diamond-fill text-yellow-550"></i>
+                      </div>
+                    }
+                    @else {
+                      <div></div>
+                    }
+                    <a class="text-gray-400 cursor-not-allowed opacity-50 uppercase">accept</a>
+                  </div>
+                </td>
+              </tr>
+            }
+            @case (timeStatus.RejectedPendingReview) {
+              <tr [ngClass]="{
+                                'bg-blue-900': isSelected(time.id) | async,
+                                'even:bg-gray-850 odd:bg-black-alt': !(isSelected(time.id) | async)
+                              }">
+                <td (click)="toggleTime(time.id)" class="border-b border-black py-2 bg-yellow-450 w-3 cursor-pointer"></td>
+                <td class="border-b border-black py-2 pl-3 pr-2">
+                  <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right"
+                    [value]="(time.billableHours | number:'1.2-2')?.replace(',','')"
+                    (change)="updateBillableHours(time.id, $event)" />
+                </td>
+                <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
+                <td class="border-b border-black py-2 px-2 w-full">
+                  <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description"
+                    (change)="updateDescription(time.id, $event)" />
+                </td>
+                <td class="border-b border-black py-2 text-right pr-5">
+                  <div class="flex justify-between flex-nowrap space-x-2 items-center">
+                    <!-- warning icon -->
+                    <div>&nbsp;</div>
+                    <div class="text-nowrap divide-x divide-teal-200">
+                      <button class="text-teal-200 hover:text-teal-300 uppercase pl-3" (click)="acceptTime(time.id)">
+                        accept
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            } 
+          } 
+        }
   </tbody>
   <tbody class="hidden">
     <!-- Needs Attention -->

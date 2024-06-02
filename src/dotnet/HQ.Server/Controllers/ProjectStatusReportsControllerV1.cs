@@ -137,6 +137,34 @@ namespace HQ.Server.Controllers
         }
 
         [Authorize(HQAuthorizationPolicies.Manager)]
+        [HttpPost(nameof(UnapproveProjectStatusReportTimeV1))]
+        [ProducesResponseType<UnapproveProjectStatusReportTimeV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> UnapproveProjectStatusReportTimeV1([FromBody] UnapproveProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
+        {
+            var psr = await _context.ProjectStatusReports
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
+
+            if(psr == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(User, psr, ProjectStatusReportOperation.UnapproveTime);
+
+            if(!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            return await _ProjectStatusReportService.UnapproveProjectStatusReportTimeV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+        }
+
+        [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(UpdateProjectStatusReportMarkdownV1))]
         [ProducesResponseType<UpdateProjectStatusReportMarkdownV1.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

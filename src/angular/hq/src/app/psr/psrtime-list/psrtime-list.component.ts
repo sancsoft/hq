@@ -279,6 +279,23 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     await this.accept([timeId]);
   }
 
+  async unacceptTime(timeId: string) {
+    const psrId = await firstValueFrom(this.psrId$);
+
+    if (!timeId) {
+      return;
+    }
+
+    const response = await firstValueFrom(
+      this.hqService.unapprovePSRTimeV1({
+        projectStatusReportId: psrId,
+        timeId: timeId,
+      })
+    );
+
+    this.refresh$.next();
+  }
+
   async updateDescription(timeId: string, event: Event) {
     const description = (event.target as HTMLInputElement).value;
     const psrId = await firstValueFrom(this.psrId$);

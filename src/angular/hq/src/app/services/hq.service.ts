@@ -80,6 +80,7 @@ import {
   updatePSRmarkDownRequestV1,
   UpdatePSRMarkDownResponseV1,
 } from '../models/PSR/update-psr-markdown';
+import { UnapprovePSRTimeRequestV1, UnapprovePSRTimeResponseV1 } from '../models/PSR/unapprove-psrtime-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -194,6 +195,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<ApprovePSRTimeResponseV1>(
           `${apiUrl}/v1/ProjectStatusReports/ApproveProjectStatusReportTimeRequestV1`,
+          request
+        )
+      )
+    );
+  }
+
+  unapprovePSRTimeV1(request: Partial<UnapprovePSRTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UnapprovePSRTimeResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/UnapproveProjectStatusReportTimeV1`,
           request
         )
       )

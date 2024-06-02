@@ -27,6 +27,7 @@ public class ProjectStatusReportAuthorizationHandler : AuthorizationHandler<Oper
         switch(requirement.Name)
         {
             case nameof(ProjectStatusReportOperation.ApproveTime):
+            case nameof(ProjectStatusReportOperation.UnapproveTime):
             case nameof(ProjectStatusReportOperation.RejectTime):
             case nameof(ProjectStatusReportOperation.UpdateTime):
             case nameof(ProjectStatusReportOperation.SubmitReport):
