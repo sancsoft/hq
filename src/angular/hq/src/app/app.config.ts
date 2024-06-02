@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { TitleStrategy, provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -9,6 +9,7 @@ import { AbstractSecurityStorage, AuthInterceptor, authInterceptor, provideAuth 
 import { authConfig } from './auth.config';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { AuthStorageService } from './auth-storage.service';
+import { HQTitleStrategy } from './hq-title-strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,6 +27,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: AbstractSecurityStorage, 
       useClass: AuthStorageService
+    },
+    {
+      provide: TitleStrategy,
+      useClass: HQTitleStrategy
     }
-],
+  ],
 };
