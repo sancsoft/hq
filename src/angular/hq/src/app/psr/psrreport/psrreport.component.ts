@@ -98,6 +98,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error:', err);
+        window.alert('There was an error saving the PM report.')
       },
     });
   }

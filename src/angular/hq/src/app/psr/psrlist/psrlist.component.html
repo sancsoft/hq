@@ -34,10 +34,13 @@
             <th width="100" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Code
                 <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
-            <th width="90" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.StartDate)">Week
+            <th width="90" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.StartDate)">Start
                 <hq-sort-icon [column]="sortColumn.StartDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
-            <th width="170" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ClientName)">Client Name
+            <th width="90" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.EndDate)">End
+                <hq-sort-icon [column]="sortColumn.EndDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+            </th>
+            <th width="150" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ClientName)">Client Name
                 <hq-sort-icon [column]="sortColumn.ClientName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectName)">Project Name
@@ -76,6 +79,7 @@
         <tr [class]="report.isLate ? 'bg-red-950' : 'even:bg-gray-850 odd:bg-black-alt'">
             <td class="border-b border-black py-2 pl-5">{{report.chargeCode}}</td>
             <td class="border-b border-black py-2">{{report.startDate}}</td>
+            <td class="border-b border-black py-2">{{report.endDate}}</td>
             <td class="border-b border-black py-2">{{report.clientName}}</td>
             <td class="border-b border-black py-2">{{report.projectName}}</td>
             <td class="border-b border-black py-2">{{report.projectManagerName}}</td>
