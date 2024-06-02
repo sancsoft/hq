@@ -29,12 +29,13 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { MarkdownModule } from 'ngx-markdown';
+import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 
 @Component({
   selector: 'hq-psrreport',
   standalone: true,
-  styleUrls: ['./psrreport.component.css'],
-  imports: [FormsModule, CommonModule, MonacoEditorModule, MarkdownModule],
+  imports: [FormsModule, CommonModule, MonacoEditorModule, MarkdownModule, HQMarkdownComponent],
+  styleUrl: "../../common/markdown/markdown.component.css",
   templateUrl: './psrreport.component.html',
   encapsulation: ViewEncapsulation.None,
 })
