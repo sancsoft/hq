@@ -421,11 +421,6 @@ public class ProjectStatusReportServiceV1
             return Result.Fail("Unable to find project status report.");
         }
 
-        if (psr.SubmittedAt.HasValue)
-        {
-            return Result.Fail("Project status report has already been submitted.");
-        }
-
         psr.Report = request.Report;
 
         await _context.SaveChangesAsync(ct);

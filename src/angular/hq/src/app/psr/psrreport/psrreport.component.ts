@@ -30,7 +30,7 @@ import { APIError } from '../../errors/apierror';
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<any>;
-  code: string = '';
+  report: string|null = null;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   report$ = new Subject<string | null>();
@@ -42,6 +42,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.psrService.hideStaffMembers();
     this.psrService.hideIsSubmitted();
   }
+  
   ngOnDestroy(): void {
     this.psrService.resetFilter();
     this.destroyed$.next(true);
@@ -71,16 +72,15 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       map((psr) => {
         return {
           theme: 'vs-dark',
-          language: 'markdown',
-          domReadOnly: psr.submittedAt != null,
-          readOnly: psr.submittedAt != null,
+          language: 'markdown'
         };
       }),
       startWith({ theme: 'vs-dark', language: 'markdown' })
     );
+
     psr$.subscribe((psrResponse) => {
       if (psrResponse.report) {
-        this.code = psrResponse.report;
+        this.report = psrResponse.report;
       }
     });
 

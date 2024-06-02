@@ -6,7 +6,6 @@
     </div>
     <!-- <textarea class="bg-black-alt w-full outline-none p-5 flex-grow"></textarea> -->
     <div class="h-full">
-        <ngx-monaco-editor style="height: 100%" [options]="editorOptions$ | async" [(ngModel)]="code" (ngModelChange)="updateReport($event)"></ngx-monaco-editor>
-
+        <ngx-monaco-editor style="height: 100%" [options]="editorOptions$ | async" [(ngModel)]="report" (ngModelChange)="updateReport($event)"></ngx-monaco-editor>
     </div>
 </div>
