@@ -325,7 +325,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
-    this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
   }
 
@@ -357,7 +357,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
-    this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
   }
 
@@ -416,7 +416,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
-    this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
   }
 
