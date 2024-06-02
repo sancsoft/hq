@@ -164,7 +164,7 @@ public class UserServiceV1
         var query = HttpUtility.ParseQueryString(string.Empty);
 
         int count = 0;
-        List<KeycloakUserRepresentation> users = [];
+        List<KeycloakUserRepresentation>? users = [];
 
         if(request.Id.HasValue)
         {
