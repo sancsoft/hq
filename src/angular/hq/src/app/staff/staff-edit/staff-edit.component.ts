@@ -6,44 +6,52 @@ import { APIError } from '../../errors/apierror';
 import { Jurisdiciton } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
+import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
 
 
 
 interface Form {
-  name: FormControl<string | null>;
+  firstName: FormControl<string | null>;
+  lastName: FormControl<string | null>;
   workHours: FormControl<number | null>;
   vacationHours: FormControl<number | null>;
   jurisdiciton: FormControl<Jurisdiciton | null>;
   startDate: FormControl<Date | null>;
+  endDate: FormControl<Date | null>;
 }
 
 @Component({
   selector: 'hq-staff-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ErrorDisplayComponent],
   templateUrl: './staff-edit.component.html'
 })
 export class StaffEditComponent implements OnInit {
   staffId?: string;
-  apiErrors?: string[];
+  apiErrors: string[] = [];
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
   Jurisdiction = Jurisdiciton
 
   form = new FormGroup<Form>({
-    name: new FormControl(null, {
-      validators: [Validators.required, Validators.minLength(1)],
+    firstName: new FormControl(null, {
+      validators: [ Validators.minLength(1)],
+    }),
+    lastName: new FormControl(null, {
+      validators: [ Validators.minLength(1)],
     }),
     workHours: new FormControl(0, {
-      validators: [Validators.required, Validators.min(0)],
+      validators: [ Validators.min(0)],
     }),
     vacationHours: new FormControl(0, {
-      validators: [Validators.required, Validators.min(0)],
+      validators: [ Validators.min(0)],
     }),
     jurisdiciton: new FormControl(Jurisdiciton.USA, {
-      validators: [Validators.required],
+      validators: []
     }),
     startDate: new FormControl(null, {
-      validators: [Validators.required],
+      validators: []
+    }),
+    endDate: new FormControl(null, {
     }),
   });
   async ngOnInit() {
@@ -96,11 +104,13 @@ export class StaffEditComponent implements OnInit {
       const response = await firstValueFrom(this.hqService.getStaffMembersV1(request));
       const staffMember = response.records[0];
       this.form.setValue({
-        name: staffMember.name || null,
+        firstName: staffMember.firstName || null,
+        lastName: staffMember.lastName || null,
         workHours: staffMember.workHours || null,
         vacationHours: staffMember.vacationHours || null,
         jurisdiciton: staffMember.jurisdiciton || null,
         startDate: staffMember.startDate || null,
+        endDate: staffMember.endDate || null,
       });
     } catch (err) {
       if (err instanceof APIError) {

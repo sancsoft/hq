@@ -16,16 +16,18 @@ public class GetStaffV1
         public Guid? Id { get; set; }
         public Jurisdiciton? Jurisdiciton { get; set; }
         public bool? IsAssignedProjectManager  { get; set; }
-        public SortColumn SortBy { get; set; } = SortColumn.Name;
+        public SortColumn SortBy { get; set; } = SortColumn.FirstName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }
 
     public enum SortColumn
     {
         StartDate = 1,
-        Name = 2,
-        WorkHours = 3,
-        VacationHours = 4
+        EndDate = 2,
+        FirstName = 3,
+        LastName = 4,
+        WorkHours = 5,
+        VacationHours = 6
     }
 
     public class Response : PagedResponseV1<Record>;

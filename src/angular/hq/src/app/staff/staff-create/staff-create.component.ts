@@ -15,42 +15,51 @@ import {
   Jurisdiciton,
 } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
+import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
 
 interface Form {
-  name: FormControl<string | null>;
+  firstName: FormControl<string | null>;
+  lastName: FormControl<string | null>;
   workHours: FormControl<number | null>;
   vacationHours: FormControl<number | null>;
   jurisdiciton: FormControl<Jurisdiciton | null>;
   startDate: FormControl<Date | null>;
+  endDate: FormControl<Date | null>;
+
 }
 
 @Component({
   selector: 'hq-staff-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ErrorDisplayComponent],
 
   templateUrl: './staff-create.component.html',
 })
 export class StaffCreateComponent {
-  apiErrors?: string[];
+  apiErrors: string[] = [];
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
   Jurisdiction = Jurisdiciton
 
   form = new FormGroup<Form>({
-    name: new FormControl(null, {
-      validators: [Validators.required, Validators.minLength(1)],
+    firstName: new FormControl(null, {
+      validators: [ Validators.minLength(1)],
+    }),
+    lastName: new FormControl(null, {
+      validators: [ Validators.minLength(1)],
     }),
     workHours: new FormControl(0, {
-      validators: [Validators.required, Validators.min(0)],
+      validators: [ Validators.min(0)],
     }),
     vacationHours: new FormControl(0, {
-      validators: [Validators.required, Validators.min(0)],
+      validators: [ Validators.min(0)],
     }),
     jurisdiciton: new FormControl(Jurisdiciton.USA, {
-      validators: [Validators.required],
+      validators: [],
     }),
     startDate: new FormControl(null, {
-      validators: [Validators.required],
+      validators: [],
+    }),
+    endDate: new FormControl(null, {
     }),
   });
 

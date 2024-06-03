@@ -9,9 +9,11 @@ export enum Jurisdiciton {
 
 export enum SortColumn {
   StartDate = 1,
-  Name = 2,
-  WorkHours = 3,
-  VacationHours = 4
+  EndDate = 2,
+  FirstName = 3,
+  LastName = 4,
+  WorkHours = 5,
+  VacationHours = 6
 }
 
 export interface GetStaffV1Request extends PagedRequestV1 {
@@ -25,7 +27,8 @@ export interface GetStaffV1Request extends PagedRequestV1 {
 
 export interface GetStaffV1Record {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   workHours: number;
   vacationHours: number;
   jurisdiciton: Jurisdiciton;

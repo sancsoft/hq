@@ -30,12 +30,7 @@
         <div class="grid flex-1">
           <div class="p-5 pr-0">
             <div class="grid gap-[20px]">
-              @if(this.apiErrors) { @for (error of this.apiErrors; track
-              $index) {
-              <div class="text-red-700 text-xs leading-normal inline-block">
-                {{ error }}
-              </div>
-              } }
+              <hq-error-display [errors]="apiErrors"></hq-error-display>
 
               <!-- row grid -->
               <div
@@ -167,6 +162,32 @@
                     >
                     }
                 </div>
+                <div>
+                  <!-- End Date input -->
+                  <div>End Date</div>
+
+                  <div class="grid relative w-full max-w-[220px]">
+                    <input
+                      formControlName="endDate"
+                      type="date"
+                      class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+                    />
+                    <span
+                      class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                    >
+                      <i
+                        class="bi bi-arrow-down-short text-[24px] bg-blue-900"
+                      ></i>
+                    </span>
+                  </div>
+                  @if(form.get('endDate')?.touched &&
+                  form.get('endDate')?.errors?.['required']) {
+                  <span
+                    class="text-red-700 text-xs leading-normal inline-block"
+                    >End date is required</span
+                  >
+                  }
+              </div>
               </div>
             </div>
           </div>
