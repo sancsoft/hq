@@ -6,6 +6,7 @@ import {
   FormGroup,
   FormControl,
   Validators,
+  ValidationErrors,
 } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
@@ -17,9 +18,9 @@ import { HQService } from '../../services/hq.service';
 
 interface Form {
   name: FormControl<string | null>;
-  workingHours: FormControl<number | null>;
+  workHours: FormControl<number | null>;
   vacationHours: FormControl<number | null>;
-  jurisdiction: FormControl<Jurisdiciton | null>;
+  jurisdiciton: FormControl<Jurisdiciton | null>;
   startDate: FormControl<Date | null>;
 }
 
@@ -39,13 +40,13 @@ export class StaffCreateComponent {
     name: new FormControl(null, {
       validators: [Validators.required, Validators.minLength(1)],
     }),
-    workingHours: new FormControl(0, {
+    workHours: new FormControl(0, {
       validators: [Validators.required, Validators.min(0)],
     }),
     vacationHours: new FormControl(0, {
       validators: [Validators.required, Validators.min(0)],
     }),
-    jurisdiction: new FormControl(Jurisdiciton.USA, {
+    jurisdiciton: new FormControl(Jurisdiciton.USA, {
       validators: [Validators.required],
     }),
     startDate: new FormControl(null, {
@@ -63,6 +64,8 @@ export class StaffCreateComponent {
     this.form.markAsTouched();
     console.log(this.form.value);
     if (this.form.invalid) {
+      this.apiErrors = [];
+      this.apiErrors = ['Invlid Form Error']
       return;
     }
     console.log('Form is valid');

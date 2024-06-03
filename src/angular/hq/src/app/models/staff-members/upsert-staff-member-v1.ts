@@ -1,9 +1,9 @@
 export interface UpsertStaffMemberRequestV1 {
   name?: string | null;
-  workingHours?: number | null;
+  workHours?: number | null;
   vacationHours?: number | null;
   startDate?: Date | null;
-  jurisdiciton?: number | undefined
+  jurisdiciton?: number | null;
 }
 
 export interface UpsertStaffMemberResponseV1 {
