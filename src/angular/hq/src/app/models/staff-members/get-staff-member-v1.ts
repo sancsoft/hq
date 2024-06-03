@@ -7,24 +7,31 @@ export enum Jurisdiciton {
   Colombia = 2,
 }
 
-export enum StaffSortColumn {
-  CreatedAt = 'CreatedAt',
-  Name = 'Name',
-  WorkHours = 'WorkHours',
+export enum SortColumn {
+  Name = 1,
+  FirstName = 2,
+  LastName = 3,
+  StartDate = 4,
+  EndDate  = 5,
+  WorkHours = 6,
+  VacationHours = 7
 }
 
 export interface GetStaffV1Request extends PagedRequestV1 {
-  search?: string;
+  search?: string | null;
   id?: string;
   isAssignedProjectManager?: boolean;
   jurisdiciton?: Jurisdiciton;
-  sortBy?: StaffSortColumn;
+  sortBy?: SortColumn;
   sortDirection?: SortDirection;
 }
 
 export interface GetStaffV1Record {
   id: string;
+  firstName: string;
+  lastName: string;
   name: string;
+  email: string;
   workHours: number;
   vacationHours: number;
   jurisdiciton: Jurisdiciton;

@@ -1,3 +1,4 @@
+import { UpsertStaffMemberResponseV1 } from './../models/staff-members/upsert-staff-member-v1';
 import {
   SubmitPSRRequestV1,
   SubmitPSRResponseV1,
@@ -81,6 +82,7 @@ import {
   UpdatePSRMarkDownResponseV1,
 } from '../models/PSR/update-psr-markdown';
 import { UnapprovePSRTimeRequestV1, UnapprovePSRTimeResponseV1 } from '../models/PSR/unapprove-psrtime-v1';
+import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff-member-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -310,6 +312,22 @@ export class HQService {
         )
       )
     );
+  }
+
+  upsertStaffV1(request: Partial<UpsertStaffMemberRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertStaffMemberResponseV1>(
+          `${apiUrl}/v1/Staff/UpsertStaffV1
+          `,
+          request
+        )
+      ), catchError((err: HttpErrorResponse) => {
+        if (err.status == 400) {
+          return throwError(() => new APIError(err.error));
+        }
+        throw err;
+      }))
   }
   submitProjectStatusReportV1(request: Partial<SubmitPSRRequestV1>) {
     return this.appSettings.apiUrl$.pipe(

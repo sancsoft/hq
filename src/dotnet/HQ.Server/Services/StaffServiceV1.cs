@@ -45,6 +45,9 @@ public class StaffServiceV1
         staff.Jurisdiciton = request.Jurisdiciton;
         staff.StartDate = request.StartDate;
         staff.EndDate = request.EndDate;
+        staff.FirstName = request.FirstName;
+        staff.LastName = request.LastName;
+        staff.Email = request.Email;
 
         await _context.SaveChangesAsync(ct);
 
@@ -90,14 +93,14 @@ public class StaffServiceV1
             records = records.Where(t => t.Id == request.Id.Value);
         }
 
-        if(request.Jurisdiciton.HasValue)
+        if (request.Jurisdiciton.HasValue)
         {
             records = records.Where(t => t.Jurisdiciton == request.Jurisdiciton.Value);
         }
 
-        if(request.IsAssignedProjectManager.HasValue)
+        if (request.IsAssignedProjectManager.HasValue)
         {
-            if(request.IsAssignedProjectManager.Value)
+            if (request.IsAssignedProjectManager.Value)
             {
                 records = records.Where(t => _context.Projects.Any(x => x.ProjectManagerId == t.Id));
             }
@@ -109,9 +112,14 @@ public class StaffServiceV1
 
         var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
         {
-            { Abstractions.Staff.GetStaffV1.SortColumn.CreatedAt, "CreatedAt" },
             { Abstractions.Staff.GetStaffV1.SortColumn.Name, "Name" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.FirstName, "FirstName" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.LastName, "LastName" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.StartDate, "StartDate" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.EndDate, "EndDate" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.VacationHours, "VacationHours" },
             { Abstractions.Staff.GetStaffV1.SortColumn.WorkHours, "WorkHours" },
+
         };
 
         var sortProperty = sortMap[request.SortBy];
@@ -138,7 +146,10 @@ public class StaffServiceV1
             VacationHours = t.VacationHours,
             Jurisdiciton = t.Jurisdiciton,
             StartDate = t.StartDate,
-            EndDate = t.EndDate
+            EndDate = t.EndDate,
+            FirstName = t.FirstName,
+            LastName = t.LastName,
+            Email = t.Email
         });
 
         var response = new GetStaffV1.Response()
@@ -196,6 +207,9 @@ public class StaffServiceV1
             staff.Jurisdiciton = record.Jurisdiciton;
             staff.StartDate = record.StartDate;
             staff.EndDate = record.EndDate;
+            staff.FirstName = record.FirstName;
+            staff.LastName = record.LastName;
+            staff.Email = record.Email;
 
             staffById[staff.Id] = staff;
         }
