@@ -95,8 +95,7 @@ export class StaffEditComponent implements OnInit {
       const response = await firstValueFrom(
         this.hqService.upsertStaffV1(request)
       );
-      console.log(response.id);
-      this.router.navigate(['../', response.id], { relativeTo: this.route });
+      this.router.navigate(['../../',], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
