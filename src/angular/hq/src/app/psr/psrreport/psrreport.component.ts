@@ -40,7 +40,7 @@ import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<any>;
-  report: string = null;
+  report: string|null = null;
   sideBarCollapsed = false;
   leftWidth: number = 100;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);

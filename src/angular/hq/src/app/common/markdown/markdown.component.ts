@@ -9,5 +9,5 @@ import { MarkdownModule } from 'ngx-markdown';
   encapsulation: ViewEncapsulation.Emulated,
 })
 export class HQMarkdownComponent {
-  @Input() data: string = '';
+  @Input() data: string|null = null;
 }

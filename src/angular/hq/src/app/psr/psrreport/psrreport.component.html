@@ -15,7 +15,7 @@
     <aside
       class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out">
       <div class="h-full">
-        <ngx-monaco-editor [ngStyle]="{ height: '100%' }" [options]="editorOptions$ | async" [(ngModel)]="code"
+        <ngx-monaco-editor [ngStyle]="{ height: '100%' }" [options]="editorOptions$ | async" [(ngModel)]="report"
           (ngModelChange)="updateReport($event)"></ngx-monaco-editor>
       </div>
     </aside>
