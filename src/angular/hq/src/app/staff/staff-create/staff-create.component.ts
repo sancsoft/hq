@@ -20,11 +20,14 @@ import { ErrorDisplayComponent } from '../../errors/error-display/error-display.
 interface Form {
   firstName: FormControl<string | null>;
   lastName: FormControl<string | null>;
+  email: FormControl<string | null>;
+
   workHours: FormControl<number | null>;
   vacationHours: FormControl<number | null>;
   jurisdiciton: FormControl<Jurisdiciton | null>;
   startDate: FormControl<Date | null>;
   endDate: FormControl<Date | null>;
+
 
 }
 
@@ -45,6 +48,9 @@ export class StaffCreateComponent {
       validators: [ Validators.minLength(1)],
     }),
     lastName: new FormControl(null, {
+      validators: [ Validators.minLength(1)],
+    }),
+    email: new FormControl(null, {
       validators: [ Validators.minLength(1)],
     }),
     workHours: new FormControl(0, {

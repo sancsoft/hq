@@ -29,6 +29,8 @@ export interface GetStaffV1Record {
   id: string;
   firstName: string;
   lastName: string;
+  name: string;
+  email: string;
   workHours: number;
   vacationHours: number;
   jurisdiciton: Jurisdiciton;

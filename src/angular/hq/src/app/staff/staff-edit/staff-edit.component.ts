@@ -13,6 +13,7 @@ import { ErrorDisplayComponent } from '../../errors/error-display/error-display.
 interface Form {
   firstName: FormControl<string | null>;
   lastName: FormControl<string | null>;
+  email: FormControl<string | null>;
   workHours: FormControl<number | null>;
   vacationHours: FormControl<number | null>;
   jurisdiciton: FormControl<Jurisdiciton | null>;
@@ -38,6 +39,9 @@ export class StaffEditComponent implements OnInit {
     }),
     lastName: new FormControl(null, {
       validators: [ Validators.minLength(1)],
+    }),
+    email: new FormControl(null, {
+      validators: [ Validators.email],
     }),
     workHours: new FormControl(0, {
       validators: [ Validators.min(0)],
@@ -106,6 +110,7 @@ export class StaffEditComponent implements OnInit {
       this.form.setValue({
         firstName: staffMember.firstName || null,
         lastName: staffMember.lastName || null,
+        email: staffMember.email || null,
         workHours: staffMember.workHours || null,
         vacationHours: staffMember.vacationHours || null,
         jurisdiciton: staffMember.jurisdiciton || null,

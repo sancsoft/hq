@@ -9,6 +9,9 @@
 <table class="min-w-full border-spacing-0 border-separate">
     <thead>
         <tr class="sticky top-0 text-left">
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" >
+            Name
+        </th>
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.FirstName)">
                 First Name
                 <hq-sort-icon [column]="sortColumn.FirstName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
@@ -36,10 +39,14 @@
 
             </th>
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.EndDate)">
-              Start Date
+              End Date
               <hq-sort-icon [column]="sortColumn.EndDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
 
           </th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" >
+            Email
+
+        </th>
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
                 <button routerLink="/staff/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
           <i class="bi bi-plus"></i>
@@ -51,6 +58,9 @@
     <tbody>
         @for (member of staffMembers$ | async; track $index) {
         <tr class="even:bg-gray-850 odd:bg-black-alt">
+          <td class="border-b border-black py-2 pl-5">
+            {{ member.name }}
+        </td>
             <td class="border-b border-black py-2 pl-5">
                 {{ member.firstName }}
             </td>
@@ -72,6 +82,12 @@
             <td class="border-b border-black py-2">
                 {{ member.startDate }}
             </td>
+            <td class="border-b border-black py-2">
+              {{ member.email }}
+          </td>
+          <td class="border-b border-black py-2">
+            {{ member.email }}
+        </td>
 
             <td class="border-b border-black py-2 text-right pr-5">
                 <a [routerLink]="['edit', member.id]" class="text-teal-200 hover:text-teal-300 cursor-pointer">EDIT</a

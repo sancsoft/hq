@@ -25,9 +25,10 @@ public class GetStaffV1
         StartDate = 1,
         EndDate = 2,
         FirstName = 3,
-        LastName = 4,
-        WorkHours = 5,
-        VacationHours = 6
+        Name = 4,
+        LastName = 5,
+        WorkHours = 6,
+        VacationHours = 7
     }
 
     public class Response : PagedResponseV1<Record>;
