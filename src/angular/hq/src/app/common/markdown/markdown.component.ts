@@ -5,7 +5,6 @@ import { MarkdownModule } from 'ngx-markdown';
   selector: 'hq-markdown',
   standalone: true,
   imports: [MarkdownModule],
-  styleUrl: './markdown.component.css',
   templateUrl: './markdown.component.html',
   encapsulation: ViewEncapsulation.Emulated,
 })

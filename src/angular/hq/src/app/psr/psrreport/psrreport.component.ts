@@ -35,7 +35,6 @@ import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
   selector: 'hq-psrreport',
   standalone: true,
   imports: [FormsModule, CommonModule, MonacoEditorModule, MarkdownModule, HQMarkdownComponent],
-  styleUrl: "../../common/markdown/markdown.component.css",
   templateUrl: './psrreport.component.html',
   encapsulation: ViewEncapsulation.None,
 })
