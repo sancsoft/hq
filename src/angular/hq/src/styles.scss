@@ -10,8 +10,8 @@
   }
 }
 
-html, body { 
-  height: 100%; 
+html, body {
+  height: 100%;
   @apply text-gray-100;
 }
 
@@ -86,6 +86,15 @@ body { margin: 0; font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif
 /* Scroll bar corner */
 ::-webkit-scrollbar-corner {
   background: transparent;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* remove the calendar date picker icon */

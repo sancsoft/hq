@@ -1,11 +1,35 @@
-<div class="flex h-full flex-col">
-    <div class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap flex justify-end">
-        <div class="flex space-x-2 pr-5">
-            <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="onReportSubmit()">Submit</button>
-        </div>
+<div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 z-50">
+  <div class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap flex justify-end">
+    <div class="flex space-x-2 pr-5">
+      <button
+        class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+        (click)="onReportSubmit()">
+        Submit
+      </button>
     </div>
-    <!-- <textarea class="bg-black-alt w-full outline-none p-5 flex-grow"></textarea> -->
-    <div class="h-full">
-        <ngx-monaco-editor style="height: 100%" [options]="editorOptions$ | async" [(ngModel)]="report" (ngModelChange)="updateReport($event)"></ngx-monaco-editor>
+  </div>
+  <div id="left-side" class="grid gap-0 transition-all duration-200 ease-in-out relative" [ngClass]="{
+       'grid-cols-[1fr_20px_1fr]': !sideBarCollapsed,
+      'grid-cols-[1fr_20px_0fr]': sideBarCollapsed
+    }">
+    <aside
+      class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out">
+      <div class="h-full">
+        <ngx-monaco-editor [ngStyle]="{ height: '100%' }" [options]="editorOptions$ | async" [(ngModel)]="code"
+          (ngModelChange)="updateReport($event)"></ngx-monaco-editor>
+      </div>
+    </aside>
+    <div
+      class="flex flex-col justify-center items-center bg-black-alt border-r border-black border-t border-t-steel-blue-600"
+      (click)="sideBarCollapsed = !sideBarCollapsed" aria-controls="left-side">
+      <div class="cursor-pointer py-4">
+        <div class="leading-[0.5]">&bull;</div>
+        <div class="leading-[0.5]">&bull;</div>
+        <div class="leading-[0.5]">&bull;</div>
+      </div>
     </div>
+    <main class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out p-4 break-all" [ngClass]="{'hidden': sideBarCollapsed}">
+      <hq-markdown [data]="report"></hq-markdown>
+    </main>
+  </div>
 </div>

@@ -10,19 +10,22 @@ import { authConfig } from './auth.config';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { AuthStorageService } from './auth-storage.service';
 import { HQTitleStrategy } from './hq-title-strategy';
+import { MarkdownModule, provideMarkdown } from 'ngx-markdown';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimationsAsync(),
-    importProvidersFrom(MonacoEditorModule.forRoot()),
+    importProvidersFrom(MonacoEditorModule.forRoot(), MarkdownModule.forRoot()),
+    provideMarkdown(),
     provideHttpClient(withInterceptors([authInterceptor()])),
     provideAuth(authConfig),
     {
-        provide: APP_INITIALIZER,
-        useFactory: (appSettingsService: AppSettingsService) => () => appSettingsService.appSettings$,
-        multi: true,
-        deps: [AppSettingsService],
+      provide: APP_INITIALIZER,
+      useFactory: (appSettingsService: AppSettingsService) => () =>
+        appSettingsService.appSettings$,
+      multi: true,
+      deps: [AppSettingsService],
     },
     {
       provide: AbstractSecurityStorage, 

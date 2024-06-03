@@ -1,10 +1,17 @@
 import { HQService } from './../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, NgModel } from '@angular/forms';
 import { PsrService } from '../psr-service';
+
 import {
   BehaviorSubject,
   Observable,
@@ -21,16 +28,21 @@ import {
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
+import { MarkdownModule } from 'ngx-markdown';
+import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 
 @Component({
   selector: 'hq-psrreport',
   standalone: true,
-  imports: [FormsModule, CommonModule, MonacoEditorModule],
+  imports: [FormsModule, CommonModule, MonacoEditorModule, HQMarkdownComponent],
   templateUrl: './psrreport.component.html',
+  encapsulation: ViewEncapsulation.None,
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<any>;
-  report: string|null = null;
+  report: string = null;
+  sideBarCollapsed = false;
+  leftWidth: number = 100;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   report$ = new Subject<string | null>();
@@ -72,7 +84,8 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       map((psr) => {
         return {
           theme: 'vs-dark',
-          language: 'markdown'
+          language: 'markdown',
+          automaticLayout: true
         };
       }),
       startWith({ theme: 'vs-dark', language: 'markdown' })

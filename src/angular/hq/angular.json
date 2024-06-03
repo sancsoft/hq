@@ -42,7 +42,11 @@
                             "src/favicon.ico",
                             "src/assets",
                             "src/config",
-                            { "glob": "**/*", "input": "node_modules/monaco-editor", "output": "/assets/monaco/" }
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/monaco-editor",
+                                "output": "/assets/monaco/"
+                            }
                         ],
                         "styles": [
                             "src/styles.scss"
@@ -51,7 +55,8 @@
                     },
                     "configurations": {
                         "production": {
-                            "budgets": [{
+                            "budgets": [
+                                {
                                     "type": "initial",
                                     "maximumWarning": "500kb",
                                     "maximumError": "1mb"
