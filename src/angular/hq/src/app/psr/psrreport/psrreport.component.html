@@ -1,4 +1,4 @@
-<div class="flex h-full flex-col">
+<div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 z-50">
   <div class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap flex justify-end">
     <div class="flex space-x-2 pr-5">
       <button
@@ -9,15 +9,11 @@
     </div>
   </div>
   <div id="left-side" class="grid gap-0 transition-all duration-200 ease-in-out relative" [ngClass]="{
-      'grid-cols-[0px_20px_1fr]': sideBarCollapsed,
-      'grid-cols-[805px_20px_1fr]': !sideBarCollapsed
+       'grid-cols-[1fr_20px_1fr]': !sideBarCollapsed,
+      'grid-cols-[1fr_20px_0fr]': sideBarCollapsed
     }">
     <aside
-      class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out"
-      [ngClass]="{
-        'opacity-0': sideBarCollapsed,
-        'opacity-100': !sideBarCollapsed
-      }">
+      class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out">
       <div class="h-full">
         <ngx-monaco-editor [ngStyle]="{ height: '100%' }" [options]="editorOptions$ | async" [(ngModel)]="code"
           (ngModelChange)="updateReport($event)"></ngx-monaco-editor>
@@ -32,7 +28,7 @@
         <div class="leading-[0.5]">&bull;</div>
       </div>
     </div>
-    <main class="p-2">
+    <main class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out" [ngClass]="{'hidden': sideBarCollapsed}">
       <hq-markdown [data]="code"></hq-markdown>
     </main>
   </div>
