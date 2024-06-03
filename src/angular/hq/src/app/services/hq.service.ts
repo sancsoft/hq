@@ -310,8 +310,12 @@ export class HQService {
           `,
           request
         )
-      )
-    );
+      ), catchError((err: HttpErrorResponse) => {
+        if (err.status == 400) {
+          return throwError(() => new APIError(err.error));
+        }
+        throw err;
+      }))
   }
   submitProjectStatusReportV1(request: Partial<SubmitPSRRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
