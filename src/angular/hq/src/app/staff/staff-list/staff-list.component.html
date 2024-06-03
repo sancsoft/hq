@@ -9,8 +9,9 @@
 <table class="min-w-full border-spacing-0 border-separate">
     <thead>
         <tr class="sticky top-0 text-left">
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" >
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.Name)">
             Name
+            <hq-sort-icon [column]="sortColumn.Name" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
         </th>
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.FirstName)">
                 First Name

@@ -44,7 +44,7 @@ export class StaffListComponent {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value)
     );
-    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.FirstName);
+    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Name);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 

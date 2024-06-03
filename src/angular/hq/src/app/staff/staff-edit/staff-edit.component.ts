@@ -11,6 +11,7 @@ import { ErrorDisplayComponent } from '../../errors/error-display/error-display.
 
 
 interface Form {
+  name: FormControl<string | null>;
   firstName: FormControl<string | null>;
   lastName: FormControl<string | null>;
   email: FormControl<string | null>;
@@ -34,6 +35,9 @@ export class StaffEditComponent implements OnInit {
   Jurisdiction = Jurisdiciton
 
   form = new FormGroup<Form>({
+    name: new FormControl(null, {
+      validators: [Validators.required, Validators.minLength(1)],
+    }),
     firstName: new FormControl(null, {
       validators: [ Validators.minLength(1)],
     }),
@@ -108,6 +112,7 @@ export class StaffEditComponent implements OnInit {
       const response = await firstValueFrom(this.hqService.getStaffMembersV1(request));
       const staffMember = response.records[0];
       this.form.setValue({
+        name: staffMember.name || null,
         firstName: staffMember.firstName || null,
         lastName: staffMember.lastName || null,
         email: staffMember.email || null,

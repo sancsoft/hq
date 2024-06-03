@@ -109,12 +109,13 @@ public class StaffServiceV1
 
         var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
         {
-            { Abstractions.Staff.GetStaffV1.SortColumn.StartDate, "StartDate" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.VacationHours, "VacationHours" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.Name, "Name" },
             { Abstractions.Staff.GetStaffV1.SortColumn.FirstName, "FirstName" },
             { Abstractions.Staff.GetStaffV1.SortColumn.LastName, "LastName" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.WorkHours, "WorkHours" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.StartDate, "StartDate" },
             { Abstractions.Staff.GetStaffV1.SortColumn.EndDate, "EndDate" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.VacationHours, "VacationHours" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.WorkHours, "WorkHours" },
 
         };
 
