@@ -45,6 +45,9 @@ public class StaffServiceV1
         staff.Jurisdiciton = request.Jurisdiciton;
         staff.StartDate = request.StartDate;
         staff.EndDate = request.EndDate;
+        staff.FirstName = request.FirstName;
+        staff.LastName = request.LastName;
+        staff.Email = request.Email;
 
         await _context.SaveChangesAsync(ct);
 
@@ -143,7 +146,10 @@ public class StaffServiceV1
             VacationHours = t.VacationHours,
             Jurisdiciton = t.Jurisdiciton,
             StartDate = t.StartDate,
-            EndDate = t.EndDate
+            EndDate = t.EndDate,
+            FirstName = t.FirstName,
+            LastName = t.LastName,
+            Email = t.Email
         });
 
         var response = new GetStaffV1.Response()
@@ -201,6 +207,9 @@ public class StaffServiceV1
             staff.Jurisdiciton = record.Jurisdiciton;
             staff.StartDate = record.StartDate;
             staff.EndDate = record.EndDate;
+            staff.FirstName = record.FirstName;
+            staff.LastName = record.LastName;
+            staff.Email = record.Email;
 
             staffById[staff.Id] = staff;
         }

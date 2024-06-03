@@ -41,5 +41,8 @@ public class GetStaffV1
         public Jurisdiciton Jurisdiciton { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Email { get; set; }
     }
 }
