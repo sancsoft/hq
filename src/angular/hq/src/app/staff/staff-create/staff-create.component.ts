@@ -51,7 +51,7 @@ export class StaffCreateComponent {
       validators: [ Validators.minLength(1)],
     }),
     email: new FormControl(null, {
-      validators: [ Validators.minLength(1)],
+      validators: [ Validators.email],
     }),
     workHours: new FormControl(0, {
       validators: [ Validators.min(0)],
