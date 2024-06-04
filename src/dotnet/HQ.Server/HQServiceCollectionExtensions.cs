@@ -46,6 +46,12 @@ namespace HQ.Server
                 connectionStringBuilder.Port = dbPort.Value;
             }
 
+            var sslMode = configuration.GetValue<SslMode?>("DB_SSL_Mode");
+            if (sslMode.HasValue)
+            {
+                connectionStringBuilder.SslMode = sslMode.Value;
+            }
+
             var dbUser = configuration.GetValue<string>("DB_USER");
             if (!String.IsNullOrEmpty(dbUser))
             {
