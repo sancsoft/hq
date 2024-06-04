@@ -1,0 +1,40 @@
+<table class="min-w-full border-spacing-0 border-separate">
+  <thead>
+    <tr class="sticky top-0 text-left">
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+      >
+        PSR week of
+        <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i>
+      </th>
+      <th
+        scope="col"
+        colspan="2"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3"
+      >
+        This Hrs <i class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (psrWeek of PSRWorkWeeks; track $index) {
+    <tr
+      [ngClass]="
+        $index % 2 != 0 ? 'bg-blue-900' : 'even:bg-gray-850 odd:bg-black-alt'
+      "
+    >
+      <td class="border-b border-black py-2 pl-5">{{ psrWeek.startDate }}</td>
+      <td class="border-b border-black py-2">{{ psrWeek.thisHours }}</td>
+      <td class="border-b border-black py-2 text-right pr-5">
+        <a
+          class="text-teal-200 hover:text-teal-300"
+          routerLink="report"
+          [queryParams]="{ psrId: psrWeek.id }"
+          >VIEW</a
+        >
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>

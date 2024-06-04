@@ -77,7 +77,8 @@
     <div class="overflow-hidden flex-auto">
         <div id="left-side" class="grid gap-0 transition-all duration-200 ease-in-out relative" [ngClass]="{ 'grid-cols-[0px_20px_1fr]': sideBarCollapsed, 'grid-cols-[405px_20px_1fr]': !sideBarCollapsed }">
             <aside class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out" [ngClass]="{ 'opacity-0': sideBarCollapsed, 'opacity-100': !sideBarCollapsed }">
-                <table class="min-w-full border-spacing-0 border-separate">
+                <hq-psr-work-week></hq-psr-work-week>
+                <table class="min-w-full border-spacing-0 border-separate hidden">
                     <thead>
                         <tr class="sticky top-0 text-left">
                             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">PSR week of <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
