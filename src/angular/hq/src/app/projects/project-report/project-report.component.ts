@@ -14,15 +14,15 @@ import { CommonModule } from '@angular/common';
 })
 export class ProjectReportComponent {
   psr$?: Observable<GetPSRRecordV1 | null>;
-  projectId$: Observable<string | null>;
+  psrId$: Observable<string | null>;
 
   constructor(private hqService: HQService, private route: ActivatedRoute) {
-    this.projectId$ = route.queryParams.pipe(map((t) => t['projectId']));
-    this.projectId$.subscribe((id) => {
+    this.psrId$ = route.queryParams.pipe(map((t) => t['psrId']));
+    this.psrId$.subscribe((id) => {
       console.log(id);
       if (id) {
         this.psr$ = hqService
-          .getPSRV1({ projectId: id })
+          .getPSRV1({ id: id })
           .pipe(map((t) => t.records[0]));
       }
     });

@@ -1,3 +1,4 @@
+import { ProjectPsrDetailsComponent } from './project-psr-details/project-psr-details.component';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
@@ -23,12 +24,14 @@ import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
     RouterLink,
     RouterLinkActive,
     PsrWorkWeekComponent,
+    ProjectPsrDetailsComponent
   ],
   templateUrl: './project-view.component.html',
 })
+
 export class ProjectViewComponent {
-projectId$: Observable<string | null>;
-  psrId?: string | null;
+  projectId$: Observable<string | null>;
+  psrId$: Observable<string|null>;
   psrWorkWeeks$?: Observable<GetPSRRecordV1[]> | null;
   projectDetail$?: Observable<GetProjectRecordV1 | null>;
   clientDetail$?: Observable<GetClientRecordV1 | null>;
@@ -41,20 +44,19 @@ projectId$: Observable<string | null>;
     private hqService: HQService
   ) {
     this.projectId$ = this.route.params.pipe(map((params) => params['projectId']));
-    this.projectId$.pipe(
-      switchMap((id) => {
+    this.psrId$ = route.queryParams.pipe(
+      map(t => t['psrId'])
+    );
+    this.projectId$.subscribe(
+      (id) => {
+        console.log(id);
         if (id) {
           this.psrWorkWeeks$ = this.hqService.getProjectPSRV1(id).pipe(map((response) => response.records));
           this.projectDetail$ = this.hqService.getProjectV1(id).pipe(
             map((response) => response.records ? response.records[0] : null)
           );
-          this.router.navigate(['details'], { relativeTo: this.route, queryParamsHandling: 'merge', queryParams: { 'projectId': id } });
         }
-        return this.psrWorkWeeks$?.pipe(map((records) => records[0]?.id || null)) ?? [];
       })
-    ).subscribe((psrId) => {
-      this.psrId = psrId;
-    });
 
   this.projectDetail$?.pipe(
       switchMap((project) => {
@@ -70,5 +72,10 @@ projectId$: Observable<string | null>;
       if(clientDetails)
       this.clientDetail$ = of(clientDetails[0])
     });
+  }
+  psrSelected(psrId: string) {
+    console.log(psrId);
+    this.psrId$ = of(psrId);
+
   }
 }

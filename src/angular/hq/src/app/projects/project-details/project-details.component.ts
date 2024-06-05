@@ -6,11 +6,12 @@ import { Observable, map } from 'rxjs';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { Period } from '../project-create/project-create.component';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
+import { PdfViewerComponent } from '../../common/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'hq-project-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, PdfViewerComponent],
   templateUrl: './project-details.component.html',
 })
 export class ProjectDetailsComponent {
@@ -32,7 +33,7 @@ export class ProjectDetailsComponent {
             return null;
           })
         );
-        
+
         this.psr$ = hqService
           .getPSRV1({ projectId: id })
           .pipe(map((t) => t.records),

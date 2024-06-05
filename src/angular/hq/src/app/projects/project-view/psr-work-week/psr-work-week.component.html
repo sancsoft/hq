@@ -4,21 +4,24 @@
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+        (click)="onSortClick(sortColumn.StartDate)"
       >
         PSR week of
-        <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i>
+        <!-- sorted by client name --> <hq-sort-icon [column]="sortColumn.StartDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+
       </th>
       <th
         scope="col"
         colspan="2"
         class="bg-blue-900 border-steel-blue-600 border-y py-3"
+        (click)="onSortClick(sortColumn.ThisHours)"
       >
-        This Hrs <i class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+        This Hrs  <hq-sort-icon [column]="sortColumn.ThisHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
       </th>
     </tr>
   </thead>
   <tbody>
-    @for (psrWeek of PSRWorkWeeks; track $index) {
+    @for (psrWeek of PSRWorkWeeks | async; track $index) {
     <tr
       [ngClass]="
         $index % 2 != 0 ? 'bg-blue-900' : 'even:bg-gray-850 odd:bg-black-alt'
@@ -31,6 +34,7 @@
           class="text-teal-200 hover:text-teal-300"
           routerLink="time"
           [queryParams]="{ psrId: psrWeek.id }"
+          (click)="psrClicked(psrWeek.id)"
           >VIEW</a
         >
       </td>

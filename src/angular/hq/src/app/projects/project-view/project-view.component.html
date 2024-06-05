@@ -10,32 +10,7 @@
                 <div class="text-gray-50"><a href="#" class="underline">Official Name - {{project.officialName || 'None'}}</a></div>
             </div>
 
-            <div class="flex flex-row auto-cols-min gap-[2.983rem] pt-3 justify-end xl:pt-0">
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Start / End Date</div>
-                    <div class="text-right">{{project.startDate}} - {{project.endDate}}</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Last</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS This</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Total HRS</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Avail.</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Budget Avail.</div>
-                    <div class="text-right">17%</div>
-                </div>
-            </div>
+            <hq-project-psr-details [psrId$]="psrId$"></hq-project-psr-details>
         </div>
     </div>
 }
@@ -79,11 +54,11 @@
     <div class="overflow-hidden flex-auto">
         <div id="left-side" class="grid gap-0 transition-all duration-200 ease-in-out relative" [ngClass]="{ 'grid-cols-[0px_20px_1fr]': sideBarCollapsed, 'grid-cols-[405px_20px_1fr]': !sideBarCollapsed }">
             <aside class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out" [ngClass]="{ 'opacity-0': sideBarCollapsed, 'opacity-100': !sideBarCollapsed }">
-                <hq-psr-work-week [data]="psrWorkWeeks$ | async"></hq-psr-work-week>
+                <hq-psr-work-week  (psrId)="psrSelected($event)" ></hq-psr-work-week>
                 <table class="min-w-full border-spacing-0 border-separate hidden">
                     <thead>
                         <tr class="sticky top-0 text-left">
-                            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">PSR week of <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
+                            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5" >PSR week of <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
                             <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3">Total Hrs <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
                         </tr>
                     </thead>
@@ -109,21 +84,15 @@
             <main class="bg-black-alt overflow-y-auto h-[calc(100dvh-245px)]">
                 <!-- project details tabs -->
                 <div class="bg-black-alt border-steel-blue-600 border-t pt-[23px] sticky top-0 z-50">
-                    <div class="flex border-b border-black">
-@if(projectId$ | async; as projectId) {
-    <a routerLink="details"  [queryParams]="{projectId: projectId}" routerLinkActive #rlaDetails="routerLinkActive"
-       [ngClass]="(rlaDetails.isActive ? 'border-gray-100' : 'border-transparent')"
-       class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">Details</a>
-    <a routerLink="report" [queryParams]="{projectId: projectId}" routerLinkActive #rlaReport="routerLinkActive"
-       [ngClass]="(rlaReport.isActive ? 'border-gray-100' : 'border-transparent')"
-       class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PM Report</a>
-                        }
-   @if (psrId) {
-       <a routerLink="time" [queryParams]="{psrId: psrId}" routerLinkActive #rlaTime="routerLinkActive"
-       [ngClass]="(rlaTime.isActive ? 'border-gray-100' : 'border-transparent')"
-       class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PSR</a>
-   }
-</div>
+                  <div class="flex border-b border-black">
+                    <a routerLink="details" [queryParams]="{projectId: projectId$ | async}" routerLinkActive #rlaDetails="routerLinkActive" [ngClass]="(rlaDetails.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">Details</a>
+
+                    @if(psrId$ | async)
+                    {
+                      <a routerLink="report" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaReport="routerLinkActive" [ngClass]="(rlaReport.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PM Report</a>
+                        <a routerLink="time" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaTime="routerLinkActive" [ngClass]="(rlaTime.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PSR</a>
+                    }
+                </div>
 
                 </div>
                 <router-outlet></router-outlet>
