@@ -5,11 +5,13 @@ import { AppSettingsService } from './app-settings.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { InRolePipe } from './pipes/in-role.pipe';
+import { HQRole } from './enums/hqrole';
 
 @Component({
   selector: 'hq-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, FormsModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, FormsModule, RouterLink, RouterLinkActive, InRolePipe],
   templateUrl: './layout.component.html'
 })
 export class LayoutComponent {
@@ -18,6 +20,8 @@ export class LayoutComponent {
   oidcSecurityService = inject(OidcSecurityService);
 
   dropdownOpen = false;
+
+  HQRole = HQRole;
 
   userName$: Observable<string>;
   

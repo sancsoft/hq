@@ -177,6 +177,7 @@ public class StaffServiceV1
 
         var allStaff = await _context.Staff.ToListAsync(ct);
         var staffById = allStaff.ToDictionary(t => t.Id);
+        var staffByName = allStaff.ToDictionary(t => t.Name);
 
         var records = csv.GetRecords<UpsertStaffV1.Request>()
             .OrderByDescending(t => t.Id.HasValue)
@@ -193,6 +194,11 @@ public class StaffServiceV1
                 staff = staffById[record.Id.Value];
                 updated++;
             }
+            else if (!record.Id.HasValue && !String.IsNullOrEmpty(record.Name.ToLower()) && staffByName.ContainsKey(record.Name.ToLower()))
+            {
+                staff = staffByName[record.Name.ToLower()];
+                updated++;
+            }
             else
             {
                 staff = new();
@@ -201,7 +207,7 @@ public class StaffServiceV1
                 created++;
             }
 
-            staff.Name = record.Name;
+            staff.Name = record.Name.ToLower();
             staff.WorkHours = record.WorkHours;
             staff.VacationHours = record.VacationHours;
             staff.Jurisdiciton = record.Jurisdiciton;
@@ -212,6 +218,7 @@ public class StaffServiceV1
             staff.Email = record.Email;
 
             staffById[staff.Id] = staff;
+            staffByName[staff.Name] = staff;
         }
 
         await _context.SaveChangesAsync(ct);
