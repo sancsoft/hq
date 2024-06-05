@@ -38,5 +38,20 @@ namespace HQ.Server.Controllers
         public Task<ActionResult> UpsertUserV1([FromBody] UpsertUserV1.Request request, CancellationToken ct = default) =>
              _userService.UpsertUserV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(ImportUsersV1))]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public Task<ActionResult> ImportUsersV1(IFormFile file, CancellationToken ct = default)
+        {
+            var request = new ImportUsersV1.Request();
+            var stream = file.OpenReadStream();
+
+            request.File = stream;
+
+            return _userService.ImportUsersV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
     }
 }

@@ -1,6 +1,9 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using System.Text.Json.Serialization;
 using System.Web;
+using CsvHelper;
+using CsvHelper.Configuration;
 using FluentResults;
 using HQ.Abstractions.Users;
 using HQ.Server.Data;
@@ -257,6 +260,80 @@ public class UserServiceV1
             Total = count,
             Records = records
         };
+    }
+
+    public async Task<Result<ImportUsersV1.Response>> ImportUsersV1(ImportUsersV1.Request request, CancellationToken ct = default)
+    {
+        var conf = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+            TrimOptions = TrimOptions.Trim,
+            MissingFieldFound = null,
+            HeaderValidated = null
+        };
+
+        using var reader = new StreamReader(request.File);
+        using var csv = new CsvReader(reader, conf);
+
+        var records = csv.GetRecords<ImportUserRecord>()
+            .OrderByDescending(t => t.Id.HasValue)
+            .ToList();
+
+        var staffByName = await _context.Staff.ToDictionaryAsync(t => t.Name, ct);
+
+        var created = 0;
+        var updated = 0;
+        var failed = 0;
+
+        var allUsers = await GetUsersV1(new() { Take = 2000 });
+        if(allUsers.IsFailed)
+        {
+            return allUsers.ToResult();
+        }
+
+        var userIdByEmail = allUsers.Value.Records.ToDictionary(t => t.Email, t => t.Id);
+
+        foreach (var record in records)
+        {
+            if(!String.IsNullOrEmpty(record.StaffName) && !record.StaffId.HasValue && staffByName.ContainsKey(record.StaffName.ToLower()))
+            {
+                record.StaffId = staffByName[record.StaffName.ToLower()].Id;
+            }
+
+            if(!String.IsNullOrEmpty(record.Email) && !record.Id.HasValue && userIdByEmail.ContainsKey(record.Email.ToLower()))
+            {
+                record.Id = userIdByEmail[record.Email.ToLower()];
+            }
+
+            var result = await UpsertUserV1(record, ct);
+            if(result.IsSuccess)
+            {
+                if(record.Id.HasValue)
+                {
+                    updated++;
+                }
+                else
+                {
+                    created++;
+                }
+            }
+            else
+            {
+                failed++;
+            }
+        }
+
+        return new ImportUsersV1.Response()
+        {
+            Created = created,
+            Updated = updated,
+            Failed = failed
+        };
+    }
+
+    private class ImportUserRecord : UpsertUserV1.Request
+    {
+        public string? StaffName { get ;set; }
     }
 
     private class KeycloakError
