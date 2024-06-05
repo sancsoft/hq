@@ -1,4 +1,5 @@
 import { ProjectStatus } from '../../clients/client-details.service';
+import { Period } from '../../projects/project-create/project-create.component';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
@@ -25,7 +26,7 @@ export interface GetProjectRecordV1 {
   id: number;
   projectNumber: string;
   chargeCode: string | null;
-  clientId: number;
+  clientId: string;
   clientName: string;
   projectManagerId: number;
   projectManagerName: string | null;
@@ -34,7 +35,7 @@ export interface GetProjectRecordV1 {
   quoteNumber: string | null;
   hourlyRate: number;
   bookingHours: number;
-  bookingPeriod: string;
+  bookingPeriod: Period;
   startDate: Date;
   endDate: Date;
   status: ProjectStatus

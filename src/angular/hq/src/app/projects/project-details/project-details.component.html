@@ -3,10 +3,11 @@
 <div class="pb-[27px] pt-[8px] relative">
     <div class="absolute top-[8px] right-0 px-4">
         <!-- edit/save button -->
-        <button routerLink="../edit" [queryParams]="{psrId: psrId$ | async}" class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
+        <button routerLink="../edit" [queryParams]="{projectId: projectId$ | async}" class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
             Edit
         </button>
     </div>
+    @if (psr$ | async; as psr) {
     <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
         <!-- left side -->
         <div class="grid gap-[20px] pt-[12px] px-[27px]">
@@ -15,13 +16,13 @@
             <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]">
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Official Client name</div>
-                    <div class="">Official Client Name Here</div>
+                    <div class="">{{psr.clientName}}</div>
                 </div>
             </div>
             <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]">
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project Full Name</div>
-                    <div class="">Project Full Name</div>
+                    <div class="">{{psr.projectName}}</div>
                 </div>
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project Name - Concatenated</div>
@@ -31,7 +32,7 @@
             <div class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)]">
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">PM</div>
-                    <div class="">bmcvicker</div>
+                    <div class="">{{psr.projectManagerName ?? 'None'}}</div>
                 </div>
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Rate</div>
@@ -40,7 +41,7 @@
                             <span class="w-[42px]">
                                 <i class="bi bi-currency-dollar text-[14px]"></i>
                             </span>
-                            105.00
+                            {{(project$ | async)?.hourlyRate || 'None'}}
                             <span class="ml-[8px] font-semibold">p / h</span>
                         </div>
                     </div>
@@ -54,23 +55,38 @@
             <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)]">
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Total HRS</div>
-                    <div class="">Total HRS</div>
+                    <div class="">{{psr.totalHours}}</div>
                 </div>
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Period</div>
-                    <div class="">Period?</div>
+                    <div class="">
+                        @switch (psr.bookingPeriod) {
+                            @case (BookingPeriod.Week) {
+                                <div>Week</div>
+                            }
+                            @case (BookingPeriod.Month) {
+                                <div>Month</div>
+                            }
+                            @case (BookingPeriod.Quarter) {
+                                <div>Quarter</div>
+                            }
+                            @case (BookingPeriod.Year) {
+                                <div>Year</div>
+                            }
+                        }
+                    </div>
                 </div>
             </div>
             <div class="grid gap-[20px] grid-flow-row pr-5">
                 <div class="grid grid-flow-col grid-cols-[102px_35px_102px] gap-[15px]">
                     <div class="w-full max-w-[102px]">
                         <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Start Date</div>
-                        <div class="">MM / DD / YYYY</div>
+                        <div class="">{{psr.startDate || 'None'}}</div>
                     </div>
                     <div class="flex align-middle justify-center items-center pt-4">-</div>
                     <div class="w-full max-w-[102px]">
                         <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">End Date</div>
-                        <div class="">MM / DD / YYYY</div>
+                        <div class="">{{psr.endDate || 'None'}}</div>
                     </div>
                 </div>
             </div>
@@ -111,7 +127,7 @@
                             <!-- remove/add hidden class for edit/details page -->
                             <div class="hidden font-open-sans text-nav-disabled text-xs font-bold uppercase">Optional Notes</div>
                             <!-- textarea -->
-                            <textarea class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded" placeholder="Optional Notes"></textarea>
+                            <textarea  class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded" placeholder="Optional Notes"></textarea>
                         </div>
                     </div>
                 </div>
@@ -136,4 +152,5 @@
             </div>
         </div>
     </div>
+}
 </div>
