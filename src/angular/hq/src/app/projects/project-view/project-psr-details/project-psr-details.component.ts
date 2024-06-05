@@ -15,9 +15,12 @@ import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
 })
 export class ProjectPsrDetailsComponent {
   psr$?: Observable<GetPSRRecordV1 | null>;
-  @Input() psrId$? :Observable<string | null>;
+  psrId$? :Observable<string | null>;
 
   constructor(private hqService: HQService, private route: ActivatedRoute) {
+    this.psrId$ = route.queryParams.pipe(
+      map(t => t['psrId']),
+    );
     this.psrId$?.subscribe((id) => {
       console.log(id);
       if (id) {

@@ -45,7 +45,7 @@ export class ProjectViewComponent {
   ) {
     this.projectId$ = this.route.params.pipe(map((params) => params['projectId']));
     this.psrId$ = route.queryParams.pipe(
-      map(t => t['psrId'])
+      map(t => t['psrId']),
     );
     this.projectId$.subscribe(
       (id) => {
@@ -73,9 +73,5 @@ export class ProjectViewComponent {
       this.clientDetail$ = of(clientDetails[0])
     });
   }
-  psrSelected(psrId: string) {
-    console.log(psrId);
-    this.psrId$ = of(psrId);
 
-  }
 }

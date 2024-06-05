@@ -10,7 +10,7 @@
                 <div class="text-gray-50"><a href="#" class="underline">Official Name - {{project.officialName || 'None'}}</a></div>
             </div>
 
-            <hq-project-psr-details [psrId$]="psrId$"></hq-project-psr-details>
+            <hq-project-psr-details ></hq-project-psr-details>
         </div>
     </div>
 }
@@ -54,7 +54,7 @@
     <div class="overflow-hidden flex-auto">
         <div id="left-side" class="grid gap-0 transition-all duration-200 ease-in-out relative" [ngClass]="{ 'grid-cols-[0px_20px_1fr]': sideBarCollapsed, 'grid-cols-[405px_20px_1fr]': !sideBarCollapsed }">
             <aside class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out" [ngClass]="{ 'opacity-0': sideBarCollapsed, 'opacity-100': !sideBarCollapsed }">
-                <hq-psr-work-week  (psrId)="psrSelected($event)" ></hq-psr-work-week>
+                <hq-psr-work-week></hq-psr-work-week>
                 <table class="min-w-full border-spacing-0 border-separate hidden">
                     <thead>
                         <tr class="sticky top-0 text-left">

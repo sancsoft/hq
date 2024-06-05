@@ -15,7 +15,6 @@ import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component
 })
 export class PsrWorkWeekComponent {
   PSRWorkWeeks?: Observable<GetPSRRecordV1[]> | null;
-  @Output('psrId') psrIdEvent = new EventEmitter<string>();
   projectId$?: Observable<string>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
@@ -54,10 +53,5 @@ export class PsrWorkWeekComponent {
       this.sortOption$.next(sortColumn);
       this.sortDirection$.next(SortDirection.Asc);
     }
-  }
-  
-  psrClicked(id: string) {
-    console.log(id);
-    this.psrIdEvent.emit(id);
   }
 }
