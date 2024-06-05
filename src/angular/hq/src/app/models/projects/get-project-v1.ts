@@ -38,7 +38,9 @@ export interface GetProjectRecordV1 {
   bookingPeriod: Period;
   startDate: Date;
   endDate: Date;
-  status: ProjectStatus
+  status: ProjectStatus;
+  billingEmail: string,
+  officialName: string,
 }
 
 export interface GetProjectRecordsV1 {

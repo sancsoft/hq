@@ -7,7 +7,7 @@
             Edit
         </button>
     </div>
-    @if (psr$ | async; as psr) {
+    @if (project$ | async; as project) {
     <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
         <!-- left side -->
         <div class="grid gap-[20px] pt-[12px] px-[27px]">
@@ -16,15 +16,15 @@
             <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]">
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Official Client name</div>
-                    <div class="">{{psr.clientName}}</div>
+                    <div class="">{{project.clientName}}</div>
                 </div>
             </div>
             <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]">
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project Full Name</div>
-                    <div class="">{{psr.projectName}}</div>
+                    <div class="">{{project.name}}</div>
                 </div>
-                <div class="">
+                <div class="hidden">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project Name - Concatenated</div>
                     <div class="">Project Name - Concatenated</div>
                 </div>
@@ -32,7 +32,7 @@
             <div class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)]">
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">PM</div>
-                    <div class="">{{psr.projectManagerName ?? 'None'}}</div>
+                    <div class="">{{project.projectManagerName ?? 'None'}}</div>
                 </div>
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Rate</div>
@@ -41,7 +41,7 @@
                             <span class="w-[42px]">
                                 <i class="bi bi-currency-dollar text-[14px]"></i>
                             </span>
-                            {{(project$ | async)?.hourlyRate || 'None'}}
+                            {{project.hourlyRate || 'None'}}
                             <span class="ml-[8px] font-semibold">p / h</span>
                         </div>
                     </div>
@@ -50,17 +50,17 @@
 
             <!-- section heading -->
             <div class="border-b border-black mt-10">
-                <div class="font-bold mb-[3px] px-2">Billing</div>
+                <div class="font-bold mb-[3px] px-2">Booking</div>
             </div>
             <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)]">
                 <div class="">
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Total HRS</div>
-                    <div class="">{{psr.totalHours}}</div>
+                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">HRS</div>
+                    <div class="">{{project.bookingHours}}</div>
                 </div>
                 <div class="">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Period</div>
                     <div class="">
-                        @switch (psr.bookingPeriod) {
+                        @switch (project.bookingPeriod) {
                             @case (BookingPeriod.Week) {
                                 <div>Week</div>
                             }
@@ -81,17 +81,17 @@
                 <div class="grid grid-flow-col grid-cols-[102px_35px_102px] gap-[15px]">
                     <div class="w-full max-w-[102px]">
                         <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Start Date</div>
-                        <div class="">{{psr.startDate || 'None'}}</div>
+                        <div class="">{{project.startDate || 'None'}}</div>
                     </div>
                     <div class="flex align-middle justify-center items-center pt-4">-</div>
                     <div class="w-full max-w-[102px]">
                         <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">End Date</div>
-                        <div class="">{{psr.endDate || 'None'}}</div>
+                        <div class="">{{project.endDate || 'None'}}</div>
                     </div>
                 </div>
             </div>
             <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)]">
-                <div class="">
+                <div class="hidden">
                     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Value</div>
                     <div class="">Value</div>
                 </div>
@@ -100,7 +100,7 @@
 
             <!-- edit form / engagement form -->
             <form class="grid gap-[20px]">
-                
+
                 <!-- engagement section  -->
                 <!-- section heading -->
                 <div class="border-b border-black mt-10">
@@ -119,7 +119,7 @@
                             <a href="#" class="inline-block p-2 hover:text-gray-50" title="Download"><i class="bi bi-cloud-download-fill"></i></a>
                         </div>
                     </div>
-                    
+
                     <!-- row grid -->
                     <div class="grid gap-[20px] grid-flow-col">
                         <!-- column -->

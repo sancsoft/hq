@@ -6,10 +6,8 @@
         <div class="flex flex-col xl:flex-row xl:justify-between xl:items-center">
             <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
                 <div class="text-gray-50">${{project.hourlyRate}}</div>
-                @if (clientDetail$ | async; as client) {
-                <div class="text-gray-50">{{client.billingEmail || 'None'}}</div>
-                <div class="text-gray-50"><a href="#" class="underline">Official Name - {{client.officialName || 'None'}}</a></div>
-                }
+                <div class="text-gray-50">{{project.billingEmail || 'None'}}</div>
+                <div class="text-gray-50"><a href="#" class="underline">Official Name - {{project.officialName || 'None'}}</a></div>
             </div>
 
             <div class="flex flex-row auto-cols-min gap-[2.983rem] pt-3 justify-end xl:pt-0">
@@ -56,7 +54,7 @@
                     name=""
                 />
                 </div>
-        
+
                 <!-- Is this a button? -->
                 <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[205px]">
                 <input
@@ -65,7 +63,7 @@
                     name=""
                     value="Activities"
                 />
-                </div>  
+                </div>
 
                 <div class="pl-[5vw]">
                     <div>
@@ -73,7 +71,7 @@
                         <div class="text-right font-rajdhani font-semibold text-3xl">00000.00</div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -113,16 +111,16 @@
                 <div class="bg-black-alt border-steel-blue-600 border-t pt-[23px] sticky top-0 z-50">
                     <div class="flex border-b border-black">
 @if(projectId$ | async; as projectId) {
-    <a routerLink="details"  [queryParams]="{projectId: projectId}" routerLinkActive #rlaDetails="routerLinkActive" 
-       [ngClass]="(rlaDetails.isActive ? 'border-gray-100' : 'border-transparent')" 
+    <a routerLink="details"  [queryParams]="{projectId: projectId}" routerLinkActive #rlaDetails="routerLinkActive"
+       [ngClass]="(rlaDetails.isActive ? 'border-gray-100' : 'border-transparent')"
        class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">Details</a>
-    <a routerLink="report" [queryParams]="{projectId: projectId}" routerLinkActive #rlaReport="routerLinkActive" 
-       [ngClass]="(rlaReport.isActive ? 'border-gray-100' : 'border-transparent')" 
+    <a routerLink="report" [queryParams]="{projectId: projectId}" routerLinkActive #rlaReport="routerLinkActive"
+       [ngClass]="(rlaReport.isActive ? 'border-gray-100' : 'border-transparent')"
        class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PM Report</a>
                         }
    @if (psrId) {
-       <a routerLink="time" [queryParams]="{psrId: psrId}" routerLinkActive #rlaTime="routerLinkActive" 
-       [ngClass]="(rlaTime.isActive ? 'border-gray-100' : 'border-transparent')" 
+       <a routerLink="time" [queryParams]="{psrId: psrId}" routerLinkActive #rlaTime="routerLinkActive"
+       [ngClass]="(rlaTime.isActive ? 'border-gray-100' : 'border-transparent')"
        class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PSR</a>
    }
 </div>
