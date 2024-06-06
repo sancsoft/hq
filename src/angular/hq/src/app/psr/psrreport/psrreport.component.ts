@@ -54,7 +54,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.psrService.hideStaffMembers();
     this.psrService.hideIsSubmitted();
   }
-  
+
   ngOnDestroy(): void {
     this.psrService.resetFilter();
     this.destroyed$.next(true);
@@ -132,6 +132,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       );
       apiResponse$.subscribe({
         next: (response) => {
+          this.router.navigate(['']);
           window.alert('Report submitted successfully');
         },
         error: (err) => {
