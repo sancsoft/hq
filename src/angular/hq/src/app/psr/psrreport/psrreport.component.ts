@@ -30,6 +30,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { MarkdownModule } from 'ngx-markdown';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'hq-psrreport',
@@ -65,7 +66,8 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
-    private psrService: PsrService
+    private psrService: PsrService,
+    private modalService: ModalService
   ) {
     const psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId'])
@@ -111,7 +113,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error:', err);
-        window.alert('There was an error saving the PM report.')
+        this.modalService.alert('Error', 'There was an error saving the PM report.')
       },
     });
   }
@@ -120,7 +122,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.report$.next(value);
   }
   onReportSubmit() {
-    if (window.confirm('Are you sure you want to submit this report?')) {
+    if (this.modalService.confirm('Confirmation', 'Are you sure you want to submit this report?')) {
       const request$ = combineLatest({
         projectStatusReportId: this.psrId$,
       });
@@ -132,11 +134,11 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       );
       apiResponse$.subscribe({
         next: (response) => {
-          window.alert('Report submitted successfully');
+          this.modalService.alert('Success', 'Report submitted successfully');
         },
         error: (err) => {
           if (err instanceof APIError) {
-            window.alert(err.errors.join('\n'));
+            this.modalService.alert('Error', err.errors.join('\n'));
           }
         },
       });
