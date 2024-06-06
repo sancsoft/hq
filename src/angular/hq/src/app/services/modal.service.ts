@@ -12,11 +12,9 @@ export class ModalService {
     return of(window.confirm(`${title}\n${message}`));
   }
 
-  alert(title: string, message: string): Observable<void> {
-    var onClose$ = new Subject<void>();
+  alert(title: string, message: string): Observable<boolean> {
     window.alert(`${title}\n${message}`)
-    onClose$.complete();
-    return onClose$;
+    return of(true);
   }
 
   prompt(title: string, message: string = ''): Observable<string|null> {
