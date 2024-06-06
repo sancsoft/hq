@@ -1,10 +1,10 @@
-import { Injectable, Input } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { ProjectStatus } from '../clients/client-details.service';
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { GetStaffV1Record } from '../models/staff-members/get-staff-member-v1';
-import { HQService } from '../services/hq.service';
-import { GetPSRTimeRecordStaffV1 } from '../models/PSR/get-psr-time-v1';
+import { FormControl } from "@angular/forms";
+import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
+import { ProjectStatus } from "../../../clients/client-details.service";
+import { GetPSRTimeRecordStaffV1 } from "../../../models/PSR/get-psr-time-v1";
+import { HQService } from "../../../services/hq.service";
+import { Injectable } from "@angular/core";
+
 
 export enum ActivityName {
   Support = 0,
@@ -15,7 +15,7 @@ export enum ActivityName {
 @Injectable({
   providedIn: 'root',
 })
-export class PsrService {
+export class PsrListService {
   staffMembers$ = new BehaviorSubject<GetPSRTimeRecordStaffV1[]>([]);
   search = new FormControl<string | null>('');
   roaster = new FormControl<string | null>('');
@@ -26,6 +26,10 @@ export class PsrService {
   isSubmitted = new FormControl<boolean | null>(null);
   startDate = new FormControl<Date | null>(null);
   endDate = new FormControl<Date | null>(null);
+
+  // Pagination form controls
+  itemsPerPage = new FormControl(20, { nonNullable: true });
+  page = new FormControl<number>(1, { nonNullable: true });
 
   ProjectStatus = ProjectStatus;
   ActivityName = ActivityName;
@@ -107,3 +111,4 @@ export class PsrService {
     this.showEndDate$.next(false);
   }
 }
+
