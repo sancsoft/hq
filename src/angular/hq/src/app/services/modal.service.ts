@@ -1,20 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject, map, of } from 'rxjs';
+import { Dialog } from '@angular/cdk/dialog';
+import { AlertModalComponent } from '../common/alert-modal/alert-modal.component';
+
+export interface ModalData {
+  title: string;
+  message?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModalService {
 
-  constructor() { }
+  constructor(public dialog: Dialog) { }
 
   confirm(title: string, message: string = ''): Observable<boolean> {
     return of(window.confirm(`${title}\n${message}`));
   }
 
   alert(title: string, message: string): Observable<boolean> {
-    window.alert(`${title}\n${message}`)
-    return of(true);
+    const dialogRef = this.dialog.open<boolean, ModalData>(AlertModalComponent, {
+      minWidth: '600px',
+      data: {
+        title,
+        message
+      }
+    });
+
+    return dialogRef.closed.pipe(map(t => true));
   }
 
   prompt(title: string, message: string = ''): Observable<string|null> {

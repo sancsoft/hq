@@ -42,6 +42,11 @@
 
 <!-- router-outlet -->
 <div class="flex-1">
+    <div>
+        <p><button (click)="alert()">Alert</button></p>
+        <p><button (click)="confirm()">Confirm</button></p>
+        <p><button (click)="prompt()">Prompt</button></p>
+    </div>
     <ng-content></ng-content>
 </div>
 
