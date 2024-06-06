@@ -1,0 +1,117 @@
+<div class="px-5">
+  <h1 class="font-rajdhani font-semibold text-3xl">Charge Codes</h1>
+
+  <!-- <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
+      <div class="text-gray-50">$105.00</div>
+      <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
+      <div class="text-gray-50">Official Name - Probably longer than the name</div>
+  </div> -->
+</div>
+
+<div class="px-5 pt-4 mb-[8px]">
+  <div class="flex flex-col lg:flex-row justify-between items-start">
+      <div class="flex items-center order-2 lg:order-1 gap-[20px]">
+          <hq-psr-search-filter></hq-psr-search-filter>
+
+          <!-- select dropdown -->
+          <div class="grid relative w-[220px]">
+              <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+        <option>First Name, Last Name</option>
+        <option>First Name, Last Name</option>
+      </select>
+              <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+        <i class="bi bi-arrow-down-short text-[24px]"></i>
+      </span>
+          </div>
+      </div>
+  </div>
+</div>
+
+<table class="min-w-full border-spacing-0 border-separate">
+  <thead>
+      <tr class="sticky top-0 text-left">
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.Code)">
+              Charge Code
+              <hq-sort-icon [column]="sortColumn.Code" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+          </th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Billable)">
+              Billable
+              <hq-sort-icon [column]="sortColumn.Billable" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+          </th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Active)">
+            Active
+            <hq-sort-icon [column]="sortColumn.Active" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+        </th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectName)">
+            Project Name
+              <hq-sort-icon [column]="sortColumn.ProjectName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+          </th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.QuoteName)">
+            Quote Name
+              <hq-sort-icon [column]="sortColumn.QuoteName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+          </th>
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ServiceAgreementName)">
+            Service Agreement Name
+              <hq-sort-icon [column]="sortColumn.ServiceAgreementName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+          </th>
+
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5" colspan="2">
+              <button routerLink="/projects/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
+            <i class="bi bi-plus"></i>
+            Chargecode
+        </button>
+          </th>
+      </tr>
+  </thead>
+  <tbody>
+      @for((chargeCode of chargeCodes$ | async); track $index) {
+      <tr class="even:bg-gray-850 odd:bg-black-alt">
+          <td class="border-b border-black py-2 pl-5">{{ chargeCode.code }}</td>
+          <td class="border-b border-black py-2">{{ chargeCode.billable }}</td>
+          <td class="border-b border-black py-2">{{ chargeCode.projectName }}</td>
+
+          <td class="border-b border-black py-2">
+              {{ chargeCode.active }}
+          </td>
+          <td class="border-b border-black py-2">{{ chargeCode.projectName }}</td>
+          <td class="border-b border-black py-2">{{ chargeCode.quoteName }}</td>
+          <td class="border-b border-black py-2">
+              {{ chargeCode.serviceAgreementName }}
+          </td>
+
+          <td></td>
+          <td class="border-b border-black py-2 text-right pr-5">
+              <a [routerLink]="[chargeCode.id]" class="text-teal-200 hover:text-teal-300">VIEW</a
+      >
+    </td>
+  </tr>
+  }
+</tbody>
+</table>
+<div
+class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
+>
+<div>
+  <select
+    class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
+    [formControl]="itemsPerPage"
+  >
+    <option [ngValue]="10">10</option>
+    <option [ngValue]="20">20</option>
+    <option [ngValue]="50">50</option>
+    <option [ngValue]="100">100</option>
+    <!-- Add more options as needed -->
+  </select>
+  <span>items per page</span>
+</div>
+<hq-paginator
+  [total]="(totalRecords$ | async) ?? 0"
+  [pageSize]="itemsPerPage.value"
+  [currentPage]="page.value"
+  (onPage)="goToPage($event)"
+></hq-paginator>
+<div class="flex justify-end text-xs">
+  {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
+  {{ totalRecords$ | async }} items
+</div>
+</div>

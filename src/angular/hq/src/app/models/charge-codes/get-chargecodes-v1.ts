@@ -4,7 +4,7 @@ import { SortDirection } from "../common/sort-direction";
 
 // Interface for the paged request with sorting and optional filters specific to charge codes
 export interface GetChargeCodesRequestV1 extends PagedRequestV1 {
-  search?: string;
+  search?: string | null;
   id?: string;
   sortBy: SortColumn;
   sortDirection: SortDirection;
