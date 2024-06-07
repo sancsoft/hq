@@ -1,3 +1,4 @@
+import { ChargeCodeListService } from './../services/ChargeCodeListService';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -12,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { PsrSearchFilterComponent } from '../../psr/psr-search-filter/psr-search-filter.component';
+import { ChargeCodeSearchFilterComponent } from '../SearchFilter/charge-code-search-filter.component';
 
 @Component({
   selector: 'hq-charge-code-list',
@@ -22,13 +24,13 @@ import { PsrSearchFilterComponent } from '../../psr/psr-search-filter/psr-search
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    PsrSearchFilterComponent,
+    ChargeCodeSearchFilterComponent,
   ],
   templateUrl: './charge-code-list.component.html'
 })
 export class ChargeCodeListComponent implements OnInit {
   ngOnInit(): void {
-  
+    this.chargeCodeListService.showSearch();
   }
   apiErrors: string[] = [];
 
@@ -48,7 +50,7 @@ export class ChargeCodeListComponent implements OnInit {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private psrService: PsrService
+    private chargeCodeListService: ChargeCodeListService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ProjectName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -62,9 +64,9 @@ export class ChargeCodeListComponent implements OnInit {
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
       startWith(0)
     );
-    const search$ = psrService.search.valueChanges.pipe(
+    const search$ = chargeCodeListService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(psrService.search.value)
+      startWith(chargeCodeListService.search.value)
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
@@ -104,7 +106,6 @@ export class ChargeCodeListComponent implements OnInit {
       )
     );
 
-    this.psrService.resetFilter();
   }
 
   goToPage(page: number) {
