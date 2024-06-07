@@ -33,6 +33,15 @@ export const routes: Routes = [
             import('./charge-code/charge-code-list/charge-code-list.component').then(
               (m) => m.ChargeCodeListComponent
             ),
+        },
+        {
+          path: 'create',
+          title: 'Charge Code Create',
+          canActivate: [userRoleGuard(HQRole.Administrator)],
+          loadComponent: () =>
+            import('./charge-code/charge-code-create/charge-code-create.component').then(
+              (m) => m.ChargeCodeCreateComponent
+            ),
         }
       ]
   },

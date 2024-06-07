@@ -4,6 +4,7 @@ using FluentResults;
 using HQ.Abstractions.ChargeCodes;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Projects;
+using HQ.Abstractions.Staff;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,76 @@ public class ChargeCodeServiceV1
     public ChargeCodeServiceV1(HQDbContext context)
     {
         _context = context;
+    }
+    public async Task<Result<UpsertChargeCodeV1.Response>> UpsertChargeCodeV1(UpsertChargeCodeV1.Request request, CancellationToken ct = default)
+    {
+        using (var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, ct))
+        {
+            try{
+            var validationResult = Result.Merge(
+            Result.FailIf(await _context.ChargeCodes.AnyAsync(t => t.Id != request.Id, ct), "Charge code Id must be unique.")
+        );
+
+        if (validationResult.IsFailed)
+        {
+            return validationResult;
+        }
+
+        var chargecode = await _context.ChargeCodes.FindAsync(request.Id);
+        if (chargecode == null)
+        {
+            chargecode = new();
+            _context.ChargeCodes.Add(chargecode);
+        }
+
+        chargecode.Activity = request.Activity;
+        chargecode.Billable = request.Billable;
+        chargecode.Active = request.Active;
+        chargecode.Description = request.Description;
+        chargecode.QuoteId = request.QuoteId;
+        chargecode.ProjectId = request.ProjectId;
+        chargecode.ServiceAgreementId = request.ServiceAgreementId;
+        
+        switch (request.Activity)
+        {
+            case(ChargeCodeActivity.General):
+            break;
+            case(ChargeCodeActivity.Project):
+                var latestProjectNumber = _context.Projects.Max((p) => p.ProjectNumber);
+                var newProjectNumber = latestProjectNumber + 1;
+                var newCode = "P" + newProjectNumber;
+                chargecode.Code = newCode;
+                break;
+            case (ChargeCodeActivity.Quote):
+                var latestQuoteNumber = _context.Quotes.Max((q) => q.QuoteNumber);
+                var newQuoteNumber = latestQuoteNumber + 1;
+                newCode = "Q" + newQuoteNumber;
+                chargecode.Code = newCode;
+                break;
+            case (ChargeCodeActivity.Service):
+                var latestServiceAgreementNumber = _context.ServiceAgreements.Max((s) => s.ServiceNumber);
+                var newServiceAgreementNumber = latestServiceAgreementNumber + 1;
+                newCode = "S" + newServiceAgreementNumber;
+                chargecode.Code = newCode;
+                break;
+        }
+
+        await _context.SaveChangesAsync(ct);
+
+        return new UpsertChargeCodeV1.Response()
+        {
+            Id = chargecode.Id
+        };
+        
+        }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(ct);
+                return Result.Fail(new Error("An error occurred while upserting the quote.").CausedBy(ex));
+            }
+
+
+        }
     }
 
     public async Task<Result<GetChargeCodesV1.Response>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)

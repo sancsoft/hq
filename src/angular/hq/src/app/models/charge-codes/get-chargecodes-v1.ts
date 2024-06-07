@@ -13,6 +13,13 @@ export interface GetChargeCodesRequestV1 extends PagedRequestV1 {
   billable?: boolean;
   active?: boolean;
 }
+export enum ChargeCodeActivity
+{
+    General = 1,
+    Project = 2,
+    Quote = 3,
+    Service = 4
+}
 
 // Enum for specifying the sortable columns in charge code requests
 export enum SortColumn {
