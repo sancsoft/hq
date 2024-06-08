@@ -42,6 +42,15 @@ export const routes: Routes = [
             import('./charge-code/charge-code-create/charge-code-create.component').then(
               (m) => m.ChargeCodeCreateComponent
             ),
+        }, 
+        {
+          path: 'edit/:chargeCodeId',
+          title: 'Charge Code Edit',
+          canActivate: [userRoleGuard(HQRole.Administrator)],
+          loadComponent: () =>
+            import('./charge-code/charge-code-edit/charge-code-edit.component').then(
+              (m) => m.ChargeCodeEditComponent
+            ),
         }
       ]
   },

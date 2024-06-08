@@ -27,22 +27,44 @@ public class ChargeCodeServiceV1
         {
 
        try {
-                var validationResult = Result.Merge(
-            Result.FailIf(await _context.ChargeCodes.AnyAsync(c => c.ServiceAgreementId == request.ServiceAgreementId && request.ServiceAgreementId != null, ct), "A ChargeCode with the specified ServiceId already exists."),
-            Result.FailIf(await _context.ChargeCodes.AnyAsync(c => c.QuoteId == request.QuoteId && request.QuoteId != null, ct), "A ChargeCode with the specified QuoteId already exists."),
-            Result.FailIf(await _context.ChargeCodes.AnyAsync(c => c.ProjectId == request.ProjectId && request.ProjectId != null, ct), "A ChargeCode with the specified ProjectId already exists.")
-        );
-
-                if (validationResult.IsFailed)
-                {
-                    return validationResult;
-                }
-                var chargecode = await _context.ChargeCodes.FindAsync(request.Id);
+        var chargecode = await _context.ChargeCodes.FindAsync(request.Id);
         if (chargecode == null)
         {
             chargecode = new();
             _context.ChargeCodes.Add(chargecode);
-        }
+                    switch (request.Activity)
+                    {
+                        case (ChargeCodeActivity.General):
+                            var maxGeneralCode = _context.ChargeCodes
+                         .Where(g => g.Code.StartsWith("G"))
+                         .Select(g => g.Code.Substring(1))
+                         .Select(int.Parse)
+                         .DefaultIfEmpty(0)
+                         .Max();
+                            var newCodeNumber = maxGeneralCode + 1;
+                            var formattedNewCode = $"G{newCodeNumber:0000}";
+                            chargecode.Code = formattedNewCode;
+                            break;
+                        case (ChargeCodeActivity.Project):
+                            var latestProjectNumber = _context.Projects.Max((p) => p.ProjectNumber);
+                            var newProjectNumber = latestProjectNumber + 1;
+                            var newCode = "P" + newProjectNumber;
+                            chargecode.Code = newCode;
+                            break;
+                        case (ChargeCodeActivity.Quote):
+                            var latestQuoteNumber = _context.Quotes.Max((q) => q.QuoteNumber);
+                            var newQuoteNumber = latestQuoteNumber + 1;
+                            newCode = "Q" + newQuoteNumber;
+                            chargecode.Code = newCode;
+                            break;
+                        case (ChargeCodeActivity.Service):
+                            var latestServiceAgreementNumber = _context.ServiceAgreements.Max((s) => s.ServiceNumber);
+                            var newServiceAgreementNumber = latestServiceAgreementNumber + 1;
+                            newCode = "S" + newServiceAgreementNumber;
+                            chargecode.Code = newCode;
+                            break;
+                    }
+                }
 
         chargecode.Activity = request.Activity;
         chargecode.Billable = request.Billable;
@@ -52,38 +74,7 @@ public class ChargeCodeServiceV1
         chargecode.ProjectId = request.ProjectId;
         chargecode.ServiceAgreementId = request.ServiceAgreementId;
         
-        switch (request.Activity)
-        {
-            case(ChargeCodeActivity.General):
-                 var maxGeneralCode = _context.ChargeCodes
-              .Where(g => g.Code.StartsWith("G")) 
-              .Select(g => g.Code.Substring(1))  
-              .Select(int.Parse)                 
-              .DefaultIfEmpty(0)                  
-              .Max();
-            var newCodeNumber = maxGeneralCode + 1;
-            var formattedNewCode = $"G{newCodeNumber:0000}";
-            chargecode.Code = formattedNewCode;
-            break;
-            case(ChargeCodeActivity.Project):
-                var latestProjectNumber = _context.Projects.Max((p) => p.ProjectNumber);
-                var newProjectNumber = latestProjectNumber + 1;
-                var newCode = "P" + newProjectNumber;
-                chargecode.Code = newCode;
-                break;
-            case (ChargeCodeActivity.Quote):
-                var latestQuoteNumber = _context.Quotes.Max((q) => q.QuoteNumber);
-                var newQuoteNumber = latestQuoteNumber + 1;
-                newCode = "Q" + newQuoteNumber;
-                chargecode.Code = newCode;
-                break;
-            case (ChargeCodeActivity.Service):
-                var latestServiceAgreementNumber = _context.ServiceAgreements.Max((s) => s.ServiceNumber);
-                var newServiceAgreementNumber = latestServiceAgreementNumber + 1;
-                newCode = "S" + newServiceAgreementNumber;
-                chargecode.Code = newCode;
-                break;
-        }
+        
 
         await _context.SaveChangesAsync(ct);
         await transaction.CommitAsync(ct);  
@@ -152,6 +143,9 @@ public class ChargeCodeServiceV1
             ProjectName = t.Project != null ? t.Project.Name : null,
             QuoteName = t.Quote != null ? t.Quote.Name : null,
             ServiceAgreementName = t.ServiceAgreement != null ? t.ServiceAgreement.Name : null,
+            ProjectId = t.ProjectId != null ? t.ProjectId : null,
+            QuoteId = t.QuoteId != null ? t.QuoteId : null,
+            ServiceAgreementId = t.ServiceAgreementId != null ? t.ServiceAgreementId : null,
             Description = t.Description
         });
 

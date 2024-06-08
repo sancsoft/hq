@@ -33,6 +33,7 @@ export enum SortColumn {
 
 // Interface representing a single charge code record
 export interface GetChargeCodeRecordV1 {
+  activity: ChargeCodeActivity;
   id: string;
   code: string;
   billable: boolean;
@@ -41,6 +42,9 @@ export interface GetChargeCodeRecordV1 {
   quoteName?: string;
   serviceAgreementName?: string;
   description?: string;
+  quoteId?: string;
+  projectId?: string;
+  serviceAgreementId?: string;
 }
 
 // Interface for the response containing a list of charge code records
