@@ -25,17 +25,19 @@ public class ChargeCodeServiceV1
     {
         using (var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, ct))
         {
-            try{
-            var validationResult = Result.Merge(
-            Result.FailIf(await _context.ChargeCodes.AnyAsync(t => t.Id != request.Id, ct), "Charge code Id must be unique.")
+
+       try {
+                var validationResult = Result.Merge(
+            Result.FailIf(await _context.ChargeCodes.AnyAsync(c => c.ServiceAgreementId == request.ServiceAgreementId && request.ServiceAgreementId != null, ct), "A ChargeCode with the specified ServiceId already exists."),
+            Result.FailIf(await _context.ChargeCodes.AnyAsync(c => c.QuoteId == request.QuoteId && request.QuoteId != null, ct), "A ChargeCode with the specified QuoteId already exists."),
+            Result.FailIf(await _context.ChargeCodes.AnyAsync(c => c.ProjectId == request.ProjectId && request.ProjectId != null, ct), "A ChargeCode with the specified ProjectId already exists.")
         );
 
-        if (validationResult.IsFailed)
-        {
-            return validationResult;
-        }
-
-        var chargecode = await _context.ChargeCodes.FindAsync(request.Id);
+                if (validationResult.IsFailed)
+                {
+                    return validationResult;
+                }
+                var chargecode = await _context.ChargeCodes.FindAsync(request.Id);
         if (chargecode == null)
         {
             chargecode = new();
@@ -53,6 +55,15 @@ public class ChargeCodeServiceV1
         switch (request.Activity)
         {
             case(ChargeCodeActivity.General):
+                 var maxGeneralCode = _context.ChargeCodes
+              .Where(g => g.Code.StartsWith("G")) 
+              .Select(g => g.Code.Substring(1))  
+              .Select(int.Parse)                 
+              .DefaultIfEmpty(0)                  
+              .Max();
+            var newCodeNumber = maxGeneralCode + 1;
+            var formattedNewCode = $"G{newCodeNumber:0000}";
+            chargecode.Code = formattedNewCode;
             break;
             case(ChargeCodeActivity.Project):
                 var latestProjectNumber = _context.Projects.Max((p) => p.ProjectNumber);
@@ -75,20 +86,19 @@ public class ChargeCodeServiceV1
         }
 
         await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);  
 
-        return new UpsertChargeCodeV1.Response()
+
+                return new UpsertChargeCodeV1.Response()
         {
             Id = chargecode.Id
         };
-        
         }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync(ct);
-                return Result.Fail(new Error("An error occurred while upserting the quote.").CausedBy(ex));
+                return Result.Fail(new Error("An error occurred while upserting the Chargecode.").CausedBy(ex));
             }
-
-
         }
     }
 

@@ -17,10 +17,13 @@ import {
 } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
+import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
+import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
+import { GetQuotesRecordV1 } from '../../models/quotes/get-quotes-v1';
 
 
 interface Form {
-  ChargeCodeActivity: FormControl<ChargeCodeActivity | null>;
+  Activity: FormControl<ChargeCodeActivity | null>;
   ProjectId: FormControl<string | null>;
   QuoteId: FormControl<string | null>;
   ServiceAgreementId: FormControl<string | null>;
@@ -39,6 +42,10 @@ export class ChargeCodeCreateComponent {
   apiErrors: string[] = [];
   ChargeCodeActivity = ChargeCodeActivity;
   
+  projects$: Observable<GetProjectRecordV1[]>;
+  services$: Observable<GetServicesRecordV1[]>;
+  quotes$: Observable<GetQuotesRecordV1[]>;
+
   showProjects$ = new BehaviorSubject<boolean | null>(null);
   showQuotes$ = new BehaviorSubject<boolean | null>(null);
   showServices$ = new BehaviorSubject<boolean | null>(null);
@@ -47,7 +54,7 @@ export class ChargeCodeCreateComponent {
 
 
   form = new FormGroup<Form>({
-    ChargeCodeActivity: new FormControl(null, {
+    Activity: new FormControl(null, {
       validators: [Validators.required],
     }),
     ProjectId: new FormControl(null, {
@@ -60,10 +67,10 @@ export class ChargeCodeCreateComponent {
       validators: [],
     }),
         Billable: new FormControl(null, {
-      validators: [],
+      validators: [Validators.required],
     }),
         Active: new FormControl(null, {
-      validators: [],
+      validators: [Validators.required],
     }),
       Description: new FormControl(null, {
       validators: [],
@@ -76,7 +83,29 @@ export class ChargeCodeCreateComponent {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    this.form.controls.ChargeCodeActivity.valueChanges.subscribe((chargeCodeActivity)=>{
+    const quotesResponse$ = this.hqService.getQuotesV1({});
+    this.quotes$ = quotesResponse$.pipe(
+      map((response) => {
+        return response.records;
+      })
+    );
+    const projectsResponse$ = this.hqService.getProjectsV1({});
+    this.projects$ = projectsResponse$.pipe(
+      map((response) => {
+        return response.records;
+      }));
+
+      const servicesResponse$ = this.hqService.getServicesV1({});
+    this.services$ = servicesResponse$.pipe(
+      map((response) => {
+        return response.records;
+      }));
+
+    this.form.controls.Activity.valueChanges.subscribe((chargeCodeActivity)=>{
+      this.form.controls.ProjectId.setValue(null);
+      this.form.controls.QuoteId.setValue(null);
+      this.form.controls.ServiceAgreementId.setValue(null);
+
       this.showProjects$.next(false);
       this.showQuotes$.next(false);
       this.showServices$.next(false);
@@ -107,9 +136,9 @@ export class ChargeCodeCreateComponent {
 
     try {
       const request = this.form.value;
-      // const response = await firstValueFrom(
-      //   // this.hqService.upsertStaffV1(request)
-      // );
+      const response = await firstValueFrom(
+        this.hqService.upsertChargecodesV1(request)
+      );
       this.router.navigate(['../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
