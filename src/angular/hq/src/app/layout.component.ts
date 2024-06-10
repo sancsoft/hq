@@ -26,9 +26,7 @@ export class LayoutComponent {
 
   userName$: Observable<string>;
   
-  constructor(
-    public modalService: ModalService
-  ) {
+  constructor() {
     this.userName$ = this.oidcSecurityService.userData$.pipe(
       filter(t => t.userData),
       map(t => t.userData.email)
@@ -39,21 +37,6 @@ export class LayoutComponent {
     this.oidcSecurityService
       .logoff()
       .subscribe((result) => console.log(result));
-  }
-
-  async alert() {
-    const result = await firstValueFrom(this.modalService.alert('Alert title', 'Alert message'));
-    console.log(result);
-  }
-
-  async confirm() {
-    const result = await firstValueFrom(this.modalService.confirm('Confirm title', 'Confirm message'));
-    console.log(result);
-  }
-
-  async prompt() {
-    const result = await firstValueFrom(this.modalService.prompt('Prompt title', 'Prompt message'));
-    console.log(result);
   }
 
 }
