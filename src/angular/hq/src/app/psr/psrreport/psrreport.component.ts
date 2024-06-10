@@ -117,9 +117,9 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
 
     const apiResponse$ = request$.pipe(
+      skip(1),
       tap(()=> {this.submitButtonState = ButtonState.Enabled}),
       debounceTime(1000),
-      skip(1),
       takeUntil(this.destroyed$),
       tap(()=> {this.savedStatus = "loading"; console.log(this.savedStatus);}),
       switchMap((request) =>

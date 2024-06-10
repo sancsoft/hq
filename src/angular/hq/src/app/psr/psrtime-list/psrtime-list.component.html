@@ -30,10 +30,12 @@
                         <!-- <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="deselectAll()">
               Deselect All
             </button> -->
-                        <button class="px-2 py-2 bg-transparent border border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptAll()">
+                        <button  [disabled]="acceptAllButtonState == ButtonState.Disabled"
+                        [ngClass]="{'text-gray-50 border-gray-500 bg-gray-500 ':acceptAllButtonState == ButtonState.Disabled, 'border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white': acceptAllButtonState == ButtonState.Enabled}"  class="px-2 py-2 bg-transparent border  rounded min-w-[120px] font-normal" (click)="acceptAll()">
               Accept All
             </button>
-                        <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptSelected()">
+                        <button [disabled]="acceptButtonState == ButtonState.Disabled"
+                        [ngClass]="{'text-gray-50 border-gray-500 bg-gray-500 ':acceptButtonState == ButtonState.Disabled, 'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white': acceptButtonState == ButtonState.Enabled}" class="px-2 py-2 border  rounded min-w-[120px] font-normal" (click)="acceptSelected()">
               Accept
             </button>
                     </div>
