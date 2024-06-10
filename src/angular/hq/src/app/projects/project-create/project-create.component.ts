@@ -36,6 +36,17 @@ export enum Period {
   Year = 4,
 }
 
+interface Form {
+  clientId: FormControl<string | null>;
+  name: FormControl<string | null>;
+  projectManagerId: FormControl<string | null>;
+  hourlyRate: FormControl<number | null>;
+  totalHours: FormControl<number | null>;
+  bookingPeriod: FormControl<number | null>;
+  quoteId: FormControl<string | null>;
+  startDate: FormControl<Date | null>;
+  endDate: FormControl<Date | null>;
+}
 @Component({
   selector: 'hq-project-create',
   standalone: true,
@@ -49,6 +60,7 @@ export enum Period {
   ],
   templateUrl: './project-create.component.html',
 })
+
 export class ProjectCreateComponent {
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
@@ -59,20 +71,20 @@ export class ProjectCreateComponent {
   selectedClientName$ = new BehaviorSubject<string | null>(null);
   generatedChargeCode$ = new BehaviorSubject<string | null>(null);
 
-  projectFormGroup = new FormGroup(
+  projectFormGroup = new FormGroup<Form>(
     {
       clientId: new FormControl(''),
-      name: new FormControl('', Validators.required),
-      projectManagerId: new FormControl(''),
+      name: new FormControl('', [Validators.required]),
+      projectManagerId: new FormControl(null, [Validators.required]),
       hourlyRate: new FormControl(0, [Validators.required, Validators.min(0)]),
-      totalHours: new FormControl('', [Validators.required, Validators.min(0)]),
-      bookingPeriod: new FormControl(0, [
+      totalHours: new FormControl(0, [Validators.required, Validators.min(0)]),
+      bookingPeriod: new FormControl(null, [
         Validators.required,
         Validators.min(0),
       ]),
-      quoteId: new FormControl(null),
-      startDate: new FormControl(new Date(), Validators.required),
-      endDate: new FormControl(new Date(), Validators.required),
+      quoteId: new FormControl(null, [Validators.required]),
+      startDate: new FormControl(null, Validators.required),
+      endDate: new FormControl(null, Validators.required),
     },
     { validators: this.dateRangeValidator }
   );

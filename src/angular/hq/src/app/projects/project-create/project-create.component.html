@@ -142,7 +142,7 @@
                         formControlName="projectManagerId"
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
                       >
-                        <option value="" disabled selected>
+                        <option [ngValue]="null" disabled selected>
                           Select Project Manager
                         </option>
                         <option
@@ -159,6 +159,15 @@
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                     </div>
+                    @if ( projectFormGroup.get('projectManagerId')?.touched &&
+                    projectFormGroup.get('projectManagerId')?.errors) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('projectManagerId')?.errors?.['required']"
+                      >
+                        Project Manager selection is required.
+                      </span>
+                    }
                   </div>
                   <!-- column -->
                   <div>
@@ -279,10 +288,10 @@
                         <option [ngValue]="null" disabled selected>
                           Select Period
                         </option>
-                        <option value="1">Week</option>
-                        <option value="2">Month</option>
-                        <option value="3">Quarter</option>
-                        <option value="4">Year</option>
+                        <option [ngValue]="1">Week</option>
+                        <option [ngValue]="2">Month</option>
+                        <option [ngValue]="3">Quarter</option>
+                        <option [ngValue]="4">Year</option>
                       </select>
                       <span
                         class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
@@ -298,7 +307,7 @@
                       >
                         <span
                           class="text-red-700 text-xs leading-normal inline-block"
-                          >Required: Error message here</span
+                          >Required: Selecting period is required here</span
                         >
                       </div>
                     </div>
@@ -470,7 +479,7 @@
                         formControlName="quoteId"
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
                       >
-                        <option value="" disabled selected>
+                        <option [ngValue]="null" disabled selected>
                           Select a quote
                         </option>
                         <option *ngFor="let quote of quotes" [value]="quote.id">
