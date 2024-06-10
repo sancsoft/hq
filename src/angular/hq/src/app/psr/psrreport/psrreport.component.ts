@@ -12,6 +12,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, NgModel } from '@angular/forms';
 import { PsrService } from '../psr-service';
 
+
 import {
   BehaviorSubject,
   Observable,
@@ -20,16 +21,19 @@ import {
   combineLatest,
   debounceTime,
   map,
+  tap,
   skip,
   startWith,
   switchMap,
   take,
   takeUntil,
+  firstValueFrom
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { MarkdownModule } from 'ngx-markdown';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'hq-psrreport',
@@ -40,13 +44,15 @@ import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<any>;
-  report: string|null = null;
+  report: string | null = null;
   sideBarCollapsed = false;
   leftWidth: number = 100;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   report$ = new Subject<string | null>();
   psrId$: Observable<string>;
+  savedStatus?: string;
+
 
   ngOnInit(): void {
     this.psrService.resetFilter();
@@ -54,7 +60,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.psrService.hideStaffMembers();
     this.psrService.hideIsSubmitted();
   }
-  
+
   ngOnDestroy(): void {
     this.psrService.resetFilter();
     this.destroyed$.next(true);
@@ -65,7 +71,8 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
-    private psrService: PsrService
+    private psrService: PsrService,
+    private modalService: ModalService
   ) {
     const psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId'])
@@ -101,17 +108,21 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       debounceTime(1000),
       skip(1),
       takeUntil(this.destroyed$),
+      tap(()=> {this.savedStatus = "loading";}),
       switchMap((request) =>
         this.hqService.updateProjectStatusReportMarkdownV1(request)
       )
     );
     apiResponse$.subscribe({
       next: (response) => {
+        this.savedStatus ="success";
         console.log('API Response:', response);
       },
       error: (err) => {
+        this.savedStatus = "fail";
         console.error('Error:', err);
-        window.alert('There was an error saving the PM report.')
+        this.modalService.alert('Error', 'There was an error saving the PM report.')
+        this.savedStatus = "fail";
       },
     });
   }
@@ -119,11 +130,13 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   updateReport(value: string) {
     this.report$.next(value);
   }
-  onReportSubmit() {
-    if (window.confirm('Are you sure you want to submit this report?')) {
-      const request$ = combineLatest({
-        projectStatusReportId: this.psrId$,
-      });
+
+  async onReportSubmit() {
+    const confirmation = await firstValueFrom(this.modalService.confirm('Confirmation', 'Are you sure you want to submit this report?'));
+
+    if (confirmation) {
+      const request$ = combineLatest({ projectStatusReportId: this.psrId$, });
+
       const apiResponse$ = request$.pipe(
         take(1),
         switchMap((request) =>
@@ -131,12 +144,13 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         )
       );
       apiResponse$.subscribe({
-        next: (response) => {
-          window.alert('Report submitted successfully');
+        next: () => {
+          this.modalService.alert('Success', 'Report submitted successfully');
+          this.router.navigate(['/psr']);
         },
         error: (err) => {
           if (err instanceof APIError) {
-            window.alert(err.errors.join('\n'));
+            this.modalService.alert('Error', err.errors.join('\n'));
           }
         },
       });

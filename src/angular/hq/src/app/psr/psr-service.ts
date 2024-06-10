@@ -23,7 +23,9 @@ export class PsrService {
   projectStatus = new FormControl<ProjectStatus>(ProjectStatus.InProduction);
   activityName = new FormControl<ActivityName>(ActivityName.Development);
   staffMember = new FormControl<string | null>(null);
-  isSubmitted = new FormControl<boolean | null>(false);
+  isSubmitted = new FormControl<boolean | null>(null);
+  startDate = new FormControl<Date | null>(null);
+  endDate = new FormControl<Date | null>(null);
 
   ProjectStatus = ProjectStatus;
   ActivityName = ActivityName;
@@ -32,6 +34,10 @@ export class PsrService {
   showSearch$ = new BehaviorSubject<boolean>(true);
   showStaffMembers$ = new BehaviorSubject<boolean>(true);
   showIsSubmitted$ = new BehaviorSubject<boolean>(true);
+  showStartDate$ = new BehaviorSubject<boolean>(true);
+  showEndDate$ = new BehaviorSubject<boolean>(true);
+
+
 
 
   showActivityName$ = new BehaviorSubject<boolean>(true);
@@ -45,6 +51,9 @@ export class PsrService {
     this.activityName.setValue(ActivityName.Development);
     this.staffMember.setValue(null);
     this.roaster.setValue('');
+    this.isSubmitted.setValue(null);
+    this.startDate.setValue(null);
+    this.endDate.setValue(null);
   }
   showProjectStatus() {
     this.showProjectStatus$.next(true);
@@ -83,5 +92,18 @@ export class PsrService {
   }
   hideIsSubmitted() {
     this.showIsSubmitted$.next(false);
+  }
+
+  showStartDate() {
+    this.showStartDate$.next(true);
+  }
+  hideStartDate() {
+    this.showStartDate$.next(false);
+  }
+  showEndDate() {
+    this.showEndDate$.next(true);
+  }
+  hideEndDate() {
+    this.showEndDate$.next(false);
   }
 }

@@ -45,6 +45,7 @@ import {
 } from '../../models/charge-codes/get-chargecodes-v1';
 import { FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
+import { ModalService } from '../../services/modal.service';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -88,6 +89,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     this.psrService.showSearch();
     this.psrService.showStaffMembers();
     this.psrService.hideIsSubmitted();
+    this.psrService.hideStartDate();
+    this.psrService.hideEndDate();
   }
   ngOnDestroy(): void {
     this.psrService.resetFilter();
@@ -98,7 +101,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private psrService: PsrService,
     private hqSnackBarService: HQSnackBarService,
-    private hqConfirmationModalService: HQConfirmationModalService
+    private hqConfirmationModalService: HQConfirmationModalService,
+    private modalService: ModalService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -304,7 +308,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     );
 
     if (!time || description.length < 1) {
-      alert('Please Enter a description');
+      this.modalService.alert('Error', 'Please Enter a description');
       // TODO: Alert the users
       return;
     }
@@ -378,7 +382,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     if (!time || !chargeCode || chargeCode.length != 5) {
       // this condition is to check if the charge code is valid
-      alert('Please Enter a Activity Name');
+      this.modalService.alert('Error', 'Please Enter a Activity Name');
       // TODO: Alert the users
       return;
     }
@@ -392,7 +396,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     //   this.refresh$.next();
     //   return;
     // }
-    const changeChargeCode = window.confirm(
+    const changeChargeCode = this.modalService.confirm(
+      'Confirmation',
       `Are you sure you want to change the charge code to ${chargeCode}?`
     );
     if (!changeChargeCode) {
@@ -432,7 +437,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     }
 
     if (!time || billableHours == '0' || billableHours == '') {
-      alert('Please Add a time to your billable hours');
+      this.modalService.alert('Error', 'Please Add a time to your billable hours');
       return;
     }
     const chargecodeId = await firstValueFrom(
@@ -468,7 +473,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     // const actionTaken = await firstValueFrom(
     //   this.hqConfirmationModalService.cuurentAction
     // );
-    const notes = window.prompt('Enter Notes');
+    const notes = await firstValueFrom(this.modalService.prompt('Enter Notes'));
     console.log(notes);
     // if (actionTaken != true) {
     //   this.refresh$.next();
