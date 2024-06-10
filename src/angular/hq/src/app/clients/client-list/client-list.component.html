@@ -94,7 +94,7 @@
     </tr>
   </thead>
   <tbody>
-    @if((records$ | async)!.length == 0) {
+    @if((records$ | async)?.length == 0) {
       <td colspan = "6">
         <h1 class = "text-center py-4 font-bold">No matching records found</h1>
       </td>
