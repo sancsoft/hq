@@ -32,6 +32,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { MarkdownModule } from 'ngx-markdown';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
+
+enum ButtonState {
+  Enabled,
+  Disabled,
+  Loading,
+}
+
 @Component({
   selector: 'hq-psrreport',
   standalone: true,
@@ -50,10 +57,16 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   psrId$: Observable<string>;
   savedStatus?: string;
 
+  submitButtonState: ButtonState = ButtonState.Enabled;
+  ButtonState = ButtonState;
+
+
 
   ngOnInit(): void {
     this.psrService.resetFilter();
     this.psrService.hideSearch();
+    this.psrService.hideStartDate();
+    this.psrService.hideEndDate();
     this.psrService.hideStaffMembers();
     this.psrService.hideIsSubmitted();
   }
@@ -79,6 +92,8 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       projectStatusReportId: psrId$,
       report: this.report$,
     });
+
+
     const psr$ = psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
       map((t) => t.records[0])
@@ -99,10 +114,14 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       if (psrResponse.report) {
         this.report = psrResponse.report;
       }
+      console.log(psrResponse.submittedAt, 'Submitted At');
+      this.submitButtonState =  psrResponse.submittedAt ? ButtonState.Disabled : ButtonState.Enabled; // If submittedAt is not null, this means that the report has been submitted
+      console.log(this.submitButtonState.toLocaleString()); // console
     });
 
 
     const apiResponse$ = request$.pipe(
+      tap(()=> {this.submitButtonState = ButtonState.Enabled}),
       debounceTime(1000),
       skip(1),
       takeUntil(this.destroyed$),
@@ -146,6 +165,8 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.router.navigate(['']);
           window.alert('Report submitted successfully');
+          // Disable the submit button
+          this.submitButtonState = ButtonState.Disabled;
         },
         error: (err) => {
           if (err instanceof APIError) {
