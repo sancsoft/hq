@@ -25,6 +25,7 @@ import {
   switchMap,
   take,
   takeUntil,
+  firstValueFrom
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
@@ -41,7 +42,7 @@ import { ModalService } from '../../services/modal.service';
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<any>;
-  report: string|null = null;
+  report: string | null = null;
   sideBarCollapsed = false;
   leftWidth: number = 100;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -55,7 +56,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.psrService.hideStaffMembers();
     this.psrService.hideIsSubmitted();
   }
-  
+
   ngOnDestroy(): void {
     this.psrService.resetFilter();
     this.destroyed$.next(true);
@@ -121,11 +122,13 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   updateReport(value: string) {
     this.report$.next(value);
   }
-  onReportSubmit() {
-    if (this.modalService.confirm('Confirmation', 'Are you sure you want to submit this report?')) {
-      const request$ = combineLatest({
-        projectStatusReportId: this.psrId$,
-      });
+
+  async onReportSubmit() {
+    const confirmation = await firstValueFrom(this.modalService.confirm('Confirmation', 'Are you sure you want to submit this report?'));
+
+    if (confirmation) {
+      const request$ = combineLatest({ projectStatusReportId: this.psrId$, });
+
       const apiResponse$ = request$.pipe(
         take(1),
         switchMap((request) =>
@@ -133,7 +136,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         )
       );
       apiResponse$.subscribe({
-        next: (response) => {
+        next: () => {
           this.modalService.alert('Success', 'Report submitted successfully');
         },
         error: (err) => {

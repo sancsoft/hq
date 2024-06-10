@@ -18,14 +18,14 @@ export class ModalService {
   constructor(public dialog: Dialog) { }
 
   confirm(title: string, message: string = ''): Observable<boolean> {
-    const dialogRef = this.dialog.open<boolean, ModalData>(ConfirmModalComponent,{
+    const dialogRef = this.dialog.open<boolean, ModalData>(ConfirmModalComponent, {
       minWidth: '600px',
-      data:{
+      data: {
         title,
         message,
       }
     });
-    return dialogRef.closed.pipe(map(t=>t === true ));
+    return dialogRef.closed.pipe(map(t => t == true));
   }
 
   alert(title: string, message: string): Observable<boolean> {
@@ -40,7 +40,7 @@ export class ModalService {
     return dialogRef.closed.pipe(map(t => true));
   }
 
-  prompt(title: string, message: string = ''): Observable<string|undefined> {
+  prompt(title: string, message: string = ''): Observable<string | undefined> {
     const dialogRef = this.dialog.open<string, ModalData>(PromptModalComponent, {
       minWidth: '600px',
       data: {
@@ -48,7 +48,7 @@ export class ModalService {
         message,
       }
     });
-    return dialogRef.closed.pipe(map(t=>t));
+    return dialogRef.closed.pipe(map(t => t));
   }
 
   // showCustom(title: string, component: ComponentType<C>, data: ?): Observable<?> {
