@@ -153,6 +153,8 @@ public class ProjectServiceV1
             BookingPeriod = t.BookingPeriod,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
+            BillingEmail = t.Client.BillingEmail,
+            OfficialName = t.Client.OfficialName,
             Status = t.Quote != null ? (int)t.Quote.Status : 0
         });
 

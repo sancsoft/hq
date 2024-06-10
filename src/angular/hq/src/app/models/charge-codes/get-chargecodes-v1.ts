@@ -4,7 +4,7 @@ import { SortDirection } from "../common/sort-direction";
 
 // Interface for the paged request with sorting and optional filters specific to charge codes
 export interface GetChargeCodesRequestV1 extends PagedRequestV1 {
-  search?: string;
+  search?: string | null;
   id?: string;
   sortBy: SortColumn;
   sortDirection: SortDirection;
@@ -12,6 +12,13 @@ export interface GetChargeCodesRequestV1 extends PagedRequestV1 {
   clientId?: string | null,
   billable?: boolean;
   active?: boolean;
+}
+export enum ChargeCodeActivity
+{
+    General = 1,
+    Project = 2,
+    Quote = 3,
+    Service = 4
 }
 
 // Enum for specifying the sortable columns in charge code requests
@@ -26,6 +33,7 @@ export enum SortColumn {
 
 // Interface representing a single charge code record
 export interface GetChargeCodeRecordV1 {
+  activity: ChargeCodeActivity;
   id: string;
   code: string;
   billable: boolean;
@@ -34,6 +42,9 @@ export interface GetChargeCodeRecordV1 {
   quoteName?: string;
   serviceAgreementName?: string;
   description?: string;
+  quoteId?: string;
+  projectId?: string;
+  serviceAgreementId?: string;
 }
 
 // Interface for the response containing a list of charge code records

@@ -14,7 +14,7 @@ import { ClientDetailsService } from '../client-details.service';
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive, ClientDetailsSummaryComponent, ClientDetailsSearchFilterComponent],
   templateUrl: './client-details.component.html',
-  providers: [ClientDetailsService]
+  // providers: [ClientDetailsService]
 })
 export class ClientDetailsComponent {
 

@@ -8,10 +8,13 @@ export interface GetPSRRequestV1 extends PagedRequestV1 {
   search?: string | null;
   id?: string | null;
   clientId?: string;
+  projectId?: string;
   sortBy?: SortColumn;
   projectManagerId?: string | null;
   sortDirection?: SortDirection;
   isSubmitted?: boolean | null;
+  startDate?: Date | null;
+  endDate?: Date | null;
 }
 
 export enum SortColumn {

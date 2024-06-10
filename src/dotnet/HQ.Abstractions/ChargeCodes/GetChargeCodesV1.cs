@@ -44,6 +44,9 @@ namespace HQ.Abstractions.ChargeCodes
             public string? ProjectName { get; set; }
             public string? QuoteName { get; set; }
             public string? ServiceAgreementName { get; set; }
+            public Guid? ProjectId { get; set; }
+            public Guid? QuoteId { get; set; }
+            public Guid? ServiceAgreementId { get; set; }
             public string? Description { get; set; }
         }
     }

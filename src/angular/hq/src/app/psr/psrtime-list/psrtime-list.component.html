@@ -42,8 +42,8 @@
         </tr>
     </thead>
     <tbody>
-        @for (time of time$ | async; track time.id) { 
-          @switch (time.status) { 
+        @for (time of time$ | async; track time.id) {
+          @switch (time.status) {
             @case (timeStatus.Pending) {
               <tr [ngClass]="{
                             'bg-blue-950': isSelected(time.id) | async,
@@ -178,8 +178,8 @@
                   </div>
                 </td>
               </tr>
-            } 
-          } 
+            }
+          }
         }
   </tbody>
   <tbody class="hidden">
