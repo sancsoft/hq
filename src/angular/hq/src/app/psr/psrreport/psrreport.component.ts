@@ -27,11 +27,14 @@ import {
   switchMap,
   take,
   takeUntil,
+  firstValueFrom
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { MarkdownModule } from 'ngx-markdown';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
+import { ModalService } from '../../services/modal.service';
+
 @Component({
   selector: 'hq-psrreport',
   standalone: true,
@@ -41,7 +44,7 @@ import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<any>;
-  report: string|null = null;
+  report: string | null = null;
   sideBarCollapsed = false;
   leftWidth: number = 100;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -69,7 +72,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private psrService: PsrService,
-
+    private modalService: ModalService
   ) {
     const psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId'])
@@ -101,12 +104,11 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       }
     });
 
-
     const apiResponse$ = request$.pipe(
       debounceTime(1000),
       skip(1),
       takeUntil(this.destroyed$),
-      tap(()=> {this.savedStatus = "loading"; console.log(this.savedStatus);}),
+      tap(()=> {this.savedStatus = "loading";}),
       switchMap((request) =>
         this.hqService.updateProjectStatusReportMarkdownV1(request)
       )
@@ -114,15 +116,13 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     apiResponse$.subscribe({
       next: (response) => {
         this.savedStatus ="success";
-        console.log(this.savedStatus);
         console.log('API Response:', response);
       },
       error: (err) => {
         this.savedStatus = "fail";
-        console.log(this.savedStatus);
         console.error('Error:', err);
-        window.alert('There was an error saving the PM report.');
-        tap(()=> {this.savedStatus = "fail"; });
+        this.modalService.alert('Error', 'There was an error saving the PM report.')
+        this.savedStatus = "fail";
       },
     });
   }
@@ -131,11 +131,12 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.report$.next(value);
   }
 
-  onReportSubmit() {
-    if (window.confirm('Are you sure you want to submit this report?')) {
-      const request$ = combineLatest({
-        projectStatusReportId: this.psrId$,
-      });
+  async onReportSubmit() {
+    const confirmation = await firstValueFrom(this.modalService.confirm('Confirmation', 'Are you sure you want to submit this report?'));
+
+    if (confirmation) {
+      const request$ = combineLatest({ projectStatusReportId: this.psrId$, });
+
       const apiResponse$ = request$.pipe(
         take(1),
         switchMap((request) =>
@@ -143,13 +144,13 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         )
       );
       apiResponse$.subscribe({
-        next: (response) => {
-          this.router.navigate(['']);
-          window.alert('Report submitted successfully');
+        next: () => {
+          this.modalService.alert('Success', 'Report submitted successfully');
+          this.router.navigate(['/psr']);
         },
         error: (err) => {
           if (err instanceof APIError) {
-            window.alert(err.errors.join('\n'));
+            this.modalService.alert('Error', err.errors.join('\n'));
           }
         },
       });
