@@ -1,42 +1,19 @@
 <div class="h-[calc(100dvh-(var(--h-footer)+var(--h-header)))] fixed top-[--h-header] left-0 w-full flex flex-col">
+    @if (projectDetail$ | async; as project) {
     <div class="px-5">
-        <h1 class="font-rajdhani font-semibold text-3xl">P1006: POS</h1>
+        <h1 class="font-rajdhani font-semibold text-3xl">{{project.chargeCode}}: {{project.name}}</h1>
 
         <div class="flex flex-col xl:flex-row xl:justify-between xl:items-center">
             <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-                <div class="text-gray-50">$105.00</div>
-                <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
-                <div class="text-gray-50"><a href="#" class="underline">Official Name - Probably longer than the name</a></div>
+                <div class="text-gray-50">${{project.hourlyRate}}</div>
+                <div class="text-gray-50">{{project.billingEmail || 'None'}}</div>
+                <div class="text-gray-50"><a href="#" class="underline">Official Name - {{project.officialName || 'None'}}</a></div>
             </div>
 
-            <div class="flex flex-row auto-cols-min gap-[2.983rem] pt-3 justify-end xl:pt-0">
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Start / End Date</div>
-                    <div class="text-right">MM/DD/YYYY - MM/DD/YYYY</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Last</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS This</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Total HRS</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Avail.</div>
-                    <div class="text-right">00000.00</div>
-                </div>
-                <div>
-                    <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Budget Avail.</div>
-                    <div class="text-right">17%</div>
-                </div>
-            </div>
+            <hq-project-psr-details ></hq-project-psr-details>
         </div>
     </div>
+}
 
     <div class="px-5 mb-[8px]">
         <div class="flex flex-col lg:flex-row justify-between items-start">
@@ -52,7 +29,7 @@
                     name=""
                 />
                 </div>
-        
+
                 <!-- Is this a button? -->
                 <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[205px]">
                 <input
@@ -61,7 +38,7 @@
                     name=""
                     value="Activities"
                 />
-                </div>  
+                </div>
 
                 <div class="pl-[5vw]">
                     <div>
@@ -69,7 +46,7 @@
                         <div class="text-right font-rajdhani font-semibold text-3xl">00000.00</div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -77,20 +54,21 @@
     <div class="overflow-hidden flex-auto">
         <div id="left-side" class="grid gap-0 transition-all duration-200 ease-in-out relative" [ngClass]="{ 'grid-cols-[0px_20px_1fr]': sideBarCollapsed, 'grid-cols-[405px_20px_1fr]': !sideBarCollapsed }">
             <aside class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out" [ngClass]="{ 'opacity-0': sideBarCollapsed, 'opacity-100': !sideBarCollapsed }">
-                <table class="min-w-full border-spacing-0 border-separate">
+                <hq-psr-work-week></hq-psr-work-week>
+                <table class="min-w-full border-spacing-0 border-separate hidden">
                     <thead>
                         <tr class="sticky top-0 text-left">
-                            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">PSR week of <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
+                            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5" >PSR week of <!-- sorted by client name --><i class="bi bi-sort-down ml-2"></i></th>
                             <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3">Total Hrs <i class="bi bi-arrow-down-up text-[12px] ml-2"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                         @for(i of [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10]; track i)
                         {
-                            <tr [ngClass]="(psrId$ | async) == i.toString() ? 'bg-blue-900' : 'even:bg-gray-850 odd:bg-black-alt'">
+                            <tr [ngClass]="(projectId$ | async) == i.toString() ? 'bg-blue-900' : 'even:bg-gray-850 odd:bg-black-alt'">
                                 <td class="border-b border-black py-2 pl-5">MM/DD/YYYY</td>
                                 <td class="border-b border-black py-2">0000.00</td>
-                                <td class="border-b border-black py-2 text-right pr-5"><a class="text-teal-200 hover:text-teal-300" routerLink="report" [queryParams]="{psrId: i}">VIEW</a></td>
+                                <td class="border-b border-black py-2 text-right pr-5"><a class="text-teal-200 hover:text-teal-300" routerLink="report" [queryParams]="{psrId$: i}">VIEW</a></td>
                             </tr>
                         }
                     </tbody>
@@ -106,14 +84,16 @@
             <main class="bg-black-alt overflow-y-auto h-[calc(100dvh-245px)]">
                 <!-- project details tabs -->
                 <div class="bg-black-alt border-steel-blue-600 border-t pt-[23px] sticky top-0 z-50">
-                    <div class="flex border-b border-black">
-                        <a routerLink="details" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaDetails="routerLinkActive" [ngClass]="(rlaDetails.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">Details</a>
-                        @if(psrId$ | async)
-                        {
-                            <a routerLink="report" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaReport="routerLinkActive" [ngClass]="(rlaReport.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PM Report</a>
-                            <a routerLink="time" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaTime="routerLinkActive" [ngClass]="(rlaTime.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PSR</a>
-                        }
-                    </div>
+                  <div class="flex border-b border-black">
+                    <a routerLink="details" [queryParams]="{projectId: projectId$ | async}" routerLinkActive #rlaDetails="routerLinkActive" [ngClass]="(rlaDetails.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">Details</a>
+
+                    @if(psrId$ | async)
+                    {
+                      <a routerLink="report" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaReport="routerLinkActive" [ngClass]="(rlaReport.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PM Report</a>
+                        <a routerLink="time" [queryParams]="{psrId: psrId$ | async}" routerLinkActive #rlaTime="routerLinkActive" [ngClass]="(rlaTime.isActive ? 'border-gray-100' : 'border-transparent')" class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100">PSR</a>
+                    }
+                </div>
+
                 </div>
                 <router-outlet></router-outlet>
             </main>

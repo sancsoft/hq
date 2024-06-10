@@ -88,6 +88,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     this.psrService.showSearch();
     this.psrService.showStaffMembers();
     this.psrService.hideIsSubmitted();
+    this.psrService.hideStartDate();
+    this.psrService.hideEndDate();
   }
   ngOnDestroy(): void {
     this.psrService.resetFilter();

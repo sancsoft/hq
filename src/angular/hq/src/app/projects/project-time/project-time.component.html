@@ -1,4 +1,6 @@
 <!-- psr content -->
+@if (psrTimes$ | async; as times) {
+
 <div class="relative">
     <div class="flex-auto">
         <table class="min-w-full border-spacing-0 border-separate">
@@ -6,373 +8,59 @@
                 <tr class="sticky top-[54px] text-left">
                     <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-22 pl-5 pr-2 text-nowrap">Billable Hrs</th>
                     <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-2 px-2 text-nowrap">Hrs</th>
-                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-2 px-2 text-nowrap">Date <i class="bi bi-sort-down ml-1"></i></th>
-                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-2 px-2 text-nowrap">Chrg Code <i class="bi bi-arrow-down-up text-[12px] ml-1"></i></th>
-                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-2 px-2 text-nowrap">Staff <i class="bi bi-arrow-down-up text-[12px] ml-1"></i></th>
-                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-2 px-2 text-nowrap">Activity/Task <i class="bi bi-arrow-down-up text-[12px] ml-1"></i></th>
+                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-2 px-2 text-nowrap" (click)="onSortClick(sortColumn.Date)">Date <hq-sort-icon [column]="sortColumn.Date" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
+                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-2 px-2 text-nowrap" (click)="onSortClick(sortColumn.ChargeCode)">Chrg Code <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
+                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-2 px-2 text-nowrap" (click)="onSortClick(sortColumn.StaffName)">Staff <hq-sort-icon [column]="sortColumn.StaffName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
+                    <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-2 px-2 text-nowrap" (click)="onSortClick(sortColumn.Activity)">Activity/Task <hq-sort-icon [column]="sortColumn.Activity" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" /></th>
                     <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-2 pl-2">
                         <div class="flex items-center justify-between">
                             Description
                             <div class="flex space-x-2 pr-5">
-                                <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">Review</button>
+                                @if (psrId$ | async; as psrId) {
+                                <button [routerLink]="['/', 'psr', psrId, 'time']"  class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">Review</button>
+                                }
                             </div>
                         </div>
                     </th>
                 </tr>
             </thead>
             <tbody>
+                @for (time of times; track $index) {
                 <!-- Default -->
                 <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">     
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />        
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">  
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Default -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">8</td>
-                    <td class="border-b border-black py-2 px-2">8/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">Q1234</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">            
-                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />           
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <div class="text-nowrap divide-x divide-teal-200">
-                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                        </div>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Error -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-red-850 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">3.75</td>
-                    <td class="border-b border-black py-2 px-2">3/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">P1006</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
+                    @switch (time.status) {
+                        @case (timeStatus.Accepted) {
+                    <td  class="border-b border-black py-2 bg-green-600 w-3"></td>
+                        }
+                        @case (timeStatus.Pending) {
+                    <td  class="border-b border-black py-2 bg-gray-450 w-3"></td>
+
+                        }
+                        @case (timeStatus.Rejected) {
+                    <td  class="border-b border-black py-2 bg-red-600 w-3"></td>
+                        }
+                    }
+                    <td class="border-b border-black py-2 pl-3 pr-2">{{time.billableHours}}</td>
+                    <td class="border-b border-black py-2 px-2">{{time.hours}}</td>
+                    <td class="border-b border-black py-2 px-2">{{time.date}}</td>
+                    <td class="border-b border-black py-2 px-2">{{time.chargeCode}}</td>
+                    <td class="border-b border-black py-2 px-2">{{time.staffName}}</td>
                     <td class="border-b border-black py-2 px-2">Support</td>
                     <td class="border-b border-black py-2 px-2 w-full">
-                    <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />
+                        <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />
                     </td>
                     <td class="border-b border-black py-2 text-right pr-5">
                     <div class="flex justify-between flex-nowrap space-x-2 items-center">
                         <div>&nbsp;</div>
-                        <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
+                        <div class="text-nowrap divide-x divide-teal-200">
+                            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
+                        </div>
                     </div>
                     </td>
                 </tr>
-                <!-- Error -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-red-850 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">6.5</td>
-                    <td class="border-b border-black py-2 px-2">3.75</td>
-                    <td class="border-b border-black py-2 px-2">3/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">P1006</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">
-                    <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                    </div>
-                    </td>
-                </tr>
-                <!-- Error -->
-                <tr class="even:bg-gray-850 odd:bg-black-alt">
-                    <td class="border-b border-black py-2 bg-red-850 w-3"></td>
-                    <td class="border-b border-black py-2 pl-3 pr-2">10</td>
-                    <td class="border-b border-black py-2 px-2">3.75</td>
-                    <td class="border-b border-black py-2 px-2">3/23/2024</td>
-                    <td class="border-b border-black py-2 px-2">P1006</td>
-                    <td class="border-b border-black py-2 px-2">rlennox</td>
-                    <td class="border-b border-black py-2 px-2">Support</td>
-                    <td class="border-b border-black py-2 px-2 w-full">
-                    <input class="w-full bg-transparent border border-transparent rounded px-2 mr-2" value="Assisting Jack with debugging NV200 issues, sealevel questions." disabled />
-                    </td>
-                    <td class="border-b border-black py-2 text-right pr-5">
-                    <div class="flex justify-between flex-nowrap space-x-2 items-center">
-                        <div>&nbsp;</div>
-                        <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">view</button>
-                    </div>
-                    </td>
-                </tr>
+            }
             </tbody>
         </table>
     </div>
 </div>
+}
