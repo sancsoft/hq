@@ -279,6 +279,8 @@ public class ProjectServiceV1
     {
         var validationResult = Result.Merge(
             Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
+            Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId != request.ProjectId && t.Sequence == request.Sequence, ct), "Sequence must be unique."),
+
             Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId == request.ProjectId && t.Name == request.Name, ct), "Name must be unique.")
         );
 

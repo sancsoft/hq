@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, map } from 'rxjs';
 import { GetStaffV1Record } from '../models/staff-members/get-staff-member-v1';
 import { HQService } from '../services/hq.service';
 import { GetPSRTimeRecordStaffV1 } from '../models/PSR/get-psr-time-v1';
+import { GetProjectActivityRecordV1 } from '../models/PSR/get-project-activity-v1';
 
 export enum ActivityName {
   Support = 0,
@@ -17,12 +18,15 @@ export enum ActivityName {
 })
 export class PsrService {
   staffMembers$ = new BehaviorSubject<GetPSRTimeRecordStaffV1[]>([]);
+  projectActivities$ = new BehaviorSubject<GetProjectActivityRecordV1[]>([]);
+
   search = new FormControl<string | null>('');
   roaster = new FormControl<string | null>('');
 
   projectStatus = new FormControl<ProjectStatus>(ProjectStatus.InProduction);
   activityName = new FormControl<ActivityName>(ActivityName.Development);
   staffMember = new FormControl<string | null>(null);
+  projectActivity = new FormControl<string | null>(null);
   isSubmitted = new FormControl<boolean | null>(null);
   startDate = new FormControl<Date | null>(null);
   endDate = new FormControl<Date | null>(null);
@@ -33,6 +37,8 @@ export class PsrService {
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
   showSearch$ = new BehaviorSubject<boolean>(true);
   showStaffMembers$ = new BehaviorSubject<boolean>(true);
+  showProjectActivities$ = new BehaviorSubject<boolean>(true);
+
   showIsSubmitted$ = new BehaviorSubject<boolean>(true);
   showStartDate$ = new BehaviorSubject<boolean>(true);
   showEndDate$ = new BehaviorSubject<boolean>(true);
@@ -54,6 +60,7 @@ export class PsrService {
     this.isSubmitted.setValue(null);
     this.startDate.setValue(null);
     this.endDate.setValue(null);
+    this.projectActivity.setValue(null);
   }
   showProjectStatus() {
     this.showProjectStatus$.next(true);
@@ -105,5 +112,11 @@ export class PsrService {
   }
   hideEndDate() {
     this.showEndDate$.next(false);
+  }
+  showProjectActvities() {
+    this.showProjectActivities$.next(true);
+  }
+  hideProjectActvities() {
+    this.showProjectActivities$.next(false);
   }
 }

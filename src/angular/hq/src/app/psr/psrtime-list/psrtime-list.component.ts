@@ -46,6 +46,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
 import { ModalService } from '../../services/modal.service';
+import { GetProjectActivityRecordV1 } from '../../models/PSR/get-project-activity-v1';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -73,6 +74,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   psrId$: Observable<string>;
   time$: Observable<GetPSRTimeRecordV1[]>;
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
+  projectActivities$ = new BehaviorSubject<GetProjectActivityRecordV1[]>([]);
+
   timeIds$: Observable<string[]>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
@@ -88,6 +91,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     this.psrService.resetFilter();
     this.psrService.showSearch();
     this.psrService.showStaffMembers();
+    this.psrService.showProjectActvities();
     this.psrService.hideIsSubmitted();
     this.psrService.hideStartDate();
     this.psrService.hideEndDate();
@@ -137,6 +141,11 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     apiResponse$.pipe(first()).subscribe((response) => {
       psrService.staffMembers$.next(response.staff);
     });
+
+    this.hqService.getprojectActivitiesV1({projectId:'d245fc5f-ca02-487d-a6b7-52c6d04f695e'}).subscribe((response) => {
+      psrService.projectActivities$.next(response.records);
+      this.projectActivities$.next(response.records);
+     });
 
     const psr$ = psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
@@ -421,6 +430,28 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.refresh$.next();
+  }
+
+
+  async updateProjectActivity(timeId: string, event: Event) {
+    const activityId = await firstValueFrom(
+      this.time$.pipe(
+        map((times) => times.find((x) => x.id == timeId)?.activityId)
+      )
+    );
+    const psrId = await firstValueFrom(this.psrId$);
+
+
+    const request = {
+      timeId: timeId,
+      projectStatusReportId: psrId,
+      activityId: activityId
+    };
+
+    // TOOD: Call API
+    // const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
     // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
     this.refresh$.next();
   }
