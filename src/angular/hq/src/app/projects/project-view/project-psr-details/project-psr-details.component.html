@@ -1,0 +1,28 @@
+@if (psr$ | async; as psr) {
+<div class="flex flex-row auto-cols-min gap-[2.983rem] pt-3 justify-end xl:pt-0">
+  <div>
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Start / End Date</div>
+      <div class="text-right">{{psr.startDate}} - {{psr.endDate}}</div>
+  </div>
+  <div>
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Last</div>
+      <div class="text-right">{{psr.lastHours || 'None'}}</div>
+  </div>
+  <div>
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS This</div>
+      <div class="text-right">{{psr.thisHours}}</div>
+  </div>
+  <div>
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Total HRS</div>
+      <div class="text-right">{{psr.totalHours}}</div>
+  </div>
+  <div>
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">HRS Avail.</div>
+      <div class="text-right">{{psr.totalAvailableHours}}</div>
+  </div>
+  <div>
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">Budget Avail.</div>
+      <div class="text-right">%</div>
+  </div>
+</div>
+}
