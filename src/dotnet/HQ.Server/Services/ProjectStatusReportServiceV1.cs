@@ -417,11 +417,12 @@ public class ProjectStatusReportServiceV1
         {
             return Result.Fail("Unable to find time entry.");
         }
+        // This is TEMPORARY for making rejected time change to Pending
 
-        if(time.Status != TimeStatus.Accepted)
-        {
-            return Result.Fail("Time entry is not accepted.");
-        }
+        // if(time.Status != TimeStatus.Accepted)
+        // {
+        //     return Result.Fail("Time entry is not accepted.");
+        // }
 
         time.Status = TimeStatus.Pending;
 
