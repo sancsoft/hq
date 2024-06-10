@@ -32,12 +32,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { MarkdownModule } from 'ngx-markdown';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
+import { ButtonState } from '../../enums/ButtonState';
 
-enum ButtonState {
-  Enabled,
-  Disabled,
-  Loading,
-}
 
 @Component({
   selector: 'hq-psrreport',
