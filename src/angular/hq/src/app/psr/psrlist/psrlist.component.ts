@@ -1,3 +1,4 @@
+import { PsrListSearchFilterComponent } from './../psr-list-search-filter/psr-list-search-filter.component';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -26,8 +27,8 @@ import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { Period } from '../../projects/project-create/project-create.component';
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
-import { PsrService } from '../psr-service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { PsrListService } from './services/pstlistService';
 
 @Component({
   selector: 'hq-psrlist',
@@ -38,7 +39,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    PsrSearchFilterComponent,
+    PsrListSearchFilterComponent,
   ],
   templateUrl: './psrlist.component.html',
 })
@@ -53,62 +54,66 @@ export class PSRListComponent implements OnInit, OnDestroy {
   sortDirection$: BehaviorSubject<SortDirection>;
 
   Math = Math;
-
-  itemsPerPage = new FormControl(20, { nonNullable: true });
-  page = new FormControl<number>(1, { nonNullable: true });
-
   sortColumn = SortColumn;
   sortDirection = SortDirection;
 
   async ngOnInit() {
-    this.psrService.resetFilter();
-    this.psrService.showSearch();
-    this.psrService.showStaffMembers();
-    this.psrService.showIsSubmitted();
+    this.psrListService.showSearch();
+    this.psrListService.showStaffMembers();
+    this.psrListService.showIsSubmitted();
+    this.psrListService.showStartDate();
+    this.psrListService.showEndDate();
+
+
     const staffId = await firstValueFrom(
       this.oidcSecurityService.userData$.pipe(map((t) => t.userData?.staff_id))
     );
     if (staffId) {
-      this.psrService.staffMember.setValue(staffId);
+      this.psrListService.staffMember.setValue(staffId);
     } else {
       console.log('ERROR: Could not find staff');
     }
   }
   ngOnDestroy(): void {
-    this.psrService.resetFilter();
   }
 
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private psrService: PsrService,
+    public psrListService: PsrListService,
     private oidcSecurityService: OidcSecurityService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ChargeCode);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
-    const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      startWith(this.itemsPerPage.value)
+    const itemsPerPage$ = psrListService.itemsPerPage.valueChanges.pipe(
+      startWith(psrListService.itemsPerPage.value)
     );
-    const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
+    const page$ = psrListService.page.valueChanges.pipe(startWith(psrListService.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
       startWith(0)
     );
-    const search$ = psrService.search.valueChanges.pipe(
+    const search$ = psrListService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(psrService.search.value)
+      startWith(psrListService.search.value)
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
-    
-    const staffMemberId$ = psrService.staffMember.valueChanges.pipe(
-      startWith(psrService.staffMember.value)
+
+    const staffMemberId$ = psrListService.staffMember.valueChanges.pipe(
+      startWith(psrListService.staffMember.value)
     );
-    
-    const isSubmitted$ = psrService.isSubmitted.valueChanges.pipe(
-      startWith(psrService.isSubmitted.value)
+
+    const isSubmitted$ = psrListService.isSubmitted.valueChanges.pipe(
+      startWith(psrListService.isSubmitted.value)
+    );
+    const startDate$ = psrListService.startDate.valueChanges.pipe(
+      startWith(psrListService.startDate.value),
+    );
+    const endDate$ = psrListService.endDate.valueChanges.pipe(
+      startWith(psrListService.endDate.value)
     );
 
     const request$ = combineLatest({
@@ -119,13 +124,16 @@ export class PSRListComponent implements OnInit, OnDestroy {
       projectManagerId: staffMemberId$,
       sortDirection: this.sortDirection$,
       isSubmitted: isSubmitted$,
+      startDate: startDate$ ?? null,
+      endDate: endDate$ ?? null,
     });
 
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getPSRV1(request)),
-      shareReplay(1)
-    );
+      shareReplay(1),
+    )
+
 
     const staffMembersResponse$ = this.hqService
       .getStaffMembersV1({ isAssignedProjectManager: true })
@@ -138,36 +146,18 @@ export class PSRListComponent implements OnInit, OnDestroy {
             totalHours: record.workHours,
           }))
         )
-      );
+      )
 
     staffMembersResponse$.pipe(first()).subscribe((response) => {
-      psrService.staffMembers$.next(response);
-    });
+      console.log(response);
+      psrListService.staffMembers$.next(response);
+    })
 
     this.projectStatusReports$ = response$.pipe(
       map((response) => {
         return response.records;
       })
     );
-    // psrService.isSubmitted.valueChanges.subscribe((submitted) => {
-    //   this.projectStatusReports$ = response$.pipe(
-    //     map((response) => {
-    //       return response.records;
-    //     }),
-    //     map((reports) =>
-    //       reports.filter((report) => {
-    //         console.log(report.submittedAt);
-    //         if (submitted === null) {
-    //           return true;
-    //         } else if (submitted) {
-    //           return report.submittedAt !== null;
-    //         } else {
-    //           return report.submittedAt === null;
-    //         }
-    //       })
-    //     )
-    //   );
-    // });
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
 
@@ -181,11 +171,11 @@ export class PSRListComponent implements OnInit, OnDestroy {
       )
     );
 
-    this.psrService.resetFilter();
   }
 
+
   goToPage(page: number) {
-    this.page.setValue(page);
+    this.psrListService.page.setValue(page);
   }
 
   onSortClick(sortColumn: SortColumn) {
@@ -199,7 +189,7 @@ export class PSRListComponent implements OnInit, OnDestroy {
       this.sortOption$.next(sortColumn);
       this.sortDirection$.next(SortDirection.Asc);
     }
-    this.page.setValue(1);
+    this.psrListService.page.setValue(1);
   }
   getProjectSatusString(status: ProjectStatus): string {
     return ProjectStatus[status];

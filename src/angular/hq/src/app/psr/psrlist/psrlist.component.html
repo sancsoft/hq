@@ -12,7 +12,7 @@
 <div class="px-5 pt-4 mb-[8px]">
     <div class="flex flex-col lg:flex-row justify-between items-start">
         <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-            <hq-psr-search-filter></hq-psr-search-filter>
+            <hq-psr-list-search-filter></hq-psr-list-search-filter>
 
             <!-- select dropdown -->
             <!-- <div class="grid relative w-[220px]">
@@ -130,7 +130,7 @@
 </table>
 <div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
     <div>
-        <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2" [formControl]="itemsPerPage">
+        <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2" [formControl]="psrListService.itemsPerPage">
       <option [ngValue]="10">10</option>
       <option [ngValue]="20">20</option>
       <option [ngValue]="50">50</option>
@@ -139,7 +139,7 @@
     </select>
         <span>items per page</span>
     </div>
-    <hq-paginator [total]="(totalRecords$ | async) ?? 0" [pageSize]="itemsPerPage.value" [currentPage]="page.value" (onPage)="goToPage($event)"></hq-paginator>
+    <hq-paginator [total]="(totalRecords$ | async) ?? 0" [pageSize]="psrListService.itemsPerPage.value" [currentPage]="psrListService.page.value" (onPage)="goToPage($event)"></hq-paginator>
     <div class="flex justify-end text-xs">
         {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ | async }} items
     </div>
