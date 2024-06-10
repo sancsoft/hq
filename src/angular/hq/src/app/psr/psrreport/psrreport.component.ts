@@ -48,7 +48,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
   report$ = new Subject<string | null>();
   psrId$: Observable<string>;
-  savedStatus ="loading";
+  savedStatus?: string;
 
 
   ngOnInit(): void {
