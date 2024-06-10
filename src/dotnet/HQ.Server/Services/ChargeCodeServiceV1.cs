@@ -4,6 +4,7 @@ using FluentResults;
 using HQ.Abstractions.ChargeCodes;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Projects;
+using HQ.Abstractions.Staff;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,77 @@ public class ChargeCodeServiceV1
     public ChargeCodeServiceV1(HQDbContext context)
     {
         _context = context;
+    }
+    public async Task<Result<UpsertChargeCodeV1.Response>> UpsertChargeCodeV1(UpsertChargeCodeV1.Request request, CancellationToken ct = default)
+    {
+        using (var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, ct))
+        {
+
+       try {
+        var chargecode = await _context.ChargeCodes.FindAsync(request.Id);
+        if (chargecode == null)
+        {
+            chargecode = new();
+            _context.ChargeCodes.Add(chargecode);
+                    switch (request.Activity)
+                    {
+                        case (ChargeCodeActivity.General):
+                            var maxGeneralCode = _context.ChargeCodes
+                         .Where(g => g.Code.StartsWith("G"))
+                         .Select(g => g.Code.Substring(1))
+                         .Select(int.Parse)
+                         .DefaultIfEmpty(0)
+                         .Max();
+                            var newCodeNumber = maxGeneralCode + 1;
+                            var formattedNewCode = $"G{newCodeNumber:0000}";
+                            chargecode.Code = formattedNewCode;
+                            break;
+                        case (ChargeCodeActivity.Project):
+                            var latestProjectNumber = _context.Projects.Max((p) => p.ProjectNumber);
+                            var newProjectNumber = latestProjectNumber + 1;
+                            var newCode = "P" + newProjectNumber;
+                            chargecode.Code = newCode;
+                            break;
+                        case (ChargeCodeActivity.Quote):
+                            var latestQuoteNumber = _context.Quotes.Max((q) => q.QuoteNumber);
+                            var newQuoteNumber = latestQuoteNumber + 1;
+                            newCode = "Q" + newQuoteNumber;
+                            chargecode.Code = newCode;
+                            break;
+                        case (ChargeCodeActivity.Service):
+                            var latestServiceAgreementNumber = _context.ServiceAgreements.Max((s) => s.ServiceNumber);
+                            var newServiceAgreementNumber = latestServiceAgreementNumber + 1;
+                            newCode = "S" + newServiceAgreementNumber;
+                            chargecode.Code = newCode;
+                            break;
+                    }
+                }
+
+        chargecode.Activity = request.Activity;
+        chargecode.Billable = request.Billable;
+        chargecode.Active = request.Active;
+        chargecode.Description = request.Description;
+        chargecode.QuoteId = request.QuoteId;
+        chargecode.ProjectId = request.ProjectId;
+        chargecode.ServiceAgreementId = request.ServiceAgreementId;
+        
+        
+
+        await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);  
+
+
+                return new UpsertChargeCodeV1.Response()
+        {
+            Id = chargecode.Id
+        };
+        }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(ct);
+                return Result.Fail(new Error("An error occurred while upserting the Chargecode.").CausedBy(ex));
+            }
+        }
     }
 
     public async Task<Result<GetChargeCodesV1.Response>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)
@@ -61,33 +133,6 @@ public class ChargeCodeServiceV1
         if(request.ClientId.HasValue) {
             records = records.Where(t => t.Project!.ClientId == request.ClientId.Value);
         }
-
-        var sortMap = new Dictionary<GetChargeCodesV1.SortColumn, string>()
-        {
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code, "Code" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Billable, "Billable" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Active, "Active" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName, "Project.Name" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName, "Quote.Name" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName, "ServiceAgreement.Name" },
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        records = request.SortDirection == SortDirection.Asc ?
-            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
-
-        if (request.Skip.HasValue)
-        {
-            records = records.Skip(request.Skip.Value);
-        }
-
-        if (request.Take.HasValue)
-        {
-            records = records.Take(request.Take.Value);
-        }
-
         var mapped = records.Select(t => new GetChargeCodesV1.Record()
         {
             Id = t.Id,
@@ -98,8 +143,38 @@ public class ChargeCodeServiceV1
             ProjectName = t.Project != null ? t.Project.Name : null,
             QuoteName = t.Quote != null ? t.Quote.Name : null,
             ServiceAgreementName = t.ServiceAgreement != null ? t.ServiceAgreement.Name : null,
+            ProjectId = t.ProjectId != null ? t.ProjectId : null,
+            QuoteId = t.QuoteId != null ? t.QuoteId : null,
+            ServiceAgreementId = t.ServiceAgreementId != null ? t.ServiceAgreementId : null,
             Description = t.Description
         });
+
+        var sortMap = new Dictionary<GetChargeCodesV1.SortColumn, string>()
+        {
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code, "Code" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Billable, "Billable" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Active, "Active" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName, "ProjectName" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName, "QuoteName" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName, "ServiceAgreementName" },
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+        mapped = request.SortDirection == SortDirection.Asc ?
+            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+        if (request.Skip.HasValue)
+        {
+            mapped = mapped.Skip(request.Skip.Value);
+        }
+
+        if (request.Take.HasValue)
+        {
+            mapped = mapped.Take(request.Take.Value);
+        }
+
         var total = await records.CountAsync(ct);
 
         var response = new GetChargeCodesV1.Response()

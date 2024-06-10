@@ -131,6 +131,22 @@ public class ProjectStatusReportServiceV1
         {
             records = records.Where(t => t.Project.ProjectManagerId == request.ProjectManagerId.Value);
         }
+
+        if (request.StartDate.HasValue && !request.EndDate.HasValue)
+        {
+            records = records.Where(t => t.StartDate >= request.StartDate);
+        }
+
+        if (request.EndDate.HasValue && !request.StartDate.HasValue)
+        {
+            records = records.Where(t => t.EndDate <= request.EndDate);
+        }
+
+        if (request.StartDate.HasValue && request.EndDate.HasValue)
+        {
+            records = records.Where(t => t.StartDate >= request.StartDate && t.EndDate <= request.EndDate);
+        }
+        
         if (request.IsSubmitted != null)
         {
             if (request.IsSubmitted == true)

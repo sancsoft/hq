@@ -12,6 +12,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, NgModel } from '@angular/forms';
 import { PsrService } from '../psr-service';
 
+
 import {
   BehaviorSubject,
   Observable,
@@ -20,6 +21,7 @@ import {
   combineLatest,
   debounceTime,
   map,
+  tap,
   skip,
   startWith,
   switchMap,
@@ -49,6 +51,8 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
   report$ = new Subject<string | null>();
   psrId$: Observable<string>;
+  savedStatus?: string;
+
 
   ngOnInit(): void {
     this.psrService.resetFilter();
@@ -104,17 +108,21 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       debounceTime(1000),
       skip(1),
       takeUntil(this.destroyed$),
+      tap(()=> {this.savedStatus = "loading";}),
       switchMap((request) =>
         this.hqService.updateProjectStatusReportMarkdownV1(request)
       )
     );
     apiResponse$.subscribe({
       next: (response) => {
+        this.savedStatus ="success";
         console.log('API Response:', response);
       },
       error: (err) => {
+        this.savedStatus = "fail";
         console.error('Error:', err);
         this.modalService.alert('Error', 'There was an error saving the PM report.')
+        this.savedStatus = "fail";
       },
     });
   }
@@ -138,6 +146,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       apiResponse$.subscribe({
         next: () => {
           this.modalService.alert('Success', 'Report submitted successfully');
+          this.router.navigate(['/psr']);
         },
         error: (err) => {
           if (err instanceof APIError) {

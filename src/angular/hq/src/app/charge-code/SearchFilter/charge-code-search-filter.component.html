@@ -1,0 +1,57 @@
+<div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+    @if(ChargeCodeListService.showSearch$ | async) {
+    <!-- search bar -->
+    <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]">
+        <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
+      <i class="bi bi-search text-[14px]"></i>
+    </span>
+        <input type="text" [formControl]="ChargeCodeListService.search" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="" />
+    </div>
+    } @if(ChargeCodeListService.staffMembers$ && ChargeCodeListService.showStaffMembers$ | async) {
+    <div class="grid relative w-full max-w-[220px]">
+        <select [formControl]="ChargeCodeListService.staffMember" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+    <option  [ngValue]="null">Select Staff Member</option>
+      @for (staffMember of ChargeCodeListService.staffMembers$ | async; track $index)
+      {
+      <option [value]="staffMember.id">
+        {{ staffMember.name }}
+      </option>
+      }
+    </select>
+        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+      <i class="bi bi-arrow-down-short text-[24px]"></i>
+    </span>
+    </div>
+    } @if(ChargeCodeListService.showIsSubmitted$ | async) {
+    <div class="grid relative w-full max-w-[220px]">
+        <select [formControl]="ChargeCodeListService.isSubmitted" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+      <option  [ngValue]="null">Is Submitted?</option>
+
+        <option [ngValue]="true">
+         Yes
+        </option>
+        <option [ngValue]="false">
+          No
+         </option>
+      </select>
+        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+        <i class="bi bi-arrow-down-short text-[24px]"></i>
+      </span>
+    </div>
+    } @if (ChargeCodeListService.showRoaster$ | async) {
+    <!-- <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[205px]">
+        <input type="text" class="w-[100%] block text-[14px] text-center px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="" value="Roster" />
+    </div> -->
+    } @if ( ChargeCodeListService.showActivityName$ | async ) {
+    <!-- <div class="grid relative w-[290px]">
+        <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+      <option [value]="ChargeCodeListService.ActivityName.Development">Development</option>
+      <option [value]="ChargeCodeListService.ActivityName.Todo">Todo</option>
+      <option [value]="ChargeCodeListService.ActivityName.Support">Support</option>
+    </select>
+        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+      <i class="bi bi-arrow-down-short text-[24px]"></i>
+    </span>
+    </div> -->
+    }
+</div>

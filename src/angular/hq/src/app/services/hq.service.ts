@@ -81,8 +81,12 @@ import {
   updatePSRmarkDownRequestV1,
   UpdatePSRMarkDownResponseV1,
 } from '../models/PSR/update-psr-markdown';
-import { UnapprovePSRTimeRequestV1, UnapprovePSRTimeResponseV1 } from '../models/PSR/unapprove-psrtime-v1';
+import {
+  UnapprovePSRTimeRequestV1,
+  UnapprovePSRTimeResponseV1,
+} from '../models/PSR/unapprove-psrtime-v1';
 import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff-member-v1';
+import { UpsertChargeCodesRequestV1, UpsertChargeCodesResponseV1 } from '../models/charge-codes/upsert-chargecodes';
 
 @Injectable({
   providedIn: 'root',
@@ -133,6 +137,9 @@ export class HQService {
       )
     );
   }
+  getProjectV1(id: string) {
+    return this.getProjectsV1({ id: id })
+  }
 
   // Quotes
   getQuotesV1(request: Partial<GetQuotesRequestV1>) {
@@ -179,6 +186,9 @@ export class HQService {
         )
       )
     );
+  }
+  getProjectPSRV1(id: string) {
+    return this.getPSRV1({ projectId: id });
   }
 
   getPSRTimeV1(request: Partial<GetPSRTimeRequestV1>) {
@@ -322,6 +332,24 @@ export class HQService {
           `,
           request
         )
+      ),
+      catchError((err: HttpErrorResponse) => {
+        if (err.status == 400) {
+          return throwError(() => new APIError(err.error));
+        }
+        throw err;
+      })
+    );
+  }
+
+    upsertChargecodesV1(request: Partial<UpsertChargeCodesRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertChargeCodesResponseV1>(
+          `${apiUrl}/v1/ChargeCodes/UpsertChargeCodesV1
+          `,
+          request
+        )
       ), catchError((err: HttpErrorResponse) => {
         if (err.status == 400) {
           return throwError(() => new APIError(err.error));
@@ -329,6 +357,7 @@ export class HQService {
         throw err;
       }))
   }
+
   submitProjectStatusReportV1(request: Partial<SubmitPSRRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>

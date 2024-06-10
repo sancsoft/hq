@@ -17,6 +17,44 @@ export const routes: Routes = [
       import('./callback.component').then((m) => m.CallbackComponent),
   },
   {
+    path: 'chargecodes',
+    title: 'Charge Codes',
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Administrator)],
+    loadComponent: () =>
+      import('.//charge-code/charge-code.component').then(
+        (m) => m.ChargeCodeComponent
+      ),
+      children: [
+        {
+          path: '',
+          title: 'Charge Code List',
+          canActivate: [userRoleGuard(HQRole.Administrator)],
+          loadComponent: () =>
+            import('./charge-code/charge-code-list/charge-code-list.component').then(
+              (m) => m.ChargeCodeListComponent
+            ),
+        },
+        {
+          path: 'create',
+          title: 'Charge Code Create',
+          canActivate: [userRoleGuard(HQRole.Administrator)],
+          loadComponent: () =>
+            import('./charge-code/charge-code-create/charge-code-create.component').then(
+              (m) => m.ChargeCodeCreateComponent
+            ),
+        }, 
+        {
+          path: 'edit/:chargeCodeId',
+          title: 'Charge Code Edit',
+          canActivate: [userRoleGuard(HQRole.Administrator)],
+          loadComponent: () =>
+            import('./charge-code/charge-code-edit/charge-code-edit.component').then(
+              (m) => m.ChargeCodeEditComponent
+            ),
+        }
+      ]
+  },
+  {
     path: 'clients',
     title: 'Clients',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
