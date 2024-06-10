@@ -51,5 +51,8 @@ public class GetProjectsV1
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
         public int Status { get; set; }
+        public string? BillingEmail { get; set; }
+        public string? OfficialName { get; set; }
+
     }
 }

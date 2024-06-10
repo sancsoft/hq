@@ -132,6 +132,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       );
       apiResponse$.subscribe({
         next: (response) => {
+          this.router.navigate(['']);
           window.alert('Report submitted successfully');
         },
         error: (err) => {
