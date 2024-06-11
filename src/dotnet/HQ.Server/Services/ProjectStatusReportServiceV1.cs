@@ -202,12 +202,6 @@ public class ProjectStatusReportServiceV1
                 TotalEndDate = t.Row.Project.ChargeCode.Times.Where(x => x.Date <= t.Row.EndDate).Max(t => t.Date),
             });
 
-        var currentWeek = await _context.ProjectStatusReports.Select(t => (DateOnly?)t.StartDate).DefaultIfEmpty().MaxAsync(ct);
-        if(currentWeek.HasValue)
-        {
-            mapped = mapped.Where(t => t.StartDate == currentWeek || t.IsLate);
-        }
-
         var totalHours = await mapped.SumAsync(t => t.TotalHours, ct);
         var total = await mapped.CountAsync(ct);
 
