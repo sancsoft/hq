@@ -1,10 +1,12 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using DocumentFormat.OpenXml.Bibliography;
 using FluentResults;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.ProjectStatusReports;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Formats.Asn1;
 using System.Globalization;
@@ -20,21 +22,22 @@ public class ProjectStatusReportServiceV1
         _context = context;
     }
 
+
     public async Task<Result<GenerateWeeklyProjectStatusReportsV1.Response>> GenerateWeeklyProjectStatusReportsV1(GenerateWeeklyProjectStatusReportsV1.Request request, CancellationToken ct = default)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
-        request.ForWeek ??= DateOnly.FromDateTime(DateTime.Today).AddDays(-7);
-
-
+        request.ForDate ??= DateOnly.FromDateTime(DateTime.Today);
         int createdCount = 0;
         int skippedCount = 0;
 
         var projects = await _context.Projects.Where(t => t.ChargeCode != null && t.ChargeCode.Active)
             .ToListAsync(ct);
 
-        DateOnly startDate = request.ForWeek.Value.AddDays(DayOfWeek.Saturday - request.ForWeek.Value.DayOfWeek - 14);
+
+        DateOnly startDate = request.ForDate.Value.AddDays(-((int)request.ForDate.Value.DayOfWeek + 1) % 7);
         DateOnly endDate = startDate.AddDays(6);
+
 
         foreach (var project in projects)
         {
