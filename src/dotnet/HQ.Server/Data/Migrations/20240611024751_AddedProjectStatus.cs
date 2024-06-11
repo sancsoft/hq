@@ -20,6 +20,7 @@ namespace HQ.Server.Data.Migrations
             migrationBuilder.Sql("UPDATE projects p SET status = 5 FROM charge_codes c WHERE p.id = c.project_id AND c.code LIKE 'Q%'");
             migrationBuilder.Sql("UPDATE projects p SET status = 6 FROM charge_codes c WHERE p.id = c.project_id AND c.code LIKE 'P%'");
             migrationBuilder.Sql("UPDATE projects p SET status = 6 FROM charge_codes c WHERE p.id = c.project_id AND c.code LIKE 'S%'");
+            migrationBuilder.Sql("UPDATE project_status_reports psr SET status = p.status FROM projects p WHERE p.id = psr.project_id");
         }
 
         /// <inheritdoc />
