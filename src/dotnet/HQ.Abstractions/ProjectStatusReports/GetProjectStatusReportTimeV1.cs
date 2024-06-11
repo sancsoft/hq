@@ -10,6 +10,7 @@ public class GetProjectStatusReportTimeV1
         public Guid ProjectStatusReportId { get; set; }
         public string? Search { get; set; }
         public Guid? ProjectManagerId { get; set; }
+        public Guid? ActivityId { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.StaffName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }
@@ -27,6 +28,7 @@ public class GetProjectStatusReportTimeV1
     public class Response : PagedResponseV1<Record>
     {
         public List<StaffRecord> Staff { get; set; } = new();
+        public Guid ProjectId { get; set;} = new();
     }
 
     public class StaffRecord

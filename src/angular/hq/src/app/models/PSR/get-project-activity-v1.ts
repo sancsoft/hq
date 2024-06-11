@@ -1,7 +1,7 @@
 import { PagedResponseV1 } from "../common/paged-response-v1";
 
 export interface GetProjectActivityRequestV1 {
-  projectId: string;
+  projectId: string | null;
 }
 export interface GetProjectActivityRecordV1 {
   id: string;

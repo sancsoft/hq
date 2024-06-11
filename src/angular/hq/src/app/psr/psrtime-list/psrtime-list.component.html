@@ -72,12 +72,20 @@
                 <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
                 <td class="border-b border-black py-2 px-2">
                   @if (projectActivities$ | async; as projectActivities) {
+                    @if (projectActivities.length > 0) {
                     <select [(ngModel)]="time.activityId" (change)="updateProjectActivity(time.id, $event)"
                       class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]">
-                      <option *ngFor="let activity of projectActivities" [ngValue]="activity.id">
+                     @for (activity of projectActivities; track $index) {
+                    <option [ngValue]="activity.id">
                         {{ activity.name }}
                       </option>
+                     }
                     </select>
+                  } 
+                  @else {
+                     <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.task"
+                      (change)="updateTask(time.id, $event)" />
+                  }
                     } @else {
                       <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.task"
                       (change)="updateTask(time.id, $event)" />

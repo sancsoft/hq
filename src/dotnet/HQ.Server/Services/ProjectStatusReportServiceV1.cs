@@ -263,6 +263,11 @@ public class ProjectStatusReportServiceV1
 
     public async Task<Result<GetProjectStatusReportTimeV1.Response>> GetProjectStatusReportTimeV1(GetProjectStatusReportTimeV1.Request request, CancellationToken ct = default)
     {
+        var project = await _context.ProjectStatusReports
+        .Where(t => t.Id == request.ProjectStatusReportId)
+        .Select(psr => psr.Project)
+        .FirstOrDefaultAsync();
+
         var records = _context.ProjectStatusReports
             .AsNoTracking()
             .Where(t => t.Id == request.ProjectStatusReportId)
@@ -281,6 +286,11 @@ public class ProjectStatusReportServiceV1
         {
             records = records.Where(t => t.StaffId.Equals(request.ProjectManagerId));
         }
+        if (request.ActivityId.HasValue)
+        {
+            records = records.Where(t => t.ActivityId.Equals(request.ActivityId));
+        }
+
 
         var mapped = records
             .Select(t => new GetProjectStatusReportTimeV1.Record()
@@ -310,6 +320,7 @@ public class ProjectStatusReportServiceV1
                 TotalHours = t.Sum(t => t.Hours)
             })
             .OrderBy(t => t.Name);
+        
 
         var sortMap = new Dictionary<GetProjectStatusReportTimeV1.SortColumn, string>()
         {
@@ -336,6 +347,7 @@ public class ProjectStatusReportServiceV1
         {
             Records = await sorted.ToListAsync(ct),
             Staff = await staff.ToListAsync(ct),
+            ProjectId = project != null ? project.Id : Guid.Empty,
             Total = total
         };
 

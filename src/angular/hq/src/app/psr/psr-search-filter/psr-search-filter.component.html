@@ -72,11 +72,11 @@
         </div>
         }
 
-        @if((psrService.projectActivities$ | async) && (psrService.showActivityName$ | async)) {
+        @if((psrService.projectActivities$ | async)?.length ?? 0 > 0 && (psrService.showActivityName$ | async)) {
           <div class="grid relative w-full max-w-[220px]">
               <select [formControl]= "psrService.projectActivity"
                  class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
-          <option  [ngValue]="null">Select Project Activity</option>
+          <option [ngValue]="null">Select Project Activity</option>
             @for (activity of psrService.projectActivities$ | async; track $index)
             {
             <option [value]="activity.id">

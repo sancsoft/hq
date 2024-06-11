@@ -1,4 +1,4 @@
-import { Injectable, Input } from '@angular/core';
+import { Injectable, Input, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ProjectStatus } from '../clients/client-details.service';
 import { BehaviorSubject, Observable, map } from 'rxjs';
@@ -16,7 +16,10 @@ export enum ActivityName {
 @Injectable({
   providedIn: 'root',
 })
-export class PsrService {
+export class PsrService implements OnDestroy {
+  ngOnDestroy(): void {
+    console.log("PSR SERVICE DESTROYED");
+  }
   staffMembers$ = new BehaviorSubject<GetPSRTimeRecordStaffV1[]>([]);
   projectActivities$ = new BehaviorSubject<GetProjectActivityRecordV1[]>([]);
 

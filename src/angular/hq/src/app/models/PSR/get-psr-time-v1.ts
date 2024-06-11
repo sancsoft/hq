@@ -7,6 +7,7 @@ export interface GetPSRTimeRequestV1 {
   search?: string | null;
   sortBy: SortColumn;
   sortDirection: SortDirection;
+  activityId: string | null;
 }
 
 export enum SortColumn {
@@ -28,6 +29,7 @@ export interface GetPSRTimeRecordV1 {
   staffName: string;
   rejectionNotes: string | null;
   task?: string | null;
+  projectId: string;
   activityName?: string | null;
   activityId?: string | null;
   description?: string | undefined;
@@ -41,6 +43,7 @@ export interface GetPSRTimeRecordStaffV1 {
 export interface GetPSRTimeRecordsV1 {
   records: [GetPSRTimeRecordV1];
   staff: [GetPSRTimeRecordStaffV1];
+  projectId: string;
   total: number | null;
 }
 
