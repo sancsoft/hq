@@ -45,6 +45,7 @@ import {
 } from '../../models/charge-codes/get-chargecodes-v1';
 import { FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
+import { ButtonState } from '../../enums/ButtonState';
 import { ModalService } from '../../services/modal.service';
 
 export interface ChargeCodeViewModel {
@@ -84,6 +85,11 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   timeStatus = TimeStatus;
+
+  acceptButtonState = ButtonState.Enabled;
+  acceptAllButtonState = ButtonState.Enabled;
+  ButtonState = ButtonState;
+
   ngOnInit(): void {
     this.psrService.resetFilter();
     this.psrService.showSearch();
@@ -169,6 +175,15 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     this.time$ = response$.pipe(
       map((response) => {
         return response.records;
+      }), tap((times) =>{
+        let isPendingTime = times.find((record) =>  record.status === TimeStatus.Pending)
+        if(isPendingTime) {
+          this.acceptButtonState = ButtonState.Enabled;
+          this.acceptAllButtonState = ButtonState.Enabled;
+        } else {
+          this.acceptButtonState = ButtonState.Disabled;
+          this.acceptAllButtonState = ButtonState.Disabled;
+        }
       })
     );
     this.timeIds$ = this.time$.pipe(

@@ -7,7 +7,7 @@
             <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap text-right">
                 Hrs
             </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap" (click)="onSortClick(sortColumn.Date)">
+            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap " (click)="onSortClick(sortColumn.Date)">
                 Date
                 <hq-sort-icon [column]="sortColumn.Date" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
             </th>
@@ -27,13 +27,15 @@
                 <div class="flex items-center justify-between">
                     Description
                     <div class="flex space-x-2 pr-5">
-                        <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="deselectAll()">
+                        <!-- <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="deselectAll()">
               Deselect All
-            </button>
-                        <button class="px-2 py-2 bg-transparent border border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptAll()">
+            </button> -->
+                        <button  [disabled]="acceptAllButtonState == ButtonState.Disabled"
+                        [ngClass]="{'text-gray-50 border-gray-500 bg-gray-500 ':acceptAllButtonState == ButtonState.Disabled, 'border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white': acceptAllButtonState == ButtonState.Enabled}"  class="px-2 py-2 bg-transparent border  rounded min-w-[120px] font-normal" (click)="acceptAll()">
               Accept All
             </button>
-                        <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="acceptSelected()">
+                        <button [disabled]="acceptButtonState == ButtonState.Disabled"
+                        [ngClass]="{'text-gray-50 border-gray-500 bg-gray-500 ':acceptButtonState == ButtonState.Disabled, 'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white': acceptButtonState == ButtonState.Enabled}" class="px-2 py-2 border  rounded min-w-[120px] font-normal" (click)="acceptSelected()">
               Accept
             </button>
                     </div>
@@ -56,7 +58,7 @@
                     type="number" step="0.25" min="0" />
                 </td>
                 <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+                <td class="border-b border-black py-2 px-2 whitespace-nowrap">{{ time.date }}</td>
                 <td class="border-b border-black py-2 px-2 text-black">
                   @if (chargeCodes$ | async; as chargeCodes) {
                   <select [(ngModel)]="time.chargeCode" (change)="updateChargeCode(time.id, $event)"
@@ -96,10 +98,10 @@
                     [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" disabled />
                 </td>
                 <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+                <td class="border-b border-black py-2 px-2 whitespace-nowrap">{{ time.date }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.task || 'None' }}</td>
                 <td class="border-b border-black py-2 px-2 w-full">
                   <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.description"
                     disabled />
@@ -120,10 +122,10 @@
                     [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" disabled />
                 </td>
                 <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+                <td class="border-b border-black py-2 px-2 whitespace-nowrap">{{ time.date }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.task || 'None' }}</td>
                 <td class="border-b border-black py-2 px-2 w-full">
                   <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.description"
                     disabled />
@@ -141,7 +143,9 @@
                     @else {
                       <div></div>
                     }
-                    <a class="text-gray-400 cursor-not-allowed opacity-50 uppercase">accept</a>
+                    <button  (click)="unacceptTime(time.id)" class="text-teal-200 hover:text-teal-300 uppercase">edit</button>
+
+                    <!-- <a class="text-gray-400 cursor-not-allowed opacity-50 uppercase">accept</a> -->
                   </div>
                 </td>
               </tr>
@@ -158,10 +162,10 @@
                     (change)="updateBillableHours(time.id, $event)" />
                 </td>
                 <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.date }}</td>
+                <td class="border-b border-black py-2 px-2 whitespace-nowrap">{{ time.date }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.task }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.task || 'None' }}</td>
                 <td class="border-b border-black py-2 px-2 w-full">
                   <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description"
                     (change)="updateDescription(time.id, $event)" />

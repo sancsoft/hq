@@ -1,7 +1,6 @@
 <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 z-50">
   <div class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap flex">
 
-
     <div class= "ml-5 py-2">
       @if(savedStatus == "loading"){
         <div class=" rounded min-w-[120px]">
@@ -19,7 +18,9 @@
     </div>
     <div class="ml-auto space-x-2 pr-5">
       <button
-        class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+       [disabled]="submitButtonState == ButtonState.Disabled"
+       [ngClass]="{'text-gray-50 border-gray-500 bg-gray-500 ':submitButtonState == ButtonState.Disabled, 'text-white border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600': submitButtonState == ButtonState.Enabled}"
+        class="px-2 py-2 border   rounded min-w-[120px] font-normal"
         (click)="onReportSubmit()"
         >
         Submit
