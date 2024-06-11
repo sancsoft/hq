@@ -36,7 +36,10 @@ export enum SortColumn {
   BookingHours = 16,
   BookingAvailableHours = 17,
   TotalPercentComplete = 18,
-  BookingPercentComplete = 19
+  BookingPercentComplete = 19,
+  SummaryHoursTotal = 20,
+  SummaryHoursAvailable = 21,
+  SummaryPercentComplete = 22
 }
 
 export interface GetPSRRecordV1 {
@@ -68,6 +71,9 @@ export interface GetPSRRecordV1 {
   lastHours?: number;
   submittedAt?: Date | null;
   isLate: boolean;
+  summaryHoursTotal: number;
+  summaryHoursAvailable: number;
+  summaryPercentComplete: number;
 }
 
 export interface GetPSRRecordsV1 {
