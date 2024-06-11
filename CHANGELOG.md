@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.1]
+## [0.3.2] - 2024-06-11
+
+### Changed
+- PSR updates
+  - Added summary total hours, fields for sorting based on project status
+  - Cleaned up columns on PSR list
+  - Progress bar and % calculation is now dynamic based on project status
+  - Swapped red color from progress bar and PSRs that need submitted
+  - Highlight unsubmitted PSRs red
+  - Only generate PSRs for projects that are Ongoing or InProduction
+
+## [0.3.1] - 2024-06-10
 
 ### Added
 - Modal service with custom alert, confirm and prompt modals
@@ -61,7 +72,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.0...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/sancsoft/hq/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/sancsoft/hq/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/sancsoft/hq/releases/tag/v0.3.0
 [0.2.1]: https://github.com/sancsoft/hq/compare/v0.2.0...v0.2.1
