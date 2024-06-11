@@ -47,6 +47,7 @@ import { FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
 import { ButtonState } from '../../enums/ButtonState';
 import { ModalService } from '../../services/modal.service';
+import { ToastService } from '../../services/toast.service';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -108,7 +109,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     private psrService: PsrService,
     private hqSnackBarService: HQSnackBarService,
     private hqConfirmationModalService: HQConfirmationModalService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private toastService: ToastService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -276,6 +278,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       })
     );
 
+    this.toastService.show('Accepted', 'Time entries have been accepted.');
+
     this.refresh$.next();
   }
 
@@ -342,9 +346,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       chargeCodeId: chargecodeId,
     };
 
-    // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
-    // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.toastService.show('Updated', 'Description has been updated.');
     this.refresh$.next();
   }
 
@@ -374,9 +377,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       chargeCodeId: chargecodeId,
     };
 
-    // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
-    // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.toastService.show('Updated', 'Task has been updated.');
     this.refresh$.next();
   }
 
@@ -411,10 +413,10 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     //   this.refresh$.next();
     //   return;
     // }
-    const changeChargeCode = this.modalService.confirm(
+    const changeChargeCode = await firstValueFrom(this.modalService.confirm(
       'Confirmation',
       `Are you sure you want to change the charge code to ${chargeCode}?`
-    );
+    ));
     if (!changeChargeCode) {
       this.refresh$.next();
       return;
@@ -434,9 +436,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       chargeCodeId: chargecodeId,
     };
 
-    // TOOD: Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
-    // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.toastService.show('Updated', 'Charge code has been updated.');
     this.refresh$.next();
   }
 
@@ -471,6 +472,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     };
     //  Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    this.toastService.show('Updated', 'Approved hours have been updated.');
     this.refresh$.next();
   }
 
@@ -506,6 +508,9 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
         notes: notes,
       })
     );
+
+    this.toastService.show('Rejected', 'Time entry has been rejected.');
+
     console.log(response);
 
     this.refresh$.next();
