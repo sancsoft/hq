@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3] - 2024-06-1
+
+### Added
+- Toast service
+  - Toast notifications to PSR time list after API calls
+
+### Fixed
+- Client edit button alignment
+
+### Changed
+- PSR week generation to Saturday to Friday
+
 ## [0.3.2] - 2024-06-11
 
 ### Changed
@@ -72,7 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.2...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/sancsoft/hq/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/sancsoft/hq/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/sancsoft/hq/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/sancsoft/hq/releases/tag/v0.3.0
