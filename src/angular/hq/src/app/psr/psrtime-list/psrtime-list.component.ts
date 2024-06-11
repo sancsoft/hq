@@ -144,7 +144,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
       activityId: projectActivityId$
-    });
+    }).pipe(shareReplay(1));
 
     const apiResponse$ = request$.pipe(
       debounceTime(500),
