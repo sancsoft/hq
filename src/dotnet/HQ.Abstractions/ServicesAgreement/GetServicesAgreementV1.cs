@@ -45,7 +45,7 @@ namespace HQ.Abstractions.ServicesAgreement
             public DateOnly? EndDate { get; set; }
             public string? ChargeCode { get; set; }
             public string? ChargeCodeDescription { get; set; }
-            public int? QuoteStatus { get; set; }
+            public int? ProjectStatus { get; set; }
         }
     }
 }

@@ -48,8 +48,8 @@ public class ProjectStatusReportServiceV1
             psr.EndDate = endDate;
             psr.ProjectId = project.Id;
             psr.ProjectManagerId = project.ProjectManagerId;
-            psr.Status = ProjectStatus.Unknown;
             psr.BookingPeriod = project.BookingPeriod;
+            psr.Status = project.Status;
 
             switch (project.BookingPeriod)
             {
@@ -180,7 +180,7 @@ public class ProjectStatusReportServiceV1
                 ClientId = t.Row.Project.Client.Id,
                 ClientName = t.Row.Project.Client.Name,
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
-                Status = t.Row.Status,
+                Status = t.Row.Project.Status,
                 ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 LastId = t.Previous != null ? t.Previous.Id : null,
@@ -201,12 +201,6 @@ public class ProjectStatusReportServiceV1
                 TotalStartDate = t.Row.Project.ChargeCode.Times.Where(x => x.Date <= t.Row.EndDate).Min(t => t.Date),
                 TotalEndDate = t.Row.Project.ChargeCode.Times.Where(x => x.Date <= t.Row.EndDate).Max(t => t.Date),
             });
-
-        var currentWeek = await _context.ProjectStatusReports.Select(t => (DateOnly?)t.StartDate).DefaultIfEmpty().MaxAsync(ct);
-        if(currentWeek.HasValue)
-        {
-            mapped = mapped.Where(t => t.StartDate == currentWeek || t.IsLate);
-        }
 
         var totalHours = await mapped.SumAsync(t => t.TotalHours, ct);
         var total = await mapped.CountAsync(ct);
@@ -417,11 +411,12 @@ public class ProjectStatusReportServiceV1
         {
             return Result.Fail("Unable to find time entry.");
         }
+        // This is TEMPORARY for making rejected time change to Pending
 
-        if(time.Status != TimeStatus.Accepted)
-        {
-            return Result.Fail("Time entry is not accepted.");
-        }
+        // if(time.Status != TimeStatus.Accepted)
+        // {
+        //     return Result.Fail("Time entry is not accepted.");
+        // }
 
         time.Status = TimeStatus.Pending;
 

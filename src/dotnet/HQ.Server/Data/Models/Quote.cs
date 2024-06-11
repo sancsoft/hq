@@ -10,7 +10,7 @@ public class Quote : Base
     public string Name { get; set; } = null!;
     public DateOnly Date { get; set; }
     public decimal Value { get; set; }
-    public QuoteStatus Status { get; set; }
+    public ProjectStatus Status { get; set; }
     // PDF link
     public ChargeCode? ChargeCode { get; set; }
 }

@@ -17,7 +17,7 @@ public class UpsertQuotestV1
         public Guid ClientId { get; set; }
         public string Name { get; set; } = null!;
         public decimal Value { get; set; }
-        public QuoteStatus Status { get; set; }
+        public ProjectStatus Status { get; set; }
         public DateOnly Date { get; set; }
     }
 

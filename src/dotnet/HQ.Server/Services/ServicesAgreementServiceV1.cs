@@ -59,7 +59,7 @@ namespace HQ.Server.Services
                 EndDate = t.EndDate,
                 ChargeCode = (t.ChargeCode != null) ? t.ChargeCode.Code : null,
                 ChargeCodeDescription = (t.ChargeCode != null) ? t.ChargeCode.Description : null,
-                QuoteStatus = (int?)(t.Quote != null ? t.Quote.Status : (QuoteStatus)1),
+                ProjectStatus = (int?)(t.Quote != null ? t.Quote.Status : (ProjectStatus)1),
 
 
 
@@ -74,7 +74,7 @@ namespace HQ.Server.Services
             { GetServicesAgreementV1.SortColumn.EndDate, "EndDate" },
             { GetServicesAgreementV1.SortColumn.Cost, "CostValue" },
             { GetServicesAgreementV1.SortColumn.Price, "PriceValue" },
-            { GetServicesAgreementV1.SortColumn.Status, "QuoteStatus" }
+            { GetServicesAgreementV1.SortColumn.Status, "ProjectStatus" }
 
         };
 
