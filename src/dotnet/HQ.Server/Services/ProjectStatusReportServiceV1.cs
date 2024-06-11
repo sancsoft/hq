@@ -48,7 +48,7 @@ public class ProjectStatusReportServiceV1
             psr.EndDate = endDate;
             psr.ProjectId = project.Id;
             psr.ProjectManagerId = project.ProjectManagerId;
-            psr.Status = ProjectStatus.Unknown;
+            psr.Status = project.Status;
             psr.BookingPeriod = project.BookingPeriod;
 
             switch (project.BookingPeriod)
