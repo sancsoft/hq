@@ -48,7 +48,6 @@ public class ProjectStatusReportServiceV1
             psr.EndDate = endDate;
             psr.ProjectId = project.Id;
             psr.ProjectManagerId = project.ProjectManagerId;
-            psr.Status = project.Status;
             psr.BookingPeriod = project.BookingPeriod;
 
             switch (project.BookingPeriod)
@@ -180,7 +179,7 @@ public class ProjectStatusReportServiceV1
                 ClientId = t.Row.Project.Client.Id,
                 ClientName = t.Row.Project.Client.Name,
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
-                Status = t.Row.Status,
+                Status = t.Row.Project.Status,
                 ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 LastId = t.Previous != null ? t.Previous.Id : null,
