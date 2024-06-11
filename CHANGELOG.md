@@ -7,8 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1]
+
 ### Added
 - Modal service with custom alert, confirm and prompt modals
+
+### Removed
+- Filter to only show latest or late PSRs on PSR list
+
+### Changed
+- Unified Quote and Project status enums
+- PSR details feedback
+  - Removed 'Deselect All' button
+  - If not time is available to be 'Accepted' the 'Accept' & 'Accept All' buttons should be in a disabled state with a grayed out theme
+  - Date is unwrapped
+  - Rejected time entry can be edited by changing it back to pending
+  - PM Report - if report has been submitted, 'Submit' button is in a disabled state until an edit is made
 
 ## [0.3.0] - 2024-06-09
 
@@ -48,8 +62,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release.
 
 [unreleased]: https://github.com/sancsoft/hq/compare/v0.3.0...HEAD
+[0.3.1]: https://github.com/sancsoft/hq/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/sancsoft/hq/releases/tag/v0.3.0
-[0.2.1]: https://github.com/sancsoft/hq/releases/tag/v0.2.1
+[0.2.1]: https://github.com/sancsoft/hq/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/sancsoft/hq/releases/tag/v0.2.0
 [0.1.1]: https://github.com/sancsoft/hq/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/sancsoft/hq/releases/tag/v0.1.0
