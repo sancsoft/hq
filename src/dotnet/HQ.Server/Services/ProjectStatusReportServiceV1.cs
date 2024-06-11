@@ -1,10 +1,12 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using DocumentFormat.OpenXml.Bibliography;
 using FluentResults;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.ProjectStatusReports;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Formats.Asn1;
 using System.Globalization;
@@ -20,20 +22,22 @@ public class ProjectStatusReportServiceV1
         _context = context;
     }
 
+
     public async Task<Result<GenerateWeeklyProjectStatusReportsV1.Response>> GenerateWeeklyProjectStatusReportsV1(GenerateWeeklyProjectStatusReportsV1.Request request, CancellationToken ct = default)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
-        request.ForWeek ??= DateOnly.FromDateTime(DateTime.Today).AddDays(-7);
-
+        request.ForDate ??= DateOnly.FromDateTime(DateTime.Today);
         int createdCount = 0;
         int skippedCount = 0;
 
         var projects = await _context.Projects.Where(t => t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing))
             .ToListAsync(ct);
 
-        DateOnly startDate = request.ForWeek.Value.AddDays(DayOfWeek.Monday - request.ForWeek.Value.DayOfWeek);
+
+        DateOnly startDate = request.ForDate.Value.AddDays(-((int)request.ForDate.Value.DayOfWeek + 1) % 7);
         DateOnly endDate = startDate.AddDays(6);
+
 
         foreach (var project in projects)
         {
@@ -77,7 +81,7 @@ public class ProjectStatusReportServiceV1
                 .Where(t => t.Date >= psr.StartDate && t.Date <= psr.EndDate && t.ChargeCode!.ProjectId == psr.ProjectId)
                 .SumAsync(t => t.Hours, ct);
 
-            if(totalTime == 0 && project.BookingHours == 0)
+            if (totalTime == 0 && project.BookingHours == 0)
             {
                 psr.SubmittedAt = DateTime.UtcNow;
                 psr.Report = @"No planned activities.";
@@ -146,7 +150,7 @@ public class ProjectStatusReportServiceV1
         {
             records = records.Where(t => t.StartDate >= request.StartDate && t.EndDate <= request.EndDate);
         }
-        
+
         if (request.IsSubmitted != null)
         {
             if (request.IsSubmitted == true)
@@ -194,7 +198,7 @@ public class ProjectStatusReportServiceV1
                 BookingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 BookingAvailableHours = t.Row.Project.BookingHours - t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 BookingPercentComplete = t.Row.Project.BookingHours == 0 ? 0 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours) / t.Row.Project.BookingHours,
-                
+
                 TotalHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 TotalAvailableHours = t.Row.Project.TotalHours != null ? t.Row.Project.TotalHours.Value - t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.Hours) : null,
                 TotalPercentComplete = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? null : t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.Hours) / t.Row.Project.TotalHours.Value,
