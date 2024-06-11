@@ -119,7 +119,7 @@
                 <td class="border-b border-black py-2 px-2 whitespace-nowrap">{{ time.date }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.task || 'None' }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.activityName || time.task || 'None' }}</td>
                 <td class="border-b border-black py-2 px-2 w-full">
                   <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.description"
                     disabled />
@@ -143,7 +143,7 @@
                 <td class="border-b border-black py-2 px-2 whitespace-nowrap">{{ time.date }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.task || 'None' }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.activityName || time.task || 'None' }}</td>
                 <td class="border-b border-black py-2 px-2 w-full">
                   <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.description"
                     disabled />
@@ -183,7 +183,7 @@
                 <td class="border-b border-black py-2 px-2 whitespace-nowrap">{{ time.date }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
                 <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
-                <td class="border-b border-black py-2 px-2">{{ time.task || 'None' }}</td>
+                <td class="border-b border-black py-2 px-2">{{ time.activityName || time.task || 'None' }}</td>
                 <td class="border-b border-black py-2 px-2 w-full">
                   <input class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2" [value]="time.description"
                     (change)="updateDescription(time.id, $event)" />
