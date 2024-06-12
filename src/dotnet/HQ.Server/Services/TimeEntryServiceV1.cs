@@ -23,6 +23,7 @@ namespace HQ.Server.Services
         public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default) {
             var validationResult = Result.Merge(
                 Result.FailIf(string.IsNullOrEmpty(request.Notes), "Notes are required."),
+                 Result.FailIf(request.StaffId == null, "Staff is required."),
                 Result.FailIf(request.BillableHours <= 0, "Billable Hours must be greater than 0.")
             );
 
@@ -51,6 +52,13 @@ namespace HQ.Server.Services
 
         public async Task<Result<GetTimesV1.Response>> GetTimesV1(GetTimesV1.Request request, CancellationToken ct = default)
     {
+        var validationResult = Result.Merge(
+                Result.FailIf(request.StaffId == null, "Staff is required.")
+            );
+
+        if (validationResult.IsFailed) {
+            return validationResult;
+        }
         var records = _context.Times
             .AsNoTracking()
             .OrderByDescending(t => t.CreatedAt)

@@ -53,13 +53,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            // var authorizationResult = await _authorizationService
-            //     .AuthorizeAsync(User, staff, TimeEntryOperation.UpsertTime);
-
-            // if(!authorizationResult.Succeeded)
-            // {
-            //     return Forbid();
-            // }
             request.StaffId = staffId;
             return await _TimeEntryServiceV1.UpsertTimeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
@@ -83,13 +76,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            // var authorizationResult = await _authorizationService
-            //     .AuthorizeAsync(User, staff, TimeEntryOperation.GetTimes);
-
-            // if(!authorizationResult.Succeeded)
-            // {
-            //     return Forbid();
-            // }
             request.StaffId = staffId;
             return await _TimeEntryServiceV1.GetTimesV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
@@ -113,13 +99,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            // var authorizationResult = await _authorizationService
-            //     .AuthorizeAsync(User, staff, TimeEntryOperation.DeleteTime);
-
-            // if(!authorizationResult.Succeeded)
-            // {
-            //     return Forbid();
-            // }
             request.StaffId = staffId;
             return await _TimeEntryServiceV1.DeleteTimeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
