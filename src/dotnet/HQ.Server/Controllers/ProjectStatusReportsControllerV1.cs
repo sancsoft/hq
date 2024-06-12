@@ -125,7 +125,7 @@ namespace HQ.Server.Controllers
             }
 
             var authorizationResult = await _authorizationService
-                .AuthorizeAsync(User, psr, ProjectStatusReportOperation.RejectTime);
+                .AuthorizeAsync(User, psr, ProjectStatusReportOperation.UpdateTime);
 
             if(!authorizationResult.Succeeded)
             {
