@@ -56,6 +56,7 @@ export class PSRListComponent implements OnInit, OnDestroy {
   Math = Math;
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  ProjectStatus = ProjectStatus;
 
   async ngOnInit() {
     this.psrListService.showSearch();

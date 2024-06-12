@@ -46,6 +46,9 @@ public class GetProjectStatusReportsV1
         BookingAvailableHours = 17,
         TotalPercentComplete = 18,
         BookingPercentComplete = 19,
+        SummaryHoursTotal = 20,
+        SummaryHoursAvailable = 21,
+        SummaryPercentComplete = 22,
     }
 
     public class Response : PagedResponseV1<Record>
@@ -98,11 +101,16 @@ public class GetProjectStatusReportsV1
         public DateOnly? TotalEndDate { get; set; }
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
-        public DateOnly BookingStartDate { get; set; }
-        public DateOnly BookingEndDate { get; set; }
+        public DateOnly? BookingStartDate { get; set; }
+        public DateOnly? BookingEndDate { get; set; }
         public Period BookingPeriod { get; set; }
         public Guid? LastId { get; set; }
         public decimal? LastHours { get; set; }
         public bool IsLate { get; set; }
+
+        public decimal? SummaryHoursTotal { get; set; }
+        public decimal? SummaryHoursAvailable { get; set; }
+        public decimal? SummaryPercentComplete { get; set; }
+        public decimal? SummaryPercentCompleteSort { get; set; }
     }
 }
