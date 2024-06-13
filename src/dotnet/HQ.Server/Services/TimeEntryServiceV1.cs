@@ -60,6 +60,7 @@ namespace HQ.Server.Services
             return validationResult;
         }
         var records = _context.Times
+        .Include(t => t.ChargeCode).ThenInclude(t => t.Project).ThenInclude(t => t.Client)
             .AsNoTracking()
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
@@ -67,10 +68,39 @@ namespace HQ.Server.Services
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
-                t.Notes.ToLower().Contains(request.Search.ToLower())
+                t.Notes.ToLower().Contains(request.Search.ToLower()) ||
+                t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
+                t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
+                t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
+                 t.ChargeCode.Project.Name != null && t.ChargeCode.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
+                 t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
             );
         }
 
+        if (!string.IsNullOrEmpty(request.ChargeCode))
+        {
+            records = records.Where(t => t.ChargeCode.Code == request.ChargeCode);
+        }
+        if (request.ClientId.HasValue)
+        {
+            records = records.Where(t => t.ChargeCode.Project.ClientId.Equals(request.ClientId));
+        }
+
+        if (request.StartDate.HasValue && !request.EndDate.HasValue)
+        {
+            records = records.Where(t => t.Date >= request.StartDate);
+        }
+
+        if (request.EndDate.HasValue && !request.StartDate.HasValue)
+        {
+            records = records.Where(t => t.Date <= request.EndDate);
+        }
+
+        if (request.StartDate.HasValue && request.EndDate.HasValue)
+        {
+            records = records.Where(t => t.Date >= request.StartDate && t.Date <= request.EndDate);
+        }
+        
         if (request.Id.HasValue)
         {
             records = records.Where(t => t.Id == request.Id.Value);
@@ -78,6 +108,14 @@ namespace HQ.Server.Services
         if (request.StaffId.HasValue)
         {
             records = records.Where(t => t.StaffId == request.StaffId);
+        }
+        if (!string.IsNullOrEmpty(request.Task))
+        {
+            records = records.Where(t => t.Task == request.Task);
+        }
+        if (!string.IsNullOrEmpty(request.Activity))
+        {
+            records = records.Where(t => t.Activity.Name == request.Activity);
         }
         
         var mapped = records
@@ -90,6 +128,8 @@ namespace HQ.Server.Services
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
                 ChargeCode = t.ChargeCode.Code,
+                ProjectName = t.ChargeCode.Project.Name,
+                ClientName = t.ChargeCode.Project.Client.Name,
                 Date = t.Date,
                 Description = t.Notes,
                 ActivityId = t.ActivityId,
@@ -127,7 +167,7 @@ namespace HQ.Server.Services
         return response;
     }
 
- public async Task<Result<DeleteTimeV1.Response>> DeleteTimeV1(DeleteTimeV1.Request request, CancellationToken ct = default)
+ public async Task<Result<DeleteTimeV1.Response?>> DeleteTimeV1(DeleteTimeV1.Request request, CancellationToken ct = default)
 {
     var time = await _context.Times
                              .Where(t => t.Id == request.Id && t.StaffId == request.StaffId)
@@ -135,13 +175,13 @@ namespace HQ.Server.Services
 
     if (time == null)
     {
-        return Result.Fail("No time entry exists for this Staff ID");
+        return Result.Ok<DeleteTimeV1.Response?>(null);
     }
 
     _context.Times.Remove(time);
     await _context.SaveChangesAsync(ct);
 
-    return  Result.Ok();
+     return new DeleteTimeV1.Response();
     }
     }
 }

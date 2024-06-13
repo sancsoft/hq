@@ -1,13 +1,18 @@
-namespace HQ.Abstractions.Times {
+using HQ.Abstractions.Common;
 
-public class DeleteTimeV1
+namespace HQ.Abstractions.Times
 {
-   public class Request
-    {
-        public Guid? Id { get; set; }
-        public Guid? StaffId { get; set; }
-    }
-    public class Response;
 
-}
+    public class DeleteTimeV1
+    {
+        public class Request
+        {
+            public Guid? Id { get; set; }
+            public Guid? StaffId { get; set; }
+        }
+        public class Response : NoContentResponseV1
+        {
+        }
+
+    }
 }

@@ -5,6 +5,7 @@ using HQ.Abstractions.Clients;
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Projects;
 using HQ.Abstractions.Staff;
+using HQ.Abstractions.Times;
 using HQ.Abstractions.Voltron;
 using System;
 using System.Collections.Generic;
@@ -141,5 +142,12 @@ namespace HQ.SDK
 
         public Task<Result<GetChargeCodesV1.Response?>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<GetChargeCodesV1.Response>("/v1/ChargeCodes/GetChargeCodesV1", request, ct);
+
+            // Time Entries
+        public Task<Result<GetTimesV1.Response?>> GetTimeEntriesV1(GetTimesV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<GetTimesV1.Response>("/v1/TimeEntries/GetTimesV1", request, ct);
+
+            public Task<Result<DeleteTimeV1.Response?>> DeleteTimeEntryV1(DeleteTimeV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<DeleteTimeV1.Response>("/v1/TimeEntries/DeleteTimeV1", request, ct);
     }
 }

@@ -1,4 +1,6 @@
+using HQ.Tests;
 namespace HQ.Tests;
+
 
 public class UnitTest1
 {

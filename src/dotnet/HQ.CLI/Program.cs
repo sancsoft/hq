@@ -5,6 +5,7 @@ using HQ.CLI.Commands.ChargeCodes;
 using HQ.CLI.Commands.Clients;
 using HQ.CLI.Commands.Projects;
 using HQ.CLI.Commands.Staff;
+using HQ.CLI.Commands.TimeEntries;
 using HQ.SDK;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +25,7 @@ var services = new ServiceCollection();
 
 // Setup logging
 var logLevel = LogLevel.None;
-if(Enum.TryParse<LogLevel>(Environment.GetEnvironmentVariable("HQ_LOG_LEVEL"), true, out LogLevel envLogLevel))
+if (Enum.TryParse<LogLevel>(Environment.GetEnvironmentVariable("HQ_LOG_LEVEL"), true, out LogLevel envLogLevel))
 {
     logLevel = envLogLevel;
 }
@@ -63,7 +64,8 @@ app.Configure(config =>
     config.AddCommand<ConfigureCommand>("configure");
     config.AddCommand<LoginCommand>("login");
 
-    config.AddBranch("staff", branch => {
+    config.AddBranch("staff", branch =>
+    {
         branch.AddCommand<GetStaffCommand>("list").WithAlias("ls");
         branch.AddCommand<DeleteStaffCommand>("delete").WithAlias("rm");
         branch.AddCommand<EditStaffCommand>("edit");
@@ -71,7 +73,8 @@ app.Configure(config =>
         branch.AddCommand<ImportStaffCommand>("import");
     });
 
-    config.AddBranch("client", branch => {
+    config.AddBranch("client", branch =>
+    {
         branch.AddCommand<GetClientsCommand>("list").WithAlias("ls");
         branch.AddCommand<DeleteClientCommand>("delete").WithAlias("rm");
         branch.AddCommand<EditClientCommand>("edit");
@@ -79,7 +82,8 @@ app.Configure(config =>
         branch.AddCommand<ImportClientCommand>("import");
     });
 
-    config.AddBranch("project", branch => {
+    config.AddBranch("project", branch =>
+    {
         branch.AddCommand<GetProjectsCommand>("list").WithAlias("ls");
         branch.AddCommand<DeleteProjectCommand>("delete").WithAlias("rm");
         branch.AddCommand<EditProjectCommand>("edit");
@@ -87,18 +91,27 @@ app.Configure(config =>
         branch.AddCommand<ImportProjectCommand>("import");
     });
 
-    config.AddBranch("code", branch => {
+    config.AddBranch("code", branch =>
+    {
         branch.AddCommand<GetChargeCodesCommand>("list").WithAlias("ls");
     });
 
-    config.AddBranch("voltron", branch => {
+    config.AddBranch("voltron", branch =>
+    {
         branch.AddCommand<ImportVoltronTimeCommand>("import-time");
+    });
+
+    config.AddBranch("time", branch =>
+    {
+        branch.AddCommand<GetTimeEntriesCommand>("list").WithAlias("ls");
+        branch.AddCommand<DeleteTimeEntryCommand>("delete").WithAlias("rm");
+
     });
 });
 
 var rc = await app.RunAsync(args);
 
-if(rc == 0)
+if (rc == 0)
 {
     var options = new JsonSerializerOptions()
     {
