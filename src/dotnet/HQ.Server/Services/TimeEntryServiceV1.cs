@@ -39,12 +39,47 @@ namespace HQ.Server.Services
                 _context.Times.Add(timeEntry);
             }
 
+            var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.ChargeCode || t.Id == request.ChargeCodeId).FirstOrDefaultAsync();
+
+            // These conditions are for the case where the request doesn't have a chargeCodeId but has ChargeCode for example P1041
+            if (!string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue)
+            {
+                if (chargeCode != null) {
+                    timeEntry.ChargeCode = chargeCode;
+                } else {
+                    return Result.Fail($"The Charge code: {request.ChargeCode} not found");
+                }
+            }
+
+            if(request.ChargeCodeId.HasValue) {
+                timeEntry.ChargeCodeId = request.ChargeCodeId.Value;
+            }
+
+            if (!string.IsNullOrEmpty(request.ActivityName) && !request.ActivityId.HasValue)
+            {
+                var activity = await _context.ProjectActivities
+                .Where(t => t.ProjectId.Equals(chargeCode.ProjectId) && t.Name == request.ActivityName)
+                .FirstOrDefaultAsync();
+
+                if (activity != null)
+                {
+                    timeEntry.ActivityId = activity.Id;
+                }
+                else
+                {
+                    return Result.Fail($"The Activity Name: {request.ActivityName} not found");
+                }
+            }
+
+            if (request.ActivityId.HasValue)
+            {
+                timeEntry.ActivityId = request.ActivityId.Value;
+            }
+
             timeEntry.StaffId = request.StaffId.HasValue ? request.StaffId.Value : Guid.Empty;
-            timeEntry.ChargeCodeId = request.ChargeCodeId;
             timeEntry.Date = request.Date;
             timeEntry.Notes = request.Notes;
             timeEntry.Hours = request.BillableHours;
-            timeEntry.ActivityId = request.ActivityId;
             timeEntry.Task = request.Task;
             await _context.SaveChangesAsync(ct);
             return Result.Ok(new UpsertTimeV1.Response() { Id = timeEntry.Id });            

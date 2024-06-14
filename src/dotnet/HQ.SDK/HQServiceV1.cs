@@ -147,7 +147,9 @@ namespace HQ.SDK
         public Task<Result<GetTimesV1.Response?>> GetTimeEntriesV1(GetTimesV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<GetTimesV1.Response>("/v1/TimeEntries/GetTimesV1", request, ct);
 
-            public Task<Result<DeleteTimeV1.Response?>> DeleteTimeEntryV1(DeleteTimeV1.Request request, CancellationToken ct = default)
+        public Task<Result<DeleteTimeV1.Response?>> DeleteTimeEntryV1(DeleteTimeV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<DeleteTimeV1.Response>("/v1/TimeEntries/DeleteTimeV1", request, ct);
+        public Task<Result<UpsertTimeV1.Response?>> UpsertTimeEntryV1(UpsertTimeV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertTimeV1.Response>("/v1/TimeEntries/UpsertTimeV1", request, ct);
     }
 }

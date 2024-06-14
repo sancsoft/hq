@@ -105,6 +105,8 @@ app.Configure(config =>
     {
         branch.AddCommand<GetTimeEntriesCommand>("list").WithAlias("ls");
         branch.AddCommand<DeleteTimeEntryCommand>("delete").WithAlias("rm");
+        branch.AddCommand<CreateTimeEntryCommand>("create");
+
 
     });
 });
