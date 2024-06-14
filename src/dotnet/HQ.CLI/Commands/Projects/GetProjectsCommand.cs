@@ -55,7 +55,7 @@ namespace HQ.CLI.Commands.Projects
                 return 1;
             }
 
-            AnsiConsole.Write(OutputHelper.Create(result.Value, result.Value.Records)
+            OutputHelper.Create(result.Value, result.Value.Records)
                 .WithColumn("ID", t => t.Id.ToString())
                 .WithColumn("CHARGE CODE", t => t.ChargeCode)
                 .WithColumn("PROJECT NUM", t => t.ProjectNumber?.ToString())
@@ -65,8 +65,7 @@ namespace HQ.CLI.Commands.Projects
                 .WithColumn("START DATE", t => t.StartDate?.ToLongDateString(), table: false, wide: true)
                 .WithColumn("END DATE", t => t.EndDate?.ToLongDateString(), table: false, wide: true)
                 .WithColumn("STATUS", t => null, table: false, wide: true)
-                .Output(settings.Output)
-            );
+                .Output(settings.Output);
 
             return 0;
         }

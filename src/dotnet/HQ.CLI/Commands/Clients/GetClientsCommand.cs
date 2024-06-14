@@ -56,14 +56,13 @@ namespace HQ.CLI.Commands.Clients
                 return 1;
             }
 
-            AnsiConsole.Write(OutputHelper.Create(result.Value, result.Value.Records)
+            OutputHelper.Create(result.Value, result.Value.Records)
                 .WithColumn("ID", t => t.Id.ToString())
                 .WithColumn("NAME", t => t.Name)
                 .WithColumn("HOURLY RATE", t => t.HourlyRate?.ToString("C"))
                 .WithColumn("OFFICIAL NAME", t => t.OfficialName, table: false, wide: true)
                 .WithColumn("BILLING EMAIL", t => t.BillingEmail, table: false, wide: true)
-                .Output(settings.Output)
-            );
+                .Output(settings.Output);
 
             return 0;
         }

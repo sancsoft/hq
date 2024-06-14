@@ -65,7 +65,7 @@ namespace HQ.CLI.Commands.ChargeCodes
                 return 1;
             }
 
-            AnsiConsole.Write(OutputHelper.Create(result.Value, result.Value.Records)
+            OutputHelper.Create(result.Value, result.Value.Records)
                 .WithColumn("ID", t => t.Id.ToString())
                 .WithColumn("ACTIVITY", t => t.Activity.ToString())
                 .WithColumn("CODE", t => t.Code)
@@ -75,8 +75,7 @@ namespace HQ.CLI.Commands.ChargeCodes
                 .WithColumn("QUOTE NAME", t => t.QuoteName)
                 .WithColumn("SERVICE AGREEMENT NAME", t => t.ServiceAgreementName)
                 .WithColumn("DESCRIPTION", t => t.Description, table: false, wide: true)
-                .Output(settings.Output)
-            );
+                .Output(settings.Output);
 
             return 0;
         }

@@ -48,7 +48,7 @@ namespace HQ.CLI
             return this;
         }
 
-        public IRenderable Output(OutputFormat output)
+        public void Output(OutputFormat output)
         {
             switch(output)
             {
@@ -68,8 +68,8 @@ namespace HQ.CLI
                     }
 
                     table.Border(TableBorder.None);
-
-                    return table;
+                    AnsiConsole.Write(table);
+                    break;
                 case OutputFormat.CSV:
                     {
                         using var stream = new MemoryStream();
@@ -94,7 +94,8 @@ namespace HQ.CLI
                         csv.Flush();
                         stream.Position = 0;
 
-                        return new Text(reader.ReadToEnd());
+                        Console.WriteLine(reader.ReadToEnd());
+                        break;
                     }
                 case OutputFormat.Json:
                 default:
@@ -108,7 +109,8 @@ namespace HQ.CLI
                         }
                     };
 
-                    return new JsonText(JsonSerializer.Serialize(_json, options));
+                    Console.WriteLine(JsonSerializer.Serialize(_json, options));
+                    break;
             }
         }
     }
