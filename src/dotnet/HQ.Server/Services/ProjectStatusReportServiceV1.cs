@@ -28,18 +28,14 @@ public class ProjectStatusReportServiceV1
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
-        request.ForDate ??= DateOnly.FromDateTime(DateTime.Today);
-
         int createdCount = 0;
         int skippedCount = 0;
 
         var projects = await _context.Projects.Where(t => t.ChargeCode != null && t.ChargeCode.Active)
             .ToListAsync(ct);
 
-
-        DateOnly startDate = ((DateOnly)request.ForDate).GetPeriodStartDate(Period.Week);
-        DateOnly endDate = ((DateOnly)request.ForDate).GetPeriodEndDate(Period.Week);
-
+        DateOnly startDate = request.ForDate.GetPeriodStartDate(Period.Week);
+        DateOnly endDate = request.ForDate.GetPeriodEndDate(Period.Week);
 
         foreach (var project in projects)
         {
