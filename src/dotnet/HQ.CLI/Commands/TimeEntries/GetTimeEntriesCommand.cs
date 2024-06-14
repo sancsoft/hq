@@ -73,9 +73,6 @@ namespace HQ.CLI.Commands.TimeEntries
             };
             // this part is commented out for testing purposes
             
-            // if(settings.Date == null) {
-            //     timeEntryRequest.StartDate = DateOnly.FromDateTime(DateTime.Now);
-            // }
 
             var result = await _hqService.GetTimeEntriesV1(timeEntryRequest);
             
@@ -85,12 +82,6 @@ namespace HQ.CLI.Commands.TimeEntries
                 return 1;
             }
             
-//             foreach(PropertyDescriptor descriptor in TypeDescriptor.GetProperties(timeEntryRequest))
-// {
-//     string name = descriptor.Name;
-//     object value = descriptor.GetValue(timeEntryRequest);
-//     Console.WriteLine("{0}={1}", name, value);
-// }
         AnsiConsole.Write(
         OutputHelper.Create(result.Value, result.Value.Records)
         .WithColumn("ID", t => t.Id.ToString())
