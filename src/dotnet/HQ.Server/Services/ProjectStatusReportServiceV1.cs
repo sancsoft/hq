@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Formats.Asn1;
 using System.Globalization;
+using HQ.Abstractions;
 
 namespace HQ.Server.Services;
 
@@ -27,17 +28,14 @@ public class ProjectStatusReportServiceV1
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
-        request.ForDate ??= DateOnly.FromDateTime(DateTime.Today);
         int createdCount = 0;
         int skippedCount = 0;
 
         var projects = await _context.Projects.Where(t => t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing))
             .ToListAsync(ct);
 
-
-        DateOnly startDate = request.ForDate.Value.AddDays(-((int)request.ForDate.Value.DayOfWeek + 1) % 7);
-        DateOnly endDate = startDate.AddDays(6);
-
+        DateOnly startDate = request.ForDate.GetPeriodStartDate(Period.Week);
+        DateOnly endDate = request.ForDate.GetPeriodEndDate(Period.Week);
 
         foreach (var project in projects)
         {
