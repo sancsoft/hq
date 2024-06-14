@@ -58,7 +58,7 @@ namespace HQ.Server.Services
             if (!string.IsNullOrEmpty(request.ActivityName) && !request.ActivityId.HasValue)
             {
                 var activity = await _context.ProjectActivities
-                .Where(t => t.ProjectId.Equals(chargeCode.ProjectId) && t.Name == request.ActivityName)
+                .Where(t => t.ProjectId.Equals(chargeCode.ProjectId) && t.Name.ToLower() == request.ActivityName.ToLower())
                 .FirstOrDefaultAsync();
 
                 if (activity != null)
