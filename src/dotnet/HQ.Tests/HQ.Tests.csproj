@@ -22,4 +22,8 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\HQ.Abstractions\HQ.Abstractions.csproj" />
+	</ItemGroup>
+
 </Project>

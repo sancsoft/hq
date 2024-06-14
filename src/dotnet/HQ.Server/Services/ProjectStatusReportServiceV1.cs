@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Formats.Asn1;
 using System.Globalization;
+using HQ.Abstractions;
 
 namespace HQ.Server.Services;
 
@@ -28,15 +29,16 @@ public class ProjectStatusReportServiceV1
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
         request.ForDate ??= DateOnly.FromDateTime(DateTime.Today);
+
         int createdCount = 0;
         int skippedCount = 0;
 
-        var projects = await _context.Projects.Where(t => t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing))
+        var projects = await _context.Projects.Where(t => t.ChargeCode != null && t.ChargeCode.Active)
             .ToListAsync(ct);
 
 
-        DateOnly startDate = request.ForDate.Value.AddDays(-((int)request.ForDate.Value.DayOfWeek + 1) % 7);
-        DateOnly endDate = startDate.AddDays(6);
+        DateOnly startDate = ((DateOnly)request.ForDate).GetPeriodStartDate(Period.Week);
+        DateOnly endDate = ((DateOnly)request.ForDate).GetPeriodEndDate(Period.Week);
 
 
         foreach (var project in projects)
@@ -52,8 +54,8 @@ public class ProjectStatusReportServiceV1
             psr.EndDate = endDate;
             psr.ProjectId = project.Id;
             psr.ProjectManagerId = project.ProjectManagerId;
+            psr.Status = ProjectStatus.Unknown;
             psr.BookingPeriod = project.BookingPeriod;
-            psr.Status = project.Status;
 
             switch (project.BookingPeriod)
             {
@@ -168,7 +170,8 @@ public class ProjectStatusReportServiceV1
             .Select(t => new
             {
                 Row = t,
-                Previous = _context.ProjectStatusReports.Where(x => x.ProjectId == t.ProjectId && x.StartDate < t.StartDate).OrderByDescending(x => x.StartDate).FirstOrDefault()
+                Previous = _context.ProjectStatusReports.Where(x => x.ProjectId == t.ProjectId && x.StartDate < t.StartDate).OrderByDescending(x => x.StartDate).FirstOrDefault(),
+                Next = _context.ProjectStatusReports.Where(x => x.ProjectId == t.ProjectId && x.StartDate > t.EndDate).OrderBy(x => x.StartDate).FirstOrDefault()
             })
             .Select(t => new GetProjectStatusReportsV1.Record()
             {
@@ -184,17 +187,15 @@ public class ProjectStatusReportServiceV1
                 ClientName = t.Row.Project.Client.Name,
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
                 Status = t.Row.Status,
-                IsLate = t.Row.SubmittedAt == null,
-                
                 ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
-                
                 LastId = t.Previous != null ? t.Previous.Id : null,
                 LastHours = t.Previous != null && t.Previous.Project.ChargeCode != null ? t.Previous.Project.ChargeCode.Times.Where(x => x.Date >= t.Previous.StartDate && x.Date <= t.Previous.EndDate).Sum(x => x.Hours) : null,
+                IsLate = t.Next != null && t.Row.SubmittedAt == null,
 
                 BookingPeriod = t.Row.BookingPeriod,
-                BookingStartDate = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Min(x => x.Date),
-                BookingEndDate = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Max(x => x.Date),
+                BookingStartDate = t.Row.BookingStartDate,
+                BookingEndDate = t.Row.BookingEndDate,
                 BookingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 BookingAvailableHours = t.Row.Project.BookingHours - t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 BookingPercentComplete = t.Row.Project.BookingHours == 0 ? 0 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours) / t.Row.Project.BookingHours,
@@ -205,47 +206,13 @@ public class ProjectStatusReportServiceV1
                 TotalPercentCompleteSort = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? -1 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.Hours) / t.Row.Project.TotalHours.Value,
                 TotalStartDate = t.Row.Project.ChargeCode.Times.Where(x => x.Date <= t.Row.EndDate).Min(t => t.Date),
                 TotalEndDate = t.Row.Project.ChargeCode.Times.Where(x => x.Date <= t.Row.EndDate).Max(t => t.Date),
-            })
-            .Select(t => new GetProjectStatusReportsV1.Record() {
-                Id = t.Id,
-                Report = t.Report,
-                SubmittedAt = t.SubmittedAt,
-                StartDate = t.StartDate,
-                EndDate = t.EndDate,
-                ChargeCode = t.ChargeCode,
-                ProjectName = t.ProjectName,
-                ProjectId = t.ProjectId,
-                ClientId = t.ClientId,
-                ClientName = t.ClientName,
-                ProjectManagerName = t.ProjectManagerName,
-                Status = t.Status,
-                IsLate = t.IsLate,
-                
-                ThisHours = t.ThisHours,
-                ThisPendingHours = t.ThisPendingHours,
-                
-                LastId = t.LastId,
-                LastHours = t.LastHours,
-
-                BookingPeriod = t.BookingPeriod,
-                BookingStartDate = t.BookingStartDate,
-                BookingEndDate = t.BookingEndDate,
-                BookingHours = t.BookingHours,
-                BookingAvailableHours = t.BookingAvailableHours,
-                BookingPercentComplete = t.BookingPercentComplete,
-                
-                TotalHours = t.TotalHours,
-                TotalAvailableHours = t.TotalAvailableHours,
-                TotalPercentComplete = t.TotalPercentComplete,
-                TotalPercentCompleteSort = t.TotalPercentCompleteSort,
-                TotalStartDate = t.TotalStartDate,
-                TotalEndDate = t.TotalEndDate,
-
-                SummaryHoursTotal = t.Status == ProjectStatus.Ongoing ? t.BookingHours : t.TotalHours,
-                SummaryHoursAvailable = t.Status == ProjectStatus.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
-                SummaryPercentComplete = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
-                SummaryPercentCompleteSort = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort
             });
+
+        var currentWeek = await _context.ProjectStatusReports.Select(t => (DateOnly?)t.StartDate).DefaultIfEmpty().MaxAsync(ct);
+        if (currentWeek.HasValue)
+        {
+            mapped = mapped.Where(t => t.StartDate == currentWeek || t.IsLate);
+        }
 
         var totalHours = await mapped.SumAsync(t => t.TotalHours, ct);
         var total = await mapped.CountAsync(ct);
@@ -271,9 +238,6 @@ public class ProjectStatusReportServiceV1
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingAvailableHours, "BookingAvailableHours" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalPercentComplete, "TotalPercentCompleteSort" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPercentComplete, "BookingPercentComplete" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryHoursTotal, "SummaryHoursTotal" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryHoursAvailable, "SummaryHoursAvailable" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryPercentComplete, "SummaryPercentCompleteSort" },
         };
 
         var sortProperty = sortMap[request.SortBy];
@@ -459,12 +423,11 @@ public class ProjectStatusReportServiceV1
         {
             return Result.Fail("Unable to find time entry.");
         }
-        // This is TEMPORARY for making rejected time change to Pending
 
-        // if(time.Status != TimeStatus.Accepted)
-        // {
-        //     return Result.Fail("Time entry is not accepted.");
-        // }
+        if (time.Status != TimeStatus.Accepted)
+        {
+            return Result.Fail("Time entry is not accepted.");
+        }
 
         time.Status = TimeStatus.Pending;
 
