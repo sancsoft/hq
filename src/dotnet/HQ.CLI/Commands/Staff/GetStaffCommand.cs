@@ -59,7 +59,7 @@ namespace HQ.CLI.Commands.Staff
                 return 1;
             }
 
-            AnsiConsole.Write(OutputHelper.Create(result.Value, result.Value.Records)
+            OutputHelper.Create(result.Value, result.Value.Records)
                 .WithColumn("ID", t => t.Id.ToString())
                 .WithColumn("NAME", t => t.Name)
                 .WithColumn("WORK HOURS", t => t.WorkHours.ToString())
@@ -67,8 +67,7 @@ namespace HQ.CLI.Commands.Staff
                 .WithColumn("JURISDICITON", t => t.Jurisdiciton.ToString(), table: false, wide: true)
                 .WithColumn("START DATE", t => t.StartDate?.ToLongDateString(), table: false, wide: true)
                 .WithColumn("END DATE", t => t.EndDate?.ToLongDateString(), table: false, wide: true)
-                .Output(settings.Output)
-            );
+                .Output(settings.Output);
 
             return 0;
         }
