@@ -105,8 +105,7 @@ app.Configure(config =>
     {
         branch.AddCommand<GetTimeEntriesCommand>("list").WithAlias("ls");
         branch.AddCommand<DeleteTimeEntryCommand>("delete").WithAlias("rm");
-        branch.AddCommand<CreateTimeEntryCommand>("create").WithAlias("c");
-        branch.AddCommand<EditTimeEntryCommand>("add").WithAlias("a");
+        branch.AddCommand<CreateTimeEntryCommand>("add").WithAlias("a");
         branch.AddCommand<EditTimeEntryActivityCommand>("update-Activity");
         branch.AddCommand<EditTimeEntryChargecodeCommand>("update-chargecode");
         branch.AddCommand<EditTimeEntryDescriptionCommand>("update-description");
