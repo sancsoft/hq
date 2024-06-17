@@ -31,7 +31,7 @@ namespace HQ.CLI.Commands.TimeEntries
         public string? Activity { get; set; }
 
         [CommandOption("--hours|-h")]
-        public decimal? Hours { get; set; }
+        public required decimal Hours { get; set; }
 
         [CommandOption("--date")]
         public DateOnly? Date { get; set; }
@@ -48,29 +48,15 @@ namespace HQ.CLI.Commands.TimeEntries
 
         public override async Task<int> ExecuteAsync(CommandContext context, EditTimeEntrySettings settings)
         {
-            var result = await _hqService.GetTimeEntriesV1(new()
-            {
-                Id = settings.Id,
-            });
 
-            if (!result.IsSuccess || result.Value == null)
-            {
-                ErrorHelper.Display(result);
-                return 1;
-            }
-            var time = result.Value.Records.FirstOrDefault();
-            if(time == null) {
-                ErrorHelper.Display(result);
-                return 1;
-            }
             var timeEntryRequest = new UpsertTimeV1.Request()
             {
-                ChargeCode = string.IsNullOrEmpty(settings.ChargeCode) ? time.ChargeCode : settings.ChargeCode ,
-                ActivityName = string.IsNullOrEmpty(settings.Activity) ? time.ActivityName : settings.Activity,
-                Notes = string.IsNullOrEmpty(settings.Notes) ? time.Description! : settings.Notes,
-                Task = string.IsNullOrEmpty(settings.Task) ? time.Task : settings.Task,
-                Date = settings.Date.HasValue ? settings.Date.Value : time.Date ,
-                Hours = settings.Hours.HasValue ? settings.Hours.Value : time.Hours
+                ChargeCode = settings.ChargeCode ,
+                ActivityName = settings.Activity,
+                Notes = settings.Notes,
+                Task = settings.Task,
+                Date = settings.Date.HasValue ? settings.Date.Value :  DateOnly.FromDateTime(DateTime.Today),
+                Hours = settings.Hours
             };
 
             var updateResult = await _hqService.UpsertTimeEntryV1(timeEntryRequest);
