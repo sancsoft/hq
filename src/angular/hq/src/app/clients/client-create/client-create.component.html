@@ -39,9 +39,10 @@
                 <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5">
                   <!-- column -->
                   <div>
+                    <label for="name" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Name</label>
                     <!-- text input -->
                     <input [class.border-red-700]="form.controls.name.errors && form.touched" type="text"
-                      name="fullname" id="fullname"
+                      id="name"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                       placeholder="Client Name" formControlName="name">
                     @if(form.controls.name.errors && form.touched) {
@@ -52,9 +53,10 @@
                   </div>
                   <!-- column -->
                   <div>
+                    <label for="officialName" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Official Name</label>
                     <!-- text input -->
                     <input [class.border-red-700]="form.controls.officialName.errors && form.touched" type="text"
-                      name="canatednated" id="canatednated"
+                      id="officialName"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                       placeholder="Official Name" formControlName="officialName">
                   </div>
@@ -63,9 +65,10 @@
                 <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
                   <!-- column -->
                   <div>
+                    <label for="billingEmail" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Name</label>
                     <!-- email input -->
                     <input [class.border-red-700]="form.controls.billingEmail.errors && form.touched" type="email"
-                      name="canatednated" id="canatednated"
+                      id="billingEmail"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                       placeholder="Billing Email" formControlName="billingEmail">
                     @if(form.controls.billingEmail.errors && form.touched)
@@ -78,8 +81,8 @@
                   </div>
                   <!-- column -->
                   <div>
+                    <label for="hourlyRate" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Rate</label>
                     <div class="flex items-center">
-                      <span class="mr-[8px] font-semibold">Rate</span>
                       <!-- text input w/icon to left -->
                       <div
                         class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]">
@@ -88,6 +91,7 @@
                           <i class="bi bi-currency-dollar text-[14px]"></i>
                         </span>
                         <input [class.border-red-700]="form.controls.hourlyRate.errors && form.touched" type="number"
+                          id="hourlyRate"
                           step="1" min="0"
                           class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded"
                           placeholder="00" formControlName="hourlyRate">
