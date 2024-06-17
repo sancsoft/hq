@@ -39,7 +39,7 @@ namespace HQ.Server.Services
                 _context.Times.Add(timeEntry);
             }
 
-            timeEntry.StaffId = request.StaffId.HasValue ? request.StaffId.Value : Guid.Empty;
+            timeEntry.StaffId = request.StaffId.Value;
             timeEntry.ChargeCodeId = request.ChargeCodeId;
             timeEntry.Date = request.Date;
             timeEntry.Notes = request.Notes;
@@ -130,7 +130,7 @@ namespace HQ.Server.Services
  public async Task<Result<DeleteTimeV1.Response>> DeleteTimeV1(DeleteTimeV1.Request request, CancellationToken ct = default)
 {
     var time = await _context.Times
-                             .Where(t => t.Id == request.Id && t.StaffId == request.StaffId)
+                             .Where(t => t.Id == request.Id)
                              .FirstOrDefaultAsync(ct);
 
     if (time == null)
