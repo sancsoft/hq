@@ -87,6 +87,7 @@ import {
 } from '../models/PSR/unapprove-psrtime-v1';
 import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff-member-v1';
 import { UpsertChargeCodesRequestV1, UpsertChargeCodesResponseV1 } from '../models/charge-codes/upsert-chargecodes';
+import { GetProjectActivitiesResponseV1, GetProjectActivityRequestV1 } from '../models/PSR/get-project-activity-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -374,5 +375,19 @@ export class HQService {
       })
     );
   }
+
+  getprojectActivitiesV1(request: Partial<GetProjectActivityRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetProjectActivitiesResponseV1>(
+          `${apiUrl}/v1/Projects/GetProjectActivitiesV1`,
+          request
+        )
+      )
+    );
+  }
 }
+
+
+
 // UpdateProjectStatusReportTimeV1

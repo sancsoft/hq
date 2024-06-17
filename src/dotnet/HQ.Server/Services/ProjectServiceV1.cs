@@ -135,7 +135,6 @@ public class ProjectServiceV1
         {
             records = records.Where(t => t.Id == request.Id.Value);
         }
-
         var mapped = records.Select(t => new GetProjectsV1.Record()
         {
             Id = t.Id,
@@ -270,10 +269,42 @@ public class ProjectServiceV1
                 Sequence = t.Sequence
             })
             .OrderBy(t => t.Name);
-
         return new GetProjectActivitiesV1.Response()
         {
             Records = await records.ToListAsync(ct)
+        };
+    }
+
+        public async Task<Result<UpsertProjectActivityV1.Response>> UpsertProjectActivityV1(UpsertProjectActivityV1.Request request, CancellationToken ct = default)
+    {
+        var validationResult = Result.Merge(
+            Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
+            Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId != request.ProjectId && t.Sequence == request.Sequence, ct), "Sequence must be unique."),
+
+            Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId == request.ProjectId && t.Name == request.Name, ct), "Name must be unique.")
+        );
+
+        if (validationResult.IsFailed)
+        {
+            return validationResult;
+        }
+
+        var activity = await _context.ProjectActivities.FindAsync(request.Id);
+        if (activity == null)
+        {
+            activity = new();
+            _context.ProjectActivities.Add(activity);
+        }
+
+        activity.Name = request.Name;
+        activity.ProjectId = request.ProjectId;
+        activity.Sequence = request.Sequence;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new UpsertProjectActivityV1.Response()
+        {
+            Id = activity.Id
         };
     }
 }
