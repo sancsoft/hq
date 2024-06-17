@@ -5,6 +5,15 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Times;
+using HQ.Abstractions;
+
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Spectre.Console.Json;
+using System;
+using System.Collections.Generic;
 
 namespace HQ.CLI.Commands.TimeEntries
 {
@@ -36,8 +45,12 @@ namespace HQ.CLI.Commands.TimeEntries
 
         [CommandOption("--task")]
         public string? Task { get; set; }
+
         [CommandOption("--date")]
         public DateOnly? Date { get; set; }
+
+        [CommandOption("--period|-p")]
+        public TimePeriod? Period { get; set; }
 
         [CommandOption("--sort-direction|-D")]
         [DefaultValue(SortDirection.Asc)]
@@ -58,31 +71,44 @@ namespace HQ.CLI.Commands.TimeEntries
 
         public override async Task<int> ExecuteAsync(CommandContext context, GetTimeEntriesSettings settings)
         {
-            var timeEntryRequest = new GetTimesV1.Request() {
+            DateOnly? startDate = null;
+            DateOnly? endDate = null;
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+            if (settings.Period.HasValue)
+            {
+                (startDate, endDate) = CalculateDateRange(settings.Period.Value, today);
+            }
+            else
+            {
+                startDate = settings.From;
+                endDate = settings.To;
+            }
+
+            var timeEntryRequest = new GetTimesV1.Request
+            {
                 Search = settings.Search,
                 ChargeCode = settings.chargecode,
                 Id = settings.Id,
                 ClientId = settings.ClientId,
                 StaffId = settings.StaffId,
-                StartDate = settings.From ?? settings.Date,
-                EndDate = settings.To,
+                StartDate = startDate,
+                EndDate = endDate,
                 SortBy = settings.SortBy,
                 SortDirection = settings.SortDirection,
                 Task = settings.Task,
                 Activity = settings.Activity
             };
-            // this part is commented out for testing purposes
-            
 
             var result = await _hqService.GetTimeEntriesV1(timeEntryRequest);
             
 
             if (!result.IsSuccess || result.Value == null)
             {
+                ErrorHelper.Display(result);
                 return 1;
             }
             
-        AnsiConsole.Write(
         OutputHelper.Create(result.Value, result.Value.Records)
         .WithColumn("ID", t => t.Id.ToString())
         .WithColumn("DATE", t => t.Date.ToString())
@@ -91,10 +117,42 @@ namespace HQ.CLI.Commands.TimeEntries
         .WithColumn("DESCRIPTION", t => t.Description.Length > 70 ? t.Description.Substring(0, 70) + "..." : t.Description)
         .WithColumn("ACTIVITY / TASK", t => t.ActivityName != null ? t.ActivityName : t.Task)
         .WithColumn("REJECTION NOTES", t => t.RejectionNotes)
-        .Output(settings.Output)
-        );
-
+        .Output(settings.Output);
             return 0;
         }
+
+        private (DateOnly StartDate, DateOnly EndDate) CalculateDateRange(TimePeriod period, DateOnly today)
+        {
+            DateOnly startDate;
+            DateOnly endDate;
+
+            switch (period)
+            {
+                case TimePeriod.Today:
+                    startDate = endDate = today;
+                    break;
+                case TimePeriod.ThisWeek:
+                    startDate = today.AddDays(-(int)today.DayOfWeek);
+                    endDate = startDate.AddDays(6);
+                    break;
+                case TimePeriod.LastWeek:
+                    endDate = today.AddDays(-(int)today.DayOfWeek - 1);
+                    startDate = endDate.AddDays(-6);
+                    break;
+                case TimePeriod.ThisMonth:
+                    startDate = new DateOnly(today.Year, today.Month, 1);
+                    endDate = startDate.AddMonths(1).AddDays(-1);
+                    break;
+                case TimePeriod.LastMonth:
+                    startDate = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
+                    endDate = startDate.AddMonths(1).AddDays(-1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return (startDate, endDate);
+        }
     }
+    
 }

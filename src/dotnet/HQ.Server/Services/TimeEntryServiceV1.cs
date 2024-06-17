@@ -79,10 +79,132 @@ namespace HQ.Server.Services
             timeEntry.StaffId = request.StaffId.HasValue ? request.StaffId.Value : Guid.Empty;
             timeEntry.Date = request.Date;
             timeEntry.Notes = request.Notes;
-            timeEntry.Hours = request.BillableHours;
+            timeEntry.Hours = request.Hours ?? 0;
             timeEntry.Task = request.Task;
             await _context.SaveChangesAsync(ct);
             return Result.Ok(new UpsertTimeV1.Response() { Id = timeEntry.Id });            
+        }
+
+        public async Task<Result<UpsertTimeDescriptionV1.Response>> UpsertTimeDescriptionV1(UpsertTimeDescriptionV1.Request request, CancellationToken ct = default)
+        {
+            if (string.IsNullOrEmpty(request.Notes))
+            {
+                return Result.Fail("Time Description can not be null or empty");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            timeEntry.Notes = request.Notes;
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeDescriptionV1.Response() { Id = timeEntry.Id });
+        }
+
+        public async Task<Result<UpsertTimeHoursV1.Response>> UpsertTimeHoursV1(UpsertTimeHoursV1.Request request, CancellationToken ct = default)
+        {
+            if(request.Hours <= 0) {
+                return Result.Fail("Hours must be greater than zero");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+            
+            if(timeEntry == null) {
+                return Result.Fail("Time Id is required.");
+            }
+
+            timeEntry.Hours = request.Hours;
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeHoursV1.Response() { Id = timeEntry.Id });
+        }
+
+        public async Task<Result<UpsertTimeDateV1.Response>> UpsertTimeDateV1(UpsertTimeDateV1.Request request, CancellationToken ct = default)
+        {
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            timeEntry.Date = request.Date;
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeDateV1.Response() { Id = timeEntry.Id });
+        }
+
+        public async Task<Result<UpsertTimeTaskV1.Response>> UpsertTimeTaskV1(UpsertTimeTaskV1.Request request, CancellationToken ct = default)
+        {
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            timeEntry.Task = request.Task;
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeTaskV1.Response() { Id = timeEntry.Id });
+        }
+        public async Task<Result<UpsertTimeActivityV1.Response>> UpsertTimeActivityV1(UpsertTimeActivityV1.Request request, CancellationToken ct = default)
+        {
+            if (string.IsNullOrEmpty(request.ActivityName))
+            {
+                return Result.Fail("Activity Name can't be null or empty");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            if (!string.IsNullOrEmpty(request.ActivityName))
+            {
+                var activity = await _context.ProjectActivities
+                .Where(t => t.ProjectId.Equals(timeEntry.ChargeCode.ProjectId) && t.Name.ToLower() == request.ActivityName.ToLower())
+                .FirstOrDefaultAsync();
+
+                if (activity != null)
+                {
+                    timeEntry.ActivityId = activity.Id;
+                }
+                else
+                {
+                    return Result.Fail($"The Activity Name: {request.ActivityName} not found");
+                }
+            }
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeActivityV1.Response() { Id = timeEntry.Id });
+        }
+
+        public async Task<Result<UpsertTimeChargeCodeV1.Response>> UpsertTimeChargecodeV1(UpsertTimeChargeCodeV1.Request request, CancellationToken ct = default)
+        {
+            if (string.IsNullOrEmpty(request.Chargecode))
+            {
+                return Result.Fail("Charge code can't be null or empty");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+            var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.Chargecode).FirstOrDefaultAsync();
+
+            if (!string.IsNullOrEmpty(request.Chargecode))
+            {
+                if (chargeCode != null)
+                {
+                    timeEntry.ChargeCode = chargeCode;
+                }
+                else
+                {
+                    return Result.Fail($"The Charge code: {request.Chargecode} not found");
+                }
+            }
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeChargeCodeV1.Response() { Id = timeEntry.Id });
         }
 
         public async Task<Result<GetTimesV1.Response>> GetTimesV1(GetTimesV1.Request request, CancellationToken ct = default)
@@ -152,8 +274,12 @@ namespace HQ.Server.Services
         {
             records = records.Where(t => t.Activity.Name == request.Activity);
         }
-        
-        var mapped = records
+        if (request.Date.HasValue)
+        {
+            records = records.Where(t => t.Date == request.Date);
+        }
+
+            var mapped = records
             .Select(t => new GetTimesV1.Record()
             {
                 Id = t.Id,

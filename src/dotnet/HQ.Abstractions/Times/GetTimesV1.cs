@@ -17,6 +17,7 @@ public class GetTimesV1
         public string? Search { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
+        public DateOnly? Date { get; set; }
         public Guid? ClientId  { get; set; }
         public string? ChargeCode  { get; set; }
         public string? Activity  { get; set; }

@@ -54,6 +54,7 @@ namespace HQ.CLI.Commands.TimeEntries
 
             if (!result.IsSuccess || result.Value == null)
             {
+                ErrorHelper.Display(result);
                 return 1;
             }
 

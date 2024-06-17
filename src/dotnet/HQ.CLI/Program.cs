@@ -105,10 +105,20 @@ app.Configure(config =>
     {
         branch.AddCommand<GetTimeEntriesCommand>("list").WithAlias("ls");
         branch.AddCommand<DeleteTimeEntryCommand>("delete").WithAlias("rm");
-        branch.AddCommand<CreateTimeEntryCommand>("create");
+        branch.AddCommand<CreateTimeEntryCommand>("create").WithAlias("c");
+        // branch.AddCommand<EditTimeEntryCommand>("edit").WithAlias("e");
+        branch.AddCommand<EditTimeEntryActivityCommand>("update-Activity");
+        branch.AddCommand<EditTimeEntryChargecodeCommand>("update-chargecode");
+        branch.AddCommand<EditTimeEntryDescriptionCommand>("update-description");
+        branch.AddCommand<EditTimeEntryHoursCommand>("update-hours");
+        branch.AddCommand<EditTimeEntryDateCommand>("update-date");
+        branch.AddCommand<EditTimeEntryTaskCommand>("update-task");
+
+
 
 
     });
+    
 });
 
 var rc = await app.RunAsync(args);
