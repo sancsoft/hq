@@ -61,6 +61,7 @@ namespace HQ.Server.Controllers
                     return Forbid();
                 }
             }
+            request.StaffId = User.GetStaffId();
             
             return await _TimeEntryServiceV1.UpsertTimeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
