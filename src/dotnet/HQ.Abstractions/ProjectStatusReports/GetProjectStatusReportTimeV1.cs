@@ -28,7 +28,7 @@ public class GetProjectStatusReportTimeV1
     public class Response : PagedResponseV1<Record>
     {
         public List<StaffRecord> Staff { get; set; } = new();
-        public Guid ProjectId { get; set;} = new();
+        public Guid? ProjectId { get; set;} = new();
     }
 
     public class StaffRecord

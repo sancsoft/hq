@@ -395,7 +395,7 @@ public class ProjectStatusReportServiceV1
         {
             Records = await sorted.ToListAsync(ct),
             Staff = await staff.ToListAsync(ct),
-            ProjectId = project != null ? project.Id : Guid.Empty,
+            ProjectId = project != null ? project.Id : null,
             Total = total
         };
 
