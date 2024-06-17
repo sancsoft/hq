@@ -46,8 +46,8 @@ namespace HQ.CLI.Commands.ChargeCode
         public override async Task<int> ExecuteAsync(CommandContext context, ImportVoltronTimeSettings settings)
         {
             var files = new List<FileInfo>();
-            
-            if(settings.File != null)
+
+            if (settings.File != null)
             {
                 files.Add(settings.File);
             }
@@ -60,7 +60,7 @@ namespace HQ.CLI.Commands.ChargeCode
             Console.WriteLine("Processing {0} files", files.Count);
 
             var request = new ImportVoltronTimeSheetsV1.Request()
-            {                
+            {
                 From = settings.From,
                 To = settings.To,
                 Replace = settings.Replace,
@@ -68,6 +68,11 @@ namespace HQ.CLI.Commands.ChargeCode
             };
 
             var response = await _hqService.ImportVoltronTimeSheetsV1(request);
+            if (!response.IsSuccess || response.Value == null)
+            {
+                ErrorHelper.Display(response);
+                return 1;
+            }
 
             Console.WriteLine("{0} Created", response.Value?.TimeCreated);
             Console.WriteLine("{0} Deleted", response.Value?.TimeDeleted);

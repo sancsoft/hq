@@ -37,11 +37,12 @@ namespace HQ.CLI.Commands.Clients
 
             if (!result.IsSuccess || result.Value == null)
             {
+                ErrorHelper.Display(result);
                 return 1;
             }
 
             var record = result.Value.Records.FirstOrDefault();
-            if(record == null)
+            if (record == null)
             {
                 return 1;
             }

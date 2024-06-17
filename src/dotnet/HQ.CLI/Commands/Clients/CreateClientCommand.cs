@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace HQ.CLI.Commands.Clients
 {
@@ -36,6 +37,7 @@ namespace HQ.CLI.Commands.Clients
             });
 
             var rc = await editor.Launch();
+
             return rc;
         }
     }

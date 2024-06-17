@@ -38,12 +38,14 @@ namespace HQ.CLI.Commands.Clients
             };
 
             var response = await _hqService.ImportClientsV1(request);
-            if(response.IsFailed)
+            if (!response.IsSuccess || response.Value == null)
             {
-                throw new Exception($"Error importing clients:\n{String.Join(Environment.NewLine, response.Errors.Select(t => t.Message))}");
+                ErrorHelper.Display(response);
+                return 1;
             }
 
             var result = response.Value!;
+
 
             Console.WriteLine("{0} created, {1} updated", result.Created, result.Updated);
 

@@ -30,7 +30,7 @@ internal class LoginCommand : AsyncCommand<LoginSettings>
 
     public override async Task<int> ExecuteAsync(CommandContext context, LoginSettings settings)
     {
-        if(String.IsNullOrEmpty(_config.AuthUrl?.AbsoluteUri))
+        if (String.IsNullOrEmpty(_config.AuthUrl?.AbsoluteUri))
         {
             AnsiConsole.MarkupLine("[red]Invalid Auth URL[/]");
             return 1;
@@ -39,7 +39,7 @@ internal class LoginCommand : AsyncCommand<LoginSettings>
         var request = new DiscoveryDocumentRequest();
         request.Address = _config.AuthUrl.AbsoluteUri;
 
-        if(_config.Insecure)
+        if (_config.Insecure)
         {
             request.Policy.RequireHttps = false;
             request.Policy.ValidateIssuerName = false;
@@ -48,7 +48,7 @@ internal class LoginCommand : AsyncCommand<LoginSettings>
 
         var disco = await _httpClient.GetDiscoveryDocumentAsync(request);
         if (disco.IsError) throw new Exception(disco.Error);
-        
+
         var authorizeResponse = await _httpClient.RequestDeviceAuthorizationAsync(new DeviceAuthorizationRequest
         {
             Address = disco.DeviceAuthorizationEndpoint,
