@@ -23,6 +23,8 @@ public class TimeEntryAuthorizationHandler : AuthorizationHandler<OperationAutho
         var isPartner = context.User.IsInRole("partner");
         var isExecutive = context.User.IsInRole("executive");
         var isAdmin = context.User.IsInRole("administrator");
+        var isStaff = context.User.IsInRole("staff");
+
 
         switch(requirement.Name)
         {
@@ -30,7 +32,7 @@ public class TimeEntryAuthorizationHandler : AuthorizationHandler<OperationAutho
             case nameof(TimeEntryOperation.DeleteTime):
             case nameof(TimeEntryOperation.UpsertTime):
             {
-                if(staffId.HasValue || isPartner || isExecutive || isAdmin)
+                if((isStaff && staffId.HasValue && staffId.Value == resource.StaffId) || isPartner || isExecutive || isAdmin)
                 {
                     context.Succeed(requirement);
                 }

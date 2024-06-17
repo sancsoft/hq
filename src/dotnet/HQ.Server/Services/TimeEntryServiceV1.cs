@@ -31,7 +31,7 @@ namespace HQ.Server.Services
                 return validationResult;
             }
 
-            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id && t.StaffId == request.StaffId);
 
             if (timeEntry == null)
             {
@@ -66,7 +66,7 @@ namespace HQ.Server.Services
 
         if (request.Id.HasValue)
         {
-            records = records.Where(t => t.Id == request.Id.Value);
+            records = records.Where(t => t.Id == request.Id.Value && t.StaffId == request.StaffId);
         }
         if (request.StaffId.HasValue)
         {
