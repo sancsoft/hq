@@ -58,6 +58,8 @@ public class APICommand : AsyncCommand
         });
 
         builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizationHandler>();
+        builder.Services.AddScoped<IAuthorizationHandler, TimeEntryAuthorizationHandler>();
+
 
         builder.Services.AddCors(options =>
         {

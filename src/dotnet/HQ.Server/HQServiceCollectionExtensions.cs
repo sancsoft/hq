@@ -19,6 +19,7 @@ namespace HQ.Server
             services.AddScoped<ProjectStatusReportServiceV1>();
             services.AddScoped<InvoicesServiceV1>();
             services.AddScoped<ServicesAgreementServiceV1>();
+            services.AddScoped<TimeEntryServiceV1>();
             services.AddScoped<UserServiceV1>();
 
             return services;
