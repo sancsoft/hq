@@ -50,7 +50,7 @@ namespace HQ.CLI.Commands.TimeEntries
         public DateOnly? Date { get; set; }
 
         [CommandOption("--period|-p")]
-        public TimePeriod? Period { get; set; }
+        public Period? Period { get; set; }
 
         [CommandOption("--sort-direction|-D")]
         [DefaultValue(SortDirection.Asc)]
@@ -73,11 +73,12 @@ namespace HQ.CLI.Commands.TimeEntries
         {
             DateOnly? startDate = null;
             DateOnly? endDate = null;
-            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
             if (settings.Period.HasValue)
             {
-                (startDate, endDate) = CalculateDateRange(settings.Period.Value, today);
+                startDate = new DateOnly().GetPeriodStartDate(settings.Period.Value);
+                endDate = new DateOnly().GetPeriodEndDate(settings.Period.Value);
+
             }
             else
             {
@@ -119,39 +120,6 @@ namespace HQ.CLI.Commands.TimeEntries
         .WithColumn("REJECTION NOTES", t => t.RejectionNotes)
         .Output(settings.Output);
             return 0;
-        }
-
-        private (DateOnly StartDate, DateOnly EndDate) CalculateDateRange(TimePeriod period, DateOnly today)
-        {
-            DateOnly startDate;
-            DateOnly endDate;
-
-            switch (period)
-            {
-                case TimePeriod.Today:
-                    startDate = endDate = today;
-                    break;
-                case TimePeriod.ThisWeek:
-                    startDate = today.AddDays(-(int)today.DayOfWeek);
-                    endDate = startDate.AddDays(6);
-                    break;
-                case TimePeriod.LastWeek:
-                    endDate = today.AddDays(-(int)today.DayOfWeek - 1);
-                    startDate = endDate.AddDays(-6);
-                    break;
-                case TimePeriod.ThisMonth:
-                    startDate = new DateOnly(today.Year, today.Month, 1);
-                    endDate = startDate.AddMonths(1).AddDays(-1);
-                    break;
-                case TimePeriod.LastMonth:
-                    startDate = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
-                    endDate = startDate.AddMonths(1).AddDays(-1);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return (startDate, endDate);
         }
     }
     
