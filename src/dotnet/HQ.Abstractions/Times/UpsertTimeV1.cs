@@ -8,7 +8,7 @@ namespace HQ.Abstractions.Times
     public class UpsertTimeV1
     {
         public class Request {
-            public Guid Id { get; set; }
+            public Guid? Id { get; set; }
             public DateOnly Date { get; set; }
             public decimal BillableHours { get; set; }
             public string? Task { get; set; }

@@ -43,17 +43,25 @@ namespace HQ.Server.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpsertTime1([FromBody] UpsertTimeV1.Request request, CancellationToken ct = default)
         {
-            var staffId = User.GetStaffId();
-            var staff = await _context.Staff
-                .AsNoTracking()
-                .SingleOrDefaultAsync(t => t.Id == staffId);
+            if(request.Id.HasValue) { 
+                var time = await _context.Times
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(t => t.Id == request.Id);
 
-            if(staff == null)
-            {
-                return NotFound();
+                if(time == null)
+                {
+                    return NotFound();
+                }
+
+                var authorizationResult = await _authorizationService
+                    .AuthorizeAsync(User, time, TimeEntryOperation.UpsertTime);
+
+                if(!authorizationResult.Succeeded)
+                {
+                    return Forbid();
+                }
             }
-
-            request.StaffId = staffId;
+            request.StaffId = User.GetStaffId();
             return await _TimeEntryServiceV1.UpsertTimeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -66,17 +74,7 @@ namespace HQ.Server.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> GetTimesV1([FromBody] GetTimesV1.Request request, CancellationToken ct = default)
         {
-            var staffId = User.GetStaffId();
-            var staff = await _context.Staff
-                .AsNoTracking()
-                .SingleOrDefaultAsync(t => t.Id == staffId);
-
-            if(staff == null)
-            {
-                return NotFound();
-            }
-
-            request.StaffId = staffId;
+            request.StaffId = User.GetStaffId();
             return await _TimeEntryServiceV1.GetTimesV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -89,17 +87,23 @@ namespace HQ.Server.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> DeleteTimeV1([FromBody] DeleteTimeV1.Request request, CancellationToken ct = default)
         {
-            var staffId = User.GetStaffId();
-            var staff = await _context.Staff
+            var time = await _context.Times
                 .AsNoTracking()
-                .SingleOrDefaultAsync(t => t.Id == staffId);
+                .SingleOrDefaultAsync(t => t.Id == request.Id);
 
-            if(staff == null)
+            if(time == null)
             {
                 return NotFound();
             }
 
-            request.StaffId = staffId;
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(User, time, TimeEntryOperation.DeleteTime);
+
+            if(!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+            
             return await _TimeEntryServiceV1.DeleteTimeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
