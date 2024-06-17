@@ -39,20 +39,178 @@ namespace HQ.Server.Services
                 _context.Times.Add(timeEntry);
             }
 
-            timeEntry.StaffId = request.StaffId.Value;
-            timeEntry.ChargeCodeId = request.ChargeCodeId;
+            var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.ChargeCode || t.Id == request.ChargeCodeId).FirstOrDefaultAsync();
+
+            // These conditions are for the case where the request doesn't have a chargeCodeId but has ChargeCode for example P1041
+            if (!string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue)
+            {
+                if (chargeCode != null) {
+                    timeEntry.ChargeCode = chargeCode;
+                } else {
+                    return Result.Fail($"The Charge code: {request.ChargeCode} not found");
+                }
+            }
+
+            if(request.ChargeCodeId.HasValue) {
+                timeEntry.ChargeCodeId = request.ChargeCodeId.Value;
+            }
+
+            if (!string.IsNullOrEmpty(request.ActivityName) && !request.ActivityId.HasValue)
+            {
+                var activity = await _context.ProjectActivities
+                .Where(t => t.ProjectId.Equals(chargeCode.ProjectId) && t.Name.ToLower() == request.ActivityName.ToLower())
+                .FirstOrDefaultAsync();
+
+                if (activity != null)
+                {
+                    timeEntry.ActivityId = activity.Id;
+                }
+                else
+                {
+                    return Result.Fail($"The Activity Name: {request.ActivityName} not found");
+                }
+            }
+
+            if (request.ActivityId.HasValue)
+            {
+                timeEntry.ActivityId = request.ActivityId.Value;
+            }
+
+            timeEntry.StaffId = request.StaffId.HasValue ? request.StaffId.Value : Guid.Empty;
             timeEntry.Date = request.Date;
             timeEntry.Notes = request.Notes;
-            timeEntry.Hours = request.BillableHours;
-            timeEntry.ActivityId = request.ActivityId;
+            timeEntry.Hours = request.Hours ?? 0;
             timeEntry.Task = request.Task;
             await _context.SaveChangesAsync(ct);
             return Result.Ok(new UpsertTimeV1.Response() { Id = timeEntry.Id });            
         }
 
+        public async Task<Result<UpsertTimeDescriptionV1.Response>> UpsertTimeDescriptionV1(UpsertTimeDescriptionV1.Request request, CancellationToken ct = default)
+        {
+            if (string.IsNullOrEmpty(request.Notes))
+            {
+                return Result.Fail("Time Description can not be null or empty");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            timeEntry.Notes = request.Notes;
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeDescriptionV1.Response() { Id = timeEntry.Id });
+        }
+
+        public async Task<Result<UpsertTimeHoursV1.Response>> UpsertTimeHoursV1(UpsertTimeHoursV1.Request request, CancellationToken ct = default)
+        {
+            if(request.Hours <= 0) {
+                return Result.Fail("Hours must be greater than zero");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+            
+            if(timeEntry == null) {
+                return Result.Fail("Time Id is required.");
+            }
+
+            timeEntry.Hours = request.Hours;
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeHoursV1.Response() { Id = timeEntry.Id });
+        }
+
+        public async Task<Result<UpsertTimeDateV1.Response>> UpsertTimeDateV1(UpsertTimeDateV1.Request request, CancellationToken ct = default)
+        {
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            timeEntry.Date = request.Date;
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeDateV1.Response() { Id = timeEntry.Id });
+        }
+
+        public async Task<Result<UpsertTimeTaskV1.Response>> UpsertTimeTaskV1(UpsertTimeTaskV1.Request request, CancellationToken ct = default)
+        {
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            timeEntry.Task = request.Task;
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeTaskV1.Response() { Id = timeEntry.Id });
+        }
+        public async Task<Result<UpsertTimeActivityV1.Response>> UpsertTimeActivityV1(UpsertTimeActivityV1.Request request, CancellationToken ct = default)
+        {
+            if (string.IsNullOrEmpty(request.ActivityName))
+            {
+                return Result.Fail("Activity Name can't be null or empty");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            if (!string.IsNullOrEmpty(request.ActivityName))
+            {
+                var activity = await _context.ProjectActivities
+                .Where(t => t.ProjectId.Equals(timeEntry.ChargeCode.ProjectId) && t.Name.ToLower() == request.ActivityName.ToLower())
+                .FirstOrDefaultAsync();
+
+                if (activity != null)
+                {
+                    timeEntry.ActivityId = activity.Id;
+                }
+                else
+                {
+                    return Result.Fail($"The Activity Name: {request.ActivityName} not found");
+                }
+            }
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeActivityV1.Response() { Id = timeEntry.Id });
+        }
+
+        public async Task<Result<UpsertTimeChargeCodeV1.Response>> UpsertTimeChargecodeV1(UpsertTimeChargeCodeV1.Request request, CancellationToken ct = default)
+        {
+            if (string.IsNullOrEmpty(request.Chargecode))
+            {
+                return Result.Fail("Charge code can't be null or empty");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+            var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.Chargecode).FirstOrDefaultAsync();
+
+            if (!string.IsNullOrEmpty(request.Chargecode))
+            {
+                if (chargeCode != null)
+                {
+                    timeEntry.ChargeCode = chargeCode;
+                }
+                else
+                {
+                    return Result.Fail($"The Charge code: {request.Chargecode} not found");
+                }
+            }
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeChargeCodeV1.Response() { Id = timeEntry.Id });
+        }
+
         public async Task<Result<GetTimesV1.Response>> GetTimesV1(GetTimesV1.Request request, CancellationToken ct = default)
     {
         var records = _context.Times
+        .Include(t => t.ChargeCode).ThenInclude(t => t.Project).ThenInclude(t => t.Client)
             .AsNoTracking()
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
@@ -60,10 +218,39 @@ namespace HQ.Server.Services
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
-                t.Notes.ToLower().Contains(request.Search.ToLower())
+                t.Notes.ToLower().Contains(request.Search.ToLower()) ||
+                t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
+                t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
+                t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
+                 t.ChargeCode.Project.Name != null && t.ChargeCode.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
+                 t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
             );
         }
 
+        if (!string.IsNullOrEmpty(request.ChargeCode))
+        {
+            records = records.Where(t => t.ChargeCode.Code == request.ChargeCode);
+        }
+        if (request.ClientId.HasValue)
+        {
+            records = records.Where(t => t.ChargeCode.Project.ClientId.Equals(request.ClientId));
+        }
+
+        if (request.StartDate.HasValue && !request.EndDate.HasValue)
+        {
+            records = records.Where(t => t.Date >= request.StartDate);
+        }
+
+        if (request.EndDate.HasValue && !request.StartDate.HasValue)
+        {
+            records = records.Where(t => t.Date <= request.EndDate);
+        }
+
+        if (request.StartDate.HasValue && request.EndDate.HasValue)
+        {
+            records = records.Where(t => t.Date >= request.StartDate && t.Date <= request.EndDate);
+        }
+        
         if (request.Id.HasValue)
         {
             records = records.Where(t => t.Id == request.Id.Value && t.StaffId == request.StaffId);
@@ -72,8 +259,20 @@ namespace HQ.Server.Services
         {
             records = records.Where(t => t.StaffId == request.StaffId);
         }
-        
-        var mapped = records
+        if (!string.IsNullOrEmpty(request.Task))
+        {
+            records = records.Where(t => t.Task == request.Task);
+        }
+        if (!string.IsNullOrEmpty(request.Activity))
+        {
+            records = records.Where(t => t.Activity.Name == request.Activity);
+        }
+        if (request.Date.HasValue)
+        {
+            records = records.Where(t => t.Date == request.Date);
+        }
+
+            var mapped = records
             .Select(t => new GetTimesV1.Record()
             {
                 Id = t.Id,
@@ -83,6 +282,8 @@ namespace HQ.Server.Services
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
                 ChargeCode = t.ChargeCode.Code,
+                ProjectName = t.ChargeCode.Project.Name,
+                ClientName = t.ChargeCode.Project.Client.Name,
                 Date = t.Date,
                 Description = t.Notes,
                 ActivityId = t.ActivityId,
@@ -120,7 +321,7 @@ namespace HQ.Server.Services
         return response;
     }
 
- public async Task<Result<DeleteTimeV1.Response>> DeleteTimeV1(DeleteTimeV1.Request request, CancellationToken ct = default)
+ public async Task<Result<DeleteTimeV1.Response?>> DeleteTimeV1(DeleteTimeV1.Request request, CancellationToken ct = default)
 {
     var time = await _context.Times
                              .Where(t => t.Id == request.Id)
@@ -128,13 +329,13 @@ namespace HQ.Server.Services
 
     if (time == null)
     {
-        return Result.Fail("No time entry exists for this Staff ID");
+        return Result.Ok<DeleteTimeV1.Response?>(null);
     }
 
     _context.Times.Remove(time);
     await _context.SaveChangesAsync(ct);
 
-    return  Result.Ok();
+     return new DeleteTimeV1.Response();
     }
     }
 }

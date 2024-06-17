@@ -41,7 +41,7 @@ namespace HQ.Server.Controllers
         [ProducesResponseType<UpsertTimeV1.Response>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult> UpsertTime1([FromBody] UpsertTimeV1.Request request, CancellationToken ct = default)
+        public async Task<ActionResult> UpsertTimeV1([FromBody] UpsertTimeV1.Request request, CancellationToken ct = default)
         {
             if(request.Id.HasValue) { 
                 var time = await _context.Times
@@ -67,8 +67,95 @@ namespace HQ.Server.Controllers
                 .ToActionResult(new HQResultEndpointProfile());
         }
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(UpsertTimeDescriptionV1))]
+        [ProducesResponseType<UpsertTimeDescriptionV1.Response>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> UpsertTimeDescriptionV1([FromBody] UpsertTimeDescriptionV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
 
-         [Authorize(HQAuthorizationPolicies.Staff)]
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            request.StaffId = staffId;
+            return await _TimeEntryServiceV1.UpsertTimeDescriptionV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(UpsertTimeChargecodeV1))]
+        [ProducesResponseType<UpsertTimeChargeCodeV1.Response>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> UpsertTimeChargecodeV1([FromBody] UpsertTimeChargeCodeV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            request.StaffId = staffId;
+            return await _TimeEntryServiceV1.UpsertTimeChargecodeV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(UpsertTimeDateV1))]
+        [ProducesResponseType<UpsertTimeDateV1.Response>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> UpsertTimeDateV1([FromBody] UpsertTimeDateV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            request.StaffId = staffId;
+            return await _TimeEntryServiceV1.UpsertTimeDateV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(UpsertTimeTaskV1))]
+        [ProducesResponseType<UpsertTimeDateV1.Response>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> UpsertTimeTaskV1([FromBody] UpsertTimeTaskV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            request.StaffId = staffId;
+            return await _TimeEntryServiceV1.UpsertTimeTaskV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(GetTimesV1))]
         [ProducesResponseType<GetTimesV1.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -78,6 +165,7 @@ namespace HQ.Server.Controllers
             return await _TimeEntryServiceV1.GetTimesV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
+        
 
 
         [Authorize(HQAuthorizationPolicies.Staff)]
