@@ -1,4 +1,4 @@
-namespace HQ.Abstractions.Times {
+namespace HQ.Abstractions.Times;
 
 public class DeleteTimeV1
 {
