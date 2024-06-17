@@ -38,9 +38,10 @@ namespace HQ.CLI.Commands.Staff
             };
 
             var response = await _hqService.ImportStaffV1(request);
-            if(response.IsFailed)
+            if (!response.IsSuccess || response.Value == null)
             {
-                throw new Exception($"Error importing Staff:\n{String.Join(Environment.NewLine, response.Errors.Select(t => t.Message))}");
+                ErrorHelper.Display(response);
+                return 1;
             }
 
             var result = response.Value!;

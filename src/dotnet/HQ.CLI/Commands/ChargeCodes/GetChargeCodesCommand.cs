@@ -62,6 +62,7 @@ namespace HQ.CLI.Commands.ChargeCodes
 
             if (!result.IsSuccess || result.Value == null)
             {
+                ErrorHelper.Display(result);
                 return 1;
             }
 

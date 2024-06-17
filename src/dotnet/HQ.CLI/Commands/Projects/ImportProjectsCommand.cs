@@ -38,9 +38,10 @@ namespace HQ.CLI.Commands.Projects
             };
 
             var response = await _hqService.ImportProjectsV1(request);
-            if(response.IsFailed)
+            if (!response.IsSuccess || response.Value == null)
             {
-                throw new Exception($"Error importing project:\n{String.Join(Environment.NewLine, response.Errors.Select(t => t.Message))}");
+                ErrorHelper.Display(response);
+                return 1;
             }
 
             var result = response.Value!;

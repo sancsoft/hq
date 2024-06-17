@@ -14,44 +14,45 @@ using System.Reflection.Metadata;
 namespace HQ.Tests
 {
 
-    public class UnitTest1
+    public class TestPeriodGeneration
     {
         [Fact]
-        public void TestPeriodGeneration()
+        public void TestYear()
         {
+            var testYearBegin1 = new DateOnly(2024, 1, 1);
+            var testYearBegin2 = new DateOnly(2024, 12, 31);
+            var testYearBegin3 = new DateOnly(2023, 5, 6);
 
-            /////////////////////////////////////////////////
-            var testDate1 = new DateOnly(2024, 1, 1);
-            var testDate2 = new DateOnly(2024, 12, 31);
-            var testDate3 = new DateOnly(2023, 5, 6);
+            var transformYearStart1 = testYearBegin1.GetPeriodStartDate(Period.Year);
+            var transformYearStart2 = testYearBegin2.GetPeriodStartDate(Period.Year);
+            var transformYearStart3 = testYearBegin3.GetPeriodStartDate(Period.Year);
 
-            var yearStart1 = testDate1.GetPeriodStartDate(Period.Year);
-            var yearStart2 = testDate2.GetPeriodStartDate(Period.Year);
-            var yearStart3 = testDate3.GetPeriodStartDate(Period.Year);
+            var actualYearStart = new DateOnly(2024, 1, 1);
+            var actualYearStart3 = new DateOnly(2023, 1, 1);
 
-            var expectedYearStart = new DateOnly(2024, 1, 1);
-            var expectedYearStart3 = new DateOnly(2023, 1, 1);
-
-            Assert.Equal(expectedYearStart, yearStart1);
-            Assert.Equal(expectedYearStart, yearStart2);
-            Assert.Equal(expectedYearStart3, yearStart3);
+            Assert.Equal(actualYearStart, transformYearStart1);
+            Assert.Equal(actualYearStart, transformYearStart2);
+            Assert.Equal(actualYearStart3, transformYearStart3);
             ///////////////////////////////////////////////////
 
-            var testDate4 = new DateOnly(2024, 1, 1);
-            var testDate5 = new DateOnly(2024, 12, 31);
-            var testDate6 = new DateOnly(2023, 5, 6);
+            var testYearEnd1 = new DateOnly(2024, 1, 1);
+            var testYearEnd2 = new DateOnly(2024, 12, 31);
+            var testYearEnd3 = new DateOnly(2023, 5, 6);
 
-            var yearEnd4 = testDate1.GetPeriodEndDate(Period.Year);
-            var yearEnd5 = testDate2.GetPeriodEndDate(Period.Year);
-            var yearEnd6 = testDate3.GetPeriodEndDate(Period.Year);
+            var transformYearEnd1 = testYearEnd1.GetPeriodEndDate(Period.Year);
+            var transformYearEnd2 = testYearEnd2.GetPeriodEndDate(Period.Year);
+            var transformYearEnd3 = testYearEnd3.GetPeriodEndDate(Period.Year);
 
-            var expectedYearEnd4 = new DateOnly(2024, 12, 31);
-            var expectedYearEnd6 = new DateOnly(2023, 12, 31);
+            var actualYearEnd1 = new DateOnly(2024, 12, 31);
+            var actualYearEnd2 = new DateOnly(2023, 12, 31);
 
-            Assert.Equal(expectedYearEnd4, yearEnd4);
-            Assert.Equal(expectedYearEnd4, yearEnd5);
-            Assert.Equal(expectedYearEnd6, yearEnd6);
-            //////////////////////////////////////////////////////
+            Assert.Equal(transformYearEnd1, actualYearEnd1);
+            Assert.Equal(transformYearEnd2, actualYearEnd1);
+            Assert.Equal(transformYearEnd3, actualYearEnd2);
+        }
+        [Fact]
+        public void TestQuarter()
+        {
             var testQuarterBegin1 = new DateOnly(2024, 4, 8);
             var testQuarterBegin2 = new DateOnly(2024, 1, 1);
             var testQuarterBegin3 = new DateOnly(2023, 8, 1);
@@ -92,7 +93,10 @@ namespace HQ.Tests
             Assert.Equal(transformQuarterEnd2, actualQuarterEnd2);
             Assert.Equal(transformQuarterEnd3, actualQuarterEnd3);
             Assert.Equal(transformQuarterEnd4, actualQuarterEnd4);
-            /////////////////////////////////////////////////////////////////////////////////////
+        }
+        [Fact]
+        public void TestMonth()
+        {
             var testMonthBegin1 = new DateOnly(2024, 9, 1);
             var testMonthBegin2 = new DateOnly(2020, 1, 31);
             var testMonthBegin3 = new DateOnly(2013, 2, 18);
@@ -132,7 +136,10 @@ namespace HQ.Tests
             Assert.Equal(transformMonthEnd2, actualMonthEnd2);
             Assert.Equal(transformMonthEnd3, actualMonthEnd3);
             Assert.Equal(transformMonthEnd4, actualMonthEnd4);
-            /////////////////////////////////////////////////////////////////////
+        }
+        [Fact]
+        public void TestWeek()
+        {
             var testWeekBegin1 = new DateOnly(2024, 6, 14);
             var testWeekBegin2 = new DateOnly(2024, 1, 1);
             var testWeekBegin3 = new DateOnly(2023, 12, 31);

@@ -56,6 +56,7 @@ namespace HQ.CLI.Commands.Staff
 
             if (!result.IsSuccess || result.Value == null)
             {
+                ErrorHelper.Display(result);
                 return 1;
             }
 

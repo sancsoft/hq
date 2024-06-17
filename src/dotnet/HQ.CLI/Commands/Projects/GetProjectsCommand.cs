@@ -52,6 +52,7 @@ namespace HQ.CLI.Commands.Projects
 
             if (!result.IsSuccess || result.Value == null)
             {
+                ErrorHelper.Display(result);
                 return 1;
             }
 
