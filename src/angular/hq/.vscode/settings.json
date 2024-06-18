@@ -1,13 +1,14 @@
 {
   "files.associations": {
-      ".css": "tailwindcss"
+    ".css": "tailwindcss"
   },
   "editor.quickSuggestions": {
-      "strings": "on"
+    "strings": "on"
   },
   "files.watcherExclude": {
     "/.git/objects/": true,
     "/.git/subtree-cache/": true,
     "**/node_modules//**": true
-  }
+  },
+  "editor.formatOnSave": false
 }
