@@ -1,3 +1,4 @@
+import { ClientListService } from './../Services/ClientListService';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
@@ -28,6 +29,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
+import { SearchFilterClientListComponent } from '../SearchFilter/search-filter-client-list/search-filter-client-list.component';
 
 export interface ClientNameId {
   id: string;
@@ -43,6 +45,7 @@ export interface ClientNameId {
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
+    SearchFilterClientListComponent
   ],
   templateUrl: './client-list.component.html',
 })
@@ -50,9 +53,7 @@ export interface ClientNameId {
 export class ClientListComponent {
   @Output() selectedClient = new EventEmitter<GetClientRecordV1>();
 
-  search = new FormControl('', { nonNullable: true });
-  itemsPerPage = new FormControl(20, { nonNullable: true });
-  page = new FormControl<number>(1, { nonNullable: true });
+
 
   records$: Observable<GetClientRecordV1[]>;
   skipDisplay$: Observable<number>;
@@ -65,20 +66,20 @@ export class ClientListComponent {
   sortDirection = SortDirection;
   private currentClient$ = new BehaviorSubject<GetClientRecordV1 | null>(null);
 
-  constructor(private hqService: HQService) {
+  constructor(public hqService: HQService, public ClientListService: ClientListService) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Name);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
-    const search$ = this.search.valueChanges.pipe(
+    const search$ = this.ClientListService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(this.search.value)
+      startWith(this.ClientListService.search.value)
     );
 
-    const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
+    const itemsPerPage$ = this.ClientListService.itemsPerPage.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(this.itemsPerPage.value)
+      startWith(this.ClientListService.itemsPerPage.value)
     );
 
-    const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
+    const page$ = this.ClientListService.page.valueChanges.pipe(startWith(this.ClientListService.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage)
@@ -116,7 +117,7 @@ export class ClientListComponent {
   }
 
   goToPage(page: number) {
-    this.page.setValue(page);
+    this.ClientListService.page.setValue(page);
   }
   toggleClient(client: GetClientRecordV1) {
     this.selectedClient.emit(client);
@@ -137,6 +138,6 @@ export class ClientListComponent {
       this.sortOption$.next(sortColumn);
       this.sortDirection$.next(SortDirection.Asc);
     }
-    this.page.setValue(1);
+    this.ClientListService.page.setValue(1);
   }
 }
