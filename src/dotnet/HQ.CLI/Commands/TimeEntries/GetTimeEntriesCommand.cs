@@ -90,7 +90,7 @@ namespace HQ.CLI.Commands.TimeEntries
                 startDate = settings.From;
                 endDate = settings.To;
             }
-            settings.StaffId = _hqConfig.StaffId;
+            settings.StaffId ??= _hqConfig.StaffId;
 
             var timeEntryRequest = new GetTimesV1.Request
             {
