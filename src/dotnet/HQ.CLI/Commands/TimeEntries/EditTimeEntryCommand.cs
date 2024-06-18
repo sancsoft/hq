@@ -69,7 +69,7 @@ namespace HQ.CLI.Commands.TimeEntries
 
             if (updateResult.Value != null)
             {
-                AnsiConsole.Write("Time updated successfully");
+                AnsiConsole.WriteLine("Time updated successfully");
             }
 
             return 0;

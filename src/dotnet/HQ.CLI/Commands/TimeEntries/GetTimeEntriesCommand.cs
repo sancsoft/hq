@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Spectre.Console.Json;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace HQ.CLI.Commands.TimeEntries
 {
@@ -50,10 +51,11 @@ namespace HQ.CLI.Commands.TimeEntries
         public DateOnly? Date { get; set; }
 
         [CommandOption("--period|-p")]
+        [DefaultValue(HQ.Abstractions.Enumerations.Period.Today)]
         public Period? Period { get; set; }
 
         [CommandOption("--sort-direction|-D")]
-        [DefaultValue(SortDirection.Asc)]
+        [DefaultValue(SortDirection.Desc)]
         public SortDirection SortDirection { get; set; }
 
         [CommandOption("--sort-by|-S")]
@@ -64,9 +66,12 @@ namespace HQ.CLI.Commands.TimeEntries
     internal class GetTimeEntriesCommand : AsyncCommand<GetTimeEntriesSettings>
     {
         private readonly HQServiceV1 _hqService;
-        public GetTimeEntriesCommand(HQServiceV1 hqService)
+        private readonly HQConfig _hqConfig;
+
+        public GetTimeEntriesCommand(HQServiceV1 hqService, HQConfig hQConfig)
         {
             _hqService = hqService;
+            _hqConfig = hQConfig;
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, GetTimeEntriesSettings settings)
@@ -85,6 +90,7 @@ namespace HQ.CLI.Commands.TimeEntries
                 startDate = settings.From;
                 endDate = settings.To;
             }
+            settings.StaffId ??= _hqConfig.StaffId;
 
             var timeEntryRequest = new GetTimesV1.Request
             {
@@ -92,35 +98,36 @@ namespace HQ.CLI.Commands.TimeEntries
                 ChargeCode = settings.chargecode,
                 Id = settings.Id,
                 ClientId = settings.ClientId,
-                StaffId = settings.StaffId,
                 StartDate = startDate,
                 EndDate = endDate,
+                Date = settings.Date,
                 SortBy = settings.SortBy,
                 SortDirection = settings.SortDirection,
                 Task = settings.Task,
-                Activity = settings.Activity
+                Activity = settings.Activity,
+                StaffId = settings.StaffId
             };
 
             var result = await _hqService.GetTimeEntriesV1(timeEntryRequest);
-            
+
+
 
             if (!result.IsSuccess || result.Value == null)
             {
                 ErrorHelper.Display(result);
                 return 1;
             }
-            
-        OutputHelper.Create(result.Value, result.Value.Records)
-        .WithColumn("ID", t => t.Id.ToString())
-        .WithColumn("DATE", t => t.Date.ToString())
-        .WithColumn("CHARGE CODE", t => t.ChargeCode)
-        .WithColumn("Billable Hours", t => t.BillableHours.ToString())
-        .WithColumn("DESCRIPTION", t => t.Description?.Length > 70 ? t.Description?.Substring(0, 70) + "..." : t.Description)
-        .WithColumn("ACTIVITY / TASK", t => t.ActivityName != null ? t.ActivityName : t.Task)
-        .WithColumn("REJECTION NOTES", t => t.RejectionNotes)
-        .Output(settings.Output);
+
+            OutputHelper.Create(result.Value, result.Value.Records)
+            .WithColumn("ID", t => t.Id.ToString())
+            .WithColumn("DATE", t => t.Date.ToString())
+            .WithColumn("CHARGE CODE", t => t.ChargeCode)
+            .WithColumn("HOURS", t => t.Hours.ToString("0.00"))
+            .WithColumn("DESCRIPTION", t => t.Description?.Length > 70 ? t.Description?.Substring(0, 70) + "..." : t.Description)
+            .WithColumn("ACTIVITY / TASK", t => t.ActivityName != null ? t.ActivityName : t.Task)
+            .Output(settings.Output);
             return 0;
         }
     }
-    
+
 }

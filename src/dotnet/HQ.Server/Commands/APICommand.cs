@@ -1,4 +1,5 @@
-﻿using Duende.AccessTokenManagement.OpenIdConnect;
+﻿using System.Security.Claims;
+using Duende.AccessTokenManagement.OpenIdConnect;
 using HQ.Server.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;

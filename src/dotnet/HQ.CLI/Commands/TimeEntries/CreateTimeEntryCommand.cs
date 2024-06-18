@@ -60,7 +60,7 @@ namespace HQ.CLI.Commands.TimeEntries
 
             if (result.Value != null)
             {
-                AnsiConsole.Write("Time recorded successfully");
+                AnsiConsole.WriteLine("Time recorded successfully");
             }
 
             return 0;
