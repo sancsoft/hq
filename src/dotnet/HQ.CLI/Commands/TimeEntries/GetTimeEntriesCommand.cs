@@ -65,9 +65,12 @@ namespace HQ.CLI.Commands.TimeEntries
     internal class GetTimeEntriesCommand : AsyncCommand<GetTimeEntriesSettings>
     {
         private readonly HQServiceV1 _hqService;
-        public GetTimeEntriesCommand(HQServiceV1 hqService)
+        private readonly HQConfig _hqConfig;
+
+        public GetTimeEntriesCommand(HQServiceV1 hqService, HQConfig hQConfig)
         {
             _hqService = hqService;
+            _hqConfig = hQConfig;
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, GetTimeEntriesSettings settings)
@@ -100,9 +103,9 @@ namespace HQ.CLI.Commands.TimeEntries
                 SortDirection = settings.SortDirection,
                 Task = settings.Task,
                 Activity = settings.Activity,
-                // StaffId = _user.GetStaffId()
+                StaffId = _hqConfig.StaffId
             };
-
+            
             var result = await _hqService.GetTimeEntriesV1(timeEntryRequest);
             
 
