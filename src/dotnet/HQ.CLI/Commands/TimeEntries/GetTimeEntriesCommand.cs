@@ -90,6 +90,7 @@ namespace HQ.CLI.Commands.TimeEntries
                 startDate = settings.From;
                 endDate = settings.To;
             }
+            settings.StaffId = _hqConfig.StaffId;
 
             var timeEntryRequest = new GetTimesV1.Request
             {
@@ -104,7 +105,7 @@ namespace HQ.CLI.Commands.TimeEntries
                 SortDirection = settings.SortDirection,
                 Task = settings.Task,
                 Activity = settings.Activity,
-                StaffId = _hqConfig.StaffId
+                StaffId = settings.StaffId
             };
 
             var result = await _hqService.GetTimeEntriesV1(timeEntryRequest);
