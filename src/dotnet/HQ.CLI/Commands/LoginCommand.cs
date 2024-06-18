@@ -116,6 +116,23 @@ Then enter the code:
         _config.AccessToken = !String.IsNullOrEmpty(response.AccessToken) ? protector.Protect(response.AccessToken) : null; ;
         _config.AccessTokenExpiresAt = DateTime.UtcNow.AddSeconds(response.ExpiresIn);
 
+        var userInfoResponse = await _httpClient.GetUserInfoAsync(new UserInfoRequest()
+        {
+            Address = disco.UserInfoEndpoint,
+            Token = response.AccessToken
+        });
+
+        if (userInfoResponse.IsError) throw new Exception(userInfoResponse.Error);
+
+        if(Guid.TryParse(userInfoResponse.Claims.SingleOrDefault(t => t.Type == "staff_id")?.Value, out Guid staffId))
+        {
+            _config.StaffId = staffId;
+        }
+        else
+        {
+            _config.StaffId = null;
+        }
+
         AnsiConsole.MarkupLine("[green]Authentication successful![/]");
 
         return 0;

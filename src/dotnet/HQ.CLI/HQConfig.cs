@@ -15,6 +15,7 @@ namespace HQ.CLI
         public string? AccessToken { get; set; }
         public Guid? StaffId { get; set; }
         public DateTime? AccessTokenExpiresAt { get; set; }
+        public Guid? StaffId { get; set; }
         public bool Insecure { get; set; }
     }
 }
