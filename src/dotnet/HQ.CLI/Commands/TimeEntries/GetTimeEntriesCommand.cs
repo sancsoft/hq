@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Spectre.Console.Json;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace HQ.CLI.Commands.TimeEntries
 {
@@ -53,7 +54,7 @@ namespace HQ.CLI.Commands.TimeEntries
         public Period? Period { get; set; }
 
         [CommandOption("--sort-direction|-D")]
-        [DefaultValue(SortDirection.Asc)]
+        [DefaultValue(SortDirection.Desc)]
         public SortDirection SortDirection { get; set; }
 
         [CommandOption("--sort-by|-S")]
@@ -92,35 +93,36 @@ namespace HQ.CLI.Commands.TimeEntries
                 ChargeCode = settings.chargecode,
                 Id = settings.Id,
                 ClientId = settings.ClientId,
-                StaffId = settings.StaffId,
                 StartDate = startDate,
                 EndDate = endDate,
+                Date = settings.Date ?? DateOnly.FromDateTime(DateTime.Today),
                 SortBy = settings.SortBy,
                 SortDirection = settings.SortDirection,
                 Task = settings.Task,
-                Activity = settings.Activity
+                Activity = settings.Activity,
+                // StaffId = _user.GetStaffId()
             };
 
             var result = await _hqService.GetTimeEntriesV1(timeEntryRequest);
             
+
 
             if (!result.IsSuccess || result.Value == null)
             {
                 ErrorHelper.Display(result);
                 return 1;
             }
-            
-        OutputHelper.Create(result.Value, result.Value.Records)
-        .WithColumn("ID", t => t.Id.ToString())
-        .WithColumn("DATE", t => t.Date.ToString())
-        .WithColumn("CHARGE CODE", t => t.ChargeCode)
-        .WithColumn("Billable Hours", t => t.BillableHours.ToString())
-        .WithColumn("DESCRIPTION", t => t.Description?.Length > 70 ? t.Description?.Substring(0, 70) + "..." : t.Description)
-        .WithColumn("ACTIVITY / TASK", t => t.ActivityName != null ? t.ActivityName : t.Task)
-        .WithColumn("REJECTION NOTES", t => t.RejectionNotes)
-        .Output(settings.Output);
+
+            OutputHelper.Create(result.Value, result.Value.Records)
+            .WithColumn("ID", t => t.Id.ToString())
+            .WithColumn("DATE", t => t.Date.ToString())
+            .WithColumn("CHARGE CODE", t => t.ChargeCode)
+            .WithColumn("Hours", t => t.Hours.ToString("0.00"))
+            .WithColumn("DESCRIPTION", t => t.Description?.Length > 70 ? t.Description?.Substring(0, 70) + "..." : t.Description)
+            .WithColumn("ACTIVITY / TASK", t => t.ActivityName != null ? t.ActivityName : t.Task)
+            .Output(settings.Output);
             return 0;
         }
     }
-    
+
 }
