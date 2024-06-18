@@ -51,6 +51,7 @@ namespace HQ.CLI.Commands.TimeEntries
         public DateOnly? Date { get; set; }
 
         [CommandOption("--period|-p")]
+        [DefaultValue(HQ.Abstractions.Enumerations.Period.Today)]
         public Period? Period { get; set; }
 
         [CommandOption("--sort-direction|-D")]
@@ -98,16 +99,16 @@ namespace HQ.CLI.Commands.TimeEntries
                 ClientId = settings.ClientId,
                 StartDate = startDate,
                 EndDate = endDate,
-                Date = settings.Date ?? DateOnly.FromDateTime(DateTime.Today),
+                Date = settings.Date,
                 SortBy = settings.SortBy,
                 SortDirection = settings.SortDirection,
                 Task = settings.Task,
                 Activity = settings.Activity,
                 StaffId = _hqConfig.StaffId
             };
-            
+
             var result = await _hqService.GetTimeEntriesV1(timeEntryRequest);
-            
+
 
 
             if (!result.IsSuccess || result.Value == null)
@@ -120,7 +121,7 @@ namespace HQ.CLI.Commands.TimeEntries
             .WithColumn("ID", t => t.Id.ToString())
             .WithColumn("DATE", t => t.Date.ToString())
             .WithColumn("CHARGE CODE", t => t.ChargeCode)
-            .WithColumn("Hours", t => t.Hours.ToString("0.00"))
+            .WithColumn("HOURS", t => t.Hours.ToString("0.00"))
             .WithColumn("DESCRIPTION", t => t.Description?.Length > 70 ? t.Description?.Substring(0, 70) + "..." : t.Description)
             .WithColumn("ACTIVITY / TASK", t => t.ActivityName != null ? t.ActivityName : t.Task)
             .Output(settings.Output);
