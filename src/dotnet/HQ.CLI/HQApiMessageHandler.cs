@@ -56,6 +56,23 @@ namespace HQ.CLI
 
                 accessToken = response.AccessToken!;
 
+                var userInfoResponse = await _httpClient.GetUserInfoAsync(new UserInfoRequest()
+                {
+                    Address = disco.UserInfoEndpoint,
+                    Token = accessToken
+                });
+
+                if (userInfoResponse.IsError) throw new Exception(userInfoResponse.Error);
+
+                if(Guid.TryParse(userInfoResponse.Claims.SingleOrDefault(t => t.Type == "staff_id")?.Value, out Guid staffId))
+                {
+                    _config.StaffId = staffId;
+                }
+                else
+                {
+                    _config.StaffId = null;
+                }
+
                 _config.RefreshToken = !String.IsNullOrEmpty(response.RefreshToken) ? _dataProtector.Protect(response.RefreshToken) : null;
                 _config.AccessToken = !String.IsNullOrEmpty(response.AccessToken) ? _dataProtector.Protect(response.AccessToken) : null; ;
                 _config.AccessTokenExpiresAt = DateTime.UtcNow.AddSeconds(response.ExpiresIn);

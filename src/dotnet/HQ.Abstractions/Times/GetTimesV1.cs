@@ -1,42 +1,45 @@
-﻿using HQ.Abstractions.Common;
+using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace HQ.Abstractions.ProjectStatusReports;
+namespace HQ.Abstractions.Times {
 
-public class GetProjectStatusReportTimeV1
+public class GetTimesV1
 {
-    public class Request
+   public class Request
     {
-        public Guid ProjectStatusReportId { get; set; }
+        public Guid? Id { get; set; }
+        public Guid? StaffId { get; set; }
         public string? Search { get; set; }
-        public Guid? ProjectManagerId { get; set; }
-        public Guid? ActivityId { get; set; }
-        public SortColumn SortBy { get; set; } = SortColumn.StaffName;
+        public DateOnly? StartDate { get; set; }
+        public DateOnly? EndDate { get; set; }
+        public DateOnly? Date { get; set; }
+        public Guid? ClientId  { get; set; }
+        public string? ChargeCode  { get; set; }
+        public string? Activity  { get; set; }
+        public string? Task  { get; set; }
+        public SortColumn SortBy { get; set; } = SortColumn.Date;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }
 
     public enum SortColumn
     {
         BillableHours = 1,
-        Hours = 2,
-        Date = 3,
-        ChargeCode = 4,
-        StaffName = 5,
-        Activity = 6
+        Date = 2,
+        ChargeCode = 3,
+        Activity = 4
     }
 
     public class Response : PagedResponseV1<Record>
     {
-        public List<StaffRecord> Staff { get; set; } = new();
-        public Guid? ProjectId { get; set;} = new();
+       
     }
 
-    public class StaffRecord
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
-        public decimal TotalHours { get; set; }
-    }
+
 
     public class Record
     {
@@ -47,12 +50,13 @@ public class GetProjectStatusReportTimeV1
         public string? RejectionNotes { get; set; } = null!;
         public DateOnly Date { get; set; }
         public string ChargeCode { get; set; } = null!;
-        public Guid StaffId { get; set; }
-        public string StaffName { get; set; } = null!;
         public string? Task { get; set; }
         public Guid? ActivityId { get; set; }
+        public string? ProjectName { get; set; }
+        public string? ClientName { get; set; }
         public string? ActivityName { get; set; }
         public string? Description { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
     }
+}
 }

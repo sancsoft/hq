@@ -189,5 +189,77 @@ namespace HQ.Tests
             Assert.Equal(transformWeekEnd4, actualWeekEnd4);
             Assert.Equal(transformWeekEnd5, actualWeekEnd5);
         }
+
+         [Fact]
+        public void GetPeriodStartDate_Today_ReturnsToday()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly result = today.GetPeriodStartDate(Period.Today);
+            Assert.Equal(today, result);
+        }
+
+        [Fact]
+        public void GetPeriodStartDate_ThisWeek_ReturnsStartOfWeek()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly startOfWeek = today.AddDays(-(int)today.DayOfWeek);
+            DateOnly result = today.GetPeriodStartDate(Period.ThisWeek);
+            Assert.Equal(startOfWeek, result);
+        }
+
+        [Fact]
+        public void GetPeriodStartDate_ThisMonth_ReturnsStartOfMonth()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly startOfMonth = new DateOnly(today.Year, today.Month, 1);
+            DateOnly result = today.GetPeriodStartDate(Period.ThisMonth);
+            Assert.Equal(startOfMonth, result);
+        }
+
+        [Fact]
+        public void GetPeriodStartDate_LastMonth_ReturnsStartOfLastMonth()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly startOfLastMonth = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
+            DateOnly result = today.GetPeriodStartDate(Period.LastMonth);
+            Assert.Equal(startOfLastMonth, result);
+        }
+
+        [Fact]
+        public void GetPeriodEndDate_Today_ReturnsToday()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly result = today.GetPeriodEndDate(Period.Today);
+            Assert.Equal(today, result);
+        }
+
+        [Fact]
+        public void GetPeriodEndDate_ThisWeek_ReturnsEndOfWeek()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly endOfWeek = today.AddDays(6 - (int)today.DayOfWeek);
+            DateOnly result = today.GetPeriodEndDate(Period.ThisWeek);
+            Assert.Equal(endOfWeek, result);
+        }
+
+        [Fact]
+        public void GetPeriodEndDate_ThisMonth_ReturnsEndOfMonth()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly startOfMonth = new DateOnly(today.Year, today.Month, 1);
+            DateOnly endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+            DateOnly result = today.GetPeriodEndDate(Period.ThisMonth);
+            Assert.Equal(endOfMonth, result);
+        }
+
+        [Fact]
+        public void GetPeriodEndDate_LastMonth_ReturnsEndOfLastMonth()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly startOfLastMonth = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
+            DateOnly endOfLastMonth = startOfLastMonth.AddMonths(1).AddDays(-1);
+            DateOnly result = today.GetPeriodEndDate(Period.LastMonth);
+            Assert.Equal(endOfLastMonth, result);
+        }
     }
 }

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.4] - 2024-06-17
+
+### Fixed
+- CSV text wrapping in CLI output helper
+- CLI API error handling consistency
+
+### Added
+- `DateOnlyExtensions` extension methods for calculating time periods based on a given input date
+  - Year
+  - Quarter
+  - Month
+  - Week
+- Activities/task handling on PSR time list
+  - Projects with activities assigned show a dropdown of available activities
+  - Projects without activities show a freeform text field
+- Time entry API
+  - Create/edit
+  - List
+  - Delete
+- CLI time entry
+  - Create/edit
+  - List
+  - Delete
+
 ## [0.3.3] - 2024-06-11
 
 ### Added
@@ -84,7 +108,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.3...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.4...HEAD
+[0.3.4]: https://github.com/sancsoft/hq/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/sancsoft/hq/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/sancsoft/hq/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/sancsoft/hq/compare/v0.3.0...v0.3.1

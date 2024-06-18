@@ -47,6 +47,13 @@ namespace HQ.Server.Controllers
             .ToActionResult(new HQResultEndpointProfile());
 
         [Authorize(HQAuthorizationPolicies.Manager)]
+        [HttpPost(nameof(UpsertProjectActivityV1))]
+        [ProducesResponseType<UpsertProjectActivityV1.Response>(StatusCodes.Status201Created)]
+        public Task<ActionResult> UpsertProjectActivityV1([FromBody] UpsertProjectActivityV1.Request request, CancellationToken ct = default) =>
+            _projectService.UpsertProjectActivityV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(DeleteProjectV1))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -1,4 +1,5 @@
-﻿using Duende.AccessTokenManagement.OpenIdConnect;
+﻿using System.Security.Claims;
+using Duende.AccessTokenManagement.OpenIdConnect;
 using HQ.Server.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
@@ -58,6 +59,8 @@ public class APICommand : AsyncCommand
         });
 
         builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizationHandler>();
+        builder.Services.AddScoped<IAuthorizationHandler, TimeEntryAuthorizationHandler>();
+
 
         builder.Services.AddCors(options =>
         {
