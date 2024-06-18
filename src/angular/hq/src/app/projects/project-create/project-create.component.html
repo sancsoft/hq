@@ -1,27 +1,25 @@
 <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
-    <div class="px-5">
-        <h1 class="font-rajdhani font-semibold text-3xl">Create Project</h1>
+  <div class="px-5">
+    <h1 class="font-rajdhani font-semibold text-3xl">Create Project</h1>
 
-        <div class="py-3">
-            <a href="/projects" class="text-gray-50 underline">Project List</a>
-        </div>
+    <div class="py-3">
+      <a href="/projects" class="text-gray-50 underline">Project List</a>
     </div>
+  </div>
 
-    <div class="overflow-hidden flex-auto">
-        <div class="grid grid-cols-[1fr_305px] 2xl:grid-cols-[1fr_405px] gap-0 relative">
-            <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
-                <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
-                    <div class="w-full flex flex-row border-b border-black justify-between pe-5">
-                        <div class="flex pt-[23px]">
-                            <a href="#" routerLink="projects" routerLinkActive="border-gray-100" class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a
-              >
+  <div class="overflow-hidden flex-auto">
+    <div class="grid grid-cols-[1fr_305px] 2xl:grid-cols-[1fr_405px] gap-0 relative">
+      <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
+        <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
+          <div class="w-full flex flex-row border-b border-black justify-between pe-5">
+            <div class="flex pt-[23px]">
+              <a href="#" routerLink="projects" routerLinkActive="border-gray-100"
+                class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a>
             </div>
 
             <div class="flex flex-column justify-center items-center">
-              <button
-                (click)="onSubmitProject()"
-                class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
-              >
+              <button (click)="onSubmitProject()"
+                class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
                 Save
               </button>
             </div>
@@ -37,79 +35,57 @@
             <div class="p-5 pr-0">
               <div class="grid gap-[20px]">
                 <!-- row grid -->
-                <div
-                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
-                >
+                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
                   <!-- column -->
                   <div>
                     <!-- select dropdown -->
+                    <label for="selectClient"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select Client</label>
                     <div class="grid relative w-full max-w-[395px]">
                       <select
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
-                        (click)="openModal()"
-                        (mousedown)="$event.preventDefault()"
-                      >
-                        <option
-                          *ngIf="(selectedClientName$ | async) === null"
-                          value=""
-                        >
+                        (click)="openModal()" id="selectClient" (mousedown)="$event.preventDefault()">
+                        <option *ngIf="(selectedClientName$ | async) === null" value="">
                           Select Client
                         </option>
 
-                        <option
-                          *ngIf="selectedClientName$ | async as clientId"
-                          [value]="clientId"
-                        >
+                        <option *ngIf="selectedClientName$ | async as clientId" [value]="clientId">
                           {{ clientId }}
                         </option>
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-right-short text-[24px]"></i>
                       </span>
                     </div>
                   </div>
                 </div>
                 <!-- row grid -->
-                <div
-                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
-                >
+                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
                   <!-- column -->
                   <div>
                     <!-- text input -->
-                    <input
-                      formControlName="name"
-                      type="text"
-                      name="fullname"
-                      id="fullname"
+                    <label for="fullname" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project
+                      Full Name</label>
+                    <input formControlName="name" type="text" name="fullname" id="fullname"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Project Full Name"
-                    />
-                    <div
-                      *ngIf="
+                      placeholder="Project Full Name" />
+                    <div *ngIf="
                         projectFormGroup.get('name')?.touched &&
                         projectFormGroup.get('name')?.errors
-                      "
-                    >
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('name')?.errors?.['required']"
-                      >
+                      ">
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('name')?.errors?.['required']">
                         Project full name is required.
                       </span>
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('name')?.errors?.['minlength']"
-                      >
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('name')?.errors?.['minlength']">
                         Project full name must be at least
                         {{ projectFormGroup.get('name')?.errors?.['minlength']?.requiredLength }}
                         characters long.
                       </span>
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('name')?.errors?.['maxlength']"
-                      >
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('name')?.errors?.['maxlength']">
                         Project full name cannot be more than
                         {{ projectFormGroup.get('name')?.errors?.['maxlength']?.requiredLength }}
                         characters long.
@@ -120,102 +96,78 @@
                   <!-- column -->
                   <div class="hidden">
                     <!-- text input -->
-                    <input
-                      type="text"
-                      name="canatednated"
-                      id="canatednated"
+                    <input type="text" name="canatednated" id="canatednated"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Project Name - Cancatenated"
-                    />
+                      placeholder="Project Name - Cancatenated" />
                   </div>
                 </div>
                 <!-- row grid -->
-                <div
-                  class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)] pr-5"
-                >
+                <div class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)] pr-5">
                   <!-- column -->
                   <div>
                     <!-- select dropdown -->
+                    <label for="projectManager"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select
+                      Project Manager</label>
                     <div class="grid relative w-full max-w-[220px]">
                       @if ((projectManagers$ | async); as projectManagers) {
-                      <select
-                        formControlName="projectManagerId"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
+                      <select formControlName="projectManagerId"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
                         <option [ngValue]="null" disabled selected>
                           Select Project Manager
                         </option>
-                        <option
-                          *ngFor="let projectManager of projectManagers"
-                          [value]="projectManager.id"
-                        >
+                        <option *ngFor="let projectManager of projectManagers" [value]="projectManager.id"
+                          id="projectManager">
                           {{ projectManager.name }}
                         </option>
                       </select>
                       }
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                     </div>
                     @if ( projectFormGroup.get('projectManagerId')?.touched &&
                     projectFormGroup.get('projectManagerId')?.errors) {
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('projectManagerId')?.errors?.['required']"
-                      >
-                        Project Manager selection is required.
-                      </span>
+                    <span class="text-red-700 text-xs leading-normal inline-block"
+                      *ngIf="projectFormGroup.get('projectManagerId')?.errors?.['required']">
+                      Project Manager selection is required.
+                    </span>
                     }
                   </div>
                   <!-- column -->
                   <div>
+                    <label for="rate" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Rate</label>
                     <div class="flex items-center">
                       <!-- text input w/icon to left -->
                       <div
-                        class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]"
-                      >
+                        class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]">
                         <span
-                          class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block"
-                        >
+                          class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block">
                           <i class="bi bi-currency-dollar text-[14px]"></i>
                         </span>
-                        <input
-                          formControlName="hourlyRate"
-                          type="text"
-                          name=""
-                          id=""
+                        <input formControlName="hourlyRate" type="text" name="" id="rate"
                           class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded"
-                          placeholder="00.00"
-                        />
+                          placeholder="00.00" />
                       </div>
                       <span class="ml-[8px] font-semibold">p / hr</span>
                     </div>
-                    <div
-                      *ngIf="
+                    <div *ngIf="
                         projectFormGroup.get('hourlyRate')?.touched &&
                         projectFormGroup.get('hourlyRate')?.errors
-                      "
-                    >
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('hourlyRate')?.errors?.['required']"
-                      >
+                      ">
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('hourlyRate')?.errors?.['required']">
                         Hourly rate is required.
                       </span>
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('hourlyRate')?.errors?.['min']"
-                      >
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('hourlyRate')?.errors?.['min']">
                         Minimum value for hourly rate is
                         {{ projectFormGroup.get('hourlyRate')?.errors?.['min']?.min
                         }}.
                       </span>
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('hourlyRate')?.errors?.['max']"
-                      >
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('hourlyRate')?.errors?.['max']">
                         Maximum value for hourly rate is
                         {{ projectFormGroup.get('hourlyRate')?.errors?.['max']?.max
                         }}.
@@ -230,43 +182,30 @@
                 </div>
 
                 <!-- row grid -->
-                <div
-                  class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5"
-                >
+                <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5">
                   <!-- column -->
                   <div>
-                    <input
-                      formControlName="totalHours"
-                      type="text"
-                      name=""
-                      id=""
+                    <label for="totalHours" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Total
+                      Hours</label>
+                    <input formControlName="totalHours" type="text" name="" id="totalHours"
                       class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Total hrs"
-                    />
-                    <div
-                      *ngIf="
+                      placeholder="Total hrs" />
+                    <div *ngIf="
                         projectFormGroup.get('totalHours')?.touched &&
                         projectFormGroup.get('totalHours')?.errors
-                      "
-                    >
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('totalHours')?.errors?.['required']"
-                      >
+                      ">
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('totalHours')?.errors?.['required']">
                         Total hours is required.
                       </span>
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('totalHours')?.errors?.['min']"
-                      >
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('totalHours')?.errors?.['min']">
                         Minimum value for total hours is
                         {{ projectFormGroup.get('totalHours')?.errors?.['min']?.min
                         }}.
                       </span>
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('totalHours')?.errors?.['max']"
-                      >
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('totalHours')?.errors?.['max']">
                         Maximum value for total hours is
                         {{ projectFormGroup.get('totalHours')?.errors?.['max']?.max
 
@@ -279,12 +218,13 @@
                   <!-- column -->
                   <div>
                     <!-- select dropdown -->
+                    <label for="period" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select
+                      Period</label>
                     <div class="grid relative w-full max-w-[395px]">
+
                       <!-- add border-red-700 class for input required/error -->
-                      <select
-                        formControlName="bookingPeriod"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
+                      <select formControlName="bookingPeriod"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border text-gray-100 bg-blue-900 rounded h-[36px]">
                         <option [ngValue]="null" disabled selected>
                           Select Period
                         </option>
@@ -294,145 +234,118 @@
                         <option [ngValue]="4">Year</option>
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-right-short text-[24px]"></i>
                       </span>
                       <!-- add/remove hidden class to show/hide error message -->
-                      <div
-                        *ngIf="
+                      <div *ngIf="
                           projectFormGroup.get('bookingPeriod')?.touched &&
                           projectFormGroup.get('bookingPeriod')?.errors
-                        "
-                      >
+                        ">
+                        <span class="text-red-700 text-xs leading-normal inline-block">Required: Selecting period is
+                          required here</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-row pr-5">
+                  <!-- column -->
+                  <div class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]">
+                    <div>
+                      <label for="startDate" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select
+                        Start Date</label>
+
+                      <!-- input date -->
+                      <div class="grid relative w-full max-w-[220px]">
+                        <input formControlName="startDate" type="date"
+                          class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase" />
                         <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                          >Required: Selecting period is required here</span
-                        >
+                          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                          <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                        </span>
+                      </div>
+                      <div *ngIf="
+                                        projectFormGroup.get('startDate')?.touched &&
+                                        projectFormGroup.get('startDate')?.errors
+                                      ">
+                        <span class="text-red-700 text-xs leading-normal inline-block"
+                          *ngIf="projectFormGroup.get('startDate')?.errors?.['required']">
+                          Start date is required.
+                        </span>
+                        <span class="text-red-700 text-xs leading-normal inline-block"
+                          *ngIf="projectFormGroup.errors?.['invalidDateRange']">
+                          Start date cannot be after end date.
+                        </span>
+                      </div>
+                    </div>
+
+
+                    <div class="flex align-middle justify-center items-center mt-3">
+                      -
+                    </div>
+                    <div>
+                      <label for="endId" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select
+                        End Date</label>
+
+                      <!-- input date -->
+                      <div class="grid relative w-full max-w-[220px]">
+                        <input formControlName="endDate" type="date" id="endDate"
+                          class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase" />
+                        <span
+                          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                          <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                        </span>
+                      </div>
+                      <div *ngIf="
+                                        projectFormGroup.get('endDate')?.touched &&
+                                        projectFormGroup.get('endDate')?.errors
+                                      ">
+                        <span class="text-red-700 text-xs leading-normal inline-block"
+                          *ngIf="projectFormGroup.get('endDate')?.errors?.['required']">
+                          End date is required.
+                        </span>
+                        <span class="text-red-700 text-xs leading-normal inline-block"
+                          *ngIf="projectFormGroup.errors?.['invalidDateRange']">
+                          End date cannot be before start date.
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <!-- row grid -->
-                <div class="grid gap-[20px] grid-flow-row pr-5">
-                  <!-- column -->
-                  <div
-                    class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]"
-                  >
-                    <!-- input date -->
-                    <div class="grid relative w-full max-w-[220px]">
-                      <input
-                        formControlName="startDate"
-                        type="date"
-                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
-                      />
-                      <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
-                        <i
-                          class="bi bi-arrow-down-short text-[24px] bg-blue-900"
-                        ></i>
-                      </span>
-                    </div>
-                    <div
-                      *ngIf="
-                        projectFormGroup.get('startDate')?.touched &&
-                        projectFormGroup.get('startDate')?.errors
-                      "
-                    >
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('startDate')?.errors?.['required']"
-                      >
-                        Start date is required.
-                      </span>
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.errors?.['invalidDateRange']"
-                      >
-                        Start date cannot be after end date.
-                      </span>
-                    </div>
-
-                    <div class="flex align-middle justify-center items-center">
-                      -
-                    </div>
-
-                    <!-- input date -->
-                    <div class="grid relative w-full max-w-[220px]">
-                      <input
-                        formControlName="endDate"
-                        type="date"
-                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
-                      />
-                      <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
-                        <i
-                          class="bi bi-arrow-down-short text-[24px] bg-blue-900"
-                        ></i>
-                      </span>
-                    </div>
-                    <div
-                      *ngIf="
-                        projectFormGroup.get('endDate')?.touched &&
-                        projectFormGroup.get('endDate')?.errors
-                      "
-                    >
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('endDate')?.errors?.['required']"
-                      >
-                        End date is required.
-                      </span>
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.errors?.['invalidDateRange']"
-                      >
-                        End date cannot be before start date.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- row grid -->
-                <div
-                  class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5"
-                >
+                <label for="val"
+                  class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-5">Value</label>
+                <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5">
                   <!-- column -->
                   <div>
-                    <input
-                      type="text"
-                      name=""
-                      id=""
+                    <input type="text" name="" id="val"
                       class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Value"
-                    />
+                      placeholder="Value" />
                   </div>
                 </div>
 
                 <!-- engagement tab form fields below: hidden for now incase we need these on another screen -->
                 <div class="hidden">
                   <!-- row grid -->
-                  <div
-                    class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
-                  >
+                  <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
                     <!-- column -->
                     <div>
                       <!-- select dropdown -->
                       <div class="grid relative w-full max-w-[395px]">
                         <select
-                          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
-                        >
+                          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
                           <option value="">Equipment Type</option>
                           <option vallue="">Type 1</option>
                           <option vallue="">Type 2</option>
                           <option vallue="">Type 3</option>
                         </select>
                         <span
-                          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                        >
+                          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                           <i class="bi bi-arrow-down-short text-[24px]"></i>
                         </span>
                       </div>
@@ -441,8 +354,7 @@
                     <div>
                       <!-- div input -->
                       <div
-                        class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%] max-w-[395px]"
-                      >
+                        class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%] max-w-[395px]">
                         filename.ext
                       </div>
                     </div>
@@ -455,30 +367,32 @@
                       <!-- textarea -->
                       <textarea
                         class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded"
-                        placeholder="Optional Notes"
-                      ></textarea>
+                        placeholder="Optional Notes"></textarea>
                     </div>
                   </div>
                 </div>
               </div>
+
             </div>
+
             <div class="flex flex-col pt-5">
+              <label for="quoteId"
+                class="font-open-sans text-nav-disabled text-xs font-bold uppercase pl-5 2xl:p-0 ">Select
+                a
+                Quote</label>
               <div class="grid gap-[20px]">
+
                 <!-- row grid -->
-                <div
-                  class="grid gap-[20px] grid-flow-col grid-cols-[395px_98px_auto] px-5 2xl:px-0"
-                >
+                <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_98px_auto] px-5 2xl:px-0">
+
                   <!-- column -->
                   <div>
                     <!-- select dropdown -->
 
                     <div class="grid relative w-full max-w-[395px]">
                       @if (quotes$ | async; as quotes) {
-                      <select
-                        (change)="quoteSelected($event.target)"
-                        formControlName="quoteId"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
+                      <select (change)="quoteSelected($event.target)" formControlName="quoteId" id="quoteId"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
                         <option [ngValue]="null" disabled selected>
                           Select a quote
                         </option>
@@ -489,21 +403,16 @@
                       }
 
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-right-short text-[24px]"></i>
                       </span>
                     </div>
-                    <div
-                      *ngIf="
+                    <div *ngIf="
                         projectFormGroup.get('quoteId')?.touched &&
                         projectFormGroup.get('quoteId')?.errors
-                      "
-                    >
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        *ngIf="projectFormGroup.get('quoteId')?.errors?.['required']"
-                      >
+                      ">
+                      <span class="text-red-700 text-xs leading-normal inline-block"
+                        *ngIf="projectFormGroup.get('quoteId')?.errors?.['required']">
                         Quote selection is required.
                       </span>
                     </div>
@@ -512,112 +421,119 @@
                   <div>
                     <!-- div input -->
                     <div
-                      class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-full max-w-[98px]"
-                    >
+                      class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-full max-w-[98px]">
                       {{ selectedQuote$ | async }}
                     </div>
                   </div>
                   <!-- column -->
                   <div class="flex items-center">
-                    <a
-                      href="#"
-                      class="block p-2 hover:text-gray-50"
-                      title="Download"
-                      ><i class="bi bi-cloud-download-fill"></i
-                    ></a>
-                        </div>
-                    </div>
+                    <a href="#" class="block p-2 hover:text-gray-50" title="Download"><i
+                        class="bi bi-cloud-download-fill"></i></a>
+                  </div>
                 </div>
-                <!-- flex flex-col flex-grow -->
-                <hq-pdf-viewer [pdfURL]="quotePdfURL"></hq-pdf-viewer>
-        </div>
-    </div>
-    </form>
-    </main>
-    <aside class="border-l border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(192px))]">
+              </div>
+              <!-- flex flex-col flex-grow -->
+              <hq-pdf-viewer [pdfURL]="quotePdfURL"></hq-pdf-viewer>
+            </div>
+          </div>
+        </form>
+      </main>
+      <aside class="border-l border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(192px))]">
         <div class="overflow-y-auto h-[275px]">
-            <table class="min-w-full border-spacing-0 border-separate">
-                <thead>
-                    <tr class="sticky top-0 text-left">
-                        <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
-                            Activity<i class="bi bi-sort-down ml-2"></i>
-                        </th>
-                        <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-                            Total Hrs <i class="bi bi-arrow-down-up text-[12px] ml-2"></i>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for(i of [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,7]; track i) {
-                    <tr class="even:bg-gray-850 odd:bg-black-alt">
-                        <td class="border-b border-black py-2 pl-5">MM/DD/YYYY</td>
-                        <td class="border-b border-black py-2">0000.00</td>
-                        <td class="border-b border-black py-2 text-right pr-5">
-                            <a class="text-teal-200 hover:text-teal-300">VIEW</a>
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </table>
+          <table class="min-w-full border-spacing-0 border-separate">
+            <thead>
+              <tr class="sticky top-0 text-left">
+                <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+                  Activity<i class="bi bi-sort-down ml-2"></i>
+                </th>
+                <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+                  Total Hrs <i class="bi bi-arrow-down-up text-[12px] ml-2"></i>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(i of [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,7]; track i) {
+              <tr class="even:bg-gray-850 odd:bg-black-alt">
+                <td class="border-b border-black py-2 pl-5">MM/DD/YYYY</td>
+                <td class="border-b border-black py-2">0000.00</td>
+                <td class="border-b border-black py-2 text-right pr-5">
+                  <a class="text-teal-200 hover:text-teal-300">VIEW</a>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
         </div>
         <div class="p-5">
-            <div class="bg-black-alt rounded-[6px] p-[10px]">
-                <form>
-                    <div class="grid gap-[10px]">
-                        <div class="font-semibold text-center">Create Activity</div>
-                        <div>
-                            <input type="text" name="Activity" id="Activity" placeholder="Activity Name" class="block w-full flex-1 border-[1px] border-black h-[36px] bg-blue-900 rounded px-2 py-1 focus:outline-none placeholder:text-gray-100" />
-                        </div>
-                        <div class="grid grid-cols-2 gap-[10px]">
-                            <div>
-                                <input type="text" name="Hrs" id="Hrs" placeholder="Hrs" class="block w-[77px] flex-1 border-[1px] border-black h-[36px] bg-blue-900 rounded px-2 py-1 focus:outline-none placeholder:text-gray-100" />
-                            </div>
-                            <div class="text-right">
-                                <button class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px]">
+          <div class="bg-black-alt rounded-[6px] p-[10px]">
+            <form>
+              <div class="grid gap-[10px]">
+                <div class="font-semibold text-center">Create Activity</div>
+                <div>
+                  <input type="text" name="Activity" id="Activity" placeholder="Activity Name"
+                    class="block w-full flex-1 border-[1px] border-black h-[36px] bg-blue-900 rounded px-2 py-1 focus:outline-none placeholder:text-gray-100" />
+                </div>
+                <div class="grid grid-cols-2 gap-[10px]">
+                  <div>
+                    <input type="text" name="Hrs" id="Hrs" placeholder="Hrs"
+                      class="block w-[77px] flex-1 border-[1px] border-black h-[36px] bg-blue-900 rounded px-2 py-1 focus:outline-none placeholder:text-gray-100" />
+                  </div>
+                  <div class="text-right">
+                    <button
+                      class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px]">
                       Save
                     </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
-    </aside>
-</div>
-</div>
+      </aside>
+    </div>
+  </div>
 </div>
 
 <!-- modal -->
-<div class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear" [ngClass]="{
+<div
+  class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear"
+  [ngClass]="{
     'opacity-100 visible': (modalOpen$ | async),
     'opacity-0 invisible': !(modalOpen$ | async)
   }">
-    <!-- modal dialog -->
-    <div class="modal-dialog max-w-full mr-auto ml-auto text-black">
-        <div class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto">
-            <!-- header -->
-            <div class="modal-header flex flex-shrink-0 items-center px-5 py-[15px] bg-blue-900 text-gray-100">
-                <div class="font-bold">Select Client</div>
-            </div>
+  <!-- modal dialog -->
+  <div class="modal-dialog max-w-full mr-auto ml-auto text-black">
+    <div class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto">
+      <!-- header -->
+      <div class="modal-header flex flex-shrink-0 items-center px-5 py-[15px] bg-blue-900 text-gray-100">
+        <div class="font-bold">Select Client</div>
+      </div>
 
-            <!--Body-->
-            <hq-selectable-client-list (selectedClient)="updateSelectedClient($event)" [SelectClientEnabled]="true" [showViewButtons]="false" [showEditButtons]="false"></hq-selectable-client-list>
+      <!--Body-->
+      <hq-selectable-client-list (selectedClient)="updateSelectedClient($event)" [SelectClientEnabled]="true"
+        [showViewButtons]="false" [showEditButtons]="false"></hq-selectable-client-list>
 
-            <!--Footer-->
-            <div class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900">
-                <button class="h-[36px] px-2 py-2 border border-transparent bg-transparent hover:bg-transparent hover:border-transparent text-white hover:text-gray-200 rounded w-full min-w-[100px] max-w-[100px] leading-[normal] mr-2" (click)="modalCancelClicked()">
+      <!--Footer-->
+      <div class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900">
+        <button
+          class="h-[36px] px-2 py-2 border border-transparent bg-transparent hover:bg-transparent hover:border-transparent text-white hover:text-gray-200 rounded w-full min-w-[100px] max-w-[100px] leading-[normal] mr-2"
+          (click)="modalCancelClicked()">
           Cancel
         </button>
-                <button class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px] leading-[normal]" (click)="modalOkClicked()">
+        <button
+          class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px] leading-[normal]"
+          (click)="modalOkClicked()">
           Okay
         </button>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- modal backdrop/overlay -->
-<div class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear" [ngClass]="{
+<div
+  class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear"
+  [ngClass]="{
     'opacity-75 visible': (modalOpen$ | async),
     'opacity-0 invisible': !(modalOpen$ | async)
   }"></div>
