@@ -115,7 +115,7 @@ namespace HQ.CLI.Commands.TimeEntries
         .WithColumn("DATE", t => t.Date.ToString())
         .WithColumn("CHARGE CODE", t => t.ChargeCode)
         .WithColumn("Billable Hours", t => t.BillableHours.ToString())
-        .WithColumn("DESCRIPTION", t => t.Description.Length > 70 ? t.Description.Substring(0, 70) + "..." : t.Description)
+        .WithColumn("DESCRIPTION", t => t.Description?.Length > 70 ? t.Description?.Substring(0, 70) + "..." : t.Description)
         .WithColumn("ACTIVITY / TASK", t => t.ActivityName != null ? t.ActivityName : t.Task)
         .WithColumn("REJECTION NOTES", t => t.RejectionNotes)
         .Output(settings.Output);
