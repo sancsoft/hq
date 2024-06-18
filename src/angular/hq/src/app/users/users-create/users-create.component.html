@@ -39,8 +39,7 @@
                 <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5">
                   <!-- column -->
                   <div>
-                    <label for="fullname" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">First
-                      Name</label>
+                    <label for="fullname" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">First Name</label>
                     <!-- text input -->
                     <input [class.border-red-700]="form.get('firstName')?.touched &&
                         form.get('firstName')?.errors?.['required']" type="text" name="fullname" id="fullname"
@@ -53,8 +52,7 @@
                   </div>
                   <!-- column -->
                   <div>
-                    <label for="lastName" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Last
-                      Name</label>
+                    <label for="lastName" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Last Name</label>
                     <!-- text input -->
                     <input [class.border-red-700]="form.get('lastName')?.touched &&
                       form.get('lastName')?.errors?.['required']" type="text" name="lastName" id="lastName"
@@ -70,8 +68,7 @@
                 <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
                   <!-- column -->
                   <div>
-                    <label for="canatednated" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
-                      Email Address</label>
+                    <label for="canatednated" class="font-open-sans text-nav-disabled text-xs font-bold uppercase"> Email Address</label>
                     <!-- email input -->
                     <input [class.border-red-700]="form.get('email')?.touched &&
                     form.get('email')?.errors?.['required']" type="email" name="canatednated" id="canatednated"
@@ -86,7 +83,7 @@
                 <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
                   <!-- column -->
                   <div>
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Enabled?</div>
+                    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Enabled</label>
                     <div class="grid relative w-full max-w-[220px]">
                       <select formControlName="enabled"
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
@@ -103,7 +100,7 @@
                 <div>
                   <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
                     <div>
-                      <span class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Is Staff?</span>
+                      <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Staff</label>
                       <div class="grid relative w-full max-w-[220px]">
                         <select formControlName="isStaff"
                           class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
@@ -118,9 +115,7 @@
                     </div>
                     <div>
                       @if (showStaffMembers$ | async) {
-                      <label for="staffId" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select
-                        Staff
-                        Member</label>
+                      <label for="staffId" class="font-open-sans text-nav-disabled text-xs font-bold uppercase"> Staff Member</label>
                       <div class="grid relative w-full max-w-[220px]">
                         <select [class.border-red-700]="form.get('staffId')?.touched &&
                     form.get('staffId')?.errors?.['required']" formControlName="staffId" id="staffId"
@@ -149,7 +144,7 @@
                   </div>
                 </div>
                 <div>
-                  <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Is Manager?</div>
+                  <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Manager</label>
                   <div class="grid relative w-full max-w-[220px]">
                     <select formControlName="isManager"
                       class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
@@ -163,7 +158,7 @@
                   </div>
                 </div>
                 <div>
-                  <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Is Partner?</div>
+                  <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Partner</label>
                   <div class="grid relative w-full max-w-[220px]">
                     <select formControlName="isPartner"
                       class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
@@ -177,7 +172,7 @@
                   </div>
                 </div>
                 <div>
-                  <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Is Executive?</div>
+                  <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Executive</label>
                   <div class="grid relative w-full max-w-[220px]">
                     <select formControlName="isExecutive"
                       class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
@@ -191,7 +186,7 @@
                   </div>
                 </div>
                 <div>
-                  <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Is Adminstrator?</div>
+                  <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Administrator</label>
                   <div class="grid relative w-full max-w-[220px]">
                     <select formControlName="isAdministrator"
                       class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">

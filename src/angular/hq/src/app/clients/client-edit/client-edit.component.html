@@ -68,10 +68,9 @@
                   <!-- column -->
                   <div>
                     <!-- email input -->
-                    <label for="canatednated"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Billing Email</label>
+                    <label for="email" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Billing Email</label>
                     <input [class.border-red-700]="form.controls.billingEmail.errors && form.touched" type="email"
-                      name="canatednated" id="canatednated"
+                      name="canatednated" id="email"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                       placeholder="Billing Email" formControlName="billingEmail">
                     @if(form.controls.billingEmail.errors && form.touched)

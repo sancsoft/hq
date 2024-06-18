@@ -39,7 +39,7 @@
                 <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5">
                   <!-- column -->
                   <div>
-                    <label for="name" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Name</label>
+                    <label for="name" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Client Name</label>
                     <!-- text input -->
                     <input [class.border-red-700]="form.controls.name.errors && form.touched" type="text"
                       id="name"
@@ -65,7 +65,7 @@
                 <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
                   <!-- column -->
                   <div>
-                    <label for="billingEmail" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Name</label>
+                    <label for="billingEmail" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Billing Email</label>
                     <!-- email input -->
                     <input [class.border-red-700]="form.controls.billingEmail.errors && form.touched" type="email"
                       id="billingEmail"

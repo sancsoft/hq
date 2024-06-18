@@ -40,7 +40,7 @@
                   <div>
                     <!-- select dropdown -->
                     <label for="selectClient"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select Client</label>
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Client</label>
                     <div class="grid relative w-full max-w-[395px]">
                       <select
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
@@ -107,8 +107,7 @@
                   <div>
                     <!-- select dropdown -->
                     <label for="projectManager"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select
-                      Project Manager</label>
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project Manager</label>
                     <div class="grid relative w-full max-w-[220px]">
                       @if ((projectManagers$ | async); as projectManagers) {
                       <select formControlName="projectManagerId"
@@ -218,8 +217,7 @@
                   <!-- column -->
                   <div>
                     <!-- select dropdown -->
-                    <label for="period" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select
-                      Period</label>
+                    <label for="period" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Period</label>
                     <div class="grid relative w-full max-w-[395px]">
 
                       <!-- add border-red-700 class for input required/error -->
@@ -256,12 +254,11 @@
                   <!-- column -->
                   <div class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]">
                     <div>
-                      <label for="startDate" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select
-                        Start Date</label>
+                      <label for="startDate" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Start Date</label>
 
                       <!-- input date -->
                       <div class="grid relative w-full max-w-[220px]">
-                        <input formControlName="startDate" type="date"
+                        <input formControlName="startDate" type="date" id="startDate"
                           class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase" />
                         <span
                           class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
@@ -288,8 +285,7 @@
                       -
                     </div>
                     <div>
-                      <label for="endId" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select
-                        End Date</label>
+                      <label for="endDate" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">End Date</label>
 
                       <!-- input date -->
                       <div class="grid relative w-full max-w-[220px]">
@@ -377,9 +373,7 @@
 
             <div class="flex flex-col pt-5">
               <label for="quoteId"
-                class="font-open-sans text-nav-disabled text-xs font-bold uppercase pl-5 2xl:p-0 ">Select
-                a
-                Quote</label>
+                class="font-open-sans text-nav-disabled text-xs font-bold uppercase pl-5 2xl:p-0 ">Quote</label>
               <div class="grid gap-[20px]">
 
                 <!-- row grid -->
