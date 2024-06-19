@@ -67,6 +67,7 @@ public class GetProjectStatusReportsV1
         public Guid ProjectId { get; set; }
         public string? Report { get; set; }
 
+        public Guid? ProjectManagerId { get; set; }
         public string? ProjectManagerName { get; set; }
         /// <summary>
         /// Total hours across all time.

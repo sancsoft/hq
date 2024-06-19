@@ -10,11 +10,13 @@ import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { ClientDetailsService } from '../../clients/client-details.service';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
+import { HQRole } from '../../enums/hqrole';
+import { InRolePipe } from '../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-quotes-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent, InRolePipe],
   templateUrl: './quotes-list.component.html'
 })
 export class QuotesListComponent  {
@@ -32,6 +34,7 @@ export class QuotesListComponent  {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  HQRole = HQRole;
 
   constructor(
     private hqService: HQService,

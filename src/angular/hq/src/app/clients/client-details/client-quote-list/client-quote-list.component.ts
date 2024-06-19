@@ -26,6 +26,8 @@ import { PaginatorComponent } from '../../../common/paginator/paginator.componen
 import { ClientDetailsService } from '../../client-details.service';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
+import { InRolePipe } from '../../../pipes/in-role.pipe';
+import { HQRole } from '../../../enums/hqrole';
 
 @Component({
   selector: 'hq-client-quote-list',
@@ -36,6 +38,7 @@ import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
+    InRolePipe
   ],
   templateUrl: './client-quote-list.component.html',
 })
@@ -55,6 +58,7 @@ export class ClientQuoteListComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  HQRole = HQRole;
 
   constructor(
     private hqService: HQService,

@@ -21,6 +21,8 @@ import { GetInvoicesRecordV1 } from '../../../models/Invoices/get-invoices-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
+import { HQRole } from '../../../enums/hqrole';
+import { InRolePipe } from '../../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-client-invoices-list',
@@ -31,6 +33,7 @@ import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
+    InRolePipe
   ],
   templateUrl: './client-invoices.component-list.html',
 })
@@ -50,6 +53,7 @@ export class ClientInvoicesComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  HQRole = HQRole;
 
   constructor(
     private hqService: HQService,
