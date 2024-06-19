@@ -11,11 +11,11 @@ export class InRolePipe implements PipeTransform {
 
   oidcSecurityService = inject(OidcSecurityService);
 
-  transform(role: HQRole): Observable<boolean> {
-    console.log('checking if user in role ', role)
+  transform(roles: HQRole|HQRole[]): Observable<boolean> {
+    const rolesToCheck = Array.isArray(roles) ? roles : [roles];
     return this.oidcSecurityService.userData$.pipe(
       map(t => t.userData),
-      map(t => t && t.roles && Array.isArray(t.roles) && t.roles.includes(role)),
+      map(t => t && t.roles && Array.isArray(t.roles) && rolesToCheck.some(role => t.roles.includes(role))),
     );
   }
 
