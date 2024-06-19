@@ -23,6 +23,8 @@ import { PaginatorComponent } from '../../../common/paginator/paginator.componen
 import { ClientDetailsService } from '../../client-details.service';
 import { GetClientRequestV1 } from '../../../models/clients/get-client-v1';
 import { SortDirection } from '../../../models/common/sort-direction';
+import { InRolePipe } from '../../../pipes/in-role.pipe';
+import { HQRole } from '../../../enums/hqrole';
 
 @Component({
   selector: 'hq-client-project-list',
@@ -32,7 +34,8 @@ import { SortDirection } from '../../../models/common/sort-direction';
     CommonModule,
     ReactiveFormsModule,
     PaginatorComponent,
-    SortIconComponent
+    SortIconComponent,
+    InRolePipe
   ],
   templateUrl: './client-project-list.component.html',
 })
@@ -43,6 +46,7 @@ export class ClientProjectListComponent implements OnInit {
   clientId?: string;
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  HQRole = HQRole;
 
   itemsPerPage = new FormControl(20, { nonNullable: true });
 

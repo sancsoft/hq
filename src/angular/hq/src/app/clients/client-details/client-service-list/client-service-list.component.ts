@@ -11,11 +11,13 @@ import { ClientDetailsService } from '../../client-details.service';
 import { SortColumn } from '../../../models/Services/get-services-v1';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { QuoteStatus } from '../../../models/common/quote-status';
+import { HQRole } from '../../../enums/hqrole';
+import { InRolePipe } from '../../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-client-service-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, PaginatorComponent, ReactiveFormsModule, SortIconComponent],
+  imports: [RouterLink, CommonModule, PaginatorComponent, ReactiveFormsModule, SortIconComponent, InRolePipe],
   templateUrl: './client-service-list.component.html',
 })
 export class ClientServiceListComponent {
@@ -35,7 +37,7 @@ export class ClientServiceListComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
-
+  HQRole = HQRole;
 
   constructor(
     private hqService: HQService,
