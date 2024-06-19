@@ -49,6 +49,8 @@ jobs:
         cache-dependency-path: src/angular/hq/package-lock.json
     - name: Restore dependencies
       run: npm ci
+    - name: Lint
+      run: npm run lint
     - name: Build
       run: npm run build
     - name: Upload HQ Artifact

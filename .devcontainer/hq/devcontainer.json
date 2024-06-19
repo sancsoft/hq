@@ -19,7 +19,8 @@
             "extensions": [
                 "angular.ng-template",
                 "bradlc.vscode-tailwindcss",
-                "adrianwilczynski.csharp-to-typescript"
+                "adrianwilczynski.csharp-to-typescript",
+                "dbaeumer.vscode-eslint"
             ]
         }
     }
