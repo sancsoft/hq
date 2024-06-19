@@ -13,11 +13,13 @@ import { ClientDetailsSearchFilterComponent } from '../../clients/client-details
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
+import { HQRole } from '../../enums/hqrole';
+import { InRolePipe } from '../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-staff-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent, RouterLink],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent, RouterLink, InRolePipe],
   templateUrl: './staff-list.component.html',
 })
 export class StaffListComponent {
@@ -35,6 +37,7 @@ export class StaffListComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  HQRole = HQRole;
 
   constructor(
     private hqService: HQService,
