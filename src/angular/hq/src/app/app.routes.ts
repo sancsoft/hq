@@ -42,7 +42,7 @@ export const routes: Routes = [
             import('./charge-code/charge-code-create/charge-code-create.component').then(
               (m) => m.ChargeCodeCreateComponent
             ),
-        }, 
+        },
         {
           path: 'edit/:chargeCodeId',
           title: 'Charge Code Edit',
@@ -388,5 +388,33 @@ export const routes: Routes = [
           ),
       },
     ],
+  },
+  {
+    path:'times',
+    title: 'Times',
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Administrator)],
+    loadComponent: () =>
+      import('./times/times.component').then((m) => m.TimesComponent),
+    children: [
+      {
+        path: '',
+        title: 'Time List',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./times/time-list/time-list.component').then(
+            (m) => m.TimeListComponent
+          ),
+      },
+      {
+        path: 'edit/:timeId',
+        title: 'Time Edit',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./times/time-edit/time-edit.component').then(
+            (m) => m.TimeEditComponent
+          ),
+      }
+    ]
+
   }
 ];

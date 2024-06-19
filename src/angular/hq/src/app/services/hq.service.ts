@@ -88,6 +88,7 @@ import {
 import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff-member-v1';
 import { UpsertChargeCodesRequestV1, UpsertChargeCodesResponseV1 } from '../models/charge-codes/upsert-chargecodes';
 import { GetProjectActivitiesResponseV1, GetProjectActivityRequestV1 } from '../models/PSR/get-project-activity-v1';
+import { GetTimeRecordsV1, GetTimeRequestV1 } from '../models/times/get-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -381,6 +382,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetProjectActivitiesResponseV1>(
           `${apiUrl}/v1/Projects/GetProjectActivitiesV1`,
+          request
+        )
+      )
+    );
+  }
+
+  getTimesV1(request: Partial<GetTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetTimeRecordsV1>(
+          `${apiUrl}/v1/TimeEntries/GetTimesV1`,
           request
         )
       )

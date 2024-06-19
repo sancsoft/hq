@@ -226,6 +226,7 @@ namespace HQ.Server.Services
                  t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
             );
         }
+        var total = await records.CountAsync(ct);
 
         if (!string.IsNullOrEmpty(request.ChargeCode))
         {
@@ -271,7 +272,36 @@ namespace HQ.Server.Services
         {
             records = records.Where(t => t.Date == request.Date);
         }
+        
 
+
+
+
+
+        var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
+        {
+            { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
+            { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
+            { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" }
+
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+         records = request.SortDirection == SortDirection.Asc ?
+            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+            
+        if (request.Skip.HasValue)
+        {
+            records = records.Skip(request.Skip.Value);
+        }
+
+        if (request.Take.HasValue)
+        {
+            records = records.Take(request.Take.Value);
+        }
+        
             var mapped = records
             .Select(t => new GetTimesV1.Record()
             {
@@ -280,37 +310,22 @@ namespace HQ.Server.Services
                 RejectionNotes = t.RejectionNotes,
                 Task = t.Task,
                 Hours = t.Hours,
-                BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
+                BillableHours = t.HoursApproved,
                 ChargeCode = t.ChargeCode.Code,
                 ProjectName = t.ChargeCode.Project.Name,
+                ProjectId = t.ChargeCode.Project.Id,
                 ClientName = t.ChargeCode.Project.Client.Name,
+                ClientId = t.ChargeCode.Project.Client.Id,
+                StaffName = t.Staff.Name,
+                StaffId = t.Staff.Id,
+                InvoiceId = t.InvoiceId,
+                HoursApprovedBy = null,
                 Date = t.Date,
                 Description = t.Notes,
                 ActivityId = t.ActivityId,
                 ActivityName = t.Activity != null ? t.Activity.Name : null,
                 CreatedAt = t.CreatedAt,
             });
-
-        var total = await mapped.CountAsync(ct);
-
-
-        var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
-        {
-            { Abstractions.Times.GetTimesV1.SortColumn.BillableHours, "BillableHours" },
-            { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-            { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" }
-
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        var sorted = request.SortDirection == SortDirection.Asc ?
-            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
-
-        sorted = sorted
-            .ThenBy(t => t.Date)
-            .ThenBy(t => t.CreatedAt);
 
         var response = new GetTimesV1.Response()
         {
