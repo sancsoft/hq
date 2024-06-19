@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using FluentResults;
+using HQ.Abstractions;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Projects;
@@ -194,8 +195,23 @@ public class ClientServiceV1
         };
     }
 
-    public async Task<Result<GetClientInvoiceSummaryV1.Response>> GetClientInvoiceSummaryV1(GetClientInvoiceSummaryV1.Request request, CancellationToken ct = default)
+    public async Task<Result<GetClientInvoiceSummaryV1.Response?>> GetClientInvoiceSummaryV1(GetClientInvoiceSummaryV1.Request request, CancellationToken ct = default)
     {
-        return new GetClientInvoiceSummaryV1.Response();
+        var currentMonthStartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Month);
+        var lastMonthStartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.LastMonth);
+        var lastMonthEndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(Period.LastMonth);
+        var currentYearStartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Year);
+
+        var response = await _context.Clients
+            .Where(t => t.Id == request.Id)
+            .Select(client => new GetClientInvoiceSummaryV1.Response() {
+                MonthToDate = client.Invoices.Where(t => t.Date >= currentMonthStartDate).Sum(t => t.Total),
+                LastMonthToDate = client.Invoices.Where(t => t.Date >= lastMonthStartDate && t.Date <= lastMonthEndDate).Sum(t => t.Total),
+                YearToDate = client.Invoices.Where(t => t.Date >= currentYearStartDate).Sum(t => t.Total),
+                AllTimeToDate = client.Invoices.Sum(t => t.Total)
+            })
+            .SingleOrDefaultAsync(ct);
+        
+        return response;
     }
 }
