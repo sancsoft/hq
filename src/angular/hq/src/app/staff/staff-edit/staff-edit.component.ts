@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute,RouterLink } from '@angular/router';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { Jurisdiciton } from '../../models/staff-members/get-staff-member-v1';
@@ -25,7 +25,7 @@ interface Form {
 @Component({
   selector: 'hq-staff-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, ErrorDisplayComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ErrorDisplayComponent,RouterLink],
   templateUrl: './staff-edit.component.html'
 })
 export class StaffEditComponent implements OnInit {

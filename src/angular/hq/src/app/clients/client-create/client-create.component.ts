@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HQService } from '../../services/hq.service';
 import { firstValueFrom } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router,  RouterLink} from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { ToastService } from '../../services/toast.service';
 
@@ -17,7 +17,7 @@ interface Form {
 @Component({
   selector: 'hq-client-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,RouterLink],
   templateUrl: './client-create.component.html'
 })
 export class ClientCreateComponent {

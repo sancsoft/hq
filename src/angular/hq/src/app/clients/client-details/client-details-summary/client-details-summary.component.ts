@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, catchError, map, shareReplay } from 'rxjs/operators';
 import { HQService } from '../../../services/hq.service';
@@ -7,11 +6,16 @@ import { GetClientRecordV1 } from '../../../models/clients/get-client-v1';
 import { APIError } from '../../../errors/apierror';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../../errors/error-display/error-display.component';
-
+import {
+  ActivatedRoute,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 @Component({
   selector: 'hq-client-details-summary',
   standalone: true,
-  imports: [CommonModule, ErrorDisplayComponent],
+  imports: [CommonModule, ErrorDisplayComponent,RouterLink],
   templateUrl: './client-details-summary.component.html',
 })
 export class ClientDetailsSummaryComponent {

@@ -7,7 +7,7 @@
       <div class="text-gray-50">email: {{ (client.billingEmail) ?? "None" }}</div>
       <div class="text-gray-50">official name: {{ (client.officialName) ?? "None"}}</div>
     </div>
-      <a href={{editClientLink}} class="text-gray-50 pt-3">Edit client details</a>
+      <a [routerLink]="['/clients/edit',clientId]" class="text-gray-50 pt-3">Edit client details</a>
 
   </div>
   <hq-error-display [errors]="apiErrors"></hq-error-display>
