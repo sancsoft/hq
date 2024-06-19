@@ -23,11 +23,35 @@
       [formControl]="clientDetailService.projectStatus"
       class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
     >
+      <option [value]="clientDetailService.ProjectStatus.Unknown">
+        Unknown
+      </option>
+      <option [value]="clientDetailService.ProjectStatus.Draft">
+        Draft
+      </option>
+      <option [value]="clientDetailService.ProjectStatus.WaitingForSale">
+        Waiting For Sale
+      </option>
+      <option [value]="clientDetailService.ProjectStatus.WaitingForClient">
+        Waiting For Client
+      </option>
+      <option [value]="clientDetailService.ProjectStatus.WaitingForStaff ">
+        Waiting For Staff
+      </option>
       <option [value]="clientDetailService.ProjectStatus.InProduction">
-        In Production
+        InProduction
       </option>
       <option [value]="clientDetailService.ProjectStatus.Ongoing">
         Ongoing
+      </option>
+      <option [value]="clientDetailService.ProjectStatus.Completed">
+        Completed
+      </option>
+      <option [value]="clientDetailService.ProjectStatus.Closed">
+        Closed
+      </option>
+      <option [value]="clientDetailService.ProjectStatus.Lost">
+        Lost
       </option>
     </select>
     <span
