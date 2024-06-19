@@ -18,9 +18,7 @@ public class GetClientInvoiceSummaryV1
     {
         public decimal? MonthToDate { get; set; }
         public decimal? LastMonthToDate { get; set; }
-
         public decimal? YearToDate { get; set; }
-
         public decimal? AllTimeToDate { get; set; }
     }
 }

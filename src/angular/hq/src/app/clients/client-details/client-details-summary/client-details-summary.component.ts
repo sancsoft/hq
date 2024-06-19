@@ -12,6 +12,7 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
+import { GetClientInvoiceSummaryV1Response } from '../../../models/clients/get-client-invoice-summary-v1';
 @Component({
   selector: 'hq-client-details-summary',
   standalone: true,
@@ -19,33 +20,32 @@ import {
   templateUrl: './client-details-summary.component.html',
 })
 export class ClientDetailsSummaryComponent {
-  clientId?: string;
   client$: Observable<GetClientRecordV1 | null>;
+  clientInvoiceSummary$: Observable<GetClientInvoiceSummaryV1Response>;
   apiErrors: string[] = [];
-  editClientLink: string = ''
+
   constructor(private hqService: HQService, private route: ActivatedRoute) {
-    this.client$ = this.route.paramMap.pipe(
-      switchMap((params) => {
-        this.clientId = params.get('clientId') || undefined;
-        this.editClientLink = `clients/edit/${this.clientId}`;
-        console.log(this.clientId);
-        if (this.clientId) {
-          const request = { id: this.clientId };
-          return this.hqService.getClientsV1(request).pipe(
-            map((response) => response.records[0] || null),
-            catchError((error) => {
-              if (error instanceof APIError) {
-                this.apiErrors = error.errors;
-              } else {
-                this.apiErrors = ['An unexpected error has occurred.'];
-              }
-              return of(null);
-            })
-          );
+    const clientId$ = this.route.paramMap.pipe(
+      map(t => t.get('clientId')!)
+    );
+
+    this.client$ = clientId$.pipe(
+      switchMap(clientId => this.hqService.getClientsV1({ id: clientId })),
+      map(t => t.records[0]),
+      catchError((error) => {
+        if (error instanceof APIError) {
+          this.apiErrors = error.errors;
         } else {
-          return of(null);
+          this.apiErrors = ['An unexpected error has occurred.'];
         }
+
+        return of(null);
       }),
+      shareReplay(1)
+    );
+
+    this.clientInvoiceSummary$ = clientId$.pipe(
+      switchMap(clientId => this.hqService.getClientInvoiceSummaryV1({ id: clientId })),
       shareReplay(1)
     );
   }

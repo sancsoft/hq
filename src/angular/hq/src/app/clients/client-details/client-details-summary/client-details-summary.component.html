@@ -7,8 +7,10 @@
       <div class="text-gray-50">email: {{ (client.billingEmail) ?? "None" }}</div>
       <div class="text-gray-50">official name: {{ (client.officialName) ?? "None"}}</div>
     </div>
-      <a [routerLink]="['/clients/edit',clientId]" class="text-gray-50 pt-3">Edit client details</a>
-
+    <div>
+      <pre>{{ clientInvoiceSummary$ | async | json }}</pre>
+      <a [routerLink]="['/clients/edit', client.id]" class="text-gray-50 pt-3">Edit client details</a>
+    </div>
   </div>
   <hq-error-display [errors]="apiErrors"></hq-error-display>
   }
