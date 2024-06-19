@@ -193,4 +193,9 @@ public class ClientServiceV1
             Updated = updated
         };
     }
+
+    public async Task<Result<GetClientInvoiceSummaryV1.Response>> GetClientInvoiceSummaryV1(GetClientInvoiceSummaryV1.Request request, CancellationToken ct = default)
+    {
+        return new GetClientInvoiceSummaryV1.Response();
+    }
 }

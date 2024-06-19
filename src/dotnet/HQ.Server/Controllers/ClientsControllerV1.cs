@@ -36,8 +36,8 @@ namespace HQ.Server.Controllers
         [HttpPost(nameof(GetClientInvoiceSummaryV1))]
         [ProducesResponseType<GetClientInvoiceSummaryV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> GetClientInvoiceSummaryV1([FromBody] GetClientInvoiceSummaryV1.Request request, CancellationToken ct = default) =>
-                    _clientService.GetClientInvoiceSummaryV1(request, ct)
-                   .ToActionResult(new HQResultEndpointProfile());
+            _clientService.GetClientInvoiceSummaryV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
 
         [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(UpsertClientV1))]
