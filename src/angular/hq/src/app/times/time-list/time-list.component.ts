@@ -1,14 +1,16 @@
+import { GetTimeRecordStaffV1 } from './../../models/times/get-time-v1';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, startWith, combineLatest, map, tap, debounceTime, switchMap, shareReplay } from 'rxjs';
+import { Observable, BehaviorSubject, startWith, combineLatest, map, tap, debounceTime, switchMap, shareReplay, of } from 'rxjs';
 import { GetTimeRecordV1, GetTimeRecordsV1, SortColumn } from '../../models/times/get-time-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { ChargeCodeListService } from '../../charge-code/services/ChargeCodeListService';
+import { TimeService } from '../services/TimeService';
+import { TimeSearchFilterComponent } from '../search-filter/time-search-filter/time-search-filter.component';
 
 @Component({
   selector: 'hq-time-list',
@@ -19,12 +21,12 @@ import { ChargeCodeListService } from '../../charge-code/services/ChargeCodeList
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
+    TimeSearchFilterComponent,
   ],
   templateUrl: './time-list.component.html'
 })
 export class TimeListComponent implements OnInit {
   ngOnInit(): void {
-    this.chargeCodeListService.showSearch();
   }
   apiErrors: string[] = [];
 
@@ -35,8 +37,7 @@ export class TimeListComponent implements OnInit {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
-  itemsPerPage = new FormControl(20, { nonNullable: true });
-  page = new FormControl<number>(1, { nonNullable: true });
+
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
@@ -44,32 +45,103 @@ export class TimeListComponent implements OnInit {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private chargeCodeListService: ChargeCodeListService
+    public timeListService: TimeService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Desc);
 
-    const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      startWith(this.itemsPerPage.value)
+    const itemsPerPage$ = this.timeListService.itemsPerPage.valueChanges.pipe(
+      startWith(this.timeListService.itemsPerPage.value)
     );
-    const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
+    const page$ = this.timeListService.page.valueChanges.pipe(startWith(this.timeListService.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
       startWith(0)
     );
-    const search$ = chargeCodeListService.search.valueChanges.pipe(
+    const search$ = timeListService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(chargeCodeListService.search.value)
+      startWith(timeListService.search.value)
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
+    // Getting the staff members
+    this.hqService.getStaffMembersV1({}).pipe(map((members) => members.records), map((records) =>
+      records.map((record) => ({
+        id: record.id,
+        name: record.name,
+      }))
+    )).subscribe((staffMembers) => {
+      this.timeListService.staffMembers$.next(staffMembers);
+    });
+    // Getting the Clients
+    this.hqService.getClientsV1({}).pipe(map((clients) => clients.records), map((records) =>
+      records.map((record) => ({
+        id: record.id,
+        name: record.name,
+      }))
+    )).subscribe((clients) => {
+      this.timeListService.clients$.next(clients);
+    });
+    const clientId$ = this.timeListService.client.valueChanges.pipe(
+      tap(()=>{
+        this.timeListService.project.setValue(null);
+      }),
+      startWith(this.timeListService.client.value)
+    )
+
+
+// Assuming clientId$ is defined and is an observable
+const projectRequest$ = combineLatest({
+  clientId: clientId$
+});
+
+projectRequest$.pipe(
+  switchMap(projectRequest =>
+    this.hqService.getProjectsV1(projectRequest).pipe(
+      map((clients) => clients.records),
+      map((records) =>
+        records.map((record) => ({
+          id: record.id,
+          name: record.name,
+          chargeCode: record.chargeCode,
+        }))
+      )
+    )
+  )
+).subscribe((projects) => {
+  this.timeListService.projects$.next(projects);
+});
+
+  const staffMemberId$ = this.timeListService.staffMember.valueChanges.pipe(
+    startWith(this.timeListService.staffMember.value)
+  );
+
+  const projectId$ = this.timeListService.project.valueChanges.pipe(
+    startWith(this.timeListService.project.value)
+  )
+  const startDate$ = this.timeListService.startDate.valueChanges.pipe(
+    startWith(this.timeListService.startDate.value)
+  );
+  const endDate$ = this.timeListService.endDate.valueChanges.pipe(
+    startWith(this.timeListService.endDate.value)
+  );
+  const period$ = this.timeListService.selectedPeriod.valueChanges.pipe(
+    startWith(this.timeListService.selectedPeriod.value)
+  );
+
     const request$ = combineLatest({
       search: search$,
       skip: skip$,
+      clientId: clientId$,
+      projectId: projectId$,
+      staffId: staffMemberId$,
       take: itemsPerPage$,
       sortBy: this.sortOption$,
+      startDate: startDate$,
+      endDate: endDate$,
+      period: period$,
       sortDirection: this.sortDirection$,
     });
 
@@ -78,6 +150,7 @@ export class TimeListComponent implements OnInit {
       switchMap((request) => this.hqService.getTimesV1(request)),
       shareReplay(1)
     );
+
 
     this.times$ = response$.pipe(
       map((response) => {
@@ -103,7 +176,7 @@ export class TimeListComponent implements OnInit {
   }
 
   goToPage(page: number) {
-    this.page.setValue(page);
+    this.timeListService.page.setValue(page);
   }
 
   onSortClick(sortColumn: SortColumn) {
@@ -117,9 +190,6 @@ export class TimeListComponent implements OnInit {
       this.sortOption$.next(sortColumn);
       this.sortDirection$.next(SortDirection.Asc);
     }
-    this.page.setValue(1);
+    this.timeListService.page.setValue(1);
   }
-  // getProjectSatusString(status: ProjectStatus): string {
-  //   return ProjectStatus[status];
-  // }
 }

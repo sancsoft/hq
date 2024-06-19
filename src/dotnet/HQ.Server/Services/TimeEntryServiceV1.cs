@@ -9,6 +9,7 @@ using HQ.Server.Data;
 using HQ.Server.Data.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using HQ.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services
@@ -222,8 +223,8 @@ namespace HQ.Server.Services
                 t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
                 t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
                 t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
-                 t.ChargeCode.Project.Name != null && t.ChargeCode.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
-                 t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
+                t.ChargeCode.Project.Name != null && t.ChargeCode.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
+                t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
             );
         }
         var total = await records.CountAsync(ct);
@@ -235,6 +236,11 @@ namespace HQ.Server.Services
         if (request.ClientId.HasValue)
         {
             records = records.Where(t => t.ChargeCode.Project.ClientId.Equals(request.ClientId));
+        }
+        if (request.Period.HasValue)
+        {
+            request.StartDate = new DateOnly().GetPeriodStartDate(request.Period.Value);
+            request.EndDate = new DateOnly().GetPeriodEndDate(request.Period.Value);
         }
 
         if (request.StartDate.HasValue && !request.EndDate.HasValue)
@@ -260,6 +266,10 @@ namespace HQ.Server.Services
         {
             records = records.Where(t => t.StaffId == request.StaffId);
         }
+        if(request.ProjectId.HasValue) {
+            records = records.Where(t => t.ChargeCode.ProjectId.Equals(request.ProjectId.Value));
+        }
+
         if (!string.IsNullOrEmpty(request.Task))
         {
             records = records.Where(t => t.Task == request.Task);
@@ -272,6 +282,7 @@ namespace HQ.Server.Services
         {
             records = records.Where(t => t.Date == request.Date);
         }
+        
         
 
 

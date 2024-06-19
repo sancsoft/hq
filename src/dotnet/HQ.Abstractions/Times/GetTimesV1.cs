@@ -19,9 +19,11 @@ public class GetTimesV1
         public DateOnly? EndDate { get; set; }
         public DateOnly? Date { get; set; }
         public Guid? ClientId  { get; set; }
+        public Guid? ProjectId  { get; set; }
         public string? ChargeCode  { get; set; }
         public string? Activity  { get; set; }
         public string? Task  { get; set; }
+        public Period? Period { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.Date;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }

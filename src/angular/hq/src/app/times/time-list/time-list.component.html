@@ -5,6 +5,7 @@
 <div class="px-5 pt-4 mb-[8px]">
   <div class="flex flex-col lg:flex-row justify-between items-start">
       <div class="flex items-center order-2 lg:order-1 gap-[20px]">
+        <hq-time-search-filter></hq-time-search-filter>
        <!-- <hq-psr-search-filter></hq-psr-search-filter> -->
       </div>
   </div>
@@ -20,7 +21,7 @@
           <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer">
               Staff
           </th>
-          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer">
+          <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer">
             Client
         </th>
           <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" >
@@ -66,8 +67,8 @@
       @for((time of times$ | async); track $index) {
       <tr class="even:bg-gray-850 odd:bg-black-alt">
           <td class="border-b border-black px-3 py-2 pl-5">{{ time.date }}</td>
-          <td class="border-b border-black py-2">{{ time.staffName }}</td>
-          <td class="border-b border-black py-2">
+          <td class="border-b px-3 border-black py-2">{{ time.staffName }}</td>
+          <td class="border-b px-3 border-black py-2">
               {{ time.clientName }}
           </td>
           <td class="border-b border-black py-2">{{ time.projectName }}</td>
@@ -96,7 +97,7 @@ class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 borde
 <div>
   <select
     class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-    [formControl]="itemsPerPage"
+    [formControl]="timeListService.itemsPerPage"
   >
     <option [ngValue]="10">10</option>
     <option [ngValue]="20">20</option>
@@ -108,8 +109,8 @@ class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 borde
 </div>
 <hq-paginator
   [total]="(totalRecords$ | async) ?? 0"
-  [pageSize]="itemsPerPage.value"
-  [currentPage]="page.value"
+  [pageSize]="timeListService.itemsPerPage.value"
+  [currentPage]="timeListService.page.value"
   (onPage)="goToPage($event)"
 ></hq-paginator>
 <div class="flex justify-end text-xs">

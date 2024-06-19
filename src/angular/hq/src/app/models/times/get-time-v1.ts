@@ -6,7 +6,7 @@ export interface GetTimeRequestV1 {
   search?: string | null;
   sortBy: SortColumn;
   sortDirection: SortDirection;
-  // period?: Period | null;
+  period?: Period | null;
   startDate?: Date | null;
   endDate?: Date | null;
   date?: Date | null;
@@ -45,16 +45,33 @@ export interface GetTimeRecordV1 {
   hoursApprovedBy?: string | null;
 
 }
-export interface GetTimeRecordStaffV1 {
+export interface GetTimeRecordStaffV1 extends BaseRecordV1 {}
+
+export interface GetTimeRecordClientsV1 extends BaseRecordV1 {
+}
+
+export interface GetTimeRecordProjectsV1 extends BaseRecordV1 {
+  chargeCode: string | null;
+}
+
+export interface BaseRecordV1 {
   id: string;
   name: string;
-  totalHours: number;
 }
 
 export interface GetTimeRecordsV1 {
   records: [GetTimeRecordV1];
   staff: [GetTimeRecordStaffV1];
   total: number | null;
+}
+
+export enum Period
+{
+    Today = 5,
+    ThisWeek = 6,
+    LastWeek = 7,
+    ThisMonth = 8,
+    LastMonth = 9,
 }
 
 export interface GetTimeV1 extends PagedResponseV1<GetTimeRecordV1> {}
