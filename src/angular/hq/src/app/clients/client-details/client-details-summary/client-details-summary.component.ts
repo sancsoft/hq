@@ -18,12 +18,12 @@ export class ClientDetailsSummaryComponent {
   clientId?: string;
   client$: Observable<GetClientRecordV1 | null>;
   apiErrors: string[] = [];
-
+  editClientLink: string = ''
   constructor(private hqService: HQService, private route: ActivatedRoute) {
-   
     this.client$ = this.route.paramMap.pipe(
       switchMap((params) => {
         this.clientId = params.get('clientId') || undefined;
+        this.editClientLink = `clients/edit/${this.clientId}`;
         console.log(this.clientId);
         if (this.clientId) {
           const request = { id: this.clientId };
@@ -53,4 +53,5 @@ export class ClientDetailsSummaryComponent {
     billingEmail: '',
     hourlyRate: 0.0,
   };
+
 }

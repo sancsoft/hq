@@ -1,10 +1,14 @@
 <div>
   @if (client$ | async; as client) {
   <h1 class="font-rajdhani font-semibold text-3xl">{{ client.name }}</h1>
-  <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-    <div class="text-gray-50">hourly rate: ${{ client.hourlyRate }}</div>
-    <div class="text-gray-50">email: {{ client.billingEmail }}</div>
-    <div class="text-gray-50">official name: {{ client.officialName }}</div>
+  <div class="flex justify-between">
+    <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
+      <div class="text-gray-50">hourly rate: {{ (client.hourlyRate) ?? "None" }}  </div>
+      <div class="text-gray-50">email: {{ (client.billingEmail) ?? "None" }}</div>
+      <div class="text-gray-50">official name: {{ (client.officialName) ?? "None"}}</div>
+    </div>
+      <a href={{editClientLink}} class="text-gray-50 pt-3">Edit client details</a>
+
   </div>
   <hq-error-display [errors]="apiErrors"></hq-error-display>
   }

@@ -5,6 +5,7 @@ import { HQService } from '../../services/hq.service';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
+import { ToastService } from '../../services/toast.service';
 
 interface Form {
   name: FormControl<string>;
@@ -43,29 +44,27 @@ export class ClientCreateComponent {
     }),
   });
 
-  constructor(private hqService: HQService, private router: Router, private route: ActivatedRoute) {
+  constructor(private hqService: HQService, private router: Router, private route: ActivatedRoute, private toastService: ToastService) {
   }
 
   async submit() {
     this.form.markAsTouched();
-    if(this.form.invalid) {
+    if (this.form.invalid) {
       return;
     }
 
-    try
-    {
+    try {
       const request = this.form.value;
       const response = await firstValueFrom(this.hqService.upsertClientV1(request));
       this.router.navigate(['../', response.id], { relativeTo: this.route });
+      this.toastService.show('Accepted', 'Client has been created.');
+
     }
-    catch(err)
-    {
-      if(err instanceof APIError)
-      {
+    catch (err) {
+      if (err instanceof APIError) {
         this.apiErrors = err.errors;
       }
-      else
-      {
+      else {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }

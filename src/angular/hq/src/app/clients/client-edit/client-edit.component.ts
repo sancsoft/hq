@@ -5,7 +5,7 @@ import { HQService } from '../../services/hq.service';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
-
+import { ToastService } from '../../services/toast.service';
 
 interface Form {
   name: FormControl<string>;
@@ -24,7 +24,7 @@ interface Form {
 export class ClientEditComponent implements OnInit {
   clientId?: string;
 
-  constructor(private hqService: HQService, private router: Router, private route: ActivatedRoute) { }
+  constructor(private hqService: HQService, private router: Router, private route: ActivatedRoute, private toastService: ToastService) { }
 
   async ngOnInit() {
     this.clientId = await (await firstValueFrom(this.route.paramMap.pipe())).get('clientId') ?? undefined
@@ -84,7 +84,9 @@ export class ClientEditComponent implements OnInit {
     try {
       var request = { id: this.clientId, ... this.form.value }
       const response = await firstValueFrom(this.hqService.upsertClientV1(request));
-      this.router.navigate(['../', response.id], { relativeTo: this.route });
+      console.log(response);
+      this.router.navigate(['clients', response.id]);
+      this.toastService.show("Updated", "Client has been updated")
     }
     catch (err) {
       console.log(err);
