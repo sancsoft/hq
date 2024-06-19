@@ -17,6 +17,8 @@
       }
     </div>
     <div class="ml-auto space-x-2 pr-5">
+      @if([HQRole.Manager, HQRole.Partner, HQRole.Administrator] | inRole | async)
+      {
       <button
        [disabled]="submitButtonState == ButtonState.Disabled"
        [ngClass]="{'text-gray-50 border-gray-500 bg-gray-500 ':submitButtonState == ButtonState.Disabled, 'text-white border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600': submitButtonState == ButtonState.Enabled}"
@@ -24,7 +26,8 @@
         (click)="onReportSubmit()"
         >
         Submit
-      </button>
+      </button>         
+      }
     </div>
   </div>
   <div id="left-side" class="grid gap-0 transition-all duration-200 ease-in-out relative" [ngClass]="{
