@@ -1,83 +1,104 @@
-<div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
-  @if(psrListService.showSearch$ | async) {
-  <!-- search bar -->
-  <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]">
-      <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
-    <i class="bi bi-search text-[14px]"></i>
-  </span>
-      <input type="text" [formControl]="psrListService.search" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="" />
-  </div>
-  } @if(psrListService.staffMembers$ && psrListService.showStaffMembers$ | async) {
-  <div class="grid relative w-full max-w-[220px]">
-      <select [formControl]="psrListService.staffMember" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
-  <option  [ngValue]="null">Select Staff Member</option>
-    @for (staffMember of psrListService.staffMembers$ | async; track $index)
-    {
-    <option [value]="staffMember.id">
-      {{ staffMember.name }}
-    </option>
-    }
-  </select>
-      <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-    <i class="bi bi-arrow-down-short text-[24px]"></i>
-  </span>
-  </div>
-  } @if(psrListService.showIsSubmitted$ | async) {
-  <div class="grid relative w-full max-w-[220px]">
-      <select [formControl]="psrListService.isSubmitted" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
-    <option  [ngValue]="null">All</option>
+<div>
 
-      <option [ngValue]="true">
-       Yes
-      </option>
-      <option [ngValue]="false">
-        No
-       </option>
-    </select>
-      <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-      <i class="bi bi-arrow-down-short text-[24px]"></i>
-    </span>
-  </div>
-  }
-  @if(psrListService.showStartDate$ | async) {
-    <div class="grid relative w-full max-w-[220px]">
-      <input
-        [formControl]="psrListService.startDate"
-        type="date"
-        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
-      />
+  <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+
+    @if(psrListService.showSearch$ | async) {
+    <!-- search bar -->
+    <div
+      class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px] mt-4">
       <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-      >
-        <i
-          class="bi bi-arrow-down-short text-[24px] bg-blue-900"
-        ></i>
+        class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
+        <i class="bi bi-search text-[14px]"></i>
       </span>
+      <input type="text" [formControl]="psrListService.search"
+        class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
+        name="" />
     </div>
     }
-    @if(psrListService.showEndDate$ | async) {
+
+
+    <div class="w-full">
+      @if(psrListService.staffMembers$ && psrListService.showStaffMembers$ | async) {
+      <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4">
+        Project Manager</label>
       <div class="grid relative w-full max-w-[220px]">
-        <input
-          [formControl]="psrListService.endDate"
-          type="date"
-          class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
-        />
+
+        <select [formControl]="psrListService.staffMember"
+          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+          <option [ngValue]="null">Select Staff Member</option>
+          @for (staffMember of psrListService.staffMembers$ | async; track $index)
+          {
+          <option [value]="staffMember.id">
+            {{ staffMember.name }}
+          </option>
+          }
+        </select>
         <span
-          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-        >
-          <i
-            class="bi bi-arrow-down-short text-[24px] bg-blue-900"
-          ></i>
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+          <i class="bi bi-arrow-down-short text-[24px]"></i>
         </span>
       </div>
       }
+    </div>
 
-  @if (psrListService.showRoaster$ | async) {
-  <!-- <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[205px]">
+    <div class="w-full">
+      @if(psrListService.showIsSubmitted$ | async) {
+      <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4">Submitted
+          </label>
+      <div class="grid relative w-full max-w-[220px]">
+        <select [formControl]="psrListService.isSubmitted"
+          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+          <option [ngValue]="null">All</option>
+
+          <option [ngValue]="true">
+            Yes
+          </option>
+          <option [ngValue]="false">
+            No
+          </option>
+        </select>
+        <span
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+          <i class="bi bi-arrow-down-short text-[24px]"></i>
+        </span>
+      </div>
+      }
+    </div>
+    <div class="w-full">
+      @if(psrListService.showStartDate$ | async) {
+
+      <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4">Start Date</label>
+      <div class="grid relative w-full max-w-[220px]">
+        <input [formControl]="psrListService.startDate" type="date"
+          class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase" />
+        <span
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+          <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+        </span>
+      </div>
+
+      }
+    </div>
+    <div class="w-full">
+      @if(psrListService.showEndDate$ | async) {
+      <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4">End Date</label>
+      <div class="grid relative w-full max-w-[220px]">
+        <input [formControl]="psrListService.endDate" type="date"
+          class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase" />
+        <span
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+          <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+        </span>
+      </div>
+      }
+    </div>
+
+    @if (psrListService.showRoaster$ | async) {
+    <!-- <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[205px]">
       <input type="text" class="w-[100%] block text-[14px] text-center px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="" value="Roster" />
   </div> -->
-  } @if ( psrListService.showActivityName$ | async ) {
-  <!-- <div class="grid relative w-[290px]">
+    } @if ( psrListService.showActivityName$ | async ) {
+    <!-- <div class="grid relative w-[290px]">
       <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
     <option [value]="psrListService.ActivityName.Development">Development</option>
     <option [value]="psrListService.ActivityName.Todo">Todo</option>
@@ -87,5 +108,6 @@
     <i class="bi bi-arrow-down-short text-[24px]"></i>
   </span>
   </div> -->
-  }
+    }
+  </div>
 </div>

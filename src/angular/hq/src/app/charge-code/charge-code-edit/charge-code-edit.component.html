@@ -1,27 +1,25 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
-    <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
-        <div class="px-5">
-            <h1 class="font-rajdhani font-semibold text-3xl">Create Charge Code</h1>
+  <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
+    <div class="px-5">
+      <h1 class="font-rajdhani font-semibold text-3xl">Create Charge Code</h1>
 
-            <div class="py-3">
-                <a href="/chargecodes" class="text-gray-50 underline">Charge codes List</a>
-            </div>
-        </div>
+      <div class="py-3">
+        <a href="/chargecodes" class="text-gray-50 underline">Charge codes List</a>
+      </div>
+    </div>
 
-        <div class="overflow-hidden flex-auto">
-            <div class="grid gap-0 relative">
-                <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
-                    <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
-                        <div class="w-full flex flex-row border-b border-black justify-between pe-5">
-                            <div class="flex pt-[23px]">
-                                <a href="#" routerLink="projects" routerLinkActive="border-gray-100" class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a
-                >
+    <div class="overflow-hidden flex-auto">
+      <div class="grid gap-0 relative">
+        <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
+          <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
+            <div class="w-full flex flex-row border-b border-black justify-between pe-5">
+              <div class="flex pt-[23px]">
+                <a href="#" routerLink="projects" routerLinkActive="border-gray-100"
+                  class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a>
               </div>
               <div class="flex flex-column justify-center items-center">
-                <button
-                  type="submit"
-                  class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
-                >
+                <button type="submit"
+                  class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
                   Save
                 </button>
               </div>
@@ -33,19 +31,16 @@
                 <hq-error-display [errors]="apiErrors"></hq-error-display>
 
                 <!-- row grid -->
-                <div
-                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"
-                >
-                <!-- column -->
-                <!-- column -->
+                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5">
+                  <!-- column -->
+                  <!-- column -->
                   <div>
-                    <div>Charge Code Activity</div>
+                    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Charge Code
+                      Activity</label>
                     <div class="grid relative w-full max-w-[220px]">
-                      <select
-                        formControlName="Activity"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
-                      <option [ngValue]="null" selected>
+                      <select formControlName="Activity"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                        <option [ngValue]="null" selected>
                           Select Activity
                         </option>
                         <option [ngValue]="ChargeCodeActivity.General">
@@ -62,115 +57,105 @@
                         </option>
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                     </div>
-                    </div>
-                    @if (showProjects$ | async) {
-                    <div class="mt-4 grid relative w-full max-w-[220px]">
-                      <select
-                      [class.border-red-700]="form.get('ProjectId')?.touched &&
-                    form.get('ProjectId')?.errors?.['required']"
-                        formControlName="ProjectId"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
+                  </div>
+                  @if (showProjects$ | async) {
+                  <div>
+                    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project</label>
+                    <div class="grid relative w-full max-w-[220px]">
+                      <select [class.border-red-700]="form.get('ProjectId')?.touched &&
+                      form.get('ProjectId')?.errors?.['required']" formControlName="ProjectId" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer
+                        font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100
+                        bg-blue-900 rounded h-[36px]">
                         <option [ngValue]="null">Select Project</option>
                         @for (project of (projects$ | async); track
                         $index) {
                         <option [ngValue]="project.id">
                           {{ project.name }}
                         </option>
-                    }
+                        }
 
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                       @if(form.get('ProjectId')?.touched &&
-                  form.get('ProjectId')?.errors?.['required']) {
-                  <span class="text-red-700 text-xs leading-normal inline-block"
-                    >Selecting Project is required.</span
-                  >
-                  }
+                      form.get('ProjectId')?.errors?.['required']) {
+                      <span class="text-red-700 text-xs leading-normal inline-block">Selecting Project is required.</span>
+                      }
                     </div>
-                  }
+                  </div>
+                }
+
                   @if (showQuotes$ | async) {
-                    <div class="mt-4 grid relative w-full max-w-[220px]">
-                      <select
-                      [class.border-red-700]="form.get('QuoteId')?.touched &&
-                    form.get('QuoteId')?.errors?.['required']"
-                        formControlName="QuoteId"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
+                  <div>
+                    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Quote</label>
+                    <div class=" grid relative w-full max-w-[220px]">
+                      <select [class.border-red-700]="form.get('QuoteId')?.touched &&
+                      form.get('QuoteId')?.errors?.['required']" formControlName="QuoteId"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
                         <option [ngValue]="null">Select Quote</option>
                         @for (quote of (quotes$ | async); track
                         $index) {
                         <option [ngValue]="quote.id">
                           {{ quote.name }}
                         </option>
-                    }
+                        }
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                       @if(form.get('QuoteId')?.touched &&
-                  form.get('QuoteId')?.errors?.['required']) {
-                  <span class="text-red-700 text-xs leading-normal inline-block"
-                    >Selecting Quote is required.</span
-                  >
-                  }
+                      form.get('QuoteId')?.errors?.['required']) {
+                      <span class="text-red-700 text-xs leading-normal inline-block">Selecting Quote is required.</span>
+                      }
                     </div>
-                  }
+                  </div>
+                }
                   @if (showServices$ | async) {
-                    <div class="mt-4 grid relative w-full max-w-[220px]">
-                      <select
-                      [class.border-red-700]="form.get('ServiceAgreementId')?.touched &&
-                    form.get('ServiceAgreementId')?.errors?.['required']"
-                        formControlName="ServiceAgreementId"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
+                  <div>
+                    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Service Agreement</label>
+                    <div class="grid relative w-full max-w-[220px]">
+                      <select [class.border-red-700]="form.get('ServiceAgreementId')?.touched &&
+                      form.get('ServiceAgreementId')?.errors?.['required']" formControlName="ServiceAgreementId"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
                         <option [ngValue]="null">Select Service Agreement</option>
                         @for (service of (services$ | async); track
                         $index) {
                         <option [ngValue]="service.id">
                           {{ service.name }}
                         </option>
-                    }
+                        }
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                       @if(form.get('ServiceAgreementId')?.touched &&
-                  form.get('ServiceAgreementId')?.errors?.['required']) {
-                  <span class="text-red-700 text-xs leading-normal inline-block"
-                    >Selecting Service Agreement is required.</span
-                  >
-                  }
+                      form.get('ServiceAgreementId')?.errors?.['required']) {
+                      <span class="text-red-700 text-xs leading-normal inline-block">Selecting Service Agreement is
+                        required.</span>
+                      }
                     </div>
-                  }
-                 
+                  </div>
+                }
+
                   <!-- column -->
                 </div>
-                  <!-- row grid -->
-                <div
-                  class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5"
-                >
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
                   <!-- column -->
                   <div>
+                    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Billable</label>
                     <div class="grid relative w-full max-w-[220px]">
-                      <select
-                        formControlName="Billable"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
-                      <option [ngValue]="null" selected>
+                      <select formControlName="Billable"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                        <option [ngValue]="null" selected>
                           Billable?
                         </option>
                         <option [ngValue]="true">
@@ -181,19 +166,17 @@
                         </option>
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                     </div>
-                    </div>
-                    <div>
+                  </div>
+                  <div>
+                    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Active</label>
                     <div class="grid relative w-full max-w-[220px]">
-                      <select
-                        formControlName="Active"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
-                      <option [ngValue]="null" selected>
+                      <select formControlName="Active"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                        <option [ngValue]="null" selected>
                           Active?
                         </option>
                         <option [ngValue]="true">
@@ -204,34 +187,27 @@
                         </option>
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                     </div>
-                    </div>
-                    <div>
+                  </div>
+
+                  <div>
                     <!-- text input -->
-                    <input
-                      [class.border-red-700]="form.get('Description')?.touched &&
-                        form.get('Description')?.errors?.['required']"
-                      type="text"
-                      name="Description"
-                      id="Description"
+                    <label for=""
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Description</label>
+                    <input [class.border-red-700]="form.get('Description')?.touched &&
+                        form.get('Description')?.errors?.['required']" type="text" name="Description" id="Description"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Enter Description"
-                      formControlName="Description"
-                    />
+                      placeholder="Enter Description" formControlName="Description" />
                     @if(form.get('Description')?.touched &&
                     form.get('Description')?.errors?.['required']) {
-                    <span
-                      class="text-red-700 text-xs leading-normal inline-block"
-                      >Description is required.</span
-                    >
+                    <span class="text-red-700 text-xs leading-normal inline-block">Description is required.</span>
                     }
                   </div>
-                    </div>
-                
+                </div>
+
               </div>
             </div>
           </div>
