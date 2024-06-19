@@ -76,6 +76,8 @@ namespace HQ.Server.Controllers
                 return Forbid();
             }
 
+            request.AcceptedById = User.GetStaffId();
+
             return await _ProjectStatusReportService.ApproveProjectStatusReportTimeRequestV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -104,8 +106,10 @@ namespace HQ.Server.Controllers
                 return Forbid();
             }
 
+            request.RejectedById = User.GetStaffId();
+
             return await _ProjectStatusReportService.RejectProjectStatusReportTimeV1(request, ct)
-            .ToActionResult(new HQResultEndpointProfile());
+                .ToActionResult(new HQResultEndpointProfile());
         }
 
         [Authorize(HQAuthorizationPolicies.Manager)]

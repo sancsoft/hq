@@ -12,7 +12,12 @@ public class Time : Base
     public decimal Hours { get; set; }
     public string? Notes { get; set; }
     public decimal? HoursApproved { get; set; }
-    // Staff approving hours
+    public Guid? AcceptedById { get; set; }
+    public Staff? AcceptedBy { get; set; }
+    public DateTime? AcceptedAt { get; set; }
+    public Guid? RejectedById { get; set; }
+    public Staff? RejectedBy { get; set; }
+    public DateTime? RejectedAt { get; set; }
     public Guid? InvoiceId { get; set; }
     public Invoice? Invoice { get; set; }
     public TimeStatus Status { get; set; }
