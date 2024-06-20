@@ -22,6 +22,8 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_ENV
     - name: Restore dependencies
       run: dotnet restore
+    - name: Format
+      run: dotnet format --verify-no-changes --verbosity diagnostic
     - name: Build
       run: dotnet build --no-restore --configuration Release /p:Version=${VERSION} -warnaserror
     - name: Test
