@@ -38,6 +38,11 @@
     </tr>
   </thead>
   <tbody>
+    @if((invoices$ | async)?.length == 0) {
+    <td colspan="6">
+      <h1 class="text-center py-4 font-bold">No matching records found</h1>
+    </td>
+    }
     @for (invoice of invoices$ | async; track $index) {
     <tr class="even:bg-gray-850 odd:bg-black-alt">
       <td class="border-b border-black py-2 pl-5">{{ invoice.clientName}}</td>
