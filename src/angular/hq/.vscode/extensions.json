@@ -4,6 +4,7 @@
     "angular.ng-template",
     "bradlc.vscode-tailwindcss",
     "adrianwilczynski.csharp-to-typescript",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
   ]
 }
