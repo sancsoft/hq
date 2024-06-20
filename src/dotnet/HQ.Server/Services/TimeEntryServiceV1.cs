@@ -305,7 +305,11 @@ namespace HQ.Server.Services
         {
             { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
             { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-            { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" }
+            { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
+            { Abstractions.Times.GetTimesV1.SortColumn.Billable, "Billable" },
+            { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
+            { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
+            { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" }
 
         };
 
@@ -343,6 +347,7 @@ namespace HQ.Server.Services
                 StaffId = t.Staff.Id,
                 InvoiceId = t.InvoiceId,
                 HoursApprovedBy = null,
+                Billable = t.ChargeCode.Billable,
                 Date = t.Date,
                 Description = t.Notes,
                 ActivityId = t.ActivityId,

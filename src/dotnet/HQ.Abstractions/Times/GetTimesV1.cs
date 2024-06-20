@@ -35,7 +35,10 @@ public class GetTimesV1
         Hours = 1,
         Date = 2,
         ChargeCode = 3,
-        Activity = 4
+        StaffName = 4,
+        ClientName = 5,
+        ProjectName = 6,
+        Billable = 7,
     }
 
     public class Response : PagedResponseV1<Record>

@@ -34,6 +34,7 @@ export interface GetTimeRecordV1 {
   date: Date;
   chargeCode: string;
   staffName: string | null;
+  billable: boolean;
   clientName: string | null
   projectName: string | null;
   rejectionNotes: string | null;
