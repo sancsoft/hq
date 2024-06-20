@@ -13,6 +13,8 @@ export interface GetTimeRequestV1 {
   staffId?: string | null;
   projectId?: string | null;
   clientId?: string | null;
+  invoiced?: boolean | null,
+  TimeAccepted?: boolean | null,
   activityId: string | null;
 }
 

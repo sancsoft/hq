@@ -34,6 +34,9 @@ export class TimeService {
 
   projectActivity = new FormControl<string | null>(null);
   isSubmitted = new FormControl<boolean | null>(null);
+  invoiced = new FormControl<boolean | null>(null);
+  timeAccepted = new FormControl<boolean | null>(null);
+
   startDate = new FormControl<Date | null>(null);
   endDate = new FormControl<Date | null>(null);
 

@@ -242,8 +242,19 @@ namespace HQ.Server.Services
             request.StartDate = new DateOnly().GetPeriodStartDate(request.Period.Value);
             request.EndDate = new DateOnly().GetPeriodEndDate(request.Period.Value);
         }
+        if (request.Invoiced.HasValue)
+        {
+            var isInvoiceRequired = request.Invoiced.Value;
+            records = records.Where(t => isInvoiceRequired ? t.InvoiceId != null : t.InvoiceId == null);
+        }
 
-        if (request.StartDate.HasValue && !request.EndDate.HasValue)
+        if (request.TimeAccepted.HasValue)
+        {
+            var isAcceptedTimeRequired = request.TimeAccepted.Value;
+            records = records.Where(t => isAcceptedTimeRequired ? t.Status == TimeStatus.Accepted : t.Status != TimeStatus.Accepted);
+        }
+
+            if (request.StartDate.HasValue && !request.EndDate.HasValue)
         {
             records = records.Where(t => t.Date >= request.StartDate);
         }

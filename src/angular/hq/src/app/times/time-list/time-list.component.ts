@@ -130,6 +130,12 @@ projectRequest$.pipe(
   const period$ = this.timeListService.selectedPeriod.valueChanges.pipe(
     startWith(this.timeListService.selectedPeriod.value)
   );
+  const invoiced$ = this.timeListService.invoiced.valueChanges.pipe(
+    startWith(this.timeListService.invoiced.value)
+  );
+  const accepted$ = this.timeListService.timeAccepted.valueChanges.pipe(
+    startWith(this.timeListService.timeAccepted.value)
+  );
 
     const request$ = combineLatest({
       search: search$,
@@ -142,6 +148,8 @@ projectRequest$.pipe(
       startDate: startDate$,
       endDate: endDate$,
       period: period$,
+      invoiced: invoiced$,
+      TimeAccepted: accepted$,
       sortDirection: this.sortDirection$,
     });
 
