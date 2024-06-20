@@ -2,7 +2,7 @@ import { GetTimeRecordStaffV1 } from './../../models/times/get-time-v1';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, startWith, combineLatest, map, tap, debounceTime, switchMap, shareReplay, of } from 'rxjs';
+import { Observable, BehaviorSubject, startWith, combineLatest, map, tap, debounceTime, switchMap, shareReplay, of, firstValueFrom } from 'rxjs';
 import { GetTimeRecordV1, GetTimeRecordsV1, SortColumn } from '../../models/times/get-time-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
@@ -11,6 +11,8 @@ import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { TimeService } from '../services/TimeService';
 import { TimeSearchFilterComponent } from '../search-filter/time-search-filter/time-search-filter.component';
+import { saveAs } from "file-saver";
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'hq-time-list',
@@ -45,7 +47,8 @@ export class TimeListComponent implements OnInit {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    public timeListService: TimeService
+    public timeListService: TimeService,
+    private toastService: ToastService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Desc);
@@ -199,5 +202,18 @@ projectRequest$.pipe(
       this.sortDirection$.next(SortDirection.Asc);
     }
     this.timeListService.page.setValue(1);
+  }
+
+  async exportTime() {
+    const result = await firstValueFrom(this.hqService.exportTimesV1({  }));
+    if(result.file === null)
+    {
+      this.toastService.show('Error', 'Unable to download export.');
+      return;
+    }
+
+    console.log(result);
+
+    saveAs(result.file, result.fileName);
   }
 }

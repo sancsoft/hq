@@ -7,14 +7,14 @@ import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   GetClientRequestV1,
   GetClientResponseV1,
 } from '../models/clients/get-client-v1';
 import { AppSettingsService } from '../app-settings.service';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, map, Observable, switchMap, throwError } from 'rxjs';
 import {
   UpsertClientRequestV1,
   UpsertClientResponseV1,
@@ -425,6 +425,26 @@ export class HQService {
           request
         )
       )
+    );
+  }
+
+  exportTimesV1(request: Partial<{  }>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.request(
+          'post',
+          `${apiUrl}/v1/TimeEntries/ExportTimesV1`,
+          {
+            body: request,
+            responseType: 'blob',
+            observe: 'response'
+          }
+        )
+      ),
+      map(response => ({ 
+        file: response.body,
+        fileName: (response.headers.get('content-disposition') ?? '').split(';')[1].split('filename')[1].split('=')[1].trim()
+      }))
     );
   }
   }
