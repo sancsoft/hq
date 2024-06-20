@@ -19,7 +19,7 @@ namespace HQ.CLI.Commands.TimeEntries
         public Guid Id { get; set; }
 
         [CommandArgument(1, "<notes>")]
-        public string? Notes { get; set; }
+        public string Notes { get; set; } = null!;
     }
 
     internal class EditTimeEntryDescriptionCommand : AsyncCommand<EditTimeEntryDescriptionSettings>

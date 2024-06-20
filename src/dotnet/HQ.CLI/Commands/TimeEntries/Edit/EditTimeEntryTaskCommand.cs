@@ -11,7 +11,7 @@ namespace HQ.CLI.Commands.TimeEntries
         public Guid Id { get; set; }
 
         [CommandArgument(1, "<task>")]
-        public string? Task { get; set; }
+        public string Task { get; set; } = null!;
     }
 
     internal class EditTimeEntryTaskCommand : AsyncCommand<EditTimeEntryTaskSettings>
