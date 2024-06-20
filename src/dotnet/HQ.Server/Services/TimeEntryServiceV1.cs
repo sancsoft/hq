@@ -24,7 +24,7 @@ namespace HQ.Server.Services
         public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default) {
             var validationResult = Result.Merge(
                 Result.FailIf(string.IsNullOrEmpty(request.Notes), "Notes are required."),
-                 Result.FailIf(request.StaffId == null, "Staff is required."),
+                Result.FailIf(!request.Id.HasValue && request.StaffId == null, "Staff is required."),
                 Result.FailIf(request.BillableHours <= 0, "Billable Hours must be greater than 0.")
             );
 
@@ -32,11 +32,12 @@ namespace HQ.Server.Services
                 return validationResult;
             }
 
-            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id && t.StaffId == request.StaffId);
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
 
             if (timeEntry == null)
             {
                 timeEntry = new Time();
+                timeEntry.StaffId = request.StaffId!.Value;
                 _context.Times.Add(timeEntry);
             }
 
@@ -77,7 +78,6 @@ namespace HQ.Server.Services
                 timeEntry.ActivityId = request.ActivityId.Value;
             }
 
-            timeEntry.StaffId = request.StaffId.HasValue ? request.StaffId.Value : Guid.Empty;
             timeEntry.Date = request.Date;
             timeEntry.Notes = request.Notes;
             timeEntry.Hours = request.Hours ?? 0;

@@ -138,11 +138,7 @@ export class TimeEditComponent {
   }
     private async getTime() {
     try {
-      const staffId = await firstValueFrom(this.oidcSecurityService.userData$.pipe(
-      map(t => t.userData),
-      map(t => t.staff_id as string),
-    ));
-      const request = { "Id": this.timeId, staffId: staffId }
+      const request = { "Id": this.timeId }
       const response = await firstValueFrom(this.hqService.getTimesV1(request));
       const time = response.records[0]
       this.form.setValue({
