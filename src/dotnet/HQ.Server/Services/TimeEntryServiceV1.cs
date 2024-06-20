@@ -375,5 +375,24 @@ namespace HQ.Server.Services
 
      return new DeleteTimeV1.Response();
     }
+
+    public async Task<Result<ExportTimesV1.Response>> ExportTimesV1(ExportTimesV1.Request request, CancellationToken ct)
+    {
+        // TODO: Replace with CSVHelper
+        var stream = new MemoryStream();
+        var streamWriter = new StreamWriter(stream);
+        await streamWriter.WriteLineAsync("Hello,World");
+
+        await streamWriter.FlushAsync(ct);
+
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return new ExportTimesV1.Response()
+        {
+            File = stream,
+            FileName = "HQTimeExport.csv", // TODO: Format with date/time something like HQTimeExport_202406201612.csv
+            ContentType = "text/csv",
+        };
+    }
     }
 }
