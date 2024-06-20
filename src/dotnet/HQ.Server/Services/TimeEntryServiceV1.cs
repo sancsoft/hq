@@ -227,9 +227,9 @@ namespace HQ.Server.Services
                 t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
             );
         }
-        var total = await records.CountAsync(ct);
+            var total = await records.CountAsync(ct);
 
-        if (!string.IsNullOrEmpty(request.ChargeCode))
+            if (!string.IsNullOrEmpty(request.ChargeCode))
         {
             records = records.Where(t => t.ChargeCode.Code == request.ChargeCode);
         }
@@ -271,7 +271,7 @@ namespace HQ.Server.Services
         
         if (request.Id.HasValue)
         {
-            records = records.Where(t => t.Id == request.Id.Value && t.StaffId == request.StaffId);
+            records = records.Where(t => t.Id == request.Id.Value);
         }
         if (request.StaffId.HasValue)
         {
@@ -293,6 +293,7 @@ namespace HQ.Server.Services
         {
             records = records.Where(t => t.Date == request.Date);
         }
+
         
         
 

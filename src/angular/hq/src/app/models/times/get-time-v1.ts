@@ -3,6 +3,7 @@ import { SortDirection } from '../common/sort-direction';
 import { TimeStatus } from '../common/time-status';
 
 export interface GetTimeRequestV1 {
+  Id?: string | null;
   search?: string | null;
   sortBy: SortColumn;
   sortDirection: SortDirection;
@@ -30,16 +31,17 @@ export interface GetTimeRecordV1 {
   status: TimeStatus;
   billableHours: number;
   hours: number;
-  date: string;
+  date: Date;
   chargeCode: string;
   staffName: string | null;
   clientName: string | null
   projectName: string | null;
   rejectionNotes: string | null;
-  task?: string | null;
+  task: string | null;
   projectId: string;
+  clientId: string;
   activityName?: string | null;
-  activityId?: string | null;
+  activityId: string | null;
   description?: string | undefined;
   invoiceId?: string | null;
   invoiceNumber?: string | null;

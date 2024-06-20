@@ -90,6 +90,7 @@ import { UpsertChargeCodesRequestV1, UpsertChargeCodesResponseV1 } from '../mode
 import { GetProjectActivitiesResponseV1, GetProjectActivityRequestV1 } from '../models/PSR/get-project-activity-v1';
 import { GetTimeRecordsV1, GetTimeRequestV1 } from '../models/times/get-time-v1';
 import { GetClientInvoiceSummaryV1Request, GetClientInvoiceSummaryV1Response } from '../models/clients/get-client-invoice-summary-v1';
+import { updateTimeRequestV1, UpdateTimeResponseV1 } from '../models/times/update-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -396,6 +397,23 @@ export class HQService {
           `${apiUrl}/v1/TimeEntries/GetTimesV1`,
           request)
       )
+    );
+  }
+    upsertTimeV1(request: Partial<updateTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdateTimeResponseV1>(
+          `${apiUrl}/v1/TimeEntries/UpsertTimeV1`,
+          request
+        )
+      ),
+      catchError((err: HttpErrorResponse) => {
+        if (err.status == 400) {
+          return throwError(() => new APIError(err.error));
+        }
+
+        throw err;
+      })
     );
   }
 

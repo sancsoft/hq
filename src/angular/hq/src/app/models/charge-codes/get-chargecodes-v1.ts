@@ -44,6 +44,8 @@ export interface GetChargeCodeRecordV1 {
   description?: string;
   quoteId?: string;
   projectId?: string;
+  clientId?: string;
+  clientName?: string;
   serviceAgreementId?: string;
 }
 

@@ -1,11 +1,10 @@
 export interface updateTimeRequestV1 {
-  projectStatusReportId: string;
-  timeId: string;
-  billableHours: number;
+  id: string;
   activityId?: string|null;
   task?: string|null;
   notes: string;
-  chargeCodeId: string;
+  hours: number;
+  chargeCode: string;
 }
 
 export interface UpdateTimeResponseV1 {
