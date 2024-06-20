@@ -12,11 +12,13 @@ import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { QuoteStatus } from '../../models/common/quote-status';
+import { HQRole } from '../../enums/hqrole';
+import { InRolePipe } from '../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-services-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, PaginatorComponent, ReactiveFormsModule, SortIconComponent, ClientDetailsSearchFilterComponent],
+  imports: [RouterLink, CommonModule, PaginatorComponent, ReactiveFormsModule, SortIconComponent, ClientDetailsSearchFilterComponent, InRolePipe],
   templateUrl: './services-list.component.html'
 })
 export class ServicesListComponent {
@@ -36,7 +38,7 @@ export class ServicesListComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
-
+  HQRole = HQRole;
 
   constructor(
     private hqService: HQService,

@@ -19,7 +19,7 @@ export const routes: Routes = [
   {
     path: 'chargecodes',
     title: 'Charge Codes',
-    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Administrator)],
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
       import('.//charge-code/charge-code.component').then(
         (m) => m.ChargeCodeComponent
@@ -28,7 +28,7 @@ export const routes: Routes = [
         {
           path: '',
           title: 'Charge Code List',
-          canActivate: [userRoleGuard(HQRole.Administrator)],
+          canActivate: [userRoleGuard(HQRole.Staff)],
           loadComponent: () =>
             import('./charge-code/charge-code-list/charge-code-list.component').then(
               (m) => m.ChargeCodeListComponent
@@ -356,14 +356,14 @@ export const routes: Routes = [
   {
     path: 'staff',
     title: 'Staff',
-    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Administrator)],
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
       import('./users/users.component').then((m) => m.UsersComponent),
     children: [
       {
         path: '',
         title: 'Staff List',
-        canActivate: [userRoleGuard(HQRole.Administrator)],
+        canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
           import('./staff/staff-list/staff-list.component').then(
             (m) => m.StaffListComponent

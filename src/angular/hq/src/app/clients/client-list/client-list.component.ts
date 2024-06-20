@@ -30,6 +30,8 @@ import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { SearchFilterClientListComponent } from '../SearchFilter/search-filter-client-list/search-filter-client-list.component';
+import { HQRole } from '../../enums/hqrole';
+import { InRolePipe } from '../../pipes/in-role.pipe';
 
 export interface ClientNameId {
   id: string;
@@ -45,13 +47,16 @@ export interface ClientNameId {
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    SearchFilterClientListComponent
+    SearchFilterClientListComponent,
+    InRolePipe
   ],
   templateUrl: './client-list.component.html',
 })
 
 export class ClientListComponent {
   @Output() selectedClient = new EventEmitter<GetClientRecordV1>();
+  
+  HQRole = HQRole;
 
 
 

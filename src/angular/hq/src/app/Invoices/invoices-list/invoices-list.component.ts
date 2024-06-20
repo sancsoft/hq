@@ -24,11 +24,13 @@ import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortDirection } from '../../models/common/sort-direction';
 import { GetInvoicesRecordV1 } from '../../models/Invoices/get-invoices-v1';
 import { HQService } from '../../services/hq.service';
+import { HQRole } from '../../enums/hqrole';
+import { InRolePipe } from '../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-client-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent],
+  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent, InRolePipe],
   templateUrl: './invoices-list.component.html',
 })
 export class InvoicesListComponent {
@@ -46,6 +48,7 @@ export class InvoicesListComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  HQRole = HQRole;
 
   constructor(
     private hqService: HQService,

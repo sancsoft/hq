@@ -24,6 +24,8 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
         colspan="2"
       >
+      @if([HQRole.Executive, HQRole.Administrator] | inRole | async)
+      {
         <button
           routerLink="/invoices/create"
           class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
@@ -31,6 +33,7 @@
           <i class="bi bi-plus"></i>
           Invoices
         </button>
+      }
       </th>
     </tr>
   </thead>

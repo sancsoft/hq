@@ -23,6 +23,8 @@ import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { PsrSearchFilterComponent } from '../../psr/psr-search-filter/psr-search-filter.component';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { PsrService } from '../../psr/psr-service';
+import { HQRole } from '../../enums/hqrole';
+import { InRolePipe } from '../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-project-list',
@@ -34,6 +36,7 @@ import { PsrService } from '../../psr/psr-service';
     PaginatorComponent,
     SortIconComponent,
     PsrSearchFilterComponent,
+    InRolePipe
   ],
   templateUrl: './project-list.component.html',
 })
@@ -52,6 +55,7 @@ export class ProjectListComponent {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  HQRole = HQRole;
 
   constructor(
     private hqService: HQService,
