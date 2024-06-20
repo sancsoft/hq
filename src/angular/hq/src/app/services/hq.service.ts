@@ -88,6 +88,7 @@ import {
 import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff-member-v1';
 import { UpsertChargeCodesRequestV1, UpsertChargeCodesResponseV1 } from '../models/charge-codes/upsert-chargecodes';
 import { GetProjectActivitiesResponseV1, GetProjectActivityRequestV1 } from '../models/PSR/get-project-activity-v1';
+import { GetClientInvoiceSummaryV1Request, GetClientInvoiceSummaryV1Response } from '../models/clients/get-client-invoice-summary-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -381,6 +382,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetProjectActivitiesResponseV1>(
           `${apiUrl}/v1/Projects/GetProjectActivitiesV1`,
+          request
+        )
+      )
+    );
+  }
+
+  getClientInvoiceSummaryV1(request: Partial<GetClientInvoiceSummaryV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetClientInvoiceSummaryV1Response>(
+          `${apiUrl}/v1/Clients/GetClientInvoiceSummaryV1`,
           request
         )
       )

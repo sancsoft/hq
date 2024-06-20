@@ -988,7 +988,7 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.Invoice", b =>
                 {
                     b.HasOne("HQ.Server.Data.Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("Invoices")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1033,7 +1033,7 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.Project", b =>
                 {
                     b.HasOne("HQ.Server.Data.Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("Projects")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1090,7 +1090,7 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.Quote", b =>
                 {
                     b.HasOne("HQ.Server.Data.Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("Quotes")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1121,7 +1121,7 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.ServiceAgreement", b =>
                 {
                     b.HasOne("HQ.Server.Data.Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("ServiceAgreements")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1189,6 +1189,17 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.ChargeCode", b =>
                 {
                     b.Navigation("Times");
+                });
+
+            modelBuilder.Entity("HQ.Server.Data.Models.Client", b =>
+                {
+                    b.Navigation("Invoices");
+
+                    b.Navigation("Projects");
+
+                    b.Navigation("Quotes");
+
+                    b.Navigation("ServiceAgreements");
                 });
 
             modelBuilder.Entity("HQ.Server.Data.Models.Project", b =>

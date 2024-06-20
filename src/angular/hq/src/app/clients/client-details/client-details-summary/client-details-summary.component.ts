@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, catchError, map, shareReplay } from 'rxjs/operators';
 import { HQService } from '../../../services/hq.service';
@@ -7,41 +6,46 @@ import { GetClientRecordV1 } from '../../../models/clients/get-client-v1';
 import { APIError } from '../../../errors/apierror';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../../errors/error-display/error-display.component';
-
+import {
+  ActivatedRoute,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
+import { GetClientInvoiceSummaryV1Response } from '../../../models/clients/get-client-invoice-summary-v1';
 @Component({
   selector: 'hq-client-details-summary',
   standalone: true,
-  imports: [CommonModule, ErrorDisplayComponent],
+  imports: [CommonModule, ErrorDisplayComponent,RouterLink],
   templateUrl: './client-details-summary.component.html',
 })
 export class ClientDetailsSummaryComponent {
-  clientId?: string;
   client$: Observable<GetClientRecordV1 | null>;
+  clientInvoiceSummary$: Observable<GetClientInvoiceSummaryV1Response>;
   apiErrors: string[] = [];
 
   constructor(private hqService: HQService, private route: ActivatedRoute) {
-   
-    this.client$ = this.route.paramMap.pipe(
-      switchMap((params) => {
-        this.clientId = params.get('clientId') || undefined;
-        console.log(this.clientId);
-        if (this.clientId) {
-          const request = { id: this.clientId };
-          return this.hqService.getClientsV1(request).pipe(
-            map((response) => response.records[0] || null),
-            catchError((error) => {
-              if (error instanceof APIError) {
-                this.apiErrors = error.errors;
-              } else {
-                this.apiErrors = ['An unexpected error has occurred.'];
-              }
-              return of(null);
-            })
-          );
+    const clientId$ = this.route.paramMap.pipe(
+      map(t => t.get('clientId')!)
+    );
+
+    this.client$ = clientId$.pipe(
+      switchMap(clientId => this.hqService.getClientsV1({ id: clientId })),
+      map(t => t.records[0]),
+      catchError((error) => {
+        if (error instanceof APIError) {
+          this.apiErrors = error.errors;
         } else {
-          return of(null);
+          this.apiErrors = ['An unexpected error has occurred.'];
         }
+
+        return of(null);
       }),
+      shareReplay(1)
+    );
+
+    this.clientInvoiceSummary$ = clientId$.pipe(
+      switchMap(clientId => this.hqService.getClientInvoiceSummaryV1({ id: clientId })),
       shareReplay(1)
     );
   }
@@ -53,4 +57,5 @@ export class ClientDetailsSummaryComponent {
     billingEmail: '',
     hourlyRate: 0.0,
   };
+
 }
