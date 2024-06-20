@@ -2,18 +2,19 @@
     <hq-psr-details-header></hq-psr-details-header>
 
     <div class="px-5 pt-3">
-        <div class="flex flex-col xl:flex-row justify-between items-end gap-4">
-            <div class="mb-3">
+        <div class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row">
+            <div class="xl:pb-2">
                 <hq-psr-search-filter></hq-psr-search-filter>
             </div>
-            <div class="flex divide-x ml-auto">
+            <div class="flex divide-x ml-aut float-right">
                 <a routerLink="time" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Time</a>
                 <a routerLink="report" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">PM Report</a>
             </div>
-        </div>
+          </div>
     </div>
 
     <div class="overflow-auto flex-auto scrollbar-hide">
         <router-outlet></router-outlet>
     </div>
 </div>
+
