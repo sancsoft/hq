@@ -89,6 +89,7 @@ import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff
 import { UpsertChargeCodesRequestV1, UpsertChargeCodesResponseV1 } from '../models/charge-codes/upsert-chargecodes';
 import { GetProjectActivitiesResponseV1, GetProjectActivityRequestV1 } from '../models/PSR/get-project-activity-v1';
 import { GetClientInvoiceSummaryV1Request, GetClientInvoiceSummaryV1Response } from '../models/clients/get-client-invoice-summary-v1';
+import { GetDashboardTimeV1Request, GetDashboardTimeV1Response } from '../models/staff-dashboard/get-dashboard-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -398,7 +399,19 @@ export class HQService {
       )
     );
   }
+  
+  getDashboardTimeV1(request: Partial<GetDashboardTimeV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetDashboardTimeV1Response>(
+          `${apiUrl}/v1/TimeEntries/GetDashboardTimeV1`,
+          request
+        )
+      )
+    );
+  }
 }
+
 
 
 
