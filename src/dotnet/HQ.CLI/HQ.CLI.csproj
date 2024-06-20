@@ -9,6 +9,7 @@
 		<SelfContained>true</SelfContained>
 		<PublishReadyToRunComposite>true</PublishReadyToRunComposite>
 		<AssemblyName>hq</AssemblyName>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,12 +31,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="data\keys\" />
-	  <Folder Include="Settings\" />
+		<Folder Include="data\keys\" />
+		<Folder Include="Settings\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\HQ.SDK\HQ.SDK.csproj" />
+		<ProjectReference Include="..\HQ.SDK\HQ.SDK.csproj" />
 	</ItemGroup>
 
 </Project>
