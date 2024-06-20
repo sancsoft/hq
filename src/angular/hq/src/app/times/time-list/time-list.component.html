@@ -80,7 +80,7 @@
               {{ time.activityName ?? time.task }}
           </td>
           <td class="border-b border-black py-2">{{ time.billable ? 'Yes' : 'No' }}</td>
-          <td class="border-b border-black px-3 py-2">{{ time.hours }}</td>
+          <td class="border-b border-black px-3 py-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
           <td class="border-b border-black px-3 py-2">{{ time.description }}</td>
           <td class="border-b border-black py-2">{{ time.hoursApproved }}</td>
           <td class="border-b border-black py-2">{{ time.hoursApprovedBy }}</td>
