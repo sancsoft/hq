@@ -16,10 +16,10 @@
   @if(clientInvoiceSummary$ | async; as clientInvoiceSummary){
     <div class="flex justify-between">
       <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-        <div class="text-gray-50">Month to Date: {{ (clientInvoiceSummary.lastMonthToDate) ?? 'None'}} </div>
-        <div class="text-gray-50">Last Month to Date: {{ (clientInvoiceSummary.monthToDate) ?? 'None'}} </div>
-        <div class="text-gray-50">Year to Date: {{ (clientInvoiceSummary.yearToDate) ?? 'None'}}</div>
-        <div class="text-gray-50">All Time to Date: {{ (clientInvoiceSummary.allTimeToDate) ?? 'None'}}</div>
+        <div class="text-gray-50">Month to Date: {{ (clientInvoiceSummary.lastMonthToDate | currency) ?? 'None'}} </div>
+        <div class="text-gray-50">Last Month to Date: {{ (clientInvoiceSummary.monthToDate | currency) ?? 'None'}} </div>
+        <div class="text-gray-50">Year to Date: {{ (clientInvoiceSummary.yearToDate | currency) ?? 'None'}}</div>
+        <div class="text-gray-50">All Time to Date: {{ (clientInvoiceSummary.allTimeToDate | currency) ?? 'None'}}</div>
       </div>
     </div>
   }
