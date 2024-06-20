@@ -1,12 +1,15 @@
-﻿namespace HQ.Abstractions.Times;
+﻿using HQ.Abstractions.Enumerations;
+
+namespace HQ.Abstractions.Times;
 
 public class GetDashboardTimeV1
 {
     public class Request
     {
         public Guid StaffId { get; set; }
-        public DateOnly FromDate { get; set; }
-        public DateOnly ToDate { get; set; }
+        public Period Period { get; set; }
+        public DateOnly? FromDate { get; set; }
+        public DateOnly? ToDate { get; set; }
     }
 
     public class Response

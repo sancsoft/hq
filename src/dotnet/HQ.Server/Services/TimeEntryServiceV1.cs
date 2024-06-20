@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentResults;
+using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Times;
 using HQ.Server.Data;
@@ -340,9 +341,17 @@ namespace HQ.Server.Services
 
     public async Task<Result<GetDashboardTimeV1.Response>> GetDashboardTimeV1(GetDashboardTimeV1.Request request, CancellationToken ct = default)
     {
-        if(request.FromDate > request.ToDate)
+        if(request.Period == Period.Custom)
         {
-            return Result.Fail("Invalid date range.");
+            if(!request.FromDate.HasValue || !request.ToDate.HasValue || request.FromDate.Value > request.ToDate.Value)
+            {
+                return Result.Fail("Invalid date range.");
+            }
+        }
+        else
+        {
+            request.FromDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(request.Period);
+            request.ToDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(request.Period);
         }
 
         var times = await _context.Times
@@ -393,7 +402,7 @@ namespace HQ.Server.Services
         response.Clients = clients;
         response.Projects = projects;
 
-        DateOnly date = request.ToDate;
+        DateOnly date = request.ToDate.Value;
         do
         {
             var timeForDate =  new GetDashboardTimeV1.TimeForDate();
@@ -406,7 +415,7 @@ namespace HQ.Server.Services
             response.Dates.Add(timeForDate);
             date = date.AddDays(-1);
         }
-        while(date >= request.FromDate);
+        while(date >= request.FromDate.Value);
 
         return response;
     }
