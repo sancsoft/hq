@@ -301,23 +301,7 @@ namespace HQ.Server.Services
 
 
 
-        var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
-        {
-            { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
-            { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-            { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.Times.GetTimesV1.SortColumn.Billable, "Billable" },
-            { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
-            { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
-            { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" }
-
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-         records = request.SortDirection == SortDirection.Asc ?
-            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+  
             
         if (request.Skip.HasValue)
         {
@@ -355,7 +339,25 @@ namespace HQ.Server.Services
                 CreatedAt = t.CreatedAt,
             });
 
-        var response = new GetTimesV1.Response()
+            var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
+        {
+            { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
+            { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
+            { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
+            { Abstractions.Times.GetTimesV1.SortColumn.Billable, "Billable" },
+            { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
+            { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
+            { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" }
+
+        };
+
+            var sortProperty = sortMap[request.SortBy];
+
+            mapped = request.SortDirection == SortDirection.Asc ?
+               mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+               mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+            var response = new GetTimesV1.Response()
         {
             Records = await mapped.ToListAsync(ct),
             Total = total

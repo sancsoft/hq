@@ -20,10 +20,13 @@ export interface GetTimeRequestV1 {
 }
 
 export enum SortColumn {
-  Hours = 1,
-  Date = 2,
-  ChargeCode = 3,
-  Activity = 4
+    Hours = 1,
+    Date = 2,
+    ChargeCode = 3,
+    StaffName = 4,
+    ClientName = 5,
+    ProjectName = 6,
+    Billable = 7,
 }
 
 export interface GetTimeRecordV1 {
