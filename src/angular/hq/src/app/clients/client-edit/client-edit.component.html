@@ -1,97 +1,121 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
-      <div class="px-5">
-          <h1 class="font-rajdhani font-semibold text-3xl">Edit Client</h1>
+    <div class="px-5">
+      <h1 class="font-rajdhani font-semibold text-3xl">Edit Client</h1>
 
-          <div class="py-3">
-              <a href="/clients" class="text-gray-50 underline">Client List</a>
-          </div>
+      <div class="py-3">
+        <a routerLink="/clients" class="text-gray-50 underline">Client List</a>
       </div>
+    </div>
 
-      <div class="overflow-hidden flex-auto">
-          <div class="grid gap-0 relative">
-              <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
-                  <div class=" bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
-                      <div class="w-full flex flex-row border-b border-black justify-between pe-5">
-                          <div class="flex pt-[23px]">
-                              <a href="#" routerLink="projects" routerLinkActive="border-gray-100" class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a>
-                          </div>
-                          <div class="flex flex-column justify-center items-center">
-                              <button type="submit" class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
-                                  Save
-                              </button>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="grid flex-1">
-                      <div class="p-5 pr-0">
-                          <form class="grid gap-[20px]">
-
-                              @if(this.apiErrors) {
-                                  @for (error of this.apiErrors; track $index) {
-                                      <div class="text-red-700 text-xs leading-normal inline-block">{{ error }}</div>
-                                  }
-                              }
-
-                              <!-- row grid -->
-                              <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5">
-                                  <!-- column -->
-                                  <div>
-                                      <!-- text input -->
-                                      <input [class.border-red-700]="form.controls.name.errors && form.touched" type="text" name="fullname" id="fullname" class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Client Name" formControlName="name">
-                                      @if(form.controls.name.errors && form.touched) {
-                                          @if(form.controls.name.errors['required']) {
-                                              <span class="text-red-700 text-xs leading-normal inline-block">Name is required.</span>
-                                          }
-                                      }
-                                  </div>
-                                  <!-- column -->
-                                  <div>
-                                      <!-- text input -->
-                                      <input [class.border-red-700]="form.controls.officialName.errors && form.touched" type="text" name="canatednated" id="canatednated" class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Official Name" formControlName="officialName">
-                                  </div>
-                              </div>
-                              <!-- row grid -->
-                              <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
-                                  <!-- column -->
-                                  <div>
-                                      <!-- email input -->
-                                      <input [class.border-red-700]="form.controls.billingEmail.errors && form.touched" type="email" name="canatednated" id="canatednated" class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]" placeholder="Billing Email" formControlName="billingEmail">
-                                      @if(form.controls.billingEmail.errors && form.touched)
-                                      {
-                                          @if(form.controls.billingEmail.errors['email'])
-                                          {
-                                              <span class="text-red-700 text-xs leading-normal inline-block">Email address is invalid.</span>
-                                          }
-                                      }
-                                  </div>
-                                  <!-- column -->
-                                  <div>
-                                      <div class="flex items-center">
-                                          <span class="mr-[8px] font-semibold">Rate</span>
-                                          <!-- text input w/icon to left -->
-                                          <div class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]">
-                                              <span class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block">
-                                                  <i class="bi bi-currency-dollar text-[14px]"></i>
-                                              </span>
-                                              <input [class.border-red-700]="form.controls.hourlyRate.errors && form.touched" type="number" step="1" min="0" class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded" placeholder="00" formControlName="hourlyRate">
-                                          </div>
-                                          <span class="ml-[8px] font-semibold">p / hr</span>
-                                      </div>
-                                      @if(form.controls.hourlyRate.errors && form.touched)
-                                      {
-                                          @if(form.controls.hourlyRate.errors['min'])
-                                          {
-                                              <span class="text-red-700 text-xs leading-normal inline-block">Hourly rate must be positive.</span>
-                                          }
-                                      }
-                                  </div>
-                              </div>
-                          </form>
-                      </div>
-                  </div>
-              </main>
+    <div class="overflow-hidden flex-auto">
+      <div class="grid gap-0 relative">
+        <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
+          <div class=" bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
+            <div class="w-full flex flex-row border-b border-black justify-between pe-5">
+              <div class="flex pt-[23px]">
+                <a href="#" routerLink="projects" routerLinkActive="border-gray-100"
+                  class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a>
+              </div>
+              <div class="flex flex-column justify-center items-center">
+                <button type="submit"
+                  class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
+                  Save
+                </button>
+              </div>
+            </div>
           </div>
+          <div class="grid flex-1">
+            <div class="p-5 pr-0">
+              <form class="grid gap-[20px]">
+
+                @if(this.apiErrors) {
+                @for (error of this.apiErrors; track $index) {
+                <div class="text-red-700 text-xs leading-normal inline-block">{{ error }}</div>
+                }
+                }
+
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5">
+                  <!-- column -->
+                  <div>
+                    <label for="fullname" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Client
+                      Name</label>
+                    <!-- text input -->
+                    <input [class.border-red-700]="form.controls.name.errors && form.touched" type="text" id="fullname"
+                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+                      placeholder="Client Name" formControlName="name">
+                    @if(form.controls.name.errors && form.touched) {
+                    @if(form.controls.name.errors['required']) {
+                    <span class="text-red-700 text-xs leading-normal inline-block">Name is
+                      required.</span>
+                    }
+                    }
+                  </div>
+                  <!-- column -->
+                  <div>
+                    <!-- text input -->
+                    <label for="canatednated"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Official Name</label>
+                    <input [class.border-red-700]="form.controls.officialName.errors && form.touched" type="text"
+                      name="canatednated" id="canatednated"
+                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+                      placeholder="Official Name" formControlName="officialName">
+                  </div>
+                </div>
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
+                  <!-- column -->
+                  <div>
+                    <!-- email input -->
+                    <label for="email" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Billing Email</label>
+                    <input [class.border-red-700]="form.controls.billingEmail.errors && form.touched" type="email"
+                      name="canatednated" id="email"
+                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+                      placeholder="Billing Email" formControlName="billingEmail">
+                    @if(form.controls.billingEmail.errors && form.touched)
+                    {
+                    @if(form.controls.billingEmail.errors['email'])
+                    {
+                    <span class="text-red-700 text-xs leading-normal inline-block">Email address is
+                      invalid.</span>
+                    }
+                    }
+                  </div>
+                  <!-- column -->
+                  <div>
+                    <label for="hourlyRate"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Rate</label>
+                    <div class="flex items-center">
+                      <!-- text input w/icon to left -->
+                      <div
+                        class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]">
+                        <span
+                          class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block">
+                          <i class="bi bi-currency-dollar text-[14px]"></i>
+                        </span>
+                        <input [class.border-red-700]="form.controls.hourlyRate.errors && form.touched" type="number"
+                          step="1" min="0" id="hourlyRate"
+                          class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded"
+                          placeholder="00" formControlName="hourlyRate">
+                      </div>
+                      <span class="ml-[8px] font-semibold">p / hr</span>
+                    </div>
+                    @if(form.controls.hourlyRate.errors && form.touched)
+                    {
+                    @if(form.controls.hourlyRate.errors['min'])
+                    {
+                    <span class="text-red-700 text-xs leading-normal inline-block">Hourly rate must
+                      be positive.</span>
+                    }
+                    }
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </main>
       </div>
+    </div>
   </div>
 </form>

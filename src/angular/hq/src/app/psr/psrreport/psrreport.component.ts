@@ -35,11 +35,14 @@ import { MarkdownModule } from 'ngx-markdown';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 import { ButtonState } from '../../enums/ButtonState';
 import { ModalService } from '../../services/modal.service';
+import { HQRole } from '../../enums/hqrole';
+import { InRolePipe } from '../../pipes/in-role.pipe';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
   selector: 'hq-psrreport',
   standalone: true,
-  imports: [FormsModule, CommonModule, MonacoEditorModule, HQMarkdownComponent],
+  imports: [FormsModule, CommonModule, MonacoEditorModule, HQMarkdownComponent, InRolePipe],
   templateUrl: './psrreport.component.html',
   encapsulation: ViewEncapsulation.None,
 })
@@ -56,6 +59,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
   submitButtonState: ButtonState = ButtonState.Enabled;
   ButtonState = ButtonState;
+  HQRole = HQRole;
 
 
 
@@ -79,7 +83,8 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private psrService: PsrService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private oidcSecurityService: OidcSecurityService
   ) {
     const psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId'])
@@ -90,21 +95,36 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       report: this.report$,
     });
 
-
     const psr$ = psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
       map((t) => t.records[0])
     );
+
+    const canManageProjectStatusReport$ = combineLatest({
+      userData: oidcSecurityService.userData$.pipe(map(t => t.userData)),
+      psr: psr$
+    }).pipe(
+      map(t => t.userData.roles && Array.isArray(t.userData.roles) && (
+        t.userData.roles.includes(HQRole.Administrator) ||
+        t.userData.roles.includes(HQRole.Executive) ||
+        t.userData.roles.includes(HQRole.Partner) ||
+        (t.userData.roles.includes(HQRole.Manager) && t.psr.projectManagerId == t.userData.staff_id)
+      )),
+      map(t => !!t)
+    );
+    
     // Editor options
-    this.editorOptions$ = psr$.pipe(
-      map((psr) => {
+    this.editorOptions$ = canManageProjectStatusReport$.pipe(
+      map((canManageProjectStatusReport) => {
         return {
           theme: 'vs-dark',
           language: 'markdown',
-          automaticLayout: true
+          automaticLayout: true,
+          readOnly: !canManageProjectStatusReport, 
+          domReadOnly: !canManageProjectStatusReport
         };
       }),
-      startWith({ theme: 'vs-dark', language: 'markdown' })
+      startWith({ theme: 'vs-dark', language: 'markdown', readOnly: true, domReadOnly: true })
     );
 
     psr$.subscribe((psrResponse) => {

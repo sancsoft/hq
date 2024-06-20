@@ -4,26 +4,9 @@
   <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
 
-<div class="px-5 pt-4 mb-[8px]">
-  <div class="flex flex-col lg:flex-row justify-between items-start">
-    <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-      <!-- search bar -->
-      <div
-        class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[395px]"
-      >
-        <span
-          class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100"
-        >
-          <i class="bi bi-search text-[14px]"></i>
-        </span>
-        <input
-          type="text"
-          class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
-          [formControl]="search"
-        />
-      </div>
-    </div>
-  </div>
+<div class="px-5  mb-[8px]">
+<hq-search-filter-client-list/>
+
 </div>
 
 <table class="min-w-full border-spacing-0 border-separate">
@@ -83,13 +66,16 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
         colspan="2"
       >
-        <button
-          routerLink="/clients/create"
-          class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
-        >
-          <i class="bi bi-plus"></i>
-          Client
-        </button>
+        @if([HQRole.Executive, HQRole.Administrator] | inRole | async)
+        {
+          <button
+            routerLink="/clients/create"
+            class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+          >
+            <i class="bi bi-plus"></i>
+            Client
+          </button>
+        }
       </th>
     </tr>
   </thead>
@@ -115,11 +101,12 @@
       </td>
       <td class="border-b border-black py-2 text-right pr-5">
           <div class="text-nowrap divide-x divide-teal-200">
-            <a
-          [routerLink]="['edit', client.id]"
-          class="text-teal-200 hover:text-teal-300 pr-3"
-          >EDIT</a
-        >
+            @if([HQRole.Executive, HQRole.Administrator] | inRole | async)
+            {
+              <a [routerLink]="['edit', client.id]"
+              class="text-teal-200 hover:text-teal-300 pr-3"
+              >EDIT</a>
+            }
          <a [routerLink]="[client.id]" class="text-teal-200 hover:text-teal-300 pl-3"
           >VIEW</a
         >
@@ -138,7 +125,7 @@
   <div>
     <select
       class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="itemsPerPage"
+      [formControl]="ClientListService.itemsPerPage"
     >
       <option [ngValue]="10">10</option>
       <option [ngValue]="20">20</option>
@@ -150,8 +137,8 @@
   </div>
   <hq-paginator
     [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="itemsPerPage.value"
-    [currentPage]="page.value"
+    [pageSize]="ClientListService.itemsPerPage.value"
+    [currentPage]="ClientListService.page.value"
     (onPage)="goToPage($event)"
   ></hq-paginator>
   <div class="flex justify-end text-xs">

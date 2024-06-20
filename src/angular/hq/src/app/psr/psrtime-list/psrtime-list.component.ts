@@ -51,6 +51,9 @@ import { ButtonState } from '../../enums/ButtonState';
 import { ModalService } from '../../services/modal.service';
 import { GetProjectActivityRecordV1 } from '../../models/PSR/get-project-activity-v1';
 import { ToastService } from '../../services/toast.service';
+import { InRolePipe } from '../../pipes/in-role.pipe';
+import { HQRole } from '../../enums/hqrole';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -66,6 +69,7 @@ export interface ChargeCodeViewModel {
     SortIconComponent,
     PsrSearchFilterComponent,
     FormsModule,
+    InRolePipe
   ],
   templateUrl: './psrtime-list.component.html',
 })
@@ -84,6 +88,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   timeIds$: Observable<string[]>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
+  canManageProjectStatusReport$: Observable<boolean>;
 
   selectedTimes$ = new BehaviorSubject<string[]>([]);
   lastSelectedTime$ = new BehaviorSubject<string | null>(null);
@@ -92,6 +97,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   timeStatus = TimeStatus;
+  HQRole = HQRole;
 
   acceptButtonState = ButtonState.Enabled;
   acceptAllButtonState = ButtonState.Enabled;
@@ -117,7 +123,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     private hqSnackBarService: HQSnackBarService,
     private hqConfirmationModalService: HQConfirmationModalService,
     private modalService: ModalService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private oidcSecurityService: OidcSecurityService
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -174,6 +181,20 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     const psr$ = psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
       map((t) => t.records[0])
+    );
+
+    this.canManageProjectStatusReport$ = combineLatest({
+      userData: oidcSecurityService.userData$.pipe(map(t => t.userData)),
+      psr: psr$
+    }).pipe(
+      map(t => t.userData.roles && Array.isArray(t.userData.roles) && (
+        t.userData.roles.includes(HQRole.Administrator) ||
+        t.userData.roles.includes(HQRole.Executive) ||
+        t.userData.roles.includes(HQRole.Partner) ||
+        (t.userData.roles.includes(HQRole.Manager) && t.psr.projectManagerId == t.userData.staff_id)
+      )),
+      map(t => !!t),
+      shareReplay(1)
     );
 
     const clientId$ = psr$.pipe(map((t) => t.clientId));
@@ -249,6 +270,11 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   }
 
   async toggleTime(timeId: string) {
+    if(!await firstValueFrom(this.canManageProjectStatusReport$))
+    {
+      return;
+    }
+
     let selected = [...(await firstValueFrom(this.selectedTimes$))];
     let shift = await firstValueFrom(this.shiftKey$);
 

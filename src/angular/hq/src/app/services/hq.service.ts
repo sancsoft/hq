@@ -89,6 +89,7 @@ import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff
 import { UpsertChargeCodesRequestV1, UpsertChargeCodesResponseV1 } from '../models/charge-codes/upsert-chargecodes';
 import { GetProjectActivitiesResponseV1, GetProjectActivityRequestV1 } from '../models/PSR/get-project-activity-v1';
 import { GetTimeRecordsV1, GetTimeRequestV1 } from '../models/times/get-time-v1';
+import { GetClientInvoiceSummaryV1Request, GetClientInvoiceSummaryV1Response } from '../models/clients/get-client-invoice-summary-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -393,13 +394,21 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetTimeRecordsV1>(
           `${apiUrl}/v1/TimeEntries/GetTimesV1`,
+          request)
+      )
+    );
+  }
+
+  getClientInvoiceSummaryV1(request: Partial<GetClientInvoiceSummaryV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetClientInvoiceSummaryV1Response>(
+          `${apiUrl}/v1/Clients/GetClientInvoiceSummaryV1`,
           request
         )
       )
     );
   }
-}
+  }
 
 
-
-// UpdateProjectStatusReportTimeV1

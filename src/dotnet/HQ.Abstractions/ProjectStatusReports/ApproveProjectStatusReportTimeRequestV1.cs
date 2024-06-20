@@ -6,6 +6,7 @@ public class ApproveProjectStatusReportTimeRequestV1
     {
         public Guid ProjectStatusReportId { get; set; }
         public List<Guid> TimeIds { get; set; } = new List<Guid>();
+        public Guid? AcceptedById { get; set; }
     }
 
     public class Response

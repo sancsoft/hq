@@ -419,6 +419,8 @@ public class ProjectStatusReportServiceV1
             }
 
             time.Status = TimeStatus.Accepted;
+            time.AcceptedAt = DateTime.UtcNow;
+            time.AcceptedById = request.AcceptedById;
 
             // If the approved hours haven't been modified and we are approving, use the time hours
             if (!time.HoursApproved.HasValue)
@@ -452,6 +454,8 @@ public class ProjectStatusReportServiceV1
 
         time.Status = TimeStatus.Rejected;
         time.RejectionNotes = request.Notes;
+        time.RejectedAt = DateTime.UtcNow;
+        time.RejectedById = request.RejectedById;
 
         await _context.SaveChangesAsync(ct);
 

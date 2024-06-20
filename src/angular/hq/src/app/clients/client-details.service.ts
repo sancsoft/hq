@@ -26,11 +26,11 @@ export class ClientDetailsService {
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
   showCurrentOnly$ = new BehaviorSubject<boolean>(true);
 
-  constructor() {}
+  constructor() { }
 
   resetFilters() {
     this.search.setValue('');
-    this.projectStatus.setValue(ProjectStatus.InProduction);
+    this.projectStatus.setValue(ProjectStatus.Unknown);
     this.currentOnly.setValue(true);
   }
 
@@ -41,7 +41,6 @@ export class ClientDetailsService {
   hideProjectStatus() {
     this.showProjectStatus$.next(false);
   }
-
   showCurrentOnly() {
     this.showCurrentOnly$.next(true);
   }

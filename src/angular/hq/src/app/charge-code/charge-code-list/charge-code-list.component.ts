@@ -14,6 +14,8 @@ import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { PsrSearchFilterComponent } from '../../psr/psr-search-filter/psr-search-filter.component';
 import { ChargeCodeSearchFilterComponent } from '../SearchFilter/charge-code-search-filter.component';
+import { HQRole } from '../../enums/hqrole';
+import { InRolePipe } from '../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-charge-code-list',
@@ -25,6 +27,7 @@ import { ChargeCodeSearchFilterComponent } from '../SearchFilter/charge-code-sea
     PaginatorComponent,
     SortIconComponent,
     ChargeCodeSearchFilterComponent,
+    InRolePipe
   ],
   templateUrl: './charge-code-list.component.html'
 })
@@ -46,6 +49,7 @@ export class ChargeCodeListComponent implements OnInit {
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
+  HQRole = HQRole;
 
   constructor(
     private hqService: HQService,

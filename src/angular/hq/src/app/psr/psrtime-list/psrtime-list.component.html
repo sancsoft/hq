@@ -26,6 +26,8 @@
             <th scope="col" colspan="2" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2">
                 <div class="flex items-center justify-between">
                     Description
+                    @if(canManageProjectStatusReport$ | async)
+                    {
                     <div class="flex space-x-2 pr-5">
                         <!-- <button class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal" (click)="deselectAll()">
               Deselect All
@@ -39,12 +41,15 @@
               Accept
             </button>
                     </div>
+                    }
                 </div>
             </th>
         </tr>
     </thead>
     <tbody>
         @for (time of time$ | async; track time.id) {
+        @if(canManageProjectStatusReport$ | async)
+        {
           @switch (time.status) {
             @case (timeStatus.Pending) {
               <tr [ngClass]="{
@@ -202,6 +207,42 @@
               </tr>
             }
           }
+        } @else {
+          <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
+            @switch (time.status) {
+              @case (timeStatus.Pending) {
+                <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
+              }
+              @case (timeStatus.Accepted) {
+                <td class="border-b border-black py-2 bg-green-600 w-3"></td>
+              }
+              @case (timeStatus.Rejected) {
+                <td class="border-b border-black py-2 bg-red-600 w-3"></td>
+              }
+              @case (timeStatus.RejectedPendingReview) {
+                <td class="border-b border-black py-2 bg-yellow-450 w-3"></td>
+              }
+            }
+            <td class="border-b border-black py-2 pl-3 pr-2">
+              <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right"
+                [value]="(time.billableHours | number:'1.2-2')?.replace(',','')" disabled />
+            </td>
+            <td class="border-b border-black py-2 px-2 text-right">{{ time.hours | number:'1.2-2' }}</td>
+            <td class="border-b border-black py-2 px-2 whitespace-nowrap">{{ time.date }}</td>
+            <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
+            <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
+            <td class="border-b border-black py-2 px-2">{{ time.activityName || time.task || 'None' }}</td>
+            <td class="border-b border-black py-2 px-2 w-full">
+              <input class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2" [value]="time.description"
+                disabled />
+            </td>
+            <td class="border-b border-black py-2 pr-5">
+              <div class="flex flex-nowrap justify-between space-x-2 items-center">
+                <div></div>
+              </div>
+            </td>
+          </tr>
+        }
         }
   </tbody>
   <tbody class="hidden">
