@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using HQ.Server.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
-using HQ.Server.Data.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HQ.Server.Data.Configuration;
 

@@ -1,13 +1,17 @@
-﻿using CsvHelper;
+﻿using System.Formats.Asn1;
+using System.Globalization;
+
+using CsvHelper;
 using CsvHelper.Configuration;
+
 using FluentResults;
+
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Staff;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
-using System.Formats.Asn1;
-using System.Globalization;
 
 namespace HQ.Server.Services;
 

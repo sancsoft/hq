@@ -12,10 +12,9 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './client-details-search-filter.component.html',
 })
 export class ClientDetailsSearchFilterComponent {
-
-
-  constructor(private router: Router, private activatedRoute : ActivatedRoute, public clientDetailService: ClientDetailsService) {
-  }
-
-
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    public clientDetailService: ClientDetailsService,
+  ) {}
 }

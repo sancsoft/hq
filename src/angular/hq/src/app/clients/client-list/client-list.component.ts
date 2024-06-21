@@ -48,17 +48,14 @@ export interface ClientNameId {
     PaginatorComponent,
     SortIconComponent,
     SearchFilterClientListComponent,
-    InRolePipe
+    InRolePipe,
   ],
   templateUrl: './client-list.component.html',
 })
-
 export class ClientListComponent {
   @Output() selectedClient = new EventEmitter<GetClientRecordV1>();
-  
+
   HQRole = HQRole;
-
-
 
   records$: Observable<GetClientRecordV1[]>;
   skipDisplay$: Observable<number>;
@@ -71,23 +68,28 @@ export class ClientListComponent {
   sortDirection = SortDirection;
   private currentClient$ = new BehaviorSubject<GetClientRecordV1 | null>(null);
 
-  constructor(public hqService: HQService, public ClientListService: ClientListService) {
+  constructor(
+    public hqService: HQService,
+    public ClientListService: ClientListService,
+  ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Name);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const search$ = this.ClientListService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(this.ClientListService.search.value)
+      startWith(this.ClientListService.search.value),
     );
 
     const itemsPerPage$ = this.ClientListService.itemsPerPage.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(this.ClientListService.itemsPerPage.value)
+      startWith(this.ClientListService.itemsPerPage.value),
     );
 
-    const page$ = this.ClientListService.page.valueChanges.pipe(startWith(this.ClientListService.page.value));
+    const page$ = this.ClientListService.page.valueChanges.pipe(
+      startWith(this.ClientListService.page.value),
+    );
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
-      map(([itemsPerPage, page]) => (page - 1) * itemsPerPage)
+      map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
     );
 
     const request$ = combineLatest({
@@ -101,7 +103,7 @@ export class ClientListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => hqService.getClientsV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.records$ = response$.pipe(map((t) => t.records));
@@ -116,8 +118,8 @@ export class ClientListComponent {
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
   }
 
@@ -137,7 +139,7 @@ export class ClientListComponent {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

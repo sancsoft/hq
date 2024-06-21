@@ -4,5 +4,4 @@ export interface RejectPSRTimeRequestV1 {
   notes?: string | null;
 }
 
-export interface RejectPSRTimeResponseV1 {
-}
+export interface RejectPSRTimeResponseV1 {}

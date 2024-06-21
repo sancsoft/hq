@@ -5,8 +5,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'hq-charge-code',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './charge-code.component.html'
+  templateUrl: './charge-code.component.html',
 })
-export class ChargeCodeComponent {
-
-}
+export class ChargeCodeComponent {}

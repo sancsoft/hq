@@ -2,8 +2,24 @@ import { GetTimeRecordStaffV1 } from './../../models/times/get-time-v1';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, startWith, combineLatest, map, tap, debounceTime, switchMap, shareReplay, of, firstValueFrom } from 'rxjs';
-import { GetTimeRecordV1, GetTimeRecordsV1, SortColumn } from '../../models/times/get-time-v1';
+import {
+  Observable,
+  BehaviorSubject,
+  startWith,
+  combineLatest,
+  map,
+  tap,
+  debounceTime,
+  switchMap,
+  shareReplay,
+  of,
+  firstValueFrom,
+} from 'rxjs';
+import {
+  GetTimeRecordV1,
+  GetTimeRecordsV1,
+  SortColumn,
+} from '../../models/times/get-time-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
@@ -11,7 +27,7 @@ import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { TimeService } from '../services/TimeService';
 import { TimeSearchFilterComponent } from '../search-filter/time-search-filter/time-search-filter.component';
-import { saveAs } from "file-saver";
+import { saveAs } from 'file-saver';
 import { ToastService } from '../../services/toast.service';
 
 @Component({
@@ -25,11 +41,9 @@ import { ToastService } from '../../services/toast.service';
     SortIconComponent,
     TimeSearchFilterComponent,
   ],
-  templateUrl: './time-list.component.html'
+  templateUrl: './time-list.component.html',
 })
-export class TimeListComponent implements OnInit {
-  ngOnInit(): void {
-  }
+export class TimeListComponent {
   apiErrors: string[] = [];
 
   skipDisplay$: Observable<number>;
@@ -41,8 +55,6 @@ export class TimeListComponent implements OnInit {
   timeRequest$ = new BehaviorSubject({});
   date$ = new BehaviorSubject<Date | null>(null);
 
-
-
   sortColumn = SortColumn;
   sortDirection = SortDirection;
 
@@ -50,78 +62,95 @@ export class TimeListComponent implements OnInit {
     private hqService: HQService,
     private route: ActivatedRoute,
     public timeListService: TimeService,
-    private toastService: ToastService
+    private toastService: ToastService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
-    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Desc);
+    this.sortDirection$ = new BehaviorSubject<SortDirection>(
+      SortDirection.Desc,
+    );
 
     const itemsPerPage$ = this.timeListService.itemsPerPage.valueChanges.pipe(
-      startWith(this.timeListService.itemsPerPage.value)
+      startWith(this.timeListService.itemsPerPage.value),
     );
-    const page$ = this.timeListService.page.valueChanges.pipe(startWith(this.timeListService.page.value));
+    const page$ = this.timeListService.page.valueChanges.pipe(
+      startWith(this.timeListService.page.value),
+    );
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
-      startWith(0)
+      startWith(0),
     );
     const search$ = timeListService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(timeListService.search.value)
+      startWith(timeListService.search.value),
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
     // Getting the staff members
-    this.hqService.getStaffMembersV1({}).pipe(map((members) => members.records), map((records) =>
-      records.map((record) => ({
-        id: record.id,
-        name: record.name,
-      }))
-    )).subscribe((staffMembers) => {
-      this.timeListService.staffMembers$.next(staffMembers);
-    });
+    this.hqService
+      .getStaffMembersV1({})
+      .pipe(
+        map((members) => members.records),
+        map((records) =>
+          records.map((record) => ({
+            id: record.id,
+            name: record.name,
+          })),
+        ),
+      )
+      .subscribe((staffMembers) => {
+        this.timeListService.staffMembers$.next(staffMembers);
+      });
     // Getting the Clients
-    this.hqService.getClientsV1({}).pipe(map((clients) => clients.records), map((records) =>
-      records.map((record) => ({
-        id: record.id,
-        name: record.name,
-      }))
-    )).subscribe((clients) => {
-      this.timeListService.clients$.next(clients);
-    });
+    this.hqService
+      .getClientsV1({})
+      .pipe(
+        map((clients) => clients.records),
+        map((records) =>
+          records.map((record) => ({
+            id: record.id,
+            name: record.name,
+          })),
+        ),
+      )
+      .subscribe((clients) => {
+        this.timeListService.clients$.next(clients);
+      });
     const clientId$ = this.timeListService.client.valueChanges.pipe(
-      tap(()=>{
+      tap(() => {
         this.timeListService.project.setValue(null);
       }),
-      startWith(this.timeListService.client.value)
-    )
+      startWith(this.timeListService.client.value),
+    );
 
+    // Assuming clientId$ is defined and is an observable
+    const projectRequest$ = combineLatest({
+      clientId: clientId$,
+    });
 
-// Assuming clientId$ is defined and is an observable
-const projectRequest$ = combineLatest({
-  clientId: clientId$
-});
-
-projectRequest$.pipe(
-  switchMap(projectRequest =>
-    this.hqService.getProjectsV1(projectRequest).pipe(
-      map((clients) => clients.records),
-      map((records) =>
-        records.map((record) => ({
-          id: record.id,
-          name: record.name,
-          chargeCode: record.chargeCode,
-        }))
+    projectRequest$
+      .pipe(
+        switchMap((projectRequest) =>
+          this.hqService.getProjectsV1(projectRequest).pipe(
+            map((clients) => clients.records),
+            map((records) =>
+              records.map((record) => ({
+                id: record.id,
+                name: record.name,
+                chargeCode: record.chargeCode,
+              })),
+            ),
+          ),
+        ),
       )
-    )
-  )
-).subscribe((projects) => {
-  this.timeListService.projects$.next(projects);
-});
+      .subscribe((projects) => {
+        this.timeListService.projects$.next(projects);
+      });
 
-  const staffMemberId$ = this.timeListService.staffMember.valueChanges.pipe(
-    startWith(this.timeListService.staffMember.value)
-  );
+    const staffMemberId$ = this.timeListService.staffMember.valueChanges.pipe(
+      startWith(this.timeListService.staffMember.value),
+    );
 
     const projectId$ = this.timeListService.project.valueChanges.pipe(
       startWith(this.timeListService.project.value),
@@ -176,14 +205,13 @@ projectRequest$.pipe(
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getTimesV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
-
 
     this.times$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
@@ -197,10 +225,9 @@ projectRequest$.pipe(
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
-
   }
 
   goToPage(page: number) {
@@ -212,7 +239,7 @@ projectRequest$.pipe(
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

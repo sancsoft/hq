@@ -1,110 +1,166 @@
 <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
-  @if(timeService.showSearch$ | async) {
+  @if (timeService.showSearch$ | async) {
     <!-- search bar -->
     <div class="relative flex flex-col items-stretch w-full max-w-[395px]">
-      <label for="search" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Search</label>
-      <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
-        <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
+      <label
+        for="search"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        >Search</label
+      >
+      <div
+        class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+      >
+        <span
+          class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100"
+        >
           <i class="bi bi-search text-[14px]"></i>
         </span>
-        <input type="text" [formControl]="timeService.search" class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="" />
+        <input
+          type="text"
+          [formControl]="timeService.search"
+          class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
+          name=""
+        />
       </div>
     </div>
   }
-  @if((timeService.staffMembers$ | async) && timeService.showStaffMembers$ | async) {
+  @if (
+    (timeService.staffMembers$ | async) && timeService.showStaffMembers$ | async
+  ) {
     <div class="relative flex flex-col w-full max-w-[220px]">
-      <label for="staffMember" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select Staff</label>
+      <label
+        for="staffMember"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        >Select Staff</label
+      >
       <div class="grid relative">
-        <select [formControl]="timeService.staffMember" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+        <select
+          [formControl]="timeService.staffMember"
+          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+        >
           <option [ngValue]="null">Select Staff</option>
-          @for (staffMember of timeService.staffMembers$ | async; track $index)
-          {
-          <option [value]="staffMember.id">
-            {{ staffMember.name }}
-          </option>
+          @for (
+            staffMember of timeService.staffMembers$ | async;
+            track $index
+          ) {
+            <option [value]="staffMember.id">
+              {{ staffMember.name }}
+            </option>
           }
         </select>
-        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+        <span
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+        >
           <i class="bi bi-arrow-down-short text-[24px]"></i>
         </span>
       </div>
     </div>
   }
-  @if((timeService.clients$ | async)) {
+  @if (timeService.clients$ | async) {
     <div class="relative flex flex-col w-full max-w-[220px]">
-      <label for="client" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select Client</label>
+      <label
+        for="client"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        >Select Client</label
+      >
       <div class="grid relative">
-        <select [formControl]="timeService.client" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+        <select
+          [formControl]="timeService.client"
+          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+        >
           <option [ngValue]="null">Select Client</option>
-          @for (client of timeService.clients$ | async; track $index)
-          {
-          <option [value]="client.id">
-            {{ client.name }}
-          </option>
+          @for (client of timeService.clients$ | async; track $index) {
+            <option [value]="client.id">
+              {{ client.name }}
+            </option>
           }
         </select>
-        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+        <span
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+        >
           <i class="bi bi-arrow-down-short text-[24px]"></i>
         </span>
       </div>
     </div>
   }
-  @if((timeService.projects$ | async)) {
+  @if (timeService.projects$ | async) {
     <div class="relative flex flex-col w-full max-w-[220px]">
-      <label for="project" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Select Project</label>
+      <label
+        for="project"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        >Select Project</label
+      >
       <div class="grid relative">
-        <select [formControl]="timeService.project" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+        <select
+          [formControl]="timeService.project"
+          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+        >
           <option [ngValue]="null">Select Project</option>
-          @for (project of timeService.projects$ | async; track $index)
-          {
-          <option [value]="project.id">
-            {{ project.name }} ({{ project.chargeCode }})
-          </option>
+          @for (project of timeService.projects$ | async; track $index) {
+            <option [value]="project.id">
+              {{ project.name }} ({{ project.chargeCode }})
+            </option>
           }
         </select>
-        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+        <span
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+        >
           <i class="bi bi-arrow-down-short text-[24px]"></i>
         </span>
       </div>
     </div>
   }
   <div class="relative flex flex-col w-full max-w-[220px]">
-    <label for="timeAccepted" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Time Accepted</label>
+    <label
+      for="timeAccepted"
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+      >Time Accepted</label
+    >
     <div class="grid relative">
-      <select [formControl]="timeService.timeAccepted" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+      <select
+        [formControl]="timeService.timeAccepted"
+        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+      >
         <option [ngValue]="null">All</option>
-        <option [ngValue]="true">
-          Yes
-        </option>
-        <option [ngValue]="false">
-          No
-        </option>
+        <option [ngValue]="true">Yes</option>
+        <option [ngValue]="false">No</option>
       </select>
-      <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+      <span
+        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+      >
         <i class="bi bi-arrow-down-short text-[24px]"></i>
       </span>
     </div>
   </div>
   <div class="relative flex flex-col w-full max-w-[220px]">
-    <label for="invoiced" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Invoiced</label>
+    <label
+      for="invoiced"
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+      >Invoiced</label
+    >
     <div class="grid relative">
-      <select [formControl]="timeService.invoiced" class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+      <select
+        [formControl]="timeService.invoiced"
+        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+      >
         <option [ngValue]="null">All</option>
-        <option [ngValue]="true">
-          Yes
-        </option>
-        <option [ngValue]="false">
-          No
-        </option>
+        <option [ngValue]="true">Yes</option>
+        <option [ngValue]="false">No</option>
       </select>
-      <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+      <span
+        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+      >
         <i class="bi bi-arrow-down-short text-[24px]"></i>
       </span>
     </div>
   </div>
-  @if(timeService.showStartDate$ | async) {
+  @if (timeService.showStartDate$ | async) {
     <div class="relative flex flex-col w-full max-w-[220px]">
-      <label for="startDate" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Start Date</label>
+      <label
+        for="startDate"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        >Start Date</label
+      >
       <div class="grid relative">
         <input
           [formControl]="timeService.startDate"
@@ -114,16 +170,18 @@
         <span
           class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
         >
-          <i
-            class="bi bi-arrow-down-short text-[24px] bg-blue-900"
-          ></i>
+          <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
         </span>
       </div>
     </div>
   }
-  @if(timeService.showEndDate$ | async) {
+  @if (timeService.showEndDate$ | async) {
     <div class="relative flex flex-col w-full max-w-[220px]">
-      <label for="endDate" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">End Date</label>
+      <label
+        for="endDate"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        >End Date</label
+      >
       <div class="grid relative">
         <input
           [formControl]="timeService.endDate"
@@ -133,17 +191,22 @@
         <span
           class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
         >
-          <i
-            class="bi bi-arrow-down-short text-[24px] bg-blue-900"
-          ></i>
+          <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
         </span>
       </div>
     </div>
   }
   <div class="relative flex flex-col w-full max-w-[220px]">
-    <label for="selectedPeriod" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Period</label>
+    <label
+      for="selectedPeriod"
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+      >Period</label
+    >
     <div class="grid relative">
-      <select [formControl]="timeService.selectedPeriod" class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+      <select
+        [formControl]="timeService.selectedPeriod"
+        class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+      >
         <option [ngValue]="null">All</option>
         <option [ngValue]="timeService.Period.Today">Today</option>
         <option [ngValue]="timeService.Period.Week">This Week</option>
@@ -151,7 +214,9 @@
         <option [ngValue]="timeService.Period.LastWeek">Last Week</option>
         <option [ngValue]="timeService.Period.LastMonth">Last Month</option>
       </select>
-      <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+      <span
+        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+      >
         <i class="bi bi-arrow-down-short text-[24px]"></i>
       </span>
     </div>

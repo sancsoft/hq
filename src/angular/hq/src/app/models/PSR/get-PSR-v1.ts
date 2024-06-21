@@ -39,7 +39,7 @@ export enum SortColumn {
   BookingPercentComplete = 19,
   SummaryHoursTotal = 20,
   SummaryHoursAvailable = 21,
-  SummaryPercentComplete = 22
+  SummaryPercentComplete = 22,
 }
 
 export interface GetPSRRecordV1 {

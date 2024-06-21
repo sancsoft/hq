@@ -19,7 +19,7 @@ export enum SortColumn {
   EndDate = 4,
   ChargeCode = 5,
   ClientName = 6,
-  Status = 7
+  Status = 7,
 }
 
 export interface GetProjectRecordV1 {
@@ -39,8 +39,8 @@ export interface GetProjectRecordV1 {
   startDate: Date;
   endDate: Date;
   status: ProjectStatus;
-  billingEmail: string,
-  officialName: string,
+  billingEmail: string;
+  officialName: string;
 }
 
 export interface GetProjectRecordsV1 {

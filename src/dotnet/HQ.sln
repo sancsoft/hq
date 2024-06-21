@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HQ.Tests", "HQ.Tests\HQ.Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0958CE69-ABD0-4301-A132-56FF6E22745D}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
@@ -16,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HQ.CLI", "HQ.CLI\HQ.CLI.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HQ.SDK", "HQ.SDK\HQ.SDK.csproj", "{8BE654C4-9AAC-499D-BDAC-33A99A1CC089}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HQ.Abstractions", "HQ.Abstractions\HQ.Abstractions.csproj", "{D0253812-BD5E-4764-8813-D73B083C72DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HQ.Abstractions", "HQ.Abstractions\HQ.Abstractions.csproj", "{D0253812-BD5E-4764-8813-D73B083C72DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

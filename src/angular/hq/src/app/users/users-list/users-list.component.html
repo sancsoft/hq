@@ -55,49 +55,49 @@
     </tr>
   </thead>
   <tbody>
-    @if((users$ | async)?.length == 0) {
-      <td colspan = "10">
-        <h1 class = "text-center py-4 font-bold">No matching records found</h1>
+    @if ((users$ | async)?.length === 0) {
+      <td colspan="10">
+        <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
     }
     @for (user of users$ | async; track $index) {
-    <tr class="even:bg-gray-850 odd:bg-black-alt">
-      <td class="border-b border-black py-2 pl-5">
-        {{ user.firstName ?? "None" }}
-      </td>
-      <td class="border-b border-black py-2 pl-5">
-        {{ user.lastName ?? "None" }}
-      </td>
-      <td class="border-b border-black py-2">
-        <a href="mailto:{{ user.email }}">{{ user.email }}</a>
-      </td>
-      <td class="border-b border-black py-2">
-        {{ user.enabled ? "Yes " : "No " }}
-      </td>
-      <td class="border-b border-black py-2">
-        {{ user.isAdministrator ? "Yes " : "No " }}
-      </td>
-      <td class="border-b border-black py-2">
-        {{ user.isExecutive ? "Yes " : "No " }}
-      </td>
-      <td class="border-b border-black py-2">
-        {{ user.isManager ? "Yes " : "No " }}
-      </td>
-      <td class="border-b border-black py-2">
-        {{ user.isPartner ? "Yes " : "No " }}
-      </td>
-      <td class="border-b border-black py-2">
-        {{ user.isStaff ? "Yes " : "No " }}
-      </td>
+      <tr class="even:bg-gray-850 odd:bg-black-alt">
+        <td class="border-b border-black py-2 pl-5">
+          {{ user.firstName ?? "None" }}
+        </td>
+        <td class="border-b border-black py-2 pl-5">
+          {{ user.lastName ?? "None" }}
+        </td>
+        <td class="border-b border-black py-2">
+          <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+        </td>
+        <td class="border-b border-black py-2">
+          {{ user.enabled ? "Yes " : "No " }}
+        </td>
+        <td class="border-b border-black py-2">
+          {{ user.isAdministrator ? "Yes " : "No " }}
+        </td>
+        <td class="border-b border-black py-2">
+          {{ user.isExecutive ? "Yes " : "No " }}
+        </td>
+        <td class="border-b border-black py-2">
+          {{ user.isManager ? "Yes " : "No " }}
+        </td>
+        <td class="border-b border-black py-2">
+          {{ user.isPartner ? "Yes " : "No " }}
+        </td>
+        <td class="border-b border-black py-2">
+          {{ user.isStaff ? "Yes " : "No " }}
+        </td>
 
-      <td class="border-b border-black py-2 text-right pr-5">
-        <a
-          [routerLink]="['edit', user.id]"
-          class="text-teal-200 hover:text-teal-300 cursor-pointer"
-          >EDIT</a
-        >
-      </td>
-    </tr>
+        <td class="border-b border-black py-2 text-right pr-5">
+          <a
+            [routerLink]="['edit', user.id]"
+            class="text-teal-200 hover:text-teal-300 cursor-pointer"
+            >EDIT</a
+          >
+        </td>
+      </tr>
     }
   </tbody>
 </table>
@@ -121,7 +121,7 @@
     [total]="(totalRecords$ | async) ?? 0"
     [pageSize]="itemsPerPage.value"
     [currentPage]="page.value"
-    (onPage)="goToPage($event)"
+    (page)="goToPage($event)"
   ></hq-paginator>
   <div class="flex justify-end text-xs">
     {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /

@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Asp.Versioning;
+
 using FluentResults.Extensions.AspNetCore;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Quotes;
 using HQ.API;
 using HQ.Server.Authorization;
 using HQ.Server.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

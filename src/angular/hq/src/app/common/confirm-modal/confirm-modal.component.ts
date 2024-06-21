@@ -6,8 +6,11 @@ import { ModalData } from '../../services/modal.service';
   selector: 'hq-confirm-modal',
   standalone: true,
   imports: [],
-  templateUrl: './confirm-modal.component.html'
+  templateUrl: './confirm-modal.component.html',
 })
 export class ConfirmModalComponent {
-  constructor(@Inject(DIALOG_DATA) public data: ModalData, public dialogRef: DialogRef<boolean>) {}
+  constructor(
+    @Inject(DIALOG_DATA) public data: ModalData,
+    public dialogRef: DialogRef<boolean>,
+  ) {}
 }

@@ -18,7 +18,7 @@ export enum ActivityName {
 })
 export class PsrService implements OnDestroy {
   ngOnDestroy(): void {
-    console.log("PSR SERVICE DESTROYED");
+    console.log('PSR SERVICE DESTROYED');
   }
   staffMembers$ = new BehaviorSubject<GetPSRTimeRecordStaffV1[]>([]);
   projectActivities$ = new BehaviorSubject<GetProjectActivityRecordV1[]>([]);
@@ -45,9 +45,6 @@ export class PsrService implements OnDestroy {
   showIsSubmitted$ = new BehaviorSubject<boolean>(true);
   showStartDate$ = new BehaviorSubject<boolean>(true);
   showEndDate$ = new BehaviorSubject<boolean>(true);
-
-
-
 
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);

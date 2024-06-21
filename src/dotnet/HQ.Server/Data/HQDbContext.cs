@@ -1,6 +1,8 @@
-﻿using HQ.Server.Data.Models;
+﻿using System.Reflection;
+
+using HQ.Server.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace HQ.Server.Data
 {

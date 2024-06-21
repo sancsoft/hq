@@ -35,12 +35,11 @@ import { HQRole } from '../../../enums/hqrole';
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    InRolePipe
+    InRolePipe,
   ],
   templateUrl: './client-project-list.component.html',
 })
-export class ClientProjectListComponent implements OnInit {
-  ngOnInit(): void {}
+export class ClientProjectListComponent {
   projects$: Observable<GetProjectRecordV1[]>;
   apiErrors: string[] = [];
   clientId?: string;
@@ -61,10 +60,10 @@ export class ClientProjectListComponent implements OnInit {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService
+    private clientDetailService: ClientDetailsService,
   ) {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      startWith(this.itemsPerPage.value)
+      startWith(this.itemsPerPage.value),
     );
 
     const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
@@ -74,11 +73,11 @@ export class ClientProjectListComponent implements OnInit {
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
-      startWith(0)
+      startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(clientDetailService.search.value)
+      startWith(clientDetailService.search.value),
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
@@ -95,13 +94,13 @@ export class ClientProjectListComponent implements OnInit {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getProjectsV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.projects$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
     // this.projects$.subscribe((records) => console.log(records));
 
@@ -113,8 +112,8 @@ export class ClientProjectListComponent implements OnInit {
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
 
     this.clientDetailService.resetFilters();
@@ -130,7 +129,7 @@ export class ClientProjectListComponent implements OnInit {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

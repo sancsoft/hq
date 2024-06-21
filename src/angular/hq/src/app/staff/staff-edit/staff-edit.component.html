@@ -10,16 +10,29 @@
 
     <div class="overflow-hidden flex-auto">
       <div class="grid gap-0 relative">
-        <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
-          <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
-            <div class="w-full flex flex-row border-b border-black justify-between pe-5">
+        <main
+          class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]"
+        >
+          <div
+            class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
+          >
+            <div
+              class="w-full flex flex-row border-b border-black justify-between pe-5"
+            >
               <div class="flex pt-[23px]">
-                <a href="#" routerLink="projects" routerLinkActive="border-gray-100"
-                  class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a>
+                <a
+                  href="#"
+                  routerLink="projects"
+                  routerLinkActive="border-gray-100"
+                  class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
+                  >Details</a
+                >
               </div>
               <div class="flex flex-column justify-center items-center">
-                <button type="submit"
-                  class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
+                <button
+                  type="submit"
+                  class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
+                >
                   Save
                 </button>
               </div>
@@ -28,109 +41,219 @@
           <div class="grid flex-1">
             <div class="p-5 pr-0">
               <div class="grid gap-[20px]">
-
                 <hq-error-display [errors]="apiErrors"></hq-error-display>
                 <!-- row grid -->
-                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5">
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"
+                >
                   <!-- column -->
                   <div>
                     <!-- text input -->
-                     <label for="name"class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4">Name</label>
-                    <input [class.border-red-700]="form.get('name')?.touched &&
-                    form.get('name')?.errors?.['required']" type="text" name="name" id="name"
+                    <label
+                      for="name"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"
+                      >Name</label
+                    >
+                    <input
+                      [class.border-red-700]="
+                        form.get('name')?.touched &&
+                        form.get('name')?.errors?.['required']
+                      "
+                      type="text"
+                      name="name"
+                      id="name"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Enter Name" formControlName="name" />
-                    @if(form.get('name')?.touched &&
-                    form.get('name')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block"> Name is required.</span>
+                      placeholder="Enter Name"
+                      formControlName="name"
+                    />
+                    @if (
+                      form.get("name")?.touched &&
+                      form.get("name")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                      >
+                        Name is required.</span
+                      >
                     }
                   </div>
                   <div>
                     <!-- text input -->
-                    <label for="firstName" class="font-open-sans text-nav-disabled text-xs font-bold uppercase ">First
-                      Name</label>
-                    <input [class.border-red-700]="form.get('firstName')?.touched &&
-                    form.get('firstName')?.errors?.['required']" type="text" name="firstName" id="firstName"
+                    <label
+                      for="firstName"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                      >First Name</label
+                    >
+                    <input
+                      [class.border-red-700]="
+                        form.get('firstName')?.touched &&
+                        form.get('firstName')?.errors?.['required']
+                      "
+                      type="text"
+                      name="firstName"
+                      id="firstName"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Enter First Name" formControlName="firstName" />
-                    @if(form.get('firstName')?.touched &&
-                    form.get('firstName')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">First Name is required.</span>
+                      placeholder="Enter First Name"
+                      formControlName="firstName"
+                    />
+                    @if (
+                      form.get("firstName")?.touched &&
+                      form.get("firstName")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >First Name is required.</span
+                      >
                     }
                   </div>
                   <!-- column -->
-                  <div><label for="lastName" class="font-open-sans text-nav-disabled text-xs font-bold uppercase ">Last
-                      Name</label>
+                  <div>
+                    <label
+                      for="lastName"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                      >Last Name</label
+                    >
                     <!-- text input -->
-                    <input [class.border-red-700]="form.get('lastName')?.touched &&
-                    form.get('lastName')?.errors?.['required']" type="text" name="lastName" id="lastName"
+                    <input
+                      [class.border-red-700]="
+                        form.get('lastName')?.touched &&
+                        form.get('lastName')?.errors?.['required']
+                      "
+                      type="text"
+                      name="lastName"
+                      id="lastName"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Enter last Name" formControlName="lastName" />
-                    @if(form.get('lastName')?.touched &&
-                    form.get('lastName')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">last Name is required.</span>
+                      placeholder="Enter last Name"
+                      formControlName="lastName"
+                    />
+                    @if (
+                      form.get("lastName")?.touched &&
+                      form.get("lastName")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >last Name is required.</span
+                      >
                     }
                   </div>
 
                   <!-- column -->
                   <div>
-                    <label for="email" class="font-open-sans text-nav-disabled text-xs font-bold uppercase ">Email
-                      Address</label>
+                    <label
+                      for="email"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                      >Email Address</label
+                    >
                     <!-- text input -->
-                    <input [class.border-red-700]="form.get('email')?.touched &&
-                    form.get('email')?.errors?.['required']" type="email" name="email" id="email"
+                    <input
+                      [class.border-red-700]="
+                        form.get('email')?.touched &&
+                        form.get('email')?.errors?.['required']
+                      "
+                      type="email"
+                      name="email"
+                      id="email"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Enter Email" formControlName="email" />
-                    @if(form.get('email')?.touched &&
-                    form.get('email')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">Email is required.</span>
+                      placeholder="Enter Email"
+                      formControlName="email"
+                    />
+                    @if (
+                      form.get("email")?.touched &&
+                      form.get("email")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >Email is required.</span
+                      >
                     }
                   </div>
                   <!-- column -->
                 </div>
                 <!-- row grid -->
-                <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
+                <div
+                  class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5"
+                >
                   <!-- column -->
                   <div>
                     <!-- Working Hours input -->
-                    <label for="workHours"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"> Working
-                      Hours</label>
-                    <input [class.border-red-700]="form.get('workHours')?.touched &&
-                form.get('workHours')?.errors?.['workHours']" type="number" name="workHours" id="workHours"
+                    <label
+                      for="workHours"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"
+                    >
+                      Working Hours</label
+                    >
+                    <input
+                      [class.border-red-700]="
+                        form.get('workHours')?.touched &&
+                        form.get('workHours')?.errors?.['workHours']
+                      "
+                      type="number"
+                      name="workHours"
+                      id="workHours"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Working Hours" formControlName="workHours" min="0" />
-                    @if(form.get('workHours')?.touched &&
-                    form.get('workHours')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">Woking Hours is required</span>
+                      placeholder="Working Hours"
+                      formControlName="workHours"
+                      min="0"
+                    />
+                    @if (
+                      form.get("workHours")?.touched &&
+                      form.get("workHours")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >Woking Hours is required</span
+                      >
                     }
                   </div>
                   <div>
                     <!-- Vacation Hours input -->
-                    <label for="vacationHours"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"> Vacation
-                      Hours</label>
+                    <label
+                      for="vacationHours"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"
+                    >
+                      Vacation Hours</label
+                    >
 
-                    <input [class.border-red-700]="form.get('vacationHours')?.touched &&
-                form.get('vacationHours')?.errors?.['vacationHours']" type="number" name="vacationHours"
+                    <input
+                      [class.border-red-700]="
+                        form.get('vacationHours')?.touched &&
+                        form.get('vacationHours')?.errors?.['vacationHours']
+                      "
+                      type="number"
+                      name="vacationHours"
                       id="vacationHours"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="vacation Hours" formControlName="vacationHours" min="0" />
-                    @if(form.get('vacationHours')?.touched &&
-                    form.get('vacationHours')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">Vacation Hours is required</span>
+                      placeholder="vacation Hours"
+                      formControlName="vacationHours"
+                      min="0"
+                    />
+                    @if (
+                      form.get("vacationHours")?.touched &&
+                      form.get("vacationHours")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >Vacation Hours is required</span
+                      >
                     }
                   </div>
                 </div>
                 <!-- row grid -->
-                <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5">
+                <div
+                  class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5"
+                >
                   <!-- column -->
                   <div>
-                    <label for="jurisdiciton"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4">Jurisdiction</label>
+                    <label
+                      for="jurisdiciton"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"
+                      >Jurisdiction</label
+                    >
                     <div class="grid relative w-full max-w-[220px]">
-                      <select formControlName="jurisdiciton"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
+                      <select
+                        formControlName="jurisdiciton"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+                      >
                         <option [ngValue]="Jurisdiction.USA" selected>
                           USA
                         </option>
@@ -139,43 +262,72 @@
                         </option>
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                     </div>
                   </div>
                   <div>
                     <!-- Start Date input -->
-                    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4">Start
-                      Date</label>
+                    <label
+                      for=""
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"
+                      >Start Date</label
+                    >
                     <div class="grid relative w-full max-w-[220px]">
-                      <input formControlName="startDate" type="date"
-                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase" />
+                      <input
+                        formControlName="startDate"
+                        type="date"
+                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+                      />
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                        <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
+                        <i
+                          class="bi bi-arrow-down-short text-[24px] bg-blue-900"
+                        ></i>
                       </span>
                     </div>
-                    @if(form.get('startDate')?.touched &&
-                    form.get('startDate')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">Start date is required</span>
+                    @if (
+                      form.get("startDate")?.touched &&
+                      form.get("startDate")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >Start date is required</span
+                      >
                     }
                   </div>
                   <div>
                     <!-- End Date input -->
-                    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4">End
-                      Date</label>
+                    <label
+                      for=""
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"
+                      >End Date</label
+                    >
                     <div class="grid relative w-full max-w-[220px]">
-                      <input formControlName="endDate" type="date"
-                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase" />
+                      <input
+                        formControlName="endDate"
+                        type="date"
+                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+                      />
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                        <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
+                        <i
+                          class="bi bi-arrow-down-short text-[24px] bg-blue-900"
+                        ></i>
                       </span>
                     </div>
-                    @if(form.get('endDate')?.touched &&
-                    form.get('endDate')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">End date is required</span>
+                    @if (
+                      form.get("endDate")?.touched &&
+                      form.get("endDate")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >End date is required</span
+                      >
                     }
                   </div>
                 </div>

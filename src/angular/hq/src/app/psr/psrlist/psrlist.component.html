@@ -1,21 +1,20 @@
 <div class="px-5">
-    <h1 class="font-rajdhani font-semibold text-3xl">PSR</h1>
+  <h1 class="font-rajdhani font-semibold text-3xl">PSR</h1>
 
-    <!-- <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
+  <!-- <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
         <div class="text-gray-50">$105.00</div>
         <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
         <div class="text-gray-50">Official Name - Probably longer than the name</div>
     </div> -->
-
 </div>
 
 <div class="px-5 pt-4 mb-[8px]">
-    <div class="flex flex-col lg:flex-row justify-between items-start">
-        <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-            <hq-psr-list-search-filter></hq-psr-list-search-filter>
+  <div class="flex flex-col lg:flex-row justify-between items-start">
+    <div class="flex items-center order-2 lg:order-1 gap-[20px]">
+      <hq-psr-list-search-filter></hq-psr-list-search-filter>
 
-            <!-- select dropdown -->
-            <!-- <div class="grid relative w-[220px]">
+      <!-- select dropdown -->
+      <!-- <div class="grid relative w-[220px]">
                 <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
                     <option>First Name, Last Name</option>
                     <option>First Name, Last Name</option>
@@ -24,118 +23,297 @@
                     <i class="bi bi-arrow-down-short text-[24px]"></i>
                 </span>
             </div> -->
-        </div>
     </div>
+  </div>
 </div>
 
 <table class="min-w-full border-spacing-0 border-separate table-fixed">
-    <thead>
-        <tr class="sticky top-0 text-left select-none">
-            <th width="100" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer" (click)="onSortClick(sortColumn.ChargeCode)">Code
-                <hq-sort-icon [column]="sortColumn.ChargeCode" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-            <th width="90" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.StartDate)">Start
-                <hq-sort-icon [column]="sortColumn.StartDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-            <th width="90" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.EndDate)">End
-                <hq-sort-icon [column]="sortColumn.EndDate" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-            <th width="150" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ClientName)">Client Name
-                <hq-sort-icon [column]="sortColumn.ClientName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-            <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectName)">Project Name
-                <hq-sort-icon [column]="sortColumn.ProjectName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-            <th width="100" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.ProjectManagerName)">PM
-                <hq-sort-icon [column]="sortColumn.ProjectManagerName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-            <th width="170" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right" (click)="onSortClick(sortColumn.ThisHours)">Hrs This
-                <hq-sort-icon [column]="sortColumn.ThisHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-            <th width="170" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right" (click)="onSortClick(sortColumn.SummaryHoursTotal)">Hrs Total
-                <hq-sort-icon [column]="sortColumn.SummaryHoursTotal" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-            <th width="170" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right pe-2" (click)="onSortClick(sortColumn.SummaryHoursAvailable)">Hrs Available
-                <hq-sort-icon [column]="sortColumn.SummaryHoursAvailable" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-            <th width="150" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">Status</th>
-            <th colspan="2" scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.SummaryPercentComplete)">Complete %
-                <hq-sort-icon [column]="sortColumn.SummaryPercentComplete" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
-            </th>
-        </tr>
-
-    </thead>
-    <tbody>
-      @if((projectStatusReports$ | async)?.length == 0) {
-        <td colspan = "13">
-          <h1 class = "text-center py-4 font-bold">No matching records found</h1>
+  <thead>
+    <tr class="sticky top-0 text-left select-none">
+      <th
+        width="100"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        (click)="onSortClick(sortColumn.ChargeCode)"
+      >
+        Code
+        <hq-sort-icon
+          [column]="sortColumn.ChargeCode"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="90"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.StartDate)"
+      >
+        Start
+        <hq-sort-icon
+          [column]="sortColumn.StartDate"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="90"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.EndDate)"
+      >
+        End
+        <hq-sort-icon
+          [column]="sortColumn.EndDate"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="150"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.ClientName)"
+      >
+        Client Name
+        <hq-sort-icon
+          [column]="sortColumn.ClientName"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.ProjectName)"
+      >
+        Project Name
+        <hq-sort-icon
+          [column]="sortColumn.ProjectName"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="100"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.ProjectManagerName)"
+      >
+        PM
+        <hq-sort-icon
+          [column]="sortColumn.ProjectManagerName"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="170"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right"
+        (click)="onSortClick(sortColumn.ThisHours)"
+      >
+        Hrs This
+        <hq-sort-icon
+          [column]="sortColumn.ThisHours"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="170"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right"
+        (click)="onSortClick(sortColumn.SummaryHoursTotal)"
+      >
+        Hrs Total
+        <hq-sort-icon
+          [column]="sortColumn.SummaryHoursTotal"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="170"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right pe-2"
+        (click)="onSortClick(sortColumn.SummaryHoursAvailable)"
+      >
+        Hrs Available
+        <hq-sort-icon
+          [column]="sortColumn.SummaryHoursAvailable"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="150"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3"
+      >
+        Status
+      </th>
+      <th
+        colspan="2"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.SummaryPercentComplete)"
+      >
+        Complete %
+        <hq-sort-icon
+          [column]="sortColumn.SummaryPercentComplete"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @if ((projectStatusReports$ | async)?.length === 0) {
+      <td colspan="13">
+        <h1 class="text-center py-4 font-bold">No matching records found</h1>
+      </td>
+    }
+    @for ((report of projectStatusReports$ | async); track report.id) {
+      <tr
+        [class]="
+          report.isLate ? 'bg-red-850' : 'even:bg-gray-850 odd:bg-black-alt'
+        "
+      >
+        <td class="border-b border-black py-2 pl-5">{{ report.chargeCode }}</td>
+        <td class="border-b border-black py-2">{{ report.startDate }}</td>
+        <td class="border-b border-black py-2">{{ report.endDate }}</td>
+        <td class="border-b border-black py-2">{{ report.clientName }}</td>
+        <td class="border-b border-black py-2">{{ report.projectName }}</td>
+        <td class="border-b border-black py-2">
+          {{ report.projectManagerName }}
         </td>
-      }
-        @for((report of projectStatusReports$ | async); track report.id) {
-        <tr [class]="report.isLate ? 'bg-red-850' : 'even:bg-gray-850 odd:bg-black-alt'">
-            <td class="border-b border-black py-2 pl-5">{{report.chargeCode}}</td>
-            <td class="border-b border-black py-2">{{report.startDate}}</td>
-            <td class="border-b border-black py-2">{{report.endDate}}</td>
-            <td class="border-b border-black py-2">{{report.clientName}}</td>
-            <td class="border-b border-black py-2">{{report.projectName}}</td>
-            <td class="border-b border-black py-2">{{report.projectManagerName}}</td>
-            <td class="border-b border-black py-2 text-right">{{report.thisHours | number: '0.2-2'}}</td>
-            <td class="border-b border-black py-2 text-right">{{report.summaryHoursTotal | number: '0.2-2'}}</td>
-            <td class="border-b border-black py-2 text-right pe-2">{{report.summaryHoursAvailable | number: '0.2-2'}}</td>
-            <td class="border-b border-black py-2">{{getProjectSatusString(report.status)}}</td>
-            <td width="200" class="border-b border-black py-2 pe-2">
-                @if(report.status == ProjectStatus.Ongoing)
-                {
-                    @if(report.bookingPercentComplete && report.bookingPercentComplete > 1) {
-                    <div class="w-full bg-gray-450 border border-red-950 h-[10px]" title="{{ report.bookingStartDate }} - {{ report.bookingEndDate }}">
-                        <div class="bg-red-950 h-[8px]" [style.width.%]="Math.min(report.bookingPercentComplete - 1, 1) * 100"></div>
-                    </div>
-                    } @else {
-                    <div class="w-full bg-gray-500 border border-white h-[10px]" title="{{ report.bookingStartDate }} - {{ report.bookingEndDate }}">
-                        <div class="bg-white h-[8px]" [style.width.%]="(report.bookingPercentComplete ?? 0) * 100"></div>
-                    </div>
-                    }
-                    <div class="flex justify-between gap-2 text-xs text-gray-300">
-                        <span class="lowercase">{{ report.bookingHours | number: '0.2-2' }} hrs this {{ getPeriodName(report.bookingPeriod) }} to date</span>
-                        <span>{{ report.bookingPercentComplete | percent }}</span>
-                    </div>
-                }
-                @if(report.status == ProjectStatus.InProduction)
-                {
-                    @if(report.totalPercentComplete && report.totalPercentComplete > 1) {
-                    <div class="w-full bg-gray-450 border border-red-950 h-[10px]" title="{{ report.totalStartDate ?? '-' }} - {{ report.totalEndDate ?? '-' }}">
-                        <div class="bg-red-950 h-[8px]" [style.width.%]="Math.min(report.totalPercentComplete - 1, 1) * 100"></div>
-                    </div>
-                    } @else {
-                    <div class="w-full bg-gray-500 border border-white h-[10px]" title="{{ report.totalStartDate ?? '-' }} - {{ report.totalEndDate ?? '-' }}">
-                        <div class="bg-white h-[8px]" [style.width.%]="(report.totalPercentComplete ?? 0) * 100"></div>
-                    </div>
-                    }
-                    <div class="flex justify-between gap-2 text-xs text-gray-300">
-                        <span>{{ report.totalHours | number: '0.2-2' }} hrs total</span>
-                        <span>{{ report.totalPercentComplete != null ? (report.totalPercentComplete | percent) : '-' }}</span>
-                    </div>
-                }
-            </td>
-            <td width="80" class="border-b border-black py-2 text-right pr-5"><a [routerLink]="[report.id]" class="truncate text-teal-200 hover:text-teal-300">VIEW</a></td>
-        </tr>
-        }
-
-    </tbody>
+        <td class="border-b border-black py-2 text-right">
+          {{ report.thisHours | number: "0.2-2" }}
+        </td>
+        <td class="border-b border-black py-2 text-right">
+          {{ report.summaryHoursTotal | number: "0.2-2" }}
+        </td>
+        <td class="border-b border-black py-2 text-right pe-2">
+          {{ report.summaryHoursAvailable | number: "0.2-2" }}
+        </td>
+        <td class="border-b border-black py-2">
+          {{ getProjectSatusString(report.status) }}
+        </td>
+        <td width="200" class="border-b border-black py-2 pe-2">
+          @if (report.status === ProjectStatus.Ongoing) {
+            @if (
+              report.bookingPercentComplete && report.bookingPercentComplete > 1
+            ) {
+              <div
+                class="w-full bg-gray-450 border border-red-950 h-[10px]"
+                title="{{ report.bookingStartDate }} - {{
+                  report.bookingEndDate
+                }}"
+              >
+                <div
+                  class="bg-red-950 h-[8px]"
+                  [style.width.%]="
+                    Math.min(report.bookingPercentComplete - 1, 1) * 100
+                  "
+                ></div>
+              </div>
+            } @else {
+              <div
+                class="w-full bg-gray-500 border border-white h-[10px]"
+                title="{{ report.bookingStartDate }} - {{
+                  report.bookingEndDate
+                }}"
+              >
+                <div
+                  class="bg-white h-[8px]"
+                  [style.width.%]="(report.bookingPercentComplete ?? 0) * 100"
+                ></div>
+              </div>
+            }
+            <div class="flex justify-between gap-2 text-xs text-gray-300">
+              <span class="lowercase"
+                >{{ report.bookingHours | number: "0.2-2" }} hrs this
+                {{ getPeriodName(report.bookingPeriod) }} to date</span
+              >
+              <span>{{ report.bookingPercentComplete | percent }}</span>
+            </div>
+          }
+          @if (report.status === ProjectStatus.InProduction) {
+            @if (
+              report.totalPercentComplete && report.totalPercentComplete > 1
+            ) {
+              <div
+                class="w-full bg-gray-450 border border-red-950 h-[10px]"
+                title="{{ report.totalStartDate ?? '-' }} - {{
+                  report.totalEndDate ?? '-'
+                }}"
+              >
+                <div
+                  class="bg-red-950 h-[8px]"
+                  [style.width.%]="
+                    Math.min(report.totalPercentComplete - 1, 1) * 100
+                  "
+                ></div>
+              </div>
+            } @else {
+              <div
+                class="w-full bg-gray-500 border border-white h-[10px]"
+                title="{{ report.totalStartDate ?? '-' }} - {{
+                  report.totalEndDate ?? '-'
+                }}"
+              >
+                <div
+                  class="bg-white h-[8px]"
+                  [style.width.%]="(report.totalPercentComplete ?? 0) * 100"
+                ></div>
+              </div>
+            }
+            <div class="flex justify-between gap-2 text-xs text-gray-300">
+              <span>{{ report.totalHours | number: "0.2-2" }} hrs total</span>
+              <span>{{
+                report.totalPercentComplete !== null
+                  ? (report.totalPercentComplete | percent)
+                  : "-"
+              }}</span>
+            </div>
+          }
+        </td>
+        <td width="80" class="border-b border-black py-2 text-right pr-5">
+          <a
+            [routerLink]="[report.id]"
+            class="truncate text-teal-200 hover:text-teal-300"
+            >VIEW</a
+          >
+        </td>
+      </tr>
+    }
+  </tbody>
 </table>
-<div class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600">
-    <div>
-        <select class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2" [formControl]="psrListService.itemsPerPage">
+<div
+  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
+>
+  <div>
+    <select
+      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
+      [formControl]="psrListService.itemsPerPage"
+    >
       <option [ngValue]="10">10</option>
       <option [ngValue]="20">20</option>
       <option [ngValue]="50">50</option>
       <option [ngValue]="100">100</option>
       <!-- Add more options as needed -->
     </select>
-        <span>items per page</span>
-    </div>
-    <hq-paginator [total]="(totalRecords$ | async) ?? 0" [pageSize]="psrListService.itemsPerPage.value" [currentPage]="psrListService.page.value" (onPage)="goToPage($event)"></hq-paginator>
-    <div class="flex justify-end text-xs">
-        {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ | async }} items
-    </div>
+    <span>items per page</span>
+  </div>
+  <hq-paginator
+    [total]="(totalRecords$ | async) ?? 0"
+    [pageSize]="psrListService.itemsPerPage.value"
+    [currentPage]="psrListService.page.value"
+    (page)="goToPage($event)"
+  ></hq-paginator>
+  <div class="flex justify-end text-xs">
+    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
+    {{ totalRecords$ | async }} items
+  </div>
 </div>

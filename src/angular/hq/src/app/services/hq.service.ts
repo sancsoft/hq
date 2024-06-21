@@ -7,7 +7,11 @@ import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   GetClientRequestV1,
@@ -86,11 +90,30 @@ import {
   UnapprovePSRTimeResponseV1,
 } from '../models/PSR/unapprove-psrtime-v1';
 import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff-member-v1';
-import { UpsertChargeCodesRequestV1, UpsertChargeCodesResponseV1 } from '../models/charge-codes/upsert-chargecodes';
-import { GetProjectActivitiesResponseV1, GetProjectActivityRequestV1 } from '../models/PSR/get-project-activity-v1';
-import { GetTimeRecordsV1, GetTimeRequestV1 } from '../models/times/get-time-v1';
-import { GetClientInvoiceSummaryV1Request, GetClientInvoiceSummaryV1Response } from '../models/clients/get-client-invoice-summary-v1';
-import { updateTimeRequestV1, UpdateTimeResponseV1 } from '../models/times/update-time-v1';
+import {
+  UpsertChargeCodesRequestV1,
+  UpsertChargeCodesResponseV1,
+} from '../models/charge-codes/upsert-chargecodes';
+import {
+  GetProjectActivitiesResponseV1,
+  GetProjectActivityRequestV1,
+} from '../models/PSR/get-project-activity-v1';
+import {
+  GetTimeRecordsV1,
+  GetTimeRequestV1,
+} from '../models/times/get-time-v1';
+import {
+  GetClientInvoiceSummaryV1Request,
+  GetClientInvoiceSummaryV1Response,
+} from '../models/clients/get-client-invoice-summary-v1';
+import {
+  updateTimeRequestV1,
+  UpdateTimeResponseV1,
+} from '../models/times/update-time-v1';
+import {
+  GetDashboardTimeV1Request,
+  GetDashboardTimeV1Response,
+} from '../models/staff-dashboard/get-dashboard-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -98,7 +121,7 @@ import { updateTimeRequestV1, UpdateTimeResponseV1 } from '../models/times/updat
 export class HQService {
   constructor(
     private http: HttpClient,
-    private appSettings: AppSettingsService
+    private appSettings: AppSettingsService,
   ) {}
   // Clients
   getClientsV1(request: Partial<GetClientRequestV1>) {
@@ -106,9 +129,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetClientResponseV1>(
           `${apiUrl}/v1/Clients/GetClientsV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -117,8 +140,8 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpsertClientResponseV1>(
           `${apiUrl}/v1/Clients/UpsertClientV1`,
-          request
-        )
+          request,
+        ),
       ),
       catchError((err: HttpErrorResponse) => {
         if (err.status == 400) {
@@ -126,7 +149,7 @@ export class HQService {
         }
 
         throw err;
-      })
+      }),
     );
   }
 
@@ -136,13 +159,13 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetProjectRecordsV1>(
           `${apiUrl}/v1/Projects/GetProjectsV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
   getProjectV1(id: string) {
-    return this.getProjectsV1({ id: id })
+    return this.getProjectsV1({ id: id });
   }
 
   // Quotes
@@ -151,9 +174,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetQuotesRecordsV1>(
           `${apiUrl}/v1/Quotes/GetQuotesV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -163,9 +186,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetServicesRecordsV1>(
           `${apiUrl}/v1/ServicesAgreement/GetServicesAgreementV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -175,9 +198,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetInvoicesRecordsV1>(
           `${apiUrl}/v1/Invoices/GetInvoicesV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -186,9 +209,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetPSRRecordsV1>(
           `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportsV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
   getProjectPSRV1(id: string) {
@@ -200,9 +223,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetPSRTimeRecordsV1>(
           `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportTimeV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -211,9 +234,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<ApprovePSRTimeResponseV1>(
           `${apiUrl}/v1/ProjectStatusReports/ApproveProjectStatusReportTimeRequestV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -222,9 +245,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UnapprovePSRTimeResponseV1>(
           `${apiUrl}/v1/ProjectStatusReports/UnapproveProjectStatusReportTimeV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -233,9 +256,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<RejectPSRTimeResponseV1>(
           `${apiUrl}/v1/ProjectStatusReports/RejectProjectStatusReportTimeV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -244,9 +267,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpdatePSRTimeResponseV1>(
           `${apiUrl}/v1/ProjectStatusReports/UpdateProjectStatusReportTimeV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -255,9 +278,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetChargeCodesResponseV1>(
           `${apiUrl}/v1/ChargeCodes/GetChargeCodesV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -266,9 +289,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetStaffV1Response>(
           `${apiUrl}/v1/Staff/GetStaffV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -277,9 +300,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpsertProjectResponsetV1>(
           `${apiUrl}/v1/Projects/UpsertProjectV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -288,9 +311,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpsertQuoteResponsetV1>(
           `${apiUrl}/v1/Quotes/UpsertQuotesV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -299,21 +322,21 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetUsersResponseV1>(
           `${apiUrl}/v1/Users/GetUsersV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
   updateProjectStatusReportMarkdownV1(
-    request: Partial<updatePSRmarkDownRequestV1>
+    request: Partial<updatePSRmarkDownRequestV1>,
   ) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<UpdatePSRMarkDownResponseV1>(
           `${apiUrl}/v1/ProjectStatusReports/UpdateProjectStatusReportMarkdownV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -322,9 +345,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpsertUserResponseV1>(
           `${apiUrl}/v1/Users/UpsertUserV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -334,32 +357,34 @@ export class HQService {
         this.http.post<UpsertStaffMemberResponseV1>(
           `${apiUrl}/v1/Staff/UpsertStaffV1
           `,
-          request
-        )
+          request,
+        ),
       ),
       catchError((err: HttpErrorResponse) => {
         if (err.status == 400) {
           return throwError(() => new APIError(err.error));
         }
         throw err;
-      })
+      }),
     );
   }
 
-    upsertChargecodesV1(request: Partial<UpsertChargeCodesRequestV1>) {
+  upsertChargecodesV1(request: Partial<UpsertChargeCodesRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<UpsertChargeCodesResponseV1>(
           `${apiUrl}/v1/ChargeCodes/UpsertChargeCodesV1
           `,
-          request
-        )
-      ), catchError((err: HttpErrorResponse) => {
+          request,
+        ),
+      ),
+      catchError((err: HttpErrorResponse) => {
         if (err.status == 400) {
           return throwError(() => new APIError(err.error));
         }
         throw err;
-      }))
+      }),
+    );
   }
 
   submitProjectStatusReportV1(request: Partial<SubmitPSRRequestV1>) {
@@ -367,15 +392,15 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<SubmitPSRResponseV1>(
           `${apiUrl}/v1/ProjectStatusReports/SubmitProjectStatusReportV1`,
-          request
-        )
+          request,
+        ),
       ),
       catchError((err: HttpErrorResponse) => {
         if (err.status == 400) {
           return throwError(() => new APIError(err.error));
         }
         throw err;
-      })
+      }),
     );
   }
 
@@ -384,9 +409,9 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetProjectActivitiesResponseV1>(
           `${apiUrl}/v1/Projects/GetProjectActivitiesV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
@@ -395,17 +420,18 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetTimeRecordsV1>(
           `${apiUrl}/v1/TimeEntries/GetTimesV1`,
-          request)
-      )
+          request,
+        ),
+      ),
     );
   }
-    upsertTimeV1(request: Partial<updateTimeRequestV1>) {
+  upsertTimeV1(request: Partial<updateTimeRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<UpdateTimeResponseV1>(
           `${apiUrl}/v1/TimeEntries/UpsertTimeV1`,
-          request
-        )
+          request,
+        ),
       ),
       catchError((err: HttpErrorResponse) => {
         if (err.status == 400) {
@@ -413,40 +439,53 @@ export class HQService {
         }
 
         throw err;
-      })
+      }),
     );
   }
 
-  getClientInvoiceSummaryV1(request: Partial<GetClientInvoiceSummaryV1Request>) {
+  getClientInvoiceSummaryV1(
+    request: Partial<GetClientInvoiceSummaryV1Request>,
+  ) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<GetClientInvoiceSummaryV1Response>(
           `${apiUrl}/v1/Clients/GetClientInvoiceSummaryV1`,
-          request
-        )
-      )
+          request,
+        ),
+      ),
     );
   }
 
-  exportTimesV1(request: Partial<{  }>) {
+  getDashboardTimeV1(request: Partial<GetDashboardTimeV1Request>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.request(
-          'post',
-          `${apiUrl}/v1/TimeEntries/ExportTimesV1`,
-          {
-            body: request,
-            responseType: 'blob',
-            observe: 'response'
-          }
-        )
+        this.http.post<GetDashboardTimeV1Response>(
+          `${apiUrl}/v1/TimeEntries/GetDashboardTimeV1`,
+          request,
+        ),
       ),
-      map(response => ({ 
-        file: response.body,
-        fileName: (response.headers.get('content-disposition') ?? '').split(';')[1].split('filename')[1].split('=')[1].trim()
-      }))
     );
   }
+
+  exportTimesV1(request: Partial<object>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.request('post', `${apiUrl}/v1/TimeEntries/ExportTimesV1`, {
+          body: request,
+          responseType: 'blob',
+          observe: 'response',
+        }),
+      ),
+      map((response) => ({
+        file: response.body,
+        fileName: (response.headers.get('content-disposition') ?? '')
+          .split(';')[1]
+          .split('filename')[1]
+          .split('=')[1]
+          .trim(),
+      })),
+    );
   }
+}
 
-
+// UpdateProjectStatusReportTimeV1

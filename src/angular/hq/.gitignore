@@ -43,3 +43,5 @@ Thumbs.db
 
 src/config/*
 !src/config/settings.template.json
+.nx/cache
+.nx/workspace-data

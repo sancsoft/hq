@@ -19,7 +19,7 @@ public class Project : Base
     public Period BookingPeriod { get; set; }
     public DateOnly? StartDate { get; set; }
     public ProjectStatus Status { get; set; }
- 
+
     public DateOnly? EndDate { get; set; }
     public ChargeCode? ChargeCode { get; set; }
     public ICollection<ProjectActivity> Activities { get; set; } = new List<ProjectActivity>();

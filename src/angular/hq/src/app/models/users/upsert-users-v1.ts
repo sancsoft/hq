@@ -1,5 +1,3 @@
-
-
 export interface UpsertUserRequestV1 {
   firstName?: string | null;
   lastName?: string | null;
@@ -14,5 +12,5 @@ export interface UpsertUserRequestV1 {
 }
 
 export interface UpsertUserResponseV1 {
-  id:string;
+  id: string;
 }

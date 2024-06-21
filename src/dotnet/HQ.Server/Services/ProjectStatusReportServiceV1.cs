@@ -1,16 +1,21 @@
-﻿using CsvHelper;
+﻿using System.Formats.Asn1;
+using System.Globalization;
+
+using CsvHelper;
 using CsvHelper.Configuration;
+
 using DocumentFormat.OpenXml.Bibliography;
+
 using FluentResults;
+
+using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.ProjectStatusReports;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
-using System.Formats.Asn1;
-using System.Globalization;
-using HQ.Abstractions;
 
 namespace HQ.Server.Services;
 
@@ -183,10 +188,10 @@ public class ProjectStatusReportServiceV1
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
                 Status = t.Row.Status,
                 IsLate = t.Row.SubmittedAt == null,
-                
+
                 ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
                 ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
-                
+
                 LastId = t.Previous != null ? t.Previous.Id : null,
                 LastHours = t.Previous != null && t.Previous.Project.ChargeCode != null ? t.Previous.Project.ChargeCode.Times.Where(x => x.Date >= t.Previous.StartDate && x.Date <= t.Previous.EndDate).Sum(x => x.Hours) : null,
 
@@ -204,7 +209,8 @@ public class ProjectStatusReportServiceV1
                 TotalStartDate = t.Row.Project.ChargeCode.Times.Where(x => x.Date <= t.Row.EndDate).Min(t => t.Date),
                 TotalEndDate = t.Row.Project.ChargeCode.Times.Where(x => x.Date <= t.Row.EndDate).Max(t => t.Date),
             })
-            .Select(t => new GetProjectStatusReportsV1.Record() {
+            .Select(t => new GetProjectStatusReportsV1.Record()
+            {
                 Id = t.Id,
                 Report = t.Report,
                 SubmittedAt = t.SubmittedAt,
@@ -218,10 +224,10 @@ public class ProjectStatusReportServiceV1
                 ProjectManagerName = t.ProjectManagerName,
                 Status = t.Status,
                 IsLate = t.IsLate,
-                
+
                 ThisHours = t.ThisHours,
                 ThisPendingHours = t.ThisPendingHours,
-                
+
                 LastId = t.LastId,
                 LastHours = t.LastHours,
 
@@ -231,7 +237,7 @@ public class ProjectStatusReportServiceV1
                 BookingHours = t.BookingHours,
                 BookingAvailableHours = t.BookingAvailableHours,
                 BookingPercentComplete = t.BookingPercentComplete,
-                
+
                 TotalHours = t.TotalHours,
                 TotalAvailableHours = t.TotalAvailableHours,
                 TotalPercentComplete = t.TotalPercentComplete,
@@ -366,7 +372,7 @@ public class ProjectStatusReportServiceV1
                 TotalHours = t.Sum(t => t.Hours)
             })
             .OrderBy(t => t.Name);
-        
+
 
         var sortMap = new Dictionary<GetProjectStatusReportTimeV1.SortColumn, string>()
         {

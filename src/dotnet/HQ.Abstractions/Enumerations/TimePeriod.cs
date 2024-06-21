@@ -1,4 +1,5 @@
-public enum TimePeriod {
+public enum TimePeriod
+{
     Today = 1,
     ThisWeek = 2,
     LastWeek = 3,

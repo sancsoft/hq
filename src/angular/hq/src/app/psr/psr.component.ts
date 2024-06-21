@@ -5,8 +5,6 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   selector: 'hq-psr',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './psr.component.html'
+  templateUrl: './psr.component.html',
 })
-export class PSRComponent {
-
-}
+export class PSRComponent {}

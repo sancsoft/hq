@@ -1,8 +1,8 @@
 export interface ApprovePSRTimeRequestV1 {
-    projectStatusReportId: string;
-    timeIds: string[];
+  projectStatusReportId: string;
+  timeIds: string[];
 }
 
 export interface ApprovePSRTimeResponseV1 {
-    approved: number;
+  approved: number;
 }

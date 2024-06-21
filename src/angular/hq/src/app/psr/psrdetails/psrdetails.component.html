@@ -1,19 +1,33 @@
-<div class="h-[calc(100dvh-(var(--h-footer)+var(--h-header)))] fixed top-[--h-header] left-0 w-full flex flex-col">
-    <hq-psr-details-header></hq-psr-details-header>
+<div
+  class="h-[calc(100dvh-(var(--h-footer)+var(--h-header)))] fixed top-[--h-header] left-0 w-full flex flex-col"
+>
+  <hq-psr-details-header></hq-psr-details-header>
 
-    <div class="px-5 pt-3">
-        <div class="flex flex-col xl:flex-row justify-between items-end gap-4">
-            <div class="mb-3">
-                <hq-psr-search-filter></hq-psr-search-filter>
-            </div>
-            <div class="flex divide-x ml-auto">
-                <a routerLink="time" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Time</a>
-                <a routerLink="report" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">PM Report</a>
-            </div>
-        </div>
+  <div class="px-5 pt-3">
+    <div
+      class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row"
+    >
+      <div class="xl:pb-2">
+        <hq-psr-search-filter></hq-psr-search-filter>
+      </div>
+      <div class="flex divide-x ml-aut float-right">
+        <a
+          routerLink="time"
+          routerLinkActive="bg-blue-900"
+          class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+          >Time</a
+        >
+        <a
+          routerLink="report"
+          routerLinkActive="bg-blue-900"
+          class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+          >PM Report</a
+        >
+      </div>
     </div>
+  </div>
 
-    <div class="overflow-auto flex-auto scrollbar-hide">
-        <router-outlet></router-outlet>
-    </div>
+  <div class="overflow-auto flex-auto scrollbar-hide">
+    <router-outlet></router-outlet>
+  </div>
 </div>

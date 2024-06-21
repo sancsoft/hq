@@ -7,10 +7,8 @@ import { Component } from '@angular/core';
   selector: 'hq-search-filter-client-list',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './search-filter-client-list.component.html'
+  templateUrl: './search-filter-client-list.component.html',
 })
 export class SearchFilterClientListComponent {
-  constructor(public ClientListService: ClientListService) {
-    
-  }
+  constructor(public ClientListService: ClientListService) {}
 }

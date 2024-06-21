@@ -9,89 +9,138 @@
 
   <div class="overflow-hidden flex-auto">
     <div class="grid gap-0 relative">
-      <main class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]">
-        <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50">
-          <div class="w-full flex flex-row border-b border-black justify-between pe-5">
+      <main
+        class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]"
+      >
+        <div
+          class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
+        >
+          <div
+            class="w-full flex flex-row border-b border-black justify-between pe-5"
+          >
             <div class="flex pt-[23px]">
-              <a href="#" routerLink="quotes" routerLinkActive="border-gray-100"
-                class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100">Details</a>
+              <a
+                href="#"
+                routerLink="quotes"
+                routerLinkActive="border-gray-100"
+                class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
+                >Details</a
+              >
             </div>
 
             <div class="flex flex-column justify-center items-center">
-              <button (click)="onSubmitProject()"
-                class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
+              <button
+                (click)="onSubmitProject()"
+                class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
+              >
                 Save
               </button>
             </div>
           </div>
         </div>
-        @if(this.apiErrors) { @for (error of this.apiErrors; track $index) {
-        <div class="text-red-700 text-xs leading-normal inline-block">
-          {{ error }}
-        </div>
-        } }
+        @if (this.apiErrors) {
+          @for (error of this.apiErrors; track $index) {
+            <div class="text-red-700 text-xs leading-normal inline-block">
+              {{ error }}
+            </div>
+          }
+        }
         <form [formGroup]="quoteFormGroup" (ngSubmit)="onSubmitProject()">
           <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
             <div class="p-5 pr-0">
               <div class="grid gap-[20px]">
                 <!-- row grid -->
-                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
+                >
                   <!-- column -->
                   <div>
                     <!-- select dropdown -->
-                    <label for="client" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Client</label>
+                    <label
+                      for="client"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                      >Client</label
+                    >
                     <div class="grid relative w-full max-w-[395px]">
                       <select
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
-                        (click)="openModal()" (mousedown)="$event.preventDefault()" id="client">
+                        (click)="openModal()"
+                        (mousedown)="$event.preventDefault()"
+                        id="client"
+                      >
                         @if ((selectedClientName$ | async) === null) {
-                        <option value="">Select Client</option>
+                          <option value="">Select Client</option>
                         }
                         @if (selectedClientName$ | async; as clientId) {
-                        <option [value]="clientId">
-                          {{ clientId }}
-                        </option>
+                          <option [value]="clientId">
+                            {{ clientId }}
+                          </option>
                         }
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
                         <i class="bi bi-arrow-right-short text-[24px]"></i>
                       </span>
                     </div>
                   </div>
                 </div>
                 <!-- row grid -->
-                <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
+                >
                   <!-- column -->
                   <div>
-                    <label for="fullname" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Quote
-                      Name</label>
+                    <label
+                      for="fullname"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                      >Quote Name</label
+                    >
                     <!-- text input -->
-                    <input formControlName="name" type="text" name="fullname" id="fullname"
+                    <input
+                      formControlName="name"
+                      type="text"
+                      name="fullname"
+                      id="fullname"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Quote Name" />
+                      placeholder="Quote Name"
+                    />
 
-                    @if (quoteFormGroup.get('name')?.touched &&
-                    quoteFormGroup.get('name')?.errors) {
-                    @if (quoteFormGroup.get('name')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">
-                      Quote name is required.
-                    </span>
-                    }
-                    @if (quoteFormGroup.get('name')?.errors?.['minlength']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">
-                      Quote name must be at least
-                      {{ quoteFormGroup.get('name')?.errors?.['minlength']?.requiredLength }}
-                      characters long.
-                    </span>
-                    }
-                    @if (quoteFormGroup.get('name')?.errors?.['maxlength']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">
-                      Quote name cannot be more than
-                      {{ quoteFormGroup.get('name')?.errors?.['maxlength']?.requiredLength }}
-                      characters long.
-                    </span>
-                    }
+                    @if (
+                      quoteFormGroup.get("name")?.touched &&
+                      quoteFormGroup.get("name")?.errors
+                    ) {
+                      @if (quoteFormGroup.get("name")?.errors?.["required"]) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                        >
+                          Quote name is required.
+                        </span>
+                      }
+                      @if (quoteFormGroup.get("name")?.errors?.["minlength"]) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                        >
+                          Quote name must be at least
+                          {{
+                            quoteFormGroup.get("name")?.errors?.["minlength"]
+                              ?.requiredLength
+                          }}
+                          characters long.
+                        </span>
+                      }
+                      @if (quoteFormGroup.get("name")?.errors?.["maxlength"]) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                        >
+                          Quote name cannot be more than
+                          {{
+                            quoteFormGroup.get("name")?.errors?.["maxlength"]
+                              ?.requiredLength
+                          }}
+                          characters long.
+                        </span>
+                      }
                     }
                     <!-- </div> -->
                   </div>
@@ -99,21 +148,33 @@
                   <!-- column -->
                   <div class="hidden">
                     <!-- text input -->
-                    <input type="text" name="canatednated" id="canatednated"
+                    <input
+                      type="text"
+                      name="canatednated"
+                      id="canatednated"
                       class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Project Name - Cancatenated" />
+                      placeholder="Project Name - Cancatenated"
+                    />
                   </div>
                 </div>
                 <!-- row grid -->
-                <div class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)] pr-5">
+                <div
+                  class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)] pr-5"
+                >
                   <!-- column -->
                   <div>
-                    <label for="quoteStatus" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Quote
-                      Status</label>
+                    <label
+                      for="quoteStatus"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                      >Quote Status</label
+                    >
                     <!-- select dropdown -->
                     <div class="grid relative w-full max-w-[220px]">
-                      <select formControlName="status" id="quoteStatus"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
+                      <select
+                        formControlName="status"
+                        id="quoteStatus"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
+                      >
                         <option value="" selected disabled>
                           Select Quote Status
                         </option>
@@ -143,74 +204,110 @@
                         </option>
                       </select>
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
                     </div>
                   </div>
                   <!-- column -->
                   <div>
-                    <label for="value"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Value</label>
+                    <label
+                      for="value"
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                      >Value</label
+                    >
                     <div class="flex items-center">
-
                       <!-- text input w/icon to left -->
                       <div
-                        class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]">
+                        class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]"
+                      >
                         <span
-                          class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block">
+                          class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block"
+                        >
                           <i class="bi bi-currency-dollar text-[14px]"></i>
                         </span>
-                        <input formControlName="value" type="text" name="" id="value"
+                        <input
+                          formControlName="value"
+                          type="text"
+                          name=""
+                          id="value"
                           class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded"
-                          placeholder="value" />
+                          placeholder="value"
+                        />
                       </div>
                     </div>
-                    @if (quoteFormGroup.get('value')?.touched &&
-                    quoteFormGroup.get('value')?.errors) {
-                    @if (quoteFormGroup.get('value')?.errors?.['required']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">
-                      value is required.
-                    </span>
-                    }
-                    @if (quoteFormGroup.get('value')?.errors?.['min']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">
-                      Minimum value is
-                      {{ quoteFormGroup.get('value')?.errors?.['min']?.min
-                      }}.
-                    </span>
-                    }
-                    @if (quoteFormGroup.get('value')?.errors?.['max']) {
-                    <span class="text-red-700 text-xs leading-normal inline-block">
-                      Maximum value is
-                      {{ quoteFormGroup.get('value')?.errors?.['max']?.max
-                      }}.
-                    </span>
-                    }
+                    @if (
+                      quoteFormGroup.get("value")?.touched &&
+                      quoteFormGroup.get("value")?.errors
+                    ) {
+                      @if (quoteFormGroup.get("value")?.errors?.["required"]) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                        >
+                          value is required.
+                        </span>
+                      }
+                      @if (quoteFormGroup.get("value")?.errors?.["min"]) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                        >
+                          Minimum value is
+                          {{
+                            quoteFormGroup.get("value")?.errors?.["min"]?.min
+                          }}.
+                        </span>
+                      }
+                      @if (quoteFormGroup.get("value")?.errors?.["max"]) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                        >
+                          Maximum value is
+                          {{
+                            quoteFormGroup.get("value")?.errors?.["max"]?.max
+                          }}.
+                        </span>
+                      }
                     }
                   </div>
                 </div>
 
                 <!-- row grid -->
                 <div class="grid gap-[20px] grid-flow-row pr-5">
-                  <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4 ">Date</label>
-                  <div class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]">
+                  <label
+                    for=""
+                    class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"
+                    >Date</label
+                  >
+                  <div
+                    class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]"
+                  >
                     <!-- input date -->
                     <div class="grid relative w-full max-w-[220px]">
-                      <input formControlName="date" type="date"
-                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase" />
+                      <input
+                        formControlName="date"
+                        type="date"
+                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+                      />
                       <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                        <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
+                        <i
+                          class="bi bi-arrow-down-short text-[24px] bg-blue-900"
+                        ></i>
                       </span>
                     </div>
 
-                    @if (quoteFormGroup.get('date')?.touched &&
-                    quoteFormGroup.get('date')?.errors) {
-                    @if (quoteFormGroup.get('date')?.errors?.['required']) {}
-                    <span class="text-red-700 text-xs leading-normal inline-block">
-                      date is required.
-                    </span>
+                    @if (
+                      quoteFormGroup.get("date")?.touched &&
+                      quoteFormGroup.get("date")?.errors
+                    ) {
+                      @if (quoteFormGroup.get("date")?.errors?.["required"]) {}
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                      >
+                        date is required.
+                      </span>
                     }
                   </div>
                 </div>
@@ -218,20 +315,24 @@
                 <!-- engagement tab form fields below: hidden for now incase we need these on another screen -->
                 <div class="hidden">
                   <!-- row grid -->
-                  <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                  <div
+                    class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
+                  >
                     <!-- column -->
                     <div>
                       <!-- select dropdown -->
                       <div class="grid relative w-full max-w-[395px]">
                         <select
-                          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]">
+                          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
+                        >
                           <option value="">Equipment Type</option>
                           <option vallue="">Type 1</option>
                           <option vallue="">Type 2</option>
                           <option vallue="">Type 3</option>
                         </select>
                         <span
-                          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
+                          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                        >
                           <i class="bi bi-arrow-down-short text-[24px]"></i>
                         </span>
                       </div>
@@ -240,7 +341,8 @@
                     <div>
                       <!-- div input -->
                       <div
-                        class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%] max-w-[395px]">
+                        class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%] max-w-[395px]"
+                      >
                         filename.ext
                       </div>
                     </div>
@@ -253,7 +355,8 @@
                       <!-- textarea -->
                       <textarea
                         class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded"
-                        placeholder="Optional Notes"></textarea>
+                        placeholder="Optional Notes"
+                      ></textarea>
                     </div>
                   </div>
                 </div>
@@ -262,14 +365,20 @@
             <div class="flex flex-col pt-5">
               <div class="grid gap-[20px]">
                 <!-- row grid -->
-                <div class="grid gap-[20px] grid-flow-col grid-cols-[395px_98px_auto] px-5 2xl:px-0">
+                <div
+                  class="grid gap-[20px] grid-flow-col grid-cols-[395px_98px_auto] px-5 2xl:px-0"
+                >
                   <!-- column -->
 
                   <!-- column -->
                   <div class="flex items-center">
                     <div>Upload quote pdf</div>
-                    <a href="#" class="block p-2 hover:text-gray-50" title="Download"><i
-                        class="bi bi-cloud-upload-fill"></i></a>
+                    <a
+                      href="#"
+                      class="block p-2 hover:text-gray-50"
+                      title="Download"
+                      ><i class="bi bi-cloud-upload-fill"></i
+                    ></a>
                   </div>
                 </div>
               </div>
@@ -288,30 +397,43 @@
   class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear"
   [ngClass]="{
     'opacity-100 visible': (modalOpen$ | async),
-    'opacity-0 invisible': !(modalOpen$ | async)
-  }">
+    'opacity-0 invisible': (modalOpen$ | async) === false,
+  }"
+>
   <!-- modal dialog -->
   <div class="modal-dialog max-w-full mr-auto ml-auto text-black">
-    <div class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto">
+    <div
+      class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto"
+    >
       <!-- header -->
-      <div class="modal-header flex flex-shrink-0 items-center px-5 py-[15px] bg-blue-900 text-gray-100">
+      <div
+        class="modal-header flex flex-shrink-0 items-center px-5 py-[15px] bg-blue-900 text-gray-100"
+      >
         <div class="font-bold">Select Client</div>
       </div>
 
       <!--Body-->
-      <hq-selectable-client-list (selectedClient)="updateSelectedClient($event)" [SelectClientEnabled]="true"
-        [showViewButtons]="false" [showEditButtons]="false"></hq-selectable-client-list>
+      <hq-selectable-client-list
+        (selectedClient)="updateSelectedClient($event)"
+        [SelectClientEnabled]="true"
+        [showViewButtons]="false"
+        [showEditButtons]="false"
+      ></hq-selectable-client-list>
 
       <!--Footer-->
-      <div class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900">
+      <div
+        class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900"
+      >
         <button
           class="h-[36px] px-2 py-2 border border-transparent bg-transparent hover:bg-transparent hover:border-transparent text-white hover:text-gray-200 rounded w-full min-w-[100px] max-w-[100px] leading-[normal] mr-2"
-          (click)="modalCancelClicked()">
+          (click)="modalCancelClicked()"
+        >
           Cancel
         </button>
         <button
           class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px] leading-[normal]"
-          (click)="modalOkClicked()">
+          (click)="modalOkClicked()"
+        >
           Okay
         </button>
       </div>
@@ -324,5 +446,6 @@
   class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear"
   [ngClass]="{
     'opacity-75 visible': (modalOpen$ | async),
-    'opacity-0 invisible': !(modalOpen$ | async)
-  }"></div>
+    'opacity-0 invisible': (modalOpen$ | async) === false,
+  }"
+></div>

@@ -1,9 +1,12 @@
 ﻿using System.Security.Claims;
+
 using Duende.AccessTokenManagement.OpenIdConnect;
+
 using HQ.Server.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
 using HQ.Server.Services;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -11,8 +14,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+
 using Npgsql;
+
 using Spectre.Console.Cli;
+
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -96,7 +102,7 @@ public class APICommand : AsyncCommand
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
-            if(builder.Environment.IsDevelopment())
+            if (builder.Environment.IsDevelopment())
             {
                 options.RequireHttpsMetadata = false;
             }
@@ -105,7 +111,8 @@ public class APICommand : AsyncCommand
             options.Audience = builder.Configuration["AUTH_AUDIENCE"] ?? throw new ArgumentNullException("Undefined AUTH_AUDIENCE");
         });
 
-        builder.Services.AddAuthorization(options => {
+        builder.Services.AddAuthorization(options =>
+        {
             options.AddPolicy(HQAuthorizationPolicies.Administrator, pb => pb
                 .RequireAuthenticatedUser()
                 .RequireRole("administrator"));
@@ -126,7 +133,7 @@ public class APICommand : AsyncCommand
                 .RequireAuthenticatedUser()
                 .RequireRole("staff", "manager", "partner", "executive", "administrator"));
         });
-    
+
         builder.Services.AddOpenIdConnectAccessTokenManagement();
         builder.Services.AddHttpClient<UserServiceV1>(client =>
             {
@@ -137,7 +144,7 @@ public class APICommand : AsyncCommand
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        
+
         // Run all health checks
         app.MapHealthChecks("/health/startup");
 
@@ -173,7 +180,7 @@ public class APICommand : AsyncCommand
 
         app.MapControllers();
 
-        if(builder.Environment.IsDevelopment())
+        if (builder.Environment.IsDevelopment())
         {
             var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
             await using var scope = serviceScopeFactory.CreateAsyncScope();

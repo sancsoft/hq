@@ -75,51 +75,53 @@
     </thead>
     <tbody class="text-gray-100">
       @for (client of records$ | async; track $index) {
-      <tr
-        (click)="toggleClient(client)"
-        [ngClass]="{
-          'bg-blue-900': (isClientSelected(client.id) | async),
-          'even:bg-gray-850 odd:bg-black-alt':
-            !(isClientSelected(client.id) | async) || !SelectClientEnabled
-        }"
-      >
-        <td class="border-b border-black py-2 pl-5">{{ client.name }}</td>
-        <td class="border-b border-black py-2">
-          {{
-            client.hourlyRate
-              | currency : "USD" : "symbol" : "1.2-2" : "en-US" || "None"
-          }}
-        </td>
-        <td class="border-b border-black py-2">
-          @if (client.billingEmail) {
-          <a href="mailto:{{ client.billingEmail }}">{{
-            client.billingEmail
-          }}</a>
-          } @else {
-          <div>None</div>
+        <tr
+          (click)="toggleClient(client)"
+          [ngClass]="{
+            'bg-blue-900': (isClientSelected(client.id) | async),
+            'even:bg-gray-850 odd:bg-black-alt':
+              (isClientSelected(client.id) | async) === false ||
+              !SelectClientEnabled,
+          }"
+        >
+          <td class="border-b border-black py-2 pl-5">{{ client.name }}</td>
+          <td class="border-b border-black py-2">
+            {{
+              client.hourlyRate
+                | currency: "USD" : "symbol" : "1.2-2" : "en-US" || "None"
+            }}
+          </td>
+          <td class="border-b border-black py-2">
+            @if (client.billingEmail) {
+              <a href="mailto:{{ client.billingEmail }}">{{
+                client.billingEmail
+              }}</a>
+            } @else {
+              <div>None</div>
+            }
+          </td>
+          <td class="border-b border-black py-2">
+            {{ client.officialName || "None" }}
+          </td>
+          @if (showEditButtons) {
+            <td class="border-b border-black py-2 text-right pr-5">
+              <a
+                [routerLink]="['edit', client.id]"
+                class="text-teal-200 hover:text-teal-300"
+                >EDIT</a
+              >
+            </td>
           }
-        </td>
-        <td class="border-b border-black py-2">
-          {{ client.officialName || "None" }}
-        </td>
-        @if (showEditButtons) {
-        <td class="border-b border-black py-2 text-right pr-5">
-          <a
-            [routerLink]="['edit', client.id]"
-            class="text-teal-200 hover:text-teal-300"
-            >EDIT</a
-          >
-        </td>
-        } @if (showViewButtons) {
-        <td class="border-b border-black py-2 text-right pr-5">
-          <a
-            [routerLink]="[client.id]"
-            class="text-teal-200 hover:text-teal-300"
-            >VIEW</a
-          >
-        </td>
-        }
-      </tr>
+          @if (showViewButtons) {
+            <td class="border-b border-black py-2 text-right pr-5">
+              <a
+                [routerLink]="[client.id]"
+                class="text-teal-200 hover:text-teal-300"
+                >VIEW</a
+              >
+            </td>
+          }
+        </tr>
       }
     </tbody>
   </table>
@@ -144,7 +146,7 @@
       [total]="(totalRecords$ | async) ?? 0"
       [pageSize]="itemsPerPage.value"
       [currentPage]="page.value"
-      (onPage)="goToPage($event)"
+      (page)="goToPage($event)"
     ></hq-paginator>
     <div class="flex justify-end text-xs">
       {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /

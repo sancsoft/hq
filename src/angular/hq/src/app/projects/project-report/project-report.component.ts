@@ -16,7 +16,10 @@ export class ProjectReportComponent {
   psr$?: Observable<GetPSRRecordV1 | null>;
   psrId$: Observable<string | null>;
 
-  constructor(private hqService: HQService, private route: ActivatedRoute) {
+  constructor(
+    private hqService: HQService,
+    private route: ActivatedRoute,
+  ) {
     this.psrId$ = route.queryParams.pipe(map((t) => t['psrId']));
     this.psrId$.subscribe((id) => {
       console.log(id);

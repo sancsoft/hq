@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using FluentResults;
+
 using HQ.Abstractions.Quotes;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services

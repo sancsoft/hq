@@ -11,48 +11,55 @@ export interface ModalData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ModalService {
-
-  constructor(public dialog: Dialog) { }
+  constructor(public dialog: Dialog) {}
 
   confirm(title: string, message: string = ''): Observable<boolean> {
-    const dialogRef = this.dialog.open<boolean, ModalData>(ConfirmModalComponent, {
-      minWidth: '600px',
-      data: {
-        title,
-        message,
-      }
-    });
-    return dialogRef.closed.pipe(map(t => t == true));
+    const dialogRef = this.dialog.open<boolean, ModalData>(
+      ConfirmModalComponent,
+      {
+        minWidth: '600px',
+        data: {
+          title,
+          message,
+        },
+      },
+    );
+    return dialogRef.closed.pipe(map((t) => t == true));
   }
 
   alert(title: string, message: string): Observable<boolean> {
-    const dialogRef = this.dialog.open<boolean, ModalData>(AlertModalComponent, {
-      minWidth: '600px',
-      data: {
-        title,
-        message
-      }
-    });
+    const dialogRef = this.dialog.open<boolean, ModalData>(
+      AlertModalComponent,
+      {
+        minWidth: '600px',
+        data: {
+          title,
+          message,
+        },
+      },
+    );
 
-    return dialogRef.closed.pipe(map(t => true));
+    return dialogRef.closed.pipe(map((t) => true));
   }
 
   prompt(title: string, message: string = ''): Observable<string | undefined> {
-    const dialogRef = this.dialog.open<string, ModalData>(PromptModalComponent, {
-      minWidth: '600px',
-      data: {
-        title,
-        message,
-      }
-    });
-    return dialogRef.closed.pipe(map(t => t));
+    const dialogRef = this.dialog.open<string, ModalData>(
+      PromptModalComponent,
+      {
+        minWidth: '600px',
+        data: {
+          title,
+          message,
+        },
+      },
+    );
+    return dialogRef.closed.pipe(map((t) => t));
   }
 
   // showCustom(title: string, component: ComponentType<C>, data: ?): Observable<?> {
 
   // }
-
 }

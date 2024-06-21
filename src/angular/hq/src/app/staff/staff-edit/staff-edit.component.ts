@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute,RouterLink } from '@angular/router';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { Jurisdiciton } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
-
-
 
 interface Form {
   name: FormControl<string | null>;
@@ -25,42 +29,47 @@ interface Form {
 @Component({
   selector: 'hq-staff-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, ErrorDisplayComponent,RouterLink],
-  templateUrl: './staff-edit.component.html'
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ErrorDisplayComponent,
+    RouterLink,
+  ],
+  templateUrl: './staff-edit.component.html',
 })
 export class StaffEditComponent implements OnInit {
   staffId?: string;
   apiErrors: string[] = [];
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
-  Jurisdiction = Jurisdiciton
+  Jurisdiction = Jurisdiciton;
 
   form = new FormGroup<Form>({
     name: new FormControl(null, {
       validators: [Validators.required, Validators.minLength(1)],
     }),
     firstName: new FormControl(null, {
-      validators: [ Validators.minLength(1)],
+      validators: [Validators.minLength(1)],
     }),
     lastName: new FormControl(null, {
-      validators: [ Validators.minLength(1)],
+      validators: [Validators.minLength(1)],
     }),
     email: new FormControl(null, {
-      validators: [ Validators.email],
+      validators: [Validators.email],
     }),
     workHours: new FormControl(0, {
-      validators: [ Validators.min(0)],
+      validators: [Validators.min(0)],
     }),
     vacationHours: new FormControl(0, {
-      validators: [ Validators.min(0)],
+      validators: [Validators.min(0)],
     }),
     jurisdiciton: new FormControl(Jurisdiciton.USA, {
-      validators: []
+      validators: [],
     }),
     startDate: new FormControl(null, {
-      validators: []
+      validators: [],
     }),
-    endDate: new FormControl(null, {
-    }),
+    endDate: new FormControl(null, {}),
   });
   async ngOnInit() {
     this.staffId =
@@ -68,34 +77,31 @@ export class StaffEditComponent implements OnInit {
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('staffId')) ?? undefined;
     this.getStaff();
-
   }
-
 
   constructor(
     private hqService: HQService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {
-  }
+    private route: ActivatedRoute,
+  ) {}
 
   async submit() {
     this.form.markAsTouched();
     console.log(this.form.value);
     if (this.form.invalid) {
       this.apiErrors = [];
-      this.apiErrors = ['Invlid Form Error']
+      this.apiErrors = ['Invlid Form Error'];
       return;
     }
     this.apiErrors = [];
     console.log('Form is valid');
 
     try {
-      var request = { id: this.staffId, ...this.form.value };
+      const request = { id: this.staffId, ...this.form.value };
       const response = await firstValueFrom(
-        this.hqService.upsertStaffV1(request)
+        this.hqService.upsertStaffV1(request),
       );
-      this.router.navigate(['../../',], { relativeTo: this.route });
+      this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
@@ -108,7 +114,9 @@ export class StaffEditComponent implements OnInit {
   private async getStaff() {
     try {
       const request = { id: this.staffId };
-      const response = await firstValueFrom(this.hqService.getStaffMembersV1(request));
+      const response = await firstValueFrom(
+        this.hqService.getStaffMembersV1(request),
+      );
       const staffMember = response.records[0];
       this.form.setValue({
         name: staffMember.name || null,
@@ -130,4 +138,3 @@ export class StaffEditComponent implements OnInit {
     }
   }
 }
-

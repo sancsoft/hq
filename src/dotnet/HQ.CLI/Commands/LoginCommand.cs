@@ -1,10 +1,14 @@
-﻿using IdentityModel.Client;
+﻿using System.Diagnostics;
+
+using IdentityModel.Client;
+
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Spectre.Console;
 using Spectre.Console.Cli;
-using System.Diagnostics;
+
 using static IdentityModel.OidcConstants;
 
 namespace HQ.CLI.Commands;
@@ -124,7 +128,7 @@ Then enter the code:
 
         if (userInfoResponse.IsError) throw new Exception(userInfoResponse.Error);
 
-        if(Guid.TryParse(userInfoResponse.Claims.SingleOrDefault(t => t.Type == "staff_id")?.Value, out Guid staffId))
+        if (Guid.TryParse(userInfoResponse.Claims.SingleOrDefault(t => t.Type == "staff_id")?.Value, out Guid staffId))
         {
             _config.StaffId = staffId;
         }

@@ -1,11 +1,12 @@
-﻿using HQ.Abstractions.Common;
-using HQ.Abstractions.Enumerations;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using HQ.Abstractions.Common;
+using HQ.Abstractions.Enumerations;
 
 namespace HQ.Abstractions.Projects;
 
@@ -43,7 +44,7 @@ public class GetProjectsV1
         public string Name { get; set; } = null!;
         public Guid? QuoteId { get; set; }
         public int? QuoteNumber { get; set; }
-        public string? ChargeCode { get; set; } 
+        public string? ChargeCode { get; set; }
         // Letter of engagement
         public decimal HourlyRate { get; set; }
         public decimal BookingHours { get; set; }

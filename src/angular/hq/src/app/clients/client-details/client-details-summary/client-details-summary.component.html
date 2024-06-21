@@ -1,27 +1,57 @@
-  @if (client$ | async; as client) {
+@if (client$ | async; as client) {
   <h1 class="font-rajdhani font-semibold text-3xl">{{ client.name }}</h1>
   <div class="flex justify-between">
-    <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3 ">
-      <div class="text-gray-50">Hourly Rate: {{ (client.hourlyRate| currency:'USD':'symbol') ?? 'None'}}</div>
-      <div class="text-gray-50">Email: @if(client.billingEmail ==null|| client.billingEmail =='') {None}@else{ {{client.billingEmail}} } </div>
-      <div class="text-gray-50">Official Name:@if(client.officialName ==null|| client.officialName =='') {None}@else{ {{client.officialName}} } </div>
-    </div>
-      <div class="float-right">
-        <a [routerLink]="['/clients/edit', client.id]" class="text-gray-50 pt-3">Edit client details</a>
+    <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
+      <div class="text-gray-50">
+        Hourly Rate:
+        {{ (client.hourlyRate | currency: "USD" : "symbol") ?? "None" }}
       </div>
+      <div class="text-gray-50">
+        Email:
+        @if (client.billingEmail === null || client.billingEmail === "") {
+          None
+        } @else {
+          {{ client.billingEmail }}
+        }
+      </div>
+      <div class="text-gray-50">
+        Official Name:
+        @if (client.officialName === null || client.officialName === "") {
+          None
+        } @else {
+          {{ client.officialName }}
+        }
+      </div>
+    </div>
+    <div class="float-right">
+      <a [routerLink]="['/clients/edit', client.id]" class="text-gray-50 pt-3"
+        >Edit client details</a
+      >
+    </div>
   </div>
   <hq-error-display [errors]="apiErrors"></hq-error-display>
-  }
-<div >
-  @if(clientInvoiceSummary$ | async; as clientInvoiceSummary){
+}
+<div>
+  @if (clientInvoiceSummary$ | async; as clientInvoiceSummary) {
     <div class="flex justify-between">
       <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-        <div class="text-gray-50">Month to Date: {{ (clientInvoiceSummary.lastMonthToDate | currency) ?? 'None'}} </div>
-        <div class="text-gray-50">Last Month to Date: {{ (clientInvoiceSummary.monthToDate | currency) ?? 'None'}} </div>
-        <div class="text-gray-50">Year to Date: {{ (clientInvoiceSummary.yearToDate | currency) ?? 'None'}}</div>
-        <div class="text-gray-50">All Time to Date: {{ (clientInvoiceSummary.allTimeToDate | currency) ?? 'None'}}</div>
+        <div class="text-gray-50">
+          Month to Date:
+          {{ (clientInvoiceSummary.lastMonthToDate | currency) ?? "None" }}
+        </div>
+        <div class="text-gray-50">
+          Last Month to Date:
+          {{ (clientInvoiceSummary.monthToDate | currency) ?? "None" }}
+        </div>
+        <div class="text-gray-50">
+          Year to Date:
+          {{ (clientInvoiceSummary.yearToDate | currency) ?? "None" }}
+        </div>
+        <div class="text-gray-50">
+          All Time to Date:
+          {{ (clientInvoiceSummary.allTimeToDate | currency) ?? "None" }}
+        </div>
       </div>
     </div>
   }
 </div>
-

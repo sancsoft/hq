@@ -1,7 +1,4 @@
-﻿using CsvHelper;
-using FluentResults;
-using Microsoft.Extensions.FileProviders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,6 +8,13 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+
+using CsvHelper;
+
+using FluentResults;
+
+using Microsoft.Extensions.FileProviders;
+
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HQ.CLI
@@ -44,7 +48,7 @@ namespace HQ.CLI
                     new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
                 }
             };
-            
+
             _defaultEditor = "vi";
             if (OperatingSystem.IsWindows())
             {
@@ -59,11 +63,11 @@ namespace HQ.CLI
 
             file.AppendLine("// Make changes below. Comments are ignored.");
             file.AppendLine("// If an error occurs when saving, this file will be reopened.");
-            
-            if(result != null && result.IsFailed)
+
+            if (result != null && result.IsFailed)
             {
                 file.AppendLine("// Errors:");
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     file.AppendLine("// - " + error.Message);
                 }
@@ -97,7 +101,7 @@ namespace HQ.CLI
 
                         var contents = await File.ReadAllTextAsync(_tempFilePath);
                         var source = JsonSerializer.Deserialize<T>(contents, _serializerOptions);
-                        if(source == null)
+                        if (source == null)
                         {
                             Console.WriteLine("Unable to deserialize.");
                             return 1;
@@ -116,7 +120,7 @@ namespace HQ.CLI
                         var result = await _validator(_source);
                         valid = result.IsSuccess;
 
-                        if(!valid)
+                        if (!valid)
                         {
                             await WriteTempFile(result);
                         }
@@ -137,7 +141,7 @@ namespace HQ.CLI
             }
             finally
             {
-                if(!_preserveTempFile)
+                if (!_preserveTempFile)
                 {
                     File.Delete(_tempFilePath);
                 }

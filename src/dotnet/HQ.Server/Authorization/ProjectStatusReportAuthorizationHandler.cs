@@ -1,5 +1,6 @@
 ﻿using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,7 @@ public class ProjectStatusReportAuthorizationHandler : AuthorizationHandler<Oper
         var isExecutive = context.User.IsInRole("executive");
         var isAdmin = context.User.IsInRole("administrator");
 
-        switch(requirement.Name)
+        switch (requirement.Name)
         {
             case nameof(ProjectStatusReportOperation.ApproveTime):
             case nameof(ProjectStatusReportOperation.UnapproveTime):
@@ -32,14 +33,14 @@ public class ProjectStatusReportAuthorizationHandler : AuthorizationHandler<Oper
             case nameof(ProjectStatusReportOperation.UpdateTime):
             case nameof(ProjectStatusReportOperation.SubmitReport):
             case nameof(ProjectStatusReportOperation.UpdateReportMarkdown):
-            {
-                if((staffId.HasValue && resource.ProjectManagerId.HasValue && isManager && staffId == resource.ProjectManagerId) || isPartner || isExecutive || isAdmin)
                 {
-                    context.Succeed(requirement);
-                }
+                    if ((staffId.HasValue && resource.ProjectManagerId.HasValue && isManager && staffId == resource.ProjectManagerId) || isPartner || isExecutive || isAdmin)
+                    {
+                        context.Succeed(requirement);
+                    }
 
-                break;
-            }
+                    break;
+                }
         }
 
         return Task.CompletedTask;

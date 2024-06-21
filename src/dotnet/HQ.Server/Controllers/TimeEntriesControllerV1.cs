@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Asp.Versioning;
+
 using FluentResults.Extensions.AspNetCore;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Times;
 using HQ.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
 using HQ.Server.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,12 +47,13 @@ namespace HQ.Server.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpsertTimeV1([FromBody] UpsertTimeV1.Request request, CancellationToken ct = default)
         {
-            if(request.Id.HasValue) { 
+            if (request.Id.HasValue)
+            {
                 var time = await _context.Times
                     .AsNoTracking()
                     .SingleOrDefaultAsync(t => t.Id == request.Id);
 
-                if(time == null)
+                if (time == null)
                 {
                     return NotFound();
                 }
@@ -56,7 +61,7 @@ namespace HQ.Server.Controllers
                 var authorizationResult = await _authorizationService
                     .AuthorizeAsync(User, time, TimeEntryOperation.UpsertTime);
 
-                if(!authorizationResult.Succeeded)
+                if (!authorizationResult.Succeeded)
                 {
                     return Forbid();
                 }
@@ -65,7 +70,7 @@ namespace HQ.Server.Controllers
             {
                 request.StaffId = User.GetStaffId();
             }
-            
+
             return await _TimeEntryServiceV1.UpsertTimeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -168,7 +173,7 @@ namespace HQ.Server.Controllers
             return await _TimeEntryServiceV1.GetTimesV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
-        
+
 
 
         [Authorize(HQAuthorizationPolicies.Staff)]
@@ -182,7 +187,7 @@ namespace HQ.Server.Controllers
                 .AsNoTracking()
                 .SingleOrDefaultAsync(t => t.Id == request.Id);
 
-            if(time == null)
+            if (time == null)
             {
                 return NotFound();
             }
@@ -190,12 +195,24 @@ namespace HQ.Server.Controllers
             var authorizationResult = await _authorizationService
                 .AuthorizeAsync(User, time, TimeEntryOperation.DeleteTime);
 
-            if(!authorizationResult.Succeeded)
+            if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
-            
+
             return await _TimeEntryServiceV1.DeleteTimeV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetDashboardTimeV1))]
+        [ProducesResponseType<GetDashboardTimeV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> GetDashboardTimeV1([FromBody] GetDashboardTimeV1.Request request, CancellationToken ct = default)
+        {
+            return await _TimeEntryServiceV1.GetDashboardTimeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
 
@@ -208,7 +225,7 @@ namespace HQ.Server.Controllers
         public async Task<ActionResult> ExportTimesV1([FromBody] ExportTimesV1.Request request, CancellationToken ct = default)
         {
             var result = await _TimeEntryServiceV1.ExportTimesV1(request, ct);
-            if(!result.IsSuccess)
+            if (!result.IsSuccess)
             {
                 return result.ToActionResult(new HQResultEndpointProfile());
             }
@@ -217,5 +234,7 @@ namespace HQ.Server.Controllers
 
             return File(value.File, value.ContentType, value.FileName);
         }
+
+
     }
 }

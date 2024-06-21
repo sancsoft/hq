@@ -7,4 +7,3 @@ using System.Threading.Tasks;
 namespace HQ.Abstractions.Common;
 
 public class NoContentResponseV1;
-

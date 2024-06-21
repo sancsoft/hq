@@ -7,9 +7,12 @@ import { ToastService } from '../../services/toast.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './toast.component.html',
-  styles: `:host { width: 100%; }`
+  styles: `
+    :host {
+      width: 100%;
+    }
+  `,
 })
 export class ToastComponent {
-  constructor(public toastService: ToastService) {
-  }
+  constructor(public toastService: ToastService) {}
 }

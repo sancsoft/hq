@@ -4,28 +4,69 @@
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.ClientName)">
-        Client Name <hq-sort-icon [column]="sortColumn.ClientName" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+        (click)="onSortClick(sortColumn.ClientName)"
+      >
+        Client Name
+        <hq-sort-icon
+          [column]="sortColumn.ClientName"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.InvoiceNumber)">
-        Invoices Number <hq-sort-icon [column]="sortColumn.InvoiceNumber" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.InvoiceNumber)"
+      >
+        Invoices Number
+        <hq-sort-icon
+          [column]="sortColumn.InvoiceNumber"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Total)">
-        Total <hq-sort-icon [column]="sortColumn.Total" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.Total)"
+      >
+        Total
+        <hq-sort-icon
+          [column]="sortColumn.Total"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.TotalApprovedHours)">
-        Total Approved Hours <hq-sort-icon [column]="sortColumn.TotalApprovedHours" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.TotalApprovedHours)"
+      >
+        Total Approved Hours
+        <hq-sort-icon
+          [column]="sortColumn.TotalApprovedHours"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer" (click)="onSortClick(sortColumn.Date)">
-        Date <hq-sort-icon [column]="sortColumn.Date" [activeColumn]="sortOption$ | async" [activeSortDirection]="sortDirection$ | async" />
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.Date)"
+      >
+        Date
+        <hq-sort-icon
+          [column]="sortColumn.Date"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
         colspan="2"
       >
-      @if([HQRole.Executive, HQRole.Administrator] | inRole | async)
-      {
+        @if([HQRole.Executive, HQRole.Administrator] | inRole | async) {
         <button
           routerLink="/invoices/create"
           class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
@@ -33,12 +74,16 @@
           <i class="bi bi-plus"></i>
           Invoices
         </button>
-      }
+        }
       </th>
     </tr>
   </thead>
   <tbody>
-    @for (invoice of invoices$ | async; track $index) {
+    @if((invoices$ | async)?.length === 0) {
+    <td colspan="6">
+      <h1 class="text-center py-4 font-bold">No matching records found</h1>
+    </td>
+    } @for (invoice of invoices$ | async; track $index) {
     <tr class="even:bg-gray-850 odd:bg-black-alt">
       <td class="border-b border-black py-2 pl-5">{{ invoice.clientName}}</td>
       <td class="border-b border-black py-2 pl-5">
@@ -76,7 +121,7 @@
     [total]="(totalRecords$ | async) ?? 0"
     [pageSize]="itemsPerPage.value"
     [currentPage]="page.value"
-    (onPage)="goToPage($event)"
+    (page)="goToPage($event)"
   ></hq-paginator>
   <div class="flex justify-end text-xs">
     {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} / {{ totalRecords$ |

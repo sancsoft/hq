@@ -7,16 +7,12 @@ import { Observable, map } from 'rxjs';
   selector: 'hq-project-edit',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
-  templateUrl: './project-edit.component.html'
+  templateUrl: './project-edit.component.html',
 })
 export class ProjectEditComponent {
-  
-  psrId$: Observable<string|null>;
+  psrId$: Observable<string | null>;
 
   constructor(private route: ActivatedRoute) {
-    this.psrId$ = route.queryParams.pipe(
-      map(t => t['psrId'])
-    );
+    this.psrId$ = route.queryParams.pipe(map((t) => t['psrId']));
   }
-
 }

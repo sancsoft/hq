@@ -7,5 +7,5 @@ import { Component, Input, input } from '@angular/core';
   templateUrl: './error-display.component.html',
 })
 export class ErrorDisplayComponent {
-  @Input('errors') apiErrors: string[] = [];
+  @Input() errors: string[] = [];
 }

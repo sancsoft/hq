@@ -26,10 +26,10 @@ export class PsrDetailsHeaderComponent {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private hqService: HQService
+    private hqService: HQService,
   ) {
     this.projectReportId$ = activatedRoute.paramMap.pipe(
-      map((params) => params.get('psrId'))
+      map((params) => params.get('psrId')),
     );
     const request$ = combineLatest({
       id: this.projectReportId$,
@@ -37,13 +37,13 @@ export class PsrDetailsHeaderComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getPSRV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.projectReportStatus$ = response$.pipe(
       map((response) => {
         return response.records[0];
-      })
+      }),
     );
   }
 

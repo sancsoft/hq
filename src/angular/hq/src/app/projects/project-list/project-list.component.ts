@@ -36,7 +36,7 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
     PaginatorComponent,
     SortIconComponent,
     PsrSearchFilterComponent,
-    InRolePipe
+    InRolePipe,
   ],
   templateUrl: './project-list.component.html',
 })
@@ -60,23 +60,23 @@ export class ProjectListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private psrService: PsrService
+    private psrService: PsrService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ProjectName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      startWith(this.itemsPerPage.value)
+      startWith(this.itemsPerPage.value),
     );
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
-      startWith(0)
+      startWith(0),
     );
     const search$ = psrService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(psrService.search.value)
+      startWith(psrService.search.value),
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
@@ -92,13 +92,13 @@ export class ProjectListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getProjectsV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.projects$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
@@ -112,8 +112,8 @@ export class ProjectListComponent {
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
 
     this.psrService.resetFilter();
@@ -128,7 +128,7 @@ export class ProjectListComponent {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

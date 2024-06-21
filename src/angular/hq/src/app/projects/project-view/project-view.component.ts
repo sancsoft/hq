@@ -24,14 +24,13 @@ import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
     RouterLink,
     RouterLinkActive,
     PsrWorkWeekComponent,
-    ProjectPsrDetailsComponent
+    ProjectPsrDetailsComponent,
   ],
   templateUrl: './project-view.component.html',
 })
-
 export class ProjectViewComponent {
   projectId$: Observable<string | null>;
-  psrId$: Observable<string|null>;
+  psrId$: Observable<string | null>;
   psrWorkWeeks$?: Observable<GetPSRRecordV1[]> | null;
   projectDetail$?: Observable<GetProjectRecordV1 | null>;
   clientDetail$?: Observable<GetClientRecordV1 | null>;
@@ -41,37 +40,40 @@ export class ProjectViewComponent {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private hqService: HQService
+    private hqService: HQService,
   ) {
-    this.projectId$ = this.route.params.pipe(map((params) => params['projectId']));
-    this.psrId$ = route.queryParams.pipe(
-      map(t => t['psrId']),
+    this.projectId$ = this.route.params.pipe(
+      map((params) => params['projectId']),
     );
-    this.projectId$.subscribe(
-      (id) => {
-        console.log(id);
-        if (id) {
-          this.psrWorkWeeks$ = this.hqService.getProjectPSRV1(id).pipe(map((response) => response.records));
-          this.projectDetail$ = this.hqService.getProjectV1(id).pipe(
-            map((response) => response.records ? response.records[0] : null)
+    this.psrId$ = route.queryParams.pipe(map((t) => t['psrId']));
+    this.projectId$.subscribe((id) => {
+      console.log(id);
+      if (id) {
+        this.psrWorkWeeks$ = this.hqService
+          .getProjectPSRV1(id)
+          .pipe(map((response) => response.records));
+        this.projectDetail$ = this.hqService
+          .getProjectV1(id)
+          .pipe(
+            map((response) => (response.records ? response.records[0] : null)),
           );
-        }
-      })
-
-  this.projectDetail$?.pipe(
-      switchMap((project) => {
-        if (project?.clientId) {
-          return this.hqService.getClientsV1({ id: project.clientId }).pipe(
-            map((response) => response.records)
-          );
-        }
-        return of(null);
-      })
-    ).subscribe((clientDetails) => {
-      console.log(clientDetails);
-      if(clientDetails)
-      this.clientDetail$ = of(clientDetails[0])
+      }
     });
-  }
 
+    this.projectDetail$
+      ?.pipe(
+        switchMap((project) => {
+          if (project?.clientId) {
+            return this.hqService
+              .getClientsV1({ id: project.clientId })
+              .pipe(map((response) => response.records));
+          }
+          return of(null);
+        }),
+      )
+      .subscribe((clientDetails) => {
+        console.log(clientDetails);
+        if (clientDetails) this.clientDetail$ = of(clientDetails[0]);
+      });
+  }
 }

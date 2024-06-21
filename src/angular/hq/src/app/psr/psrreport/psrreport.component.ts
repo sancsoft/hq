@@ -12,7 +12,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, NgModel } from '@angular/forms';
 import { PsrService } from '../psr-service';
 
-
 import {
   BehaviorSubject,
   Observable,
@@ -27,7 +26,7 @@ import {
   switchMap,
   take,
   takeUntil,
-  firstValueFrom
+  firstValueFrom,
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
@@ -42,12 +41,18 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 @Component({
   selector: 'hq-psrreport',
   standalone: true,
-  imports: [FormsModule, CommonModule, MonacoEditorModule, HQMarkdownComponent, InRolePipe],
+  imports: [
+    FormsModule,
+    CommonModule,
+    MonacoEditorModule,
+    HQMarkdownComponent,
+    InRolePipe,
+  ],
   templateUrl: './psrreport.component.html',
   encapsulation: ViewEncapsulation.None,
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
-  editorOptions$: Observable<any>;
+  editorOptions$: Observable<object>;
   report: string | null = null;
   sideBarCollapsed = false;
   leftWidth: number = 100;
@@ -60,8 +65,6 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   submitButtonState: ButtonState = ButtonState.Enabled;
   ButtonState = ButtonState;
   HQRole = HQRole;
-
-
 
   ngOnInit(): void {
     this.psrService.resetFilter();
@@ -84,10 +87,10 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private psrService: PsrService,
     private modalService: ModalService,
-    private oidcSecurityService: OidcSecurityService
+    private oidcSecurityService: OidcSecurityService,
   ) {
     const psrId$ = this.route.parent!.params.pipe(
-      map((params) => params['psrId'])
+      map((params) => params['psrId']),
     );
     this.psrId$ = psrId$;
     const request$ = combineLatest({
@@ -97,22 +100,26 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
     const psr$ = psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
-      map((t) => t.records[0])
+      map((t) => t.records[0]),
     );
 
     const canManageProjectStatusReport$ = combineLatest({
-      userData: oidcSecurityService.userData$.pipe(map(t => t.userData)),
-      psr: psr$
+      userData: oidcSecurityService.userData$.pipe(map((t) => t.userData)),
+      psr: psr$,
     }).pipe(
-      map(t => t.userData.roles && Array.isArray(t.userData.roles) && (
-        t.userData.roles.includes(HQRole.Administrator) ||
-        t.userData.roles.includes(HQRole.Executive) ||
-        t.userData.roles.includes(HQRole.Partner) ||
-        (t.userData.roles.includes(HQRole.Manager) && t.psr.projectManagerId == t.userData.staff_id)
-      )),
-      map(t => !!t)
+      map(
+        (t) =>
+          t.userData.roles &&
+          Array.isArray(t.userData.roles) &&
+          (t.userData.roles.includes(HQRole.Administrator) ||
+            t.userData.roles.includes(HQRole.Executive) ||
+            t.userData.roles.includes(HQRole.Partner) ||
+            (t.userData.roles.includes(HQRole.Manager) &&
+              t.psr.projectManagerId == t.userData.staff_id)),
+      ),
+      map((t) => !!t),
     );
-    
+
     // Editor options
     this.editorOptions$ = canManageProjectStatusReport$.pipe(
       map((canManageProjectStatusReport) => {
@@ -120,11 +127,16 @@ export class PSRReportComponent implements OnInit, OnDestroy {
           theme: 'vs-dark',
           language: 'markdown',
           automaticLayout: true,
-          readOnly: !canManageProjectStatusReport, 
-          domReadOnly: !canManageProjectStatusReport
+          readOnly: !canManageProjectStatusReport,
+          domReadOnly: !canManageProjectStatusReport,
         };
       }),
-      startWith({ theme: 'vs-dark', language: 'markdown', readOnly: true, domReadOnly: true })
+      startWith({
+        theme: 'vs-dark',
+        language: 'markdown',
+        readOnly: true,
+        domReadOnly: true,
+      }),
     );
 
     psr$.subscribe((psrResponse) => {
@@ -132,30 +144,39 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         this.report = psrResponse.report;
       }
       console.log(psrResponse.submittedAt, 'Submitted At');
-      this.submitButtonState =  psrResponse.submittedAt ? ButtonState.Disabled : ButtonState.Enabled; // If submittedAt is not null, this means that the report has been submitted
+      this.submitButtonState = psrResponse.submittedAt
+        ? ButtonState.Disabled
+        : ButtonState.Enabled; // If submittedAt is not null, this means that the report has been submitted
       console.log(this.submitButtonState.toLocaleString()); // console
     });
 
     const apiResponse$ = request$.pipe(
       skip(1),
-      tap(()=> {this.submitButtonState = ButtonState.Enabled}),
+      tap(() => {
+        this.submitButtonState = ButtonState.Enabled;
+      }),
       debounceTime(1000),
       takeUntil(this.destroyed$),
-      tap(()=> {this.savedStatus = "loading";}),
+      tap(() => {
+        this.savedStatus = 'loading';
+      }),
       switchMap((request) =>
-        this.hqService.updateProjectStatusReportMarkdownV1(request)
-      )
+        this.hqService.updateProjectStatusReportMarkdownV1(request),
+      ),
     );
     apiResponse$.subscribe({
       next: (response) => {
-        this.savedStatus ="success";
+        this.savedStatus = 'success';
         console.log('API Response:', response);
       },
       error: (err) => {
-        this.savedStatus = "fail";
+        this.savedStatus = 'fail';
         console.error('Error:', err);
-        this.modalService.alert('Error', 'There was an error saving the PM report.')
-        this.savedStatus = "fail";
+        this.modalService.alert(
+          'Error',
+          'There was an error saving the PM report.',
+        );
+        this.savedStatus = 'fail';
       },
     });
   }
@@ -165,16 +186,21 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   }
 
   async onReportSubmit() {
-    const confirmation = await firstValueFrom(this.modalService.confirm('Confirmation', 'Are you sure you want to submit this report?'));
+    const confirmation = await firstValueFrom(
+      this.modalService.confirm(
+        'Confirmation',
+        'Are you sure you want to submit this report?',
+      ),
+    );
 
     if (confirmation) {
-      const request$ = combineLatest({ projectStatusReportId: this.psrId$, });
+      const request$ = combineLatest({ projectStatusReportId: this.psrId$ });
 
       const apiResponse$ = request$.pipe(
         take(1),
         switchMap((request) =>
-          this.hqService.submitProjectStatusReportV1(request)
-        )
+          this.hqService.submitProjectStatusReportV1(request),
+        ),
       );
       apiResponse$.subscribe({
         next: () => {

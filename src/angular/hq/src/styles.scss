@@ -1,4 +1,4 @@
-@import '@angular/cdk/overlay-prebuilt.css';
+@import "@angular/cdk/overlay-prebuilt.css";
 
 /* You can add global styles to this file, and also import other style files */
 @tailwind base;
@@ -12,12 +12,16 @@
   }
 }
 
-html, body {
+html,
+body {
   height: 100%;
   @apply text-gray-100;
 }
 
-body { margin: 0; font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif;}
+body {
+  margin: 0;
+  font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif;
+}
 
 .markdown {
   h1 {
@@ -52,19 +56,18 @@ body { margin: 0; font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif
   }
 }
 
-
 @-moz-document url-prefix() {
   * {
-    scrollbar-width:thin;
+    scrollbar-width: thin;
     scrollbar-color: #b3b3b3 #3e3e3e;
   }
 }
 
 /* width */
 ::-webkit-scrollbar {
-  scrollbar-width:auto !important;
+  scrollbar-width: auto !important;
   width: 10px !important;
-  height:10px !important;
+  height: 10px !important;
 }
 
 /* Track */
@@ -77,7 +80,7 @@ body { margin: 0; font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif
 ::-webkit-scrollbar-thumb {
   @apply bg-gray-50;
   border-radius: 5px;
-  border:1px solid #000;
+  border: 1px solid #000;
 }
 
 /* Handle on hover */
@@ -95,25 +98,25 @@ body { margin: 0; font-family: "Open Sans", Roboto, "Helvetica Neue", sans-serif
 
 /* For IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* remove the calendar date picker icon */
 input[type="date"]::-webkit-inner-spin-button,
 input[type="date"]::-webkit-calendar-picker-indicator {
-    color:none;
-    background-color:none;
-    filter:opacity(0);
-    filter: alpha(opacity=0);
-    opacity:0;
-    -moz-opacity:0;
-    -webkit-opacity: 0; /* Chrome & Safari */
-    -webkit-filter: brightness(0);
-    -moz-brightness:0;
-    position:relative;
-    z-index:0;
-    background: transparent;
+  color: none;
+  background-color: none;
+  filter: opacity(0);
+  filter: alpha(opacity=0);
+  opacity: 0;
+  -moz-opacity: 0;
+  -webkit-opacity: 0; /* Chrome & Safari */
+  -webkit-filter: brightness(0);
+  -moz-brightness: 0;
+  position: relative;
+  z-index: 0;
+  background: transparent;
 }
 
 /* remove spinner from number input types */
@@ -122,6 +125,6 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }

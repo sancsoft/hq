@@ -1,11 +1,24 @@
-import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  ApplicationConfig,
+  importProvidersFrom,
+} from '@angular/core';
 import { TitleStrategy, provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppSettingsService } from './app-settings.service';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
-import { AbstractSecurityStorage, AuthInterceptor, authInterceptor, provideAuth } from 'angular-auth-oidc-client';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptors,
+} from '@angular/common/http';
+import {
+  AbstractSecurityStorage,
+  AuthInterceptor,
+  authInterceptor,
+  provideAuth,
+} from 'angular-auth-oidc-client';
 import { authConfig } from './auth.config';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { AuthStorageService } from './auth-storage.service';
@@ -28,12 +41,12 @@ export const appConfig: ApplicationConfig = {
       deps: [AppSettingsService],
     },
     {
-      provide: AbstractSecurityStorage, 
-      useClass: AuthStorageService
+      provide: AbstractSecurityStorage,
+      useClass: AuthStorageService,
     },
     {
       provide: TitleStrategy,
-      useClass: HQTitleStrategy
-    }
+      useClass: HQTitleStrategy,
+    },
   ],
 };

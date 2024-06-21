@@ -1,9 +1,8 @@
-import { Injectable } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { BehaviorSubject } from "rxjs";
-import { ProjectStatus } from "../../clients/client-details.service";
-import { GetPSRTimeRecordStaffV1 } from "../../models/PSR/get-psr-time-v1";
-
+import { Injectable } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
+import { ProjectStatus } from '../../clients/client-details.service';
+import { GetPSRTimeRecordStaffV1 } from '../../models/PSR/get-psr-time-v1';
 
 @Injectable({
   providedIn: 'root',

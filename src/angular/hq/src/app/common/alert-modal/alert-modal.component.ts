@@ -6,8 +6,11 @@ import { ModalData } from '../../services/modal.service';
   selector: 'hq-alert-modal',
   standalone: true,
   imports: [],
-  templateUrl: './alert-modal.component.html'
+  templateUrl: './alert-modal.component.html',
 })
 export class AlertModalComponent {
-  constructor(@Inject(DIALOG_DATA) public data: ModalData, public dialogRef: DialogRef<boolean>) {}
+  constructor(
+    @Inject(DIALOG_DATA) public data: ModalData,
+    public dialogRef: DialogRef<boolean>,
+  ) {}
 }

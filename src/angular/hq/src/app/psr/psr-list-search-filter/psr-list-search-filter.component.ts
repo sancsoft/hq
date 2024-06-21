@@ -7,9 +7,8 @@ import { PsrListService } from '../psrlist/services/pstlistService';
   selector: 'hq-psr-list-search-filter',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './psr-list-search-filter.component.html'
+  templateUrl: './psr-list-search-filter.component.html',
 })
 export class PsrListSearchFilterComponent {
   constructor(public psrListService: PsrListService) {}
-
 }
