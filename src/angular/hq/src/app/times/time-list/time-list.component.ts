@@ -52,6 +52,8 @@ export class TimeListComponent {
   times$: Observable<GetTimeRecordV1[]>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
+  timeRequest$ = new BehaviorSubject({});
+  date$ = new BehaviorSubject<Date | null>(null);
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
@@ -155,12 +157,22 @@ export class TimeListComponent {
     );
     const startDate$ = this.timeListService.startDate.valueChanges.pipe(
       startWith(this.timeListService.startDate.value),
+      tap(() => {
+        this.date$.next(null);
+      }),
     );
     const endDate$ = this.timeListService.endDate.valueChanges.pipe(
       startWith(this.timeListService.endDate.value),
+      tap(() => {
+        this.date$.next(null);
+      }),
     );
     const period$ = this.timeListService.selectedPeriod.valueChanges.pipe(
       startWith(this.timeListService.selectedPeriod.value),
+      tap(() => {
+        //
+        this.date$.next(new Date());
+      }),
     );
     const invoiced$ = this.timeListService.invoiced.valueChanges.pipe(
       startWith(this.timeListService.invoiced.value),
@@ -172,6 +184,7 @@ export class TimeListComponent {
     const request$ = combineLatest({
       search: search$,
       skip: skip$,
+      // date: this.date$,
       clientId: clientId$,
       projectId: projectId$,
       staffId: staffMemberId$,
@@ -183,6 +196,9 @@ export class TimeListComponent {
       invoiced: invoiced$,
       TimeAccepted: accepted$,
       sortDirection: this.sortDirection$,
+    });
+    request$.subscribe((request) => {
+      this.timeRequest$.next(request);
     });
 
     const response$ = request$.pipe(
@@ -232,7 +248,9 @@ export class TimeListComponent {
   }
 
   async exportTime() {
-    const result = await firstValueFrom(this.hqService.exportTimesV1({}));
+    const result = await firstValueFrom(
+      this.hqService.exportTimesV1(this.timeRequest$.getValue()),
+    );
     if (result.file === null) {
       this.toastService.show('Error', 'Unable to download export.');
       return;
