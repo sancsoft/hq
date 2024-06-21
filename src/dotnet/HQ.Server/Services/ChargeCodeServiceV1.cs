@@ -26,12 +26,13 @@ public class ChargeCodeServiceV1
         using (var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, ct))
         {
 
-       try {
-        var chargecode = await _context.ChargeCodes.FindAsync(request.Id);
-        if (chargecode == null)
-        {
-            chargecode = new();
-            _context.ChargeCodes.Add(chargecode);
+            try
+            {
+                var chargecode = await _context.ChargeCodes.FindAsync(request.Id);
+                if (chargecode == null)
+                {
+                    chargecode = new();
+                    _context.ChargeCodes.Add(chargecode);
                     switch (request.Activity)
                     {
                         case (ChargeCodeActivity.General):
@@ -66,25 +67,25 @@ public class ChargeCodeServiceV1
                     }
                 }
 
-        chargecode.Activity = request.Activity;
-        chargecode.Billable = request.Billable;
-        chargecode.Active = request.Active;
-        chargecode.Description = request.Description;
-        chargecode.QuoteId = request.QuoteId;
-        chargecode.ProjectId = request.ProjectId;
-        chargecode.ServiceAgreementId = request.ServiceAgreementId;
-        
-        
+                chargecode.Activity = request.Activity;
+                chargecode.Billable = request.Billable;
+                chargecode.Active = request.Active;
+                chargecode.Description = request.Description;
+                chargecode.QuoteId = request.QuoteId;
+                chargecode.ProjectId = request.ProjectId;
+                chargecode.ServiceAgreementId = request.ServiceAgreementId;
 
-        await _context.SaveChangesAsync(ct);
-        await transaction.CommitAsync(ct);  
+
+
+                await _context.SaveChangesAsync(ct);
+                await transaction.CommitAsync(ct);
 
 
                 return new UpsertChargeCodeV1.Response()
-        {
-            Id = chargecode.Id
-        };
-        }
+                {
+                    Id = chargecode.Id
+                };
+            }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync(ct);
@@ -126,11 +127,13 @@ public class ChargeCodeServiceV1
             records = records.Where(t => t.Billable == request.Billable.Value);
         }
 
-        if(request.ProjectId.HasValue) {
+        if (request.ProjectId.HasValue)
+        {
             records = records.Where(t => t.ProjectId.Equals(request.ProjectId));
         }
 
-        if(request.ClientId.HasValue) {
+        if (request.ClientId.HasValue)
+        {
             records = records.Where(t => t.Project!.ClientId == request.ClientId.Value);
         }
         var mapped = records.Select(t => new GetChargeCodesV1.Record()
@@ -141,9 +144,12 @@ public class ChargeCodeServiceV1
             Active = t.Active,
             Billable = t.Billable,
             ProjectName = t.Project != null ? t.Project.Name : null,
+            ProjectId = t.Project != null ? t.Project.Id : null,
+            ClientName = t.Project != null ? t.Project.Client.Name : null,
+            ClientId = t.Project != null ? t.Project.Client.Id : null,
+
             QuoteName = t.Quote != null ? t.Quote.Name : null,
             ServiceAgreementName = t.ServiceAgreement != null ? t.ServiceAgreement.Name : null,
-            ProjectId = t.ProjectId != null ? t.ProjectId : null,
             QuoteId = t.QuoteId != null ? t.QuoteId : null,
             ServiceAgreementId = t.ServiceAgreementId != null ? t.ServiceAgreementId : null,
             Description = t.Description

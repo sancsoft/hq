@@ -61,7 +61,10 @@ namespace HQ.Server.Controllers
                     return Forbid();
                 }
             }
-            request.StaffId = User.GetStaffId();
+            else
+            {
+                request.StaffId = User.GetStaffId();
+            }
             
             return await _TimeEntryServiceV1.UpsertTimeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
@@ -194,6 +197,25 @@ namespace HQ.Server.Controllers
             
             return await _TimeEntryServiceV1.DeleteTimeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
+        }
+
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(ExportTimesV1))]
+        [ProducesResponseType<FileResult>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> ExportTimesV1([FromBody] ExportTimesV1.Request request, CancellationToken ct = default)
+        {
+            var result = await _TimeEntryServiceV1.ExportTimesV1(request, ct);
+            if(!result.IsSuccess)
+            {
+                return result.ToActionResult(new HQResultEndpointProfile());
+            }
+
+            var value = result.Value;
+
+            return File(value.File, value.ContentType, value.FileName);
         }
     }
 }

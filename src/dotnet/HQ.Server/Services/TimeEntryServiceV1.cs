@@ -9,6 +9,7 @@ using HQ.Server.Data;
 using HQ.Server.Data.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using HQ.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services
@@ -23,7 +24,7 @@ namespace HQ.Server.Services
         public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default) {
             var validationResult = Result.Merge(
                 Result.FailIf(string.IsNullOrEmpty(request.Notes), "Notes are required."),
-                 Result.FailIf(request.StaffId == null, "Staff is required."),
+                Result.FailIf(!request.Id.HasValue && request.StaffId == null, "Staff is required."),
                 Result.FailIf(request.BillableHours <= 0, "Billable Hours must be greater than 0.")
             );
 
@@ -31,11 +32,12 @@ namespace HQ.Server.Services
                 return validationResult;
             }
 
-            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id && t.StaffId == request.StaffId);
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
 
             if (timeEntry == null)
             {
                 timeEntry = new Time();
+                timeEntry.StaffId = request.StaffId!.Value;
                 _context.Times.Add(timeEntry);
             }
 
@@ -76,7 +78,6 @@ namespace HQ.Server.Services
                 timeEntry.ActivityId = request.ActivityId.Value;
             }
 
-            timeEntry.StaffId = request.StaffId.HasValue ? request.StaffId.Value : Guid.Empty;
             timeEntry.Date = request.Date;
             timeEntry.Notes = request.Notes;
             timeEntry.Hours = request.Hours ?? 0;
@@ -222,12 +223,13 @@ namespace HQ.Server.Services
                 t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
                 t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
                 t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
-                 t.ChargeCode.Project.Name != null && t.ChargeCode.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
-                 t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
+                t.ChargeCode.Project.Name != null && t.ChargeCode.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
+                t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
             );
         }
+            var total = await records.CountAsync(ct);
 
-        if (!string.IsNullOrEmpty(request.ChargeCode))
+            if (!string.IsNullOrEmpty(request.ChargeCode))
         {
             records = records.Where(t => t.ChargeCode.Code == request.ChargeCode);
         }
@@ -235,8 +237,24 @@ namespace HQ.Server.Services
         {
             records = records.Where(t => t.ChargeCode.Project.ClientId.Equals(request.ClientId));
         }
+        if (request.Period.HasValue)
+        {
+            request.StartDate = new DateOnly().GetPeriodStartDate(request.Period.Value);
+            request.EndDate = new DateOnly().GetPeriodEndDate(request.Period.Value);
+        }
+        if (request.Invoiced.HasValue)
+        {
+            var isInvoiceRequired = request.Invoiced.Value;
+            records = records.Where(t => isInvoiceRequired ? t.InvoiceId != null : t.InvoiceId == null);
+        }
 
-        if (request.StartDate.HasValue && !request.EndDate.HasValue)
+        if (request.TimeAccepted.HasValue)
+        {
+            var isAcceptedTimeRequired = request.TimeAccepted.Value;
+            records = records.Where(t => isAcceptedTimeRequired ? t.Status == TimeStatus.Accepted : t.Status != TimeStatus.Accepted);
+        }
+
+            if (request.StartDate.HasValue && !request.EndDate.HasValue)
         {
             records = records.Where(t => t.Date >= request.StartDate);
         }
@@ -253,12 +271,16 @@ namespace HQ.Server.Services
         
         if (request.Id.HasValue)
         {
-            records = records.Where(t => t.Id == request.Id.Value && t.StaffId == request.StaffId);
+            records = records.Where(t => t.Id == request.Id.Value);
         }
         if (request.StaffId.HasValue)
         {
             records = records.Where(t => t.StaffId == request.StaffId);
         }
+        if(request.ProjectId.HasValue) {
+            records = records.Where(t => t.ChargeCode.ProjectId.Equals(request.ProjectId.Value));
+        }
+
         if (!string.IsNullOrEmpty(request.Task))
         {
             records = records.Where(t => t.Task == request.Task);
@@ -272,6 +294,25 @@ namespace HQ.Server.Services
             records = records.Where(t => t.Date == request.Date);
         }
 
+        
+        
+
+
+
+
+
+  
+            
+        if (request.Skip.HasValue)
+        {
+            records = records.Skip(request.Skip.Value);
+        }
+
+        if (request.Take.HasValue)
+        {
+            records = records.Take(request.Take.Value);
+        }
+        
             var mapped = records
             .Select(t => new GetTimesV1.Record()
             {
@@ -280,10 +321,17 @@ namespace HQ.Server.Services
                 RejectionNotes = t.RejectionNotes,
                 Task = t.Task,
                 Hours = t.Hours,
-                BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
+                BillableHours = t.HoursApproved,
                 ChargeCode = t.ChargeCode.Code,
                 ProjectName = t.ChargeCode.Project.Name,
+                ProjectId = t.ChargeCode.Project.Id,
                 ClientName = t.ChargeCode.Project.Client.Name,
+                ClientId = t.ChargeCode.Project.Client.Id,
+                StaffName = t.Staff.Name,
+                StaffId = t.Staff.Id,
+                InvoiceId = t.InvoiceId,
+                HoursApprovedBy = null,
+                Billable = t.ChargeCode.Billable,
                 Date = t.Date,
                 Description = t.Notes,
                 ActivityId = t.ActivityId,
@@ -291,28 +339,25 @@ namespace HQ.Server.Services
                 CreatedAt = t.CreatedAt,
             });
 
-        var total = await mapped.CountAsync(ct);
-
-
-        var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
+            var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
         {
-            { Abstractions.Times.GetTimesV1.SortColumn.BillableHours, "BillableHours" },
+            { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
             { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-            { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" }
+            { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
+            { Abstractions.Times.GetTimesV1.SortColumn.Billable, "Billable" },
+            { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
+            { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
+            { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" }
 
         };
 
-        var sortProperty = sortMap[request.SortBy];
+            var sortProperty = sortMap[request.SortBy];
 
-        var sorted = request.SortDirection == SortDirection.Asc ?
-            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+            mapped = request.SortDirection == SortDirection.Asc ?
+               mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+               mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
 
-        sorted = sorted
-            .ThenBy(t => t.Date)
-            .ThenBy(t => t.CreatedAt);
-
-        var response = new GetTimesV1.Response()
+            var response = new GetTimesV1.Response()
         {
             Records = await mapped.ToListAsync(ct),
             Total = total
@@ -336,6 +381,25 @@ namespace HQ.Server.Services
     await _context.SaveChangesAsync(ct);
 
      return new DeleteTimeV1.Response();
+    }
+
+    public async Task<Result<ExportTimesV1.Response>> ExportTimesV1(ExportTimesV1.Request request, CancellationToken ct)
+    {
+        // TODO: Replace with CSVHelper
+        var stream = new MemoryStream();
+        var streamWriter = new StreamWriter(stream);
+        await streamWriter.WriteLineAsync("Hello,World");
+
+        await streamWriter.FlushAsync(ct);
+
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return new ExportTimesV1.Response()
+        {
+            File = stream,
+            FileName = "HQTimeExport.csv", // TODO: Format with date/time something like HQTimeExport_202406201612.csv
+            ContentType = "text/csv",
+        };
     }
     }
 }

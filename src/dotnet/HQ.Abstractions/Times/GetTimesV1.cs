@@ -10,7 +10,7 @@ namespace HQ.Abstractions.Times {
 
 public class GetTimesV1
 {
-   public class Request
+   public class Request: PagedRequestV1
     {
         public Guid? Id { get; set; }
         public Guid? StaffId { get; set; }
@@ -19,19 +19,26 @@ public class GetTimesV1
         public DateOnly? EndDate { get; set; }
         public DateOnly? Date { get; set; }
         public Guid? ClientId  { get; set; }
+        public Guid? ProjectId  { get; set; }
         public string? ChargeCode  { get; set; }
         public string? Activity  { get; set; }
         public string? Task  { get; set; }
+        public Period? Period { get; set; }
+        public bool? TimeAccepted { get; set; }
+        public bool? Invoiced { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.Date;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }
 
     public enum SortColumn
     {
-        BillableHours = 1,
+        Hours = 1,
         Date = 2,
         ChargeCode = 3,
-        Activity = 4
+        StaffName = 4,
+        ClientName = 5,
+        ProjectName = 6,
+        Billable = 7,
     }
 
     public class Response : PagedResponseV1<Record>
@@ -45,18 +52,25 @@ public class GetTimesV1
     {
         public Guid Id { get; set; }
         public TimeStatus Status { get; set; }
-        public decimal BillableHours { get; set; }
+        public decimal? BillableHours { get; set; }
         public decimal Hours { get; set; }
+        public string? HoursApprovedBy { get; set; }
+        public Guid? InvoiceId { get; set; }
         public string? RejectionNotes { get; set; } = null!;
         public DateOnly Date { get; set; }
         public string ChargeCode { get; set; } = null!;
         public string? Task { get; set; }
         public Guid? ActivityId { get; set; }
         public string? ProjectName { get; set; }
+        public Guid? ProjectId { get; set; }
         public string? ClientName { get; set; }
+        public Guid? ClientId { get; set; }
+        public string? StaffName { get; set; }
+        public Guid? StaffId { get; set; }
         public string? ActivityName { get; set; }
         public string? Description { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
+        public bool Billable { get; set; }
     }
 }
 }

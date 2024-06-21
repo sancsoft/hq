@@ -64,7 +64,7 @@ public class APICommand : AsyncCommand
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAny", policy => policy.AllowAnyHeader().AllowAnyOrigin()); // TODO: Replace with explicit allow URLs
+            options.AddPolicy("AllowAny", policy => policy.AllowAnyHeader().AllowAnyOrigin().WithExposedHeaders("Content-Disposition")); // TODO: Replace with explicit allow URLs
         });
 
         builder.Services.AddControllers(options =>

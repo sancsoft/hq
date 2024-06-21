@@ -7,14 +7,14 @@ import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   GetClientRequestV1,
   GetClientResponseV1,
 } from '../models/clients/get-client-v1';
 import { AppSettingsService } from '../app-settings.service';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, map, Observable, switchMap, throwError } from 'rxjs';
 import {
   UpsertClientRequestV1,
   UpsertClientResponseV1,
@@ -88,7 +88,9 @@ import {
 import { UpsertStaffMemberRequestV1 } from '../models/staff-members/upsert-staff-member-v1';
 import { UpsertChargeCodesRequestV1, UpsertChargeCodesResponseV1 } from '../models/charge-codes/upsert-chargecodes';
 import { GetProjectActivitiesResponseV1, GetProjectActivityRequestV1 } from '../models/PSR/get-project-activity-v1';
+import { GetTimeRecordsV1, GetTimeRequestV1 } from '../models/times/get-time-v1';
 import { GetClientInvoiceSummaryV1Request, GetClientInvoiceSummaryV1Response } from '../models/clients/get-client-invoice-summary-v1';
+import { updateTimeRequestV1, UpdateTimeResponseV1 } from '../models/times/update-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -388,6 +390,33 @@ export class HQService {
     );
   }
 
+  getTimesV1(request: Partial<GetTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetTimeRecordsV1>(
+          `${apiUrl}/v1/TimeEntries/GetTimesV1`,
+          request)
+      )
+    );
+  }
+    upsertTimeV1(request: Partial<updateTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdateTimeResponseV1>(
+          `${apiUrl}/v1/TimeEntries/UpsertTimeV1`,
+          request
+        )
+      ),
+      catchError((err: HttpErrorResponse) => {
+        if (err.status == 400) {
+          return throwError(() => new APIError(err.error));
+        }
+
+        throw err;
+      })
+    );
+  }
+
   getClientInvoiceSummaryV1(request: Partial<GetClientInvoiceSummaryV1Request>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
@@ -398,8 +427,26 @@ export class HQService {
       )
     );
   }
-}
+
+  exportTimesV1(request: Partial<{  }>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.request(
+          'post',
+          `${apiUrl}/v1/TimeEntries/ExportTimesV1`,
+          {
+            body: request,
+            responseType: 'blob',
+            observe: 'response'
+          }
+        )
+      ),
+      map(response => ({ 
+        file: response.body,
+        fileName: (response.headers.get('content-disposition') ?? '').split(';')[1].split('filename')[1].split('=')[1].trim()
+      }))
+    );
+  }
+  }
 
 
-
-// UpdateProjectStatusReportTimeV1

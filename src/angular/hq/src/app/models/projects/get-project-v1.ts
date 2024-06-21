@@ -7,7 +7,7 @@ import { SortDirection } from '../common/sort-direction';
 export interface GetProjectRequestV1 extends PagedRequestV1 {
   search?: string | null;
   id?: string;
-  clientId?: string;
+  clientId?: string | null;
   sortBy: SortColumn;
   sortDirection: SortDirection;
 }
@@ -23,7 +23,7 @@ export enum SortColumn {
 }
 
 export interface GetProjectRecordV1 {
-  id: number;
+  id: string;
   projectNumber: string;
   chargeCode: string | null;
   clientId: string;
