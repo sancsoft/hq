@@ -15,7 +15,7 @@ namespace HQ.Abstractions.Times
             public string? Task { get; set; }
             public Guid? ActivityId { get; set; }
             public Guid? ChargeCodeId { get; set; }
-            public string Notes { get; set; } = "";
+            public string? Notes { get; set; }
             public Guid? StaffId { get; set; }
             public string? ChargeCode {get; set;}
             public string? ActivityName { get; set;}

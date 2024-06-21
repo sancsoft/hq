@@ -45,7 +45,7 @@ namespace HQ.Server.Services
             var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.ChargeCode || t.Id == request.ChargeCodeId).FirstOrDefaultAsync();
 
             // These conditions are for the case where the request doesn't have a chargeCodeId but has ChargeCode for example P1041
-            if (!string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue)
+            if ((!string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue) || chargeCode == null)
             {
                 if (chargeCode != null) {
                     timeEntry.ChargeCode = chargeCode;
@@ -212,7 +212,7 @@ namespace HQ.Server.Services
         public async Task<Result<GetTimesV1.Response>> GetTimesV1(GetTimesV1.Request request, CancellationToken ct = default)
     {
         var records = _context.Times
-        .Include(t => t.ChargeCode).ThenInclude(t => t.Project).ThenInclude(t => t.Client)
+            .Include(t => t.ChargeCode).ThenInclude(t => t.Project).ThenInclude(t => t!.Client)
             .AsNoTracking()
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
@@ -220,7 +220,7 @@ namespace HQ.Server.Services
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
-                t.Notes.ToLower().Contains(request.Search.ToLower()) ||
+                t.Notes!.ToLower().Contains(request.Search.ToLower()) ||
                 t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
                 t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
                 t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
@@ -236,7 +236,7 @@ namespace HQ.Server.Services
         }
         if (request.ClientId.HasValue)
         {
-            records = records.Where(t => t.ChargeCode.Project.ClientId.Equals(request.ClientId));
+            records = records.Where(t => t.ChargeCode.Project!.ClientId.Equals(request.ClientId));
         }
         if (request.Period.HasValue)
         {
@@ -288,7 +288,7 @@ namespace HQ.Server.Services
         }
         if (!string.IsNullOrEmpty(request.Activity))
         {
-            records = records.Where(t => t.Activity.Name == request.Activity);
+            records = records.Where(t => t.Activity!.Name == request.Activity);
         }
         if (request.Date.HasValue)
         {

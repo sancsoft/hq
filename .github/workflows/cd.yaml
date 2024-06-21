@@ -22,8 +22,10 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_ENV
     - name: Restore dependencies
       run: dotnet restore
+    - name: Format
+      run: dotnet format --verify-no-changes --verbosity diagnostic
     - name: Build
-      run: dotnet build --no-restore --configuration Release /p:Version=${VERSION}
+      run: dotnet build --no-restore --configuration Release /p:Version=${VERSION} -warnaserror
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
     - name: Publish HQ Server
@@ -49,6 +51,10 @@ jobs:
         cache-dependency-path: src/angular/hq/package-lock.json
     - name: Restore dependencies
       run: npm ci
+    - name: Prettier
+      run: npm run prettier -- . --check
+    - name: Lint
+      run: npm run lint
     - name: Build
       run: npm run build
     - name: Upload HQ Artifact
