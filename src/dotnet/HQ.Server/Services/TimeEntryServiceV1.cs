@@ -4,15 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 using CsvHelper;
 using CsvHelper.Configuration;
 
-
-
-
 using FluentResults;
-
 
 using HQ.Abstractions;
 using HQ.Abstractions;
@@ -425,19 +420,11 @@ namespace HQ.Server.Services
             return response;
         }
 
-
-
-
-
-
-
-
-
         public async Task<Result<DeleteTimeV1.Response?>> DeleteTimeV1(DeleteTimeV1.Request request, CancellationToken ct = default)
         {
             var time = await _context.Times
-                                     .Where(t => t.Id == request.Id)
-                                     .FirstOrDefaultAsync(ct);
+                                 .Where(t => t.Id == request.Id)
+                                 .FirstOrDefaultAsync(ct);
 
 
             if (time == null)
@@ -526,7 +513,6 @@ namespace HQ.Server.Services
             response.Clients = clients;
             response.Projects = projects;
 
-
             DateOnly date = request.ToDate.Value;
             do
             {
@@ -542,7 +528,6 @@ namespace HQ.Server.Services
                 date = date.AddDays(-1);
             }
             while (date >= request.FromDate.Value);
-
 
             return response;
         }
@@ -583,13 +568,10 @@ namespace HQ.Server.Services
                 return Result.Fail(records.Errors);
             }
 
-
             csvWriter.WriteRecords(records.Value.Records);
             await streamWriter.FlushAsync(ct);
 
-
             stream.Seek(0, SeekOrigin.Begin);
-
 
             return new ExportTimesV1.Response()
             {
@@ -600,4 +582,3 @@ namespace HQ.Server.Services
         }
     }
 }
-
