@@ -1,5 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { HQSnackBarService, IHQSnackbarMessage } from './services/hq-snack-bar-service';
+import {
+  HQSnackBarService,
+  IHQSnackbarMessage,
+} from './services/hq-snack-bar-service';
 import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -7,13 +10,13 @@ import { Observable } from 'rxjs';
   selector: 'hq-hq-snack-bar',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './hq-snack-bar.component.html'
+  templateUrl: './hq-snack-bar.component.html',
 })
 export class HqSnackBarComponent {
-  message? : IHQSnackbarMessage | null
+  message?: IHQSnackbarMessage | null;
   constructor(public hqSnackbarService: HQSnackBarService) {
-    hqSnackbarService.currentMessage.subscribe(message => { this.message = message; });
+    hqSnackbarService.currentMessage.subscribe((message) => {
+      this.message = message;
+    });
   }
-
-
 }

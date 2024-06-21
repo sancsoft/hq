@@ -5,8 +5,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'hq-clients',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './clients.component.html'
+  templateUrl: './clients.component.html',
 })
-export class ClientsComponent {
-
-}
+export class ClientsComponent {}

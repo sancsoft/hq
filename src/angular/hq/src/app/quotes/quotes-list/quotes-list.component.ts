@@ -1,9 +1,25 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Observable, debounceTime, switchMap, of, distinctUntilChanged, combineLatest, map, shareReplay, startWith, tap, BehaviorSubject } from 'rxjs';
+import {
+  Observable,
+  debounceTime,
+  switchMap,
+  of,
+  distinctUntilChanged,
+  combineLatest,
+  map,
+  shareReplay,
+  startWith,
+  tap,
+  BehaviorSubject,
+} from 'rxjs';
 import { HQService } from '../../services/hq.service';
-import { GetQuotesRecordV1, GetQuotesRecordsV1, SortColumn } from '../../models/quotes/get-quotes-v1';
+import {
+  GetQuotesRecordV1,
+  GetQuotesRecordsV1,
+  SortColumn,
+} from '../../models/quotes/get-quotes-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
@@ -16,10 +32,18 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 @Component({
   selector: 'hq-quotes-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, ReactiveFormsModule, PaginatorComponent, SortIconComponent, ClientDetailsSearchFilterComponent, InRolePipe],
-  templateUrl: './quotes-list.component.html'
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    PaginatorComponent,
+    SortIconComponent,
+    ClientDetailsSearchFilterComponent,
+    InRolePipe,
+  ],
+  templateUrl: './quotes-list.component.html',
 })
-export class QuotesListComponent  {
+export class QuotesListComponent {
   apiErrors: string[] = [];
 
   quotes$: Observable<GetQuotesRecordV1[]>;
@@ -39,24 +63,23 @@ export class QuotesListComponent  {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService
+    private clientDetailService: ClientDetailsService,
   ) {
-
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.QuoteName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      startWith(this.itemsPerPage.value)
+      startWith(this.itemsPerPage.value),
     );
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
-      startWith(0)
+      startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(clientDetailService.search.value)
+      startWith(clientDetailService.search.value),
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
@@ -72,13 +95,13 @@ export class QuotesListComponent  {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getQuotesV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.quotes$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
@@ -89,8 +112,8 @@ export class QuotesListComponent  {
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
 
     this.clientDetailService.resetFilters();
@@ -107,7 +130,7 @@ export class QuotesListComponent  {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

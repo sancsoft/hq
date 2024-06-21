@@ -1,10 +1,9 @@
-import { FormControl } from "@angular/forms";
-import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
-import { ProjectStatus } from "../../../clients/client-details.service";
-import { GetPSRTimeRecordStaffV1 } from "../../../models/PSR/get-psr-time-v1";
-import { HQService } from "../../../services/hq.service";
-import { Injectable } from "@angular/core";
-
+import { FormControl } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { ProjectStatus } from '../../../clients/client-details.service';
+import { GetPSRTimeRecordStaffV1 } from '../../../models/PSR/get-psr-time-v1';
+import { HQService } from '../../../services/hq.service';
+import { Injectable } from '@angular/core';
 
 export enum ActivityName {
   Support = 0,
@@ -40,9 +39,6 @@ export class PsrListService {
   showIsSubmitted$ = new BehaviorSubject<boolean>(true);
   showStartDate$ = new BehaviorSubject<boolean>(true);
   showEndDate$ = new BehaviorSubject<boolean>(true);
-
-
-
 
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
@@ -111,4 +107,3 @@ export class PsrListService {
     this.showEndDate$.next(false);
   }
 }
-

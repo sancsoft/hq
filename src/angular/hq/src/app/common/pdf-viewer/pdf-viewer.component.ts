@@ -9,7 +9,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
   templateUrl: './pdf-viewer.component.html',
 })
 export class PdfViewerComponent {
-  @Input() pdfURL = "";
+  @Input() pdfURL = '';
   page: number = 1;
   totalPages?: number;
   isLoaded: boolean = false;

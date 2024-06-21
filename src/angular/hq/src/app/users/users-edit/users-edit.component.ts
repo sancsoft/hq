@@ -5,7 +5,7 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router, ActivatedRoute,RouterLink } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
@@ -27,7 +27,7 @@ interface Form {
 @Component({
   selector: 'hq-users-edit',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule,RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './users-edit.component.html',
 })
 export class UsersEditComponent implements OnInit {
@@ -38,13 +38,13 @@ export class UsersEditComponent implements OnInit {
   constructor(
     private hqService: HQService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     const response$ = this.hqService.getStaffMembersV1({});
     this.staffMembers$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.form.controls.isStaff.valueChanges.subscribe((value) => {
@@ -140,7 +140,7 @@ export class UsersEditComponent implements OnInit {
     try {
       var request = { id: this.userId, ...this.form.value };
       const response = await firstValueFrom(
-        this.hqService.upsertUsersV1(request)
+        this.hqService.upsertUsersV1(request),
       );
       this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {

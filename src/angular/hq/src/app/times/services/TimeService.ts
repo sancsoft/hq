@@ -1,9 +1,13 @@
-import { Injectable, OnDestroy } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
-import { GetPSRTimeRecordStaffV1 } from "../../models/PSR/get-psr-time-v1";
-import { GetTimeRecordClientsV1, GetTimeRecordProjectsV1, GetTimeRecordStaffV1, Period } from "../../models/times/get-time-v1";
-
+import { Injectable, OnDestroy } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { GetPSRTimeRecordStaffV1 } from '../../models/PSR/get-psr-time-v1';
+import {
+  GetTimeRecordClientsV1,
+  GetTimeRecordProjectsV1,
+  GetTimeRecordStaffV1,
+  Period,
+} from '../../models/times/get-time-v1';
 
 export enum ActivityName {
   Support = 0,
@@ -15,7 +19,6 @@ export enum ActivityName {
   providedIn: 'root',
 })
 export class TimeService {
-
   staffMembers$ = new BehaviorSubject<GetTimeRecordStaffV1[]>([]);
   clients$ = new BehaviorSubject<GetTimeRecordClientsV1[]>([]);
   projects$ = new BehaviorSubject<GetTimeRecordProjectsV1[]>([]);
@@ -30,7 +33,6 @@ export class TimeService {
   client = new FormControl<string | null>(null);
   project = new FormControl<string | null>(null);
   selectedPeriod = new FormControl<Period | null>(Period.ThisMonth);
-
 
   projectActivity = new FormControl<string | null>(null);
   isSubmitted = new FormControl<boolean | null>(null);
@@ -51,9 +53,6 @@ export class TimeService {
   showIsSubmitted$ = new BehaviorSubject<boolean>(true);
   showStartDate$ = new BehaviorSubject<boolean>(true);
   showEndDate$ = new BehaviorSubject<boolean>(true);
-
-
-
 
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);

@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
   selector: 'hq-callback',
   standalone: true,
   imports: [],
-  template: ``
+  template: ``,
 })
-export class CallbackComponent {
-}
+export class CallbackComponent {}

@@ -1,17 +1,37 @@
 <div class="px-5">
-<hq-client-details-summary></hq-client-details-summary>
+  <hq-client-details-summary></hq-client-details-summary>
 </div>
 
 <div class="px-5 pt-4">
-    <div class="flex flex-col xl:flex-row justify-between items-start gap-4">
-        <hq-client-details-search-filter></hq-client-details-search-filter>
-        <div class="flex divide-x ml-auto">
-            <a routerLink="projects"  routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Projects</a>
-            <a routerLink="quotes" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Quotes</a>
-            <a routerLink="services" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Services</a>
-            <a routerLink="invoices" routerLinkActive="bg-blue-900" class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900">Invoices</a>
-        </div>
+  <div class="flex flex-col xl:flex-row justify-between items-start gap-4">
+    <hq-client-details-search-filter></hq-client-details-search-filter>
+    <div class="flex divide-x ml-auto">
+      <a
+        routerLink="projects"
+        routerLinkActive="bg-blue-900"
+        class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+        >Projects</a
+      >
+      <a
+        routerLink="quotes"
+        routerLinkActive="bg-blue-900"
+        class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+        >Quotes</a
+      >
+      <a
+        routerLink="services"
+        routerLinkActive="bg-blue-900"
+        class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+        >Services</a
+      >
+      <a
+        routerLink="invoices"
+        routerLinkActive="bg-blue-900"
+        class="text-gray-100 bg-black-alt px-8 py-3 font-bold hover:bg-blue-900"
+        >Invoices</a
+      >
     </div>
+  </div>
 </div>
 
 <router-outlet></router-outlet>

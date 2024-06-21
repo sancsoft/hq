@@ -3,17 +3,31 @@
 </div>
 <div class="bg-gray-800 alt p-4">
   <div class="pb-4">
-      {{ data.message }}
+    {{ data.message }}
   </div>
   <div>
-  <textarea rows="3" class = "w-full rounded mb-5 border-none outline-none bg-gray-900 p-1" type="text" #promptString> </textarea>
+    <textarea
+      rows="3"
+      class="w-full rounded mb-5 border-none outline-none bg-gray-900 p-1"
+      type="text"
+      #promptString
+    >
+    </textarea>
   </div>
   <div class="text-right">
-      <button type="button" (click)="dialogRef.close(promptString.value)" class="inline-block text-center px-10 py-2 mr-3 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
-        Confirm
-      </button>
-      <button type="button" (click)="dialogRef.close(null)" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
-        Cancel
-      </button>
+    <button
+      type="button"
+      (click)="dialogRef.close(promptString.value)"
+      class="inline-block text-center px-10 py-2 mr-3 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+    >
+      Confirm
+    </button>
+    <button
+      type="button"
+      (click)="dialogRef.close(null)"
+      class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+    >
+      Cancel
+    </button>
   </div>
 </div>

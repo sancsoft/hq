@@ -38,7 +38,7 @@ import { HQRole } from '../../../enums/hqrole';
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    InRolePipe
+    InRolePipe,
   ],
   templateUrl: './client-quote-list.component.html',
 })
@@ -63,25 +63,25 @@ export class ClientQuoteListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService
+    private clientDetailService: ClientDetailsService,
   ) {
     const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
-    
+
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.QuoteName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      startWith(this.itemsPerPage.value)
+      startWith(this.itemsPerPage.value),
     );
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
-      startWith(0)
+      startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(clientDetailService.search.value)
+      startWith(clientDetailService.search.value),
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
@@ -92,19 +92,19 @@ export class ClientQuoteListComponent {
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
-      clientId: clientId$
+      clientId: clientId$,
     });
 
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getQuotesV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.quotes$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
@@ -115,8 +115,8 @@ export class ClientQuoteListComponent {
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
 
     this.clientDetailService.resetFilters();
@@ -133,7 +133,7 @@ export class ClientQuoteListComponent {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

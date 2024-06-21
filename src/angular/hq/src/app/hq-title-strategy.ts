@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { Title } from "@angular/platform-browser";
-import { RouterStateSnapshot, TitleStrategy } from "@angular/router";
+import { Injectable } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
 @Injectable()
 export class HQTitleStrategy extends TitleStrategy {
@@ -14,5 +14,4 @@ export class HQTitleStrategy extends TitleStrategy {
       this.title.setTitle(`${title} - HQ`);
     }
   }
-
 }

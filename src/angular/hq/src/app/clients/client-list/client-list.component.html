@@ -4,9 +4,8 @@
   <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
 
-<div class="px-5  mb-[8px]">
-<hq-search-filter-client-list/>
-
+<div class="px-5 mb-[8px]">
+  <hq-search-filter-client-list />
 </div>
 
 <table class="min-w-full border-spacing-0 border-separate">
@@ -66,8 +65,7 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
         colspan="2"
       >
-        @if([HQRole.Executive, HQRole.Administrator] | inRole | async)
-        {
+        @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
           <button
             routerLink="/clients/create"
             class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
@@ -80,41 +78,46 @@
     </tr>
   </thead>
   <tbody>
-    @if((records$ | async)?.length == 0) {
-      <td colspan = "6">
-        <h1 class = "text-center py-4 font-bold">No matching records found</h1>
+    @if ((records$ | async)?.length == 0) {
+      <td colspan="6">
+        <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
     }
-    @for(client of records$ | async; track client.id) {
-    <tr class="even:bg-gray-850 odd:bg-black-alt">
-      <td class="border-b border-black py-2 pl-5">{{ client.name }}</td>
-      <td class="border-b border-black py-2 pl-5">
-        {{ (client.hourlyRate | currency) ?? "None" }}
-      </td>
-      <td class="border-b border-black py-2 pl-5">
-        @if(client.billingEmail) {
-        <a href="mailto:{{ client.billingEmail }}">{{ client.billingEmail }}</a>
-        } @else { None }
-      </td>
-      <td class="border-b border-black py-2 pl-5">
-        {{ client.officialName ?? "None" }}
-      </td>
-      <td class="border-b border-black py-2 text-right pr-5">
+    @for (client of records$ | async; track client.id) {
+      <tr class="even:bg-gray-850 odd:bg-black-alt">
+        <td class="border-b border-black py-2 pl-5">{{ client.name }}</td>
+        <td class="border-b border-black py-2 pl-5">
+          {{ (client.hourlyRate | currency) ?? "None" }}
+        </td>
+        <td class="border-b border-black py-2 pl-5">
+          @if (client.billingEmail) {
+            <a href="mailto:{{ client.billingEmail }}">{{
+              client.billingEmail
+            }}</a>
+          } @else {
+            None
+          }
+        </td>
+        <td class="border-b border-black py-2 pl-5">
+          {{ client.officialName ?? "None" }}
+        </td>
+        <td class="border-b border-black py-2 text-right pr-5">
           <div class="text-nowrap divide-x divide-teal-200">
-            @if([HQRole.Executive, HQRole.Administrator] | inRole | async)
-            {
-              <a [routerLink]="['edit', client.id]"
-              class="text-teal-200 hover:text-teal-300 pr-3"
-              >EDIT</a>
+            @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+              <a
+                [routerLink]="['edit', client.id]"
+                class="text-teal-200 hover:text-teal-300 pr-3"
+                >EDIT</a
+              >
             }
-         <a [routerLink]="[client.id]" class="text-teal-200 hover:text-teal-300 pl-3"
-          >VIEW</a
-        >
-       </div>
-        
-      </td>
-      
-    </tr>
+            <a
+              [routerLink]="[client.id]"
+              class="text-teal-200 hover:text-teal-300 pl-3"
+              >VIEW</a
+            >
+          </div>
+        </td>
+      </tr>
     }
   </tbody>
 </table>

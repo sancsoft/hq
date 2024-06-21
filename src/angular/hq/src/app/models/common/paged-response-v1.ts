@@ -1,4 +1,4 @@
 export interface PagedResponseV1<T> {
-    records: T[];
-    total?: number;
+  records: T[];
+  total?: number;
 }

@@ -5,19 +5,17 @@ import { SortDirection } from '../../models/common/sort-direction';
   selector: 'hq-sort-icon',
   standalone: true,
   imports: [],
-  templateUrl: './sort-icon.component.html'
+  templateUrl: './sort-icon.component.html',
 })
 export class SortIconComponent {
+  @Input()
+  activeColumn?: number | null;
 
   @Input()
-  activeColumn?: number|null;
+  activeSortDirection?: SortDirection | null;
 
   @Input()
-  activeSortDirection?: SortDirection|null;
-
-  @Input()
-  column?: number|null;
+  column?: number | null;
 
   SortDirection = SortDirection;
-
 }

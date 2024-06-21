@@ -65,9 +65,8 @@ export class PSRListComponent implements OnInit, OnDestroy {
     this.psrListService.showStartDate();
     this.psrListService.showEndDate();
 
-
     const staffId = await firstValueFrom(
-      this.oidcSecurityService.userData$.pipe(map((t) => t.userData?.staff_id))
+      this.oidcSecurityService.userData$.pipe(map((t) => t.userData?.staff_id)),
     );
     if (staffId) {
       this.psrListService.staffMember.setValue(staffId);
@@ -75,46 +74,47 @@ export class PSRListComponent implements OnInit, OnDestroy {
       console.log('ERROR: Could not find staff');
     }
   }
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
     public psrListService: PsrListService,
-    private oidcSecurityService: OidcSecurityService
+    private oidcSecurityService: OidcSecurityService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ChargeCode);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
     const itemsPerPage$ = psrListService.itemsPerPage.valueChanges.pipe(
-      startWith(psrListService.itemsPerPage.value)
+      startWith(psrListService.itemsPerPage.value),
     );
-    const page$ = psrListService.page.valueChanges.pipe(startWith(psrListService.page.value));
+    const page$ = psrListService.page.valueChanges.pipe(
+      startWith(psrListService.page.value),
+    );
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
-      startWith(0)
+      startWith(0),
     );
     const search$ = psrListService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(psrListService.search.value)
+      startWith(psrListService.search.value),
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
     const staffMemberId$ = psrListService.staffMember.valueChanges.pipe(
-      startWith(psrListService.staffMember.value)
+      startWith(psrListService.staffMember.value),
     );
 
     const isSubmitted$ = psrListService.isSubmitted.valueChanges.pipe(
-      startWith(psrListService.isSubmitted.value)
+      startWith(psrListService.isSubmitted.value),
     );
     const startDate$ = psrListService.startDate.valueChanges.pipe(
       startWith(psrListService.startDate.value),
     );
     const endDate$ = psrListService.endDate.valueChanges.pipe(
-      startWith(psrListService.endDate.value)
+      startWith(psrListService.endDate.value),
     );
 
     const request$ = combineLatest({
@@ -133,8 +133,7 @@ export class PSRListComponent implements OnInit, OnDestroy {
       debounceTime(500),
       switchMap((request) => this.hqService.getPSRV1(request)),
       shareReplay(1),
-    )
-
+    );
 
     const staffMembersResponse$ = this.hqService
       .getStaffMembersV1({ isAssignedProjectManager: true })
@@ -145,19 +144,19 @@ export class PSRListComponent implements OnInit, OnDestroy {
             id: record.id,
             name: record.name,
             totalHours: record.workHours,
-          }))
-        )
-      )
+          })),
+        ),
+      );
 
     staffMembersResponse$.pipe(first()).subscribe((response) => {
       console.log(response);
       psrListService.staffMembers$.next(response);
-    })
+    });
 
     this.projectStatusReports$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
@@ -168,12 +167,10 @@ export class PSRListComponent implements OnInit, OnDestroy {
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
-
   }
-
 
   goToPage(page: number) {
     this.psrListService.page.setValue(page);
@@ -184,7 +181,7 @@ export class PSRListComponent implements OnInit, OnDestroy {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

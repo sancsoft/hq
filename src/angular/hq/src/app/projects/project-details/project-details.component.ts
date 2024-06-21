@@ -20,7 +20,10 @@ export class ProjectDetailsComponent {
   psr$?: Observable<GetPSRRecordV1 | null>;
   BookingPeriod = Period;
 
-  constructor(private hqService: HQService, private route: ActivatedRoute) {
+  constructor(
+    private hqService: HQService,
+    private route: ActivatedRoute,
+  ) {
     this.projectId$ = route.queryParams.pipe(map((t) => t['projectId']));
     this.projectId$.subscribe((id) => {
       if (id) {
@@ -31,18 +34,17 @@ export class ProjectDetailsComponent {
               return t[0];
             }
             return null;
-          })
+          }),
         );
 
-        this.psr$ = hqService
-          .getPSRV1({ projectId: id })
-          .pipe(map((t) => t.records),
-          map((t)=>{
-            if(t) {
-              return t[0]
+        this.psr$ = hqService.getPSRV1({ projectId: id }).pipe(
+          map((t) => t.records),
+          map((t) => {
+            if (t) {
+              return t[0];
             }
             return null;
-          })
+          }),
         );
       }
     });

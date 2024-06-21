@@ -7,10 +7,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   providers: [StaffDashboardService],
-  templateUrl: './staff-dashboard.component.html'
+  templateUrl: './staff-dashboard.component.html',
 })
 export class StaffDashboardComponent {
-
   constructor(public staffDashboardService: StaffDashboardService) {}
-
 }

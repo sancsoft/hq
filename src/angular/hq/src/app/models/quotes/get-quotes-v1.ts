@@ -1,6 +1,6 @@
-import { PagedRequestV1 } from "../common/paged-request-v1";
-import { PagedResponseV1 } from "../common/paged-response-v1";
-import { SortDirection } from "../common/sort-direction";
+import { PagedRequestV1 } from '../common/paged-request-v1';
+import { PagedResponseV1 } from '../common/paged-response-v1';
+import { SortDirection } from '../common/sort-direction';
 
 export interface GetQuotesRequestV1 extends PagedRequestV1 {
   search?: string | null;
@@ -16,8 +16,6 @@ export enum SortColumn {
   Value = 3,
   Status = 4,
 }
-
-
 
 export interface GetQuotesRecordV1 {
   id: string;
@@ -37,5 +35,5 @@ export interface GetQuotesRecordsV1 {
   total: number | null;
 }
 
-export interface GetQuotesResponseV1 extends PagedResponseV1<GetQuotesRecordV1> {
-}
+export interface GetQuotesResponseV1
+  extends PagedResponseV1<GetQuotesRecordV1> {}

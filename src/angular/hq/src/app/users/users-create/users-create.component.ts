@@ -7,7 +7,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router, ActivatedRoute,RouterLink } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
@@ -29,7 +29,7 @@ interface Form {
 @Component({
   selector: 'hq-users-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule,RouterLink],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './users-create.component.html',
 })
 export class UsersCreateComponent {
@@ -77,21 +77,20 @@ export class UsersCreateComponent {
   constructor(
     private hqService: HQService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     const response$ = this.hqService.getStaffMembersV1({});
     this.staffMembers$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.form.controls.isStaff.valueChanges.subscribe((value) => {
       this.showStaffMembers$.next(value);
-      if(value) {
+      if (value) {
         this.form.controls.staffId.setValidators([Validators.required]);
         this.form.controls.staffId.updateValueAndValidity();
-
       } else {
         this.form.controls.staffId.clearValidators();
         this.form.controls.staffId.updateValueAndValidity();
@@ -110,7 +109,7 @@ export class UsersCreateComponent {
     try {
       const request = this.form.value;
       const response = await firstValueFrom(
-        this.hqService.upsertUsersV1(request)
+        this.hqService.upsertUsersV1(request),
       );
       this.router.navigate(['../'], { relativeTo: this.route });
     } catch (err) {

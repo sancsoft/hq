@@ -2,7 +2,17 @@ import { ClientDetailsSearchFilterComponent } from './../../clients/client-detai
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, map, startWith, combineLatest, tap, debounceTime, switchMap, shareReplay } from 'rxjs';
+import {
+  Observable,
+  BehaviorSubject,
+  map,
+  startWith,
+  combineLatest,
+  tap,
+  debounceTime,
+  switchMap,
+  shareReplay,
+} from 'rxjs';
 import { ClientDetailsService } from '../../clients/client-details.service';
 import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
 import { SortColumn } from '../../models/Services/get-services-v1';
@@ -18,8 +28,16 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 @Component({
   selector: 'hq-services-list',
   standalone: true,
-  imports: [RouterLink, CommonModule, PaginatorComponent, ReactiveFormsModule, SortIconComponent, ClientDetailsSearchFilterComponent, InRolePipe],
-  templateUrl: './services-list.component.html'
+  imports: [
+    RouterLink,
+    CommonModule,
+    PaginatorComponent,
+    ReactiveFormsModule,
+    SortIconComponent,
+    ClientDetailsSearchFilterComponent,
+    InRolePipe,
+  ],
+  templateUrl: './services-list.component.html',
 })
 export class ServicesListComponent {
   clientId?: string;
@@ -32,7 +50,6 @@ export class ServicesListComponent {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
-
   itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
 
@@ -43,23 +60,22 @@ export class ServicesListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService
+    private clientDetailService: ClientDetailsService,
   ) {
-
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.chargeCode);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      startWith(this.itemsPerPage.value)
+      startWith(this.itemsPerPage.value),
     );
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
-      startWith(0)
+      startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(clientDetailService.search.value)
+      startWith(clientDetailService.search.value),
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
@@ -75,13 +91,13 @@ export class ServicesListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getServicesV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.services$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
@@ -92,8 +108,8 @@ export class ServicesListComponent {
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
 
     this.clientDetailService.resetFilters();
@@ -114,7 +130,7 @@ export class ServicesListComponent {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

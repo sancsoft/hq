@@ -1,19 +1,16 @@
-@if(toastService.toastsToDisplay$ | async; as toasts)
-{
-    @if(toasts.length > 0)
-    {
-        <div class="w-full h-full flex flex-col-reverse p-2">
-            @for(toast of toasts; track toast.timestamp;)
-            {
-                <div class="w-full text-sm mt-2">
-                    <div class="bg-blue-900 py-1 px-2 font-bold">
-                        {{ toast.title }}
-                    </div>
-                    <div class="bg-gray-800 alt py-1 px-2">
-                        {{ toast.message }}
-                    </div>
-                </div>
-            }
+@if (toastService.toastsToDisplay$ | async; as toasts) {
+  @if (toasts.length > 0) {
+    <div class="w-full h-full flex flex-col-reverse p-2">
+      @for (toast of toasts; track toast.timestamp) {
+        <div class="w-full text-sm mt-2">
+          <div class="bg-blue-900 py-1 px-2 font-bold">
+            {{ toast.title }}
+          </div>
+          <div class="bg-gray-800 alt py-1 px-2">
+            {{ toast.message }}
+          </div>
         </div>
-    }
+      }
+    </div>
+  }
 }

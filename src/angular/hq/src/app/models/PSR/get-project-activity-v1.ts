@@ -1,4 +1,4 @@
-import { PagedResponseV1 } from "../common/paged-response-v1";
+import { PagedResponseV1 } from '../common/paged-response-v1';
 
 export interface GetProjectActivityRequestV1 {
   projectId: string | null;
@@ -14,4 +14,5 @@ export interface GetProjectActivityRecordsV1 {
   total: number | null;
 }
 
-export interface GetProjectActivitiesResponseV1 extends PagedResponseV1<GetProjectActivityRecordV1> {}
+export interface GetProjectActivitiesResponseV1
+  extends PagedResponseV1<GetProjectActivityRecordV1> {}

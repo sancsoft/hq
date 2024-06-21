@@ -1,4 +1,3 @@
-
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
@@ -73,18 +72,18 @@ export class SelectableClientListComponent {
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const search$ = this.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(this.search.value)
+      startWith(this.search.value),
     );
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(this.itemsPerPage.value)
+      startWith(this.itemsPerPage.value),
     );
 
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
-      map(([itemsPerPage, page]) => (page - 1) * itemsPerPage)
+      map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
     );
 
     const request$ = combineLatest({
@@ -98,7 +97,7 @@ export class SelectableClientListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => hqService.getClientsV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.records$ = response$.pipe(map((t) => t.records));
@@ -113,8 +112,8 @@ export class SelectableClientListComponent {
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
   }
 
@@ -134,7 +133,7 @@ export class SelectableClientListComponent {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

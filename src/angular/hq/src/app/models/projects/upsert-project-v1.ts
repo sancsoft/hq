@@ -1,4 +1,3 @@
-
 export interface UpsertProjectRequestV1 {
   id?: string;
   clientId: string | null;
@@ -7,7 +6,7 @@ export interface UpsertProjectRequestV1 {
   quoteId: string | null;
   hourlyRate: number | null;
   bookingHours: number | null;
-  bookingPeriod: number | null;  // Period as number
+  bookingPeriod: number | null; // Period as number
   startDate: Date | null;
   endDate: Date | null;
 }

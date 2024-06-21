@@ -69,7 +69,7 @@ export interface ChargeCodeViewModel {
     SortIconComponent,
     PsrSearchFilterComponent,
     FormsModule,
-    InRolePipe
+    InRolePipe,
   ],
   templateUrl: './psrtime-list.component.html',
 })
@@ -124,17 +124,17 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     private hqConfirmationModalService: HQConfirmationModalService,
     private modalService: ModalService,
     private toastService: ToastService,
-    private oidcSecurityService: OidcSecurityService
+    private oidcSecurityService: OidcSecurityService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
     const search$ = psrService.search.valueChanges.pipe(
-      startWith(psrService.search.value)
+      startWith(psrService.search.value),
     );
 
     const psrId$ = this.route.parent!.params.pipe(
-      map((params) => params['psrId'])
+      map((params) => params['psrId']),
     );
     const staffMemberId$ = psrService.staffMember.valueChanges.pipe(
       startWith(psrService.staffMember.value),
@@ -142,7 +142,6 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     const projectActivityId$ = psrService.projectActivity.valueChanges.pipe(
       startWith(psrService.projectActivity.value),
     );
-
 
     this.psrId$ = psrId$;
 
@@ -152,12 +151,12 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       projectManagerId: staffMemberId$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
-      activityId: projectActivityId$
+      activityId: projectActivityId$,
     }).pipe(shareReplay(1));
 
     const apiResponse$ = request$.pipe(
       debounceTime(500),
-      switchMap((request) => this.hqService.getPSRTimeV1(request))
+      switchMap((request) => this.hqService.getPSRTimeV1(request)),
     );
 
     apiResponse$.pipe(first()).subscribe((response) => {
@@ -166,35 +165,39 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     });
 
     const projectActivitiesRequest$ = combineLatest({
-      projectId: this.projectId$
+      projectId: this.projectId$,
     });
-    const ProjectActivitiesResponse$ = projectActivitiesRequest$.pipe(skip(1),
-      switchMap((request) => this.hqService.getprojectActivitiesV1(request))
+    const ProjectActivitiesResponse$ = projectActivitiesRequest$.pipe(
+      skip(1),
+      switchMap((request) => this.hqService.getprojectActivitiesV1(request)),
     );
     ProjectActivitiesResponse$.pipe(first()).subscribe((response) => {
       console.log(response);
-       psrService.projectActivities$.next(response.records);
+      psrService.projectActivities$.next(response.records);
       this.projectActivities$.next(response.records);
     });
 
-
     const psr$ = psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
-      map((t) => t.records[0])
+      map((t) => t.records[0]),
     );
 
     this.canManageProjectStatusReport$ = combineLatest({
-      userData: oidcSecurityService.userData$.pipe(map(t => t.userData)),
-      psr: psr$
+      userData: oidcSecurityService.userData$.pipe(map((t) => t.userData)),
+      psr: psr$,
     }).pipe(
-      map(t => t.userData.roles && Array.isArray(t.userData.roles) && (
-        t.userData.roles.includes(HQRole.Administrator) ||
-        t.userData.roles.includes(HQRole.Executive) ||
-        t.userData.roles.includes(HQRole.Partner) ||
-        (t.userData.roles.includes(HQRole.Manager) && t.psr.projectManagerId == t.userData.staff_id)
-      )),
-      map(t => !!t),
-      shareReplay(1)
+      map(
+        (t) =>
+          t.userData.roles &&
+          Array.isArray(t.userData.roles) &&
+          (t.userData.roles.includes(HQRole.Administrator) ||
+            t.userData.roles.includes(HQRole.Executive) ||
+            t.userData.roles.includes(HQRole.Partner) ||
+            (t.userData.roles.includes(HQRole.Manager) &&
+              t.psr.projectManagerId == t.userData.staff_id)),
+      ),
+      map((t) => !!t),
+      shareReplay(1),
     );
 
     const clientId$ = psr$.pipe(map((t) => t.clientId));
@@ -205,17 +208,17 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     const chargeCodeResponse$ = chargeCodeRequest$.pipe(
       debounceTime(500),
-      switchMap((req) => this.hqService.getChargeCodeseV1(req))
+      switchMap((req) => this.hqService.getChargeCodeseV1(req)),
     );
 
     this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     const refresh$ = this.refresh$.pipe(
       switchMap(() => apiResponse$),
-      tap((t) => this.deselectAll())
+      tap((t) => this.deselectAll()),
     );
 
     const response$ = merge(apiResponse$, refresh$).pipe(shareReplay(1));
@@ -223,21 +226,24 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     this.time$ = response$.pipe(
       map((response) => {
         return response.records;
-      }), tap((times) =>{
-        let isPendingTime = times.find((record) =>  record.status === TimeStatus.Pending)
-        if(isPendingTime) {
+      }),
+      tap((times) => {
+        let isPendingTime = times.find(
+          (record) => record.status === TimeStatus.Pending,
+        );
+        if (isPendingTime) {
           this.acceptButtonState = ButtonState.Enabled;
           this.acceptAllButtonState = ButtonState.Enabled;
         } else {
           this.acceptButtonState = ButtonState.Disabled;
           this.acceptAllButtonState = ButtonState.Disabled;
         }
-      })
+      }),
     );
     this.timeIds$ = this.time$.pipe(
       map((response) => {
         return response.map((t) => t.id);
-      })
+      }),
     );
   }
 
@@ -260,7 +266,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
   isSelected(timeId: string) {
     return this.selectedTimes$.pipe(
-      map((selected) => selected.includes(timeId))
+      map((selected) => selected.includes(timeId)),
     );
   }
 
@@ -270,8 +276,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   }
 
   async toggleTime(timeId: string) {
-    if(!await firstValueFrom(this.canManageProjectStatusReport$))
-    {
+    if (!(await firstValueFrom(this.canManageProjectStatusReport$))) {
       return;
     }
 
@@ -292,11 +297,11 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       let indexesOfSelectedTimes = selected.map((t) => timeIds.indexOf(t));
       startRowTimeIndex = Math.min(
         Math.min(...indexesOfSelectedTimes),
-        indexForShiftTime
+        indexForShiftTime,
       );
       endRowTimeIndex = Math.max(
         Math.max(...indexesOfSelectedTimes),
-        indexForShiftTime
+        indexForShiftTime,
       );
 
       this.deselectAll();
@@ -304,9 +309,9 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       const pendingTimes = await firstValueFrom(
         this.time$.pipe(
           map((t) =>
-            t.filter((t) => t.status == TimeStatus.Pending).map((t) => t.id)
-          )
-        )
+            t.filter((t) => t.status == TimeStatus.Pending).map((t) => t.id),
+          ),
+        ),
       );
       selected = selected.filter((t) => pendingTimes.includes(t));
     }
@@ -326,7 +331,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       this.hqService.approvePSRTimeV1({
         projectStatusReportId: psrId,
         timeIds: timeIds,
-      })
+      }),
     );
 
     this.toastService.show('Accepted', 'Time entries have been accepted.');
@@ -343,8 +348,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     const allTime = await firstValueFrom(
       this.time$.pipe(
         map((t) => t.filter((x) => x.status == TimeStatus.Pending)),
-        map((filteredArray) => filteredArray.map((x) => x.id))
-      )
+        map((filteredArray) => filteredArray.map((x) => x.id)),
+      ),
     );
     await this.accept(allTime);
   }
@@ -364,7 +369,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       this.hqService.unapprovePSRTimeV1({
         projectStatusReportId: psrId,
         timeId: timeId,
-      })
+      }),
     );
 
     this.refresh$.next();
@@ -374,7 +379,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     const description = (event.target as HTMLInputElement).value;
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
-      this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
     );
 
     if (!time || description.length < 1) {
@@ -384,8 +389,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     }
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id)
-      )
+        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+      ),
     );
 
     const request = {
@@ -396,7 +401,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       notes: description,
       chargeCodeId: chargecodeId,
       activityId: time.activityId,
-      activityName: time.activityName
+      activityName: time.activityName,
     };
 
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
@@ -408,7 +413,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     const task = (event.target as HTMLInputElement).value;
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
-      this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
     );
 
     if (!time) {
@@ -417,8 +422,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id)
-      )
+        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+      ),
     );
 
     const request = {
@@ -429,7 +434,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       notes: time.description,
       chargeCodeId: chargecodeId,
       activityId: time.activityId,
-      activityName: time.activityName
+      activityName: time.activityName,
     };
 
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
@@ -444,12 +449,12 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   async updateChargeCode(timeId: string, event: Event) {
     const chargeCode = await firstValueFrom(
       this.time$.pipe(
-        map((times) => times.find((x) => x.id == timeId)?.chargeCode)
-      )
+        map((times) => times.find((x) => x.id == timeId)?.chargeCode),
+      ),
     ); // this is to get the charge code of the time
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
-      this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
     );
 
     if (!time || !chargeCode || chargeCode.length != 5) {
@@ -468,18 +473,20 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     //   this.refresh$.next();
     //   return;
     // }
-    const changeChargeCode = await firstValueFrom(this.modalService.confirm(
-      'Confirmation',
-      `Are you sure you want to change the charge code to ${chargeCode}?`
-    ));
+    const changeChargeCode = await firstValueFrom(
+      this.modalService.confirm(
+        'Confirmation',
+        `Are you sure you want to change the charge code to ${chargeCode}?`,
+      ),
+    );
     if (!changeChargeCode) {
       this.refresh$.next();
       return;
     }
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == chargeCode)?.id)
-      )
+        map((c) => c.find((x) => x.code == chargeCode)?.id),
+      ),
     );
 
     const request = {
@@ -490,7 +497,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       notes: time.description,
       chargeCodeId: chargecodeId,
       activityId: time.activityId,
-      activityName: time.activityName
+      activityName: time.activityName,
     };
 
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
@@ -498,19 +505,20 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     this.refresh$.next();
   }
 
-
   async updateProjectActivity(timeId: string, event: Event) {
     const activityId = await firstValueFrom(
       this.time$.pipe(
-        map((times) => times.find((x) => x.id == timeId)?.activityId)
-      )
+        map((times) => times.find((x) => x.id == timeId)?.activityId),
+      ),
     );
     const activityName = await firstValueFrom(
-      this.projectActivities$.pipe(map((activities) => activities.find((x) => x.id == activityId)?.name))
-    )
+      this.projectActivities$.pipe(
+        map((activities) => activities.find((x) => x.id == activityId)?.name),
+      ),
+    );
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
-      this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
     );
     if (!time) {
       // this condition is to check if the charge code is valid
@@ -520,8 +528,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     }
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id)
-      )
+        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+      ),
     );
 
     const request = {
@@ -532,7 +540,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       notes: time.description,
       chargeCodeId: chargecodeId,
       activityId: activityId,
-      activityName: activityName
+      activityName: activityName,
     };
 
     // TOOD: Call API
@@ -546,20 +554,23 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     const roundedBillableHours = this.roundToNextQuarter(billableHours);
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
-      this.time$.pipe(map((times) => times.find((x) => x.id == timeId)))
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
     );
     if (time) {
       time.billableHours = roundedBillableHours;
     }
 
     if (!time || billableHours == '0' || billableHours == '') {
-      this.modalService.alert('Error', 'Please Add a time to your billable hours');
+      this.modalService.alert(
+        'Error',
+        'Please Add a time to your billable hours',
+      );
       return;
     }
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id)
-      )
+        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+      ),
     );
 
     const request = {
@@ -570,7 +581,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       notes: time.description,
       chargeCodeId: chargecodeId,
       activityId: time.activityId,
-      activityName: time.activityName
+      activityName: time.activityName,
     };
     //  Call API
     const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
@@ -608,7 +619,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
         projectStatusReportId: psrId,
         timeId: timeId,
         notes: notes,
-      })
+      }),
     );
 
     this.toastService.show('Rejected', 'Time entry has been rejected.');
@@ -624,7 +635,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

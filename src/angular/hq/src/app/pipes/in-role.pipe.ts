@@ -5,18 +5,22 @@ import { Observable, map, tap } from 'rxjs';
 
 @Pipe({
   name: 'inRole',
-  standalone: true
+  standalone: true,
 })
 export class InRolePipe implements PipeTransform {
-
   oidcSecurityService = inject(OidcSecurityService);
 
-  transform(roles: HQRole|HQRole[]): Observable<boolean> {
+  transform(roles: HQRole | HQRole[]): Observable<boolean> {
     const rolesToCheck = Array.isArray(roles) ? roles : [roles];
     return this.oidcSecurityService.userData$.pipe(
-      map(t => t.userData),
-      map(t => t && t.roles && Array.isArray(t.roles) && rolesToCheck.some(role => t.roles.includes(role))),
+      map((t) => t.userData),
+      map(
+        (t) =>
+          t &&
+          t.roles &&
+          Array.isArray(t.roles) &&
+          rolesToCheck.some((role) => t.roles.includes(role)),
+      ),
     );
   }
-
 }

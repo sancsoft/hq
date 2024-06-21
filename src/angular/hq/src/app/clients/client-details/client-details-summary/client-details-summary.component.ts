@@ -16,7 +16,7 @@ import { GetClientInvoiceSummaryV1Response } from '../../../models/clients/get-c
 @Component({
   selector: 'hq-client-details-summary',
   standalone: true,
-  imports: [CommonModule, ErrorDisplayComponent,RouterLink],
+  imports: [CommonModule, ErrorDisplayComponent, RouterLink],
   templateUrl: './client-details-summary.component.html',
 })
 export class ClientDetailsSummaryComponent {
@@ -24,14 +24,15 @@ export class ClientDetailsSummaryComponent {
   clientInvoiceSummary$: Observable<GetClientInvoiceSummaryV1Response>;
   apiErrors: string[] = [];
 
-  constructor(private hqService: HQService, private route: ActivatedRoute) {
-    const clientId$ = this.route.paramMap.pipe(
-      map(t => t.get('clientId')!)
-    );
+  constructor(
+    private hqService: HQService,
+    private route: ActivatedRoute,
+  ) {
+    const clientId$ = this.route.paramMap.pipe(map((t) => t.get('clientId')!));
 
     this.client$ = clientId$.pipe(
-      switchMap(clientId => this.hqService.getClientsV1({ id: clientId })),
-      map(t => t.records[0]),
+      switchMap((clientId) => this.hqService.getClientsV1({ id: clientId })),
+      map((t) => t.records[0]),
       catchError((error) => {
         if (error instanceof APIError) {
           this.apiErrors = error.errors;
@@ -41,12 +42,14 @@ export class ClientDetailsSummaryComponent {
 
         return of(null);
       }),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.clientInvoiceSummary$ = clientId$.pipe(
-      switchMap(clientId => this.hqService.getClientInvoiceSummaryV1({ id: clientId })),
-      shareReplay(1)
+      switchMap((clientId) =>
+        this.hqService.getClientInvoiceSummaryV1({ id: clientId }),
+      ),
+      shareReplay(1),
     );
   }
 
@@ -57,5 +60,4 @@ export class ClientDetailsSummaryComponent {
     billingEmail: '',
     hourlyRate: 0.0,
   };
-
 }

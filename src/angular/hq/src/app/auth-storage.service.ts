@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AbstractSecurityStorage } from 'angular-auth-oidc-client';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthStorageService implements AbstractSecurityStorage {
   read(key: string) {

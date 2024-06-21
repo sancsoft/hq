@@ -14,19 +14,19 @@ export interface GetTimeRequestV1 {
   staffId?: string | null;
   projectId?: string | null;
   clientId?: string | null;
-  invoiced?: boolean | null,
-  TimeAccepted?: boolean | null,
+  invoiced?: boolean | null;
+  TimeAccepted?: boolean | null;
   activityId: string | null;
 }
 
 export enum SortColumn {
-    Hours = 1,
-    Date = 2,
-    ChargeCode = 3,
-    StaffName = 4,
-    ClientName = 5,
-    ProjectName = 6,
-    Billable = 7,
+  Hours = 1,
+  Date = 2,
+  ChargeCode = 3,
+  StaffName = 4,
+  ClientName = 5,
+  ProjectName = 6,
+  Billable = 7,
 }
 
 export interface GetTimeRecordV1 {
@@ -38,7 +38,7 @@ export interface GetTimeRecordV1 {
   chargeCode: string;
   staffName: string | null;
   billable: boolean;
-  clientName: string | null
+  clientName: string | null;
   projectName: string | null;
   rejectionNotes: string | null;
   task: string | null;
@@ -51,12 +51,10 @@ export interface GetTimeRecordV1 {
   invoiceNumber?: string | null;
   hoursApproved?: number | null;
   hoursApprovedBy?: string | null;
-
 }
 export interface GetTimeRecordStaffV1 extends BaseRecordV1 {}
 
-export interface GetTimeRecordClientsV1 extends BaseRecordV1 {
-}
+export interface GetTimeRecordClientsV1 extends BaseRecordV1 {}
 
 export interface GetTimeRecordProjectsV1 extends BaseRecordV1 {
   chargeCode: string | null;
@@ -73,13 +71,12 @@ export interface GetTimeRecordsV1 {
   total: number | null;
 }
 
-export enum Period
-{
-    Today = 5,
-    ThisWeek = 6,
-    LastWeek = 7,
-    ThisMonth = 8,
-    LastMonth = 9,
+export enum Period {
+  Today = 5,
+  ThisWeek = 6,
+  LastWeek = 7,
+  ThisMonth = 8,
+  LastMonth = 9,
 }
 
 export interface GetTimeV1 extends PagedResponseV1<GetTimeRecordV1> {}

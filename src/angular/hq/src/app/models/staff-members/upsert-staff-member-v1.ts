@@ -8,9 +8,8 @@ export interface UpsertStaffMemberRequestV1 {
   startDate?: Date | null;
   endDate?: Date | null;
   jurisdiciton?: number | null;
-
 }
 
 export interface UpsertStaffMemberResponseV1 {
-  id:string;
+  id: string;
 }

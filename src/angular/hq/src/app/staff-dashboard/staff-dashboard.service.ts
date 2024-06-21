@@ -7,34 +7,33 @@ import { Observable, combineLatest, map, startWith, switchMap } from 'rxjs';
 import { GetDashboardTimeV1Response } from '../models/staff-dashboard/get-dashboard-time-v1';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StaffDashboardService {
-
-  search = new FormControl<string|null>(null);
+  search = new FormControl<string | null>(null);
   period = new FormControl<Period>(Period.Week, { nonNullable: true });
-  startDate = new FormControl<string|null>(null);
+  startDate = new FormControl<string | null>(null);
 
   time$: Observable<GetDashboardTimeV1Response>;
 
-  constructor(private hqService: HQService, private oidcSecurityService: OidcSecurityService) {
+  constructor(
+    private hqService: HQService,
+    private oidcSecurityService: OidcSecurityService,
+  ) {
     const staffId$ = oidcSecurityService.userData$.pipe(
-      map(t => t.userData),
-      map(t => t.staff_id as string)
+      map((t) => t.userData),
+      map((t) => t.staff_id as string),
     );
 
-    const period$ = this.period.valueChanges.pipe(
-      startWith(this.period.value)
-    );
+    const period$ = this.period.valueChanges.pipe(startWith(this.period.value));
 
     const request$ = combineLatest({
       staffId: staffId$,
-      period: period$
+      period: period$,
     });
 
     this.time$ = request$.pipe(
-      switchMap(request => this.hqService.getDashboardTimeV1(request))
+      switchMap((request) => this.hqService.getDashboardTimeV1(request)),
     );
   }
-
 }

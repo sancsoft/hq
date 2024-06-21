@@ -37,7 +37,7 @@ export enum Period {
   Today = 5,
   LastWeek = 6,
   LastMonth = 7,
-  Custom = 8
+  Custom = 8,
 }
 
 interface Form {
@@ -60,11 +60,9 @@ interface Form {
     ReactiveFormsModule,
     SelectableClientListComponent,
     PdfViewerComponent,
-
   ],
   templateUrl: './project-create.component.html',
 })
-
 export class ProjectCreateComponent {
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
@@ -90,17 +88,15 @@ export class ProjectCreateComponent {
       startDate: new FormControl(null, Validators.required),
       endDate: new FormControl(null, Validators.required),
     },
-    { validators: this.dateRangeValidator }
+    { validators: this.dateRangeValidator },
   );
-
-
 
   modalOpen$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private hqService: HQService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     const response$ = this.hqService.getStaffMembersV1({});
     const quotesResponse$ = this.hqService.getQuotesV1({});
@@ -108,13 +104,13 @@ export class ProjectCreateComponent {
     this.projectManagers$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.quotes$ = quotesResponse$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
     this.quotes$.subscribe((records) => {
       console.log(records);
@@ -135,7 +131,7 @@ export class ProjectCreateComponent {
         console.log(quotes);
         const quote = quotes.find((quote) => quote.id === quoteId);
         return quote ? quote.chargeCode : 'Quote not found';
-      })
+      }),
     );
   }
 
@@ -151,14 +147,14 @@ export class ProjectCreateComponent {
         request.bookingPeriod = Number(request.bookingPeriod);
         console.log('Sending Request:', request);
         const response = await firstValueFrom(
-          this.hqService.upsertProjectV1(request)
+          this.hqService.upsertProjectV1(request),
         );
-        this.generatedChargeCode$.next(response.chargeCode)
+        this.generatedChargeCode$.next(response.chargeCode);
         console.log(response.id);
         this.router.navigate(['../', response.id], { relativeTo: this.route });
       } else {
         this.apiErrors.push(
-          'Please correct the errors in the form before submitting.'
+          'Please correct the errors in the form before submitting.',
         );
       }
     } catch (err) {
@@ -186,8 +182,6 @@ export class ProjectCreateComponent {
     this.selectedClientName$.next(null);
     this.closeModal();
   }
-
-
 
   dateRangeValidator(group: AbstractControl): ValidationErrors | null {
     const startDate = group.get('startDate')?.value;

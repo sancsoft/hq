@@ -1,145 +1,225 @@
 <!-- Details content -->
 <!-- remove/add class hidden to hide/view -->
 <div class="pb-[27px] pt-[8px] relative">
-    <div class="absolute top-[8px] right-0 px-4">
-        <!-- edit/save button -->
-        <button routerLink="../edit" [queryParams]="{projectId: projectId$ | async}" class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]">
-            Edit
-        </button>
-    </div>
-    @if (project$ | async; as project) {
+  <div class="absolute top-[8px] right-0 px-4">
+    <!-- edit/save button -->
+    <button
+      routerLink="../edit"
+      [queryParams]="{ projectId: projectId$ | async }"
+      class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
+    >
+      Edit
+    </button>
+  </div>
+  @if (project$ | async; as project) {
     <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
-        <!-- left side -->
-        <div class="grid gap-[20px] pt-[12px] px-[27px]">
-
-            <!-- details view without form fields -->
-            <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]">
-                <div class="">
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Official Client name</div>
-                    <div class="">{{project.clientName}}</div>
-                </div>
+      <!-- left side -->
+      <div class="grid gap-[20px] pt-[12px] px-[27px]">
+        <!-- details view without form fields -->
+        <div
+          class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]"
+        >
+          <div class="">
+            <div
+              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+            >
+              Official Client name
             </div>
-            <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]">
-                <div class="">
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project Full Name</div>
-                    <div class="">{{project.name}}</div>
-                </div>
-                <div class="hidden">
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Project Name - Concatenated</div>
-                    <div class="">Project Name - Concatenated</div>
-                </div>
-            </div>
-            <div class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)]">
-                <div class="">
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">PM</div>
-                    <div class="">{{project.projectManagerName ?? 'None'}}</div>
-                </div>
-                <div class="">
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Rate</div>
-                    <div class="">
-                        <div class="">
-                            <span class="w-[42px]">
-                                <i class="bi bi-currency-dollar text-[14px]"></i>
-                            </span>
-                            {{project.hourlyRate || 'None'}}
-                            <span class="ml-[8px] font-semibold">p / h</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- section heading -->
-            <div class="border-b border-black mt-10">
-                <div class="font-bold mb-[3px] px-2">Booking</div>
-            </div>
-            <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)]">
-                <div class="">
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">HRS</div>
-                    <div class="">{{project.bookingHours}}</div>
-                </div>
-                <div class="">
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Period</div>
-                    <div class="">
-                        @switch (project.bookingPeriod) {
-                            @case (BookingPeriod.Week) {
-                                <div>Week</div>
-                            }
-                            @case (BookingPeriod.Month) {
-                                <div>Month</div>
-                            }
-                            @case (BookingPeriod.Quarter) {
-                                <div>Quarter</div>
-                            }
-                            @case (BookingPeriod.Year) {
-                                <div>Year</div>
-                            }
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="grid gap-[20px] grid-flow-row pr-5">
-                <div class="grid grid-flow-col grid-cols-[102px_35px_102px] gap-[15px]">
-                    <div class="w-full max-w-[102px]">
-                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Start Date</div>
-                        <div class="">{{project.startDate || 'None'}}</div>
-                    </div>
-                    <div class="flex align-middle justify-center items-center pt-4">-</div>
-                    <div class="w-full max-w-[102px]">
-                        <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">End Date</div>
-                        <div class="">{{project.endDate || 'None'}}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)]">
-                <div class="hidden">
-                    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Value</div>
-                    <div class="">Value</div>
-                </div>
-            </div>
-            <!-- end: details view without form fields -->
-
-            <!-- edit form / engagement form -->
-            <form class="grid gap-[20px]">
-
-                <!-- engagement section  -->
-                <!-- section heading -->
-                <div class="border-b border-black mt-10">
-                    <div class="font-bold mb-[3px] px-2">Engagement</div>
-                </div>
-
-                <div class="grid gap-[20px] grid-flow-row pr-5">
-                    <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,100%)] max-w-[810px]">
-                        <div>
-                            <div class="flex items-center justify-between px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%]">
-                                <div>filename.ext</div>
-                                <div><a href="" class="px-2 text-red-850" title="Remove"><i class="bi bi-trash3-fill text-[18px]"></i></a></div>
-                            </div>
-                        </div>
-                        <div class="flex justify-end">
-                            <a href="#" class="inline-block p-2 hover:text-gray-50" title="Download"><i class="bi bi-cloud-download-fill"></i></a>
-                        </div>
-                    </div>
-
-                    <!-- row grid -->
-                    <div class="grid gap-[20px] grid-flow-col">
-                        <!-- column -->
-                        <div>
-                            <!-- remove/add hidden class for edit/details page -->
-                            <div class="hidden font-open-sans text-nav-disabled text-xs font-bold uppercase">Optional Notes</div>
-                            <!-- textarea -->
-                            <textarea  class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded" placeholder="Optional Notes"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </form>
+            <div class="">{{ project.clientName }}</div>
+          </div>
         </div>
-        <!-- right side -->
-        <div>
-            <!-- flex flex-col flex-grow -->
-            <div class="bg-black px-[15px] mx-5 2xl:mx-0 w-fit 2xl:w-full mt-[80px]">
-              <hq-pdf-viewer pdfURL="https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf"></hq-pdf-viewer>
-                <!-- flex flex-grow -->
-                <!-- <div class=" bg-white">
+        <div
+          class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]"
+        >
+          <div class="">
+            <div
+              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+            >
+              Project Full Name
+            </div>
+            <div class="">{{ project.name }}</div>
+          </div>
+          <div class="hidden">
+            <div
+              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+            >
+              Project Name - Concatenated
+            </div>
+            <div class="">Project Name - Concatenated</div>
+          </div>
+        </div>
+        <div
+          class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)]"
+        >
+          <div class="">
+            <div
+              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+            >
+              PM
+            </div>
+            <div class="">{{ project.projectManagerName ?? "None" }}</div>
+          </div>
+          <div class="">
+            <div
+              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+            >
+              Rate
+            </div>
+            <div class="">
+              <div class="">
+                <span class="w-[42px]">
+                  <i class="bi bi-currency-dollar text-[14px]"></i>
+                </span>
+                {{ project.hourlyRate || "None" }}
+                <span class="ml-[8px] font-semibold">p / h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- section heading -->
+        <div class="border-b border-black mt-10">
+          <div class="font-bold mb-[3px] px-2">Booking</div>
+        </div>
+        <div
+          class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)]"
+        >
+          <div class="">
+            <div
+              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+            >
+              HRS
+            </div>
+            <div class="">{{ project.bookingHours }}</div>
+          </div>
+          <div class="">
+            <div
+              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+            >
+              Period
+            </div>
+            <div class="">
+              @switch (project.bookingPeriod) {
+                @case (BookingPeriod.Week) {
+                  <div>Week</div>
+                }
+                @case (BookingPeriod.Month) {
+                  <div>Month</div>
+                }
+                @case (BookingPeriod.Quarter) {
+                  <div>Quarter</div>
+                }
+                @case (BookingPeriod.Year) {
+                  <div>Year</div>
+                }
+              }
+            </div>
+          </div>
+        </div>
+        <div class="grid gap-[20px] grid-flow-row pr-5">
+          <div
+            class="grid grid-flow-col grid-cols-[102px_35px_102px] gap-[15px]"
+          >
+            <div class="w-full max-w-[102px]">
+              <div
+                class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+              >
+                Start Date
+              </div>
+              <div class="">{{ project.startDate || "None" }}</div>
+            </div>
+            <div class="flex align-middle justify-center items-center pt-4">
+              -
+            </div>
+            <div class="w-full max-w-[102px]">
+              <div
+                class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+              >
+                End Date
+              </div>
+              <div class="">{{ project.endDate || "None" }}</div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)]"
+        >
+          <div class="hidden">
+            <div
+              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+            >
+              Value
+            </div>
+            <div class="">Value</div>
+          </div>
+        </div>
+        <!-- end: details view without form fields -->
+
+        <!-- edit form / engagement form -->
+        <form class="grid gap-[20px]">
+          <!-- engagement section  -->
+          <!-- section heading -->
+          <div class="border-b border-black mt-10">
+            <div class="font-bold mb-[3px] px-2">Engagement</div>
+          </div>
+
+          <div class="grid gap-[20px] grid-flow-row pr-5">
+            <div
+              class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,100%)] max-w-[810px]"
+            >
+              <div>
+                <div
+                  class="flex items-center justify-between px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%]"
+                >
+                  <div>filename.ext</div>
+                  <div>
+                    <a href="" class="px-2 text-red-850" title="Remove"
+                      ><i class="bi bi-trash3-fill text-[18px]"></i
+                    ></a>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <a
+                  href="#"
+                  class="inline-block p-2 hover:text-gray-50"
+                  title="Download"
+                  ><i class="bi bi-cloud-download-fill"></i
+                ></a>
+              </div>
+            </div>
+
+            <!-- row grid -->
+            <div class="grid gap-[20px] grid-flow-col">
+              <!-- column -->
+              <div>
+                <!-- remove/add hidden class for edit/details page -->
+                <div
+                  class="hidden font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                >
+                  Optional Notes
+                </div>
+                <!-- textarea -->
+                <textarea
+                  class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded"
+                  placeholder="Optional Notes"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- right side -->
+      <div>
+        <!-- flex flex-col flex-grow -->
+        <div
+          class="bg-black px-[15px] mx-5 2xl:mx-0 w-fit 2xl:w-full mt-[80px]"
+        >
+          <hq-pdf-viewer
+            pdfURL="https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf"
+          ></hq-pdf-viewer>
+          <!-- flex flex-grow -->
+          <!-- <div class=" bg-white">
                     <img src="https://fakeimg.pl/560x730/cccccc/909090?text=Quote" class="h-auto max-w-full mx-auto" />
                 </div>
                 <div class="grid grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] h-[30px] items-center">
@@ -150,8 +230,8 @@
                     </div>
                     <div class="ml-auto text-gray-50 text-xs">1 / 2</div>
                 </div> -->
-            </div>
         </div>
+      </div>
     </div>
-}
+  }
 </div>

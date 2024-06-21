@@ -5,8 +5,6 @@ import { RouterOutlet } from '@angular/router';
   selector: 'hq-quotes',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './quotes.component.html'
+  templateUrl: './quotes.component.html',
 })
-export class QuotesComponent {
-
-}
+export class QuotesComponent {}

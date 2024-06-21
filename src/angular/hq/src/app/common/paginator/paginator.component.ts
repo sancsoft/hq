@@ -1,13 +1,19 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 
 @Component({
   selector: 'hq-paginator',
   standalone: true,
   imports: [],
-  templateUrl: './paginator.component.html'
+  templateUrl: './paginator.component.html',
 })
 export class PaginatorComponent implements OnChanges {
-
   paginationLength = 5;
 
   pages: number[] = [];
@@ -17,8 +23,6 @@ export class PaginatorComponent implements OnChanges {
   previousPage?: number | null;
 
   nextPage?: number | null;
-
-
 
   @Input()
   total!: number;
@@ -36,7 +40,6 @@ export class PaginatorComponent implements OnChanges {
 
   showPreviousPageButton: boolean = false;
 
-
   ngOnChanges(changes: SimpleChanges) {
     this.updateVisiblePages();
     this.updatePrevNextButtonPages();
@@ -46,15 +49,17 @@ export class PaginatorComponent implements OnChanges {
     this.totalPages = Math.ceil(this.total / this.pageSize);
     const length = Math.min(this.totalPages, this.paginationLength);
 
-
     const startIndex = Math.max(
-      Math.min((this.currentPage - Math.ceil(length / 2)), (this.totalPages - length)),
-      0
+      Math.min(
+        this.currentPage - Math.ceil(length / 2),
+        this.totalPages - length,
+      ),
+      0,
     );
 
     this.pages = Array.from(
       new Array(length).keys(),
-      (item) => item + startIndex + 1
+      (item) => item + startIndex + 1,
     );
   }
 
@@ -71,5 +76,4 @@ export class PaginatorComponent implements OnChanges {
     this.currentPage = page;
     this.onPage.next(this.currentPage);
   }
-
 }

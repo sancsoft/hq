@@ -12,8 +12,15 @@ import { ModalService } from './services/modal.service';
 @Component({
   selector: 'hq-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, FormsModule, RouterLink, RouterLinkActive, InRolePipe],
-  templateUrl: './layout.component.html'
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    FormsModule,
+    RouterLink,
+    RouterLinkActive,
+    InRolePipe,
+  ],
+  templateUrl: './layout.component.html',
 })
 export class LayoutComponent {
   title = 'HQ';
@@ -25,11 +32,11 @@ export class LayoutComponent {
   HQRole = HQRole;
 
   userName$: Observable<string>;
-  
+
   constructor() {
     this.userName$ = this.oidcSecurityService.userData$.pipe(
-      filter(t => t.userData),
-      map(t => t.userData.email)
+      filter((t) => t.userData),
+      map((t) => t.userData.email),
     );
   }
 
@@ -38,5 +45,4 @@ export class LayoutComponent {
       .logoff()
       .subscribe((result) => console.log(result));
   }
-
 }

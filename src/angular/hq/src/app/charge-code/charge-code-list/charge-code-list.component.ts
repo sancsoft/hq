@@ -2,9 +2,22 @@ import { ChargeCodeListService } from './../services/ChargeCodeListService';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, startWith, combineLatest, map, tap, debounceTime, switchMap, shareReplay } from 'rxjs';
+import {
+  Observable,
+  BehaviorSubject,
+  startWith,
+  combineLatest,
+  map,
+  tap,
+  debounceTime,
+  switchMap,
+  shareReplay,
+} from 'rxjs';
 import { ProjectStatus } from '../../clients/client-details.service';
-import { GetChargeCodeRecordV1, SortColumn } from '../../models/charge-codes/get-chargecodes-v1';
+import {
+  GetChargeCodeRecordV1,
+  SortColumn,
+} from '../../models/charge-codes/get-chargecodes-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { PsrService } from '../../psr/psr-service';
@@ -27,9 +40,9 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
     PaginatorComponent,
     SortIconComponent,
     ChargeCodeSearchFilterComponent,
-    InRolePipe
+    InRolePipe,
   ],
-  templateUrl: './charge-code-list.component.html'
+  templateUrl: './charge-code-list.component.html',
 })
 export class ChargeCodeListComponent implements OnInit {
   ngOnInit(): void {
@@ -54,23 +67,23 @@ export class ChargeCodeListComponent implements OnInit {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private chargeCodeListService: ChargeCodeListService
+    private chargeCodeListService: ChargeCodeListService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ProjectName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      startWith(this.itemsPerPage.value)
+      startWith(this.itemsPerPage.value),
     );
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
-      startWith(0)
+      startWith(0),
     );
     const search$ = chargeCodeListService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(chargeCodeListService.search.value)
+      startWith(chargeCodeListService.search.value),
     );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
@@ -86,13 +99,13 @@ export class ChargeCodeListComponent implements OnInit {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getChargeCodeseV1(request)),
-      shareReplay(1)
+      shareReplay(1),
     );
 
     this.chargeCodes$ = response$.pipe(
       map((response) => {
         return response.records;
-      })
+      }),
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
@@ -106,10 +119,9 @@ export class ChargeCodeListComponent implements OnInit {
       this.totalRecords$,
     ]).pipe(
       map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords)
-      )
+        Math.min(skip + itemsPerPage, totalRecords),
+      ),
     );
-
   }
 
   goToPage(page: number) {
@@ -121,7 +133,7 @@ export class ChargeCodeListComponent implements OnInit {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
-          : SortDirection.Asc
+          : SortDirection.Asc,
       );
     } else {
       this.sortOption$.next(sortColumn);

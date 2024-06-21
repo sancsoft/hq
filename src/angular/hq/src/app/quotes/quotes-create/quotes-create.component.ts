@@ -50,7 +50,7 @@ export class QuotesCreateComponent {
   constructor(
     private hqService: HQService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
   updateSelectedClient(client: GetClientRecordV1) {
     console.log(client);
@@ -69,13 +69,13 @@ export class QuotesCreateComponent {
         request.status = Number(request.status);
         console.log('Sending Request:', request);
         const response = await firstValueFrom(
-          this.hqService.upsertQuoteV1(request)
+          this.hqService.upsertQuoteV1(request),
         );
         console.log(response.id);
         this.router.navigate(['../', response.id], { relativeTo: this.route });
       } else {
         this.apiErrors.push(
-          'Please correct the errors in the form before submitting.'
+          'Please correct the errors in the form before submitting.',
         );
       }
     } catch (err) {
