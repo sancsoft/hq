@@ -16,7 +16,7 @@ export class ConfirmationModalComponent {
     });
   }
   onInputChange(event: Event) {
-    let inputElement = event.target as HTMLInputElement;
+    const inputElement = event.target as HTMLInputElement;
     this.confirmationModalService.saveNotes(inputElement.value);
   }
 }

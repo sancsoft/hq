@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { PDFDocumentProxy, PdfViewerModule } from 'ng2-pdf-viewer';
 
 @Component({
   selector: 'hq-pdf-viewer',
@@ -14,7 +14,7 @@ export class PdfViewerComponent {
   totalPages?: number;
   isLoaded: boolean = false;
 
-  afterLoadComplete(pdfData: any) {
+  afterLoadComplete(pdfData: PDFDocumentProxy) {
     this.totalPages = pdfData.numPages;
     this.isLoaded = true;
   }

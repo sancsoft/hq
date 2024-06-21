@@ -39,8 +39,7 @@ import { HQRole } from '../../../enums/hqrole';
   ],
   templateUrl: './client-project-list.component.html',
 })
-export class ClientProjectListComponent implements OnInit {
-  ngOnInit(): void {}
+export class ClientProjectListComponent {
   projects$: Observable<GetProjectRecordV1[]>;
   apiErrors: string[] = [];
   clientId?: string;

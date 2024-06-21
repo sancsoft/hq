@@ -138,7 +138,7 @@ export class UsersEditComponent implements OnInit {
     }
 
     try {
-      var request = { id: this.userId, ...this.form.value };
+      const request = { id: this.userId, ...this.form.value };
       const response = await firstValueFrom(
         this.hqService.upsertUsersV1(request),
       );

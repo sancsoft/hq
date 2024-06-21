@@ -75,12 +75,12 @@
               Deselect All
             </button> -->
               <button
-                [disabled]="acceptAllButtonState == ButtonState.Disabled"
+                [disabled]="acceptAllButtonState === ButtonState.Disabled"
                 [ngClass]="{
                   'text-gray-50 border-gray-500 bg-gray-500 ':
-                    acceptAllButtonState == ButtonState.Disabled,
+                    acceptAllButtonState === ButtonState.Disabled,
                   'border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                    acceptAllButtonState == ButtonState.Enabled,
+                    acceptAllButtonState === ButtonState.Enabled,
                 }"
                 class="px-2 py-2 bg-transparent border rounded min-w-[120px] font-normal"
                 (click)="acceptAll()"
@@ -88,12 +88,12 @@
                 Accept All
               </button>
               <button
-                [disabled]="acceptButtonState == ButtonState.Disabled"
+                [disabled]="acceptButtonState === ButtonState.Disabled"
                 [ngClass]="{
                   'text-gray-50 border-gray-500 bg-gray-500 ':
-                    acceptButtonState == ButtonState.Disabled,
+                    acceptButtonState === ButtonState.Disabled,
                   'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                    acceptButtonState == ButtonState.Enabled,
+                    acceptButtonState === ButtonState.Enabled,
                 }"
                 class="px-2 py-2 border rounded min-w-[120px] font-normal"
                 (click)="acceptSelected()"
@@ -114,9 +114,8 @@
             <tr
               [ngClass]="{
                 'bg-blue-950': isSelected(time.id) | async,
-                'even:bg-gray-850 odd:bg-black-alt': !(
-                  isSelected(time.id) | async
-                ),
+                'even:bg-gray-850 odd:bg-black-alt':
+                  (isSelected(time.id) | async) === false,
               }"
             >
               <td
@@ -332,9 +331,8 @@
             <tr
               [ngClass]="{
                 'bg-blue-950': isSelected(time.id) | async,
-                'even:bg-gray-850 odd:bg-black-alt': !(
-                  isSelected(time.id) | async
-                ),
+                'even:bg-gray-850 odd:bg-black-alt':
+                  (isSelected(time.id) | async) === false,
               }"
             >
               <td

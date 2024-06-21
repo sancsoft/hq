@@ -9,7 +9,7 @@
   }
 
   @for (page of pages; track $index) {
-    @if (page == currentPage) {
+    @if (page === currentPage) {
       <button
         (click)="goToPage(page)"
         class="px-2 py-1 font-semibold rounded bg-teal-200 text-blue-950 hover:bg-teal-300"

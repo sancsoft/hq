@@ -30,14 +30,18 @@
         [disabled]="page === 1"
         [ngClass]="{ 'text-gray-50': page === 1 }"
         class="px-2 bi bi-arrow-left-short text-[20px]"
-      ></button>
+      >
+        &nbsp;
+      </button>
       <button
         type="button"
         (click)="nextPage()"
         [disabled]="page === totalPages"
         [ngClass]="{ 'text-gray-50': page === totalPages }"
         class="px-2 bi bi-arrow-right-short text-[20px]"
-      ></button>
+      >
+        &nbsp;
+      </button>
     </div>
     <div class="ml-auto text-gray-50 text-xs">
       {{ page }} / {{ totalPages }}

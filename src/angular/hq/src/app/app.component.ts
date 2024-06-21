@@ -18,7 +18,7 @@ import { ToastComponent } from './common/toast/toast.component';
 import { ToastService } from './services/toast.service';
 
 @Component({
-  selector: 'app-root',
+  selector: 'hq-root',
   standalone: true,
   imports: [
     CommonModule,

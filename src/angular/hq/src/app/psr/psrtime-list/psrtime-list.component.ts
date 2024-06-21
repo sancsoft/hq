@@ -73,7 +73,7 @@ export interface ChargeCodeViewModel {
   ],
   templateUrl: './psrtime-list.component.html',
 })
-export class PSRTimeListComponent implements OnInit, OnDestroy {
+export class PSRTimeListComponent implements OnInit {
   apiErrors: string[] = [];
   chargeCodesViewModel: ChargeCodeViewModel[] = [];
   refresh$ = new Subject<void>();
@@ -111,9 +111,6 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     this.psrService.hideIsSubmitted();
     this.psrService.hideStartDate();
     this.psrService.hideEndDate();
-  }
-  ngOnDestroy(): void {
-    // this.psrService.resetFilter();
   }
 
   constructor(
@@ -228,7 +225,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
         return response.records;
       }),
       tap((times) => {
-        let isPendingTime = times.find(
+        const isPendingTime = times.find(
           (record) => record.status === TimeStatus.Pending,
         );
         if (isPendingTime) {
@@ -281,7 +278,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     }
 
     let selected = [...(await firstValueFrom(this.selectedTimes$))];
-    let shift = await firstValueFrom(this.shiftKey$);
+    const shift = await firstValueFrom(this.shiftKey$);
 
     if (selected.includes(timeId)) {
       selected.splice(selected.indexOf(timeId), 1);
@@ -292,9 +289,9 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     if (shift) {
       let startRowTimeIndex = 0;
       let endRowTimeIndex = 0;
-      let timeIds = await firstValueFrom(this.timeIds$);
-      let indexForShiftTime = timeIds.indexOf(timeId);
-      let indexesOfSelectedTimes = selected.map((t) => timeIds.indexOf(t));
+      const timeIds = await firstValueFrom(this.timeIds$);
+      const indexForShiftTime = timeIds.indexOf(timeId);
+      const indexesOfSelectedTimes = selected.map((t) => timeIds.indexOf(t));
       startRowTimeIndex = Math.min(
         Math.min(...indexesOfSelectedTimes),
         indexForShiftTime,

@@ -43,7 +43,7 @@ import { PsrListService } from './services/pstlistService';
   ],
   templateUrl: './psrlist.component.html',
 })
-export class PSRListComponent implements OnInit, OnDestroy {
+export class PSRListComponent implements OnInit {
   apiErrors: string[] = [];
 
   skipDisplay$: Observable<number>;
@@ -74,7 +74,6 @@ export class PSRListComponent implements OnInit, OnDestroy {
       console.log('ERROR: Could not find staff');
     }
   }
-  ngOnDestroy(): void {}
 
   constructor(
     private hqService: HQService,

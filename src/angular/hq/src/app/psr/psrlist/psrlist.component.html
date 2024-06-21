@@ -169,7 +169,7 @@
     </tr>
   </thead>
   <tbody>
-    @if ((projectStatusReports$ | async)?.length == 0) {
+    @if ((projectStatusReports$ | async)?.length === 0) {
       <td colspan="13">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
@@ -201,7 +201,7 @@
           {{ getProjectSatusString(report.status) }}
         </td>
         <td width="200" class="border-b border-black py-2 pe-2">
-          @if (report.status == ProjectStatus.Ongoing) {
+          @if (report.status === ProjectStatus.Ongoing) {
             @if (
               report.bookingPercentComplete && report.bookingPercentComplete > 1
             ) {
@@ -239,7 +239,7 @@
               <span>{{ report.bookingPercentComplete | percent }}</span>
             </div>
           }
-          @if (report.status == ProjectStatus.InProduction) {
+          @if (report.status === ProjectStatus.InProduction) {
             @if (
               report.totalPercentComplete && report.totalPercentComplete > 1
             ) {
@@ -272,7 +272,7 @@
             <div class="flex justify-between gap-2 text-xs text-gray-300">
               <span>{{ report.totalHours | number: "0.2-2" }} hrs total</span>
               <span>{{
-                report.totalPercentComplete != null
+                report.totalPercentComplete !== null
                   ? (report.totalPercentComplete | percent)
                   : "-"
               }}</span>
@@ -310,7 +310,7 @@
     [total]="(totalRecords$ | async) ?? 0"
     [pageSize]="psrListService.itemsPerPage.value"
     [currentPage]="psrListService.page.value"
-    (onPage)="goToPage($event)"
+    (page)="goToPage($event)"
   ></hq-paginator>
   <div class="flex justify-end text-xs">
     {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /

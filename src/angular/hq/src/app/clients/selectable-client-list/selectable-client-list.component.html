@@ -80,7 +80,8 @@
           [ngClass]="{
             'bg-blue-900': (isClientSelected(client.id) | async),
             'even:bg-gray-850 odd:bg-black-alt':
-              !(isClientSelected(client.id) | async) || !SelectClientEnabled,
+              (isClientSelected(client.id) | async) === false ||
+              !SelectClientEnabled,
           }"
         >
           <td class="border-b border-black py-2 pl-5">{{ client.name }}</td>
@@ -145,7 +146,7 @@
       [total]="(totalRecords$ | async) ?? 0"
       [pageSize]="itemsPerPage.value"
       [currentPage]="page.value"
-      (onPage)="goToPage($event)"
+      (page)="goToPage($event)"
     ></hq-paginator>
     <div class="flex justify-end text-xs">
       {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /

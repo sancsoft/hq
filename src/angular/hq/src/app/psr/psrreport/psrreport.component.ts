@@ -52,7 +52,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
   encapsulation: ViewEncapsulation.None,
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
-  editorOptions$: Observable<any>;
+  editorOptions$: Observable<object>;
   report: string | null = null;
   sideBarCollapsed = false;
   leftWidth: number = 100;

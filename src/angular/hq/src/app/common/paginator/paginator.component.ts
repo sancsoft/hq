@@ -34,7 +34,7 @@ export class PaginatorComponent implements OnChanges {
   currentPage!: number;
 
   @Output()
-  onPage = new EventEmitter<number>();
+  page = new EventEmitter<number>();
 
   showNextPageButton: boolean = false;
 
@@ -74,6 +74,6 @@ export class PaginatorComponent implements OnChanges {
 
   goToPage(page: number) {
     this.currentPage = page;
-    this.onPage.next(this.currentPage);
+    this.page.next(this.currentPage);
   }
 }

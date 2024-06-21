@@ -118,7 +118,7 @@
             ) {
               <tr
                 [ngClass]="
-                  (projectId$ | async) == i.toString()
+                  (projectId$ | async) === i.toString()
                     ? 'bg-blue-900'
                     : 'even:bg-gray-850 odd:bg-black-alt'
                 "
@@ -138,7 +138,8 @@
           </tbody>
         </table>
       </aside>
-      <div
+      <button
+        type="button"
         class="flex flex-col justify-center items-center bg-black-alt border-r border-black border-t border-t-steel-blue-600"
         (click)="sideBarCollapsed = !sideBarCollapsed"
         aria-controls="left-side"
@@ -148,7 +149,7 @@
           <div class="leading-[0.5]">&bull;</div>
           <div class="leading-[0.5]">&bull;</div>
         </div>
-      </div>
+      </button>
       <main class="bg-black-alt overflow-y-auto h-[calc(100dvh-245px)]">
         <!-- project details tabs -->
         <div

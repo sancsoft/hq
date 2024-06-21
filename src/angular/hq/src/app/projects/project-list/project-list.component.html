@@ -151,7 +151,7 @@
     </tr>
   </thead>
   <tbody>
-    @if ((projects$ | async)?.length == 0) {
+    @if ((projects$ | async)?.length === 0) {
       <td colspan="10">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
@@ -210,7 +210,7 @@
     [total]="(totalRecords$ | async) ?? 0"
     [pageSize]="itemsPerPage.value"
     [currentPage]="page.value"
-    (onPage)="goToPage($event)"
+    (page)="goToPage($event)"
   ></hq-paginator>
   <div class="flex justify-end text-xs">
     {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /

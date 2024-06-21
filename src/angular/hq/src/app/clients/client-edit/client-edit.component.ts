@@ -88,7 +88,7 @@ export class ClientEditComponent implements OnInit {
     }
 
     try {
-      var request = { id: this.clientId, ...this.form.value };
+      const request = { id: this.clientId, ...this.form.value };
       const response = await firstValueFrom(
         this.hqService.upsertClientV1(request),
       );

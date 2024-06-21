@@ -97,7 +97,7 @@ export class StaffEditComponent implements OnInit {
     console.log('Form is valid');
 
     try {
-      var request = { id: this.staffId, ...this.form.value };
+      const request = { id: this.staffId, ...this.form.value };
       const response = await firstValueFrom(
         this.hqService.upsertStaffV1(request),
       );

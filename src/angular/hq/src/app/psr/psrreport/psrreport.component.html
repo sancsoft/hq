@@ -3,15 +3,15 @@
     class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap flex"
   >
     <div class="ml-5 py-2">
-      @if (savedStatus == "loading") {
+      @if (savedStatus === "loading") {
         <div class="rounded min-w-[120px]">
           <i class="bi bi-cloud-upload-fill text-gray-50"></i> Saving...
         </div>
-      } @else if (savedStatus == "success") {
+      } @else if (savedStatus === "success") {
         <div>
           <i class="bi bi-check-circle-fill text-green-400"></i>
         </div>
-      } @else if (savedStatus == "fail") {
+      } @else if (savedStatus === "fail") {
         <div>
           <i class="bi bi-exclamation-diamond-fill text-yellow-400"></i> Error
           saving
@@ -23,12 +23,12 @@
         [HQRole.Manager, HQRole.Partner, HQRole.Administrator] | inRole | async
       ) {
         <button
-          [disabled]="submitButtonState == ButtonState.Disabled"
+          [disabled]="submitButtonState === ButtonState.Disabled"
           [ngClass]="{
             'text-gray-50 border-gray-500 bg-gray-500 ':
-              submitButtonState == ButtonState.Disabled,
+              submitButtonState === ButtonState.Disabled,
             'text-white border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600':
-              submitButtonState == ButtonState.Enabled,
+              submitButtonState === ButtonState.Enabled,
           }"
           class="px-2 py-2 border rounded min-w-[120px] font-normal"
           (click)="onReportSubmit()"
@@ -58,7 +58,8 @@
         ></ngx-monaco-editor>
       </div>
     </aside>
-    <div
+    <button
+      type="button"
       class="flex flex-col justify-center items-center bg-black-alt border-r border-black border-t border-t-steel-blue-600"
       (click)="sideBarCollapsed = !sideBarCollapsed"
       aria-controls="left-side"
@@ -68,7 +69,7 @@
         <div class="leading-[0.5]">&bull;</div>
         <div class="leading-[0.5]">&bull;</div>
       </div>
-    </div>
+    </button>
     <main
       class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out p-4 break-all"
       [ngClass]="{ hidden: sideBarCollapsed }"

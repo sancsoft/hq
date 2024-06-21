@@ -8,7 +8,7 @@
       </div>
       <div class="text-gray-50">
         Email:
-        @if (client.billingEmail == null || client.billingEmail == "") {
+        @if (client.billingEmail === null || client.billingEmail === "") {
           None
         } @else {
           {{ client.billingEmail }}
@@ -16,7 +16,7 @@
       </div>
       <div class="text-gray-50">
         Official Name:
-        @if (client.officialName == null || client.officialName == "") {
+        @if (client.officialName === null || client.officialName === "") {
           None
         } @else {
           {{ client.officialName }}

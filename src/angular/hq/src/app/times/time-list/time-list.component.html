@@ -179,7 +179,7 @@
     [total]="(totalRecords$ | async) ?? 0"
     [pageSize]="timeListService.itemsPerPage.value"
     [currentPage]="timeListService.page.value"
-    (onPage)="goToPage($event)"
+    (page)="goToPage($event)"
   ></hq-paginator>
   <div class="flex justify-end text-xs">
     {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /

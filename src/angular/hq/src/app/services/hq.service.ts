@@ -467,7 +467,7 @@ export class HQService {
     );
   }
 
-  exportTimesV1(request: Partial<{}>) {
+  exportTimesV1(request: Partial<object>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.request('post', `${apiUrl}/v1/TimeEntries/ExportTimesV1`, {

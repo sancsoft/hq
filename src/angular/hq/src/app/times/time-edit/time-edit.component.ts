@@ -55,7 +55,7 @@ interface Form {
 
   templateUrl: './time-edit.component.html',
 })
-export class TimeEditComponent {
+export class TimeEditComponent implements OnInit {
   apiErrors: string[] = [];
   ChargeCodeActivity = ChargeCodeActivity;
 

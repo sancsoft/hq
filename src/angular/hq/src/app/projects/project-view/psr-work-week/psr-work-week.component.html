@@ -33,7 +33,7 @@
     @for (psrWeek of PSRWorkWeeks | async; track $index) {
       <tr
         [ngClass]="
-          $index % 2 != 0 ? 'bg-blue-900' : 'even:bg-gray-850 odd:bg-black-alt'
+          $index % 2 !== 0 ? 'bg-blue-900' : 'even:bg-gray-850 odd:bg-black-alt'
         "
       >
         <td class="border-b border-black py-2 pl-5">{{ psrWeek.startDate }}</td>

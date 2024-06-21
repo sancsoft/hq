@@ -600,7 +600,7 @@
                     <div class="grid relative w-full max-w-[395px]">
                       @if (quotes$ | async; as quotes) {
                         <select
-                          (change)="quoteSelected($event.target)"
+                          (change)="quoteSelected($event)"
                           formControlName="quoteId"
                           id="quoteId"
                           class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
@@ -749,7 +749,7 @@
   class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear"
   [ngClass]="{
     'opacity-100 visible': (modalOpen$ | async),
-    'opacity-0 invisible': !(modalOpen$ | async),
+    'opacity-0 invisible': (modalOpen$ | async) === false,
   }"
 >
   <!-- modal dialog -->
@@ -798,6 +798,6 @@
   class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear"
   [ngClass]="{
     'opacity-75 visible': (modalOpen$ | async),
-    'opacity-0 invisible': !(modalOpen$ | async),
+    'opacity-0 invisible': (modalOpen$ | async) === false,
   }"
 ></div>

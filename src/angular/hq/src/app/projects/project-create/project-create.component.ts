@@ -124,8 +124,8 @@ export class ProjectCreateComponent {
   projectManagerSelected(id: string) {
     this.projectFormGroup.get('projectManagerId')?.setValue(id);
   }
-  quoteSelected(event: any) {
-    let quoteId = event.value;
+  quoteSelected(event: Event) {
+    const quoteId = (event.target as HTMLSelectElement).value;
     this.selectedQuote$ = this.quotes$.pipe(
       map((quotes) => {
         console.log(quotes);

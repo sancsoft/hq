@@ -397,7 +397,7 @@
   class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear"
   [ngClass]="{
     'opacity-100 visible': (modalOpen$ | async),
-    'opacity-0 invisible': !(modalOpen$ | async),
+    'opacity-0 invisible': (modalOpen$ | async) === false,
   }"
 >
   <!-- modal dialog -->
@@ -446,6 +446,6 @@
   class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear"
   [ngClass]="{
     'opacity-75 visible': (modalOpen$ | async),
-    'opacity-0 invisible': !(modalOpen$ | async),
+    'opacity-0 invisible': (modalOpen$ | async) === false,
   }"
 ></div>

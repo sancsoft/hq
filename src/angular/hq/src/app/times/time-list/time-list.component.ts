@@ -43,8 +43,7 @@ import { ToastService } from '../../services/toast.service';
   ],
   templateUrl: './time-list.component.html',
 })
-export class TimeListComponent implements OnInit {
-  ngOnInit(): void {}
+export class TimeListComponent {
   apiErrors: string[] = [];
 
   skipDisplay$: Observable<number>;
