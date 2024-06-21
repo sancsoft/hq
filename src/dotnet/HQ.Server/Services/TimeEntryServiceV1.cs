@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using FluentResults;
 
 using HQ.Abstractions;
-using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Times;
 using HQ.Server.Data;
@@ -235,7 +234,7 @@ namespace HQ.Server.Services
                     t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
                     t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
                     t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
-                    t.ChargeCode.Project.Name != null && t.ChargeCode.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode!.Project!.Name.ToLower().Contains(request.Search.ToLower()) ||
                     t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
                 );
             }
@@ -336,10 +335,10 @@ namespace HQ.Server.Services
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved,
                 ChargeCode = t.ChargeCode.Code,
-                ProjectName = t.ChargeCode.Project.Name,
-                ProjectId = t.ChargeCode.Project.Id,
-                ClientName = t.ChargeCode.Project.Client.Name,
-                ClientId = t.ChargeCode.Project.Client.Id,
+                ProjectName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Name : null,
+                ProjectId = t.ChargeCode.Project != null ? t.ChargeCode.Project.Id : null,
+                ClientName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Client.Name : null,
+                ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.Client.Id : null,
                 StaffName = t.Staff.Name,
                 StaffId = t.Staff.Id,
                 InvoiceId = t.InvoiceId,
