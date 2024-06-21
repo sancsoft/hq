@@ -10,6 +10,7 @@ export interface GetProjectRequestV1 extends PagedRequestV1 {
   clientId?: string | null;
   sortBy: SortColumn;
   sortDirection: SortDirection;
+  ProjectStatus?: ProjectStatus;
 }
 
 export enum SortColumn {
@@ -49,4 +50,4 @@ export interface GetProjectRecordsV1 {
 }
 
 export interface GetProjectResponseV1
-  extends PagedResponseV1<GetProjectRecordV1> {}
+  extends PagedResponseV1<GetProjectRecordV1> { }

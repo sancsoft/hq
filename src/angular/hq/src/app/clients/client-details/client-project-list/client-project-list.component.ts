@@ -79,10 +79,14 @@ export class ClientProjectListComponent {
       tap((t) => this.goToPage(1)),
       startWith(clientDetailService.search.value),
     );
-
+    const projectStatus$ = clientDetailService.projectStatus.valueChanges.pipe(
+      tap((t) => this.goToPage(1)),
+      startWith(clientDetailService.projectStatus.value),
+    );
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
     const request$ = combineLatest({
+      projectStatus: projectStatus$,
       clientId: clientId$,
       search: search$,
       skip: skip$,

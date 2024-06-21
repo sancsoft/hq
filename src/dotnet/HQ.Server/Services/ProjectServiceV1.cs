@@ -139,6 +139,13 @@ public class ProjectServiceV1
         {
             records = records.Where(t => t.Id == request.Id.Value);
         }
+
+
+        if (request.ProjectStatus.HasValue && request.ProjectStatus != ProjectStatus.All)
+        {
+            records = records.Where(t => t.Quote.Status == request.ProjectStatus);
+        }
+
         var mapped = records.Select(t => new GetProjectsV1.Record()
         {
             Id = t.Id,

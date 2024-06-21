@@ -14,6 +14,7 @@ export enum ProjectStatus {
   Completed = 7,
   Closed = 8,
   Lost = 9,
+  All = 10,
 }
 @Injectable({
   providedIn: 'root',
@@ -26,11 +27,11 @@ export class ClientDetailsService {
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
   showCurrentOnly$ = new BehaviorSubject<boolean>(true);
 
-  constructor() {}
+  constructor() { }
 
   resetFilters() {
     this.search.setValue('');
-    this.projectStatus.setValue(ProjectStatus.Unknown);
+    this.projectStatus.setValue(ProjectStatus.All);
     this.currentOnly.setValue(true);
   }
 

@@ -11,5 +11,7 @@ public enum ProjectStatus
     Ongoing = 6,
     Completed = 7,
     Closed = 8,
-    Lost = 9
+    Lost = 9,
+
+    All = 10
 }

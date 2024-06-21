@@ -19,6 +19,7 @@ public class GetProjectsV1
         public Guid? clientId { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.ProjectName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+        public ProjectStatus? ProjectStatus { get; set; }
     }
 
     public enum SortColumn
@@ -54,6 +55,6 @@ public class GetProjectsV1
         public int Status { get; set; }
         public string? BillingEmail { get; set; }
         public string? OfficialName { get; set; }
-
+        public ProjectStatus? ProjectStatus { get; set; }
     }
 }
