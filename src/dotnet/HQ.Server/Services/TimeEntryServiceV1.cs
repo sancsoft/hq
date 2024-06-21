@@ -252,11 +252,25 @@ namespace HQ.Server.Services
 
         public async Task<Result<GetTimesV1.Response>> GetTimesV1(GetTimesV1.Request request, CancellationToken ct = default)
         {
+            if (request.Period.HasValue && request.Period == Period.Custom)
+            {
+                if (request.StartDate.HasValue && request.EndDate.HasValue && request.StartDate.Value > request.EndDate.Value)
+                {
+                    return Result.Fail("Invalid date range.");
+                }
+            }
+            else if (request.Period.HasValue)
+            {
+                request.StartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(request.Period.Value);
+                request.EndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(request.Period.Value);
+            }
+
             var records = _context.Times
                 .Include(t => t.ChargeCode).ThenInclude(t => t.Project).ThenInclude(t => t!.Client)
                 .AsNoTracking()
                 .OrderByDescending(t => t.CreatedAt)
                 .AsQueryable();
+
 
 
             if (!string.IsNullOrEmpty(request.Search))
@@ -270,7 +284,6 @@ namespace HQ.Server.Services
                     t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
                 );
             }
-            var total = await records.CountAsync(ct);
 
 
             if (!string.IsNullOrEmpty(request.ChargeCode))
@@ -281,6 +294,7 @@ namespace HQ.Server.Services
             {
                 records = records.Where(t => t.ChargeCode.Project!.ClientId.Equals(request.ClientId));
             }
+
             if (request.Date.HasValue && request.Period.HasValue)
             {
                 request.StartDate = request.Date.Value.GetPeriodStartDate(request.Period.Value);
@@ -290,6 +304,7 @@ namespace HQ.Server.Services
             {
                 records = records.Where(t => t.Date == request.Date);
             }
+
             if (request.Invoiced.HasValue)
             {
                 var isInvoiceRequired = request.Invoiced.Value;
@@ -304,23 +319,15 @@ namespace HQ.Server.Services
             }
 
 
-            if (request.StartDate.HasValue && !request.EndDate.HasValue)
+            if (request.StartDate.HasValue)
             {
                 records = records.Where(t => t.Date >= request.StartDate);
             }
 
-
-            if (request.EndDate.HasValue && !request.StartDate.HasValue)
+            if (request.EndDate.HasValue)
             {
                 records = records.Where(t => t.Date <= request.EndDate);
             }
-
-
-            if (request.StartDate.HasValue && request.EndDate.HasValue)
-            {
-                records = records.Where(t => t.Date >= request.StartDate && t.Date <= request.EndDate);
-            }
-
 
             if (request.Id.HasValue)
             {
@@ -344,17 +351,8 @@ namespace HQ.Server.Services
             {
                 records = records.Where(t => t.Activity!.Name == request.Activity);
             }
-            if (request.Skip.HasValue)
-            {
-                records = records.Skip(request.Skip.Value);
-            }
 
-
-            if (request.Take.HasValue)
-            {
-                records = records.Take(request.Take.Value);
-            }
-
+            var total = await records.CountAsync(ct);
 
             var mapped = records
             .Select(t => new GetTimesV1.Record()
@@ -382,7 +380,6 @@ namespace HQ.Server.Services
                 CreatedAt = t.CreatedAt,
             });
 
-
             var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
        {
            { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
@@ -404,6 +401,16 @@ namespace HQ.Server.Services
                mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
                mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
 
+            if (request.Skip.HasValue)
+            {
+                mapped = mapped.Skip(request.Skip.Value);
+            }
+
+
+            if (request.Take.HasValue)
+            {
+                mapped = mapped.Take(request.Take.Value);
+            }
 
             var response = new GetTimesV1.Response()
             {
