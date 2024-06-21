@@ -201,9 +201,9 @@ namespace HQ.Tests
         [Fact]
         public void GetPeriodStartDate_ThisWeek_ReturnsStartOfWeek()
         {
-            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-            DateOnly startOfWeek = today.AddDays(-(int)today.DayOfWeek);
-            DateOnly result = today.GetPeriodStartDate(Period.ThisWeek);
+            DateOnly today = new DateOnly(2024, 6, 20);
+            DateOnly startOfWeek = new DateOnly(2024, 6, 15);
+            DateOnly result = today.GetPeriodStartDate(Period.Week);
             Assert.Equal(startOfWeek, result);
         }
 
@@ -212,7 +212,7 @@ namespace HQ.Tests
         {
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);
             DateOnly startOfMonth = new DateOnly(today.Year, today.Month, 1);
-            DateOnly result = today.GetPeriodStartDate(Period.ThisMonth);
+            DateOnly result = today.GetPeriodStartDate(Period.Month);
             Assert.Equal(startOfMonth, result);
         }
 
@@ -236,9 +236,9 @@ namespace HQ.Tests
         [Fact]
         public void GetPeriodEndDate_ThisWeek_ReturnsEndOfWeek()
         {
-            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-            DateOnly endOfWeek = today.AddDays(6 - (int)today.DayOfWeek);
-            DateOnly result = today.GetPeriodEndDate(Period.ThisWeek);
+            DateOnly today = new DateOnly(2024, 6, 20);
+            DateOnly endOfWeek = new DateOnly(2024, 6, 21);
+            DateOnly result = today.GetPeriodEndDate(Period.Week);
             Assert.Equal(endOfWeek, result);
         }
 
@@ -248,7 +248,7 @@ namespace HQ.Tests
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);
             DateOnly startOfMonth = new DateOnly(today.Year, today.Month, 1);
             DateOnly endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
-            DateOnly result = today.GetPeriodEndDate(Period.ThisMonth);
+            DateOnly result = today.GetPeriodEndDate(Period.Month);
             Assert.Equal(endOfMonth, result);
         }
 

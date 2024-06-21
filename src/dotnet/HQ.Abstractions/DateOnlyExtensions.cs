@@ -13,8 +13,6 @@ namespace HQ.Abstractions
 {
     public static DateOnly GetPeriodStartDate(this DateOnly forDate, Period period)
     {
-        DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-
         switch (period)
         {
             case Period.Year:
@@ -25,16 +23,11 @@ namespace HQ.Abstractions
             case Period.Month:
                 return new DateOnly(forDate.Year, forDate.Month, 1);
             case Period.Today:
-                return today;
-            case Period.ThisWeek:
-                return today.AddDays(-(int)today.DayOfWeek);
+                return forDate;
             case Period.LastWeek:
-                var lastWeekEndDate = today.AddDays(-(int)today.DayOfWeek - 1);
-                return lastWeekEndDate.AddDays(-6);
-            case Period.ThisMonth:
-                return new DateOnly(today.Year, today.Month, 1);
+                return forDate.GetPeriodStartDate(Period.Week).AddDays(-7);
             case Period.LastMonth:
-                return new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
+                return forDate.GetPeriodStartDate(Period.Month).AddMonths(-1);
             case Period.Week:
             default:
                 return forDate.AddDays(-((int)forDate.DayOfWeek + 1) % 7);
@@ -43,8 +36,6 @@ namespace HQ.Abstractions
 
     public static DateOnly GetPeriodEndDate(this DateOnly forDate, Period period)
     {
-        DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-
         switch (period)
         {
             case Period.Year:
@@ -56,17 +47,11 @@ namespace HQ.Abstractions
             case Period.Month:
                 return new DateOnly(forDate.Year, forDate.Month, 1).AddMonths(1).AddDays(-1);
             case Period.Today:
-                return today;
-            case Period.ThisWeek:
-                return today.AddDays(6 - (int)today.DayOfWeek);
+                return forDate;
             case Period.LastWeek:
-                return today.AddDays(-(int)today.DayOfWeek - 1);
-            case Period.ThisMonth:
-                startDate = new DateOnly(today.Year, today.Month, 1);
-                return startDate.AddMonths(1).AddDays(-1);
+                return forDate.GetPeriodStartDate(Period.Week).AddDays(-1);
             case Period.LastMonth:
-                startDate = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
-                return startDate.AddMonths(1).AddDays(-1);
+                return forDate.GetPeriodStartDate(Period.Month).AddDays(-1);
             case Period.Week:
             default:
                 return forDate.AddDays(-((int)forDate.DayOfWeek + 1) % 7).AddDays(6);

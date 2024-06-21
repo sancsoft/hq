@@ -201,6 +201,18 @@ namespace HQ.Server.Controllers
 
 
         [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetDashboardTimeV1))]
+        [ProducesResponseType<GetDashboardTimeV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> GetDashboardTimeV1([FromBody] GetDashboardTimeV1.Request request, CancellationToken ct = default)
+        {
+            return await _TimeEntryServiceV1.GetDashboardTimeV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(ExportTimesV1))]
         [ProducesResponseType<FileResult>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -217,5 +229,7 @@ namespace HQ.Server.Controllers
 
             return File(value.File, value.ContentType, value.FileName);
         }
+
+
     }
 }

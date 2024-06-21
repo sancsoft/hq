@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentResults;
+using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Times;
 using HQ.Server.Data;
@@ -383,6 +384,87 @@ namespace HQ.Server.Services
      return new DeleteTimeV1.Response();
     }
 
+    public async Task<Result<GetDashboardTimeV1.Response>> GetDashboardTimeV1(GetDashboardTimeV1.Request request, CancellationToken ct = default)
+    {
+        if(request.Period == Period.Custom)
+        {
+            if(!request.FromDate.HasValue || !request.ToDate.HasValue || request.FromDate.Value > request.ToDate.Value)
+            {
+                return Result.Fail("Invalid date range.");
+            }
+        }
+        else
+        {
+            request.FromDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(request.Period);
+            request.ToDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(request.Period);
+        }
+
+        var times = await _context.Times
+            .Where(t => t.StaffId == request.StaffId && t.Date >= request.FromDate && t.Date <= request.ToDate)
+            .OrderByDescending(t => t.CreatedAt)
+            .Select(t => new GetDashboardTimeV1.TimeEntry() {
+                Date = t.Date,
+                ChargeCodeId = t.ChargeCodeId,
+                ActivityId = t.ActivityId,
+                Hours = t.Hours,
+                Notes = t.Notes,
+                Task = t.Task,
+                ProjectId = t.ChargeCode.ProjectId,
+                ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null
+            })
+            .GroupBy(t => t.Date)
+            .ToDictionaryAsync(t => t.Key, t => t.ToList());
+
+        var chargeCodes = await _context.ChargeCodes
+            .OrderBy(t => t.Code)
+            .Select(t => new GetDashboardTimeV1.ChargeCode() {
+                Id = t.Id,
+                Code = t.Code,
+                ClientId = t.Project != null ? t.Project.ClientId : null,
+                ProjectId = t.ProjectId
+            })
+            .ToListAsync(ct);
+
+        var clients = await _context.Clients
+            .OrderBy(t => t.Name)
+            .Select(t => new GetDashboardTimeV1.Client() {
+                Id = t.Id,
+                Name = t.Name
+            })
+            .ToListAsync(ct);
+
+        var projects = await _context.Projects
+            .OrderBy(t => t.Name)
+            .Select(t => new GetDashboardTimeV1.Project() {
+                Id = t.Id,
+                Name = t.Name,
+                ClientId = t.ClientId
+            })
+            .ToListAsync(ct);
+
+        var response = new GetDashboardTimeV1.Response();
+        response.ChargeCodes = chargeCodes;
+        response.Clients = clients;
+        response.Projects = projects;
+
+        DateOnly date = request.ToDate.Value;
+        do
+        {
+            var timeForDate =  new GetDashboardTimeV1.TimeForDate();
+            timeForDate.Date = date;
+            if(times.ContainsKey(date))
+            {
+                timeForDate.Times = times[date];
+            }
+
+            response.Dates.Add(timeForDate);
+            date = date.AddDays(-1);
+        }
+        while(date >= request.FromDate.Value);
+
+        return response;
+    }
+
     public async Task<Result<ExportTimesV1.Response>> ExportTimesV1(ExportTimesV1.Request request, CancellationToken ct)
     {
         // TODO: Replace with CSVHelper
@@ -401,5 +483,5 @@ namespace HQ.Server.Services
             ContentType = "text/csv",
         };
     }
-    }
+}
 }

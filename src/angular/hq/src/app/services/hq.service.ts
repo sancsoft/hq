@@ -91,6 +91,7 @@ import { GetProjectActivitiesResponseV1, GetProjectActivityRequestV1 } from '../
 import { GetTimeRecordsV1, GetTimeRequestV1 } from '../models/times/get-time-v1';
 import { GetClientInvoiceSummaryV1Request, GetClientInvoiceSummaryV1Response } from '../models/clients/get-client-invoice-summary-v1';
 import { updateTimeRequestV1, UpdateTimeResponseV1 } from '../models/times/update-time-v1';
+import { GetDashboardTimeV1Request, GetDashboardTimeV1Response } from '../models/staff-dashboard/get-dashboard-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -427,6 +428,17 @@ export class HQService {
       )
     );
   }
+  
+  getDashboardTimeV1(request: Partial<GetDashboardTimeV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetDashboardTimeV1Response>(
+          `${apiUrl}/v1/TimeEntries/GetDashboardTimeV1`,
+          request
+        )
+      )
+    );
+  }
 
   exportTimesV1(request: Partial<{  }>) {
     return this.appSettings.apiUrl$.pipe(
@@ -447,6 +459,9 @@ export class HQService {
       }))
     );
   }
-  }
+}
 
 
+
+
+// UpdateProjectStatusReportTimeV1
