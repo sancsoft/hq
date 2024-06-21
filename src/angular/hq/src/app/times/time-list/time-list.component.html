@@ -3,12 +3,16 @@
 </div>
 
 <div class="px-5 pt-4 mb-[8px]">
-  <div class="flex flex-col lg:flex-row justify-between items-start">
-    <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-      <hq-time-search-filter></hq-time-search-filter>
-      <!-- <hq-psr-search-filter></hq-psr-search-filter> -->
-      <button type="button" (click)="exportTime()">Export</button>
-    </div>
+  <div class="flex items-end gap-[20px] justify-between">
+    <hq-time-search-filter></hq-time-search-filter>
+    <!-- <hq-psr-search-filter></hq-psr-search-filter> -->
+    <button
+      class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+      type="button"
+      (click)="exportTime()"
+    >
+      Export
+    </button>
   </div>
 </div>
 
