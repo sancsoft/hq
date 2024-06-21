@@ -1,7 +1,10 @@
 using System.Globalization;
+
 using CsvHelper;
 using CsvHelper.Configuration;
+
 using FluentResults;
+
 using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Times;
