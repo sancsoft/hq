@@ -9,6 +9,7 @@
 		<SelfContained>true</SelfContained>
 		<PublishReadyToRunComposite>true</PublishReadyToRunComposite>
 		<AssemblyName>hq</AssemblyName>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
