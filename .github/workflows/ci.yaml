@@ -21,7 +21,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Format
-      run: dotnet format ./HQ.sln --verify-no-changes --verbosity diagnostic
+      run: dotnet format ./HQ.sln --verify-no-changes
     - name: Build
       run: dotnet build --no-restore -warnaserror
     - name: Test
