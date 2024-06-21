@@ -157,22 +157,22 @@ export class TimeListComponent {
     );
     const startDate$ = this.timeListService.startDate.valueChanges.pipe(
       startWith(this.timeListService.startDate.value),
-      tap(()=>{
-      this.date$.next(null);
-      })
+      tap(() => {
+        this.date$.next(null);
+      }),
     );
     const endDate$ = this.timeListService.endDate.valueChanges.pipe(
       startWith(this.timeListService.endDate.value),
-      tap(()=>{
-      this.date$.next(null);
-      })
+      tap(() => {
+        this.date$.next(null);
+      }),
     );
     const period$ = this.timeListService.selectedPeriod.valueChanges.pipe(
       startWith(this.timeListService.selectedPeriod.value),
-      tap(()=>{
-        // 
+      tap(() => {
+        //
         this.date$.next(new Date());
-      })
+      }),
     );
     const invoiced$ = this.timeListService.invoiced.valueChanges.pipe(
       startWith(this.timeListService.invoiced.value),
@@ -197,10 +197,9 @@ export class TimeListComponent {
       TimeAccepted: accepted$,
       sortDirection: this.sortDirection$,
     });
-    request$.subscribe((request)=>{
+    request$.subscribe((request) => {
       this.timeRequest$.next(request);
     });
-    
 
     const response$ = request$.pipe(
       debounceTime(500),
@@ -249,7 +248,9 @@ export class TimeListComponent {
   }
 
   async exportTime() {
-    const result = await firstValueFrom(this.hqService.exportTimesV1(this.timeRequest$.getValue()));
+    const result = await firstValueFrom(
+      this.hqService.exportTimesV1(this.timeRequest$.getValue()),
+    );
     if (result.file === null) {
       this.toastService.show('Error', 'Unable to download export.');
       return;
