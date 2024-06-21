@@ -30,7 +30,7 @@ export class ClientDetailsService {
 
   resetFilters() {
     this.search.setValue('');
-    this.projectStatus.setValue(ProjectStatus.Unknown);
+    this.projectStatus.setValue(null);
     this.currentOnly.setValue(true);
   }
 
