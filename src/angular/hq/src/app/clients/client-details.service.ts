@@ -26,7 +26,7 @@ export class ClientDetailsService {
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
   showCurrentOnly$ = new BehaviorSubject<boolean>(true);
 
-  constructor() { }
+  constructor() {}
 
   resetFilters() {
     this.search.setValue('');

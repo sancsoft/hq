@@ -50,4 +50,4 @@ export interface GetProjectRecordsV1 {
 }
 
 export interface GetProjectResponseV1
-  extends PagedResponseV1<GetProjectRecordV1> { }
+  extends PagedResponseV1<GetProjectRecordV1> {}
