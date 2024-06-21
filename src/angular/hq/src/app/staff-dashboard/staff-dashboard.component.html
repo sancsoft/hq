@@ -1,4 +1,94 @@
-<p>staff-dashboard works!</p>
-<pre>
-    {{ staffDashboardService.time$ | async | json }}
-</pre>
+<label class="block"
+  >Search
+  <input [formControl]="staffDashboardService.search" class="text-black" />
+</label>
+<label class="block"
+  >Period
+  <select [formControl]="staffDashboardService.period" class="text-black">
+    <option [ngValue]="Period.Today">Day</option>
+    <option [ngValue]="Period.Week">Week</option>
+  </select>
+</label>
+<label class="block"
+  >Date
+  <input
+    [formControl]="staffDashboardService.date"
+    type="date"
+    class="text-black"
+  />
+</label>
+
+@if (staffDashboardService.time$ | async; as dashboard) {
+  <label class="block"
+    >Date
+    <input
+      [value]="dashboard.endDate"
+      type="date"
+      class="text-black"
+      readonly
+    />
+  </label>
+  <button
+    type="button"
+    (click)="staffDashboardService.date.setValue(dashboard.previousDate)"
+  >
+    Previous
+  </button>
+  <button
+    type="button"
+    (click)="staffDashboardService.date.setValue(dashboard.nextDate)"
+  >
+    Next
+  </button>
+  <div>Total Hours: {{ dashboard.totalHours }}</div>
+  <div>Billable Hours: {{ dashboard.billableHours }}</div>
+  @for (date of dashboard.dates; track date.date) {
+    <h1 class="text-xl">{{ date.date }}</h1>
+    <table class="min-w-full border-spacing-0 border-separate">
+      <thead>
+        <tr class="text-left">
+          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+            Hrs
+          </th>
+          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+            Date
+          </th>
+          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+            Chrg Code
+          </th>
+          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+            Client
+          </th>
+          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+            Project
+          </th>
+          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+            Activity / Task
+          </th>
+          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+            Description
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (time of date.times; track time.id) {
+          <tr class="even:bg-gray-850 odd:bg-black-alt">
+            <td class="border-b border-black py-2 pl-5">{{ time.hours }}</td>
+            <td class="border-b border-black py-2 pl-5">{{ time.date }}</td>
+            <td class="border-b border-black py-2 pl-5">
+              {{ time.chargeCodeId }}
+            </td>
+            <td class="border-b border-black py-2 pl-5">{{ time.clientId }}</td>
+            <td class="border-b border-black py-2 pl-5">
+              {{ time.projectId }}
+            </td>
+            <td class="border-b border-black py-2 pl-5">
+              {{ time.activityId ?? "" + time.task ?? "" }}
+            </td>
+            <td class="border-b border-black py-2 pl-5">{{ time.notes }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+}

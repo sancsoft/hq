@@ -7,13 +7,19 @@ public class GetDashboardTimeV1
     public class Request
     {
         public Guid StaffId { get; set; }
+        public DateOnly Date { get; set; }
         public Period Period { get; set; }
-        public DateOnly? FromDate { get; set; }
-        public DateOnly? ToDate { get; set; }
+        public string? Search { get; set; }
     }
 
     public class Response
     {
+        public decimal TotalHours { get; set; }
+        public decimal BillableHours { get; set; }
+        public DateOnly StartDate { get; set; }
+        public DateOnly EndDate { get; set; }
+        public DateOnly PreviousDate { get; set; }
+        public DateOnly NextDate { get; set; }
         public List<TimeForDate> Dates { get; set; } = new();
         public List<ChargeCode> ChargeCodes { get; set; } = new();
         public List<Client> Clients { get; set; } = new();
@@ -39,12 +45,12 @@ public class GetDashboardTimeV1
         public Guid Id { get; set; }
         public Guid ClientId { get; set; }
         public string Name { get; set; } = null!;
+        public List<Activities> Activities { get; set; } = new();
     }
 
     public class Activities
     {
         public Guid Id { get; set; }
-        public Guid ProjectId { get; set; }
         public string Name { get; set; } = null!;
     }
 
@@ -56,6 +62,7 @@ public class GetDashboardTimeV1
 
     public class TimeEntry
     {
+        public Guid Id { get; set; }
         public DateOnly Date { get; set; }
         public decimal Hours { get; set; }
         public string? Notes { get; set; }

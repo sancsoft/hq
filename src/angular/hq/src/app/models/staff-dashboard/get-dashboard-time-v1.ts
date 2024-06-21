@@ -3,11 +3,17 @@ import { Period } from '../../projects/project-create/project-create.component';
 export interface GetDashboardTimeV1Request {
   staffId: string;
   period: Period;
-  fromDate?: string | null;
-  toDate?: string | null;
+  date?: string;
+  search?: string | null;
 }
 
 export interface GetDashboardTimeV1Response {
+  totalHours: number;
+  billableHours: number;
+  startDate: string;
+  endDate: string;
+  previousDate: string;
+  nextDate: string;
   dates: GetDashboardTimeV1TimeForDate[];
   chargeCodes: GetDashboardTimeV1ChargeCode[];
   clients: GetDashboardTimeV1Client[];
@@ -20,6 +26,7 @@ export interface GetDashboardTimeV1TimeForDate {
 }
 
 export interface GetDashboardTimeV1TimeForDateTimes {
+  id: string;
   date: string;
   hours: number;
   notes: string | null;
