@@ -51,8 +51,8 @@ export class TimeService {
   showProjectActivities$ = new BehaviorSubject<boolean>(true);
 
   showIsSubmitted$ = new BehaviorSubject<boolean>(true);
-  showStartDate$ = new BehaviorSubject<boolean>(true);
-  showEndDate$ = new BehaviorSubject<boolean>(true);
+  showStartDate$ = new BehaviorSubject<boolean>(false);
+  showEndDate$ = new BehaviorSubject<boolean>(false);
 
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);

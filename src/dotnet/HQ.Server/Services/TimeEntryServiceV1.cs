@@ -381,25 +381,31 @@ namespace HQ.Server.Services
             });
 
             var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
-       {
-           { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
-           { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-           { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
-           { Abstractions.Times.GetTimesV1.SortColumn.Billable, "Billable" },
-           { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
-           { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
-           { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" }
-
-
-       };
+            {
+                { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
+                { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
+                { Abstractions.Times.GetTimesV1.SortColumn.Billable, "Billable" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
+                { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" }
+            };
 
 
             var sortProperty = sortMap[request.SortBy];
 
 
-            mapped = request.SortDirection == SortDirection.Asc ?
+            var sorted = request.SortDirection == SortDirection.Asc ?
                mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
                mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+            sorted = sorted
+                .ThenBy(t => t.Date)
+                .ThenBy(t => t.StaffName)
+                .ThenBy(t => t.ClientName)
+                .ThenBy(t => t.ProjectName);
+
+            mapped = sorted;
 
             if (request.Skip.HasValue)
             {
