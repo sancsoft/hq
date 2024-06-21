@@ -1,14 +1,18 @@
-﻿using CsvHelper;
+﻿using System.Formats.Asn1;
+using System.Globalization;
+
+using CsvHelper;
 using CsvHelper.Configuration;
+
 using FluentResults;
+
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Projects;
 using HQ.Abstractions.Staff;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
-using System.Formats.Asn1;
-using System.Globalization;
 
 namespace HQ.Server.Services;
 
@@ -263,7 +267,8 @@ public class ProjectServiceV1
     public async Task<Result<GetProjectActivitiesV1.Response>> GetProjectActivitiesV1(GetProjectActivitiesV1.Request request, CancellationToken ct = default)
     {
         var records = _context.ProjectActivities.Where(t => t.ProjectId == request.ProjectId)
-            .Select(t => new GetProjectActivitiesV1.Record() {
+            .Select(t => new GetProjectActivitiesV1.Record()
+            {
                 Id = t.Id,
                 Name = t.Name,
                 Sequence = t.Sequence
@@ -275,7 +280,7 @@ public class ProjectServiceV1
         };
     }
 
-        public async Task<Result<UpsertProjectActivityV1.Response>> UpsertProjectActivityV1(UpsertProjectActivityV1.Request request, CancellationToken ct = default)
+    public async Task<Result<UpsertProjectActivityV1.Response>> UpsertProjectActivityV1(UpsertProjectActivityV1.Request request, CancellationToken ct = default)
     {
         var validationResult = Result.Merge(
             Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),

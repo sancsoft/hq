@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net.Http;
-using Microsoft.AspNetCore.DataProtection;
+
 using IdentityModel.Client;
+
+using Microsoft.AspNetCore.DataProtection;
+
 using static IdentityModel.OidcConstants;
 
 namespace HQ.CLI
@@ -35,7 +38,7 @@ namespace HQ.CLI
                 var request = new DiscoveryDocumentRequest();
                 request.Address = _config.AuthUrl!.AbsoluteUri;
 
-                if(_config.Insecure)
+                if (_config.Insecure)
                 {
                     request.Policy.RequireHttps = false;
                     request.Policy.ValidateIssuerName = false;
@@ -64,7 +67,7 @@ namespace HQ.CLI
 
                 if (userInfoResponse.IsError) throw new Exception(userInfoResponse.Error);
 
-                if(Guid.TryParse(userInfoResponse.Claims.SingleOrDefault(t => t.Type == "staff_id")?.Value, out Guid staffId))
+                if (Guid.TryParse(userInfoResponse.Claims.SingleOrDefault(t => t.Type == "staff_id")?.Value, out Guid staffId))
                 {
                     _config.StaffId = staffId;
                 }

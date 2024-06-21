@@ -1,5 +1,6 @@
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -26,19 +27,19 @@ public class TimeEntryAuthorizationHandler : AuthorizationHandler<OperationAutho
         var isStaff = context.User.IsInRole("staff");
 
 
-        switch(requirement.Name)
+        switch (requirement.Name)
         {
             case nameof(TimeEntryOperation.GetTimes):
             case nameof(TimeEntryOperation.DeleteTime):
             case nameof(TimeEntryOperation.UpsertTime):
-            {
-                if((isStaff && staffId.HasValue && staffId.Value == resource.StaffId) || isPartner || isExecutive || isAdmin)
                 {
-                    context.Succeed(requirement);
-                }
+                    if ((isStaff && staffId.HasValue && staffId.Value == resource.StaffId) || isPartner || isExecutive || isAdmin)
+                    {
+                        context.Succeed(requirement);
+                    }
 
-                break;
-            }
+                    break;
+                }
         }
 
         return Task.CompletedTask;

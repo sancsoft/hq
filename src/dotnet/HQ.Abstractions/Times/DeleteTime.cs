@@ -6,6 +6,6 @@ public class DeleteTimeV1
     {
         public Guid? Id { get; set; }
     }
-    
+
     public class Response;
 }

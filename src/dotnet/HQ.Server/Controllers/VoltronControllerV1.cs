@@ -1,13 +1,16 @@
 ﻿using Asp.Versioning;
+
 using FluentResults.Extensions.AspNetCore;
-using HQ.Abstractions.Voltron;
+
 using HQ.Abstractions.Common;
+using HQ.Abstractions.Staff;
+using HQ.Abstractions.Voltron;
 using HQ.API;
+using HQ.Server.Authorization;
 using HQ.Server.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using HQ.Abstractions.Staff;
-using HQ.Server.Authorization;
 
 namespace HQ.Server.Controllers
 {
@@ -53,7 +56,7 @@ namespace HQ.Server.Controllers
             request.To = to;
             request.Replace = replace;
 
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 request.Files.Add((file.FileName, file.OpenReadStream()));
             }

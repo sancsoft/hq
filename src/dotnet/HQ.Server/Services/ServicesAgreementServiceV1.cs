@@ -1,9 +1,12 @@
 using DocumentFormat.OpenXml.InkML;
+
 using FluentResults;
+
 using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.ServicesAgreement;
 using HQ.Server.Data;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +14,7 @@ namespace HQ.Server.Services
 {
     public class ServicesAgreementServiceV1 : ControllerBase
     {
-        private HQDbContext _context;
+        private readonly HQDbContext _context;
 
         public ServicesAgreementServiceV1(HQDbContext context)
         {

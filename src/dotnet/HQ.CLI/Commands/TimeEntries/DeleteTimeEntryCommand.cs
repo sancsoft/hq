@@ -1,14 +1,16 @@
-using HQ.Abstractions.Times;
-using HQ.SDK;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using Spectre.Console.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+
+using HQ.Abstractions.Times;
+using HQ.SDK;
+
+using Spectre.Console;
+using Spectre.Console.Cli;
+using Spectre.Console.Json;
 
 namespace HQ.CLI.Commands.TimeEntries
 {

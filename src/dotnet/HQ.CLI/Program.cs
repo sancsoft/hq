@@ -1,4 +1,6 @@
-﻿using HQ.CLI;
+﻿using System.Text.Json;
+
+using HQ.CLI;
 using HQ.CLI.Commands;
 using HQ.CLI.Commands.ChargeCode;
 using HQ.CLI.Commands.ChargeCodes;
@@ -7,13 +9,14 @@ using HQ.CLI.Commands.Projects;
 using HQ.CLI.Commands.Staff;
 using HQ.CLI.Commands.TimeEntries;
 using HQ.SDK;
+
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Spectre.Console;
 using Spectre.Console.Cli;
-using System.Text.Json;
 
 // Setup data directory
 var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile, Environment.SpecialFolderOption.DoNotVerify);
@@ -117,7 +120,7 @@ app.Configure(config =>
 
 
     });
-    
+
 });
 
 var rc = await app.RunAsync(args);

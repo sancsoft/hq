@@ -14,10 +14,10 @@ public class GetDashboardTimeV1
 
     public class Response
     {
-        public List<TimeForDate> Dates { get;set; } = new();
-        public List<ChargeCode> ChargeCodes { get; set;} = new();
-        public List<Client> Clients { get; set;} = new();
-        public List<Project> Projects { get; set;} = new();
+        public List<TimeForDate> Dates { get; set; } = new();
+        public List<ChargeCode> ChargeCodes { get; set; } = new();
+        public List<Client> Clients { get; set; } = new();
+        public List<Project> Projects { get; set; } = new();
     }
 
     public class ChargeCode
@@ -50,13 +50,13 @@ public class GetDashboardTimeV1
 
     public class TimeForDate
     {
-        public DateOnly Date { get; set;}
+        public DateOnly Date { get; set; }
         public List<TimeEntry> Times { get; set; } = new List<TimeEntry>();
     }
 
     public class TimeEntry
     {
-        public DateOnly Date { get; set;}
+        public DateOnly Date { get; set; }
         public decimal Hours { get; set; }
         public string? Notes { get; set; }
         public string? Task { get; set; }

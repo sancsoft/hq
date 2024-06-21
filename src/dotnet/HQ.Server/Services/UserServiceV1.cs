@@ -2,12 +2,16 @@
 using System.Net;
 using System.Text.Json.Serialization;
 using System.Web;
+
 using CsvHelper;
 using CsvHelper.Configuration;
+
 using FluentResults;
+
 using HQ.Abstractions.Users;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services;
@@ -25,22 +29,22 @@ public class UserServiceV1
 
     public async Task<Result<UpsertUserV1.Response>> UpsertUserV1(UpsertUserV1.Request request, CancellationToken ct = default)
     {
-        if(request.StaffId.HasValue && !await _context.Staff.AnyAsync(t => t.Id == request.StaffId.Value))
+        if (request.StaffId.HasValue && !await _context.Staff.AnyAsync(t => t.Id == request.StaffId.Value))
         {
             return Result.Fail("Invalid StaffId");
         }
 
         var user = new KeycloakUserRepresentation();
-        if(request.Id.HasValue)
+        if (request.Id.HasValue)
         {
             var getUserResponse = await _httpClient.GetAsync($"users/{request.Id}", ct);
-            if(!getUserResponse.IsSuccessStatusCode)
+            if (!getUserResponse.IsSuccessStatusCode)
             {
                 return Result.Fail("Error reading user from auth server.");
             }
 
             user = await getUserResponse.Content.ReadFromJsonAsync<KeycloakUserRepresentation>(ct);
-            if(user == null)
+            if (user == null)
             {
                 return Result.Fail("Error parsing user from auth server.");
             }
@@ -53,23 +57,23 @@ public class UserServiceV1
         user.Email = request.Email;
         user.Enabled = request.Enabled;
         user.Attributes ??= new();
-        
-        if(request.StaffId.HasValue) 
+
+        if (request.StaffId.HasValue)
         {
             user.Attributes["staff_id"] = new List<string>() { request.StaffId.Value.ToString() };
         }
-        else if(user.Attributes.ContainsKey("staff_id"))
+        else if (user.Attributes.ContainsKey("staff_id"))
         {
             user.Attributes.Remove("staff_id");
         }
 
-        var upsertUserResponse = request.Id.HasValue ? await _httpClient.PutAsJsonAsync($"users/{request.Id.Value}", user, ct) : await  _httpClient.PostAsJsonAsync("users", user, ct);
-        if(!upsertUserResponse.IsSuccessStatusCode)
+        var upsertUserResponse = request.Id.HasValue ? await _httpClient.PutAsJsonAsync($"users/{request.Id.Value}", user, ct) : await _httpClient.PostAsJsonAsync("users", user, ct);
+        if (!upsertUserResponse.IsSuccessStatusCode)
         {
-            if(upsertUserResponse.StatusCode == HttpStatusCode.Conflict)
+            if (upsertUserResponse.StatusCode == HttpStatusCode.Conflict)
             {
                 var error = await upsertUserResponse.Content.ReadFromJsonAsync<KeycloakError>();
-                if(error != null && !String.IsNullOrEmpty(error.ErrorMessage))
+                if (error != null && !String.IsNullOrEmpty(error.ErrorMessage))
                 {
                     return Result.Fail(error.ErrorMessage);
                 }
@@ -81,17 +85,17 @@ public class UserServiceV1
         var userId = user.Id;
 
         // Get user ID if creating a user, because Keycloak doesn't return it in the create response
-        if(!request.Id.HasValue)
+        if (!request.Id.HasValue)
         {
             var encodedEmail = HttpUtility.UrlEncode(request.Email);
             var listUsersResponse = await _httpClient.GetAsync($"users?email={encodedEmail}", ct);
-            if(!listUsersResponse.IsSuccessStatusCode)
+            if (!listUsersResponse.IsSuccessStatusCode)
             {
                 return Result.Fail("Error reading user from auth server.");
             }
 
             var users = await listUsersResponse.Content.ReadFromJsonAsync<List<KeycloakUserRepresentation>>(ct);
-            if(users == null)
+            if (users == null)
             {
                 return Result.Fail("Error parsing user from auth server.");
             }
@@ -102,56 +106,56 @@ public class UserServiceV1
         // TODO: Clean this up, better error handling
         var allGroups = (await _httpClient.GetFromJsonAsync<List<KeycloakGroupRepresentation>>("groups"))!
             .ToDictionary(t => t.Name, t => t);
-        
+
         var userGroups = (await _httpClient.GetFromJsonAsync<List<KeycloakGroupRepresentation>>($"users/{userId}/groups"))!
             .ToDictionary(t => t.Name, t => t);
-        
+
         var administratorGroup = allGroups["administrator"];
-        if(request.IsAdministrator && !userGroups.ContainsKey("administrator"))
+        if (request.IsAdministrator && !userGroups.ContainsKey("administrator"))
         {
             await _httpClient.PutAsync($"users/{userId}/groups/{administratorGroup.Id}", null, ct);
         }
-        else if(!request.IsAdministrator && userGroups.ContainsKey("administrator"))
+        else if (!request.IsAdministrator && userGroups.ContainsKey("administrator"))
         {
             await _httpClient.DeleteAsync($"users/{userId}/groups/{administratorGroup.Id}", ct);
         }
-        
+
         var executiveGroup = allGroups["executive"];
-        if(request.IsExecutive && !userGroups.ContainsKey("executive"))
+        if (request.IsExecutive && !userGroups.ContainsKey("executive"))
         {
             await _httpClient.PutAsync($"users/{userId}/groups/{executiveGroup.Id}", null, ct);
         }
-        else if(!request.IsExecutive && userGroups.ContainsKey("executive"))
+        else if (!request.IsExecutive && userGroups.ContainsKey("executive"))
         {
             await _httpClient.DeleteAsync($"users/{userId}/groups/{executiveGroup.Id}", ct);
         }
-        
+
         var partnerGroup = allGroups["partner"];
-        if(request.IsPartner && !userGroups.ContainsKey("partner"))
+        if (request.IsPartner && !userGroups.ContainsKey("partner"))
         {
             await _httpClient.PutAsync($"users/{userId}/groups/{partnerGroup.Id}", null, ct);
         }
-        else if(!request.IsPartner && userGroups.ContainsKey("partner"))
+        else if (!request.IsPartner && userGroups.ContainsKey("partner"))
         {
             await _httpClient.DeleteAsync($"users/{userId}/groups/{partnerGroup.Id}", ct);
         }
-        
+
         var managerGroup = allGroups["manager"];
-        if(request.IsManager && !userGroups.ContainsKey("manager"))
+        if (request.IsManager && !userGroups.ContainsKey("manager"))
         {
             await _httpClient.PutAsync($"users/{userId}/groups/{managerGroup.Id}", null, ct);
         }
-        else if(!request.IsManager && userGroups.ContainsKey("manager"))
+        else if (!request.IsManager && userGroups.ContainsKey("manager"))
         {
             await _httpClient.DeleteAsync($"users/{userId}/groups/{managerGroup.Id}", ct);
         }
-        
+
         var staffGroup = allGroups["staff"];
-        if(request.IsStaff && !userGroups.ContainsKey("staff"))
+        if (request.IsStaff && !userGroups.ContainsKey("staff"))
         {
             await _httpClient.PutAsync($"users/{userId}/groups/{staffGroup.Id}", null, ct);
         }
-        else if(!request.IsStaff && userGroups.ContainsKey("staff"))
+        else if (!request.IsStaff && userGroups.ContainsKey("staff"))
         {
             await _httpClient.DeleteAsync($"users/{userId}/groups/{staffGroup.Id}", ct);
         }
@@ -169,32 +173,32 @@ public class UserServiceV1
         int count = 0;
         List<KeycloakUserRepresentation>? users = [];
 
-        if(request.Id.HasValue)
+        if (request.Id.HasValue)
         {
             var getResponse = await _httpClient.GetAsync($"users/{request.Id}", ct);
-            if(getResponse.IsSuccessStatusCode)
+            if (getResponse.IsSuccessStatusCode)
             {
-                var user = await getResponse.Content.ReadFromJsonAsync<KeycloakUserRepresentation>(ct);;
-                if(user != null)
+                var user = await getResponse.Content.ReadFromJsonAsync<KeycloakUserRepresentation>(ct); ;
+                if (user != null)
                 {
                     count = 1;
                     users.Add(user);
-                }                
+                }
             }
         }
         else
         {
-            if(!String.IsNullOrEmpty(request.Search))
+            if (!String.IsNullOrEmpty(request.Search))
             {
                 query["search"] = "*" + request.Search.Replace(" ", "*") + "*";
             }
 
-            if(request.Skip.HasValue)
+            if (request.Skip.HasValue)
             {
                 query["first"] = request.Skip.Value.ToString();
             }
 
-            if(request.Take.HasValue)
+            if (request.Take.HasValue)
             {
                 query["max"] = request.Take.Value.ToString();
             }
@@ -204,14 +208,14 @@ public class UserServiceV1
             var listResponse = await _httpClient.GetAsync($"users?{qs}", ct);
             var countResponse = await _httpClient.GetAsync($"users/count?{qs}", ct);
 
-            if(!listResponse.IsSuccessStatusCode || !countResponse.IsSuccessStatusCode)
+            if (!listResponse.IsSuccessStatusCode || !countResponse.IsSuccessStatusCode)
             {
                 return Result.Fail("Error reading users from auth server.");
             }
 
             count = await countResponse.Content.ReadFromJsonAsync<int>(ct);
             users = await listResponse.Content.ReadFromJsonAsync<List<KeycloakUserRepresentation>>(ct);
-            if(users == null)
+            if (users == null)
             {
                 return Result.Fail("Error parsing users response from auth server.");
             }
@@ -219,9 +223,10 @@ public class UserServiceV1
 
         // TODO: Optimize this to run in parallel
         var records = new List<GetUsersV1.Record>();
-        foreach(var user in users)
+        foreach (var user in users)
         {
-            var record = new GetUsersV1.Record() {
+            var record = new GetUsersV1.Record()
+            {
                 Id = user.Id,
                 Email = user.Email,
                 FirstName = user.FirstName,
@@ -229,19 +234,19 @@ public class UserServiceV1
                 Enabled = user.Enabled
             };
 
-            if(user.Attributes.ContainsKey("staff_id") && user.Attributes["staff_id"].Count == 1 && Guid.TryParse(user.Attributes["staff_id"].Single(), out Guid staffId))
+            if (user.Attributes.ContainsKey("staff_id") && user.Attributes["staff_id"].Count == 1 && Guid.TryParse(user.Attributes["staff_id"].Single(), out Guid staffId))
             {
                 record.StaffId = staffId;
             }
 
             var groupsResponse = await _httpClient.GetAsync($"users/{user.Id}/groups", ct);
-            if(!groupsResponse.IsSuccessStatusCode)
+            if (!groupsResponse.IsSuccessStatusCode)
             {
                 return Result.Fail("Error reading groups from auth server.");
             }
 
             var groups = await groupsResponse.Content.ReadFromJsonAsync<List<KeycloakGroupRepresentation>>(ct);
-            if(groups == null)
+            if (groups == null)
             {
                 return Result.Fail("Error parsing groups response from auth server.");
             }
@@ -286,7 +291,7 @@ public class UserServiceV1
         var failed = 0;
 
         var allUsers = await GetUsersV1(new() { Take = 2000 });
-        if(allUsers.IsFailed)
+        if (allUsers.IsFailed)
         {
             return allUsers.ToResult();
         }
@@ -295,20 +300,20 @@ public class UserServiceV1
 
         foreach (var record in records)
         {
-            if(!String.IsNullOrEmpty(record.StaffName) && !record.StaffId.HasValue && staffByName.ContainsKey(record.StaffName.ToLower()))
+            if (!String.IsNullOrEmpty(record.StaffName) && !record.StaffId.HasValue && staffByName.ContainsKey(record.StaffName.ToLower()))
             {
                 record.StaffId = staffByName[record.StaffName.ToLower()].Id;
             }
 
-            if(!String.IsNullOrEmpty(record.Email) && !record.Id.HasValue && userIdByEmail.ContainsKey(record.Email.ToLower()))
+            if (!String.IsNullOrEmpty(record.Email) && !record.Id.HasValue && userIdByEmail.ContainsKey(record.Email.ToLower()))
             {
                 record.Id = userIdByEmail[record.Email.ToLower()];
             }
 
             var result = await UpsertUserV1(record, ct);
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
-                if(record.Id.HasValue)
+                if (record.Id.HasValue)
                 {
                     updated++;
                 }
@@ -333,7 +338,7 @@ public class UserServiceV1
 
     private class ImportUserRecord : UpsertUserV1.Request
     {
-        public string? StaffName { get ;set; }
+        public string? StaffName { get; set; }
     }
 
     private class KeycloakError

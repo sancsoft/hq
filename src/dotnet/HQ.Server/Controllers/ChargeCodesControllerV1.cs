@@ -1,11 +1,14 @@
 ﻿using Asp.Versioning;
+
 using FluentResults.Extensions.AspNetCore;
+
 using HQ.Abstractions.ChargeCodes;
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Staff;
 using HQ.API;
 using HQ.Server.Authorization;
 using HQ.Server.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +28,7 @@ namespace HQ.Server.Controllers
         {
             _ChargeCodeService = ChargeCodeService;
         }
-        
+
         [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(UpsertChargeCodesV1))]
         [ProducesResponseType<UpsertChargeCodeV1.Response>(StatusCodes.Status200OK)]

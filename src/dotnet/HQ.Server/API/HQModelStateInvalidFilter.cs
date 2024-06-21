@@ -1,5 +1,7 @@
 ﻿using FluentResults;
+
 using HQ.Abstractions.Common;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

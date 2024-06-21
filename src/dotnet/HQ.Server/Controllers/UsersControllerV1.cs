@@ -1,12 +1,15 @@
 ﻿using Asp.Versioning;
+
 using FluentResults.Extensions.AspNetCore;
-using HQ.Abstractions.Users;
+
 using HQ.Abstractions.Common;
+using HQ.Abstractions.Users;
 using HQ.API;
+using HQ.Server.Authorization;
 using HQ.Server.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using HQ.Server.Authorization;
 
 namespace HQ.Server.Controllers
 {

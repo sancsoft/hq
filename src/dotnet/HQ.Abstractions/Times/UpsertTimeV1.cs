@@ -7,7 +7,8 @@ namespace HQ.Abstractions.Times
 {
     public class UpsertTimeV1
     {
-        public class Request {
+        public class Request
+        {
             public Guid? Id { get; set; }
             public DateOnly Date { get; set; }
             public decimal? BillableHours { get; set; }
@@ -17,11 +18,12 @@ namespace HQ.Abstractions.Times
             public Guid? ChargeCodeId { get; set; }
             public string? Notes { get; set; }
             public Guid? StaffId { get; set; }
-            public string? ChargeCode {get; set;}
-            public string? ActivityName { get; set;}
+            public string? ChargeCode { get; set; }
+            public string? ActivityName { get; set; }
         }
 
-        public class Response {
+        public class Response
+        {
             public Guid Id { get; set; }
         }
     }

@@ -1,17 +1,22 @@
-﻿using ClosedXML.Excel;
+﻿using System.Formats.Asn1;
+using System.Globalization;
+using System.IO;
+using System.Text.RegularExpressions;
+
+using ClosedXML.Excel;
+
 using CsvHelper;
 using CsvHelper.Configuration;
+
 using FluentResults;
+
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Voltron;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Formats.Asn1;
-using System.Globalization;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace HQ.Server.Services;
 
@@ -37,7 +42,7 @@ public class VoltronServiceV1
         // TODO: Validation and logging
 
         var response = new ImportVoltronTimeSheetsV1.Response();
-        foreach(var file in request.Files)
+        foreach (var file in request.Files)
         {
             var staffName = staffNameRegex.Replace(Path.GetFileNameWithoutExtension(file.FileName), String.Empty);
             if (!staffLookup.ContainsKey(staffName))
@@ -49,9 +54,9 @@ public class VoltronServiceV1
 
             var staffTime = GetTimeRecord(file.FileName, file.Stream)
                 .Where(t => t.Date >= request.From && t.Date <= request.To);
-            
+
             // Remove any existing entries during the time period for the given staff member
-            if(staffTime.Any() && request.Replace)
+            if (staffTime.Any() && request.Replace)
             {
                 var toDelete = _context.Times
                     .Where(t => t.StaffId == staff.Id && t.Date >= request.From && t.Date <= request.To);
@@ -61,9 +66,9 @@ public class VoltronServiceV1
                 _context.Times.RemoveRange(toDelete);
             }
 
-            foreach(var timeRecord in staffTime)
+            foreach (var timeRecord in staffTime)
             {
-                if(!chargeCodes.ContainsKey(timeRecord.ChargeCode))
+                if (!chargeCodes.ContainsKey(timeRecord.ChargeCode))
                 {
                     continue;
                 }
@@ -75,7 +80,7 @@ public class VoltronServiceV1
                 time.Hours = timeRecord.Hours;
                 time.Notes = timeRecord.Notes;
 
-                if(String.IsNullOrEmpty(time.Notes))
+                if (String.IsNullOrEmpty(time.Notes))
                 {
                     time.Notes = null;
                 }
@@ -105,11 +110,11 @@ public class VoltronServiceV1
         var records = GetChargeCodeRecord(request.File);
         var allStaff = await _context.Staff.ToDictionaryAsync(t => t.Name, t => t);
 
-        foreach(var chargeCodes in records.GroupBy(t => t.Client.ToLower()))
+        foreach (var chargeCodes in records.GroupBy(t => t.Client.ToLower()))
         {
             var clientName = chargeCodes.First().Client;
             var client = await _context.Clients.SingleOrDefaultAsync(t => t.Name.ToLower() == clientName.ToLower(), ct);
-            if(client == null)
+            if (client == null)
             {
                 client = new();
                 _context.Clients.Add(client);
@@ -117,7 +122,7 @@ public class VoltronServiceV1
 
             client.Name = clientName;
 
-            foreach(var projectRow in chargeCodes)
+            foreach (var projectRow in chargeCodes)
             {
 
                 var chargeCode = _context.ChargeCodes.SingleOrDefault(t => t.Code == projectRow.Code);
@@ -139,7 +144,7 @@ public class VoltronServiceV1
                 chargeCode.Billable = projectRow.Billable;
 
                 var chargeCodePrefix = chargeCode.Code.ToUpper()[0];
-                switch(chargeCodePrefix)
+                switch (chargeCodePrefix)
                 {
                     case 'S':
                         chargeCode.Activity = ChargeCodeActivity.General;
@@ -165,26 +170,26 @@ public class VoltronServiceV1
                     response.ProjectsUpdated++;
                 }
 
-                if(!String.IsNullOrEmpty(projectRow.ProjectManager))
+                if (!String.IsNullOrEmpty(projectRow.ProjectManager))
                 {
                     var staff = allStaff.ContainsKey(projectRow.ProjectManager.ToLower()) ? allStaff[projectRow.ProjectManager.ToLower()] : null;
-                    if(staff != null)
+                    if (staff != null)
                     {
                         project.ProjectManagerId = staff.Id;
                     }
                 }
 
-                if(projectRow.HourlyRate.HasValue)
+                if (projectRow.HourlyRate.HasValue)
                 {
                     project.HourlyRate = projectRow.HourlyRate.Value;
                 }
 
-                if(projectRow.HoursPerMonth.HasValue)
+                if (projectRow.HoursPerMonth.HasValue)
                 {
                     project.BookingHours = projectRow.HoursPerMonth.Value;
                 }
 
-                if(projectRow.QuoteTotalHours.HasValue && projectRow.QuoteTotalHours.Value > 0)
+                if (projectRow.QuoteTotalHours.HasValue && projectRow.QuoteTotalHours.Value > 0)
                 {
                     project.TotalHours = projectRow.QuoteTotalHours.Value;
                 }
@@ -197,15 +202,15 @@ public class VoltronServiceV1
                 project.ClientId = client.Id;
                 project.Name = projectRow.Project;
 
-                if(chargeCode.Activity == ChargeCodeActivity.Project && Int32.TryParse(chargeCode.Code.Substring(1), out int projectNumber))
+                if (chargeCode.Activity == ChargeCodeActivity.Project && Int32.TryParse(chargeCode.Code.Substring(1), out int projectNumber))
                 {
                     project.ProjectNumber = projectNumber;
                 }
 
-                if(chargeCode.Activity == ChargeCodeActivity.Quote && Int32.TryParse(chargeCode.Code.Substring(1), out int quoteNumber))
+                if (chargeCode.Activity == ChargeCodeActivity.Quote && Int32.TryParse(chargeCode.Code.Substring(1), out int quoteNumber))
                 {
                     var quote = await _context.Quotes.SingleOrDefaultAsync(t => t.QuoteNumber == quoteNumber);
-                    if(quote == null)
+                    if (quote == null)
                     {
                         quote = new();
                         _context.Quotes.Add(quote);
@@ -318,7 +323,7 @@ public class VoltronServiceV1
                     _logger.LogDebug("Unable to parse row {row} hours \"{hours}\" with notes \"{note}\" in sheet \"{sheet}\" in file \"{file}\"", row.RangeAddress, hours, notes, sheet.Name, fileName);
                 }
 
-                if(!dateTime.HasValue)
+                if (!dateTime.HasValue)
                 {
                     continue;
                 }
@@ -364,7 +369,7 @@ public class VoltronServiceV1
 
     private decimal? ParseDecimal(string? stringValue)
     {
-        if(!String.IsNullOrEmpty(stringValue) && decimal.TryParse(stringValue, out decimal decimalValue))
+        if (!String.IsNullOrEmpty(stringValue) && decimal.TryParse(stringValue, out decimal decimalValue))
         {
             return decimalValue;
         }

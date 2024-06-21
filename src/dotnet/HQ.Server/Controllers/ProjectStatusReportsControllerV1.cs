@@ -1,13 +1,16 @@
 ﻿using Asp.Versioning;
+
 using FluentResults.Extensions.AspNetCore;
-using HQ.Abstractions.ProjectStatusReports;
+
 using HQ.Abstractions.Common;
+using HQ.Abstractions.ProjectStatusReports;
 using HQ.API;
-using HQ.Server.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
+using HQ.Server.Services;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Controllers
@@ -63,7 +66,7 @@ namespace HQ.Server.Controllers
                 .AsNoTracking()
                 .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
 
-            if(psr == null)
+            if (psr == null)
             {
                 return NotFound();
             }
@@ -71,7 +74,7 @@ namespace HQ.Server.Controllers
             var authorizationResult = await _authorizationService
                 .AuthorizeAsync(User, psr, ProjectStatusReportOperation.ApproveTime);
 
-            if(!authorizationResult.Succeeded)
+            if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
@@ -93,7 +96,7 @@ namespace HQ.Server.Controllers
                 .AsNoTracking()
                 .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
 
-            if(psr == null)
+            if (psr == null)
             {
                 return NotFound();
             }
@@ -101,7 +104,7 @@ namespace HQ.Server.Controllers
             var authorizationResult = await _authorizationService
                 .AuthorizeAsync(User, psr, ProjectStatusReportOperation.RejectTime);
 
-            if(!authorizationResult.Succeeded)
+            if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
@@ -123,7 +126,7 @@ namespace HQ.Server.Controllers
                 .AsNoTracking()
                 .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
 
-            if(psr == null)
+            if (psr == null)
             {
                 return NotFound();
             }
@@ -131,7 +134,7 @@ namespace HQ.Server.Controllers
             var authorizationResult = await _authorizationService
                 .AuthorizeAsync(User, psr, ProjectStatusReportOperation.UpdateTime);
 
-            if(!authorizationResult.Succeeded)
+            if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
@@ -151,7 +154,7 @@ namespace HQ.Server.Controllers
                 .AsNoTracking()
                 .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
 
-            if(psr == null)
+            if (psr == null)
             {
                 return NotFound();
             }
@@ -159,7 +162,7 @@ namespace HQ.Server.Controllers
             var authorizationResult = await _authorizationService
                 .AuthorizeAsync(User, psr, ProjectStatusReportOperation.UnapproveTime);
 
-            if(!authorizationResult.Succeeded)
+            if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
@@ -179,7 +182,7 @@ namespace HQ.Server.Controllers
                 .AsNoTracking()
                 .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
 
-            if(psr == null)
+            if (psr == null)
             {
                 return NotFound();
             }
@@ -187,7 +190,7 @@ namespace HQ.Server.Controllers
             var authorizationResult = await _authorizationService
                 .AuthorizeAsync(User, psr, ProjectStatusReportOperation.UpdateReportMarkdown);
 
-            if(!authorizationResult.Succeeded)
+            if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
@@ -207,7 +210,7 @@ namespace HQ.Server.Controllers
                 .AsNoTracking()
                 .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
 
-            if(psr == null)
+            if (psr == null)
             {
                 return NotFound();
             }
@@ -215,7 +218,7 @@ namespace HQ.Server.Controllers
             var authorizationResult = await _authorizationService
                 .AuthorizeAsync(User, psr, ProjectStatusReportOperation.SubmitReport);
 
-            if(!authorizationResult.Succeeded)
+            if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }

@@ -2,15 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using FluentResults;
+
+using HQ.Abstractions;
 using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Times;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using HQ.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services
@@ -22,14 +25,16 @@ namespace HQ.Server.Services
         {
             this._context = context;
         }
-        public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default) {
+        public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default)
+        {
             var validationResult = Result.Merge(
                 Result.FailIf(string.IsNullOrEmpty(request.Notes), "Notes are required."),
                 Result.FailIf(!request.Id.HasValue && request.StaffId == null, "Staff is required."),
                 Result.FailIf(request.BillableHours <= 0, "Billable Hours must be greater than 0.")
             );
 
-            if (validationResult.IsFailed) {
+            if (validationResult.IsFailed)
+            {
                 return validationResult;
             }
 
@@ -47,14 +52,18 @@ namespace HQ.Server.Services
             // These conditions are for the case where the request doesn't have a chargeCodeId but has ChargeCode for example P1041
             if ((!string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue) || chargeCode == null)
             {
-                if (chargeCode != null) {
+                if (chargeCode != null)
+                {
                     timeEntry.ChargeCode = chargeCode;
-                } else {
+                }
+                else
+                {
                     return Result.Fail($"The Charge code: {request.ChargeCode} not found");
                 }
             }
 
-            if(request.ChargeCodeId.HasValue) {
+            if (request.ChargeCodeId.HasValue)
+            {
                 timeEntry.ChargeCodeId = request.ChargeCodeId.Value;
             }
 
@@ -84,7 +93,7 @@ namespace HQ.Server.Services
             timeEntry.Hours = request.Hours ?? 0;
             timeEntry.Task = request.Task;
             await _context.SaveChangesAsync(ct);
-            return Result.Ok(new UpsertTimeV1.Response() { Id = timeEntry.Id });            
+            return Result.Ok(new UpsertTimeV1.Response() { Id = timeEntry.Id });
         }
 
         public async Task<Result<UpsertTimeDescriptionV1.Response>> UpsertTimeDescriptionV1(UpsertTimeDescriptionV1.Request request, CancellationToken ct = default)
@@ -107,12 +116,14 @@ namespace HQ.Server.Services
 
         public async Task<Result<UpsertTimeHoursV1.Response>> UpsertTimeHoursV1(UpsertTimeHoursV1.Request request, CancellationToken ct = default)
         {
-            if(request.Hours <= 0) {
+            if (request.Hours <= 0)
+            {
                 return Result.Fail("Hours must be greater than zero");
             }
             var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
-            
-            if(timeEntry == null) {
+
+            if (timeEntry == null)
+            {
                 return Result.Fail("Time Id is required.");
             }
 
@@ -210,110 +221,111 @@ namespace HQ.Server.Services
         }
 
         public async Task<Result<GetTimesV1.Response>> GetTimesV1(GetTimesV1.Request request, CancellationToken ct = default)
-    {
-        var records = _context.Times
-            .Include(t => t.ChargeCode).ThenInclude(t => t.Project).ThenInclude(t => t!.Client)
-            .AsNoTracking()
-            .OrderByDescending(t => t.CreatedAt)
-            .AsQueryable();
-
-        if (!string.IsNullOrEmpty(request.Search))
         {
-            records = records.Where(t =>
-                t.Notes!.ToLower().Contains(request.Search.ToLower()) ||
-                t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
-                t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
-                t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
-                t.ChargeCode.Project.Name != null && t.ChargeCode.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
-                t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
-            );
-        }
+            var records = _context.Times
+                .Include(t => t.ChargeCode).ThenInclude(t => t.Project).ThenInclude(t => t!.Client)
+                .AsNoTracking()
+                .OrderByDescending(t => t.CreatedAt)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.Search))
+            {
+                records = records.Where(t =>
+                    t.Notes!.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode.Project.Name != null && t.ChargeCode.Project.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
+                );
+            }
             var total = await records.CountAsync(ct);
 
             if (!string.IsNullOrEmpty(request.ChargeCode))
-        {
-            records = records.Where(t => t.ChargeCode.Code == request.ChargeCode);
-        }
-        if (request.ClientId.HasValue)
-        {
-            records = records.Where(t => t.ChargeCode.Project!.ClientId.Equals(request.ClientId));
-        }
-        if (request.Period.HasValue)
-        {
-            request.StartDate = new DateOnly().GetPeriodStartDate(request.Period.Value);
-            request.EndDate = new DateOnly().GetPeriodEndDate(request.Period.Value);
-        }
-        if (request.Invoiced.HasValue)
-        {
-            var isInvoiceRequired = request.Invoiced.Value;
-            records = records.Where(t => isInvoiceRequired ? t.InvoiceId != null : t.InvoiceId == null);
-        }
+            {
+                records = records.Where(t => t.ChargeCode.Code == request.ChargeCode);
+            }
+            if (request.ClientId.HasValue)
+            {
+                records = records.Where(t => t.ChargeCode.Project!.ClientId.Equals(request.ClientId));
+            }
+            if (request.Period.HasValue)
+            {
+                request.StartDate = new DateOnly().GetPeriodStartDate(request.Period.Value);
+                request.EndDate = new DateOnly().GetPeriodEndDate(request.Period.Value);
+            }
+            if (request.Invoiced.HasValue)
+            {
+                var isInvoiceRequired = request.Invoiced.Value;
+                records = records.Where(t => isInvoiceRequired ? t.InvoiceId != null : t.InvoiceId == null);
+            }
 
-        if (request.TimeAccepted.HasValue)
-        {
-            var isAcceptedTimeRequired = request.TimeAccepted.Value;
-            records = records.Where(t => isAcceptedTimeRequired ? t.Status == TimeStatus.Accepted : t.Status != TimeStatus.Accepted);
-        }
+            if (request.TimeAccepted.HasValue)
+            {
+                var isAcceptedTimeRequired = request.TimeAccepted.Value;
+                records = records.Where(t => isAcceptedTimeRequired ? t.Status == TimeStatus.Accepted : t.Status != TimeStatus.Accepted);
+            }
 
             if (request.StartDate.HasValue && !request.EndDate.HasValue)
-        {
-            records = records.Where(t => t.Date >= request.StartDate);
-        }
+            {
+                records = records.Where(t => t.Date >= request.StartDate);
+            }
 
-        if (request.EndDate.HasValue && !request.StartDate.HasValue)
-        {
-            records = records.Where(t => t.Date <= request.EndDate);
-        }
+            if (request.EndDate.HasValue && !request.StartDate.HasValue)
+            {
+                records = records.Where(t => t.Date <= request.EndDate);
+            }
 
-        if (request.StartDate.HasValue && request.EndDate.HasValue)
-        {
-            records = records.Where(t => t.Date >= request.StartDate && t.Date <= request.EndDate);
-        }
-        
-        if (request.Id.HasValue)
-        {
-            records = records.Where(t => t.Id == request.Id.Value);
-        }
-        if (request.StaffId.HasValue)
-        {
-            records = records.Where(t => t.StaffId == request.StaffId);
-        }
-        if(request.ProjectId.HasValue) {
-            records = records.Where(t => t.ChargeCode.ProjectId.Equals(request.ProjectId.Value));
-        }
+            if (request.StartDate.HasValue && request.EndDate.HasValue)
+            {
+                records = records.Where(t => t.Date >= request.StartDate && t.Date <= request.EndDate);
+            }
 
-        if (!string.IsNullOrEmpty(request.Task))
-        {
-            records = records.Where(t => t.Task == request.Task);
-        }
-        if (!string.IsNullOrEmpty(request.Activity))
-        {
-            records = records.Where(t => t.Activity!.Name == request.Activity);
-        }
-        if (request.Date.HasValue)
-        {
-            records = records.Where(t => t.Date == request.Date);
-        }
+            if (request.Id.HasValue)
+            {
+                records = records.Where(t => t.Id == request.Id.Value);
+            }
+            if (request.StaffId.HasValue)
+            {
+                records = records.Where(t => t.StaffId == request.StaffId);
+            }
+            if (request.ProjectId.HasValue)
+            {
+                records = records.Where(t => t.ChargeCode.ProjectId.Equals(request.ProjectId.Value));
+            }
 
-        
-        
+            if (!string.IsNullOrEmpty(request.Task))
+            {
+                records = records.Where(t => t.Task == request.Task);
+            }
+            if (!string.IsNullOrEmpty(request.Activity))
+            {
+                records = records.Where(t => t.Activity!.Name == request.Activity);
+            }
+            if (request.Date.HasValue)
+            {
+                records = records.Where(t => t.Date == request.Date);
+            }
 
 
 
 
 
-  
-            
-        if (request.Skip.HasValue)
-        {
-            records = records.Skip(request.Skip.Value);
-        }
 
-        if (request.Take.HasValue)
-        {
-            records = records.Take(request.Take.Value);
-        }
-        
+
+
+
+
+            if (request.Skip.HasValue)
+            {
+                records = records.Skip(request.Skip.Value);
+            }
+
+            if (request.Take.HasValue)
+            {
+                records = records.Take(request.Take.Value);
+            }
+
             var mapped = records
             .Select(t => new GetTimesV1.Record()
             {
@@ -359,129 +371,133 @@ namespace HQ.Server.Services
                mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
 
             var response = new GetTimesV1.Response()
-        {
-            Records = await mapped.ToListAsync(ct),
-            Total = total
-        };
-
-        return response;
-    }
-
- public async Task<Result<DeleteTimeV1.Response?>> DeleteTimeV1(DeleteTimeV1.Request request, CancellationToken ct = default)
-{
-    var time = await _context.Times
-                             .Where(t => t.Id == request.Id)
-                             .FirstOrDefaultAsync(ct);
-
-    if (time == null)
-    {
-        return Result.Ok<DeleteTimeV1.Response?>(null);
-    }
-
-    _context.Times.Remove(time);
-    await _context.SaveChangesAsync(ct);
-
-     return new DeleteTimeV1.Response();
-    }
-
-    public async Task<Result<GetDashboardTimeV1.Response>> GetDashboardTimeV1(GetDashboardTimeV1.Request request, CancellationToken ct = default)
-    {
-        if(request.Period == Period.Custom)
-        {
-            if(!request.FromDate.HasValue || !request.ToDate.HasValue || request.FromDate.Value > request.ToDate.Value)
             {
-                return Result.Fail("Invalid date range.");
-            }
-        }
-        else
-        {
-            request.FromDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(request.Period);
-            request.ToDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(request.Period);
+                Records = await mapped.ToListAsync(ct),
+                Total = total
+            };
+
+            return response;
         }
 
-        var times = await _context.Times
-            .Where(t => t.StaffId == request.StaffId && t.Date >= request.FromDate && t.Date <= request.ToDate)
-            .OrderByDescending(t => t.CreatedAt)
-            .Select(t => new GetDashboardTimeV1.TimeEntry() {
-                Date = t.Date,
-                ChargeCodeId = t.ChargeCodeId,
-                ActivityId = t.ActivityId,
-                Hours = t.Hours,
-                Notes = t.Notes,
-                Task = t.Task,
-                ProjectId = t.ChargeCode.ProjectId,
-                ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null
-            })
-            .GroupBy(t => t.Date)
-            .ToDictionaryAsync(t => t.Key, t => t.ToList());
-
-        var chargeCodes = await _context.ChargeCodes
-            .OrderBy(t => t.Code)
-            .Select(t => new GetDashboardTimeV1.ChargeCode() {
-                Id = t.Id,
-                Code = t.Code,
-                ClientId = t.Project != null ? t.Project.ClientId : null,
-                ProjectId = t.ProjectId
-            })
-            .ToListAsync(ct);
-
-        var clients = await _context.Clients
-            .OrderBy(t => t.Name)
-            .Select(t => new GetDashboardTimeV1.Client() {
-                Id = t.Id,
-                Name = t.Name
-            })
-            .ToListAsync(ct);
-
-        var projects = await _context.Projects
-            .OrderBy(t => t.Name)
-            .Select(t => new GetDashboardTimeV1.Project() {
-                Id = t.Id,
-                Name = t.Name,
-                ClientId = t.ClientId
-            })
-            .ToListAsync(ct);
-
-        var response = new GetDashboardTimeV1.Response();
-        response.ChargeCodes = chargeCodes;
-        response.Clients = clients;
-        response.Projects = projects;
-
-        DateOnly date = request.ToDate.Value;
-        do
+        public async Task<Result<DeleteTimeV1.Response?>> DeleteTimeV1(DeleteTimeV1.Request request, CancellationToken ct = default)
         {
-            var timeForDate =  new GetDashboardTimeV1.TimeForDate();
-            timeForDate.Date = date;
-            if(times.ContainsKey(date))
+            var time = await _context.Times
+                                     .Where(t => t.Id == request.Id)
+                                     .FirstOrDefaultAsync(ct);
+
+            if (time == null)
             {
-                timeForDate.Times = times[date];
+                return Result.Ok<DeleteTimeV1.Response?>(null);
             }
 
-            response.Dates.Add(timeForDate);
-            date = date.AddDays(-1);
+            _context.Times.Remove(time);
+            await _context.SaveChangesAsync(ct);
+
+            return new DeleteTimeV1.Response();
         }
-        while(date >= request.FromDate.Value);
 
-        return response;
-    }
-
-    public async Task<Result<ExportTimesV1.Response>> ExportTimesV1(ExportTimesV1.Request request, CancellationToken ct)
-    {
-        // TODO: Replace with CSVHelper
-        var stream = new MemoryStream();
-        var streamWriter = new StreamWriter(stream);
-        await streamWriter.WriteLineAsync("Hello,World");
-
-        await streamWriter.FlushAsync(ct);
-
-        stream.Seek(0, SeekOrigin.Begin);
-
-        return new ExportTimesV1.Response()
+        public async Task<Result<GetDashboardTimeV1.Response>> GetDashboardTimeV1(GetDashboardTimeV1.Request request, CancellationToken ct = default)
         {
-            File = stream,
-            FileName = "HQTimeExport.csv", // TODO: Format with date/time something like HQTimeExport_202406201612.csv
-            ContentType = "text/csv",
-        };
+            if (request.Period == Period.Custom)
+            {
+                if (!request.FromDate.HasValue || !request.ToDate.HasValue || request.FromDate.Value > request.ToDate.Value)
+                {
+                    return Result.Fail("Invalid date range.");
+                }
+            }
+            else
+            {
+                request.FromDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(request.Period);
+                request.ToDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(request.Period);
+            }
+
+            var times = await _context.Times
+                .Where(t => t.StaffId == request.StaffId && t.Date >= request.FromDate && t.Date <= request.ToDate)
+                .OrderByDescending(t => t.CreatedAt)
+                .Select(t => new GetDashboardTimeV1.TimeEntry()
+                {
+                    Date = t.Date,
+                    ChargeCodeId = t.ChargeCodeId,
+                    ActivityId = t.ActivityId,
+                    Hours = t.Hours,
+                    Notes = t.Notes,
+                    Task = t.Task,
+                    ProjectId = t.ChargeCode.ProjectId,
+                    ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null
+                })
+                .GroupBy(t => t.Date)
+                .ToDictionaryAsync(t => t.Key, t => t.ToList());
+
+            var chargeCodes = await _context.ChargeCodes
+                .OrderBy(t => t.Code)
+                .Select(t => new GetDashboardTimeV1.ChargeCode()
+                {
+                    Id = t.Id,
+                    Code = t.Code,
+                    ClientId = t.Project != null ? t.Project.ClientId : null,
+                    ProjectId = t.ProjectId
+                })
+                .ToListAsync(ct);
+
+            var clients = await _context.Clients
+                .OrderBy(t => t.Name)
+                .Select(t => new GetDashboardTimeV1.Client()
+                {
+                    Id = t.Id,
+                    Name = t.Name
+                })
+                .ToListAsync(ct);
+
+            var projects = await _context.Projects
+                .OrderBy(t => t.Name)
+                .Select(t => new GetDashboardTimeV1.Project()
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    ClientId = t.ClientId
+                })
+                .ToListAsync(ct);
+
+            var response = new GetDashboardTimeV1.Response();
+            response.ChargeCodes = chargeCodes;
+            response.Clients = clients;
+            response.Projects = projects;
+
+            DateOnly date = request.ToDate.Value;
+            do
+            {
+                var timeForDate = new GetDashboardTimeV1.TimeForDate();
+                timeForDate.Date = date;
+                if (times.ContainsKey(date))
+                {
+                    timeForDate.Times = times[date];
+                }
+
+                response.Dates.Add(timeForDate);
+                date = date.AddDays(-1);
+            }
+            while (date >= request.FromDate.Value);
+
+            return response;
+        }
+
+        public async Task<Result<ExportTimesV1.Response>> ExportTimesV1(ExportTimesV1.Request request, CancellationToken ct)
+        {
+            // TODO: Replace with CSVHelper
+            var stream = new MemoryStream();
+            var streamWriter = new StreamWriter(stream);
+            await streamWriter.WriteLineAsync("Hello,World");
+
+            await streamWriter.FlushAsync(ct);
+
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return new ExportTimesV1.Response()
+            {
+                File = stream,
+                FileName = "HQTimeExport.csv", // TODO: Format with date/time something like HQTimeExport_202406201612.csv
+                ContentType = "text/csv",
+            };
+        }
     }
-}
 }

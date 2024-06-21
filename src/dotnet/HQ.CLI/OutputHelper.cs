@@ -1,18 +1,21 @@
-﻿using CsvHelper;
-using FluentResults;
-using Spectre.Console;
-using Spectre.Console.Json;
-using Spectre.Console.Rendering;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using CsvHelper.Configuration;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+using CsvHelper;
+using CsvHelper.Configuration;
+
+using FluentResults;
+
+using Spectre.Console;
+using Spectre.Console.Json;
+using Spectre.Console.Rendering;
 
 namespace HQ.CLI
 {
@@ -26,7 +29,7 @@ namespace HQ.CLI
     {
         private readonly TJson _json;
         private readonly IEnumerable<TRow> _rows;
-        private List<(string Name, Func<TRow, string?> Render, bool Table, bool CSV, bool Wide)> _columns = new();
+        private readonly List<(string Name, Func<TRow, string?> Render, bool Table, bool CSV, bool Wide)> _columns = new();
         private Type? _csvClassMap;
 
         public OutputHelper(TJson json, IEnumerable<TRow> rows)
@@ -50,7 +53,7 @@ namespace HQ.CLI
 
         public void Output(OutputFormat output)
         {
-            switch(output)
+            switch (output)
             {
                 case OutputFormat.Table:
                 case OutputFormat.Wide:
@@ -77,7 +80,7 @@ namespace HQ.CLI
                         using var writer = new StreamWriter(stream);
                         using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
-                        if(_csvClassMap != null)
+                        if (_csvClassMap != null)
                         {
                             csv.Context.RegisterClassMap(_csvClassMap);
                         }
@@ -85,8 +88,8 @@ namespace HQ.CLI
                         csv.WriteHeader<TRow>();
 
                         csv.NextRecord();
-                        
-                        if(_rows.Any())
+
+                        if (_rows.Any())
                         {
                             csv.WriteRecords(_rows);
                         }

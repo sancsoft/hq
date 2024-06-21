@@ -1,16 +1,18 @@
-using Xunit;
 using System;
-using HQ;
-using HQ.Abstractions;
-using HQ.Abstractions.Enumerations;
-using HQ.Abstractions.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using System.Reflection.Metadata;
+
+using HQ;
+using HQ.Abstractions;
+using HQ.Abstractions.Common;
+using HQ.Abstractions.Enumerations;
+
+using Xunit;
 namespace HQ.Tests
 {
 
@@ -190,7 +192,7 @@ namespace HQ.Tests
             Assert.Equal(transformWeekEnd5, actualWeekEnd5);
         }
 
-         [Fact]
+        [Fact]
         public void GetPeriodStartDate_Today_ReturnsToday()
         {
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);

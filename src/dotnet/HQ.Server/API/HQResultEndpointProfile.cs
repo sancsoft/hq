@@ -1,6 +1,8 @@
 ﻿using FluentResults;
 using FluentResults.Extensions.AspNetCore;
+
 using HQ.Abstractions.Common;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace HQ.API;
@@ -27,7 +29,7 @@ public class HQResultEndpointProfile : IAspNetCoreResultEndpointProfile
     public ActionResult TransformOkValueResultToActionResult<T>(OkResultToActionResultTransformationContext<Result<T>> context)
     {
         var value = context.Result.ValueOrDefault;
-        if(value == null)
+        if (value == null)
         {
             return new NotFoundResult();
         }

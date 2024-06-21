@@ -1,8 +1,10 @@
-using HQ.SDK;
 using System.ComponentModel;
+
+using HQ.Abstractions.Times;
+using HQ.SDK;
+
 using Spectre.Console;
 using Spectre.Console.Cli;
-using HQ.Abstractions.Times;
 
 
 
@@ -18,7 +20,7 @@ namespace HQ.CLI.Commands.TimeEntries
 
         [CommandArgument(2, "<notes>")]
         public required string Notes { get; set; }
-        
+
 
         [CommandOption("--activity|-a")]
         public string? Activity { get; set; }
@@ -41,7 +43,8 @@ namespace HQ.CLI.Commands.TimeEntries
 
         public override async Task<int> ExecuteAsync(CommandContext context, CreateTimeEntrySettings settings)
         {
-            var timeEntryRequest = new UpsertTimeV1.Request() {
+            var timeEntryRequest = new UpsertTimeV1.Request()
+            {
                 ChargeCode = settings.ChargeCode,
                 ActivityName = settings.Activity,
                 Notes = settings.Notes,

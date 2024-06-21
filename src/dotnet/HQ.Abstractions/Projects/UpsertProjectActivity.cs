@@ -11,7 +11,7 @@ public class UpsertProjectActivityV1
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = null!;
         public int Sequence { get; set; }
-       
+
     }
 
     public class Response

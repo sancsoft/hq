@@ -1,15 +1,19 @@
-﻿using CsvHelper;
+﻿using System.Formats.Asn1;
+using System.Globalization;
+
+using CsvHelper;
 using CsvHelper.Configuration;
+
 using FluentResults;
+
 using HQ.Abstractions;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Projects;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
+
 using Microsoft.EntityFrameworkCore;
-using System.Formats.Asn1;
-using System.Globalization;
 
 namespace HQ.Server.Services;
 
@@ -204,14 +208,15 @@ public class ClientServiceV1
 
         var response = await _context.Clients
             .Where(t => t.Id == request.Id)
-            .Select(client => new GetClientInvoiceSummaryV1.Response() {
+            .Select(client => new GetClientInvoiceSummaryV1.Response()
+            {
                 MonthToDate = client.Invoices.Where(t => t.Date >= currentMonthStartDate).Sum(t => t.Total),
                 LastMonthToDate = client.Invoices.Where(t => t.Date >= lastMonthStartDate && t.Date <= lastMonthEndDate).Sum(t => t.Total),
                 YearToDate = client.Invoices.Where(t => t.Date >= currentYearStartDate).Sum(t => t.Total),
                 AllTimeToDate = client.Invoices.Sum(t => t.Total)
             })
             .SingleOrDefaultAsync(ct);
-        
+
         return response;
     }
 }
