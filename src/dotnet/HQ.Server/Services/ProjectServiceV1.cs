@@ -141,7 +141,7 @@ public class ProjectServiceV1
         }
 
 
-        if (request.ProjectStatus.HasValue && request.ProjectStatus != ProjectStatus.All)
+        if (request.ProjectStatus.HasValue && request.ProjectStatus != null)
         {
             records = records.Where(t => t.Quote!.Status == request.ProjectStatus);
         }

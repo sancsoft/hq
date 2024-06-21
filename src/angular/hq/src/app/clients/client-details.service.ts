@@ -14,7 +14,6 @@ export enum ProjectStatus {
   Completed = 7,
   Closed = 8,
   Lost = 9,
-  All = 10,
 }
 @Injectable({
   providedIn: 'root',
@@ -31,7 +30,7 @@ export class ClientDetailsService {
 
   resetFilters() {
     this.search.setValue('');
-    this.projectStatus.setValue(ProjectStatus.All);
+    this.projectStatus.setValue(null);
     this.currentOnly.setValue(true);
   }
 
