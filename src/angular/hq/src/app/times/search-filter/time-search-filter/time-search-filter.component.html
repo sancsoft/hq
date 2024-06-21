@@ -146,8 +146,8 @@
       <select [formControl]="timeService.selectedPeriod" class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
         <option [ngValue]="null">All</option>
         <option [ngValue]="timeService.Period.Today">Today</option>
-        <option [ngValue]="timeService.Period.ThisWeek">This Week</option>
-        <option [ngValue]="timeService.Period.ThisMonth">This Month</option>
+        <option [ngValue]="timeService.Period.Week">This Week</option>
+        <option [ngValue]="timeService.Period.Month">This Month</option>
         <option [ngValue]="timeService.Period.LastWeek">Last Week</option>
         <option [ngValue]="timeService.Period.LastMonth">Last Month</option>
       </select>

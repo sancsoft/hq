@@ -29,7 +29,7 @@ export class TimeService {
   staffMember = new FormControl<string | null>(null);
   client = new FormControl<string | null>(null);
   project = new FormControl<string | null>(null);
-  selectedPeriod = new FormControl<Period | null>(Period.ThisMonth);
+  selectedPeriod = new FormControl<Period | null>(Period.Month);
 
 
   projectActivity = new FormControl<string | null>(null);

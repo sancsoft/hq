@@ -38,6 +38,8 @@ export class TimeListComponent implements OnInit {
   times$: Observable<GetTimeRecordV1[]>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
+  timeRequest$ = new BehaviorSubject({});
+  date$ = new BehaviorSubject<Date | null>(null);
 
 
 
@@ -121,28 +123,39 @@ projectRequest$.pipe(
     startWith(this.timeListService.staffMember.value)
   );
 
-  const projectId$ = this.timeListService.project.valueChanges.pipe(
-    startWith(this.timeListService.project.value)
-  )
-  const startDate$ = this.timeListService.startDate.valueChanges.pipe(
-    startWith(this.timeListService.startDate.value)
-  );
-  const endDate$ = this.timeListService.endDate.valueChanges.pipe(
-    startWith(this.timeListService.endDate.value)
-  );
-  const period$ = this.timeListService.selectedPeriod.valueChanges.pipe(
-    startWith(this.timeListService.selectedPeriod.value)
-  );
-  const invoiced$ = this.timeListService.invoiced.valueChanges.pipe(
-    startWith(this.timeListService.invoiced.value)
-  );
-  const accepted$ = this.timeListService.timeAccepted.valueChanges.pipe(
-    startWith(this.timeListService.timeAccepted.value)
-  );
+    const projectId$ = this.timeListService.project.valueChanges.pipe(
+      startWith(this.timeListService.project.value),
+    );
+    const startDate$ = this.timeListService.startDate.valueChanges.pipe(
+      startWith(this.timeListService.startDate.value),
+      tap(()=>{
+      this.date$.next(null);
+      })
+    );
+    const endDate$ = this.timeListService.endDate.valueChanges.pipe(
+      startWith(this.timeListService.endDate.value),
+      tap(()=>{
+      this.date$.next(null);
+      })
+    );
+    const period$ = this.timeListService.selectedPeriod.valueChanges.pipe(
+      startWith(this.timeListService.selectedPeriod.value),
+      tap(()=>{
+        // 
+        this.date$.next(new Date());
+      })
+    );
+    const invoiced$ = this.timeListService.invoiced.valueChanges.pipe(
+      startWith(this.timeListService.invoiced.value),
+    );
+    const accepted$ = this.timeListService.timeAccepted.valueChanges.pipe(
+      startWith(this.timeListService.timeAccepted.value),
+    );
 
     const request$ = combineLatest({
       search: search$,
       skip: skip$,
+      // date: this.date$,
       clientId: clientId$,
       projectId: projectId$,
       staffId: staffMemberId$,
@@ -155,6 +168,10 @@ projectRequest$.pipe(
       TimeAccepted: accepted$,
       sortDirection: this.sortDirection$,
     });
+    request$.subscribe((request)=>{
+      this.timeRequest$.next(request);
+    });
+    
 
     const response$ = request$.pipe(
       debounceTime(500),
@@ -205,9 +222,8 @@ projectRequest$.pipe(
   }
 
   async exportTime() {
-    const result = await firstValueFrom(this.hqService.exportTimesV1({  }));
-    if(result.file === null)
-    {
+    const result = await firstValueFrom(this.hqService.exportTimesV1(this.timeRequest$.getValue()));
+    if (result.file === null) {
       this.toastService.show('Error', 'Unable to download export.');
       return;
     }
