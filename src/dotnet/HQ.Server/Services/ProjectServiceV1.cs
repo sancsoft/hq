@@ -139,9 +139,9 @@ public class ProjectServiceV1
         {
             records = records.Where(t => t.Id == request.Id.Value);
         }
-        if (request.StaffMember.HasValue)
+        if (request.ProjectManagerId.HasValue)
         {
-            records = records.Where(t => t.ProjectManager != null ? t.ProjectManager.Id.Equals(request.StaffMember.Value) : false);
+            records = records.Where(t => t.ProjectManager != null ? t.ProjectManager.Id.Equals(request.ProjectManagerId.Value) : false);
         }
 
         if (request.ProjectStatus.HasValue && request.ProjectStatus != null)

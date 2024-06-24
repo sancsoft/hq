@@ -80,10 +80,10 @@ export class ProjectListComponent {
       tap((t) => this.goToPage(1)),
       startWith(projectSearchFilterService.search.value),
     );
-    const staffMember$ =
-      projectSearchFilterService.staffMember.valueChanges.pipe(
+    const projectManager$ =
+      projectSearchFilterService.projectManager.valueChanges.pipe(
         tap((t) => this.goToPage(1)),
-        startWith(projectSearchFilterService.staffMember.value),
+        startWith(projectSearchFilterService.projectManager.value),
       );
     const projectStatus$ =
       projectSearchFilterService.projectStatus.valueChanges.pipe(
@@ -96,7 +96,7 @@ export class ProjectListComponent {
     const request$ = combineLatest({
       search: search$,
       skip: skip$,
-      staffMember: staffMember$,
+      projectManagerId: projectManager$,
       projectStatus: projectStatus$,
       take: itemsPerPage$,
       sortBy: this.sortOption$,

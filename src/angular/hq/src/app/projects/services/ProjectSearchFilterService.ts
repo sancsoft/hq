@@ -10,18 +10,16 @@ import { GetPSRTimeRecordStaffV1 } from '../../models/PSR/get-psr-time-v1';
 @Injectable({
   providedIn: 'root',
 })
-
 export class ProjectSearchFilterService {
-  staffMembers$ = new BehaviorSubject<GetPSRTimeRecordStaffV1[]>([]);
+  projectManagers$ = new BehaviorSubject<GetPSRTimeRecordStaffV1[]>([]);
 
   search = new FormControl<string | null>('');
   projectStatus = new FormControl<ProjectStatus | null>(null);
-  staffMember = new FormControl<string | null>(null);
+  projectManager = new FormControl<string | null>(null);
   itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
 
   ProjectStatus = ProjectStatus;
-
 
   constructor(private hqService: HQService) {
     const staffMembersResponse$ = this.hqService
@@ -38,13 +36,13 @@ export class ProjectSearchFilterService {
       );
 
     staffMembersResponse$.pipe(first()).subscribe((response) => {
-      this.staffMembers$.next(response);
+      this.projectManagers$.next(response);
     });
   }
 
   resetFilter() {
     this.search.setValue('');
     this.projectStatus.setValue(null);
-    this.staffMember.setValue(null);
+    this.projectManager.setValue(null);
   }
 }
