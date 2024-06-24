@@ -6,6 +6,7 @@ using CsvHelper.Configuration;
 
 using FluentResults;
 
+using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Projects;
 using HQ.Abstractions.Staff;
@@ -148,6 +149,11 @@ public class ProjectServiceV1
         {
             records = records.Where(t => t.Quote!.Status == request.ProjectStatus);
         }
+        var bookingStartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Month);
+        var bookingEndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(Period.Month);
+
+
+
 
         var mapped = records.Select(t => new GetProjectsV1.Record()
         {
@@ -162,13 +168,68 @@ public class ProjectServiceV1
             QuoteId = t.QuoteId,
             QuoteNumber = t.Quote != null ? t.Quote.QuoteNumber : null,
             HourlyRate = t.HourlyRate,
-            BookingHours = t.BookingHours,
             BookingPeriod = t.BookingPeriod,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
             BillingEmail = t.Client.BillingEmail,
             OfficialName = t.Client.OfficialName,
-            Status = t.Quote != null ? (int)t.Quote.Status : 0
+            Status = t.Quote != null ? (int)t.Quote.Status : 0,
+            ProjectStatus = t.Status,
+
+
+            BookingStartDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate && x.Date <= bookingEndDate).Min(x => x.Date),
+            BookingEndDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate && x.Date <= bookingEndDate).Max(x => x.Date),
+            BookingHours = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate && x.Date <= bookingEndDate).Sum(x => x.Hours),
+            BookingAvailableHours = t.BookingHours - t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate && x.Date <= bookingEndDate).Sum(x => x.Hours),
+            BookingPercentComplete = t.BookingHours == 0 ? 0 : t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate && x.Date <= bookingEndDate).Sum(x => x.Hours) / t.BookingHours,
+
+            TotalHours = t.ChargeCode!.Times.Where(x => x.Date <= t.EndDate).Sum(x => x.Hours),
+            TotalAvailableHours = t.TotalHours != null ? t.TotalHours.Value - t.ChargeCode!.Times.Where(x => x.Date <= bookingEndDate).Sum(x => x.Hours) : null,
+            TotalPercentComplete = !t.TotalHours.HasValue || t.TotalHours == 0 ? null : t.ChargeCode!.Times.Where(x => x.Date <= bookingEndDate).Sum(x => x.Hours) / t.TotalHours.Value,
+            TotalPercentCompleteSort = !t.TotalHours.HasValue || t.TotalHours == 0 ? -1 : t.ChargeCode!.Times.Where(x => x.Date <= bookingEndDate).Sum(x => x.Hours) / t.TotalHours.Value,
+            TotalStartDate = t.ChargeCode.Times.Where(x => x.Date <= bookingEndDate).Min(t => t.Date),
+            TotalEndDate = t.ChargeCode.Times.Where(x => x.Date <= bookingEndDate).Max(t => t.Date),
+        })
+        .Select(t => new GetProjectsV1.Record()
+        {
+            Id = t.Id,
+            ProjectNumber = t.ProjectNumber,
+            ChargeCode = t.ChargeCode,
+            ClientId = t.ClientId,
+            ClientName = t.ClientName,
+            ProjectManagerId = t.ProjectManagerId,
+            ProjectManagerName = t.ProjectManagerName,
+            Name = t.Name,
+            QuoteId = t.QuoteId,
+            QuoteNumber = t.QuoteNumber,
+            HourlyRate = t.HourlyRate,
+            BookingPeriod = t.BookingPeriod,
+            StartDate = t.StartDate,
+            EndDate = t.EndDate,
+            BillingEmail = t.BillingEmail,
+            OfficialName = t.OfficialName,
+            Status = t.Status,
+            ProjectStatus = t.ProjectStatus,
+
+
+            BookingStartDate = t.BookingStartDate,
+            BookingEndDate = t.BookingEndDate,
+            BookingHours = t.BookingHours,
+            BookingAvailableHours = t.BookingAvailableHours,
+            BookingPercentComplete = t.BookingPercentComplete,
+
+            TotalHours = t.TotalHours,
+            TotalAvailableHours = t.TotalAvailableHours,
+            TotalPercentComplete = t.TotalPercentComplete,
+            TotalPercentCompleteSort = t.TotalPercentCompleteSort,
+            TotalStartDate = t.TotalStartDate,
+            TotalEndDate = t.TotalEndDate,
+
+            SummaryHoursTotal = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingHours : t.TotalHours,
+            SummaryHoursAvailable = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
+            SummaryPercentComplete = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
+            SummaryPercentCompleteSort = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort
+
         });
 
         var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
@@ -179,7 +240,22 @@ public class ProjectServiceV1
             { Abstractions.Projects.GetProjectsV1.SortColumn.EndDate, "EndDate" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.ClientName, "ClientName" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.Status, "Status" }
+            { Abstractions.Projects.GetProjectsV1.SortColumn.Status, "ProjectStatus" },
+             { Abstractions.Projects.GetProjectsV1.SortColumn.BookingPeriod, "BookingPeriod" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingStartDate, "BookingStartDate" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingEndDate, "BookingEndDate" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.TotalHours, "TotalHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.TotalAvailableHours, "TotalAvailableHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ThisHours, "ThisHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ThisPendingHours, "ThisPendingHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.LastHours, "LastHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingHours, "BookingHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingAvailableHours, "BookingAvailableHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.TotalPercentComplete, "TotalPercentCompleteSort" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingPercentComplete, "BookingPercentComplete" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursTotal, "SummaryHoursTotal" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursAvailable, "SummaryHoursAvailable" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.SummaryPercentComplete, "SummaryPercentCompleteSort" },
         };
 
         var sortProperty = sortMap[request.SortBy];

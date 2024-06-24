@@ -89,11 +89,11 @@
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.Status)"
+        (click)="onSortClick(sortColumn.ProjectStatus)"
       >
         Status
         <hq-sort-icon
-          [column]="sortColumn.Status"
+          [column]="sortColumn.ProjectStatus"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
@@ -102,9 +102,16 @@
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px] cursor-pointer"
         colspan="2"
+        (click)="onSortClick(sortColumn.SummaryPercentComplete)"
       >
-        Complete
+        Complete %
+        <hq-sort-icon
+          [column]="sortColumn.SummaryPercentComplete"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
+
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
@@ -142,13 +149,87 @@
         <td class="border-b border-black py-2">{{ project.startDate }}</td>
         <td class="border-b border-black py-2">{{ project.endDate }}</td>
         <td class="border-b border-black py-2">
-          {{ getProjectSatusString(project.status) }}
+          {{ getProjectSatusString(project.projectStatus) }}
         </td>
-        <td class="border-b border-black py-2">
-          <div class="w-[350px] bg-gray-500 border border-white h-[10px]">
-            <!-- Todo: add percentage -->
-            <div class="bg-white h-[8px]" [style.width.%]="0 * 100"></div>
-          </div>
+        <td width="200" class="border-b border-black py-2 pe-2">
+          @if (project.projectStatus === ProjectStatus.OnGoing) {
+            @if (
+              project.bookingPercentComplete &&
+              project.bookingPercentComplete > 1
+            ) {
+              <div
+                class="w-full bg-gray-450 border border-red-950 h-[10px]"
+                title="{{ project.bookingStartDate }} - {{
+                  project.bookingEndDate
+                }}"
+              >
+                <div
+                  class="bg-red-950 h-[8px]"
+                  [style.width.%]="
+                    Math.min(project.bookingPercentComplete - 1, 1) * 100
+                  "
+                ></div>
+              </div>
+            } @else {
+              <div
+                class="w-full bg-gray-500 border border-white h-[10px]"
+                title="{{ project.bookingStartDate }} - {{
+                  project.bookingEndDate
+                }}"
+              >
+                <div
+                  class="bg-white h-[8px]"
+                  [style.width.%]="(project.bookingPercentComplete ?? 0) * 100"
+                ></div>
+              </div>
+            }
+            <div class="flex justify-between gap-2 text-xs text-gray-300">
+              <span class="lowercase"
+                >{{ project.bookingHours | number: "0.2-2" }} hrs this
+                {{ getPeriodName(project.bookingPeriod) }} to date</span
+              >
+              <span>{{ project.bookingPercentComplete | percent }}</span>
+            </div>
+          }
+          @if (project.projectStatus === ProjectStatus.InProduction) {
+            @if (
+              project.totalPercentComplete && project.totalPercentComplete > 1
+            ) {
+              <div
+                class="w-full bg-gray-450 border border-red-950 h-[10px]"
+                title="{{ project.totalStartDate ?? '-' }} - {{
+                  project.totalEndDate ?? '-'
+                }}"
+              >
+                <div
+                  class="bg-red-950 h-[8px]"
+                  [style.width.%]="
+                    Math.min(project.totalPercentComplete - 1, 1) * 100
+                  "
+                ></div>
+              </div>
+            } @else {
+              <div
+                class="w-full bg-gray-500 border border-white h-[10px]"
+                title="{{ project.totalStartDate ?? '-' }} - {{
+                  project.totalEndDate ?? '-'
+                }}"
+              >
+                <div
+                  class="bg-white h-[8px]"
+                  [style.width.%]="(project.totalPercentComplete ?? 0) * 100"
+                ></div>
+              </div>
+            }
+            <div class="flex justify-between gap-2 text-xs text-gray-300">
+              <span>{{ project.totalHours | number: "0.2-2" }} hrs total</span>
+              <span>{{
+                project.totalPercentComplete !== null
+                  ? (project.totalPercentComplete | percent)
+                  : "-"
+              }}</span>
+            </div>
+          }
         </td>
         <td></td>
         <td class="border-b border-black py-2 text-right pr-5">
