@@ -8,11 +8,16 @@ import {
   combineLatest,
   debounceTime,
   map,
+  shareReplay,
   startWith,
   switchMap,
   tap,
 } from 'rxjs';
-import { GetDashboardTimeV1Response } from '../models/staff-dashboard/get-dashboard-time-v1';
+import {
+  GetDashboardTimeV1ChargeCode,
+  GetDashboardTimeV1Client,
+  GetDashboardTimeV1Response,
+} from '../models/staff-dashboard/get-dashboard-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -20,11 +25,16 @@ import { GetDashboardTimeV1Response } from '../models/staff-dashboard/get-dashbo
 export class StaffDashboardService {
   search = new FormControl<string | null>(null);
   period = new FormControl<Period>(Period.Week, { nonNullable: true });
-  date = new FormControl<string>(new Date().toISOString().split('T')[0], {
-    nonNullable: true,
-  });
+  date = new FormControl<string>(
+    /*new Date().toISOString().split('T')[0]*/ '2024-06-21',
+    {
+      nonNullable: true,
+    },
+  );
 
   time$: Observable<GetDashboardTimeV1Response>;
+  chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
+  clients$: Observable<GetDashboardTimeV1Client[]>;
 
   constructor(
     private hqService: HQService,
@@ -52,6 +62,10 @@ export class StaffDashboardService {
       tap((response) =>
         this.date.setValue(response.startDate, { emitEvent: false }),
       ),
+      shareReplay(1),
     );
+
+    this.chargeCodes$ = this.time$.pipe(map((t) => t.chargeCodes));
+    this.clients$ = this.time$.pipe(map((t) => t.clients));
   }
 }

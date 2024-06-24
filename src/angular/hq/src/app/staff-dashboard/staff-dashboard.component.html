@@ -43,26 +43,48 @@
   <div>Total Hours: {{ dashboard.totalHours }}</div>
   <div>Billable Hours: {{ dashboard.billableHours }}</div>
   @for (date of dashboard.dates; track date.date) {
-    <h1 class="text-xl">{{ date.date }}</h1>
+    <div
+      class="px-5 pb-1 pt-4 font-open-sans text-nav-disabled text-xs font-bold uppercase"
+    >
+      {{ date.date | date: "EEEE" }} | {{ date.date }}
+    </div>
     <table class="min-w-full border-spacing-0 border-separate">
       <thead>
         <tr class="text-left">
-          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+          <th
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            width="90"
+          >
             Hrs
           </th>
-          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+          <th
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            width="120"
+          >
             Date
           </th>
-          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+          <th
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            width="120"
+          >
             Chrg Code
           </th>
-          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+          <th
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            width="180"
+          >
             Client
           </th>
-          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+          <th
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            width="180"
+          >
             Project
           </th>
-          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+          <th
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            width="180"
+          >
             Activity / Task
           </th>
           <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
@@ -71,22 +93,17 @@
         </tr>
       </thead>
       <tbody>
+        <tr
+          hq-staff-dashboard-time-entry
+          (hqTimeChange)="createTime($event)"
+          [time]="{ date: date.date }"
+        ></tr>
         @for (time of date.times; track time.id) {
-          <tr class="even:bg-gray-850 odd:bg-black-alt">
-            <td class="border-b border-black py-2 pl-5">{{ time.hours }}</td>
-            <td class="border-b border-black py-2 pl-5">{{ time.date }}</td>
-            <td class="border-b border-black py-2 pl-5">
-              {{ time.chargeCodeId }}
-            </td>
-            <td class="border-b border-black py-2 pl-5">{{ time.clientId }}</td>
-            <td class="border-b border-black py-2 pl-5">
-              {{ time.projectId }}
-            </td>
-            <td class="border-b border-black py-2 pl-5">
-              {{ time.activityId ?? "" + time.task ?? "" }}
-            </td>
-            <td class="border-b border-black py-2 pl-5">{{ time.notes }}</td>
-          </tr>
+          <tr
+            hq-staff-dashboard-time-entry
+            (hqTimeChange)="updateTime($event)"
+            [time]="time"
+          ></tr>
         }
       </tbody>
     </table>

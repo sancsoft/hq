@@ -23,7 +23,6 @@ public class GetDashboardTimeV1
         public List<TimeForDate> Dates { get; set; } = new();
         public List<ChargeCode> ChargeCodes { get; set; } = new();
         public List<Client> Clients { get; set; } = new();
-        public List<Project> Projects { get; set; } = new();
     }
 
     public class ChargeCode
@@ -38,14 +37,16 @@ public class GetDashboardTimeV1
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
+        public List<Project> Projects { get; set; } = null!;
     }
 
     public class Project
     {
         public Guid Id { get; set; }
-        public Guid ClientId { get; set; }
         public string Name { get; set; } = null!;
         public List<Activities> Activities { get; set; } = new();
+        public Guid? ChargeCodeId { get; set; }
+        public string? ChargeCode { get; set; }
     }
 
     public class Activities
@@ -71,5 +72,6 @@ public class GetDashboardTimeV1
         public Guid? ClientId { get; set; }
         public Guid? ProjectId { get; set; }
         public Guid? ActivityId { get; set; }
+        public string ChargeCode { get; set; } = null!;
     }
 }

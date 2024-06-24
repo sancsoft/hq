@@ -479,6 +479,7 @@ namespace HQ.Server.Services
                     Id = t.Id,
                     Date = t.Date,
                     ChargeCodeId = t.ChargeCodeId,
+                    ChargeCode = t.ChargeCode.Code,
                     ActivityId = t.ActivityId,
                     Hours = t.Hours,
                     Notes = t.Notes,
@@ -505,36 +506,30 @@ namespace HQ.Server.Services
             var clients = await _context.Clients
                 .AsNoTracking()
                 .OrderBy(t => t.Name)
+                .Include(t => t.Projects)
+                .ThenInclude(t => t.Activities)
                 .Select(t => new GetDashboardTimeV1.Client()
                 {
                     Id = t.Id,
-                    Name = t.Name
-                })
-                .ToListAsync(ct);
-
-
-            var projects = await _context.Projects
-                .AsNoTracking()
-                .OrderBy(t => t.Name)
-                .Include(t => t.Activities)
-                .Select(t => new GetDashboardTimeV1.Project()
-                {
-                    Id = t.Id,
                     Name = t.Name,
-                    ClientId = t.ClientId,
-                    Activities = t.Activities.Select(x => new Abstractions.Times.GetDashboardTimeV1.Activities()
+                    Projects = t.Projects.Select(x => new Abstractions.Times.GetDashboardTimeV1.Project()
                     {
                         Id = x.Id,
-                        Name = x.Name
+                        ChargeCodeId = x.ChargeCode != null ? x.ChargeCode.Id : null,
+                        ChargeCode = x.ChargeCode != null ? x.ChargeCode.Code : null,
+                        Name = x.Name,
+                        Activities = x.Activities.Select(y => new Abstractions.Times.GetDashboardTimeV1.Activities()
+                        {
+                            Id = y.Id,
+                            Name = y.Name
+                        }).ToList()
                     }).ToList()
                 })
                 .ToListAsync(ct);
 
-
             var response = new GetDashboardTimeV1.Response();
             response.ChargeCodes = chargeCodes;
             response.Clients = clients;
-            response.Projects = projects;
             response.StartDate = startDate;
             response.EndDate = endDate;
             response.TotalHours = await timesQuery.SumAsync(t => t.Hours);

@@ -17,7 +17,6 @@ export interface GetDashboardTimeV1Response {
   dates: GetDashboardTimeV1TimeForDate[];
   chargeCodes: GetDashboardTimeV1ChargeCode[];
   clients: GetDashboardTimeV1Client[];
-  projects: GetDashboardTimeV1Project[];
 }
 
 export interface GetDashboardTimeV1TimeForDate {
@@ -32,6 +31,7 @@ export interface GetDashboardTimeV1TimeForDateTimes {
   notes: string | null;
   task: string | null;
   chargeCodeId: string | null;
+  chargeCode: string;
   clientId: string | null;
   projectId: string | null;
   activityId: string | null;
@@ -47,10 +47,18 @@ export interface GetDashboardTimeV1ChargeCode {
 export interface GetDashboardTimeV1Client {
   id: string;
   name: string;
+  projects: GetDashboardTimeV1Project[];
 }
 
 export interface GetDashboardTimeV1Project {
   id: string;
-  clientId: string;
+  chargeCodeId: string | null;
+  chargeCode: string | null;
+  name: string;
+  activities: GetDashboardTimeV1ProjectActivity[];
+}
+
+export interface GetDashboardTimeV1ProjectActivity {
+  id: string;
   name: string;
 }
