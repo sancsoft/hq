@@ -19,7 +19,7 @@ namespace HQ.Tests
     public class TestPeriodGeneration
     {
         [Fact]
-        public void TestYear()
+        public void TestYearBegin()
         {
             var testYearBegin1 = new DateOnly(2024, 1, 1);
             var testYearBegin2 = new DateOnly(2024, 12, 31);
@@ -35,8 +35,11 @@ namespace HQ.Tests
             Assert.Equal(actualYearStart, transformYearStart1);
             Assert.Equal(actualYearStart, transformYearStart2);
             Assert.Equal(actualYearStart3, transformYearStart3);
-            ///////////////////////////////////////////////////
+        }
 
+        [Fact]
+        public void TestYearEnd()
+        {
             var testYearEnd1 = new DateOnly(2024, 1, 1);
             var testYearEnd2 = new DateOnly(2024, 12, 31);
             var testYearEnd3 = new DateOnly(2023, 5, 6);
@@ -52,8 +55,9 @@ namespace HQ.Tests
             Assert.Equal(transformYearEnd2, actualYearEnd1);
             Assert.Equal(transformYearEnd3, actualYearEnd2);
         }
+
         [Fact]
-        public void TestQuarter()
+        public void TestQuarterBegin()
         {
             var testQuarterBegin1 = new DateOnly(2024, 4, 8);
             var testQuarterBegin2 = new DateOnly(2024, 1, 1);
@@ -74,8 +78,11 @@ namespace HQ.Tests
             Assert.Equal(transformQuarterBegin2, actualQuarterBegin2);
             Assert.Equal(transformQuarterBegin3, actualQuarterBegin3);
             Assert.Equal(transformQuarterBegin4, actualQuarterBegin4);
-            //////////////////////////////////////////////////////////////
+        }
 
+        [Fact]
+        public void TestQuarterEnd()
+        {
             var testQuarterEnd1 = new DateOnly(2024, 3, 31);
             var testQuarterEnd2 = new DateOnly(2023, 5, 1); ;
             var testQuarterEnd3 = new DateOnly(2024, 8, 1);
@@ -97,7 +104,7 @@ namespace HQ.Tests
             Assert.Equal(transformQuarterEnd4, actualQuarterEnd4);
         }
         [Fact]
-        public void TestMonth()
+        public void TestMonthBegin()
         {
             var testMonthBegin1 = new DateOnly(2024, 9, 1);
             var testMonthBegin2 = new DateOnly(2020, 1, 31);
@@ -118,7 +125,11 @@ namespace HQ.Tests
             Assert.Equal(transformMonthBegin2, actualMonthBegin2);
             Assert.Equal(transformMonthBegin3, actualMonthBegin3);
             Assert.Equal(transformMonthBegin4, actualMonthBegin4);
-            ////////////////////////////////////////////////////////////////////////////////
+        }
+
+        [Fact]
+        public void TestMonthEnd()
+        {
             var testMonthEnd1 = new DateOnly(2024, 9, 1);
             var testMonthEnd2 = new DateOnly(2020, 1, 31);
             var testMonthEnd3 = new DateOnly(2013, 2, 18);
@@ -140,7 +151,7 @@ namespace HQ.Tests
             Assert.Equal(transformMonthEnd4, actualMonthEnd4);
         }
         [Fact]
-        public void TestWeek()
+        public void TestWeekBegin()
         {
             var testWeekBegin1 = new DateOnly(2024, 6, 14);
             var testWeekBegin2 = new DateOnly(2024, 1, 1);
@@ -166,7 +177,10 @@ namespace HQ.Tests
             Assert.Equal(transformWeekBegin3, actualWeekBegin3);
             Assert.Equal(transformWeekBegin4, actualWeekBegin4);
             Assert.Equal(transformWeekBegin5, actualWeekBegin5);
-            ///////////////////////////////////////////////////////////////////////////
+        }
+        [Fact]
+        public void TestWeekEnd()
+        {
             var testWeekEnd1 = new DateOnly(2024, 8, 8);
             var testWeekEnd2 = new DateOnly(2024, 12, 30);
             var testWeekEnd3 = new DateOnly(2024, 1, 1);
@@ -190,6 +204,122 @@ namespace HQ.Tests
             Assert.Equal(transformWeekEnd3, actualWeekEnd3);
             Assert.Equal(transformWeekEnd4, actualWeekEnd4);
             Assert.Equal(transformWeekEnd5, actualWeekEnd5);
+        }
+
+        [Fact]
+        public void TestLastWeekBegin()
+        {
+            var testLastWeekBegin1 = new DateOnly(2024, 6, 14);
+            var testLastWeekBegin2 = new DateOnly(2024, 1, 1);
+            var testLastWeekBegin3 = new DateOnly(2023, 12, 31);
+            var testLastWeekBegin4 = new DateOnly(2023, 4, 6);
+            var testLastWeekBegin5 = new DateOnly(2023, 3, 17);
+
+            var transformLastWeekBegin1 = testLastWeekBegin1.GetPeriodStartDate(Period.LastWeek);
+            var transformLastWeekBegin2 = testLastWeekBegin2.GetPeriodStartDate(Period.LastWeek);
+            var transformLastWeekBegin3 = testLastWeekBegin3.GetPeriodStartDate(Period.LastWeek);
+            var transformLastWeekBegin4 = testLastWeekBegin4.GetPeriodStartDate(Period.LastWeek);
+            var transformLastWeekBegin5 = testLastWeekBegin5.GetPeriodStartDate(Period.LastWeek);
+
+
+            var actualLastWeekBegin1 = new DateOnly(2024, 6, 1);
+            var actualLastWeekBegin2 = new DateOnly(2023, 12, 23);
+            var actualLastWeekBegin3 = new DateOnly(2023, 12, 23);
+            var actualLastWeekBegin4 = new DateOnly(2023, 3, 25);
+            var actualLastWeekBegin5 = new DateOnly(2023, 3, 4);
+
+            Assert.Equal(transformLastWeekBegin1, actualLastWeekBegin1);
+            Assert.Equal(transformLastWeekBegin2, actualLastWeekBegin2);
+            Assert.Equal(transformLastWeekBegin3, actualLastWeekBegin3);
+            Assert.Equal(transformLastWeekBegin4, actualLastWeekBegin4);
+            Assert.Equal(transformLastWeekBegin5, actualLastWeekBegin5);
+        }
+        [Fact]
+        public void TestLastWeekEnd()
+        {
+            var testLastWeekEnd1 = new DateOnly(2024, 6, 14);
+            var testLastWeekEnd2 = new DateOnly(2024, 1, 1);
+            var testLastWeekEnd3 = new DateOnly(2023, 12, 31);
+            var testLastWeekEnd4 = new DateOnly(2023, 4, 6);
+            var testLastWeekEnd5 = new DateOnly(2023, 3, 17);
+
+            var transformLastWeekEnd1 = testLastWeekEnd1.GetPeriodEndDate(Period.LastWeek);
+            var transformLastWeekEnd2 = testLastWeekEnd2.GetPeriodEndDate(Period.LastWeek);
+            var transformLastWeekEnd3 = testLastWeekEnd3.GetPeriodEndDate(Period.LastWeek);
+            var transformLastWeekEnd4 = testLastWeekEnd4.GetPeriodEndDate(Period.LastWeek);
+            var transformLastWeekEnd5 = testLastWeekEnd5.GetPeriodEndDate(Period.LastWeek);
+
+
+            var actualLastWeekEnd1 = new DateOnly(2024, 6, 7);
+            var actualLastWeekEnd2 = new DateOnly(2023, 12, 29);
+            var actualLastWeekEnd3 = new DateOnly(2023, 12, 29);
+            var actualLastWeekEnd4 = new DateOnly(2023, 3, 31);
+            var actualLastWeekEnd5 = new DateOnly(2023, 3, 10);
+
+            Assert.Equal(transformLastWeekEnd1, actualLastWeekEnd1);
+            Assert.Equal(transformLastWeekEnd2, actualLastWeekEnd2);
+            Assert.Equal(transformLastWeekEnd3, actualLastWeekEnd3);
+            Assert.Equal(transformLastWeekEnd4, actualLastWeekEnd4);
+            Assert.Equal(transformLastWeekEnd5, actualLastWeekEnd5);
+        }
+
+
+        [Fact]
+        public void TestLastMonthBegin()
+        {
+            var testLastMonthBegin1 = new DateOnly(2024, 6, 14);
+            var testLastMonthBegin2 = new DateOnly(2024, 1, 1);
+            var testLastMonthBegin3 = new DateOnly(2023, 12, 31);
+            var testLastMonthBegin4 = new DateOnly(2023, 4, 6);
+            var testLastMonthBegin5 = new DateOnly(2023, 3, 17);
+
+            var transformLastMonthBegin1 = testLastMonthBegin1.GetPeriodStartDate(Period.LastMonth);
+            var transformLastMonthBegin2 = testLastMonthBegin2.GetPeriodStartDate(Period.LastMonth);
+            var transformLastMonthBegin3 = testLastMonthBegin3.GetPeriodStartDate(Period.LastMonth);
+            var transformLastMonthBegin4 = testLastMonthBegin4.GetPeriodStartDate(Period.LastMonth);
+            var transformLastMonthBegin5 = testLastMonthBegin5.GetPeriodStartDate(Period.LastMonth);
+
+
+            var actualLastMonthBegin1 = new DateOnly(2024, 5, 1);
+            var actualLastMonthBegin2 = new DateOnly(2023, 12, 1);
+            var actualLastMonthBegin3 = new DateOnly(2023, 11, 1);
+            var actualLastMonthBegin4 = new DateOnly(2023, 3, 1);
+            var actualLastMonthBegin5 = new DateOnly(2023, 2, 1);
+
+            Assert.Equal(transformLastMonthBegin1, actualLastMonthBegin1);
+            Assert.Equal(transformLastMonthBegin2, actualLastMonthBegin2);
+            Assert.Equal(transformLastMonthBegin3, actualLastMonthBegin3);
+            Assert.Equal(transformLastMonthBegin4, actualLastMonthBegin4);
+            Assert.Equal(transformLastMonthBegin5, actualLastMonthBegin5);
+        }
+
+        [Fact]
+        public void TestLastMonthEnd()
+        {
+            var testLastMonthEnd1 = new DateOnly(2024, 6, 14);
+            var testLastMonthEnd2 = new DateOnly(2024, 1, 1);
+            var testLastMonthEnd3 = new DateOnly(2023, 12, 31);
+            var testLastMonthEnd4 = new DateOnly(2024, 3, 1);
+            var testLastMonthEnd5 = new DateOnly(2023, 3, 17);
+
+            var transformLastMonthEnd1 = testLastMonthEnd1.GetPeriodEndDate(Period.LastMonth);
+            var transformLastMonthEnd2 = testLastMonthEnd2.GetPeriodEndDate(Period.LastMonth);
+            var transformLastMonthEnd3 = testLastMonthEnd3.GetPeriodEndDate(Period.LastMonth);
+            var transformLastMonthEnd4 = testLastMonthEnd4.GetPeriodEndDate(Period.LastMonth);
+            var transformLastMonthEnd5 = testLastMonthEnd5.GetPeriodEndDate(Period.LastMonth);
+
+
+            var actualLastMonthEnd1 = new DateOnly(2024, 5, 31);
+            var actualLastMonthEnd2 = new DateOnly(2023, 12, 31);
+            var actualLastMonthEnd3 = new DateOnly(2023, 11, 30);
+            var actualLastMonthEnd4 = new DateOnly(2024, 2, 29);
+            var actualLastMonthEnd5 = new DateOnly(2023, 2, 28);
+
+            Assert.Equal(transformLastMonthEnd1, actualLastMonthEnd1);
+            Assert.Equal(transformLastMonthEnd2, actualLastMonthEnd2);
+            Assert.Equal(transformLastMonthEnd3, actualLastMonthEnd3);
+            Assert.Equal(transformLastMonthEnd4, actualLastMonthEnd4);
+            Assert.Equal(transformLastMonthEnd5, actualLastMonthEnd5);
         }
 
         [Fact]
@@ -219,6 +349,15 @@ namespace HQ.Tests
         }
 
         [Fact]
+        public void GetPeriodStartDate_LastWeek_ReturnsStartOfLastWeek()
+        {
+            DateOnly today = new DateOnly(2024, 6, 20);
+            DateOnly startOfLastWeek = new DateOnly(2024, 6, 08);
+            DateOnly result = today.GetPeriodStartDate(Period.LastWeek);
+            Assert.Equal(startOfLastWeek, result);
+        }
+
+        [Fact]
         public void GetPeriodStartDate_LastMonth_ReturnsStartOfLastMonth()
         {
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);
@@ -242,6 +381,15 @@ namespace HQ.Tests
             DateOnly endOfWeek = new DateOnly(2024, 6, 21);
             DateOnly result = today.GetPeriodEndDate(Period.Week);
             Assert.Equal(endOfWeek, result);
+        }
+
+        [Fact]
+        public void GetPeriodEndDate_LastWeek_ReturnsEndOfLastWeek()
+        {
+            DateOnly today = new DateOnly(2024, 6, 20);
+            DateOnly endOfLastWeek = new DateOnly(2024, 6, 14);
+            DateOnly result = today.GetPeriodEndDate(Period.LastWeek);
+            Assert.Equal(endOfLastWeek, result);
         }
 
         [Fact]
