@@ -7,7 +7,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
   selector: 'hq-project-list-search-filter',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './project-list-search-filter.component.html'
+  templateUrl: './project-list-search-filter.component.html',
 })
 export class ProjectListSearchFilterComponent {
   constructor(public projectSearchFilterService: ProjectSearchFilterService) {}
