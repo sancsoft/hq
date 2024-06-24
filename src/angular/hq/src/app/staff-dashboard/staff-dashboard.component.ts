@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { StaffDashboardService } from './staff-dashboard.service';
+import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Period } from '../models/times/get-time-v1';
@@ -14,6 +14,7 @@ import { HQService } from '../services/hq.service';
 import { APIError } from '../errors/apierror';
 import { ToastService } from '../services/toast.service';
 import { ModalService } from '../services/modal.service';
+import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-filter/staff-dashboard-search-filter.component';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -22,6 +23,7 @@ import { ModalService } from '../services/modal.service';
     CommonModule,
     ReactiveFormsModule,
     StaffDashboardTimeEntryComponent,
+    StaffDashboardSearchFilterComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',

@@ -13,7 +13,7 @@ import {
   GetDashboardTimeV1ProjectActivity,
   GetDashboardTimeV1TimeForDateTimes,
 } from '../../models/staff-dashboard/get-dashboard-time-v1';
-import { StaffDashboardService } from '../staff-dashboard.service';
+import { StaffDashboardService } from '../service/staff-dashboard.service';
 import {
   FormControl,
   FormGroup,

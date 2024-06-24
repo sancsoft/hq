@@ -1,14 +1,12 @@
-<label class="block"
-  >Search
-  <input [formControl]="staffDashboardService.search" class="text-black" />
-</label>
-<label class="block"
-  >Period
-  <select [formControl]="staffDashboardService.period" class="text-black">
-    <option [ngValue]="Period.Today">Day</option>
-    <option [ngValue]="Period.Week">Week</option>
-  </select>
-</label>
+<div class="px-5 pt-4 mb-[8px]">
+  <div class="flex flex-col lg:flex-row justify-between items-start">
+    <div class="flex items-center order-2 lg:order-1 gap-[20px]">
+@if (staffDashboardService.time$ | async; as dashboard) {
+      <hq-staff-dashboard-search-filter [endDate] = "dashboard.endDate" />
+}
+    </div>
+  </div>
+</div>
 <label class="block"
   >Date
   <input

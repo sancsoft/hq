@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Period } from '../projects/project-create/project-create.component';
-import { HQService } from '../services/hq.service';
+import { Period } from '../../projects/project-create/project-create.component';
+import { HQService } from '../../services/hq.service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import {
   Observable,
@@ -19,7 +19,7 @@ import {
   GetDashboardTimeV1ChargeCode,
   GetDashboardTimeV1Client,
   GetDashboardTimeV1Response,
-} from '../models/staff-dashboard/get-dashboard-time-v1';
+} from '../../models/staff-dashboard/get-dashboard-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +34,7 @@ export class StaffDashboardService {
     },
   );
 
+  Period = Period;
   time$: Observable<GetDashboardTimeV1Response>;
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
   clients$: Observable<GetDashboardTimeV1Client[]>;
