@@ -5,9 +5,11 @@ import { HQService } from '../services/hq.service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import {
   Observable,
+  Subject,
   combineLatest,
   debounceTime,
   map,
+  merge,
   shareReplay,
   startWith,
   switchMap,
@@ -36,6 +38,8 @@ export class StaffDashboardService {
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
   clients$: Observable<GetDashboardTimeV1Client[]>;
 
+  refresh$ = new Subject<void>();
+
   constructor(
     private hqService: HQService,
     private oidcSecurityService: OidcSecurityService,
@@ -56,16 +60,25 @@ export class StaffDashboardService {
       date: date$,
     });
 
-    this.time$ = request$.pipe(
-      debounceTime(250),
+    const time$ = request$.pipe(
       switchMap((request) => this.hqService.getDashboardTimeV1(request)),
       tap((response) =>
         this.date.setValue(response.startDate, { emitEvent: false }),
       ),
+    );
+
+    const refreshTime$ = this.refresh$.pipe(switchMap(() => time$));
+
+    this.time$ = merge(time$, refreshTime$).pipe(
+      debounceTime(250),
       shareReplay(1),
     );
 
     this.chargeCodes$ = this.time$.pipe(map((t) => t.chargeCodes));
     this.clients$ = this.time$.pipe(map((t) => t.clients));
+  }
+
+  refresh() {
+    this.refresh$.next();
   }
 }

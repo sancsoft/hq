@@ -114,6 +114,10 @@ import {
   GetDashboardTimeV1Request,
   GetDashboardTimeV1Response,
 } from '../models/staff-dashboard/get-dashboard-time-v1';
+import {
+  DeleteTimeV1Request,
+  DeleteTimeV1Response,
+} from '../models/times/delete-time-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -430,6 +434,23 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpdateTimeResponseV1>(
           `${apiUrl}/v1/TimeEntries/UpsertTimeV1`,
+          request,
+        ),
+      ),
+      catchError((err: HttpErrorResponse) => {
+        if (err.status == 400) {
+          return throwError(() => new APIError(err.error));
+        }
+
+        throw err;
+      }),
+    );
+  }
+  deleteTimeV1(request: Partial<DeleteTimeV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<DeleteTimeV1Response>(
+          `${apiUrl}/v1/TimeEntries/DeleteTimeV1`,
           request,
         ),
       ),

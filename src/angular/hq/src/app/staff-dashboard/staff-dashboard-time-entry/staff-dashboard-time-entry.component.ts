@@ -37,6 +37,7 @@ import {
   tap,
 } from 'rxjs';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
+import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 
 export interface HQTimeChangeEvent {
   id?: string | null;
@@ -49,6 +50,10 @@ export interface HQTimeChangeEvent {
   clientId?: string | null;
   projectId?: string | null;
   activityId?: string | null;
+}
+
+export interface HQTimeDeleteEvent {
+  id: string;
 }
 
 interface Form {
@@ -77,10 +82,15 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
   @Output()
   hqTimeChange = new EventEmitter<HQTimeChangeEvent>();
 
+  @Output()
+  hqTimeDelete = new EventEmitter<HQTimeDeleteEvent>();
+
   @HostBinding('class')
   class = 'even:bg-gray-850 odd:bg-black-alt';
 
   private destroyed$ = new Subject<void>();
+
+  chargeCodeToColor = chargeCodeToColor;
 
   form = new FormGroup<Form>({
     id: new FormControl<string | null>(null),
@@ -175,6 +185,15 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
           }
         }
       });
+
+    this.staffDashboardService.refresh$.subscribe(() => {
+      if (!this.time?.id) {
+        this.form.reset();
+        this.form.patchValue({
+          date: this.time?.date,
+        });
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -186,5 +205,12 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  deleteTime() {
+    const id = this.form.controls.id.value;
+    if (id) {
+      this.hqTimeDelete.emit({ id });
+    }
   }
 }

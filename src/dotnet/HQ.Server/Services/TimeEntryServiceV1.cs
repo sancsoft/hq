@@ -473,10 +473,11 @@ namespace HQ.Server.Services
                 );
             }
 
-            var times = await timesQuery.OrderByDescending(t => t.CreatedAt)
+            var times = await timesQuery
                 .Select(t => new GetDashboardTimeV1.TimeEntry()
                 {
                     Id = t.Id,
+                    CreatedAt = t.CreatedAt,
                     Date = t.Date,
                     ChargeCodeId = t.ChargeCodeId,
                     ChargeCode = t.ChargeCode.Code,
@@ -488,7 +489,7 @@ namespace HQ.Server.Services
                     ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null
                 })
                 .GroupBy(t => t.Date)
-                .ToDictionaryAsync(t => t.Key, t => t.ToList());
+                .ToDictionaryAsync(t => t.Key, t => t.OrderByDescending(x => x.CreatedAt).ToList());
 
             var chargeCodes = await _context.ChargeCodes
                 .AsNoTracking()

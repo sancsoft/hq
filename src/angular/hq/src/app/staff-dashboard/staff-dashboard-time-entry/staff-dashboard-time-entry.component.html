@@ -1,25 +1,35 @@
 <ng-container [formGroup]="form">
   <td class="border-b border-black py-2 pl-5">
     <input
-      class="w-[100%] block text-right text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+      class="w-[100%] block text-right text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
       type="number"
       formControlName="hours"
     />
   </td>
   <td class="border-b border-black py-2 pl-2">
     <input
-      class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+      class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
       type="date"
       formControlName="date"
+      readonly
     />
   </td>
-  <td class="border-b border-black py-2 pl-2">
-    {{ form.controls.chargeCode.value }}
+  <td class="border-b border-black py-2 pl-2 text-center">
+    @if (form.controls.chargeCode.value) {
+      <span
+        class="px-3 py-1 font-semibold rounded-full bg-opacity-25"
+        [style.background-color]="
+          chargeCodeToColor(form.controls.chargeCode.value)
+        "
+      >
+        {{ form.controls.chargeCode.value }}
+      </span>
+    }
   </td>
   <td class="border-b border-black py-2 pl-2">
     <div class="grid relative w-full max-w-[220px]">
       <select
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
         formControlName="clientId"
       >
         <option [ngValue]="null" class="text-gray-50">Client</option>
@@ -43,7 +53,7 @@
   <td class="border-b border-black py-2 pl-2">
     <div class="grid relative w-full max-w-[220px]">
       <select
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
         formControlName="projectId"
       >
         <option [ngValue]="null" class="text-gray-50">Project</option>
@@ -66,7 +76,7 @@
       @if (activities.length > 0) {
         <div class="grid relative w-full max-w-[220px]">
           <select
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="activityId"
           >
             <option [ngValue]="null" class="text-gray-50">Activity</option>
@@ -82,18 +92,29 @@
         </div>
       } @else {
         <input
-          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
           type="text"
           formControlName="task"
         />
       }
     }
   </td>
-  <td class="border-b border-black py-2 pl-2 pr-5">
+  <td class="border-b border-black py-2 pl-2">
     <input
-      class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+      class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
       type="text"
       formControlName="notes"
     />
+  </td>
+  <td class="border-b border-black py-2 pl-2 pr-5">
+    @if (form.controls.id.value) {
+      <button
+        type="submit"
+        (click)="deleteTime()"
+        class="h-[30px] px-2 py-2 border border-red-950 bg-red-950 hover:bg-red-600 hover:red-orange-600 text-white rounded w-full"
+      >
+        <i class="bi bi-trash"></i>
+      </button>
+    }
   </td>
 </ng-container>
