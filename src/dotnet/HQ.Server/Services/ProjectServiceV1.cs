@@ -141,7 +141,7 @@ public class ProjectServiceV1
         }
         if (request.StaffMember.HasValue)
         {
-            records = records.Where(t => t.ProjectManager != null? t.ProjectManager.Id.Equals(request.StaffMember.Value) : false);
+            records = records.Where(t => t.ProjectManager != null ? t.ProjectManager.Id.Equals(request.StaffMember.Value) : false);
         }
 
         if (request.ProjectStatus.HasValue && request.ProjectStatus != null)
