@@ -31,7 +31,7 @@ namespace HQ.Server.Services
             var validationResult = Result.Merge(
                 Result.FailIf(string.IsNullOrEmpty(request.Notes), "Notes are required."),
                 Result.FailIf(!request.Id.HasValue && request.StaffId == null, "Staff is required."),
-                Result.FailIf(request.BillableHours <= 0, "Billable Hours must be greater than 0.")
+                Result.FailIf(request.Hours <= 0, "Hours must be greater than 0.")
             );
 
 
