@@ -9,6 +9,7 @@ export interface GetProjectRequestV1 extends PagedRequestV1 {
   id?: string;
   clientId?: string | null;
   sortBy: SortColumn;
+  staffMember: string | null;
   sortDirection: SortDirection;
   ProjectStatus?: ProjectStatus;
 }

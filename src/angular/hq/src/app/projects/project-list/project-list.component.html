@@ -1,39 +1,11 @@
 <div class="px-5">
   <h1 class="font-rajdhani font-semibold text-3xl">Projects</h1>
-
-  <!-- <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
-        <div class="text-gray-50">$105.00</div>
-        <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
-        <div class="text-gray-50">Official Name - Probably longer than the name</div>
-    </div> -->
 </div>
 
 <div class="px-5 pt-4 mb-[8px]">
   <div class="flex flex-col lg:flex-row justify-between items-start">
     <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-      <hq-psr-search-filter></hq-psr-search-filter>
-
-      <!-- select dropdown -->
-      <div>
-        <label
-          for=""
-          class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-          >First Name, Last Name</label
-        >
-        <div class="grid relative w-[220px]">
-          <select
-            class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-          >
-            <option>First Name, Last Name</option>
-            <option>First Name, Last Name</option>
-          </select>
-          <span
-            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-arrow-down-short text-[24px]"></i>
-          </span>
-        </div>
-      </div>
+      <hq-project-list-search-filter/>
     </div>
   </div>
 </div>
@@ -196,7 +168,7 @@
   <div>
     <select
       class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="itemsPerPage"
+      [formControl]="projectSearchFilterService.itemsPerPage"
     >
       <option [ngValue]="10">10</option>
       <option [ngValue]="20">20</option>
@@ -208,8 +180,8 @@
   </div>
   <hq-paginator
     [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="itemsPerPage.value"
-    [currentPage]="page.value"
+    [pageSize]="projectSearchFilterService.itemsPerPage.value"
+    [currentPage]="projectSearchFilterService.page.value"
     (page)="goToPage($event)"
   ></hq-paginator>
   <div class="flex justify-end text-xs">

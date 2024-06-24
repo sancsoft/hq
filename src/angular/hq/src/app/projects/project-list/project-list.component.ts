@@ -22,9 +22,10 @@ import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { PsrSearchFilterComponent } from '../../psr/psr-search-filter/psr-search-filter.component';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
-import { PsrService } from '../../psr/psr-service';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
+import { ProjectListSearchFilterComponent } from '../project-list-search-filter/project-list-search-filter.component';
+import { ProjectSearchFilterService } from '../services/ProjectSearchFilterService';
 
 @Component({
   selector: 'hq-project-list',
@@ -37,6 +38,7 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
     SortIconComponent,
     PsrSearchFilterComponent,
     InRolePipe,
+    ProjectListSearchFilterComponent,
   ],
   templateUrl: './project-list.component.html',
 })
@@ -50,9 +52,6 @@ export class ProjectListComponent {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
-  itemsPerPage = new FormControl(20, { nonNullable: true });
-  page = new FormControl<number>(1, { nonNullable: true });
-
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   HQRole = HQRole;
@@ -60,30 +59,45 @@ export class ProjectListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private psrService: PsrService,
+    public projectSearchFilterService: ProjectSearchFilterService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ProjectName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
-    const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      startWith(this.itemsPerPage.value),
+    const itemsPerPage$ =
+      this.projectSearchFilterService.itemsPerPage.valueChanges.pipe(
+        startWith(this.projectSearchFilterService.itemsPerPage.value),
+      );
+    const page$ = this.projectSearchFilterService.page.valueChanges.pipe(
+      startWith(this.projectSearchFilterService.page.value),
     );
-    const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
     const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
       map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
       startWith(0),
     );
-    const search$ = psrService.search.valueChanges.pipe(
+    const search$ = projectSearchFilterService.search.valueChanges.pipe(
       tap((t) => this.goToPage(1)),
-      startWith(psrService.search.value),
+      startWith(projectSearchFilterService.search.value),
     );
+    const staffMember$ =
+      projectSearchFilterService.staffMember.valueChanges.pipe(
+        tap((t) => this.goToPage(1)),
+        startWith(projectSearchFilterService.staffMember.value),
+      );
+    const projectStatus$ =
+      projectSearchFilterService.projectStatus.valueChanges.pipe(
+        tap((t) => this.goToPage(1)),
+        startWith(projectSearchFilterService.projectStatus.value),
+      );
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
     const request$ = combineLatest({
       search: search$,
       skip: skip$,
+      staffMember: staffMember$,
+      projectStatus: projectStatus$,
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
@@ -115,12 +129,10 @@ export class ProjectListComponent {
         Math.min(skip + itemsPerPage, totalRecords),
       ),
     );
-
-    this.psrService.resetFilter();
   }
 
   goToPage(page: number) {
-    this.page.setValue(page);
+    this.projectSearchFilterService.page.setValue(page);
   }
 
   onSortClick(sortColumn: SortColumn) {
@@ -134,7 +146,7 @@ export class ProjectListComponent {
       this.sortOption$.next(sortColumn);
       this.sortDirection$.next(SortDirection.Asc);
     }
-    this.page.setValue(1);
+    this.projectSearchFilterService.page.setValue(1);
   }
   getProjectSatusString(status: ProjectStatus): string {
     return ProjectStatus[status];
