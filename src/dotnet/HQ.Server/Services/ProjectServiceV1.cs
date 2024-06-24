@@ -139,7 +139,10 @@ public class ProjectServiceV1
         {
             records = records.Where(t => t.Id == request.Id.Value);
         }
-
+        if (request.ProjectManagerId.HasValue)
+        {
+            records = records.Where(t => t.ProjectManager != null ? t.ProjectManager.Id.Equals(request.ProjectManagerId.Value) : false);
+        }
 
         if (request.ProjectStatus.HasValue && request.ProjectStatus != null)
         {
