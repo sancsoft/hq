@@ -7,10 +7,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   selector: 'hq-staff-dashboard-date-range',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './staff-dashboard-date-range.component.html'
+  templateUrl: './staff-dashboard-date-range.component.html',
 })
 export class StaffDashboardDateRangeComponent {
-constructor(public staffDashboardService: StaffDashboardService) {
-
-}
+  constructor(public staffDashboardService: StaffDashboardService) {}
 }

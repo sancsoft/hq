@@ -95,7 +95,7 @@
         <tr
           hq-staff-dashboard-time-entry
           (hqTimeChange)="upsertTime($event)"
-          [time]="{ date: date.date, timeStatus: timeStatus.Pending}"
+          [time]="{ date: date.date, timeStatus: timeStatus.Pending }"
         ></tr>
         @for (time of date.times; track time.id) {
           @switch (time.timeStatus) {
