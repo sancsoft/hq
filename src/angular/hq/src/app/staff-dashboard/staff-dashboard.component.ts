@@ -15,6 +15,7 @@ import { APIError } from '../errors/apierror';
 import { ToastService } from '../services/toast.service';
 import { ModalService } from '../services/modal.service';
 import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-filter/staff-dashboard-search-filter.component';
+import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/staff-dashboard-date-range.component';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -24,6 +25,7 @@ import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-fi
     ReactiveFormsModule,
     StaffDashboardTimeEntryComponent,
     StaffDashboardSearchFilterComponent,
+    StaffDashboardDateRangeComponent
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',

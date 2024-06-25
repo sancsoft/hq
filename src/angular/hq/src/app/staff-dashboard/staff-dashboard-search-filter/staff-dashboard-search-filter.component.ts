@@ -10,6 +10,5 @@ import { StaffDashboardService } from '../service/staff-dashboard.service';
   templateUrl: './staff-dashboard-search-filter.component.html',
 })
 export class StaffDashboardSearchFilterComponent {
-  @Input() endDate?: string;
   constructor(public staffDashboardService: StaffDashboardService) {}
 }

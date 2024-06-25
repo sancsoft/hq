@@ -1,45 +1,37 @@
 <div class="px-5 pt-4 mb-[8px]">
-  <div class="flex flex-col lg:flex-row justify-between items-start">
-    <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-      @if (staffDashboardService.time$ | async; as dashboard) {
-        <hq-staff-dashboard-search-filter [endDate]="dashboard.endDate" />
-      }
+  <div class="flex items-end gap-[20px]">
+    <hq-staff-dashboard-search-filter />
+    <div class="inline-flex gap-20 ml-20">
+      <div class="text-white">
+        <label class="uppercase font-bold text-xs">Total Hours</label>
+        <div class="text-4xl">
+          {{ (staffDashboardService.time$ | async)?.totalHours?.toFixed(2) }}
+        </div>
+      </div>
+      <!-- Billable Hours Display -->
+      <div class="text-white">
+        <label class="uppercase font-bold text-xs">Billable Hours</label>
+        <div class="text-4xl">
+          {{ (staffDashboardService.time$ | async)?.billableHours?.toFixed(2) }}
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<label class="block"
-  >Date
-  <input
-    [formControl]="staffDashboardService.date"
-    type="date"
-    class="text-black"
-  />
-</label>
+
+<div class="px-5 py-2 mb-[8px] bg-black-alt">
+  <div class="flex items-end gap-[20px] justify-between">
+    <hq-staff-dashboard-date-range />
+    <button
+      class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+      type="button"
+    >
+      Submit
+    </button>
+  </div>
+</div>
 
 @if (staffDashboardService.time$ | async; as dashboard) {
-  <label class="block"
-    >Date
-    <input
-      [value]="dashboard.endDate"
-      type="date"
-      class="text-black"
-      readonly
-    />
-  </label>
-  <button
-    type="button"
-    (click)="staffDashboardService.date.setValue(dashboard.previousDate)"
-  >
-    Previous
-  </button>
-  <button
-    type="button"
-    (click)="staffDashboardService.date.setValue(dashboard.nextDate)"
-  >
-    Next
-  </button>
-  <div>Total Hours: {{ dashboard.totalHours }}</div>
-  <div>Billable Hours: {{ dashboard.billableHours }}</div>
   @for (date of dashboard.dates; track date.date) {
     @if (dashboard.dates.length > 1) {
       <div
