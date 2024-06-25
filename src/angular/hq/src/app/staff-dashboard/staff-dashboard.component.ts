@@ -9,7 +9,7 @@ import {
   StaffDashboardTimeEntryComponent,
 } from './staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import { updateTimeRequestV1 } from '../models/times/update-time-v1';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import { HQService } from '../services/hq.service';
 import { APIError } from '../errors/apierror';
 import { ToastService } from '../services/toast.service';
@@ -25,7 +25,7 @@ import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/s
     ReactiveFormsModule,
     StaffDashboardTimeEntryComponent,
     StaffDashboardSearchFilterComponent,
-    StaffDashboardDateRangeComponent
+    StaffDashboardDateRangeComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
@@ -93,6 +93,24 @@ export class StaffDashboardComponent {
         this.staffDashboardService.search.reset();
         this.staffDashboardService.refresh();
       }
+    } catch (err) {
+      if (err instanceof APIError) {
+        this.toastService.show('Error', err.errors.join('\n'));
+      } else {
+        this.toastService.show('Error', 'An unexpected error has occurred.');
+      }
+    }
+  }
+  async submitTimes() {
+    try {
+      var timesIds = await firstValueFrom(
+        this.staffDashboardService.time$.pipe(
+          map((t) => t.dates.flatMap((d) => d.times.map((time) => time.id))),
+        ),
+      );
+      let submitTimesRequest = { ids: timesIds };
+      await firstValueFrom(this.hqService.submitTimesV1(submitTimesRequest));
+      this.toastService.show('Success', 'Time entries successfully submitted.');
     } catch (err) {
       if (err instanceof APIError) {
         this.toastService.show('Error', err.errors.join('\n'));

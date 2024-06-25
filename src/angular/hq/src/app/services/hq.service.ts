@@ -118,6 +118,10 @@ import {
   DeleteTimeV1Request,
   DeleteTimeV1Response,
 } from '../models/times/delete-time-v1';
+import {
+  SubmitTimeResponseV1,
+  SubmitTimesRequestV1,
+} from '../models/times/submit-times-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -434,6 +438,23 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpdateTimeResponseV1>(
           `${apiUrl}/v1/TimeEntries/UpsertTimeV1`,
+          request,
+        ),
+      ),
+      catchError((err: HttpErrorResponse) => {
+        if (err.status == 400) {
+          return throwError(() => new APIError(err.error));
+        }
+
+        throw err;
+      }),
+    );
+  }
+  submitTimesV1(request: Partial<SubmitTimesRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<SubmitTimeResponseV1>(
+          `${apiUrl}/v1/TimeEntries/SubmitTimesV1`,
           request,
         ),
       ),

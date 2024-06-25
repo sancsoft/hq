@@ -1,4 +1,5 @@
 import { Period } from '../../projects/project-create/project-create.component';
+import { TimeStatus } from '../common/time-status';
 
 export interface GetDashboardTimeV1Request {
   staffId: string;
@@ -35,6 +36,7 @@ export interface GetDashboardTimeV1TimeForDateTimes {
   clientId: string | null;
   projectId: string | null;
   activityId: string | null;
+  status: TimeStatus | null;
 }
 
 export interface GetDashboardTimeV1ChargeCode {
