@@ -2,9 +2,9 @@
   @switch (time?.timeStatus) {
     @case (timeStatus.Pending) {
       <td class="border-b border-black py-2 bg-gray-300 w-3"></td>
-      <td class="border-b border-black py-2 pl-3 pr-2">
+      <td class="border-b border-black py-2 pl-3 pr-2" width="105">
         <input
-          class="w-10 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
+          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
           formControlName="hours"
           step="0.25"
@@ -124,7 +124,7 @@
     }
     @case (timeStatus.Submitted) {
       <td class="border-b border-black py-2 bg-green-300 w-3"></td>
-      <td class="border-b border-black py-2 pl-5">
+      <td class="border-b border-black py-2 pl-5" width="105">
         {{ time?.hours }}
       </td>
       <td class="border-b border-black py-2 pl-2">
