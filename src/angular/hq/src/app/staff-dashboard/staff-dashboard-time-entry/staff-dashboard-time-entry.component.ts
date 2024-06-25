@@ -38,6 +38,7 @@ import {
 } from 'rxjs';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
+import { TimeStatus } from '../../models/common/time-status';
 
 export interface HQTimeChangeEvent {
   id?: string | null;
@@ -113,6 +114,8 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   projects$: Observable<GetDashboardTimeV1Project[]>;
   activities$: Observable<GetDashboardTimeV1ProjectActivity[]>;
+
+  timeStatus = TimeStatus;
 
   constructor(public staffDashboardService: StaffDashboardService) {
     const form$ = this.form.valueChanges.pipe(shareReplay(1));

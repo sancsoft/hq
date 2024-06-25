@@ -16,6 +16,7 @@ import { ToastService } from '../services/toast.service';
 import { ModalService } from '../services/modal.service';
 import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-filter/staff-dashboard-search-filter.component';
 import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/staff-dashboard-date-range.component';
+import { TimeStatus } from '../models/common/time-status';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -39,6 +40,7 @@ export class StaffDashboardComponent {
   ) {}
 
   Period = Period;
+  timeStatus = TimeStatus;
 
   async deleteTime(event: HQTimeDeleteEvent) {
     const request = {
@@ -111,6 +113,7 @@ export class StaffDashboardComponent {
       let submitTimesRequest = { ids: timesIds };
       await firstValueFrom(this.hqService.submitTimesV1(submitTimesRequest));
       this.toastService.show('Success', 'Time entries successfully submitted.');
+      this.staffDashboardService.refresh();
     } catch (err) {
       if (err instanceof APIError) {
         this.toastService.show('Error', err.errors.join('\n'));

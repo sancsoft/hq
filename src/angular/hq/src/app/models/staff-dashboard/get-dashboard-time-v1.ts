@@ -35,8 +35,11 @@ export interface GetDashboardTimeV1TimeForDateTimes {
   chargeCode: string;
   clientId: string | null;
   projectId: string | null;
+  activityName: string | null;
+  clientName: string | null;
+  projectName: string | null;
   activityId: string | null;
-  status: TimeStatus | null;
+  timeStatus: TimeStatus | null;
 }
 
 export interface GetDashboardTimeV1ChargeCode {

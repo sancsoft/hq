@@ -502,6 +502,9 @@ namespace HQ.Server.Services
                     Hours = t.Hours,
                     Notes = t.Notes,
                     Task = t.Task,
+                    ActivityName = t.Activity != null ? t.Activity.Name : null,
+                    ProjectName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Name : null,
+                    ClientName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Client.Name : null,
                     TimeStatus = t.Status,
                     ProjectId = t.ChargeCode.ProjectId,
                     ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null
