@@ -7,7 +7,7 @@
     >
     <!-- search bar -->
     <div
-      class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]"
+      class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full"
     >
       <span
         class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100"
@@ -17,7 +17,7 @@
       <input
         type="text"
         [formControl]="staffDashboardService.search"
-        class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
+        class="w-full block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
         name=""
       />
     </div>
@@ -41,59 +41,6 @@
       >
         <i class="bi bi-arrow-down-short text-[24px]"></i>
       </span>
-    </div>
-  </div>
-
-  <div class="grid gap-[20px] grid-flow-row pr-5">
-    <!-- column -->
-    <div class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]">
-      <div>
-        <label
-          for="startDate"
-          class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-          >Start Date</label
-        >
-
-        <!-- input date -->
-        <div class="grid relative w-full max-w-[220px]">
-          <input
-          [formControl]="staffDashboardService.date"
-            type="date"
-            id="startDate"
-            class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
-          />
-          <span
-            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
-          </span>
-        </div>
-      </div>
-
-      <div class="flex align-middle justify-center items-center mt-3">-</div>
-      <div>
-        <label
-          for="endDate"
-          class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-          >End Date</label
-        >
-
-        <!-- input date -->
-        <div class="grid relative w-full max-w-[220px]">
-          <input
-            readonly
-            [value]="endDate"
-            type="date"
-            id="endDate"
-            class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
-          />
-          <span
-            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
-          </span>
-        </div>
-      </div>
     </div>
   </div>
 </div>

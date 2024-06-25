@@ -1,87 +1,50 @@
 <ng-container [formGroup]="form">
-  <td class="border-b border-black py-2 pl-5">
-    <input
-      class="w-[100%] block text-right text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-      type="number"
-      formControlName="hours"
-    />
-  </td>
-  <td class="border-b border-black py-2 pl-2">
-    <input
-      class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-      type="date"
-      formControlName="date"
-      readonly
-    />
-  </td>
-  <td class="border-b border-black py-2 pl-2 text-center">
-    @if (form.controls.chargeCode.value) {
-      <span
-        class="px-3 py-1 font-semibold rounded-full"
-        [style.background-color]="
-          chargeCodeToColor(form.controls.chargeCode.value)
-        "
-      >
-        {{ form.controls.chargeCode.value }}
-      </span>
-    }
-  </td>
-  <td class="border-b border-black py-2 pl-2">
-    <div class="grid relative w-full max-w-[220px]">
-      <select
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
-        formControlName="clientId"
-      >
-        <option [ngValue]="null" class="text-gray-50">Client</option>
-        <!-- <option [ngValue]="form.controls.clientId.value">
-        {{ form.controls.clientId.value }}
-      </option> -->
-        @for (
-          client of staffDashboardService.clients$ | async;
-          track client.id
-        ) {
-          <option [ngValue]="client.id">{{ client.name }}</option>
+  @switch (time?.timeStatus) {
+    @case (timeStatus.Pending) {
+      <td class="border-b border-black py-2 bg-gray-300 w-3"></td>
+      <td class="border-b border-black py-2 pl-3 pr-2">
+        <input
+          class="w-10 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
+          type="number"
+          formControlName="hours"
+          step="0.25"
+        />
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        <input
+          class="w-full block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          type="date"
+          formControlName="date"
+          readonly
+        />
+      </td>
+      <td class="border-b border-black py-2 pl-2 text-center">
+        @if (form.controls.chargeCode.value) {
+          <span
+            class="px-3 py-1 font-semibold rounded-full"
+            [style.background-color]="
+              chargeCodeToColor(form.controls.chargeCode.value)
+            "
+          >
+            {{ form.controls.chargeCode.value }}
+          </span>
         }
-      </select>
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-      >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div>
-  </td>
-  <td class="border-b border-black py-2 pl-2">
-    <div class="grid relative w-full max-w-[220px]">
-      <select
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
-        formControlName="projectId"
-      >
-        <option [ngValue]="null" class="text-gray-50">Project</option>
-        <!-- <option [ngValue]="form.controls.projectId.value">
-        {{ form.controls.projectId.value }}
-      </option> -->
-        @for (project of projects$ | async; track project.id) {
-          <option [ngValue]="project.id">{{ project.name }}</option>
-        }
-      </select>
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-      >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div>
-  </td>
-  <td class="border-b border-black py-2 pl-2">
-    @if (activities$ | async; as activities) {
-      @if (activities.length > 0) {
+      </td>
+      <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
           <select
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
-            formControlName="activityId"
+            formControlName="clientId"
           >
-            <option [ngValue]="null" class="text-gray-50">Activity</option>
-            @for (activity of activities$ | async; track activity.id) {
-              <option [ngValue]="activity.id">{{ activity.name }}</option>
+            <option [ngValue]="null" class="text-gray-50">Client</option>
+            <!-- <option [ngValue]="form.controls.clientId.value">
+        {{ form.controls.clientId.value }}
+      </option> -->
+            @for (
+              client of staffDashboardService.clients$ | async;
+              track client.id
+            ) {
+              <option [ngValue]="client.id">{{ client.name }}</option>
             }
           </select>
           <span
@@ -90,31 +53,101 @@
             <i class="bi bi-arrow-down-short text-[24px]"></i>
           </span>
         </div>
-      } @else {
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        <div class="grid relative w-full max-w-[220px]">
+          <select
+            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+            formControlName="projectId"
+          >
+            <option [ngValue]="null" class="text-gray-50">Project</option>
+            <!-- <option [ngValue]="form.controls.projectId.value">
+        {{ form.controls.projectId.value }}
+      </option> -->
+            @for (project of projects$ | async; track project.id) {
+              <option [ngValue]="project.id">{{ project.name }}</option>
+            }
+          </select>
+          <span
+            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+          >
+            <i class="bi bi-arrow-down-short text-[24px]"></i>
+          </span>
+        </div>
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        @if (activities$ | async; as activities) {
+          @if (activities.length > 0) {
+            <div class="grid relative w-full max-w-[220px]">
+              <select
+                class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+                formControlName="activityId"
+              >
+                <option [ngValue]="null" class="text-gray-50">Activity</option>
+                @for (activity of activities$ | async; track activity.id) {
+                  <option [ngValue]="activity.id">{{ activity.name }}</option>
+                }
+              </select>
+              <span
+                class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+              >
+                <i class="bi bi-arrow-down-short text-[24px]"></i>
+              </span>
+            </div>
+          } @else {
+            <input
+              class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+              type="text"
+              formControlName="task"
+            />
+          }
+        }
+      </td>
+      <td class="border-b border-black py-2 pl-2">
         <input
           class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
           type="text"
-          formControlName="task"
+          formControlName="notes"
         />
-      }
+      </td>
+      <td class="border-b border-black py-2 pl-2 pr-5">
+        @if (form.controls.id.value) {
+          <button
+            type="submit"
+            (click)="deleteTime()"
+            class="h-[30px] px-2 py-2 border border-red-950 bg-red-950 hover:bg-red-600 hover:red-orange-600 text-white rounded w-full"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
+        }
+      </td>
     }
-  </td>
-  <td class="border-b border-black py-2 pl-2">
-    <input
-      class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-      type="text"
-      formControlName="notes"
-    />
-  </td>
-  <td class="border-b border-black py-2 pl-2 pr-5">
-    @if (form.controls.id.value) {
-      <button
-        type="submit"
-        (click)="deleteTime()"
-        class="h-[30px] px-2 py-2 border border-red-950 bg-red-950 hover:bg-red-600 hover:red-orange-600 text-white rounded w-full"
-      >
-        <i class="bi bi-trash"></i>
-      </button>
+    @case (timeStatus.Submitted) {
+      <td class="border-b border-black py-2 bg-green-300 w-3"></td>
+      <td class="border-b border-black py-2 pl-5">
+        {{ time?.hours }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.date }}
+      </td>
+      <td class="border-b border-black py-2 pl-2 text-center">
+        <span class="px-3 py-1 font-semibold rounded-full">
+          {{ time?.chargeCode }}
+        </span>
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.clientName }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.projectName }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.activityName || time?.task }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.notes }}
+      </td>
+      <td class="border-b border-black py-2 pl-2 pr-5"></td>
     }
-  </td>
+  }
 </ng-container>

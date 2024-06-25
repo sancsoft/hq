@@ -66,11 +66,10 @@ export class StaffDashboardService {
       tap((response) =>
         this.date.setValue(response.startDate, { emitEvent: false }),
       ),
+      shareReplay(1),
     );
 
-    const refreshTime$ = this.refresh$.pipe(switchMap(() => time$));
-
-    this.time$ = merge(time$, refreshTime$).pipe(
+    this.time$ = merge(time$, this.refresh$.pipe(switchMap(() => time$))).pipe(
       debounceTime(250),
       shareReplay(1),
     );

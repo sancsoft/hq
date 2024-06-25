@@ -9,12 +9,14 @@ import {
   StaffDashboardTimeEntryComponent,
 } from './staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import { updateTimeRequestV1 } from '../models/times/update-time-v1';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import { HQService } from '../services/hq.service';
 import { APIError } from '../errors/apierror';
 import { ToastService } from '../services/toast.service';
 import { ModalService } from '../services/modal.service';
 import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-filter/staff-dashboard-search-filter.component';
+import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/staff-dashboard-date-range.component';
+import { TimeStatus } from '../models/common/time-status';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -24,6 +26,7 @@ import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-fi
     ReactiveFormsModule,
     StaffDashboardTimeEntryComponent,
     StaffDashboardSearchFilterComponent,
+    StaffDashboardDateRangeComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
@@ -37,6 +40,7 @@ export class StaffDashboardComponent {
   ) {}
 
   Period = Period;
+  timeStatus = TimeStatus;
 
   async deleteTime(event: HQTimeDeleteEvent) {
     const request = {
@@ -91,6 +95,25 @@ export class StaffDashboardComponent {
         this.staffDashboardService.search.reset();
         this.staffDashboardService.refresh();
       }
+    } catch (err) {
+      if (err instanceof APIError) {
+        this.toastService.show('Error', err.errors.join('\n'));
+      } else {
+        this.toastService.show('Error', 'An unexpected error has occurred.');
+      }
+    }
+  }
+  async submitTimes() {
+    try {
+      const timesIds = await firstValueFrom(
+        this.staffDashboardService.time$.pipe(
+          map((t) => t.dates.flatMap((d) => d.times.map((time) => time.id))),
+        ),
+      );
+      const submitTimesRequest = { ids: timesIds };
+      await firstValueFrom(this.hqService.submitTimesV1(submitTimesRequest));
+      this.toastService.show('Success', 'Time entries successfully submitted.');
+      this.staffDashboardService.refresh();
     } catch (err) {
       if (err instanceof APIError) {
         this.toastService.show('Error', err.errors.join('\n'));

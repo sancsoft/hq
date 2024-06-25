@@ -73,6 +73,10 @@ public class GetDashboardTimeV1
         public Guid? ClientId { get; set; }
         public Guid? ProjectId { get; set; }
         public Guid? ActivityId { get; set; }
+        public string? ActivityName { get; set; }
+        public string? ProjectName { get; set; }
+        public string? ClientName { get; set; }
+        public TimeStatus TimeStatus { get; set; }
         public string ChargeCode { get; set; } = null!;
     }
 }
