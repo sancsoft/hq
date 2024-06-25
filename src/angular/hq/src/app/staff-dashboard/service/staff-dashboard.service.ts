@@ -61,7 +61,8 @@ export class StaffDashboardService {
       date: date$,
     });
 
-    const time$ = request$.pipe(
+    this.time$ = request$.pipe(
+      debounceTime(250),
       switchMap((request) => this.hqService.getDashboardTimeV1(request)),
       tap((response) =>
         this.date.setValue(response.startDate, { emitEvent: false }),
@@ -69,15 +70,9 @@ export class StaffDashboardService {
       shareReplay(1),
     );
 
-    this.time$ = merge(time$, this.refresh$.pipe(switchMap(() => time$))).pipe(
-      debounceTime(250),
-      shareReplay(1),
-    );
-
     this.chargeCodes$ = this.time$.pipe(map((t) => t.chargeCodes));
     this.clients$ = this.time$.pipe(map((t) => t.clients));
   }
-
   refresh() {
     this.refresh$.next();
   }

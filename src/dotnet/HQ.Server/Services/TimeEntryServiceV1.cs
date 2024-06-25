@@ -477,6 +477,19 @@ namespace HQ.Server.Services
                 .AsNoTracking()
                 .Where(t => t.StaffId == request.StaffId && t.Date >= startDate && t.Date <= endDate)
                 .AsQueryable();
+            var hrsThisWeekQuery = _context.Times
+                .AsNoTracking()
+                .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.Week) && t.Date <= request.Date.GetPeriodEndDate(Period.Week))
+                .AsQueryable();
+            var hrsLastWeekQuery = _context.Times
+                .AsNoTracking()
+                .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.LastWeek) && t.Date <= request.Date.GetPeriodEndDate(Period.LastWeek))
+                .AsQueryable();
+            var hrsThisMonthQuery = _context.Times
+            .AsNoTracking()
+            .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.Month) && t.Date <= request.Date.GetPeriodEndDate(Period.Month))
+            .AsQueryable();
+            var vacationHours = (await _context.Staff.FirstOrDefaultAsync(t => t.Id == request.StaffId))?.VacationHours;
 
             if (!String.IsNullOrEmpty(request.Search))
             {
@@ -556,6 +569,10 @@ namespace HQ.Server.Services
             response.EndDate = endDate;
             response.TotalHours = await timesQuery.SumAsync(t => t.Hours);
             response.BillableHours = await timesQuery.Where(t => t.ChargeCode.Billable).SumAsync(t => t.Hours);
+            response.HoursThisWeek = await hrsThisWeekQuery.SumAsync(t => t.Hours);
+            response.HoursLastWeek = await hrsLastWeekQuery.SumAsync(t => t.Hours);
+            response.HoursThisMonth = await hrsThisMonthQuery.SumAsync(t => t.Hours);
+            response.Vacation = vacationHours ?? 0;
             response.NextDate = nextDate;
             response.PreviousDate = previousDate;
 

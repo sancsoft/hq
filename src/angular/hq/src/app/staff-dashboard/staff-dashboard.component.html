@@ -6,7 +6,7 @@
         <label for="Total hours" class="uppercase font-bold text-xs"
           >Total Hours</label
         >
-        <div class="text-4xl">
+        <div class="text-xl">
           {{ (staffDashboardService.time$ | async)?.totalHours?.toFixed(2) }}
         </div>
       </div>
@@ -15,7 +15,7 @@
         <label for="BillableHours" class="uppercase font-bold text-xs"
           >Billable Hours</label
         >
-        <div class="text-4xl">
+        <div class="text-xl">
           {{ (staffDashboardService.time$ | async)?.billableHours?.toFixed(2) }}
         </div>
       </div>

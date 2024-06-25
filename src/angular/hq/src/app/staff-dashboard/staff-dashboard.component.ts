@@ -17,6 +17,7 @@ import { ModalService } from '../services/modal.service';
 import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-filter/staff-dashboard-search-filter.component';
 import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/staff-dashboard-date-range.component';
 import { TimeStatus } from '../models/common/time-status';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -37,6 +38,7 @@ export class StaffDashboardComponent {
     private hqService: HQService,
     private toastService: ToastService,
     private modalService: ModalService,
+    private oidcSecurityService: OidcSecurityService,
   ) {}
 
   Period = Period;
@@ -104,16 +106,39 @@ export class StaffDashboardComponent {
     }
   }
   async submitTimes() {
+    const confirm = await firstValueFrom(
+      this.modalService.confirm(
+        'Submit',
+        'Are you sure you want to submit time entries?',
+      ),
+    );
+
+    if (!confirm) {
+      return;
+    }
     try {
       const timesIds = await firstValueFrom(
         this.staffDashboardService.time$.pipe(
           map((t) => t.dates.flatMap((d) => d.times.map((time) => time.id))),
         ),
       );
-      const submitTimesRequest = { ids: timesIds };
-      await firstValueFrom(this.hqService.submitTimesV1(submitTimesRequest));
-      this.toastService.show('Success', 'Time entries successfully submitted.');
-      this.staffDashboardService.refresh();
+      const staffId = await firstValueFrom(
+        this.oidcSecurityService.userData$.pipe(
+          map((t) => t.userData?.staff_id),
+        ),
+      );
+      if (staffId) {
+        const submitTimesRequest = { ids: timesIds, staffId: staffId };
+        await firstValueFrom(this.hqService.submitTimesV1(submitTimesRequest));
+        this.toastService.show(
+          'Success',
+          'Time entries successfully submitted.',
+        );
+        this.staffDashboardService.search.reset();
+        this.staffDashboardService.refresh();
+      } else {
+        console.log('ERROR: Could not find staff');
+      }
     } catch (err) {
       if (err instanceof APIError) {
         this.toastService.show('Error', err.errors.join('\n'));

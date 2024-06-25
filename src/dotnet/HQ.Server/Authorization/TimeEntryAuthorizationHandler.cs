@@ -32,6 +32,8 @@ public class TimeEntryAuthorizationHandler : AuthorizationHandler<OperationAutho
             case nameof(TimeEntryOperation.GetTimes):
             case nameof(TimeEntryOperation.DeleteTime):
             case nameof(TimeEntryOperation.UpsertTime):
+            case nameof(TimeEntryOperation.SubmitTimes):
+
                 {
                     if ((isStaff && staffId.HasValue && staffId.Value == resource.StaffId) || isPartner || isExecutive || isAdmin)
                     {
