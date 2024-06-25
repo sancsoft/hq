@@ -16,6 +16,9 @@
         "auth:8080",
         "db:5432"
     ],
+    "features": {
+        "ghcr.io/devcontainers/features/docker-outside-of-docker": {}
+    },
     "customizations": {
         "vscode": {
             "extensions": [
