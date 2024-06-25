@@ -201,7 +201,7 @@
           {{ getProjectSatusString(report.status) }}
         </td>
         <td width="200" class="border-b border-black py-2 pe-2">
-          @if (report.status === ProjectStatus.Ongoing) {
+          @if (report.status === ProjectStatus.OnGoing) {
             @if (
               report.bookingPercentComplete && report.bookingPercentComplete > 1
             ) {
