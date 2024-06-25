@@ -21,7 +21,22 @@ export enum SortColumn {
   EndDate = 4,
   ChargeCode = 5,
   ClientName = 6,
-  Status = 7,
+  ProjectStatus = 7,
+  BookingPeriod = 8,
+  BookingStartDate = 9,
+  BookingEndDate = 10,
+  TotalHours = 11,
+  TotalAvailableHours = 12,
+  ThisHours = 13,
+  ThisPendingHours = 14,
+  LastHours = 15,
+  BookingHours = 16,
+  BookingAvailableHours = 17,
+  TotalPercentComplete = 18,
+  BookingPercentComplete = 19,
+  SummaryHoursTotal = 20,
+  SummaryHoursAvailable = 21,
+  SummaryPercentComplete = 22,
 }
 
 export interface GetProjectRecordV1 {
@@ -40,9 +55,19 @@ export interface GetProjectRecordV1 {
   bookingPeriod: Period;
   startDate: Date;
   endDate: Date;
-  status: ProjectStatus;
+  projectStatus: ProjectStatus;
   billingEmail: string;
   officialName: string;
+  summaryHoursTotal: number;
+  summaryHoursAvailable: number;
+  summaryPercentComplete: number;
+  bookingStartDate: Date;
+  bookingEndDate: Date;
+  totalStartDate?: Date;
+  totalEndDate?: Date;
+  totalPercentComplete?: number;
+  bookingPercentComplete?: number;
+  totalHours: number;
 }
 
 export interface GetProjectRecordsV1 {

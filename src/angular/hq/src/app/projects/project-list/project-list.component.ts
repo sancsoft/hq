@@ -26,6 +26,7 @@ import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { ProjectListSearchFilterComponent } from '../project-list-search-filter/project-list-search-filter.component';
 import { ProjectSearchFilterService } from '../services/ProjectSearchFilterService';
+import { Period } from '../../models/times/get-time-v1';
 
 @Component({
   selector: 'hq-project-list',
@@ -55,6 +56,8 @@ export class ProjectListComponent {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   HQRole = HQRole;
+  ProjectStatus = ProjectStatus;
+  Math = Math;
 
   constructor(
     private hqService: HQService,
@@ -149,6 +152,19 @@ export class ProjectListComponent {
     this.projectSearchFilterService.page.setValue(1);
   }
   getProjectSatusString(status: ProjectStatus): string {
-    return ProjectStatus[status];
+    return this.camelToFlat(ProjectStatus[status]);
+  }
+  camelToFlat = (camel: string) => {
+    const camelCase = camel.replace(/([a-z])([A-Z])/g, '$1 $2').split(' ');
+
+    let flat = '';
+
+    camelCase.forEach((word) => {
+      flat = flat + word.charAt(0).toUpperCase() + word.slice(1) + ' ';
+    });
+    return flat;
+  };
+  getPeriodName(period: Period) {
+    return Period[period];
   }
 }
