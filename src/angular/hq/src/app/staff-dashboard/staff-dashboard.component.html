@@ -3,14 +3,18 @@
     <hq-staff-dashboard-search-filter />
     <div class="inline-flex gap-20 ml-20">
       <div class="text-white">
-        <label class="uppercase font-bold text-xs">Total Hours</label>
+        <label for="Total hours" class="uppercase font-bold text-xs"
+          >Total Hours</label
+        >
         <div class="text-4xl">
           {{ (staffDashboardService.time$ | async)?.totalHours?.toFixed(2) }}
         </div>
       </div>
       <!-- Billable Hours Display -->
       <div class="text-white">
-        <label class="uppercase font-bold text-xs">Billable Hours</label>
+        <label for="BillableHours" class="uppercase font-bold text-xs"
+          >Billable Hours</label
+        >
         <div class="text-4xl">
           {{ (staffDashboardService.time$ | async)?.billableHours?.toFixed(2) }}
         </div>

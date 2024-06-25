@@ -105,12 +105,12 @@ export class StaffDashboardComponent {
   }
   async submitTimes() {
     try {
-      var timesIds = await firstValueFrom(
+      const timesIds = await firstValueFrom(
         this.staffDashboardService.time$.pipe(
           map((t) => t.dates.flatMap((d) => d.times.map((time) => time.id))),
         ),
       );
-      let submitTimesRequest = { ids: timesIds };
+      const submitTimesRequest = { ids: timesIds };
       await firstValueFrom(this.hqService.submitTimesV1(submitTimesRequest));
       this.toastService.show('Success', 'Time entries successfully submitted.');
       this.staffDashboardService.refresh();
