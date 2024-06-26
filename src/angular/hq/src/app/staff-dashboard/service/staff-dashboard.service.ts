@@ -54,7 +54,19 @@ export class StaffDashboardService {
 
     const search$ = this.search.valueChanges.pipe(startWith(this.search.value));
     const period$ = this.period.valueChanges.pipe(startWith(this.period.value));
-    const date$ = this.date.valueChanges.pipe(startWith(this.date.value));
+    const date$ = this.date.valueChanges
+      .pipe(startWith(this.date.value))
+      .pipe(
+        map(
+          (t) =>
+            t ||
+            new Date(
+              new Date().getTime() - new Date().getTimezoneOffset() * 60000,
+            )
+              .toISOString()
+              .split('T')[0],
+        ),
+      );
 
     const request$ = combineLatest({
       staffId: staffId$,
