@@ -424,7 +424,8 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [userRoleGuard(HQRole.Staff)],
+    title: 'Dashboard',
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
       import('./staff-dashboard/staff-dashboard.component').then(
         (m) => m.StaffDashboardComponent,
