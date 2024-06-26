@@ -164,6 +164,7 @@
             @case (timeStatus.Submitted) {
               <tr
                 hq-staff-dashboard-time-entry
+                (hqTimeChange)="upsertTime($event)"
                 (hqTimeDelete)="deleteTime($event)"
                 [time]="time"
                 class="even:bg-gray-850 odd:bg-black-alt text-gray-450"
@@ -172,7 +173,7 @@
             @default {
               <tr
                 hq-staff-dashboard-time-entry
-               
+                (hqTimeChange)="upsertTime($event)"
                 (hqTimeDelete)="deleteTime($event)"
                 [time]="time"
               ></tr>
