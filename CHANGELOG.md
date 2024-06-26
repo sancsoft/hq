@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.8] - 2024-06-26
+
+### Added
+- Time entry dashboard
+
+## [0.3.7] - 2024-06-25
+
+### Added
+- Unit tests for AddPeriod extension method
+
+### Fixed
+- Project search filtering and progress bar
+
+## [0.3.6] - 2024-06-21
+
+### Fixed
+- Client project status filtering
+- Admin time UI
+  - Filter
+  - Export
+
 ## [0.3.5] - 2024-06-20
 
 ### Fixed
@@ -21,6 +42,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Authorization checks to Angular project
   - Staff can view mostly everything and executive/admin users can create/edit everything
 - No records found on client table lists
+
+- Code formatting CI checks
+  - Angular linter
+  - .NET format
+
+### Fixed
+- Warnings and lint errors
 
 ## [0.3.4] - 2024-06-17
 
@@ -123,7 +151,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.4...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.8...HEAD
+[0.3.8]: https://github.com/sancsoft/hq/compare/v0.3.7...v0.3.8
+[0.3.7]: https://github.com/sancsoft/hq/compare/v0.3.6...v0.3.7
+[0.3.6]: https://github.com/sancsoft/hq/compare/v0.3.5...v0.3.6
+[0.3.5]: https://github.com/sancsoft/hq/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/sancsoft/hq/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/sancsoft/hq/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/sancsoft/hq/compare/v0.3.1...v0.3.2
