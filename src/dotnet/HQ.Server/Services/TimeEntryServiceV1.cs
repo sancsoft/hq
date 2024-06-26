@@ -575,6 +575,7 @@ namespace HQ.Server.Services
             response.Vacation = vacationHours ?? 0;
             response.NextDate = nextDate;
             response.PreviousDate = previousDate;
+            response.StaffName = (await _context.Staff.FirstOrDefaultAsync(t => t.Id == request.StaffId))?.Name;
 
             DateOnly date = endDate;
             do
