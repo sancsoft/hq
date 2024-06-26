@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.9] - 2024-06-26
+
+### Fixed
+- Missing `AutoLoginPartialRoutesGuard` guard and page title on dashboard route
+
 ## [0.3.8] - 2024-06-26
 
 ### Added
@@ -151,7 +156,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.8...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.9...HEAD
+[0.3.9]: https://github.com/sancsoft/hq/compare/v0.3.8...v0.3.9
 [0.3.8]: https://github.com/sancsoft/hq/compare/v0.3.7...v0.3.8
 [0.3.7]: https://github.com/sancsoft/hq/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/sancsoft/hq/compare/v0.3.5...v0.3.6
