@@ -293,12 +293,14 @@ namespace HQ.Server.Services
             if (!string.IsNullOrEmpty(request.Search))
             {
                 records = records.Where(t =>
+
+                    t.Staff.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode.Project!.Client.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode.Project!.Name.ToLower().Contains(request.Search.ToLower()) ||
                     t.Notes!.ToLower().Contains(request.Search.ToLower()) ||
-                    t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
-                    t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
-                    t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
-                    t.ChargeCode!.Project!.Name.ToLower().Contains(request.Search.ToLower()) ||
-                    t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
+                    t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Activity!.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Task!.ToLower().Contains(request.Search.ToLower())
                 );
             }
 
