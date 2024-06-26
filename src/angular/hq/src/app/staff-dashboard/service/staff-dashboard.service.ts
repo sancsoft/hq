@@ -26,9 +26,11 @@ import {
 })
 export class StaffDashboardService {
   search = new FormControl<string | null>(null);
-  period = new FormControl<Period>(Period.Week, { nonNullable: true });
+  period = new FormControl<Period>(Period.Today, { nonNullable: true });
   date = new FormControl<string>(
-    /*new Date().toISOString().split('T')[0]*/ '2024-06-21',
+    new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .split('T')[0],
     {
       nonNullable: true,
     },
