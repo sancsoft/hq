@@ -1,5 +1,5 @@
 @if (staffDashboardService.time$ | async; as dashboard) {
-  <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+  <div class="flex w-full flex-1 items-center">
     <div class="grid gap-[20px] grid-flow-row pr-5">
       <!-- column -->
       <div class="grid grid-flow-col gap-[15px]">
@@ -12,20 +12,16 @@
         </button>
         <div>
           <!-- input date -->
-          <div class="grid relative w-full max-w-[220px]">
+          <div class="grid relative w-full" style="width: 150px">
             <input
               [formControl]="staffDashboardService.date"
               type="date"
-              id="startDate"
-              class="w-full block text-[14px] px-4 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none bg-blue-900 rounded h-[36px] uppercase pr-[36px]"
+              class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
             />
             <span
-              class="flex items-center justify-center h-full pointer-events-none z-10 absolute right-0 top-0 col-start-1 row-start-1 self-center justify-self-end w-[36px]"
+              class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
             >
-              <span
-                class="absolute left-0 top-[7px] bottom-[7px] w-[1px] bg-gray-100"
-              ></span>
-              <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+              <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
             </span>
           </div>
         </div>
@@ -38,21 +34,18 @@
           </div>
           <div>
             <!-- input date -->
-            <div class="grid relative w-full max-w-[220px]">
+            <div class="grid relative w-full" style="width: 150px">
               <input
                 readonly
                 [value]="(staffDashboardService.time$ | async)?.endDate"
                 type="date"
                 id="endDate"
-                class="w-full block text-[14px] px-4 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none bg-blue-900 rounded h-[36px] uppercase pr-[36px]"
+                class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
               />
               <span
-                class="flex items-center justify-center h-full pointer-events-none z-10 absolute right-0 top-0 col-start-1 row-start-1 self-center justify-self-end w-[36px]"
+                class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
               >
-                <span
-                  class="absolute left-0 top-[7px] bottom-[7px] w-[1px] bg-gray-100"
-                ></span>
-                <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+                <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
               </span>
             </div>
           </div>
