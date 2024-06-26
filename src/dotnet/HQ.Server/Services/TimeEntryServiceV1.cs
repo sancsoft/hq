@@ -195,6 +195,11 @@ namespace HQ.Server.Services
                 {
                     time.Status = TimeStatus.Submitted;
                 }
+
+                if (time.Status == TimeStatus.Rejected)
+                {
+                    time.Status = TimeStatus.RejectedPendingReview;
+                }
             }
             await _context.SaveChangesAsync(ct);
             return Result.Ok(new SubmitTimesV1.Response() { });
@@ -532,6 +537,7 @@ namespace HQ.Server.Services
                     ProjectName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Name : null,
                     ClientName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Client.Name : null,
                     TimeStatus = t.Status,
+                    RejectionNotes = t.RejectionNotes,
                     ProjectId = t.ChargeCode.ProjectId,
                     ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null
                 })

@@ -152,7 +152,7 @@
           {{ getProjectSatusString(project.projectStatus) }}
         </td>
         <td width="200" class="border-b border-black py-2 pe-2">
-          @if (project.projectStatus === ProjectStatus.OnGoing) {
+          @if (project.projectStatus === ProjectStatus.Ongoing) {
             @if (
               project.bookingPercentComplete &&
               project.bookingPercentComplete > 1
@@ -185,7 +185,7 @@
             }
             <div class="flex justify-between gap-2 text-xs text-gray-300">
               <span class="lowercase"
-                >{{ project.bookingHours | number: "0.2-2" }} hrs this
+                >{{ project.bookingHours | number: "0.2-2" }} hrs
                 {{ getPeriodName(project.bookingPeriod) }} to date</span
               >
               <span>{{ project.bookingPercentComplete | percent }}</span>

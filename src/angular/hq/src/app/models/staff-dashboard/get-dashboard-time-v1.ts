@@ -46,6 +46,7 @@ export interface GetDashboardTimeV1TimeForDateTimes {
   projectName: string | null;
   activityId: string | null;
   timeStatus: TimeStatus | null;
+  rejectionNotes: string | null;
 }
 
 export interface GetDashboardTimeV1ChargeCode {

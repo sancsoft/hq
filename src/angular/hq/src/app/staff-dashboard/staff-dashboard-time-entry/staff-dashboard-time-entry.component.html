@@ -125,8 +125,196 @@
         }
       </td>
     }
+    @case (timeStatus.Rejected) {
+      <td class="border-b border-black py-2 bg-red-600 w-3"></td>
+      <td class="border-b border-black py-2 pl-3 pr-2" width="105">
+        <input
+          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
+          type="number"
+          formControlName="hours"
+          step="0.25"
+          (keydown.enter)="blurInput($event.target)"
+        />
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        <input
+          class="w-full block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          type="date"
+          formControlName="date"
+          readonly
+        />
+      </td>
+      <td class="border-b border-black py-2 pl-2 text-center">
+        @if (form.controls.chargeCode.value) {
+          <span
+            class="px-3 py-1 font-semibold rounded-full"
+            [style.background-color]="
+              chargeCodeToColor(form.controls.chargeCode.value)
+            "
+          >
+            {{ form.controls.chargeCode.value }}
+          </span>
+        }
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        <div class="grid relative w-full max-w-[220px]">
+          <select
+            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+            formControlName="clientId"
+          >
+            <option [ngValue]="null" class="text-gray-50">Client</option>
+            <!-- <option [ngValue]="form.controls.clientId.value">
+        {{ form.controls.clientId.value }}
+      </option> -->
+            @for (
+              client of staffDashboardService.clients$ | async;
+              track client.id
+            ) {
+              <option [ngValue]="client.id">{{ client.name }}</option>
+            }
+          </select>
+          <span
+            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+          >
+            <i class="bi bi-arrow-down-short text-[24px]"></i>
+          </span>
+        </div>
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        <div class="grid relative w-full max-w-[220px]">
+          <select
+            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+            formControlName="projectId"
+          >
+            <option [ngValue]="null" class="text-gray-50">Project</option>
+            <!-- <option [ngValue]="form.controls.projectId.value">
+        {{ form.controls.projectId.value }}
+      </option> -->
+            @for (project of projects$ | async; track project.id) {
+              <option [ngValue]="project.id">{{ project.name }}</option>
+            }
+          </select>
+          <span
+            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+          >
+            <i class="bi bi-arrow-down-short text-[24px]"></i>
+          </span>
+        </div>
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        @if (activities$ | async; as activities) {
+          @if (activities.length > 0) {
+            <div class="grid relative w-full max-w-[220px]">
+              <select
+                class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+                formControlName="activityId"
+              >
+                <option [ngValue]="null" class="text-gray-50">Activity</option>
+                @for (activity of activities$ | async; track activity.id) {
+                  <option [ngValue]="activity.id">{{ activity.name }}</option>
+                }
+              </select>
+              <span
+                class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+              >
+                <i class="bi bi-arrow-down-short text-[24px]"></i>
+              </span>
+            </div>
+          } @else {
+            <input
+              class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+              type="text"
+              formControlName="task"
+              (keydown.enter)="blurInput($event.target)"
+            />
+          }
+        }
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        <input
+          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          type="text"
+          formControlName="notes"
+          (keydown.enter)="blurInput($event.target)"
+        />
+      </td>
+      <td class="border-b border-black py-2 pl-2 pr-5">
+        @if (time?.rejectionNotes) {
+          <div>
+            <i
+              [title]="time?.rejectionNotes"
+              class="bi bi-exclamation-diamond-fill text-yellow-550"
+            ></i>
+          </div>
+        }
+      </td>
+    }
     @case (timeStatus.Submitted) {
       <td class="border-b border-black py-2 bg-green-300 w-3"></td>
+      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
+        {{ time?.hours }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.date }}
+      </td>
+      <td class="border-b border-black py-2 pl-2 text-center">
+        <span
+          class="px-3 py-1 font-semibold rounded-full text-white"
+          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
+        >
+          {{ time?.chargeCode }}
+        </span>
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.clientName }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.projectName }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.activityName || time?.task }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        @if (time?.notes; as notes) {
+          {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
+        }
+      </td>
+      <td class="border-b border-black py-2 pl-2 pr-5"></td>
+    }
+    @case (timeStatus.Accepted) {
+      <td class="border-b border-black py-2 bg-green-300 w-3"></td>
+      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
+        {{ time?.hours }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.date }}
+      </td>
+      <td class="border-b border-black py-2 pl-2 text-center">
+        <span
+          class="px-3 py-1 font-semibold rounded-full text-white"
+          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
+        >
+          {{ time?.chargeCode }}
+        </span>
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.clientName }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.projectName }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ time?.activityName || time?.task }}
+      </td>
+      <td class="border-b border-black py-2 pl-2">
+        @if (time?.notes; as notes) {
+          {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
+        }
+      </td>
+      <td class="border-b border-black py-2 pl-2 pr-5"></td>
+    }
+    @case (timeStatus.RejectedPendingReview) {
+      <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
       <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
         {{ time?.hours }}
       </td>

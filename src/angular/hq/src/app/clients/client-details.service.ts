@@ -10,7 +10,7 @@ export enum ProjectStatus {
   WaitingForClient = 3,
   WaitingForStaff = 4,
   InProduction = 5,
-  OnGoing = 6,
+  Ongoing = 6,
   Completed = 7,
   Closed = 8,
   Lost = 9,

@@ -419,7 +419,7 @@ public class ProjectStatusReportServiceV1
 
         foreach (var time in times)
         {
-            if (time.Status != TimeStatus.Pending && time.Status != TimeStatus.RejectedPendingReview)
+            if (time.Status != TimeStatus.Pending && time.Status != TimeStatus.RejectedPendingReview && time.Status != TimeStatus.Submitted)
             {
                 continue;
             }

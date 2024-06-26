@@ -85,5 +85,6 @@ public class GetDashboardTimeV1
         public string? ClientName { get; set; }
         public TimeStatus TimeStatus { get; set; }
         public string ChargeCode { get; set; } = null!;
+        public string? RejectionNotes { get; set; }
     }
 }
