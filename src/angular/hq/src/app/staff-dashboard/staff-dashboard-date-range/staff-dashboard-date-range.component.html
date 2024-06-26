@@ -3,12 +3,13 @@
     <div class="grid gap-[20px] grid-flow-row pr-5">
       <!-- column -->
       <div class="grid grid-flow-col gap-[15px]">
-        <div
+        <button
+          type="button"
           class="flex align-middle justify-center items-center mt-4"
           (click)="staffDashboardService.date.setValue(dashboard.previousDate)"
         >
           <i class="bi bi-arrow-left-short text-[28px] cursor-pointer"></i>
-        </div>
+        </button>
         <div>
           <label
             for="startDate"
@@ -68,12 +69,13 @@
           </div>
         }
 
-        <div
+        <button
+          type="button"
           class="flex align-middle justify-center items-center mt-4"
           (click)="staffDashboardService.date.setValue(dashboard.nextDate)"
         >
           <i class="bi bi-arrow-right-short text-[28px] cursor-pointer"></i>
-        </div>
+        </button>
       </div>
     </div>
   </div>

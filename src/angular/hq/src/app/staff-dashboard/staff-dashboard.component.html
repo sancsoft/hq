@@ -5,28 +5,36 @@
     </div>
     <div class="flex space-x-8 p-4">
       <div class="text-center text-white">
-        <h2 class="text-sm">HRS THIS WEEK</h2>
-        <p class="text-sm mt-2">
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+          HRS THIS WEEK
+        </div>
+        <p class="text-right">
           {{ (staffDashboardService.time$ | async)?.hoursThisWeek?.toFixed(2) }}
         </p>
       </div>
       <div class="text-center text-white">
-        <h2 class="text-sm">HRS LAST WEEK</h2>
-        <p class="text-sm mt-2">
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+          HRS LAST WEEK
+        </div>
+        <p class="text-right">
           {{ (staffDashboardService.time$ | async)?.hoursLastWeek?.toFixed(2) }}
         </p>
       </div>
       <div class="text-center text-white">
-        <h2 class="text-sm">HRS THIS MONTH</h2>
-        <p class="text-sm mt-2">
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+          HRS THIS MONTH
+        </div>
+        <p class="text-right">
           {{
             (staffDashboardService.time$ | async)?.hoursThisMonth?.toFixed(2)
           }}
         </p>
       </div>
       <div class="text-center text-white">
-        <h2 class="text-sm">VACATION</h2>
-        <p class="text-sm mt-2">
+        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+          VACATION
+        </div>
+        <p class="text-right">
           {{ (staffDashboardService.time$ | async)?.vacation?.toFixed(2) }}
         </p>
       </div>
