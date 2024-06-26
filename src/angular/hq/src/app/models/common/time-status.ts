@@ -3,4 +3,5 @@ export enum TimeStatus {
   Accepted = 1,
   Rejected = 2,
   RejectedPendingReview = 3,
+  Submitted = 4,
 }

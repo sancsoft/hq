@@ -31,7 +31,7 @@ namespace HQ.Server.Services
             var validationResult = Result.Merge(
                 Result.FailIf(string.IsNullOrEmpty(request.Notes), "Notes are required."),
                 Result.FailIf(!request.Id.HasValue && request.StaffId == null, "Staff is required."),
-                Result.FailIf(request.BillableHours <= 0, "Billable Hours must be greater than 0.")
+                Result.FailIf(request.Hours <= 0, "Hours must be greater than 0.")
             );
 
 
@@ -182,6 +182,23 @@ namespace HQ.Server.Services
             await _context.SaveChangesAsync(ct);
             return Result.Ok(new UpsertTimeTaskV1.Response() { Id = timeEntry.Id });
         }
+        public async Task<Result<SubmitTimesV1.Response>> SubmitTimesV1(SubmitTimesV1.Request request, CancellationToken ct = default)
+        {
+            var timeEntries = _context.Times.Where(t => request.Ids.Contains(t.Id));
+            if (timeEntries == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+            foreach (var time in timeEntries)
+            {
+                if (time.Status == TimeStatus.Pending)
+                {
+                    time.Status = TimeStatus.Submitted;
+                }
+            }
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new SubmitTimesV1.Response() { });
+        }
         public async Task<Result<UpsertTimeActivityV1.Response>> UpsertTimeActivityV1(UpsertTimeActivityV1.Request request, CancellationToken ct = default)
         {
             if (string.IsNullOrEmpty(request.ActivityName))
@@ -276,12 +293,14 @@ namespace HQ.Server.Services
             if (!string.IsNullOrEmpty(request.Search))
             {
                 records = records.Where(t =>
+
+                    t.Staff.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode.Project!.Client.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode.Project!.Name.ToLower().Contains(request.Search.ToLower()) ||
                     t.Notes!.ToLower().Contains(request.Search.ToLower()) ||
-                    t.ChargeCode != null && t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
-                    t.Activity != null && t.Activity.Name.ToLower().Contains(request.Search.ToLower()) ||
-                    t.Task != null && t.Task.ToLower().Contains(request.Search.ToLower()) ||
-                    t.ChargeCode!.Project!.Name.ToLower().Contains(request.Search.ToLower()) ||
-                    t.ChargeCode.Project.Client.Name != null && t.ChargeCode.Project.Client.Name.ToLower().Contains(request.Search.ToLower())
+                    t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Activity!.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Task!.ToLower().Contains(request.Search.ToLower())
                 );
             }
 
@@ -451,39 +470,76 @@ namespace HQ.Server.Services
 
         public async Task<Result<GetDashboardTimeV1.Response>> GetDashboardTimeV1(GetDashboardTimeV1.Request request, CancellationToken ct = default)
         {
-            if (request.Period == Period.Custom)
+            var startDate = request.Date.GetPeriodStartDate(request.Period);
+            var endDate = request.Date.GetPeriodEndDate(request.Period);
+            var previousDate = startDate.AddPeriod(request.Period, -1);
+            var nextDate = startDate.AddPeriod(request.Period, 1);
+
+            var timesQuery = _context.Times
+                .AsNoTracking()
+                .Where(t => t.StaffId == request.StaffId && t.Date >= startDate && t.Date <= endDate)
+                .AsQueryable();
+            var hrsThisWeekQuery = _context.Times
+                .AsNoTracking()
+                .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.Week) && t.Date <= request.Date.GetPeriodEndDate(Period.Week))
+                .AsQueryable();
+            var hrsLastWeekQuery = _context.Times
+                .AsNoTracking()
+                .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.LastWeek) && t.Date <= request.Date.GetPeriodEndDate(Period.LastWeek))
+                .AsQueryable();
+            var hrsThisMonthQuery = _context.Times
+                .AsNoTracking()
+                .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.Month) && t.Date <= request.Date.GetPeriodEndDate(Period.Month))
+                .AsQueryable();
+
+            var staff = await _context.Staff.FindAsync(request.StaffId);
+            if (staff == null)
             {
-                if (!request.FromDate.HasValue || !request.ToDate.HasValue || request.FromDate.Value > request.ToDate.Value)
-                {
-                    return Result.Fail("Invalid date range.");
-                }
-            }
-            else
-            {
-                request.FromDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(request.Period);
-                request.ToDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(request.Period);
+                return Result.Fail("Unable to find staff.");
             }
 
+            var currentYearStart = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Year);
+            var totalVacationHours = staff.VacationHours;
 
-            var times = await _context.Times
-                .Where(t => t.StaffId == request.StaffId && t.Date >= request.FromDate && t.Date <= request.ToDate)
-                .OrderByDescending(t => t.CreatedAt)
+            var usedVacationHours = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Date >= currentYearStart && t.ChargeCode.Project!.Name.ToLower().Contains("vacation")).SumAsync(t => t.Hours);
+            var vacationHours = totalVacationHours - usedVacationHours;
+
+            if (!String.IsNullOrEmpty(request.Search))
+            {
+                timesQuery = timesQuery.Where(t =>
+                    t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode.Project!.Client.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.ChargeCode.Project!.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Activity!.Name.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Task!.ToLower().Contains(request.Search.ToLower()) ||
+                    t.Notes!.ToLower().Contains(request.Search.ToLower())
+                );
+            }
+
+            var times = await timesQuery
                 .Select(t => new GetDashboardTimeV1.TimeEntry()
                 {
+                    Id = t.Id,
+                    CreatedAt = t.CreatedAt,
                     Date = t.Date,
                     ChargeCodeId = t.ChargeCodeId,
+                    ChargeCode = t.ChargeCode.Code,
                     ActivityId = t.ActivityId,
                     Hours = t.Hours,
                     Notes = t.Notes,
                     Task = t.Task,
+                    ActivityName = t.Activity != null ? t.Activity.Name : null,
+                    ProjectName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Name : null,
+                    ClientName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Client.Name : null,
+                    TimeStatus = t.Status,
                     ProjectId = t.ChargeCode.ProjectId,
                     ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null
                 })
                 .GroupBy(t => t.Date)
-                .ToDictionaryAsync(t => t.Key, t => t.ToList());
-
+                .ToDictionaryAsync(t => t.Key, t => t.OrderByDescending(x => x.CreatedAt).ToList());
 
             var chargeCodes = await _context.ChargeCodes
+                .AsNoTracking()
                 .OrderBy(t => t.Code)
                 .Select(t => new GetDashboardTimeV1.ChargeCode()
                 {
@@ -496,32 +552,45 @@ namespace HQ.Server.Services
 
 
             var clients = await _context.Clients
+                .AsNoTracking()
                 .OrderBy(t => t.Name)
+                .Include(t => t.Projects)
+                .ThenInclude(t => t.Activities)
                 .Select(t => new GetDashboardTimeV1.Client()
                 {
                     Id = t.Id,
-                    Name = t.Name
-                })
-                .ToListAsync(ct);
-
-
-            var projects = await _context.Projects
-                .OrderBy(t => t.Name)
-                .Select(t => new GetDashboardTimeV1.Project()
-                {
-                    Id = t.Id,
                     Name = t.Name,
-                    ClientId = t.ClientId
+                    Projects = t.Projects.Select(x => new Abstractions.Times.GetDashboardTimeV1.Project()
+                    {
+                        Id = x.Id,
+                        ChargeCodeId = x.ChargeCode != null ? x.ChargeCode.Id : null,
+                        ChargeCode = x.ChargeCode != null ? x.ChargeCode.Code : null,
+                        Name = x.Name,
+                        Activities = x.Activities.Select(y => new Abstractions.Times.GetDashboardTimeV1.Activities()
+                        {
+                            Id = y.Id,
+                            Name = y.Name
+                        }).ToList()
+                    }).ToList()
                 })
                 .ToListAsync(ct);
-
 
             var response = new GetDashboardTimeV1.Response();
             response.ChargeCodes = chargeCodes;
             response.Clients = clients;
-            response.Projects = projects;
+            response.StartDate = startDate;
+            response.EndDate = endDate;
+            response.TotalHours = await timesQuery.SumAsync(t => t.Hours, ct);
+            response.BillableHours = await timesQuery.Where(t => t.ChargeCode.Billable).SumAsync(t => t.Hours, ct);
+            response.HoursThisWeek = await hrsThisWeekQuery.SumAsync(t => t.Hours, ct);
+            response.HoursLastWeek = await hrsLastWeekQuery.SumAsync(t => t.Hours, ct);
+            response.HoursThisMonth = await hrsThisMonthQuery.SumAsync(t => t.Hours, ct);
+            response.Vacation = vacationHours;
+            response.NextDate = nextDate;
+            response.PreviousDate = previousDate;
+            response.StaffName = staff.Name;
 
-            DateOnly date = request.ToDate.Value;
+            DateOnly date = endDate;
             do
             {
                 var timeForDate = new GetDashboardTimeV1.TimeForDate();
@@ -529,16 +598,17 @@ namespace HQ.Server.Services
                 if (times.ContainsKey(date))
                 {
                     timeForDate.Times = times[date];
+                    timeForDate.TotalHours = timeForDate.Times.Sum(t => t.Hours);
                 }
-
 
                 response.Dates.Add(timeForDate);
                 date = date.AddDays(-1);
             }
-            while (date >= request.FromDate.Value);
+            while (date >= startDate);
 
             return response;
         }
+
         public GetTimesV1.Request MapToGetTimesV1Request(ExportTimesV1.Request exportRequest)
         {
             return new GetTimesV1.Request

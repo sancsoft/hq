@@ -176,6 +176,7 @@ namespace HQ.Server.Controllers
 
 
 
+
         [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(DeleteTimeV1))]
         [ProducesResponseType<DeleteTimeV1.Response>(StatusCodes.Status204NoContent)]
@@ -213,6 +214,30 @@ namespace HQ.Server.Controllers
         public async Task<ActionResult> GetDashboardTimeV1([FromBody] GetDashboardTimeV1.Request request, CancellationToken ct = default)
         {
             return await _TimeEntryServiceV1.GetDashboardTimeV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(SubmitTimesV1))]
+        [ProducesResponseType<GetDashboardTimeV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> SubmitTimesV1([FromBody] SubmitTimesV1.Request request, CancellationToken ct = default)
+        {
+            var times = _context.Times.Where(t => request.Ids.Contains(t.Id));
+            if (times == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                    .AuthorizeAsync(User, times.FirstOrDefault(), TimeEntryOperation.SubmitTimes);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+            return await _TimeEntryServiceV1.SubmitTimesV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
 

@@ -7,7 +7,7 @@ import { HQRole } from './enums/hqrole';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'psr',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
   {

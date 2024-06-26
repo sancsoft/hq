@@ -29,6 +29,7 @@ import {
   GetTimeRecordProjectsV1,
 } from '../../models/times/get-time-v1';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 
 interface Form {
   ProjectId: FormControl<string | null>;
@@ -160,7 +161,7 @@ export class TimeEditComponent implements OnInit {
   }
   updateHours(event: Event) {
     const hours = (event.target as HTMLInputElement).value;
-    const roundedHours = this.roundToNextQuarter(hours);
+    const roundedHours = roundToNextQuarter(hours);
     this.form.get('Hours')?.setValue(roundedHours);
   }
   private async getTime() {
@@ -185,8 +186,5 @@ export class TimeEditComponent implements OnInit {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
-  }
-  roundToNextQuarter(num: string | number) {
-    return Math.ceil(Number(num) * 4) / 4;
   }
 }

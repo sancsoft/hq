@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.5] - 2024-06-20
+
+### Fixed
+- CLI null reference exception if notes are empty
+- Newlines in CLI output messages
+- Client feedback
+
+### Added
+- StaffId to CLI state object for querying time
+- Labels to all form inputs, search fields
+- `AcceptedBy` staff to time entries to track who accepted the time entry
+- Authorization checks to Angular project
+  - Staff can view mostly everything and executive/admin users can create/edit everything
+- No records found on client table lists
+
 ## [0.3.4] - 2024-06-17
 
 ### Fixed

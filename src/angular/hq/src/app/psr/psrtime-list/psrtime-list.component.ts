@@ -54,6 +54,7 @@ import { ToastService } from '../../services/toast.service';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { HQRole } from '../../enums/hqrole';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -548,7 +549,7 @@ export class PSRTimeListComponent implements OnInit {
 
   async updateBillableHours(timeId: string, event: Event) {
     const billableHours = (event.target as HTMLInputElement).value;
-    const roundedBillableHours = this.roundToNextQuarter(billableHours);
+    const roundedBillableHours = roundToNextQuarter(billableHours);
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
@@ -638,8 +639,5 @@ export class PSRTimeListComponent implements OnInit {
       this.sortOption$.next(sortColumn);
       this.sortDirection$.next(SortDirection.Asc);
     }
-  }
-  roundToNextQuarter(num: string | number) {
-    return Math.ceil(Number(num) * 4) / 4;
   }
 }
