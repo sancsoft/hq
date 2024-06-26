@@ -92,9 +92,9 @@ export class StaffDashboardComponent {
       await firstValueFrom(this.hqService.upsertTimeV1(request));
       if (event.id) {
         this.toastService.show('Success', 'Time entry successfully updated.');
+        this.staffDashboardService.refresh();
       } else {
         this.toastService.show('Success', 'Time entry successfully created.');
-        this.staffDashboardService.search.reset();
         this.staffDashboardService.refresh();
       }
     } catch (err) {
@@ -134,7 +134,6 @@ export class StaffDashboardComponent {
           'Success',
           'Time entries successfully submitted.',
         );
-        this.staffDashboardService.search.reset();
         this.staffDashboardService.refresh();
       } else {
         console.log('ERROR: Could not find staff');

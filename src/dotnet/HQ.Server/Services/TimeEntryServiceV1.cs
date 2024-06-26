@@ -488,10 +488,21 @@ namespace HQ.Server.Services
                 .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.LastWeek) && t.Date <= request.Date.GetPeriodEndDate(Period.LastWeek))
                 .AsQueryable();
             var hrsThisMonthQuery = _context.Times
-            .AsNoTracking()
-            .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.Month) && t.Date <= request.Date.GetPeriodEndDate(Period.Month))
-            .AsQueryable();
-            var vacationHours = (await _context.Staff.FirstOrDefaultAsync(t => t.Id == request.StaffId))?.VacationHours;
+                .AsNoTracking()
+                .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.Month) && t.Date <= request.Date.GetPeriodEndDate(Period.Month))
+                .AsQueryable();
+
+            var staff = await _context.Staff.FindAsync(request.StaffId);
+            if (staff == null)
+            {
+                return Result.Fail("Unable to find staff.");
+            }
+
+            var currentYearStart = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Year);
+            var totalVacationHours = staff.VacationHours;
+
+            var usedVacationHours = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Date >= currentYearStart && t.ChargeCode.Project!.Name.ToLower().Contains("vacation")).SumAsync(t => t.Hours);
+            var vacationHours = totalVacationHours - usedVacationHours;
 
             if (!String.IsNullOrEmpty(request.Search))
             {
@@ -574,10 +585,10 @@ namespace HQ.Server.Services
             response.HoursThisWeek = await hrsThisWeekQuery.SumAsync(t => t.Hours, ct);
             response.HoursLastWeek = await hrsLastWeekQuery.SumAsync(t => t.Hours, ct);
             response.HoursThisMonth = await hrsThisMonthQuery.SumAsync(t => t.Hours, ct);
-            response.Vacation = vacationHours ?? 0;
+            response.Vacation = vacationHours;
             response.NextDate = nextDate;
             response.PreviousDate = previousDate;
-            response.StaffName = (await _context.Staff.FirstOrDefaultAsync(t => t.Id == request.StaffId, ct))?.Name;
+            response.StaffName = staff.Name;
 
             DateOnly date = endDate;
             do

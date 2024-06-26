@@ -27,7 +27,7 @@ public class GetDashboardTimeV1
         public decimal HoursThisMonth { get; set; }
         public decimal HoursLastWeek { get; set; }
         public string? StaffName { get; set; }
-        public int Vacation { get; set; }
+        public decimal Vacation { get; set; }
 
     }
 
