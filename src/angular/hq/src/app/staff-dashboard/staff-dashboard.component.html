@@ -1,3 +1,38 @@
+<div class="px-5">
+  <div class="flex items-center justify-between gap-[20px]">
+    <div class="text-4xl text-white">
+      {{ (staffDashboardService.time$ | async)?.staffName }}
+    </div>
+    <div class="flex space-x-8 p-4">
+      <div class="text-center text-white">
+        <h2 class="text-sm">HRS THIS WEEK</h2>
+        <p class="text-sm mt-2">
+          {{ (staffDashboardService.time$ | async)?.hoursThisWeek?.toFixed(2) }}
+        </p>
+      </div>
+      <div class="text-center text-white">
+        <h2 class="text-sm">HRS LAST WEEK</h2>
+        <p class="text-sm mt-2">
+          {{ (staffDashboardService.time$ | async)?.hoursLastWeek?.toFixed(2) }}
+        </p>
+      </div>
+      <div class="text-center text-white">
+        <h2 class="text-sm">HRS THIS MONTH</h2>
+        <p class="text-sm mt-2">
+          {{
+            (staffDashboardService.time$ | async)?.hoursThisMonth?.toFixed(2)
+          }}
+        </p>
+      </div>
+      <div class="text-center text-white">
+        <h2 class="text-sm">VACATION</h2>
+        <p class="text-sm mt-2">
+          {{ (staffDashboardService.time$ | async)?.vacation?.toFixed(2) }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="px-5 pt-4 mb-[8px]">
   <div class="flex items-end gap-[20px]">
     <hq-staff-dashboard-search-filter />
@@ -6,7 +41,7 @@
         <label for="Total hours" class="uppercase font-bold text-xs"
           >Total Hours</label
         >
-        <div class="text-4xl">
+        <div class="text-xl">
           {{ (staffDashboardService.time$ | async)?.totalHours?.toFixed(2) }}
         </div>
       </div>
@@ -15,7 +50,7 @@
         <label for="BillableHours" class="uppercase font-bold text-xs"
           >Billable Hours</label
         >
-        <div class="text-4xl">
+        <div class="text-xl">
           {{ (staffDashboardService.time$ | async)?.billableHours?.toFixed(2) }}
         </div>
       </div>

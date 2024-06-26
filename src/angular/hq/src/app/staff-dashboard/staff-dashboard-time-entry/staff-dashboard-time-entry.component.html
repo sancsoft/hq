@@ -124,14 +124,17 @@
     }
     @case (timeStatus.Submitted) {
       <td class="border-b border-black py-2 bg-green-300 w-3"></td>
-      <td class="border-b border-black py-2 pl-5" width="105">
+      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
         {{ time?.hours }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.date }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        <span class="px-3 py-1 font-semibold rounded-full">
+        <span
+          class="px-3 py-1 font-semibold rounded-full"
+          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
+        >
           {{ time?.chargeCode }}
         </span>
       </td>
@@ -145,7 +148,9 @@
         {{ time?.activityName || time?.task }}
       </td>
       <td class="border-b border-black py-2 pl-2">
-        {{ time?.notes }}
+        @if (time?.notes; as notes) {
+          {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
+        }
       </td>
       <td class="border-b border-black py-2 pl-2 pr-5"></td>
     }

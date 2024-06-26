@@ -224,6 +224,19 @@ namespace HQ.Server.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> SubmitTimesV1([FromBody] SubmitTimesV1.Request request, CancellationToken ct = default)
         {
+            var times = _context.Times.Where(t => request.Ids.Contains(t.Id));
+            if (times == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                    .AuthorizeAsync(User, times.FirstOrDefault(), TimeEntryOperation.SubmitTimes);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
             return await _TimeEntryServiceV1.SubmitTimesV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }

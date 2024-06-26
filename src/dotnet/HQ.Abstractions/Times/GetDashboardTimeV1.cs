@@ -23,6 +23,12 @@ public class GetDashboardTimeV1
         public List<TimeForDate> Dates { get; set; } = new();
         public List<ChargeCode> ChargeCodes { get; set; } = new();
         public List<Client> Clients { get; set; } = new();
+        public decimal HoursThisWeek { get; set; }
+        public decimal HoursThisMonth { get; set; }
+        public decimal HoursLastWeek { get; set; }
+        public string? StaffName { get; set; }
+        public int Vacation { get; set; }
+
     }
 
     public class ChargeCode

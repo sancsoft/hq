@@ -11,6 +11,11 @@ export interface GetDashboardTimeV1Request {
 export interface GetDashboardTimeV1Response {
   totalHours: number;
   billableHours: number;
+  hoursThisWeek: number;
+  hoursThisMonth: number;
+  hoursLastWeek: number;
+  staffName: string;
+  vacation: number;
   startDate: string;
   endDate: string;
   previousDate: string;
