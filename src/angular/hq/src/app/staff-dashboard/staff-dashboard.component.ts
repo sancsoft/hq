@@ -109,7 +109,7 @@ export class StaffDashboardComponent {
     const confirm = await firstValueFrom(
       this.modalService.confirm(
         'Submit',
-        'Are you sure you want to submit time entries?',
+        'Are you sure you want to submit time entries? Once submitted time entries cannot be modified.',
       ),
     );
 

@@ -65,6 +65,7 @@ public class GetDashboardTimeV1
     {
         public DateOnly Date { get; set; }
         public List<TimeEntry> Times { get; set; } = new List<TimeEntry>();
+        public decimal TotalHours { get; set; }
     }
 
     public class TimeEntry

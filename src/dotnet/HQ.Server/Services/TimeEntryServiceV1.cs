@@ -585,6 +585,7 @@ namespace HQ.Server.Services
                 if (times.ContainsKey(date))
                 {
                     timeForDate.Times = times[date];
+                    timeForDate.TotalHours = timeForDate.Times.Sum(t => t.Hours);
                 }
 
                 response.Dates.Add(timeForDate);

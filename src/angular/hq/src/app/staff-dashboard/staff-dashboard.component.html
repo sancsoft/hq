@@ -1,7 +1,7 @@
 <div class="px-5">
   <div class="flex items-center justify-between gap-[20px]">
     <div class="text-4xl text-white">
-      {{ (staffDashboardService.time$ | async)?.staffName }}
+      {{ (staffDashboardService.time$ | async)?.staffName || "-" }}
     </div>
     <div class="flex space-x-8 p-4">
       <div class="text-center text-white">
@@ -9,7 +9,10 @@
           HRS THIS WEEK
         </div>
         <p class="text-right">
-          {{ (staffDashboardService.time$ | async)?.hoursThisWeek?.toFixed(2) }}
+          {{
+            (staffDashboardService.time$ | async)?.hoursThisWeek?.toFixed(2) ||
+              "-"
+          }}
         </p>
       </div>
       <div class="text-center text-white">
@@ -17,7 +20,10 @@
           HRS LAST WEEK
         </div>
         <p class="text-right">
-          {{ (staffDashboardService.time$ | async)?.hoursLastWeek?.toFixed(2) }}
+          {{
+            (staffDashboardService.time$ | async)?.hoursLastWeek?.toFixed(2) ||
+              "-"
+          }}
         </p>
       </div>
       <div class="text-center text-white">
@@ -26,7 +32,8 @@
         </div>
         <p class="text-right">
           {{
-            (staffDashboardService.time$ | async)?.hoursThisMonth?.toFixed(2)
+            (staffDashboardService.time$ | async)?.hoursThisMonth?.toFixed(2) ||
+              "-"
           }}
         </p>
       </div>
@@ -35,13 +42,15 @@
           VACATION
         </div>
         <p class="text-right">
-          {{ (staffDashboardService.time$ | async)?.vacation?.toFixed(2) }}
+          {{
+            (staffDashboardService.time$ | async)?.vacation?.toFixed(2) || "-"
+          }}
         </p>
       </div>
     </div>
   </div>
 </div>
-<div class="px-5 pt-4 mb-[8px]">
+<div class="px-5 pt-2 mb-[8px]">
   <div class="flex items-end gap-[20px]">
     <hq-staff-dashboard-search-filter />
     <div class="inline-flex gap-20 ml-20">
@@ -49,8 +58,10 @@
         <label for="Total hours" class="uppercase font-bold text-xs"
           >Total Hours</label
         >
-        <div class="text-xl">
-          {{ (staffDashboardService.time$ | async)?.totalHours?.toFixed(2) }}
+        <div class="text-right font-rajdhani font-semibold text-3xl">
+          {{
+            (staffDashboardService.time$ | async)?.totalHours?.toFixed(2) || "-"
+          }}
         </div>
       </div>
       <!-- Billable Hours Display -->
@@ -58,16 +69,19 @@
         <label for="BillableHours" class="uppercase font-bold text-xs"
           >Billable Hours</label
         >
-        <div class="text-xl">
-          {{ (staffDashboardService.time$ | async)?.billableHours?.toFixed(2) }}
+        <div class="text-right font-rajdhani font-semibold text-3xl">
+          {{
+            (staffDashboardService.time$ | async)?.billableHours?.toFixed(2) ||
+              "-"
+          }}
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="px-5 py-2 mb-[8px] bg-black-alt">
-  <div class="flex items-end gap-[20px] justify-between">
+<div class="px-5 py-2 bg-black-alt">
+  <div class="flex items-end gap-[20px] justify-between items-center">
     <hq-staff-dashboard-date-range />
     <button
       class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
@@ -83,9 +97,10 @@
   @for (date of dashboard.dates; track date.date) {
     @if (dashboard.dates.length > 1) {
       <div
-        class="px-5 pb-1 pt-4 font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        class="px-5 pb-1 pt-4 font-open-sans text-nav-disabled text-xs font-bold uppercase flex justify-between"
       >
-        {{ date.date | date: "EEEE" }} | {{ date.date }}
+        <div>{{ date.date | date: "EEEE" }} | {{ date.date }}</div>
+        <div>{{ date.totalHours | number: "1.2-2" }} hours</div>
       </div>
     }
     <table class="min-w-full border-spacing-0 border-separate">
@@ -100,40 +115,40 @@
             Hrs
           </th>
           <th
-            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
             width="120"
           >
             Date
           </th>
           <th
-            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
             width="120"
           >
             Chrg Code
           </th>
           <th
-            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
             width="180"
           >
             Client
           </th>
           <th
-            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
             width="180"
           >
             Project
           </th>
           <th
-            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
-            width="140"
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+            width="160"
           >
             Activity / Task
           </th>
-          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5">
+          <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2">
             Description
           </th>
           <th
-            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+            class="bg-blue-900 border-steel-blue-600 border-y"
             width="20"
           ></th>
         </tr>

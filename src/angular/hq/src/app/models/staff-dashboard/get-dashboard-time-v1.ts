@@ -28,6 +28,7 @@ export interface GetDashboardTimeV1Response {
 export interface GetDashboardTimeV1TimeForDate {
   date: string;
   times: GetDashboardTimeV1TimeForDateTimes[];
+  totalHours: number;
 }
 
 export interface GetDashboardTimeV1TimeForDateTimes {

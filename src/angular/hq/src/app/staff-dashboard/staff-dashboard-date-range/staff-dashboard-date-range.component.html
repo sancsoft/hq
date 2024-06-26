@@ -5,17 +5,12 @@
       <div class="grid grid-flow-col gap-[15px]">
         <button
           type="button"
-          class="flex align-middle justify-center items-center mt-4"
+          class="flex align-middle justify-center items-center mt-1"
           (click)="staffDashboardService.date.setValue(dashboard.previousDate)"
         >
           <i class="bi bi-arrow-left-short text-[28px] cursor-pointer"></i>
         </button>
         <div>
-          <label
-            for="startDate"
-            class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-            >Start Date</label
-          >
           <!-- input date -->
           <div class="grid relative w-full max-w-[220px]">
             <input
@@ -38,16 +33,10 @@
           staffDashboardService.period.value !==
           staffDashboardService.Period.Today
         ) {
-          <div class="flex align-middle justify-center items-center mt-4">
+          <div class="flex align-middle justify-center items-center mt-1">
             <span class="w-3 h-1 bg-white"></span>
           </div>
           <div>
-            <label
-              for="endDate"
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-              >End Date</label
-            >
-
             <!-- input date -->
             <div class="grid relative w-full max-w-[220px]">
               <input
@@ -71,7 +60,7 @@
 
         <button
           type="button"
-          class="flex align-middle justify-center items-center mt-4"
+          class="flex align-middle justify-center items-center mt-1"
           (click)="staffDashboardService.date.setValue(dashboard.nextDate)"
         >
           <i class="bi bi-arrow-right-short text-[28px] cursor-pointer"></i>
