@@ -182,7 +182,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       });
 
     form$
-      .pipe(takeUntil(this.destroyed$), debounceTime(750))
+      .pipe(debounceTime(750), takeUntil(this.destroyed$))
       .subscribe((time) => {
         if (this.form.touched) {
           this.class = this.form.invalid
@@ -195,14 +195,16 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
         }
       });
 
-    this.staffDashboardService.refresh$.subscribe(() => {
-      if (!this.time?.id) {
-        this.form.reset();
-        this.form.patchValue({
-          date: this.time?.date,
-        });
-      }
-    });
+    this.staffDashboardService.refresh$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => {
+        if (!this.time?.id) {
+          this.form.reset();
+          this.form.patchValue({
+            date: this.time?.date,
+          });
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -212,6 +214,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('destroying');
     this.destroyed$.next();
     this.destroyed$.complete();
   }
@@ -220,6 +223,15 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     const id = this.form.controls.id.value;
     if (id) {
       this.hqTimeDelete.emit({ id });
+    }
+  }
+
+  blurInput(target: EventTarget | null) {
+    if (
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLSelectElement
+    ) {
+      target.blur();
     }
   }
 }
