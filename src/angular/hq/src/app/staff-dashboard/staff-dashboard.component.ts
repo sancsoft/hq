@@ -94,8 +94,7 @@ export class StaffDashboardComponent {
         this.toastService.show('Success', 'Time entry successfully updated.');
         this.staffDashboardService.refresh();
       } else {
-        this.toastService.show('Success', 'Time entry successfully created.');
-        this.staffDashboardService.refresh();
+        this.toastService.show('Error', 'An unexpected error has occurred.');
       }
     } catch (err) {
       if (err instanceof APIError) {
