@@ -567,15 +567,15 @@ namespace HQ.Server.Services
             response.Clients = clients;
             response.StartDate = startDate;
             response.EndDate = endDate;
-            response.TotalHours = await timesQuery.SumAsync(t => t.Hours);
-            response.BillableHours = await timesQuery.Where(t => t.ChargeCode.Billable).SumAsync(t => t.Hours);
-            response.HoursThisWeek = await hrsThisWeekQuery.SumAsync(t => t.Hours);
-            response.HoursLastWeek = await hrsLastWeekQuery.SumAsync(t => t.Hours);
-            response.HoursThisMonth = await hrsThisMonthQuery.SumAsync(t => t.Hours);
+            response.TotalHours = await timesQuery.SumAsync(t => t.Hours, ct);
+            response.BillableHours = await timesQuery.Where(t => t.ChargeCode.Billable).SumAsync(t => t.Hours, ct);
+            response.HoursThisWeek = await hrsThisWeekQuery.SumAsync(t => t.Hours, ct);
+            response.HoursLastWeek = await hrsLastWeekQuery.SumAsync(t => t.Hours, ct);
+            response.HoursThisMonth = await hrsThisMonthQuery.SumAsync(t => t.Hours, ct);
             response.Vacation = vacationHours ?? 0;
             response.NextDate = nextDate;
             response.PreviousDate = previousDate;
-            response.StaffName = (await _context.Staff.FirstOrDefaultAsync(t => t.Id == request.StaffId))?.Name;
+            response.StaffName = (await _context.Staff.FirstOrDefaultAsync(t => t.Id == request.StaffId, ct))?.Name;
 
             DateOnly date = endDate;
             do
