@@ -8,6 +8,7 @@
           type="number"
           formControlName="hours"
           step="0.25"
+          (keydown.enter)="blurInput($event.target)"
         />
       </td>
       <td class="border-b border-black py-2 pl-2">
@@ -99,6 +100,7 @@
               class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
               type="text"
               formControlName="task"
+              (keydown.enter)="blurInput($event.target)"
             />
           }
         }
@@ -108,6 +110,7 @@
           class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
           type="text"
           formControlName="notes"
+          (keydown.enter)="blurInput($event.target)"
         />
       </td>
       <td class="border-b border-black py-2 pl-2 pr-5">
