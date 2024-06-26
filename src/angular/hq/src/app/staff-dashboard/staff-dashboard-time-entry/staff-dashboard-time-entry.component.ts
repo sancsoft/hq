@@ -182,7 +182,13 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       });
 
     form$
-      .pipe(debounceTime(750), takeUntil(this.destroyed$))
+      .pipe(
+        distinctUntilChanged(
+          (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr),
+        ),
+        debounceTime(750),
+        takeUntil(this.destroyed$),
+      )
       .subscribe((time) => {
         if (this.form.touched) {
           this.class = this.form.invalid
