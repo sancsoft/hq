@@ -231,6 +231,9 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       this.hqTimeDelete.emit({ id });
     }
   }
+  resetTime() {
+    this.form.reset();
+  }
 
   blurInput(target: EventTarget | null) {
     if (

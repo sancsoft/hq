@@ -170,6 +170,14 @@
           >
             <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
           </button>
+        } @else {
+          <button
+            type="submit"
+            (click)="resetTime()"
+            class="h-[30px] px-2 py-2 rounded w-full"
+          >
+            <i class="bi bi-x-lg text-gray-200 hover:text-gray-300"></i>
+          </button>
         }
       </td>
     }
