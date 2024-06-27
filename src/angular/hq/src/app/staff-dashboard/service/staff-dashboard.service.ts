@@ -4,6 +4,7 @@ import { Period } from '../../projects/project-create/project-create.component';
 import { HQService } from '../../services/hq.service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import {
+  BehaviorSubject,
   Observable,
   Subject,
   combineLatest,
@@ -20,6 +21,7 @@ import {
   GetDashboardTimeV1Client,
   GetDashboardTimeV1Response,
 } from '../../models/staff-dashboard/get-dashboard-time-v1';
+import { TimeStatus } from '../../models/common/time-status';
 
 @Injectable({
   providedIn: 'root',
@@ -40,6 +42,7 @@ export class StaffDashboardService {
   time$: Observable<GetDashboardTimeV1Response>;
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
   clients$: Observable<GetDashboardTimeV1Client[]>;
+  anyTimePending$ = new BehaviorSubject<boolean>(true);
 
   refresh$ = new Subject<void>();
 
@@ -82,6 +85,13 @@ export class StaffDashboardService {
         this.date.setValue(response.startDate, { emitEvent: false }),
       ),
     );
+    // this.anyTimePending$ = time$.subscribe((time) =>{
+    //   time.dates.map((date) => {
+    //     date.times.includes((t)=>{
+    //       return t.timeStatus == TimeStatus.Pending
+    //     })
+    //   })
+    // })
 
     const refreshTime$ = this.refresh$.pipe(switchMap((t) => time$));
 
