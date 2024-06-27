@@ -107,8 +107,8 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     task: new FormControl<string | null>(null, { updateOn: 'blur' }),
     chargeCode: new FormControl<string | null>(null),
     chargeCodeId: new FormControl<string | null>(null, [Validators.required]),
-    clientId: new FormControl<string | null>(null),
-    projectId: new FormControl<string | null>(null),
+    clientId: new FormControl<string | null>(null, [Validators.required]),
+    projectId: new FormControl<string | null>(null, [Validators.required]),
     activityId: new FormControl<string | null>(null),
   });
 
@@ -191,9 +191,9 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       )
       .subscribe((time) => {
         if (this.form.touched) {
-          this.class = this.form.invalid
-            ? 'bg-red-850'
-            : 'even:bg-gray-850 odd:bg-black-alt';
+          // this.class = this.form.invalid
+          //   ? ''
+          //   : 'even:bg-gray-850 odd:bg-black-alt';
 
           if (this.form.valid) {
             this.hqTimeChange.emit(time);
