@@ -482,7 +482,7 @@ namespace HQ.Server.Services
 
             var timesQuery = _context.Times
                 .AsNoTracking()
-                .Where(t => t.StaffId == request.StaffId && t.ChargeCode.Active && t.Date >= startDate && t.Date <= endDate)
+                .Where(t => t.StaffId == request.StaffId && t.Date >= startDate && t.Date <= endDate)
                 .AsQueryable();
             var hrsThisWeekQuery = _context.Times
                 .AsNoTracking()
@@ -545,6 +545,7 @@ namespace HQ.Server.Services
                 .ToDictionaryAsync(t => t.Key, t => t.OrderByDescending(x => x.CreatedAt).ToList());
 
             var chargeCodes = await _context.ChargeCodes
+                .Where(t => t.Active == true)
                 .AsNoTracking()
                 .OrderBy(t => t.Code)
                 .Select(t => new GetDashboardTimeV1.ChargeCode()
@@ -566,7 +567,7 @@ namespace HQ.Server.Services
                 {
                     Id = t.Id,
                     Name = t.Name,
-                    Projects = t.Projects.Select(x => new Abstractions.Times.GetDashboardTimeV1.Project()
+                    Projects = t.Projects.Where(x => x.ChargeCode!.Active == true).Select(x => new Abstractions.Times.GetDashboardTimeV1.Project()
                     {
                         Id = x.Id,
                         ChargeCodeId = x.ChargeCode != null ? x.ChargeCode.Id : null,
