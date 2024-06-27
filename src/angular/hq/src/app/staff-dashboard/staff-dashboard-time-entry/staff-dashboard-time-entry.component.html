@@ -35,6 +35,13 @@
           >
             {{ form.controls.chargeCode.value }}
           </span>
+        } @else {
+          <span
+            class="px-3 py-1 font-semibold rounded-full text-transparent select-none"
+            [style.background-color]="chargeCodeToColor('P0000')"
+          >
+            P0000
+          </span>
         }
       </td>
       <td class="border-b border-black py-2 pl-2">
