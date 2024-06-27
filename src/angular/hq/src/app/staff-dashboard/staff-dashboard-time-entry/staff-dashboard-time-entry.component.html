@@ -2,6 +2,7 @@
   @switch (time?.timeStatus) {
     @case (timeStatus.Pending) {
       <td
+        style="width: 15px"
         [ngClass]="{
           'bg-red-700 w-3': form.invalid && form.touched,
           'bg-gray-300 w-3': form.valid || !form.touched,
