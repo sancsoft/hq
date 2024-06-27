@@ -153,6 +153,7 @@ export class ProjectCreateComponent {
         console.log(response.id);
         this.router.navigate(['../', response.id], { relativeTo: this.route });
       } else {
+        this.apiErrors.length = 0;
         this.apiErrors.push(
           'Please correct the errors in the form before submitting.',
         );

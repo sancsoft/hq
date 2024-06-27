@@ -11,12 +11,13 @@ import {
 } from '@angular/forms';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { PdfViewerComponent } from '../../common/pdf-viewer/pdf-viewer.component';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { HQService } from '../../services/hq.service';
 import { QuoteStatus } from '../../models/common/quote-status';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'hq-quotes-create',
@@ -27,6 +28,7 @@ import { QuoteStatus } from '../../models/common/quote-status';
     ReactiveFormsModule,
     SelectableClientListComponent,
     PdfViewerComponent,
+    RouterLink,
   ],
   templateUrl: './quotes-create.component.html',
 })
@@ -51,6 +53,7 @@ export class QuotesCreateComponent {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
+    private toastService: ToastService,
   ) {}
   updateSelectedClient(client: GetClientRecordV1) {
     console.log(client);
@@ -72,8 +75,10 @@ export class QuotesCreateComponent {
           this.hqService.upsertQuoteV1(request),
         );
         console.log(response.id);
-        this.router.navigate(['../', response.id], { relativeTo: this.route });
+        this.router.navigate(['../'], { relativeTo: this.route });
+        this.toastService.show('Accepted', 'Quote has been created.');
       } else {
+        this.apiErrors.length = 0;
         this.apiErrors.push(
           'Please correct the errors in the form before submitting.',
         );

@@ -20,7 +20,7 @@ export enum ProjectStatus {
 })
 export class ClientDetailsService {
   search = new FormControl<string | null>('');
-  projectStatus = new FormControl<ProjectStatus>(ProjectStatus.InProduction);
+  projectStatus = new FormControl<ProjectStatus | null>(null);
   currentOnly = new FormControl<boolean>(true);
   ProjectStatus = ProjectStatus;
   showProjectStatus$ = new BehaviorSubject<boolean>(true);

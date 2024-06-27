@@ -42,7 +42,9 @@
         </div>
         @if (this.apiErrors) {
           @for (error of this.apiErrors; track $index) {
-            <div class="text-red-700 text-xs leading-normal inline-block">
+            <div
+              class="text-red-700 text-xs leading-normal inline-block pl-5 pt-5 -mb-3"
+            >
               {{ error }}
             </div>
           }
