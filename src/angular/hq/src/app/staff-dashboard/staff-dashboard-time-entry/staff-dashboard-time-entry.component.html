@@ -1,9 +1,21 @@
 <ng-container [formGroup]="form">
   @switch (time?.timeStatus) {
     @case (timeStatus.Pending) {
-      <td class="border-b border-black py-2 bg-gray-300 w-3"></td>
+      <td
+        [ngClass]="{
+          'bg-red-700 w-3': form.invalid && form.touched,
+          'bg-gray-300 w-3': form.valid || !form.touched,
+        }"
+        class="border-b border-black py-2"
+      ></td>
       <td class="border-b border-black py-2 pl-3 pr-2" width="105">
         <input
+          [ngClass]="{
+            'border-red-700 focus:border-red-700':
+              form.controls.hours.errors && form.controls.hours.touched,
+            'focus:border-white placeholder:text-gray-100':
+              !form.controls.hours.errors || !form.controls.hours.touched,
+          }"
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
           formControlName="hours"
@@ -29,12 +41,26 @@
           >
             {{ form.controls.chargeCode.value }}
           </span>
+        } @else {
+          <span
+            class="px-3 py-1 font-semibold rounded-full select-none"
+            [style.background-color]="chargeCodeToColor('P0000')"
+          >
+            Chrge
+          </span>
         }
       </td>
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
           <select
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+            [ngClass]="{
+              'border-red-700 focus:border-red-700':
+                form.controls.clientId.errors && form.controls.clientId.touched,
+              'border-black':
+                !form.controls.clientId.errors ||
+                !form.controls.clientId.touched,
+            }"
+            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="clientId"
           >
             <option [ngValue]="null" class="text-gray-50">Client</option>
@@ -58,7 +84,15 @@
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
           <select
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+            [ngClass]="{
+              'border-red-700 focus:border-red-700':
+                form.controls.projectId.errors &&
+                form.controls.projectId.touched,
+              'border-black':
+                !form.controls.projectId.errors ||
+                !form.controls.projectId.touched,
+            }"
+            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="projectId"
           >
             <option [ngValue]="null" class="text-gray-50">Project</option>
@@ -81,7 +115,15 @@
           @if (activities.length > 0) {
             <div class="grid relative w-full max-w-[220px]">
               <select
-                class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+                [ngClass]="{
+                  'border-red-700 focus:border-red-700':
+                    form.controls.activityId.errors &&
+                    form.controls.activityId.touched,
+                  'border-black':
+                    !form.controls.activityId.errors ||
+                    !form.controls.activityId.touched,
+                }"
+                class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
                 formControlName="activityId"
               >
                 <option [ngValue]="null" class="text-gray-50">Activity</option>
@@ -107,7 +149,13 @@
       </td>
       <td class="border-b border-black py-2 pl-2">
         <input
-          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          [ngClass]="{
+            'border-red-700 focus:border-red-700':
+              form.controls.notes.errors && form.controls.notes.touched,
+            'focus:border-white placeholder:text-gray-100':
+              !form.controls.notes.errors || !form.controls.notes.touched,
+          }"
+          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
           type="text"
           formControlName="notes"
           (keydown.enter)="blurInput($event.target)"
@@ -118,9 +166,17 @@
           <button
             type="submit"
             (click)="deleteTime()"
-            class="h-[30px] px-2 py-2 border border-red-950 bg-red-950 hover:bg-red-600 hover:red-orange-600 text-white rounded w-full"
+            class="h-[30px] px-2 py-2 rounded w-full"
           >
-            <i class="bi bi-trash"></i>
+            <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
+          </button>
+        } @else {
+          <button
+            type="submit"
+            (click)="resetTime()"
+            class="h-[30px] px-2 py-2 rounded w-full"
+          >
+            <i class="bi bi-x-lg text-gray-200 hover:text-gray-300"></i>
           </button>
         }
       </td>
@@ -129,6 +185,12 @@
       <td class="border-b border-black py-2 bg-red-600 w-3"></td>
       <td class="border-b border-black py-2 pl-3 pr-2" width="105">
         <input
+          [ngClass]="{
+            'border-red-700 focus:border-red-700':
+              form.controls.hours.errors && form.controls.hours.touched,
+            'focus:border-white placeholder:text-gray-100':
+              !form.controls.hours.errors || !form.controls.hours.touched,
+          }"
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
           formControlName="hours"
@@ -159,7 +221,14 @@
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
           <select
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+            [ngClass]="{
+              'border-red-700 focus:border-red-700':
+                form.controls.clientId.errors && form.controls.clientId.touched,
+              'border-black':
+                !form.controls.clientId.errors ||
+                !form.controls.clientId.touched,
+            }"
+            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="clientId"
           >
             <option [ngValue]="null" class="text-gray-50">Client</option>
@@ -183,7 +252,15 @@
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
           <select
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+            [ngClass]="{
+              'border-red-700 focus:border-red-700':
+                form.controls.projectId.errors &&
+                form.controls.projectId.touched,
+              'border-black':
+                !form.controls.projectId.errors ||
+                !form.controls.projectId.touched,
+            }"
+            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="projectId"
           >
             <option [ngValue]="null" class="text-gray-50">Project</option>
@@ -206,7 +283,15 @@
           @if (activities.length > 0) {
             <div class="grid relative w-full max-w-[220px]">
               <select
-                class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+                [ngClass]="{
+                  'border-red-700 focus:border-red-700':
+                    form.controls.activityId.errors &&
+                    form.controls.activityId.touched,
+                  'border-black':
+                    !form.controls.activityId.errors ||
+                    !form.controls.activityId.touched,
+                }"
+                class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
                 formControlName="activityId"
               >
                 <option [ngValue]="null" class="text-gray-50">Activity</option>
@@ -232,7 +317,13 @@
       </td>
       <td class="border-b border-black py-2 pl-2">
         <input
-          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          [ngClass]="{
+            'border-red-700 focus:border-red-700':
+              form.controls.notes.errors && form.controls.notes.touched,
+            'focus:border-white placeholder:text-gray-100':
+              !form.controls.notes.errors || !form.controls.notes.touched,
+          }"
+          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
           type="text"
           formControlName="notes"
           (keydown.enter)="blurInput($event.target)"
@@ -259,7 +350,7 @@
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         <span
-          class="px-3 py-1 font-semibold rounded-full text-white"
+          class="px-3 py-1 font-semibold rounded-full"
           [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
         >
           {{ time?.chargeCode }}
@@ -291,7 +382,7 @@
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         <span
-          class="px-3 py-1 font-semibold rounded-full text-white"
+          class="px-3 py-1 font-semibold rounded-full"
           [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
         >
           {{ time?.chargeCode }}
@@ -323,7 +414,7 @@
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         <span
-          class="px-3 py-1 font-semibold rounded-full text-white"
+          class="px-3 py-1 font-semibold rounded-full"
           [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
         >
           {{ time?.chargeCode }}

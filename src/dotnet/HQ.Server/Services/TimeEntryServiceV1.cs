@@ -482,7 +482,7 @@ namespace HQ.Server.Services
 
             var timesQuery = _context.Times
                 .AsNoTracking()
-                .Where(t => t.StaffId == request.StaffId && t.Date >= startDate && t.Date <= endDate)
+                .Where(t => t.StaffId == request.StaffId && t.ChargeCode.Active && t.Date >= startDate && t.Date <= endDate)
                 .AsQueryable();
             var hrsThisWeekQuery = _context.Times
                 .AsNoTracking()
