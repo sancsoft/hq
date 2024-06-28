@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.13] - 2024-06-28
+
+### Fixed
+- Handling charge code creation when creating a quote
+- localstorage token renewal when multiple tabs are open
+
+## [0.3.12] - 2024-06-27
+
+### Fixed
+- Time entry feedback
+  - Red outline on invalid inputs
+  - Red chit on invalid time entries
+  - Added pill charge code if no project is selected yet
+  - Gray text on readonly time entry states
+  - Filter to active charge codes only
+  - Added reset button (X)
+  - Black border on inputs
+  - Disable submit button if no pending time
+- Consistent error handling on forms
+  - Use `markAllAsTouched()` when attempting to submit a form to trigger validation display on invalid fields
+  - Consistent handling of 400 response from server
+- Disabled unimplemented buttons
+- Fixed broken links
+- Fixed PSR list selected PSR state on project view
+- Fixed PSR tabs on project view
+- Fixed project status filter
+
+## [0.3.11] - 2024-06-26
+
+### Changed
+- Renamed My Dashboard to Home and moved to front of nav menu
+
 ## [0.3.10] - 2024-06-26
 
 ### Fixed
@@ -163,7 +195,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.10...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.13...HEAD
+[0.3.13]: https://github.com/sancsoft/hq/compare/v0.3.12...v0.3.13
+[0.3.12]: https://github.com/sancsoft/hq/compare/v0.3.11...v0.3.12
+[0.3.11]: https://github.com/sancsoft/hq/compare/v0.3.10...v0.3.11
 [0.3.10]: https://github.com/sancsoft/hq/compare/v0.3.9...v0.3.10
 [0.3.9]: https://github.com/sancsoft/hq/compare/v0.3.8...v0.3.9
 [0.3.8]: https://github.com/sancsoft/hq/compare/v0.3.7...v0.3.8
