@@ -3,6 +3,7 @@
     @case (timeStatus.Pending) {
       <td
         style="width: 15px"
+        [title]='form.valid || !form.touched ? "Pending" : "Invalid Time Entry"'
         [ngClass]="{
           'bg-red-700 w-3': form.invalid && form.touched,
           'bg-gray-300 w-3': form.valid || !form.touched,
@@ -21,6 +22,7 @@
           type="number"
           formControlName="hours"
           step="0.25"
+          aria-label="Hours"
           (keydown.enter)="blurInput($event.target)"
         />
       </td>
@@ -54,6 +56,7 @@
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
           <select
+            aria-label="Select Client"
             [ngClass]="{
               'border-red-700 focus:border-red-700':
                 form.controls.clientId.errors && form.controls.clientId.touched,
@@ -85,6 +88,7 @@
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
           <select
+            aria-label="Select Project"
             [ngClass]="{
               'border-red-700 focus:border-red-700':
                 form.controls.projectId.errors &&
@@ -166,6 +170,8 @@
         @if (form.controls.id.value) {
           <button
             type="submit"
+            [name]="'Delete Time Entry'"
+            [title]="'Delete Time Entry'"
             (click)="deleteTime()"
             class="h-[30px] px-2 py-2 rounded w-full"
           >
@@ -174,6 +180,8 @@
         } @else {
           <button
             type="submit"
+            [name]="'Reset Time Entry'"
+            [title]="'Reset Time Entry'"
             (click)="resetTime()"
             class="h-[30px] px-2 py-2 rounded w-full"
           >
@@ -195,6 +203,7 @@
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
           formControlName="hours"
+          aria-label="Hours"
           step="0.25"
           (keydown.enter)="blurInput($event.target)"
         />
@@ -203,6 +212,7 @@
         <input
           class="w-full block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
           type="date"
+          aria-label="Time Date"
           formControlName="date"
           readonly
         />
@@ -310,6 +320,7 @@
             <input
               class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
               type="text"
+              aria-label="Task"
               formControlName="task"
               (keydown.enter)="blurInput($event.target)"
             />
@@ -326,6 +337,7 @@
           }"
           class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
           type="text"
+          aria-label="Time Entry Description"
           formControlName="notes"
           (keydown.enter)="blurInput($event.target)"
         />
