@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { GetPSRRecordV1, GetPSRV1 } from '../../models/PSR/get-PSR-v1';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 import { HQService } from '../../services/hq.service';
-import { map, Observable, shareReplay } from 'rxjs';
+import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -21,13 +21,11 @@ export class ProjectReportComponent {
     private route: ActivatedRoute,
   ) {
     this.psrId$ = route.queryParams.pipe(map((t) => t['psrId']));
-    this.psrId$.subscribe((id) => {
-      console.log(id);
-      if (id) {
-        this.psr$ = hqService
-          .getPSRV1({ id: id })
-          .pipe(map((t) => t.records[0]));
-      }
-    });
+
+    this.psr$ = this.psrId$.pipe(
+      filter((t) => !!t),
+      switchMap((id) => hqService.getPSRV1({ id: id! })),
+      map((t) => t.records[0]),
+    );
   }
 }

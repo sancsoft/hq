@@ -2,7 +2,7 @@ import { HQService } from './../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
-import { Observable, map } from 'rxjs';
+import { Observable, filter, map, switchMap } from 'rxjs';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { Period } from '../project-create/project-create.component';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
@@ -24,29 +24,24 @@ export class ProjectDetailsComponent {
     private hqService: HQService,
     private route: ActivatedRoute,
   ) {
-    this.projectId$ = route.queryParams.pipe(map((t) => t['projectId']));
-    this.projectId$.subscribe((id) => {
-      if (id) {
-        this.project$ = hqService.getProjectV1(id).pipe(
-          map((t) => t.records),
-          map((t) => {
-            if (t) {
-              return t[0];
-            }
-            return null;
-          }),
-        );
+    this.projectId$ = route.parent!.params.pipe(map((t) => t['projectId']));
 
-        this.psr$ = hqService.getPSRV1({ projectId: id }).pipe(
-          map((t) => t.records),
-          map((t) => {
-            if (t) {
-              return t[0];
-            }
-            return null;
-          }),
-        );
-      }
-    });
+    this.project$ = this.projectId$.pipe(
+      filter((t) => !!t),
+      switchMap((id) => hqService.getProjectV1(id!)),
+      map((t) => t.records[0]),
+    );
+
+    this.psr$ = this.projectId$.pipe(
+      filter((t) => !!t),
+      switchMap((id) => hqService.getPSRV1({ projectId: id! })),
+      map((t) => t.records),
+      map((t) => {
+        if (t) {
+          return t[0];
+        }
+        return null;
+      }),
+    );
   }
 }

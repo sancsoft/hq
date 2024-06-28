@@ -68,7 +68,6 @@
             </th>
             <th
               scope="col"
-              colspan="2"
               class="bg-blue-900 border-steel-blue-600 border-y py-2 pl-2"
             >
               <div class="flex items-center justify-between">
@@ -116,27 +115,15 @@
               <td class="border-b border-black py-2 px-2">
                 {{ time.staffName }}
               </td>
-              <td class="border-b border-black py-2 px-2">Support</td>
+              <td class="border-b border-black py-2 px-2">
+                {{ time.activityName ?? time.task }}
+              </td>
               <td class="border-b border-black py-2 px-2 w-full">
                 <input
                   class="w-full bg-transparent border border-transparent rounded px-2 mr-2"
-                  value="Assisting Jack with debugging NV200 issues, sealevel questions."
+                  [value]="time.description"
                   disabled
                 />
-              </td>
-              <td class="border-b border-black py-2 text-right pr-5">
-                <div
-                  class="flex justify-between flex-nowrap space-x-2 items-center"
-                >
-                  <div>&nbsp;</div>
-                  <div class="text-nowrap divide-x divide-teal-200">
-                    <button
-                      class="text-teal-200 hover:text-teal-300 uppercase pl-3"
-                    >
-                      view
-                    </button>
-                  </div>
-                </div>
               </td>
             </tr>
           }
