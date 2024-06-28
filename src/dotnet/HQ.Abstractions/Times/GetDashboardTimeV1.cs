@@ -29,6 +29,7 @@ public class GetDashboardTimeV1
         public decimal HoursLastWeek { get; set; }
         public string? StaffName { get; set; }
         public decimal Vacation { get; set; }
+        public int RejectedCount { get; set; }
 
     }
 

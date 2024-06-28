@@ -24,6 +24,7 @@ export interface GetDashboardTimeV1Response {
   dates: GetDashboardTimeV1TimeForDate[];
   chargeCodes: GetDashboardTimeV1ChargeCode[];
   clients: GetDashboardTimeV1Client[];
+  rejectedCount: number;
 }
 
 export interface GetDashboardTimeV1TimeForDate {

@@ -147,6 +147,8 @@ export class StaffDashboardComponent {
           'Success',
           'Time entries successfully submitted.',
         );
+        this.staffDashboardService.showAllRejectedTimes$.next(false);
+        this.staffDashboardService.timeStatus.reset();
         this.staffDashboardService.refresh();
       } else {
         console.log('ERROR: Could not find staff');

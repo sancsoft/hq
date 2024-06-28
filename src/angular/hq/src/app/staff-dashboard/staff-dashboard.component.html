@@ -84,25 +84,27 @@
   <div class="flex items-end gap-[20px] justify-between items-center">
     <hq-staff-dashboard-date-range />
     <div>
-      <button
-        [title]="
-          (staffDashboardService.showAllRejectedTimes$ | async)
-            ? 'Dismiss all rejected time entries'
-            : 'Show all rejected time entries'
-        "
-        [name]="
-          (staffDashboardService.showAllRejectedTimes$ | async)
-            ? 'Dismiss all rejected time entries'
-            : 'Show all rejected time entries'
-        "
-        type="button"
-        (click)="handleRejectedTimes()"
-      >
-        <i
-          [class.border]="staffDashboardService.showAllRejectedTimes$ | async"
-          class="bi bi-exclamation-triangle-fill py-2 px-2 rounded-sm mr-3 text-white bg-red-700"
-        ></i>
-      </button>
+      @if (staffDashboardService.rejectedCount$ | async) {
+        <button
+          [title]="
+            (staffDashboardService.showAllRejectedTimes$ | async)
+              ? 'Dismiss all rejected time entries'
+              : 'Show all rejected time entries'
+          "
+          [name]="
+            (staffDashboardService.showAllRejectedTimes$ | async)
+              ? 'Dismiss all rejected time entries'
+              : 'Show all rejected time entries'
+          "
+          type="button"
+          (click)="handleRejectedTimes()"
+        >
+          <i
+            [class.border]="staffDashboardService.showAllRejectedTimes$ | async"
+            class="bi bi-exclamation-triangle-fill py-2 px-2 rounded-sm mr-3 text-white bg-red-700"
+          ></i>
+        </button>
+      }
       <button
         [title]="
           (staffDashboardService.anyTimePending$ | async)
@@ -131,7 +133,14 @@
   <div
     class="flex align-middle justify-between h-5 w-full bg-red-850 mb-16 pt-1 px-5"
   >
-    <div class="uppercase">currently editing 3 errors</div>
+    <div class="uppercase">
+      currently editing {{ staffDashboardService.rejectedCount$ | async }}
+      {{
+        ((staffDashboardService.rejectedCount$ | async) ?? 0) > 1
+          ? "errors"
+          : "error"
+      }}
+    </div>
     <button
       (click)="handleRejectedTimes()"
       class="text-white"
