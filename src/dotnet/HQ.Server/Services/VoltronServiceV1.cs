@@ -47,6 +47,7 @@ public class VoltronServiceV1
             var staffName = staffNameRegex.Replace(Path.GetFileNameWithoutExtension(file.FileName), String.Empty);
             if (!staffLookup.ContainsKey(staffName))
             {
+                response.SkippedMissingStaff++;
                 continue;
             }
 
@@ -70,6 +71,7 @@ public class VoltronServiceV1
             {
                 if (!chargeCodes.ContainsKey(timeRecord.ChargeCode))
                 {
+                    response.SkippedMissingChargeCode++;
                     continue;
                 }
 

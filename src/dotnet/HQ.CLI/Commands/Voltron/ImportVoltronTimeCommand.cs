@@ -77,6 +77,8 @@ namespace HQ.CLI.Commands.ChargeCode
                 return 1;
             }
 
+            Console.WriteLine("{0} Skipped (Missing Staff)", response.Value?.SkippedMissingStaff);
+            Console.WriteLine("{0} Deleted (Missing Charge Code)", response.Value?.SkippedMissingChargeCode);
             Console.WriteLine("{0} Created", response.Value?.TimeCreated);
             Console.WriteLine("{0} Deleted", response.Value?.TimeDeleted);
 

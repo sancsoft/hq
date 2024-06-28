@@ -18,6 +18,8 @@ public class ImportVoltronTimeSheetsV1
 
     public class Response
     {
+        public int SkippedMissingStaff { get; set; }
+        public int SkippedMissingChargeCode { get; set; }
         public int TimeCreated { get; set; }
         public int TimeDeleted { get; set; }
     }
