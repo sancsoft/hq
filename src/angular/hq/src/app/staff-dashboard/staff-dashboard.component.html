@@ -83,21 +83,34 @@
 <div class="px-5 py-2 bg-black-alt">
   <div class="flex items-end gap-[20px] justify-between items-center">
     <hq-staff-dashboard-date-range />
-    <button
-      [disabled]="(staffDashboardService.anyTimePending$ | async) === false"
-      [ngClass]="{
-        'text-gray-50 border-gray-500 bg-gray-500 ':
-          (staffDashboardService.anyTimePending$ | async) === false,
-        'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-          staffDashboardService.anyTimePending$ | async,
-      }"
-      [value]=""
-      class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
-      type="button"
-      (click)="submitTimes()"
-    >
-      Submit
-    </button>
+    <div>
+      <button
+        [title]="'Show all rejected time entires'"
+        name="Show All rejected time entries"
+        type="button"
+      >
+        <i
+          class="bi bi-exclamation-triangle-fill py-2 px-2 rounded-sm mr-3 text-white bg-red-700"
+        ></i>
+      </button>
+      <button
+      [title]="(staffDashboardService.anyTimePending$ | async) ? 'Submit all time entries for the shown date period' : 'No time entries to be submitted '"
+        name="Submit all time entires for the shown date period"
+        [disabled]="(staffDashboardService.anyTimePending$ | async) === false"
+        [ngClass]="{
+          'text-gray-50 border-gray-500 bg-gray-500 ':
+            (staffDashboardService.anyTimePending$ | async) === false,
+          'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+            staffDashboardService.anyTimePending$ | async,
+        }"
+        [value]=""
+        class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
+        type="button"
+        (click)="submitTimes()"
+      >
+        Submit
+      </button>
+    </div>
   </div>
 </div>
 
