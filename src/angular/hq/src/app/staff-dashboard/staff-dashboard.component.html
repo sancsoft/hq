@@ -84,7 +84,16 @@
   <div class="flex items-end gap-[20px] justify-between items-center">
     <hq-staff-dashboard-date-range />
     <button
-      class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+      [disabled]="!(staffDashboardService.anyTimePending$ | async)"
+      [ngClass]="{
+        'text-gray-50 border-gray-500 bg-gray-500 ': !(
+          staffDashboardService.anyTimePending$ | async
+        ),
+        'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+          staffDashboardService.anyTimePending$ | async,
+      }"
+      [value]=""
+      class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
       type="button"
       (click)="submitTimes()"
     >

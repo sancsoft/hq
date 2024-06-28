@@ -84,15 +84,14 @@ export class StaffDashboardService {
       tap((response) =>
         this.date.setValue(response.startDate, { emitEvent: false }),
       ),
+      map((response) => {
+        const anyPending = response.dates.some((date) =>
+          date.times.some((time) => time.timeStatus === TimeStatus.Pending),
+        );
+        this.anyTimePending$.next(anyPending);
+        return response;
+      }),
     );
-    // this.anyTimePending$ = time$.subscribe((time) =>{
-    //   time.dates.map((date) => {
-    //     date.times.includes((t)=>{
-    //       return t.timeStatus == TimeStatus.Pending
-    //     })
-    //   })
-    // })
-
     const refreshTime$ = this.refresh$.pipe(switchMap((t) => time$));
 
     this.time$ = merge(time$, refreshTime$).pipe(shareReplay(1));
