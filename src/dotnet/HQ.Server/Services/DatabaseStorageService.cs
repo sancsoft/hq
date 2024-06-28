@@ -51,16 +51,13 @@ public class DatabaseStorageService : IStorageService
             throw new ArgumentNullException(nameof(path), "Path must not be null.");
         }
 
-        if (stream.CanSeek)
-        {
-            throw new ArgumentException(nameof(stream), "Stream must be seekable.");
-        }
-
         var blob = await _context.Blobs.SingleOrDefaultAsync(t => t.Key == path, ct);
         if (blob == null)
         {
             blob = new();
             blob.Key = path;
+
+            _context.Blobs.Add(blob);
         }
         else
         {
@@ -89,7 +86,7 @@ public class DatabaseStorageService : IStorageService
         var hashedInputStringBuilder = new System.Text.StringBuilder(128);
         foreach (var hashedByte in hashedBytes)
         {
-            hashedInputStringBuilder.Append(hashedByte.ToString("X2"));
+            hashedInputStringBuilder.Append(hashedByte.ToString("X2").ToLower());
         }
 
         return hashedInputStringBuilder.ToString();
