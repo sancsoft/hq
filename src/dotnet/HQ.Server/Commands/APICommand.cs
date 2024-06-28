@@ -33,7 +33,7 @@ public class APICommand : AsyncCommand
 
         // Add services to the container.
         builder.Services.AddHealthChecks();
-        builder.Services.AddHQServices();
+        builder.Services.AddHQServices(builder.Configuration);
         builder.Services.AddHQDbContext(builder.Configuration);
 
         builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
