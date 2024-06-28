@@ -91,7 +91,9 @@
         'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
           staffDashboardService.anyTimePending$ | async,
       }"
-      [value]=""
+      [name]="
+        'Submit time entry for start date ' + staffDashboardService.date.value
+      "
       class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
       type="button"
       (click)="submitTimes()"
