@@ -42,7 +42,7 @@ export class StaffDashboardService {
   time$: Observable<GetDashboardTimeV1Response>;
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
   clients$: Observable<GetDashboardTimeV1Client[]>;
-  anyTimePending$ = new BehaviorSubject<boolean>(true);
+  anyTimePending$: Observable<boolean>;
 
   refresh$ = new Subject<void>();
 
@@ -88,13 +88,20 @@ export class StaffDashboardService {
         const anyPending = response.dates.some((date) =>
           date.times.some((time) => time.timeStatus === TimeStatus.Pending),
         );
-        this.anyTimePending$.next(anyPending);
         return response;
       }),
     );
     const refreshTime$ = this.refresh$.pipe(switchMap((t) => time$));
 
     this.time$ = merge(time$, refreshTime$).pipe(shareReplay(1));
+
+    this.anyTimePending$ = this.time$.pipe(
+      map((response) =>
+        response.dates.some((date) =>
+          date.times.some((time) => time.timeStatus === TimeStatus.Pending),
+        ),
+      ),
+    );
 
     this.chargeCodes$ = this.time$.pipe(map((t) => t.chargeCodes));
     this.clients$ = this.time$.pipe(map((t) => t.clients));
