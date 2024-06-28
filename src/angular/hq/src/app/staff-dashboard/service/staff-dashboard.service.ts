@@ -94,7 +94,7 @@ export class StaffDashboardService {
       ),
     );
 
-    const refreshTime$ = this.refresh$.pipe(switchMap((t) => time$));
+    const refreshTime$ = this.refresh$.pipe(switchMap(() => time$));
 
     this.time$ = merge(time$, refreshTime$).pipe(shareReplay(1));
     this.rejectedCount$ = this.time$.pipe(map((t) => t.rejectedCount));

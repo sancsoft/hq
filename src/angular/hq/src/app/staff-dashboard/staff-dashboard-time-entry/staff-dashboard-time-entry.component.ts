@@ -27,14 +27,11 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
-  filter,
   map,
   pairwise,
   shareReplay,
-  skip,
   startWith,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';

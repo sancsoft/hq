@@ -81,7 +81,7 @@
 </div>
 
 <div class="px-5 py-2 bg-black-alt">
-  <div class="flex items-end gap-[20px] justify-between items-center">
+  <div class="flex gap-[20px] justify-between items-center">
     <hq-staff-dashboard-date-range />
     <div>
       @if (staffDashboardService.rejectedCount$ | async) {
@@ -131,7 +131,7 @@
 </div>
 @if (staffDashboardService.showAllRejectedTimes$ | async) {
   <div
-    class="flex align-middle justify-between h-5 w-full bg-red-850 mb-16 pt-1 px-5"
+    class="flex align-middle justify-between h-5 w-full bg-red-850 mb-10 pt-1 px-5"
   >
     <div class="uppercase">
       currently editing {{ staffDashboardService.rejectedCount$ | async }}
@@ -213,11 +213,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          hq-staff-dashboard-time-entry
-          (hqTimeChange)="upsertTime($event)"
-          [time]="{ date: date.date, timeStatus: timeStatus.Pending }"
-        ></tr>
+        @if ((staffDashboardService.showAllRejectedTimes$ | async) === false) {
+          <tr
+            hq-staff-dashboard-time-entry
+            (hqTimeChange)="upsertTime($event)"
+            [time]="{ date: date.date, timeStatus: timeStatus.Pending }"
+          ></tr>
+        }
         @for (time of date.times; track time.id) {
           @switch (time.timeStatus) {
             @case (timeStatus.Pending) {

@@ -7,14 +7,7 @@
     >
     <!-- search bar -->
     <div
-      [ngClass]="{
-        'text-gray-450 cursor-not-allowed':
-          staffDashboardService.showAllRejectedTimes$ | async,
-        'bg-blue-900 border-steel-blue-600': !(
-          staffDashboardService.showAllRejectedTimes$ | async
-        ),
-      }"
-      class="relative flex items-stretch border text-gray-100 rounded h-[36px] w-full"
+      class="relative flex items-stretch border text-gray-100 rounded h-[36px] w-full bg-blue-900 border-steel-blue-600"
     >
       <span
         class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100"
@@ -22,11 +15,6 @@
         <i class="bi bi-search text-[14px]"></i>
       </span>
       <input
-        [ngClass]="{
-          'text-gray-450 cursor-not-allowed':
-            staffDashboardService.showAllRejectedTimes$ | async,
-        }"
-        [readonly]="staffDashboardService.showAllRejectedTimes$ | async"
         type="text"
         [formControl]="staffDashboardService.search"
         class="w-full block text-[14px] px-2 py-1 appearance-none focus:outline-none font-medium bg-inherit rounded"
@@ -43,14 +31,12 @@
     <div class="grid relative w-full max-w-[220px]">
       <select
         [ngClass]="{
-          'text-gray-450 bg-transparent cursor-not-allowed':
+          'text-gray-450 bg-gray-850 border-none cursor-not-allowed':
             staffDashboardService.showAllRejectedTimes$ | async,
-          'bg-blue-900 border-steel-blue-600 hover:cursor-pointer': !(
-            staffDashboardService.showAllRejectedTimes$ | async
-          ),
+          'bg-blue-900 border-steel-blue-600 hover:cursor-pointer':
+            (staffDashboardService.showAllRejectedTimes$ | async) === false,
         }"
         [formControl]="staffDashboardService.period"
-        [attr.disabled]="staffDashboardService.showAllRejectedTimes$ | async"
         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none font-medium row-start-1 col-start-1 border text-gray-100 h-[36px]"
       >
         <option [ngValue]="staffDashboardService.Period.Today">Day</option>
@@ -61,9 +47,8 @@
         [ngClass]="{
           'text-gray-450 after:bg-gray-700':
             staffDashboardService.showAllRejectedTimes$ | async,
-          'after:bg-gray-100': !(
-            staffDashboardService.showAllRejectedTimes$ | async
-          ),
+          'after:bg-gray-100':
+            (staffDashboardService.showAllRejectedTimes$ | async) === false,
         }"
         class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
       >

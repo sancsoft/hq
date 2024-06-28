@@ -113,10 +113,12 @@ export class StaffDashboardComponent {
   private showAllRejectedTimes() {
     this.staffDashboardService.showAllRejectedTimes$.next(true);
     this.staffDashboardService.timeStatus.setValue(TimeStatus.Rejected);
+    this.staffDashboardService.period.disable();
   }
   private hideAllRejectedTimes() {
     this.staffDashboardService.showAllRejectedTimes$.next(false);
     this.staffDashboardService.timeStatus.reset();
+    this.staffDashboardService.period.enable();
   }
   async submitTimes() {
     const confirm = await firstValueFrom(
@@ -147,8 +149,7 @@ export class StaffDashboardComponent {
           'Success',
           'Time entries successfully submitted.',
         );
-        this.staffDashboardService.showAllRejectedTimes$.next(false);
-        this.staffDashboardService.timeStatus.reset();
+        this.hideAllRejectedTimes();
         this.staffDashboardService.refresh();
       } else {
         console.log('ERROR: Could not find staff');
