@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using FluentResults;
 
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Quotes;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
@@ -58,7 +59,8 @@ namespace HQ.Server.Services
                         Code = newCode,
                         Billable = true,
                         Active = true,
-                        QuoteId = quote.Id
+                        QuoteId = quote.Id,
+                        Activity = ChargeCodeActivity.Quote
                     };
                     quote.ChargeCode = newChargeCode;
                     quote.QuoteNumber = newQuoteNumber;
