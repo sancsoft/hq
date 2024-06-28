@@ -36,6 +36,7 @@ export class PsrWorkWeekComponent {
   projectId$?: Observable<string>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
+  psrId$: Observable<string | null>;
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
@@ -48,6 +49,8 @@ export class PsrWorkWeekComponent {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.StartDate);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     this.projectId$ = route.params.pipe(map((params) => params['projectId']));
+    this.psrId$ = route.queryParams.pipe(map((t) => t['psrId']));
+
     const request$ = combineLatest({
       projectId: this.projectId$,
       sortBy: this.sortOption$,

@@ -65,8 +65,8 @@
                     <!-- text input -->
                     <input
                       [class.border-red-700]="
-                        form.get('firstName')?.touched &&
-                        form.get('firstName')?.errors?.['required']
+                        form.controls.firstName.errors &&
+                        form.controls.firstName.touched
                       "
                       type="text"
                       name="fullname"
@@ -76,13 +76,15 @@
                       formControlName="firstName"
                     />
                     @if (
-                      form.get("firstName")?.touched &&
-                      form.get("firstName")?.errors?.["required"]
+                      form.controls.firstName.errors &&
+                      form.controls.firstName.touched
                     ) {
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        >First Name is required.</span
-                      >
+                      @if (form.controls.firstName.errors["required"]) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                          >First name is required.</span
+                        >
+                      }
                     }
                   </div>
                   <!-- column -->
@@ -95,8 +97,8 @@
                     <!-- text input -->
                     <input
                       [class.border-red-700]="
-                        form.get('lastName')?.touched &&
-                        form.get('lastName')?.errors?.['required']
+                        form.controls.lastName.errors &&
+                        form.controls.lastName.touched
                       "
                       type="text"
                       name="lastName"
@@ -105,16 +107,18 @@
                       placeholder="Last Name"
                       formControlName="lastName"
                     />
+                    @if (
+                      form.controls.lastName.errors &&
+                      form.controls.lastName.touched
+                    ) {
+                      @if (form.controls.lastName.errors["required"]) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                          >Last name is required.</span
+                        >
+                      }
+                    }
                   </div>
-                  @if (
-                    form.get("lastName")?.touched &&
-                    form.get("lastName")?.errors?.["required"]
-                  ) {
-                    <span
-                      class="text-red-700 text-xs leading-normal inline-block"
-                      >Last Name is required.</span
-                    >
-                  }
                 </div>
                 <!-- row grid -->
                 <div
@@ -131,8 +135,8 @@
                     <!-- email input -->
                     <input
                       [class.border-red-700]="
-                        form.get('email')?.touched &&
-                        form.get('email')?.errors?.['required']
+                        form.controls.email.errors &&
+                        form.controls.email.touched
                       "
                       type="email"
                       name="canatednated"
@@ -142,13 +146,14 @@
                       formControlName="email"
                     />
                     @if (
-                      form.get("email")?.touched &&
-                      form.get("email")?.errors?.["required"]
+                      form.controls.email.errors && form.controls.email.touched
                     ) {
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        >Email address is invalid.</span
-                      >
+                      @if (form.controls.email.errors["required"]) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                          >Email is required.</span
+                        >
+                      }
                     }
                   </div>
                 </div>

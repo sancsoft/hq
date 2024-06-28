@@ -73,7 +73,9 @@
                       placeholder="Client Name"
                       formControlName="name"
                     />
-                    @if (form.controls.name.errors && form.touched) {
+                    @if (
+                      form.controls.name.errors && form.controls.name.touched
+                    ) {
                       @if (form.controls.name.errors["required"]) {
                         <span
                           class="text-red-700 text-xs leading-normal inline-block"

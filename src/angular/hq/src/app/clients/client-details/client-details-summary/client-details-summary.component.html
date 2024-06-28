@@ -23,15 +23,17 @@
         }
       </div>
     </div>
-    <div class="float-right">
-      <a [routerLink]="['/clients/edit', client.id]" class="text-gray-50 pt-3"
+    <div class="pt-3">
+      <a
+        [routerLink]="['/clients/edit', client.id]"
+        class="text-gray-50 underline"
         >Edit client details</a
       >
     </div>
   </div>
   <hq-error-display [errors]="apiErrors"></hq-error-display>
 }
-<div>
+<div class="flex flex-row justify-between">
   @if (clientInvoiceSummary$ | async; as clientInvoiceSummary) {
     <div class="flex justify-between">
       <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
@@ -54,4 +56,7 @@
       </div>
     </div>
   }
+  <div class="pt-3">
+    <a routerLink="/clients" class="text-gray-50 underline">Client List</a>
+  </div>
 </div>

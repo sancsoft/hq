@@ -81,7 +81,11 @@
         <td class="border-b border-black py-2">{{ project.startDate }}</td>
         <td class="border-b border-black py-2">{{ project.endDate }}</td>
         <td class="border-b border-black py-2 text-right pr-5">
-          <a class="text-teal-200 hover:text-teal-300">VIEW</a>
+          <a
+            [routerLink]="['/projects', project.id]"
+            class="text-teal-200 hover:text-teal-300"
+            >VIEW</a
+          >
         </td>
       </tr>
     }

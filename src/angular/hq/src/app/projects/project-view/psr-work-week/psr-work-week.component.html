@@ -33,7 +33,9 @@
     @for (psrWeek of PSRWorkWeeks | async; track $index) {
       <tr
         [ngClass]="
-          $index % 2 !== 0 ? 'bg-blue-900' : 'even:bg-gray-850 odd:bg-black-alt'
+          psrWeek.id === (psrId$ | async)
+            ? 'bg-blue-900'
+            : 'even:bg-gray-850 odd:bg-black-alt'
         "
       >
         <td class="border-b border-black py-2 pl-5">{{ psrWeek.startDate }}</td>
@@ -41,7 +43,7 @@
         <td class="border-b border-black py-2 text-right pr-5">
           <a
             class="text-teal-200 hover:text-teal-300"
-            routerLink="time"
+            routerLink="details"
             [queryParams]="{ psrId: psrWeek.id }"
             >VIEW</a
           >

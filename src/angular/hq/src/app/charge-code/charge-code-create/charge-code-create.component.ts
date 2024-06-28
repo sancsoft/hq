@@ -129,7 +129,9 @@ export class ChargeCodeCreateComponent {
     console.log(this.form.value);
     if (this.form.invalid) {
       this.apiErrors = [];
-      this.apiErrors = ['Invlid Form Error'];
+      this.apiErrors = [
+        'Please correct the errors in the form before submitting.',
+      ];
       return;
     }
     console.log('Form is valid');

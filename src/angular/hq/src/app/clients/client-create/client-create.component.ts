@@ -27,7 +27,7 @@ interface Form {
   templateUrl: './client-create.component.html',
 })
 export class ClientCreateComponent {
-  apiErrors?: string[];
+  apiErrors: string[] = [];
 
   form = new FormGroup<Form>({
     name: new FormControl('', {
@@ -52,7 +52,12 @@ export class ClientCreateComponent {
 
   async submit() {
     this.form.markAsTouched();
+
     if (this.form.invalid) {
+      this.apiErrors.length = 0;
+      this.apiErrors.push(
+        'Please correct the errors in the form before submitting.',
+      );
       return;
     }
 
