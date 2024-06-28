@@ -23,7 +23,10 @@ export const authConfig: PassedInitialConfig = {
             responseType: 'code',
             silentRenew: true,
             useRefreshToken: true,
-            renewTimeBeforeTokenExpiresInSeconds: 30,
+            // Randomly renew the access token between 30-120 seconds
+            // See https://github.com/damienbod/angular-auth-oidc-client/issues/1662
+            renewTimeBeforeTokenExpiresInSeconds:
+              Math.floor(Math.random() * 90) + 30,
             ignoreNonceAfterRefresh: true,
             renewUserInfoAfterTokenRenew: true,
             secureRoutes: [appSettings.apiUrl],
