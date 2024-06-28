@@ -10,6 +10,7 @@ public class GetDashboardTimeV1
         public DateOnly Date { get; set; }
         public Period Period { get; set; }
         public string? Search { get; set; }
+        public TimeStatus? Status { get; set; }
     }
 
     public class Response
