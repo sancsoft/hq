@@ -82,7 +82,7 @@ export class StaffCreateComponent {
   ) {}
 
   async submit() {
-    this.form.markAsTouched();
+    this.form.markAllAsTouched();
     console.log(this.form.value);
     if (this.form.invalid) {
       this.apiErrors = [];

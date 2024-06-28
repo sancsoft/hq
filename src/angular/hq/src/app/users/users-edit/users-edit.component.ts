@@ -132,7 +132,7 @@ export class UsersEditComponent implements OnInit {
   }
 
   async submit() {
-    this.form.markAsTouched();
+    this.form.markAllAsTouched();
     if (this.form.invalid) {
       return;
     }

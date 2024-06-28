@@ -51,7 +51,7 @@ export class ClientCreateComponent {
   ) {}
 
   async submit() {
-    this.form.markAsTouched();
+    this.form.markAllAsTouched();
 
     if (this.form.invalid) {
       this.apiErrors.length = 0;
