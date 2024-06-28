@@ -112,9 +112,11 @@ export class StaffDashboardComponent {
   }
   private showAllRejectedTimes() {
     this.staffDashboardService.showAllRejectedTimes$.next(true);
+    this.staffDashboardService.timeStatus.setValue(TimeStatus.Rejected);
   }
   private hideAllRejectedTimes() {
     this.staffDashboardService.showAllRejectedTimes$.next(false);
+    this.staffDashboardService.timeStatus.reset();
   }
   async submitTimes() {
     const confirm = await firstValueFrom(

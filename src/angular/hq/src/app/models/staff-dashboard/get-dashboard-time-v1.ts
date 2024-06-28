@@ -6,6 +6,7 @@ export interface GetDashboardTimeV1Request {
   period: Period;
   date?: string;
   search?: string | null;
+  status?: TimeStatus | null;
 }
 
 export interface GetDashboardTimeV1Response {

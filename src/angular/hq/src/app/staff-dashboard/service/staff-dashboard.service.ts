@@ -29,6 +29,7 @@ import { TimeStatus } from '../../models/common/time-status';
 export class StaffDashboardService {
   search = new FormControl<string | null>(null);
   period = new FormControl<Period>(Period.Today, { nonNullable: true });
+  timeStatus = new FormControl<TimeStatus | null>(null);
   date = new FormControl<string>(
     new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
@@ -58,6 +59,10 @@ export class StaffDashboardService {
 
     const search$ = this.search.valueChanges.pipe(startWith(this.search.value));
     const period$ = this.period.valueChanges.pipe(startWith(this.period.value));
+    const timeStatus$ = this.timeStatus.valueChanges.pipe(
+      startWith(this.timeStatus.value),
+    );
+
     const date$ = this.date.valueChanges
       .pipe(startWith(this.date.value))
       .pipe(
@@ -77,6 +82,7 @@ export class StaffDashboardService {
       period: period$,
       search: search$,
       date: date$,
+      status: timeStatus$,
     }).pipe(shareReplay(1));
 
     const time$ = request$.pipe(
