@@ -43,6 +43,7 @@ export class StaffDashboardService {
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
   clients$: Observable<GetDashboardTimeV1Client[]>;
   anyTimePending$: Observable<boolean>;
+  showAllRejectedTimes$ = new BehaviorSubject<boolean>(false);
 
   refresh$ = new Subject<void>();
 

@@ -105,6 +105,17 @@ export class StaffDashboardComponent {
       }
     }
   }
+  handleRejectedTimes() {
+    this.staffDashboardService.showAllRejectedTimes$.getValue()
+      ? this.hideAllRejectedTimes()
+      : this.showAllRejectedTimes();
+  }
+  private showAllRejectedTimes() {
+    this.staffDashboardService.showAllRejectedTimes$.next(true);
+  }
+  private hideAllRejectedTimes() {
+    this.staffDashboardService.showAllRejectedTimes$.next(false);
+  }
   async submitTimes() {
     const confirm = await firstValueFrom(
       this.modalService.confirm(
