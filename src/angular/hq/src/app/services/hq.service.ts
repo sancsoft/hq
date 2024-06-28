@@ -7,18 +7,14 @@ import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpResponse,
-} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   GetClientRequestV1,
   GetClientResponseV1,
 } from '../models/clients/get-client-v1';
 import { AppSettingsService } from '../app-settings.service';
-import { catchError, map, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, map, switchMap, throwError } from 'rxjs';
 import {
   UpsertClientRequestV1,
   UpsertClientResponseV1,
@@ -27,7 +23,6 @@ import { APIError } from '../errors/apierror';
 import {
   GetProjectRecordsV1,
   GetProjectRequestV1,
-  GetProjectResponseV1,
 } from '../models/projects/get-project-v1';
 import {
   GetQuotesRecordsV1,
@@ -39,14 +34,12 @@ import {
 } from '../models/Services/get-services-v1';
 import {
   GetInvoicesRecordsV1,
-  GetInvoicesRecordV1,
   GetInvoicesRequestV1,
 } from '../models/Invoices/get-invoices-v1';
 import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
 import {
   GetPSRTimeRecordsV1,
   GetPSRTimeRequestV1,
-  GetPSRTimeV1,
 } from '../models/PSR/get-psr-time-v1';
 import {
   ApprovePSRTimeRequestV1,

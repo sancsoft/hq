@@ -482,7 +482,7 @@ namespace HQ.Server.Services
 
             var timesQuery = _context.Times
                 .AsNoTracking()
-                .Where(t => t.StaffId == request.StaffId && request.Status == null ? (t.Date >= startDate && t.Date <= endDate) : (t.Status == request.Status))
+                .Where(t => t.StaffId == request.StaffId && (request.Status == null ? (t.Date >= startDate && t.Date <= endDate) : (t.Status == request.Status)))
                 .AsQueryable();
 
             var hrsThisWeekQuery = _context.Times
@@ -597,6 +597,7 @@ namespace HQ.Server.Services
             response.NextDate = nextDate;
             response.PreviousDate = previousDate;
             response.StaffName = staff.Name;
+            response.RejectedCount = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Status == TimeStatus.Rejected).CountAsync(ct);
 
             if (request.Status.HasValue)
             {
