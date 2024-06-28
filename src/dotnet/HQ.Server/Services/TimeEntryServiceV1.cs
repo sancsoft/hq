@@ -482,8 +482,9 @@ namespace HQ.Server.Services
 
             var timesQuery = _context.Times
                 .AsNoTracking()
-                .Where(t => t.StaffId == request.StaffId && t.Date >= startDate && t.Date <= endDate)
+                .Where(t => t.StaffId == request.StaffId && request.Status == null ? (t.Date >= startDate && t.Date <= endDate) : (t.Status == request.Status))
                 .AsQueryable();
+
             var hrsThisWeekQuery = _context.Times
                 .AsNoTracking()
                 .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.Week) && t.Date <= request.Date.GetPeriodEndDate(Period.Week))
@@ -557,9 +558,9 @@ namespace HQ.Server.Services
                 })
                 .ToListAsync(ct);
 
-
             var clients = await _context.Clients
                 .AsNoTracking()
+                .Where(t => !t.Projects.All(x => x.ChargeCode!.Active == false))
                 .OrderBy(t => t.Name)
                 .Include(t => t.Projects)
                 .ThenInclude(t => t.Activities)
@@ -597,21 +598,35 @@ namespace HQ.Server.Services
             response.PreviousDate = previousDate;
             response.StaffName = staff.Name;
 
-            DateOnly date = endDate;
-            do
+            if (request.Status.HasValue)
             {
-                var timeForDate = new GetDashboardTimeV1.TimeForDate();
-                timeForDate.Date = date;
-                if (times.ContainsKey(date))
+                foreach (var date in times)
                 {
-                    timeForDate.Times = times[date];
+                    var timeForDate = new GetDashboardTimeV1.TimeForDate();
+                    timeForDate.Date = date.Key;
+                    timeForDate.Times = date.Value;
                     timeForDate.TotalHours = timeForDate.Times.Sum(t => t.Hours);
+                    response.Dates.Add(timeForDate);
                 }
-
-                response.Dates.Add(timeForDate);
-                date = date.AddDays(-1);
             }
-            while (date >= startDate);
+            else
+            {
+                DateOnly date = endDate;
+                do
+                {
+                    var timeForDate = new GetDashboardTimeV1.TimeForDate();
+                    timeForDate.Date = date;
+                    if (times.ContainsKey(date))
+                    {
+                        timeForDate.Times = times[date];
+                        timeForDate.TotalHours = timeForDate.Times.Sum(t => t.Hours);
+                    }
+
+                    response.Dates.Add(timeForDate);
+                    date = date.AddDays(-1);
+                }
+                while (date >= startDate);
+            }
 
             return response;
         }
