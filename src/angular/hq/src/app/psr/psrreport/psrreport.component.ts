@@ -193,18 +193,18 @@ export class PSRReportComponent implements OnInit, OnDestroy {
           this.hqService.submitProjectStatusReportV1(request),
         ),
       );
-      apiResponse$.subscribe({
-        next: () => {
-          this.modalService.alert('Success', 'Report submitted successfully');
-          await this.router.navigate(['/psr']);
-          this.submitButtonState = ButtonState.Disabled;
-        },
-        error: (err) => {
-          if (err instanceof APIError) {
-            this.modalService.alert('Error', err.errors.join('\n'));
-          }
-        },
-      });
+
+      try {
+        await firstValueFrom(apiResponse$);
+
+        this.modalService.alert('Success', 'Report submitted successfully');
+        await this.router.navigate(['/psr']);
+        this.submitButtonState = ButtonState.Disabled;
+      } catch (err) {
+        if (err instanceof APIError) {
+          this.modalService.alert('Error', err.errors.join('\n'));
+        }
+      }
     }
   }
 }

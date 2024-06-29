@@ -144,7 +144,7 @@
                 @if (chargeCodes$ | async; as chargeCodes) {
                   <select
                     [(ngModel)]="time.chargeCode"
-                    (change)="updateChargeCode(time.id, $event)"
+                    (change)="updateChargeCode(time.id)"
                     class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
                   >
                     <option *ngFor="let c of chargeCodes" [ngValue]="c.code">
@@ -161,7 +161,7 @@
                   @if (projectActivities.length > 0) {
                     <select
                       [(ngModel)]="time.activityId"
-                      (change)="updateProjectActivity(time.id, $event)"
+                      (change)="updateProjectActivity(time.id)"
                       class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
                     >
                       @for (activity of projectActivities; track $index) {
@@ -250,7 +250,7 @@
                 @if (chargeCodes$ | async; as chargeCodes) {
                   <select
                     [(ngModel)]="time.chargeCode"
-                    (change)="updateChargeCode(time.id, $event)"
+                    (change)="updateChargeCode(time.id)"
                     class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
                   >
                     <option *ngFor="let c of chargeCodes" [ngValue]="c.code">
@@ -267,7 +267,7 @@
                   @if (projectActivities.length > 0) {
                     <select
                       [(ngModel)]="time.activityId"
-                      (change)="updateProjectActivity(time.id, $event)"
+                      (change)="updateProjectActivity(time.id)"
                       class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
                     >
                       @for (activity of projectActivities; track $index) {
