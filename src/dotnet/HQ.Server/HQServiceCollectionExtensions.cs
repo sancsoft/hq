@@ -31,7 +31,11 @@ namespace HQ.Server
             {
                 case StorageService.Filesystem:
                     services.AddScoped<IStorageService, FilesystemStorageService>();
-                    services.Configure<FilesystemStorageService.Options>(configuration.GetSection(FilesystemStorageService.Options.FilesystemStorage) ?? throw new InvalidOperationException("Config section 'FilesystemStorage' not found"));
+                    services.AddOptions<FilesystemStorageService.Options>()
+                        .Bind(configuration.GetSection(FilesystemStorageService.Options.FilesystemStorage))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
+
                     break;
                 default:
                 case StorageService.Database:
