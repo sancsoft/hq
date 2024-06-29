@@ -29,6 +29,11 @@ namespace HQ.Server
             var storageServiceType = configuration.GetValue<StorageService?>("StorageService") ?? StorageService.Database;
             switch (storageServiceType)
             {
+                case StorageService.Filesystem:
+                    services.AddScoped<IStorageService, FilesystemStorageService>();
+                    services.Configure<FilesystemStorageService.Options>(configuration.GetSection(FilesystemStorageService.Options.FilesystemStorage) ?? throw new InvalidOperationException("Config section 'FilesystemStorage' not found"));
+                    break;
+                default:
                 case StorageService.Database:
                     services.AddScoped<IStorageService, DatabaseStorageService>();
                     break;

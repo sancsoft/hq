@@ -44,7 +44,7 @@ public class DatabaseStorageService : IStorageService
         return (new MemoryStream(blob.Data), blob.ContentType, blob.ETag);
     }
 
-    public async Task WriteAsync(string path, string? contentType, Stream stream, CancellationToken ct = default)
+    public async Task WriteAsync(string path, string contentType, Stream stream, CancellationToken ct = default)
     {
         if (String.IsNullOrEmpty(path))
         {

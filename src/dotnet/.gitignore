@@ -487,4 +487,5 @@ appsettings.*.json
 sharedsettings.*.json
 app.db
 
+HQ.Server/files/
 HQ.CLI/data/

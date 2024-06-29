@@ -2,5 +2,6 @@
 
 public enum StorageService
 {
-    Database
+    Database,
+    Filesystem
 }
