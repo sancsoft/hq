@@ -1,6 +1,6 @@
 import { PsrListSearchFilterComponent } from './../psr-list-search-filter/psr-list-search-filter.component';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Observable,
@@ -15,10 +15,7 @@ import {
   first,
   firstValueFrom,
 } from 'rxjs';
-import {
-  ClientDetailsService,
-  ProjectStatus,
-} from '../../clients/client-details.service';
+import { ProjectStatus } from '../../clients/client-details.service';
 import { GetPSRRecordV1, SortColumn } from '../../models/PSR/get-PSR-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
@@ -26,7 +23,6 @@ import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { Period } from '../../projects/project-create/project-create.component';
-import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { PsrListService } from './services/pstlistService';
 
@@ -96,7 +92,7 @@ export class PSRListComponent implements OnInit {
       startWith(0),
     );
     const search$ = psrListService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(psrListService.search.value),
     );
 

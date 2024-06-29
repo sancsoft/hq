@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { HQConfirmationModalService } from './services/hq-confirmation-modal-service';
 
 @Component({

@@ -6,7 +6,6 @@ import {
   debounceTime,
   map,
   switchMap,
-  tap,
 } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { SortColumn } from '../../models/PSR/get-psr-time-v1';

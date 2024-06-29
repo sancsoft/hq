@@ -8,14 +8,9 @@ import { TitleStrategy, provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppSettingsService } from './app-settings.service';
-import {
-  HTTP_INTERCEPTORS,
-  provideHttpClient,
-  withInterceptors,
-} from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   AbstractSecurityStorage,
-  AuthInterceptor,
   authInterceptor,
   provideAuth,
 } from 'angular-auth-oidc-client';

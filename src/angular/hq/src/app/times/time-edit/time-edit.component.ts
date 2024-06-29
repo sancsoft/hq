@@ -18,9 +18,6 @@ import {
   ChargeCodeActivity,
   GetChargeCodeRecordV1,
 } from '../../models/charge-codes/get-chargecodes-v1';
-import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
-import { GetQuotesRecordV1 } from '../../models/quotes/get-quotes-v1';
-import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
@@ -104,7 +101,7 @@ export class TimeEditComponent implements OnInit {
       (await (
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('timeId')) ?? undefined;
-    this.getTime();
+    await this.getTime();
   }
 
   constructor(
@@ -147,10 +144,10 @@ export class TimeEditComponent implements OnInit {
 
     try {
       const request = this.form.value;
-      const response = await firstValueFrom(
+      await firstValueFrom(
         this.hqService.upsertTimeV1({ ...request, id: this.timeId }),
       );
-      this.router.navigate(['../../'], { relativeTo: this.route });
+      await this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;

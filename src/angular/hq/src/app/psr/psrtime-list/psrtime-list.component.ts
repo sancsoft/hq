@@ -1,13 +1,7 @@
 import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
-import {
-  Component,
-  HostListener,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { SortDirection } from '../../models/common/sort-direction';
 import {
   GetPSRTimeRecordV1,
@@ -19,7 +13,6 @@ import {
   Subject,
   combineLatest,
   debounceTime,
-  distinctUntilChanged,
   first,
   firstValueFrom,
   map,
@@ -31,20 +24,12 @@ import {
   tap,
 } from 'rxjs';
 import { HQService } from '../../services/hq.service';
-import {
-  ActivatedRoute,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TimeStatus } from '../../models/common/time-status';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
-import {
-  GetChargeCodeRecordV1,
-  GetChargeCodesRequestV1,
-} from '../../models/charge-codes/get-chargecodes-v1';
+import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 import { FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
 import { ButtonState } from '../../enums/ButtonState';
@@ -216,7 +201,7 @@ export class PSRTimeListComponent implements OnInit {
 
     const refresh$ = this.refresh$.pipe(
       switchMap(() => apiResponse$),
-      tap((t) => this.deselectAll()),
+      tap(() => this.deselectAll()),
     );
 
     const response$ = merge(apiResponse$, refresh$).pipe(shareReplay(1));
@@ -258,7 +243,7 @@ export class PSRTimeListComponent implements OnInit {
     }
   }
   @HostListener('window:blur', ['$event'])
-  onBlur(event: KeyboardEvent) {
+  onBlur() {
     this.shiftKey$.next(false);
   }
 
@@ -325,7 +310,7 @@ export class PSRTimeListComponent implements OnInit {
       return;
     }
 
-    const response = await firstValueFrom(
+    await firstValueFrom(
       this.hqService.approvePSRTimeV1({
         projectStatusReportId: psrId,
         timeIds: timeIds,
@@ -363,7 +348,7 @@ export class PSRTimeListComponent implements OnInit {
       return;
     }
 
-    const response = await firstValueFrom(
+    await firstValueFrom(
       this.hqService.unapprovePSRTimeV1({
         projectStatusReportId: psrId,
         timeId: timeId,
@@ -402,7 +387,7 @@ export class PSRTimeListComponent implements OnInit {
       activityName: time.activityName,
     };
 
-    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    await firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.toastService.show('Updated', 'Description has been updated.');
     this.refresh$.next();
   }
@@ -435,7 +420,7 @@ export class PSRTimeListComponent implements OnInit {
       activityName: time.activityName,
     };
 
-    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    await firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.toastService.show('Updated', 'Task has been updated.');
     this.refresh$.next();
   }
@@ -444,7 +429,7 @@ export class PSRTimeListComponent implements OnInit {
     this.selectedChargeCodeId$.next(selectedChargeCode.id);
   }
 
-  async updateChargeCode(timeId: string, event: Event) {
+  async updateChargeCode(timeId: string) {
     const chargeCode = await firstValueFrom(
       this.time$.pipe(
         map((times) => times.find((x) => x.id == timeId)?.chargeCode),
@@ -498,12 +483,12 @@ export class PSRTimeListComponent implements OnInit {
       activityName: time.activityName,
     };
 
-    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    await firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.toastService.show('Updated', 'Charge code has been updated.');
     this.refresh$.next();
   }
 
-  async updateProjectActivity(timeId: string, event: Event) {
+  async updateProjectActivity(timeId: string) {
     const activityId = await firstValueFrom(
       this.time$.pipe(
         map((times) => times.find((x) => x.id == timeId)?.activityId),
@@ -541,8 +526,7 @@ export class PSRTimeListComponent implements OnInit {
       activityName: activityName,
     };
 
-    // TOOD: Call API
-    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    await firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.refresh$.next();
     // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
   }
@@ -582,7 +566,7 @@ export class PSRTimeListComponent implements OnInit {
       activityName: time.activityName,
     };
     //  Call API
-    const response = firstValueFrom(this.hqService.updatePSRTimeV1(request));
+    await firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.toastService.show('Updated', 'Approved hours have been updated.');
     this.refresh$.next();
   }
@@ -612,7 +596,7 @@ export class PSRTimeListComponent implements OnInit {
       return;
     }
 
-    const response = await firstValueFrom(
+    await firstValueFrom(
       this.hqService.rejectPSRTimeV1({
         projectStatusReportId: psrId,
         timeId: timeId,
@@ -621,8 +605,6 @@ export class PSRTimeListComponent implements OnInit {
     );
 
     this.toastService.show('Rejected', 'Time entry has been rejected.');
-
-    console.log(response);
 
     this.refresh$.next();
     this.deselectAll();

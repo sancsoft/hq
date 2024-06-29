@@ -1,6 +1,6 @@
 import { HQService } from './../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { Observable, filter, map, switchMap } from 'rxjs';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';

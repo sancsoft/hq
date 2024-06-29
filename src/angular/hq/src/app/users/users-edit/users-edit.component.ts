@@ -64,7 +64,7 @@ export class UsersEditComponent implements OnInit {
       (await (
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('userId')) ?? undefined;
-    this.getUser();
+    await this.getUser();
   }
   apiErrors?: string[];
 
@@ -139,10 +139,8 @@ export class UsersEditComponent implements OnInit {
 
     try {
       const request = { id: this.userId, ...this.form.value };
-      const response = await firstValueFrom(
-        this.hqService.upsertUsersV1(request),
-      );
-      this.router.navigate(['../../'], { relativeTo: this.route });
+      await firstValueFrom(this.hqService.upsertUsersV1(request));
+      await this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       console.log(err);
       if (err instanceof APIError) {

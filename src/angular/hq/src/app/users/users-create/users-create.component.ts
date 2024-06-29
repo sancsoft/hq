@@ -114,7 +114,7 @@ export class UsersCreateComponent {
     try {
       const request = this.form.value;
       await firstValueFrom(this.hqService.upsertUsersV1(request));
-      this.router.navigate(['../'], { relativeTo: this.route });
+      await this.router.navigate(['../'], { relativeTo: this.route });
       this.toastService.show('Accepted', 'Client has been created.');
     } catch (err) {
       if (err instanceof APIError) {

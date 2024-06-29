@@ -1,12 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   Observable,
   debounceTime,
   switchMap,
-  of,
-  distinctUntilChanged,
   combineLatest,
   map,
   shareReplay,
@@ -17,12 +15,11 @@ import {
 import { HQService } from '../../services/hq.service';
 import {
   GetQuotesRecordV1,
-  GetQuotesRecordsV1,
   SortColumn,
 } from '../../models/quotes/get-quotes-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ClientDetailsService } from '../../clients/client-details.service';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
@@ -78,7 +75,7 @@ export class QuotesListComponent {
       startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(clientDetailService.search.value),
     );
 

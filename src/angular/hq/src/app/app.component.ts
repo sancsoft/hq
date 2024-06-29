@@ -1,16 +1,11 @@
 import { ConfirmationModalComponent } from './common/confirmation-modal/confirmation-modal.component';
 import { HqSnackBarComponent } from './common/hq-snack-bar/hq-snack-bar.component';
 import { Component, inject } from '@angular/core';
-import {
-  RouterLink,
-  RouterLinkActive,
-  RouterModule,
-  RouterOutlet,
-} from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { AppSettingsService } from './app-settings.service';
 import { CommonModule } from '@angular/common';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { Observable, filter, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { LayoutComponent } from './layout.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -39,11 +34,7 @@ export class AppComponent {
   isAuthenticated$: Observable<boolean>;
 
   constructor() {
-    this.oidcSecurityService
-      .checkAuth()
-      .subscribe(
-        ({ isAuthenticated, userData, accessToken, idToken, configId }) => {},
-      );
+    this.oidcSecurityService.checkAuth().subscribe(() => {});
 
     this.isAuthenticated$ = this.oidcSecurityService.isAuthenticated$.pipe(
       map((t) => t.isAuthenticated),

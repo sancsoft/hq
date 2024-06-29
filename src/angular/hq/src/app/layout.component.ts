@@ -1,13 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { Observable, filter, firstValueFrom, map } from 'rxjs';
+import { Observable, filter, map } from 'rxjs';
 import { AppSettingsService } from './app-settings.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { InRolePipe } from './pipes/in-role.pipe';
 import { HQRole } from './enums/hqrole';
-import { ModalService } from './services/modal.service';
 
 @Component({
   selector: 'hq-layout',

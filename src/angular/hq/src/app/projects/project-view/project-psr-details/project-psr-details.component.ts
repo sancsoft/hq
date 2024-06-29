@@ -1,8 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, map, tap } from 'rxjs';
-import { GetPSRTimeRecordV1 } from '../../../models/PSR/get-psr-time-v1';
-import { TimeStatus } from '../../../models/common/time-status';
+import { Observable, map } from 'rxjs';
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';

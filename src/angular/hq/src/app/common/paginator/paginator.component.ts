@@ -4,7 +4,6 @@ import {
   Input,
   OnChanges,
   Output,
-  SimpleChanges,
 } from '@angular/core';
 
 @Component({
@@ -40,7 +39,7 @@ export class PaginatorComponent implements OnChanges {
 
   showPreviousPageButton: boolean = false;
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     this.updateVisiblePages();
     this.updatePrevNextButtonPages();
   }

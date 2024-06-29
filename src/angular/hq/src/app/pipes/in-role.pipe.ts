@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform, inject } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HQRole } from '../enums/hqrole';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Pipe({
   name: 'inRole',

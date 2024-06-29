@@ -76,7 +76,7 @@ export class StaffEditComponent implements OnInit {
       (await (
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('staffId')) ?? undefined;
-    this.getStaff();
+    await this.getStaff();
   }
 
   constructor(
@@ -98,10 +98,8 @@ export class StaffEditComponent implements OnInit {
 
     try {
       const request = { id: this.staffId, ...this.form.value };
-      const response = await firstValueFrom(
-        this.hqService.upsertStaffV1(request),
-      );
-      this.router.navigate(['../../'], { relativeTo: this.route });
+      await firstValueFrom(this.hqService.upsertStaffV1(request));
+      await this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;

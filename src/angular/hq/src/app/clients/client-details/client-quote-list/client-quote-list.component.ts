@@ -1,5 +1,5 @@
 import { SortColumn } from './../../../models/quotes/get-quotes-v1';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -9,18 +9,12 @@ import {
   startWith,
   combineLatest,
   switchMap,
-  of,
-  catchError,
   debounceTime,
   shareReplay,
   tap,
 } from 'rxjs';
-import { APIError } from '../../../errors/apierror';
 import { HQService } from '../../../services/hq.service';
-import {
-  GetQuotesRecordV1,
-  GetQuotesRecordsV1,
-} from '../../../models/quotes/get-quotes-v1';
+import { GetQuotesRecordV1 } from '../../../models/quotes/get-quotes-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 import { ClientDetailsService } from '../../client-details.service';
@@ -80,7 +74,7 @@ export class ClientQuoteListComponent {
       startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(clientDetailService.search.value),
     );
 

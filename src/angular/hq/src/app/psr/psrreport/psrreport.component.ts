@@ -1,19 +1,11 @@
 import { HQService } from './../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, NgModel } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
 
 import {
-  BehaviorSubject,
   Observable,
   ReplaySubject,
   Subject,
@@ -30,7 +22,6 @@ import {
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
-import { MarkdownModule } from 'ngx-markdown';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 import { ButtonState } from '../../enums/ButtonState';
 import { ModalService } from '../../services/modal.service';
@@ -205,7 +196,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       apiResponse$.subscribe({
         next: () => {
           this.modalService.alert('Success', 'Report submitted successfully');
-          this.router.navigate(['/psr']);
+          await this.router.navigate(['/psr']);
           this.submitButtonState = ButtonState.Disabled;
         },
         error: (err) => {

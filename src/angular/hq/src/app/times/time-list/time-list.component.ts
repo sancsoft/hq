@@ -1,6 +1,5 @@
-import { GetTimeRecordStaffV1 } from './../../models/times/get-time-v1';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Observable,
@@ -12,14 +11,9 @@ import {
   debounceTime,
   switchMap,
   shareReplay,
-  of,
   firstValueFrom,
 } from 'rxjs';
-import {
-  GetTimeRecordV1,
-  GetTimeRecordsV1,
-  SortColumn,
-} from '../../models/times/get-time-v1';
+import { GetTimeRecordV1, SortColumn } from '../../models/times/get-time-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
@@ -81,7 +75,7 @@ export class TimeListComponent {
       startWith(0),
     );
     const search$ = timeListService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(timeListService.search.value),
     );
 

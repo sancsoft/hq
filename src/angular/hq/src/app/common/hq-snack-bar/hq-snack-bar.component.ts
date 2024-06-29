@@ -3,8 +3,7 @@ import {
   HQSnackBarService,
   IHQSnackbarMessage,
 } from './services/hq-snack-bar-service';
-import { Component, Input } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'hq-hq-snack-bar',

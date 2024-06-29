@@ -79,7 +79,7 @@ export class ChargeCodeEditComponent implements OnInit {
       (await (
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('chargeCodeId')) ?? undefined;
-    this.getChargeCode();
+    await this.getChargeCode();
   }
 
   constructor(
@@ -142,13 +142,13 @@ export class ChargeCodeEditComponent implements OnInit {
 
     try {
       const request = this.form.value;
-      const response = await firstValueFrom(
+      await firstValueFrom(
         this.hqService.upsertChargecodesV1({
           ...request,
           id: this.chargeCodeId,
         }),
       );
-      this.router.navigate(['../../'], { relativeTo: this.route });
+      await this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;

@@ -1,5 +1,5 @@
 import { SortIconComponent } from './../../../common/sort-icon/sort-icon.component';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -74,7 +74,7 @@ export class ClientServiceListComponent {
       startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(clientDetailService.search.value),
     );
 

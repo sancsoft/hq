@@ -1,8 +1,7 @@
-import { Injectable, Input, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ProjectStatus } from '../clients/client-details.service';
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { GetStaffV1Record } from '../models/staff-members/get-staff-member-v1';
+import { BehaviorSubject } from 'rxjs';
 import { HQService } from '../services/hq.service';
 import { GetPSRTimeRecordStaffV1 } from '../models/PSR/get-psr-time-v1';
 import { GetProjectActivityRecordV1 } from '../models/PSR/get-project-activity-v1';

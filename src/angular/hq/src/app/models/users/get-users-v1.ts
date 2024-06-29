@@ -1,6 +1,5 @@
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
-import { SortDirection } from '../common/sort-direction';
 
 export interface GetUsersRequestV1 extends PagedRequestV1 {
   search?: string | null;

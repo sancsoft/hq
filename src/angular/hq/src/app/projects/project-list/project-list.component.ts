@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   Observable,
@@ -15,7 +15,6 @@ import {
 import { ProjectStatus } from '../../clients/client-details.service';
 import { SortColumn } from '../../models/projects/get-project-v1';
 import { SortDirection } from '../../models/common/sort-direction';
-import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
@@ -80,17 +79,17 @@ export class ProjectListComponent {
       startWith(0),
     );
     const search$ = projectSearchFilterService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(projectSearchFilterService.search.value),
     );
     const projectManager$ =
       projectSearchFilterService.projectManager.valueChanges.pipe(
-        tap((t) => this.goToPage(1)),
+        tap(() => this.goToPage(1)),
         startWith(projectSearchFilterService.projectManager.value),
       );
     const projectStatus$ =
       projectSearchFilterService.projectStatus.valueChanges.pipe(
-        tap((t) => this.goToPage(1)),
+        tap(() => this.goToPage(1)),
         startWith(projectSearchFilterService.projectStatus.value),
       );
 

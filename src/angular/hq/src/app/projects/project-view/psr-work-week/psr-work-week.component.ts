@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { GetPSRRecordV1, SortColumn } from '../../../models/PSR/get-PSR-v1';
 import {
   ActivatedRoute,

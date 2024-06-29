@@ -7,12 +7,10 @@ import {
   FormGroup,
   FormControl,
   Validators,
-  ValidationErrors,
 } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
-import { Jurisdiciton } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
@@ -138,10 +136,8 @@ export class ChargeCodeCreateComponent {
 
     try {
       const request = this.form.value;
-      const response = await firstValueFrom(
-        this.hqService.upsertChargecodesV1(request),
-      );
-      this.router.navigate(['../'], { relativeTo: this.route });
+      await firstValueFrom(this.hqService.upsertChargecodesV1(request));
+      await this.router.navigate(['../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
