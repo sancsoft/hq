@@ -65,6 +65,7 @@ namespace HQ.CLI.Commands.Quotes
                 .WithColumn("QUOTE NUMBER", t => t.QuoteNumber.ToString())
                 .WithColumn("CLIENT", t => t.ClientName)
                 .WithColumn("STATUS", t => t.Status.ToString())
+                .WithColumn("DESCRIPTION", t => t.Description?.ToString(), table: false, wide: true)
                 .Output(settings.Output);
 
             return 0;

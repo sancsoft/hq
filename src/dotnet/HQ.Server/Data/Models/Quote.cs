@@ -8,6 +8,7 @@ public class Quote : Base
     public Guid ClientId { get; set; }
     public Client Client { get; set; } = null!;
     public string Name { get; set; } = null!;
+    public string? Description { get; set; }
     public DateOnly Date { get; set; }
     public decimal Value { get; set; }
     public ProjectStatus Status { get; set; }

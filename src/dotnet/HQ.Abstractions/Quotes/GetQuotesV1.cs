@@ -34,6 +34,7 @@ namespace HQ.Abstractions.Quotes
             public Guid ClientId { get; set; }
             public string ClientName { get; set; } = null!;
             public string Name { get; set; } = null!;
+            public string? Description { get; set; }
             public DateOnly Date { get; set; }
             public decimal Value { get; set; }
             public ProjectStatus Status { get; set; }

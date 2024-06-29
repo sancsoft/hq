@@ -52,7 +52,7 @@ public class QuoteServiceV1
                 quote.Value = request.Value;
                 quote.Date = request.Date;
                 quote.Status = request.Status;
-
+                quote.Description = request.Description;
 
                 var latestQuoteNumber = _context.Quotes.Max((q) => q.QuoteNumber);
                 var newQuoteNumber = latestQuoteNumber + 1;
@@ -118,11 +118,11 @@ public class QuoteServiceV1
             ClientId = t.ClientId,
             ClientName = t.Client.Name,
             Name = t.Name,
+            Description = t.Description,
             QuoteNumber = t.QuoteNumber,
             Value = t.Value,
             Status = t.Status,
             Date = t.Date
-
         });
 
         var sortMap = new Dictionary<GetQuotesV1.SortColumn, string>()
