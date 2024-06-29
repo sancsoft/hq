@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text.Json;
 
+using HQ.Abstractions;
 using HQ.Abstractions.Services;
 
 using Microsoft.Extensions.Options;
@@ -81,31 +82,21 @@ public class FilesystemStorageService : IStorageService
 
         var bytes = memoryStream.ToArray();
 
+
+        using var sha512 = SHA512.Create();
+        var etag = sha512.ComputeHashAsString(bytes);
+
         var metadata = new Metadata()
         {
             ContentType = contentType,
             Size = stream.Length,
-            ETag = CalculateETag(bytes)
+            ETag = etag
         };
 
         var metadataString = JsonSerializer.Serialize(metadata);
 
         await File.WriteAllBytesAsync(fullPath.File, bytes, ct);
         await File.WriteAllTextAsync(fullPath.MetadataFile, metadataString, ct);
-    }
-
-    private string CalculateETag(byte[] bytes)
-    {
-        using var sha512 = SHA512.Create();
-        var hashedBytes = sha512.ComputeHash(bytes);
-
-        var hashedInputStringBuilder = new System.Text.StringBuilder(128);
-        foreach (var hashedByte in hashedBytes)
-        {
-            hashedInputStringBuilder.Append(hashedByte.ToString("X2").ToLower());
-        }
-
-        return hashedInputStringBuilder.ToString();
     }
 
     private class Metadata

@@ -1,6 +1,7 @@
 ﻿
 using System.Security.Cryptography;
 
+using HQ.Abstractions;
 using HQ.Abstractions.Services;
 using HQ.Server.Data;
 
@@ -70,25 +71,12 @@ public class DatabaseStorageService : IStorageService
             await stream.CopyToAsync(memoryStream, ct);
         }
 
+        using var sha512 = SHA512.Create();
         blob.ContentType = !String.IsNullOrEmpty(contentType) ? contentType : "application/octet-stream";
         blob.Data = memoryStream.ToArray();
-        blob.ETag = CalculateETag(blob.Data);
+        blob.ETag = sha512.ComputeHashAsString(blob.Data);
         blob.Size = stream.Length;
 
         await _context.SaveChangesAsync(ct);
-    }
-
-    private string CalculateETag(byte[] bytes)
-    {
-        using var sha512 = SHA512.Create();
-        var hashedBytes = sha512.ComputeHash(bytes);
-
-        var hashedInputStringBuilder = new System.Text.StringBuilder(128);
-        foreach (var hashedByte in hashedBytes)
-        {
-            hashedInputStringBuilder.Append(hashedByte.ToString("X2").ToLower());
-        }
-
-        return hashedInputStringBuilder.ToString();
     }
 }
