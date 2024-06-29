@@ -22,11 +22,13 @@ public class QuoteServiceV1
 {
     private readonly HQDbContext _context;
     private readonly IStorageService _storageService;
+    private readonly ILogger<QuoteServiceV1> _logger;
 
-    public QuoteServiceV1(HQDbContext context, IStorageService storageService)
+    public QuoteServiceV1(HQDbContext context, IStorageService storageService, ILogger<QuoteServiceV1> logger)
     {
         this._context = context;
         _storageService = storageService;
+        _logger = logger;
     }
 
     public async Task<Result<UpsertQuotestV1.Response>> UpsertQuoteV1(UpsertQuotestV1.Request request, CancellationToken ct = default)
@@ -237,32 +239,44 @@ public class QuoteServiceV1
         {
             // TODO: Validate
 
-            Quote quote;
-            if (record.QuoteNumber.HasValue && quotesByQuoteNumber.ContainsKey(record.QuoteNumber.Value))
-            {
-                quote = quotesByQuoteNumber[record.QuoteNumber.Value];
-                updated++;
-            }
-            else
-            {
-                quote = new();
-                quote.QuoteNumber = nextQuoteNumber;
-                nextQuoteNumber++;
-
-                _context.Quotes.Add(quote);
-
-                created++;
-            }
-
             if (!String.IsNullOrEmpty(record.ClientName) && clientsByName.ContainsKey(record.ClientName.ToLower()))
             {
                 record.ClientId = clientsByName[record.ClientName.ToLower()];
+            }
+            else if (!String.IsNullOrEmpty(record.ClientName))
+            {
+                _logger.LogWarning("Unable to find client {ClientName}", record.ClientName);
             }
 
             if (record.ClientId == Guid.Empty)
             {
                 skipped++;
                 continue;
+            }
+
+            Quote quote;
+            if (record.QuoteNumber.HasValue && quotesByQuoteNumber.ContainsKey(record.QuoteNumber.Value))
+            {
+                quote = quotesByQuoteNumber[record.QuoteNumber.Value];
+
+                updated++;
+            }
+            else
+            {
+                quote = new();
+
+                if (record.QuoteNumber.HasValue)
+                {
+                    quote.QuoteNumber = record.QuoteNumber.Value;
+                }
+                else
+                {
+                    quote.QuoteNumber = nextQuoteNumber++;
+                }
+
+                _context.Quotes.Add(quote);
+
+                created++;
             }
 
             quote.ClientId = record.ClientId;

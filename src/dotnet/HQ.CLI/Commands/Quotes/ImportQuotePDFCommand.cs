@@ -71,7 +71,6 @@ namespace HQ.CLI.Commands.Quotes
                     return;
                 }
 
-                Console.WriteLine("Uploading quote for file {0}", file.Name);
                 var request = new UploadQuotePDFV1.Request()
                 {
                     Id = quotes[filename],
