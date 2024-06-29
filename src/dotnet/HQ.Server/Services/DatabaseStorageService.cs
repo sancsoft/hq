@@ -70,7 +70,7 @@ public class DatabaseStorageService : IStorageService
             await stream.CopyToAsync(memoryStream, ct);
         }
 
-        blob.ContentType = contentType ?? "application/octet-stream";
+        blob.ContentType = !String.IsNullOrEmpty(contentType) ? contentType : "application/octet-stream";
         blob.Data = memoryStream.ToArray();
         blob.ETag = CalculateETag(blob.Data);
         blob.Size = stream.Length;

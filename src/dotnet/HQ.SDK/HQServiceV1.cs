@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text;
@@ -14,6 +15,7 @@ using HQ.Abstractions.ChargeCodes;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Projects;
+using HQ.Abstractions.Quotes;
 using HQ.Abstractions.Staff;
 using HQ.Abstractions.Times;
 using HQ.Abstractions.Voltron;
@@ -142,8 +144,26 @@ namespace HQ.SDK
             return await HandleResponse<ImportVoltronTimeSheetsV1.Response>(response, ct);
         }
 
+        public async Task<Result<UploadQuotePDFV1.Response?>> UploadQuotePDFV1(UploadQuotePDFV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+
+            var fileContent = new StreamContent(request.File!);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+
+            multipartContent.Add(fileContent, "file", "quote.pdf");
+            multipartContent.Add(new StringContent(request.Id.ToString(), Encoding.UTF8), nameof(request.Id));
+
+            var response = await _httpClient.PostAsync("/v1/Quotes/UploadQuotePDFV1", multipartContent, ct);
+
+            return await HandleResponse<UploadQuotePDFV1.Response>(response, ct);
+        }
+
         public Task<Result<GetChargeCodesV1.Response?>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<GetChargeCodesV1.Response>("/v1/ChargeCodes/GetChargeCodesV1", request, ct);
+
+        public Task<Result<GetQuotesV1.Response?>> GetQuotesV1(GetQuotesV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<GetQuotesV1.Response>("/v1/Quotes/GetQuotesV1", request, ct);
 
         // Time Entries
         public Task<Result<GetTimesV1.Response?>> GetTimeEntriesV1(GetTimesV1.Request request, CancellationToken ct = default)

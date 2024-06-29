@@ -131,6 +131,7 @@ public class QuoteServiceV1
             { Abstractions.Quotes.GetQuotesV1.SortColumn.ClientName, "ClientName" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.Value, "Value" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.Status, "Status" },
+            { Abstractions.Quotes.GetQuotesV1.SortColumn.Date, "Date" },
         };
 
         var sortProperty = sortMap[request.SortBy];

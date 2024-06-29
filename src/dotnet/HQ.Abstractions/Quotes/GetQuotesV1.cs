@@ -22,6 +22,7 @@ namespace HQ.Abstractions.Quotes
             ClientName = 2,
             Value = 3,
             Status = 4,
+            Date = 5
         }
 
         public class Response : PagedResponseV1<Record>;
