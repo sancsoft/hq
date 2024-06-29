@@ -1,4 +1,6 @@
-﻿using HQ.Server.Data;
+﻿using HQ.Abstractions.Enumerations;
+using HQ.Abstractions.Services;
+using HQ.Server.Data;
 using HQ.Server.Invoices;
 using HQ.Server.Services;
 
@@ -10,7 +12,7 @@ namespace HQ.Server
 {
     public static class HQServiceCollectionExtensions
     {
-        public static IServiceCollection AddHQServices(this IServiceCollection services)
+        public static IServiceCollection AddHQServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ClientServiceV1>();
             services.AddScoped<StaffServiceV1>();
@@ -23,6 +25,23 @@ namespace HQ.Server
             services.AddScoped<ServicesAgreementServiceV1>();
             services.AddScoped<TimeEntryServiceV1>();
             services.AddScoped<UserServiceV1>();
+
+            var storageServiceType = configuration.GetValue<StorageService?>("StorageService") ?? StorageService.Database;
+            switch (storageServiceType)
+            {
+                case StorageService.Filesystem:
+                    services.AddScoped<IStorageService, FilesystemStorageService>();
+                    services.AddOptions<FilesystemStorageService.Options>()
+                        .Bind(configuration.GetSection(FilesystemStorageService.Options.FilesystemStorage))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
+
+                    break;
+                default:
+                case StorageService.Database:
+                    services.AddScoped<IStorageService, DatabaseStorageService>();
+                    break;
+            }
 
             return services;
         }
@@ -66,6 +85,10 @@ namespace HQ.Server
             {
                 connectionStringBuilder.Password = dbPassword;
             }
+
+#if DEBUG
+            connectionStringBuilder.IncludeErrorDetail = true;
+#endif
 
             var connectionString = connectionStringBuilder.ConnectionString;
             if (String.IsNullOrEmpty(connectionString))

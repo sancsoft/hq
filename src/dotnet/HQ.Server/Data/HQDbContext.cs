@@ -24,6 +24,7 @@ namespace HQ.Server.Data
         public DbSet<ServiceAgreement> ServiceAgreements { get; set; } = null!;
         public DbSet<Staff> Staff { get; set; } = null!;
         public DbSet<Time> Times { get; set; } = null!;
+        public DbSet<Blob> Blobs { get; set; } = null!;
 
         public HQDbContext(DbContextOptions<HQDbContext> options)
             : base(options)

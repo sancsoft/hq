@@ -48,5 +48,56 @@ namespace HQ.Server.Controllers
         public Task<ActionResult> UpsertQuotesV1([FromBody] UpsertQuotestV1.Request request, CancellationToken ct = default) =>
         _quoteService.UpsertQuoteV1(request, ct)
         .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(UploadQuotePDFV1))]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public Task<ActionResult> UploadQuotePDFV1([FromForm] Guid id, IFormFile file, CancellationToken ct = default)
+        {
+            var request = new UploadQuotePDFV1.Request();
+            var stream = file.OpenReadStream();
+
+            request.File = stream;
+            request.ContentType = file.ContentType;
+            request.Id = id;
+
+            return _quoteService.UploadQuotePDFV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetQuotePDFV1))]
+        [ProducesResponseType<FileResult>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> GetQuotePDFV1([FromBody] GetQuotePDFV1.Request request, CancellationToken ct = default)
+        {
+            var result = await _quoteService.GetQuotePDFV1(request, ct);
+            if (!result.IsSuccess)
+            {
+                return result.ToActionResult(new HQResultEndpointProfile());
+            }
+
+            var value = result.Value;
+
+            return File(value.File, value.ContentType, value.FileName);
+        }
+
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(ImportQuotesV1))]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public Task<ActionResult> ImportQuotesV1(IFormFile file, CancellationToken ct = default)
+        {
+            var request = new ImportQuotesV1.Request();
+            var stream = file.OpenReadStream();
+
+            request.File = stream;
+
+            return _quoteService.ImportQuotesV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
     }
 }

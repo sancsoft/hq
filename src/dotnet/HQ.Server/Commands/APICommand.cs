@@ -31,9 +31,11 @@ public class APICommand : AsyncCommand
         var args = context.Remaining.Raw.ToArray();
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Configuration.AddEnvironmentVariables("HQ_");
+
         // Add services to the container.
         builder.Services.AddHealthChecks();
-        builder.Services.AddHQServices();
+        builder.Services.AddHQServices(builder.Configuration);
         builder.Services.AddHQDbContext(builder.Configuration);
 
         builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
