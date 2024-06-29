@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+
+using CsvHelper;
+using CsvHelper.Configuration;
 
 using FluentResults;
 
@@ -47,27 +51,18 @@ public class QuoteServiceV1
                     _context.Quotes.Add(quote);
                 }
 
+                var latestQuoteNumber = await _context.Quotes.MaxAsync((q) => q.QuoteNumber, ct);
+                var nextQuoteNumber = latestQuoteNumber + 1;
+
                 quote.ClientId = request.ClientId;
                 quote.Name = request.Name;
                 quote.Value = request.Value;
                 quote.Date = request.Date;
                 quote.Status = request.Status;
                 quote.Description = request.Description;
+                quote.QuoteNumber = nextQuoteNumber;
 
-                var latestQuoteNumber = _context.Quotes.Max((q) => q.QuoteNumber);
-                var newQuoteNumber = latestQuoteNumber + 1;
-                var newCode = "Q" + newQuoteNumber;
-                var newChargeCode = new ChargeCode
-                {
-                    Code = newCode,
-                    Billable = true,
-                    Active = true,
-                    QuoteId = quote.Id,
-                    Activity = ChargeCodeActivity.Quote
-                };
-                quote.ChargeCode = newChargeCode;
-                quote.QuoteNumber = newQuoteNumber;
-                _context.ChargeCodes.Add(newChargeCode);
+
                 await _context.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
 
@@ -206,6 +201,88 @@ public class QuoteServiceV1
             File = blob.Value.Stream,
             ContentType = blob.Value.ContentType,
             FileName = $"Q{quote.QuoteNumber}.pdf"
+        };
+    }
+
+    public async Task<Result<ImportQuotesV1.Response>> ImportQuotesV1(ImportQuotesV1.Request request, CancellationToken ct = default)
+    {
+        var conf = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+            TrimOptions = TrimOptions.Trim,
+            MissingFieldFound = null,
+            HeaderValidated = null
+        };
+
+        await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+        using var reader = new StreamReader(request.File);
+        using var csv = new CsvReader(reader, conf);
+
+        var allQuotes = await _context.Quotes.ToListAsync(ct);
+        var clientsByName = await _context.Clients.ToDictionaryAsync(t => t.Name.ToLower(), t => t.Id);
+        var quotesByQuoteNumber = allQuotes.ToDictionary(t => t.QuoteNumber);
+
+        var records = csv.GetRecords<ImportQuotesV1.Record>()
+            .OrderByDescending(t => t.Id.HasValue)
+            .ToList();
+
+        var created = 0;
+        var updated = 0;
+        var skipped = 0;
+
+        var latestQuoteNumber = await _context.Quotes.MaxAsync((q) => q.QuoteNumber, ct);
+        var nextQuoteNumber = latestQuoteNumber + 1;
+
+        foreach (var record in records)
+        {
+            // TODO: Validate
+
+            Quote quote;
+            if (record.QuoteNumber.HasValue && quotesByQuoteNumber.ContainsKey(record.QuoteNumber.Value))
+            {
+                quote = quotesByQuoteNumber[record.QuoteNumber.Value];
+                updated++;
+            }
+            else
+            {
+                quote = new();
+                quote.QuoteNumber = nextQuoteNumber;
+                nextQuoteNumber++;
+
+                _context.Quotes.Add(quote);
+
+                created++;
+            }
+
+            if (!String.IsNullOrEmpty(record.ClientName) && clientsByName.ContainsKey(record.ClientName.ToLower()))
+            {
+                record.ClientId = clientsByName[record.ClientName.ToLower()];
+            }
+
+            if (record.ClientId == Guid.Empty)
+            {
+                skipped++;
+                continue;
+            }
+
+            quote.ClientId = record.ClientId;
+            quote.Name = record.Name;
+            quote.Value = record.Value;
+            quote.Date = record.Date;
+            quote.Status = record.Status;
+            quote.Description = record.Description;
+
+            quotesByQuoteNumber[quote.QuoteNumber] = quote;
+        }
+
+        await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+
+        return new ImportQuotesV1.Response()
+        {
+            Created = created,
+            Updated = updated,
+            Skipped = skipped
         };
     }
 }

@@ -84,5 +84,20 @@ namespace HQ.Server.Controllers
 
             return File(value.File, value.ContentType, value.FileName);
         }
+
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(ImportQuotesV1))]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public Task<ActionResult> ImportQuotesV1(IFormFile file, CancellationToken ct = default)
+        {
+            var request = new ImportQuotesV1.Request();
+            var stream = file.OpenReadStream();
+
+            request.File = stream;
+
+            return _quoteService.ImportQuotesV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
     }
 }

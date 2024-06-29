@@ -77,6 +77,10 @@ namespace HQ.Server
                 connectionStringBuilder.Password = dbPassword;
             }
 
+#if DEBUG
+            connectionStringBuilder.IncludeErrorDetail = true;
+#endif
+
             var connectionString = connectionStringBuilder.ConnectionString;
             if (String.IsNullOrEmpty(connectionString))
             {

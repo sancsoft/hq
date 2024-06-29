@@ -159,6 +159,16 @@ namespace HQ.SDK
             return await HandleResponse<UploadQuotePDFV1.Response>(response, ct);
         }
 
+        public async Task<Result<ImportQuotesV1.Response?>> ImportQuotesV1(ImportQuotesV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            multipartContent.Add(new StreamContent(request.File), "file", "clients.csv");
+
+            var response = await _httpClient.PostAsync("/v1/Quotes/ImportQuotesV1", multipartContent, ct);
+
+            return await HandleResponse<ImportQuotesV1.Response>(response, ct);
+        }
+
         public Task<Result<GetChargeCodesV1.Response?>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<GetChargeCodesV1.Response>("/v1/ChargeCodes/GetChargeCodesV1", request, ct);
 
