@@ -96,7 +96,7 @@ export class ChargeCodeListComponent implements OnInit {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getChargeCodeseV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.chargeCodes$ = response$.pipe(

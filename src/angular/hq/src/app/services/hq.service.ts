@@ -7,19 +7,18 @@ import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   GetClientRequestV1,
   GetClientResponseV1,
 } from '../models/clients/get-client-v1';
 import { AppSettingsService } from '../app-settings.service';
-import { catchError, map, switchMap, throwError } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 import {
   UpsertClientRequestV1,
   UpsertClientResponseV1,
 } from '../models/clients/upsert-client-v1';
-import { APIError } from '../errors/apierror';
 import {
   GetProjectRecordsV1,
   GetProjectRequestV1,
@@ -144,13 +143,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-
-        throw err;
-      }),
     );
   }
 
@@ -349,12 +341,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-        throw err;
-      }),
     );
   }
 
@@ -367,12 +353,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-        throw err;
-      }),
     );
   }
 
@@ -385,12 +365,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-        throw err;
-      }),
     );
   }
 
@@ -402,12 +376,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-        throw err;
-      }),
     );
   }
 
@@ -440,13 +408,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-
-        throw err;
-      }),
     );
   }
   submitTimesV1(request: Partial<SubmitTimesRequestV1>) {
@@ -457,13 +418,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-
-        throw err;
-      }),
     );
   }
   deleteTimeV1(request: Partial<DeleteTimeV1Request>) {
@@ -474,13 +428,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-
-        throw err;
-      }),
     );
   }
 

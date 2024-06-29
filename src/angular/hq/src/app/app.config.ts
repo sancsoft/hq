@@ -19,6 +19,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { AuthStorageService } from './auth-storage.service';
 import { HQTitleStrategy } from './hq-title-strategy';
 import { MarkdownModule, provideMarkdown } from 'ngx-markdown';
+import { badRequestInterceptor } from './common/interceptors/bad-request.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,7 +27,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     importProvidersFrom(MonacoEditorModule.forRoot(), MarkdownModule.forRoot()),
     provideMarkdown(),
-    provideHttpClient(withInterceptors([authInterceptor()])),
+    provideHttpClient(
+      withInterceptors([authInterceptor(), badRequestInterceptor]),
+    ),
     provideAuth(authConfig),
     {
       provide: APP_INITIALIZER,

@@ -7,7 +7,7 @@ import {
   map,
   switchMap,
 } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { SortColumn } from '../../models/PSR/get-psr-time-v1';
 import { HQService } from '../../services/hq.service';
 import { GetPSRTimeRecordV1 } from '../../models/PSR/get-psr-time-v1';

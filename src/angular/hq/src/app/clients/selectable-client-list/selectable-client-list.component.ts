@@ -90,7 +90,7 @@ export class SelectableClientListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => hqService.getClientsV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.records$ = response$.pipe(map((t) => t.records));

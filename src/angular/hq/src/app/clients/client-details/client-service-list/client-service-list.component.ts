@@ -92,7 +92,7 @@ export class ClientServiceListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getServicesV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.services$ = response$.pipe(

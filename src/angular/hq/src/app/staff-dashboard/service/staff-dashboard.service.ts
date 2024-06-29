@@ -84,7 +84,7 @@ export class StaffDashboardService {
       search: search$,
       date: date$,
       status: timeStatus$,
-    }).pipe(shareReplay(1));
+    }).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
     const time$ = request$.pipe(
       debounceTime(250),
@@ -96,7 +96,9 @@ export class StaffDashboardService {
 
     const refreshTime$ = this.refresh$.pipe(switchMap(() => time$));
 
-    this.time$ = merge(time$, refreshTime$).pipe(shareReplay(1));
+    this.time$ = merge(time$, refreshTime$).pipe(
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
     this.rejectedCount$ = this.time$.pipe(map((t) => t.rejectedCount));
 
     this.anyTimePending$ = this.time$.pipe(

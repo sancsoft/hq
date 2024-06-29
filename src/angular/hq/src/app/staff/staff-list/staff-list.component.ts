@@ -15,7 +15,7 @@ import {
   shareReplay,
   BehaviorSubject,
 } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { ClientDetailsService } from '../../clients/client-details.service';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
@@ -93,7 +93,7 @@ export class StaffListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getStaffMembersV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.staffMembers$ = response$.pipe(

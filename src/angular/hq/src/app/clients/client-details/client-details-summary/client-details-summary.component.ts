@@ -28,7 +28,7 @@ export class ClientDetailsSummaryComponent {
     this.client$ = clientId$.pipe(
       switchMap((clientId) => this.hqService.getClientsV1({ id: clientId })),
       map((t) => t.records[0]),
-      catchError((error) => {
+      catchError((error: unknown) => {
         if (error instanceof APIError) {
           this.apiErrors = error.errors;
         } else {
@@ -37,14 +37,14 @@ export class ClientDetailsSummaryComponent {
 
         return of(null);
       }),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.clientInvoiceSummary$ = clientId$.pipe(
       switchMap((clientId) =>
         this.hqService.getClientInvoiceSummaryV1({ id: clientId }),
       ),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
   }
 

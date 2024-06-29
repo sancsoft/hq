@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { ProjectStatus } from '../../../clients/client-details.service';
 import { GetPSRTimeRecordStaffV1 } from '../../../models/PSR/get-psr-time-v1';
 import { HQService } from '../../../services/hq.service';

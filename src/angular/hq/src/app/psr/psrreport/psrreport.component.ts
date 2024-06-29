@@ -147,20 +147,20 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         this.submitButtonState = ButtonState.Enabled;
       }),
       debounceTime(1000),
-      takeUntil(this.destroyed$),
       tap(() => {
         this.savedStatus = 'loading';
       }),
       switchMap((request) =>
         this.hqService.updateProjectStatusReportMarkdownV1(request),
       ),
+      takeUntil(this.destroyed$),
     );
     apiResponse$.subscribe({
       next: (response) => {
         this.savedStatus = 'success';
         console.log('API Response:', response);
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.savedStatus = 'fail';
         console.error('Error:', err);
         this.modalService.alert(

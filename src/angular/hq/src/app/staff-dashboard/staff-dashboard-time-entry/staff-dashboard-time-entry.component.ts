@@ -115,7 +115,9 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
   timeStatus = TimeStatus;
 
   constructor(public staffDashboardService: StaffDashboardService) {
-    const form$ = this.form.valueChanges.pipe(shareReplay(1));
+    const form$ = this.form.valueChanges.pipe(
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     const clientId$ = form$.pipe(
       map((t) => t.clientId),

@@ -92,7 +92,7 @@ export class QuotesListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getQuotesV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.quotes$ = response$.pipe(

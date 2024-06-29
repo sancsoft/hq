@@ -135,7 +135,7 @@ export class PSRTimeListComponent implements OnInit {
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
       activityId: projectActivityId$,
-    }).pipe(shareReplay(1));
+    }).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
     const apiResponse$ = request$.pipe(
       debounceTime(500),
@@ -180,7 +180,7 @@ export class PSRTimeListComponent implements OnInit {
               t.psr.projectManagerId == t.userData.staff_id)),
       ),
       map((t) => !!t),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     const clientId$ = psr$.pipe(map((t) => t.clientId));
@@ -196,7 +196,7 @@ export class PSRTimeListComponent implements OnInit {
 
     this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     const refresh$ = this.refresh$.pipe(
@@ -204,7 +204,9 @@ export class PSRTimeListComponent implements OnInit {
       tap(() => this.deselectAll()),
     );
 
-    const response$ = merge(apiResponse$, refresh$).pipe(shareReplay(1));
+    const response$ = merge(apiResponse$, refresh$).pipe(
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     this.time$ = response$.pipe(
       map((response) => {
