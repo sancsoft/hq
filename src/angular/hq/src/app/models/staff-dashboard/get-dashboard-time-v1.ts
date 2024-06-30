@@ -31,6 +31,7 @@ export interface GetDashboardTimeV1TimeForDate {
   date: string;
   times: GetDashboardTimeV1TimeForDateTimes[];
   totalHours: number;
+  canCreateTime: boolean;
 }
 
 export interface GetDashboardTimeV1TimeForDateTimes {

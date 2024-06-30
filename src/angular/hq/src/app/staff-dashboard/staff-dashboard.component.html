@@ -213,7 +213,10 @@
         </tr>
       </thead>
       <tbody>
-        @if ((staffDashboardService.showAllRejectedTimes$ | async) === false) {
+        @if (
+          (staffDashboardService.showAllRejectedTimes$ | async) === false &&
+          date.canCreateTime
+        ) {
           <tr
             hq-staff-dashboard-time-entry
             (hqTimeChange)="upsertTime($event)"
