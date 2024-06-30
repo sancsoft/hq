@@ -106,9 +106,6 @@ export class ChargeCodeListComponent implements OnInit {
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
-    this.chargeCodes$.subscribe((records) => {
-      console.log(records);
-    });
 
     this.takeToDisplay$ = combineLatest([
       skip$,

@@ -102,9 +102,6 @@ export class ProjectCreateComponent {
         return response.records;
       }),
     );
-    this.quotes$.subscribe((records) => {
-      console.log(records);
-    });
   }
   updateSelectedClient(client: GetClientRecordV1) {
     console.log(client);

@@ -14,7 +14,7 @@
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:rxjs/recommended"
       ],
-      "plugins": ["rxjs"],
+      "plugins": ["rxjs", "rxjs-angular"],
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",
@@ -32,7 +32,13 @@
             "style": "kebab-case"
           }
         ],
-        "@typescript-eslint/no-floating-promises": "error"
+        "@typescript-eslint/no-floating-promises": "error",
+        "rxjs/no-ignored-error": "error",
+        "rxjs/no-ignored-observable": "error",
+        "rxjs/no-ignored-subscribe": "error"
+        // "rxjs-angular/prefer-async-pipe": "error",
+        // "rxjs-angular/prefer-composition": "error",
+        // "rxjs-angular/prefer-takeuntil": "error"
       }
     },
     {

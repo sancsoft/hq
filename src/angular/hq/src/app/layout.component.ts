@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { Observable, filter, map } from 'rxjs';
+import { Observable, filter, firstValueFrom, map } from 'rxjs';
 import { AppSettingsService } from './app-settings.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,9 +39,7 @@ export class LayoutComponent {
     );
   }
 
-  public logout() {
-    this.oidcSecurityService
-      .logoff()
-      .subscribe((result) => console.log(result));
+  public async logout() {
+    await firstValueFrom(this.oidcSecurityService.logoff());
   }
 }

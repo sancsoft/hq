@@ -143,9 +143,9 @@ export class PSRListComponent implements OnInit {
         ),
       );
 
-    staffMembersResponse$.pipe(first()).subscribe((response) => {
-      console.log(response);
-      psrListService.staffMembers$.next(response);
+    staffMembersResponse$.pipe(first()).subscribe({
+      next: (response) => psrListService.staffMembers$.next(response),
+      error: console.error,
     });
 
     this.projectStatusReports$ = response$.pipe(

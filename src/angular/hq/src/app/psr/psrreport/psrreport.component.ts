@@ -130,15 +130,18 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       }),
     );
 
-    psr$.subscribe((psrResponse) => {
-      if (psrResponse.report) {
-        this.report = psrResponse.report;
-      }
-      console.log(psrResponse.submittedAt, 'Submitted At');
-      this.submitButtonState = psrResponse.submittedAt
-        ? ButtonState.Disabled
-        : ButtonState.Enabled; // If submittedAt is not null, this means that the report has been submitted
-      console.log(this.submitButtonState.toLocaleString()); // console
+    psr$.subscribe({
+      next: (psrResponse) => {
+        if (psrResponse.report) {
+          this.report = psrResponse.report;
+        }
+        console.log(psrResponse.submittedAt, 'Submitted At');
+        this.submitButtonState = psrResponse.submittedAt
+          ? ButtonState.Disabled
+          : ButtonState.Enabled; // If submittedAt is not null, this means that the report has been submitted
+        console.log(this.submitButtonState.toLocaleString()); // console
+      },
+      error: console.error,
     });
 
     const apiResponse$ = request$.pipe(
@@ -160,12 +163,14 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         this.savedStatus = 'success';
         console.log('API Response:', response);
       },
-      error: (err: unknown) => {
+      error: async (err: unknown) => {
         this.savedStatus = 'fail';
         console.error('Error:', err);
-        this.modalService.alert(
-          'Error',
-          'There was an error saving the PM report.',
+        await firstValueFrom(
+          this.modalService.alert(
+            'Error',
+            'There was an error saving the PM report.',
+          ),
         );
         this.savedStatus = 'fail';
       },
@@ -197,12 +202,16 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       try {
         await firstValueFrom(apiResponse$);
 
-        this.modalService.alert('Success', 'Report submitted successfully');
+        await firstValueFrom(
+          this.modalService.alert('Success', 'Report submitted successfully'),
+        );
         await this.router.navigate(['/psr']);
         this.submitButtonState = ButtonState.Disabled;
       } catch (err) {
         if (err instanceof APIError) {
-          this.modalService.alert('Error', err.errors.join('\n'));
+          await firstValueFrom(
+            this.modalService.alert('Error', err.errors.join('\n')),
+          );
         }
       }
     }

@@ -47,15 +47,18 @@ export class UsersEditComponent implements OnInit {
       }),
     );
 
-    this.form.controls.isStaff.valueChanges.subscribe((value) => {
-      this.showStaffMembers$.next(value);
-      if (value) {
-        this.form.controls.staffId.setValidators([Validators.required]);
-        this.form.controls.staffId.updateValueAndValidity();
-      } else {
-        this.form.controls.staffId.clearValidators();
-        this.form.controls.staffId.updateValueAndValidity();
-      }
+    this.form.controls.isStaff.valueChanges.subscribe({
+      next: (value) => {
+        this.showStaffMembers$.next(value);
+        if (value) {
+          this.form.controls.staffId.setValidators([Validators.required]);
+          this.form.controls.staffId.updateValueAndValidity();
+        } else {
+          this.form.controls.staffId.clearValidators();
+          this.form.controls.staffId.updateValueAndValidity();
+        }
+      },
+      error: console.error,
     });
   }
 

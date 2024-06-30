@@ -34,7 +34,10 @@ export class AppComponent {
   isAuthenticated$: Observable<boolean>;
 
   constructor() {
-    this.oidcSecurityService.checkAuth().subscribe(() => {});
+    this.oidcSecurityService.checkAuth().subscribe({
+      next: () => {},
+      error: console.error,
+    });
 
     this.isAuthenticated$ = this.oidcSecurityService.isAuthenticated$.pipe(
       map((t) => t.isAuthenticated),

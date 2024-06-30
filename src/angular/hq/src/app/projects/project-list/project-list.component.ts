@@ -118,9 +118,6 @@ export class ProjectListComponent {
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
-    this.projects$.subscribe((records) => {
-      console.log(records);
-    });
 
     this.takeToDisplay$ = combineLatest([
       skip$,

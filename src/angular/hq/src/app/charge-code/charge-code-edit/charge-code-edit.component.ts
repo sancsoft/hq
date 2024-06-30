@@ -107,26 +107,29 @@ export class ChargeCodeEditComponent implements OnInit {
       }),
     );
 
-    this.form.controls.Activity.valueChanges.subscribe((chargeCodeActivity) => {
-      this.form.controls.ProjectId.setValue(null);
-      this.form.controls.QuoteId.setValue(null);
-      this.form.controls.ServiceAgreementId.setValue(null);
+    this.form.controls.Activity.valueChanges.subscribe({
+      next: (chargeCodeActivity) => {
+        this.form.controls.ProjectId.setValue(null);
+        this.form.controls.QuoteId.setValue(null);
+        this.form.controls.ServiceAgreementId.setValue(null);
 
-      this.showProjects$.next(false);
-      this.showQuotes$.next(false);
-      this.showServices$.next(false);
+        this.showProjects$.next(false);
+        this.showQuotes$.next(false);
+        this.showServices$.next(false);
 
-      switch (chargeCodeActivity) {
-        case ChargeCodeActivity.Project:
-          this.showProjects$.next(true);
-          break;
-        case ChargeCodeActivity.Quote:
-          this.showQuotes$.next(true);
-          break;
-        case ChargeCodeActivity.Service:
-          this.showServices$.next(true);
-          break;
-      }
+        switch (chargeCodeActivity) {
+          case ChargeCodeActivity.Project:
+            this.showProjects$.next(true);
+            break;
+          case ChargeCodeActivity.Quote:
+            this.showQuotes$.next(true);
+            break;
+          case ChargeCodeActivity.Service:
+            this.showServices$.next(true);
+            break;
+        }
+      },
+      error: console.error,
     });
   }
 

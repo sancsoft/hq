@@ -142,9 +142,12 @@ export class PSRTimeListComponent implements OnInit {
       switchMap((request) => this.hqService.getPSRTimeV1(request)),
     );
 
-    apiResponse$.pipe(first()).subscribe((response) => {
-      psrService.staffMembers$.next(response.staff);
-      this.projectId$.next(response.projectId);
+    apiResponse$.pipe(first()).subscribe({
+      next: (response) => {
+        psrService.staffMembers$.next(response.staff);
+        this.projectId$.next(response.projectId);
+      },
+      error: console.error,
     });
 
     const projectActivitiesRequest$ = combineLatest({
@@ -154,10 +157,13 @@ export class PSRTimeListComponent implements OnInit {
       skip(1),
       switchMap((request) => this.hqService.getprojectActivitiesV1(request)),
     );
-    ProjectActivitiesResponse$.pipe(first()).subscribe((response) => {
-      console.log(response);
-      psrService.projectActivities$.next(response.records);
-      this.projectActivities$.next(response.records);
+    ProjectActivitiesResponse$.pipe(first()).subscribe({
+      next: (response) => {
+        console.log(response);
+        psrService.projectActivities$.next(response.records);
+        this.projectActivities$.next(response.records);
+      },
+      error: console.error,
     });
 
     const psr$ = psrId$.pipe(
@@ -368,7 +374,9 @@ export class PSRTimeListComponent implements OnInit {
     );
 
     if (!time || description.length < 1) {
-      this.modalService.alert('Error', 'Please Enter a description');
+      await firstValueFrom(
+        this.modalService.alert('Error', 'Please Enter a description'),
+      );
       // TODO: Alert the users
       return;
     }
@@ -444,7 +452,9 @@ export class PSRTimeListComponent implements OnInit {
 
     if (!time || !chargeCode || chargeCode.length != 5) {
       // this condition is to check if the charge code is valid
-      this.modalService.alert('Error', 'Please Enter Charge Code');
+      await firstValueFrom(
+        this.modalService.alert('Error', 'Please Enter Charge Code'),
+      );
       // TODO: Alert the users
       return;
     }
@@ -507,7 +517,9 @@ export class PSRTimeListComponent implements OnInit {
     );
     if (!time) {
       // this condition is to check if the charge code is valid
-      this.modalService.alert('Error', 'Please Enter Charge Code');
+      await firstValueFrom(
+        this.modalService.alert('Error', 'Please Enter Charge Code'),
+      );
       // TODO: Alert the users
       return;
     }
@@ -545,9 +557,11 @@ export class PSRTimeListComponent implements OnInit {
     }
 
     if (!time || billableHours == '0' || billableHours == '') {
-      this.modalService.alert(
-        'Error',
-        'Please Add a time to your billable hours',
+      await firstValueFrom(
+        this.modalService.alert(
+          'Error',
+          'Please Add a time to your billable hours',
+        ),
       );
       return;
     }

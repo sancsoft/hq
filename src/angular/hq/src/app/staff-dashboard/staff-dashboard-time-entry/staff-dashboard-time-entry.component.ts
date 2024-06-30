@@ -151,9 +151,8 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       startWith([]),
     );
 
-    clientId$
-      .pipe(pairwise(), takeUntil(this.destroyed$))
-      .subscribe(([previousClientId, currentClientId]) => {
+    clientId$.pipe(pairwise(), takeUntil(this.destroyed$)).subscribe({
+      next: ([previousClientId, currentClientId]) => {
         if (currentClientId != previousClientId) {
           this.form.patchValue({
             chargeCodeId: null,
@@ -161,24 +160,30 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
             projectId: null,
           });
         }
-      });
-
-    project$.pipe(takeUntil(this.destroyed$)).subscribe((project) => {
-      if (project) {
-        this.form.patchValue({
-          chargeCodeId: project.chargeCodeId,
-          chargeCode: project.chargeCode,
-        });
-      }
+      },
+      error: console.error,
     });
 
-    hours$
-      .pipe(debounceTime(500), takeUntil(this.destroyed$))
-      .subscribe((hours) => {
+    project$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (project) => {
+        if (project) {
+          this.form.patchValue({
+            chargeCodeId: project.chargeCodeId,
+            chargeCode: project.chargeCode,
+          });
+        }
+      },
+      error: console.error,
+    });
+
+    hours$.pipe(debounceTime(500), takeUntil(this.destroyed$)).subscribe({
+      next: (hours) => {
         if (hours != null) {
           this.form.patchValue({ hours: roundToNextQuarter(hours) });
         }
-      });
+      },
+      error: console.error,
+    });
 
     form$
       .pipe(
@@ -188,27 +193,27 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
         debounceTime(750),
         takeUntil(this.destroyed$),
       )
-      .subscribe((time) => {
-        if (this.form.touched) {
-          // this.class = this.form.invalid
-          //   ? ''
-          //   : 'even:bg-gray-850 odd:bg-black-alt';
-
-          if (this.form.valid) {
+      .subscribe({
+        next: (time) => {
+          if (this.form.touched && this.form.valid) {
             this.hqTimeChange.emit(time);
           }
-        }
+        },
+        error: console.error,
       });
 
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(() => {
-        if (!this.time?.id) {
-          this.form.reset();
-          this.form.patchValue({
-            date: this.time?.date,
-          });
-        }
+      .subscribe({
+        next: () => {
+          if (!this.time?.id) {
+            this.form.reset();
+            this.form.patchValue({
+              date: this.time?.date,
+            });
+          }
+        },
+        error: console.error,
       });
   }
 

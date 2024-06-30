@@ -93,8 +93,11 @@ export class TimeListComponent {
           })),
         ),
       )
-      .subscribe((staffMembers) => {
-        this.timeListService.staffMembers$.next(staffMembers);
+      .subscribe({
+        next: (staffMembers) => {
+          this.timeListService.staffMembers$.next(staffMembers);
+        },
+        error: console.error,
       });
     // Getting the Clients
     this.hqService
@@ -108,8 +111,11 @@ export class TimeListComponent {
           })),
         ),
       )
-      .subscribe((clients) => {
-        this.timeListService.clients$.next(clients);
+      .subscribe({
+        next: (clients) => {
+          this.timeListService.clients$.next(clients);
+        },
+        error: console.log,
       });
     const clientId$ = this.timeListService.client.valueChanges.pipe(
       tap(() => {
@@ -138,8 +144,11 @@ export class TimeListComponent {
           ),
         ),
       )
-      .subscribe((projects) => {
-        this.timeListService.projects$.next(projects);
+      .subscribe({
+        next: (projects) => {
+          this.timeListService.projects$.next(projects);
+        },
+        error: console.error,
       });
 
     const staffMemberId$ = this.timeListService.staffMember.valueChanges.pipe(
@@ -191,8 +200,11 @@ export class TimeListComponent {
       TimeAccepted: accepted$,
       sortDirection: this.sortDirection$,
     });
-    request$.subscribe((request) => {
-      this.timeRequest$.next(request);
+    request$.subscribe({
+      next: (request) => {
+        this.timeRequest$.next(request);
+      },
+      error: console.error,
     });
 
     const response$ = request$.pipe(
@@ -208,10 +220,6 @@ export class TimeListComponent {
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
-    this.times$.subscribe((records) => {
-      console.log(records);
-    });
-
     this.takeToDisplay$ = combineLatest([
       skip$,
       itemsPerPage$,

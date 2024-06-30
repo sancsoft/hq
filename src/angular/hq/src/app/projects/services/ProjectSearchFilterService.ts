@@ -34,8 +34,9 @@ export class ProjectSearchFilterService {
         ),
       );
 
-    staffMembersResponse$.pipe(first()).subscribe((response) => {
-      this.projectManagers$.next(response);
+    staffMembersResponse$.pipe(first()).subscribe({
+      next: (response) => this.projectManagers$.next(response),
+      error: console.log,
     });
   }
 
