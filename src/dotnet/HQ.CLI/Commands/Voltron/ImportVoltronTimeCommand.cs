@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FluentResults;
 
 using HQ.Abstractions.ChargeCodes;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Voltron;
 using HQ.SDK;
 
@@ -35,6 +36,10 @@ namespace HQ.CLI.Commands.ChargeCode
         [CommandOption("--replace|-r")]
         [DefaultValue(false)]
         public bool Replace { get; set; }
+
+        [CommandOption("--status|-s")]
+        [DefaultValue(TimeStatus.Pending)]
+        public TimeStatus Stauts { get; set; }
     }
 
     internal class ImportVoltronTimeCommand : AsyncCommand<ImportVoltronTimeSettings>
@@ -67,6 +72,7 @@ namespace HQ.CLI.Commands.ChargeCode
                 From = settings.From,
                 To = settings.To,
                 Replace = settings.Replace,
+                Status = settings.Stauts,
                 Files = files.Select(t => (t.Name, (Stream)t.OpenRead())).ToList()
             };
 
