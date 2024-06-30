@@ -190,7 +190,7 @@ public class ProjectStatusReportServiceV1
                 IsLate = t.Row.SubmittedAt == null,
 
                 ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
-                ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
+                ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Status != TimeStatus.Rejected && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
 
                 LastId = t.Previous != null ? t.Previous.Id : null,
                 LastHours = t.Previous != null && t.Previous.Project.ChargeCode != null ? t.Previous.Project.ChargeCode.Times.Where(x => x.Date >= t.Previous.StartDate && x.Date <= t.Previous.EndDate).Sum(x => x.Hours) : null,
