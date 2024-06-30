@@ -20,18 +20,7 @@ public class TimeEntryAuthorizationHandler : AuthorizationHandler<OperationAutho
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Time resource)
     {
         var staffId = context.User.GetStaffId();
-
-        var isManager = context.User.IsInRole("manager");
-        var isPartner = context.User.IsInRole("partner");
-        var isExecutive = context.User.IsInRole("executive");
-        var isAdmin = context.User.IsInRole("administrator");
         var isStaff = context.User.IsInRole("staff");
-
-        if (isPartner || isExecutive || isAdmin)
-        {
-            context.Succeed(requirement);
-            return;
-        }
 
         if (!isStaff)
         {
