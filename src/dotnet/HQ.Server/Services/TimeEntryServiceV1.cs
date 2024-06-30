@@ -198,7 +198,7 @@ namespace HQ.Server.Services
 
                 if (time.Status == TimeStatus.Rejected)
                 {
-                    time.Status = TimeStatus.RejectedPendingReview;
+                    time.Status = TimeStatus.Resubmitted;
                 }
             }
             await _context.SaveChangesAsync(ct);

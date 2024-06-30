@@ -433,7 +433,7 @@
               </td>
             </tr>
           }
-          @case (timeStatus.RejectedPendingReview) {
+          @case (timeStatus.Resubmitted) {
             <tr
               [ngClass]="{
                 'bg-blue-950': isSelected(time.id) | async,
@@ -507,7 +507,7 @@
             @case (timeStatus.Rejected) {
               <td class="border-b border-black py-2 bg-red-600 w-3"></td>
             }
-            @case (timeStatus.RejectedPendingReview) {
+            @case (timeStatus.Resubmitted) {
               <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
             }
           }
