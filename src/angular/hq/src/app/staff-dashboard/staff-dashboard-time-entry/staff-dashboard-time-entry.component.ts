@@ -151,6 +151,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       startWith([]),
     );
 
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
     clientId$.pipe(pairwise(), takeUntil(this.destroyed$)).subscribe({
       next: ([previousClientId, currentClientId]) => {
         if (currentClientId != previousClientId) {
@@ -164,6 +165,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       error: console.error,
     });
 
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
     project$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (project) => {
         if (project) {
@@ -176,6 +178,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       error: console.error,
     });
 
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
     hours$.pipe(debounceTime(500), takeUntil(this.destroyed$)).subscribe({
       next: (hours) => {
         if (hours != null) {
@@ -193,6 +196,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
         debounceTime(750),
         takeUntil(this.destroyed$),
       )
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe({
         next: (time) => {
           if (this.form.touched && this.form.valid) {
@@ -204,6 +208,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe({
         next: () => {
           if (!this.time?.id) {

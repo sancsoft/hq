@@ -53,8 +53,7 @@
         <ngx-monaco-editor
           [ngStyle]="{ height: '100%' }"
           [options]="editorOptions$ | async"
-          [(ngModel)]="report"
-          (ngModelChange)="updateReport($event)"
+          [formControl]="report"
         ></ngx-monaco-editor>
       </div>
     </aside>
@@ -74,7 +73,7 @@
       class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out p-4 break-all"
       [ngClass]="{ hidden: sideBarCollapsed }"
     >
-      <hq-markdown [data]="report"></hq-markdown>
+      <hq-markdown [data]="report$ | async"></hq-markdown>
     </main>
   </div>
 </div>

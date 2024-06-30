@@ -35,10 +35,9 @@
         "@typescript-eslint/no-floating-promises": "error",
         "rxjs/no-ignored-error": "error",
         "rxjs/no-ignored-observable": "error",
-        "rxjs/no-ignored-subscribe": "error"
-        // "rxjs-angular/prefer-async-pipe": "error",
-        // "rxjs-angular/prefer-composition": "error",
-        // "rxjs-angular/prefer-takeuntil": "error"
+        "rxjs/no-ignored-subscribe": "error",
+        "rxjs-angular/prefer-async-pipe": "error",
+        "rxjs-angular/prefer-takeuntil": "error"
       }
     },
     {

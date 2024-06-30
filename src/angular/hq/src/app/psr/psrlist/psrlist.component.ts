@@ -12,7 +12,6 @@ import {
   debounceTime,
   switchMap,
   shareReplay,
-  first,
   firstValueFrom,
 } from 'rxjs';
 import { ProjectStatus } from '../../clients/client-details.service';
@@ -129,24 +128,6 @@ export class PSRListComponent implements OnInit {
       switchMap((request) => this.hqService.getPSRV1(request)),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
-
-    const staffMembersResponse$ = this.hqService
-      .getStaffMembersV1({ isAssignedProjectManager: true })
-      .pipe(
-        map((response) => response.records),
-        map((records) =>
-          records.map((record) => ({
-            id: record.id,
-            name: record.name,
-            totalHours: record.workHours,
-          })),
-        ),
-      );
-
-    staffMembersResponse$.pipe(first()).subscribe({
-      next: (response) => psrListService.staffMembers$.next(response),
-      error: console.error,
-    });
 
     this.projectStatusReports$ = response$.pipe(
       map((response) => {

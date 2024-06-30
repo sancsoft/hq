@@ -1,7 +1,7 @@
 import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { SortDirection } from '../../models/common/sort-direction';
 import {
   GetPSRTimeRecordV1,
@@ -21,6 +21,7 @@ import {
   skip,
   startWith,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs';
 import { HQService } from '../../services/hq.service';
@@ -59,7 +60,7 @@ export interface ChargeCodeViewModel {
   ],
   templateUrl: './psrtime-list.component.html',
 })
-export class PSRTimeListComponent implements OnInit {
+export class PSRTimeListComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];
   chargeCodesViewModel: ChargeCodeViewModel[] = [];
   refresh$ = new Subject<void>();
@@ -88,6 +89,13 @@ export class PSRTimeListComponent implements OnInit {
   acceptButtonState = ButtonState.Enabled;
   acceptAllButtonState = ButtonState.Enabled;
   ButtonState = ButtonState;
+
+  private destroy = new Subject<void>();
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
+  }
 
   ngOnInit(): void {
     this.psrService.resetFilter();
@@ -142,7 +150,9 @@ export class PSRTimeListComponent implements OnInit {
       switchMap((request) => this.hqService.getPSRTimeV1(request)),
     );
 
-    apiResponse$.pipe(first()).subscribe({
+    // TODO: Refactor this
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    apiResponse$.pipe(first(), takeUntil(this.destroy)).subscribe({
       next: (response) => {
         psrService.staffMembers$.next(response.staff);
         this.projectId$.next(response.projectId);
@@ -157,14 +167,19 @@ export class PSRTimeListComponent implements OnInit {
       skip(1),
       switchMap((request) => this.hqService.getprojectActivitiesV1(request)),
     );
-    ProjectActivitiesResponse$.pipe(first()).subscribe({
-      next: (response) => {
-        console.log(response);
-        psrService.projectActivities$.next(response.records);
-        this.projectActivities$.next(response.records);
+
+    // TODO: Refactor this
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    ProjectActivitiesResponse$.pipe(first(), takeUntil(this.destroy)).subscribe(
+      {
+        next: (response) => {
+          console.log(response);
+          psrService.projectActivities$.next(response.records);
+          this.projectActivities$.next(response.records);
+        },
+        error: console.error,
       },
-      error: console.error,
-    });
+    );
 
     const psr$ = psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
