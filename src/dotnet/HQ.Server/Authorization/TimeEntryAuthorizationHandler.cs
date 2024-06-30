@@ -1,3 +1,4 @@
+using HQ.Abstractions.Enumerations;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 
@@ -16,34 +17,54 @@ public class TimeEntryAuthorizationHandler : AuthorizationHandler<OperationAutho
         _context = context;
     }
 
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Time resource)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Time resource)
     {
         var staffId = context.User.GetStaffId();
-
-        var isManager = context.User.IsInRole("manager");
-        var isPartner = context.User.IsInRole("partner");
-        var isExecutive = context.User.IsInRole("executive");
-        var isAdmin = context.User.IsInRole("administrator");
         var isStaff = context.User.IsInRole("staff");
 
+        if (!isStaff)
+        {
+            return;
+        }
+
+        if (!staffId.HasValue)
+        {
+            return;
+        }
+
+        if (staffId.Value != resource.StaffId)
+        {
+            return;
+        }
+
+        var staff = await _context.Staff.FindAsync(staffId.Value);
+        if (staff == null)
+        {
+            return;
+        }
 
         switch (requirement.Name)
         {
-            case nameof(TimeEntryOperation.GetTimes):
             case nameof(TimeEntryOperation.DeleteTime):
-            case nameof(TimeEntryOperation.UpsertTime):
-            case nameof(TimeEntryOperation.SubmitTimes):
-
+                if (!staff.TimeEntryCutoffDate.HasValue || resource.Date >= staff.TimeEntryCutoffDate.Value)
                 {
-                    if ((isStaff && staffId.HasValue && staffId.Value == resource.StaffId) || isPartner || isExecutive || isAdmin)
-                    {
-                        context.Succeed(requirement);
-                    }
-
-                    break;
+                    context.Succeed(requirement);
                 }
-        }
 
-        return Task.CompletedTask;
+                break;
+            case nameof(TimeEntryOperation.UpsertTime):
+                if (!staff.TimeEntryCutoffDate.HasValue || resource.Date >= staff.TimeEntryCutoffDate.Value || resource.Status == TimeStatus.Rejected)
+                {
+                    context.Succeed(requirement);
+                }
+
+                break;
+            case nameof(TimeEntryOperation.GetTimes):
+            case nameof(TimeEntryOperation.SubmitTimes):
+                {
+                    context.Succeed(requirement);
+                }
+                break;
+        }
     }
 }

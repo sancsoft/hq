@@ -138,6 +138,7 @@ namespace HQ.SDK
             multipartContent.Add(new StringContent(request.From.ToString("o"), Encoding.UTF8), nameof(request.From));
             multipartContent.Add(new StringContent(request.To.ToString("o"), Encoding.UTF8), nameof(request.To));
             multipartContent.Add(new StringContent(request.Replace.ToString(), Encoding.UTF8), nameof(request.Replace));
+            multipartContent.Add(new StringContent(request.Status.ToString(), Encoding.UTF8), nameof(request.Status));
 
             var response = await _httpClient.PostAsync("/v1/Voltron/ImportVoltronTimeSheetsV1", multipartContent, ct);
 

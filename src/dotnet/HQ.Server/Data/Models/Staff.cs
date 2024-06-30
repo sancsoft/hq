@@ -13,4 +13,5 @@ public class Staff : Base
     public Jurisdiciton Jurisdiciton { get; set; }
     public DateOnly? StartDate { get; set; }
     public DateOnly? EndDate { get; set; }
+    public DateOnly? TimeEntryCutoffDate { get; set; }
 }

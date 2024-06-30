@@ -76,6 +76,7 @@ public class VoltronServiceV1
                 }
 
                 var time = new Time();
+                time.Status = request.Status;
                 time.Staff = staff;
                 time.ChargeCode = chargeCodes[timeRecord.ChargeCode];
                 time.Date = timeRecord.Date;

@@ -13,6 +13,7 @@ using HQ.Abstractions.Times;
 using HQ.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
+using HQ.Server.Data.Models;
 using HQ.Server.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -69,6 +70,18 @@ namespace HQ.Server.Controllers
             else
             {
                 request.StaffId = User.GetStaffId();
+                if (!request.StaffId.HasValue)
+                {
+                    return Forbid();
+                }
+
+                var authorizationResult = await _authorizationService
+                    .AuthorizeAsync(User, new Time() { StaffId = request.StaffId.Value, Date = request.Date }, TimeEntryOperation.UpsertTime);
+
+                if (!authorizationResult.Succeeded)
+                {
+                    return Forbid();
+                }
             }
 
             return await _TimeEntryServiceV1.UpsertTimeV1(request, ct)

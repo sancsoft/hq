@@ -623,6 +623,8 @@ namespace HQ.Server.Services
                         timeForDate.TotalHours = timeForDate.Times.Sum(t => t.Hours);
                     }
 
+                    timeForDate.CanCreateTime = !staff.TimeEntryCutoffDate.HasValue || timeForDate.Date >= staff.TimeEntryCutoffDate.Value;
+
                     response.Dates.Add(timeForDate);
                     date = date.AddDays(-1);
                 }
