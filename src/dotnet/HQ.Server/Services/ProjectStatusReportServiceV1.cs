@@ -154,19 +154,6 @@ public class ProjectStatusReportServiceV1
             records = records.Where(t => t.StartDate >= request.StartDate && t.EndDate <= request.EndDate);
         }
 
-        if (request.IsSubmitted != null)
-        {
-            if (request.IsSubmitted == true)
-            {
-                records = records.Where(t => t.SubmittedAt != null);
-            }
-            else
-            {
-                records = records.Where(t => t.SubmittedAt == null);
-
-            }
-        }
-
         var mapped = records
             .Select(t => new
             {
@@ -250,6 +237,18 @@ public class ProjectStatusReportServiceV1
                 SummaryPercentComplete = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
                 SummaryPercentCompleteSort = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort
             });
+
+        if (request.IsSubmitted != null)
+        {
+            if (request.IsSubmitted == true)
+            {
+                mapped = mapped.Where(t => t.SubmittedAt != null && t.ThisPendingHours == 0);
+            }
+            else
+            {
+                mapped = mapped.Where(t => t.SubmittedAt == null || t.ThisPendingHours > 0);
+            }
+        }
 
         var totalHours = await mapped.SumAsync(t => t.TotalHours, ct);
         var total = await mapped.CountAsync(ct);
