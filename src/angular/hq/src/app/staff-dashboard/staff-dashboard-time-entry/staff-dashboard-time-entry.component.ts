@@ -95,7 +95,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     date: new FormControl<string | null>(null),
     hours: new FormControl<number | null>(null, {
       updateOn: 'blur',
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.min(0.25)],
     }),
     notes: new FormControl<string | null>(null, {
       updateOn: 'blur',
