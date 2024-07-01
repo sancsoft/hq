@@ -136,6 +136,8 @@ export class ProjectCreateComponent {
   }
 
   async onSubmitProject() {
+    this.projectFormGroup.markAllAsTouched();
+
     console.log(this.projectFormGroup);
     try {
       if (

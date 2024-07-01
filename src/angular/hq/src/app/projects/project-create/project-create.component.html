@@ -107,6 +107,10 @@
                       >Project Full Name</label
                     >
                     <input
+                      [class.border-red-700]="
+                        projectFormGroup.controls.name.errors &&
+                        projectFormGroup.controls.name.touched
+                      "
                       formControlName="name"
                       type="text"
                       name="fullname"
@@ -184,7 +188,10 @@
                     <div class="grid relative w-full max-w-[220px]">
                       @if (projectManagers$ | async; as projectManagers) {
                         <select
-                          formControlName="projectManagerId"
+                          [class.border-red-700]="
+                            projectFormGroup.controls.projectManagerId.errors &&
+                            projectFormGroup.controls.projectManagerId.touched
+                          "
                           class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
                         >
                           <option [ngValue]="null" disabled selected>
@@ -371,6 +378,10 @@
                     <div class="grid relative w-full max-w-[395px]">
                       <!-- add border-red-700 class for input required/error -->
                       <select
+                        [class.border-red-700]="
+                          projectFormGroup.controls.bookingPeriod.errors &&
+                          projectFormGroup.controls.bookingPeriod.touched
+                        "
                         formControlName="bookingPeriod"
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border text-gray-100 bg-blue-900 rounded h-[36px]"
                       >
@@ -419,6 +430,10 @@
                       <!-- input date -->
                       <div class="grid relative w-full max-w-[220px]">
                         <input
+                          [class.border-red-700]="
+                            projectFormGroup.controls.startDate.errors &&
+                            projectFormGroup.controls.startDate.touched
+                          "
                           formControlName="startDate"
                           type="date"
                           id="startDate"
@@ -472,6 +487,10 @@
                       <!-- input date -->
                       <div class="grid relative w-full max-w-[220px]">
                         <input
+                          [class.border-red-700]="
+                            projectFormGroup.controls.endDate.errors &&
+                            projectFormGroup.controls.endDate.touched
+                          "
                           formControlName="endDate"
                           type="date"
                           id="endDate"
@@ -602,6 +621,10 @@
                     <div class="grid relative w-full max-w-[395px]">
                       @if (quotes$ | async; as quotes) {
                         <select
+                          [class.border-red-700]="
+                            projectFormGroup.controls.quoteId.errors &&
+                            projectFormGroup.controls.quoteId.touched
+                          "
                           (change)="quoteSelected($event)"
                           formControlName="quoteId"
                           id="quoteId"
