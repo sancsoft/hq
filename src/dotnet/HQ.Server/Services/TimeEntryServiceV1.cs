@@ -568,7 +568,7 @@ namespace HQ.Server.Services
                 {
                     Id = t.Id,
                     Name = t.Name,
-                    Projects = t.Projects.Where(x => x.ChargeCode!.Active == true).Select(x => new Abstractions.Times.GetDashboardTimeV1.Project()
+                    Projects = t.Projects.Where(x => x.ChargeCode!.Active == true).OrderBy(x => x.Name).Select(x => new Abstractions.Times.GetDashboardTimeV1.Project()
                     {
                         Id = x.Id,
                         ChargeCodeId = x.ChargeCode != null ? x.ChargeCode.Id : null,
