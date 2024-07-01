@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.17] - 2024-07-01
+
+### Fixed
+- Vacation calculations
+
 ## [0.3.16] - 2024-07-01
 
 ### Change
@@ -234,7 +239,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.16...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.17...HEAD
+[0.3.17]: https://github.com/sancsoft/hq/compare/v0.3.16...v0.3.17
 [0.3.16]: https://github.com/sancsoft/hq/compare/v0.3.15...v0.3.16
 [0.3.15]: https://github.com/sancsoft/hq/compare/v0.3.14...v0.3.15
 [0.3.14]: https://github.com/sancsoft/hq/compare/v0.3.13...v0.3.14
