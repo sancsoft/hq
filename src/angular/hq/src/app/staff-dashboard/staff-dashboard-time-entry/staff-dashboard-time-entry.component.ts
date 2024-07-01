@@ -241,7 +241,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     }
   }
   resetTime() {
-    this.form.reset();
+    this.form.reset({ date: this.form.controls.date.value });
   }
 
   blurInput(target: EventTarget | null) {
