@@ -23,6 +23,8 @@ public class MigrateCommand : AsyncCommand
         var args = context.Remaining.Raw.ToArray();
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Configuration.AddEnvironmentVariables("HQ_");
+
         // Add services to the container.
         builder.Services.AddHQDbContext(builder.Configuration);
 

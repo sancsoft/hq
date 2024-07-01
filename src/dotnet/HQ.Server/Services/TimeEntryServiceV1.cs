@@ -684,7 +684,7 @@ namespace HQ.Server.Services
             };
         }
 
-        public async Task<Result<CaptureUnsubmittedTimeV1.Response>> CaptureUnsubmittedTimeV1(CaptureUnsubmittedTimeV1.Request request, CancellationToken ct)
+        public async Task<Result<CaptureUnsubmittedTimeV1.Response>> CaptureUnsubmittedTimeV1(CaptureUnsubmittedTimeV1.Request request, CancellationToken ct = default)
         {
             var times = _context.Times
                 .Where(t => t.Status == TimeStatus.Unsubmitted)
