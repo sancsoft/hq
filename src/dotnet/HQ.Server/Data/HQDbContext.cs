@@ -2,14 +2,16 @@
 
 using HQ.Server.Data.Models;
 
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Data
 {
-    public class HQDbContext : DbContext
+    public class HQDbContext : DbContext, IDataProtectionKeyContext
     {
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<ChargeCode> ChargeCodes { get; set; } = null!;
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
         public DbSet<Client> Clients { get; set; } = null!;
         public DbSet<Expense> Expenses { get; set; } = null!;
         public DbSet<Holiday> Holidays { get; set; } = null!;
