@@ -27,6 +27,7 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  firstValueFrom,
   map,
   pairwise,
   shareReplay,
@@ -36,6 +37,7 @@ import {
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 import { TimeStatus } from '../../models/common/time-status';
+import { ModalService } from '../../services/modal.service';
 
 export interface HQTimeChangeEvent {
   id?: string | null;
@@ -83,6 +85,9 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
   @Output()
   hqTimeDelete = new EventEmitter<HQTimeDeleteEvent>();
 
+  @Output()
+  hqTimeDuplicate = new EventEmitter<HQTimeChangeEvent>();
+
   @HostBinding('class')
   class = 'even:bg-gray-850 odd:bg-black-alt';
 
@@ -114,7 +119,10 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   timeStatus = TimeStatus;
 
-  constructor(public staffDashboardService: StaffDashboardService) {
+  constructor(
+    public staffDashboardService: StaffDashboardService,
+    private modalService: ModalService,
+  ) {
     const form$ = this.form.valueChanges.pipe(
       shareReplay({ bufferSize: 1, refCount: false }),
     );
@@ -240,8 +248,25 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       this.hqTimeDelete.emit({ id });
     }
   }
+  duplicateTime() {
+    const time = { ...this.form.value };
+    time.id = null; // to create a new time
+    this.hqTimeDuplicate.emit(time);
+  }
   resetTime() {
     this.form.reset();
+  }
+  async chooseDate() {
+    var newDate = await firstValueFrom(
+      this.modalService.chooseDate(
+        'Change Date',
+        'Changing the date may make the time entry disappear from view.',
+        this.form.controls.date.value ?? '',
+      ),
+    );
+    if (newDate) {
+      this.form.patchValue({ date: newDate });
+    }
   }
 
   blurInput(target: EventTarget | null) {

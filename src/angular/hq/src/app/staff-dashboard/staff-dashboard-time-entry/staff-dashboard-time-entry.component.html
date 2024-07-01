@@ -9,7 +9,17 @@
         }"
         class="border-b border-black py-2"
       ></td>
-      <td class="border-b border-black py-2 pl-3 pr-2" width="105">
+      <td style="width: 13px" class="border-b border-black">
+        <button
+          title="Duplicate time entry"
+          name="Duplicate time entry"
+          class="ml-2"
+          (click)="duplicateTime()"
+        >
+          <i class="bi bi-copy"></i>
+        </button>
+      </td>
+      <td class="border-b border-black py-2 pl-3 pr-2" width="90">
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
@@ -28,6 +38,7 @@
         <input
           class="w-full block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
           type="date"
+          (click)="chooseDate()"
           formControlName="date"
           readonly
         />
@@ -184,6 +195,16 @@
     }
     @case (timeStatus.Rejected) {
       <td class="border-b border-black py-2 bg-red-600 w-3"></td>
+      <td style="width: 13px" class="border-b border-black">
+        <button
+          title="Duplicate time entry"
+          name="Duplicate time entry"
+          class="ml-2"
+          (click)="duplicateTime()"
+        >
+          <i class="bi bi-copy"></i>
+        </button>
+      </td>
       <td class="border-b border-black py-2 pl-3 pr-2" width="105">
         <input
           [ngClass]="{
@@ -343,7 +364,17 @@
     }
     @case (timeStatus.Submitted) {
       <td class="border-b border-black py-2 bg-gray-300 w-3"></td>
-      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
+      <!-- <td style="width: 13px" class="border-b border-black">
+        <button
+          title="Duplicate time entry"
+          name="Duplicate time entry"
+          class="ml-2"
+          (click)="duplicateTime()"
+        >
+          <i class="bi bi-copy"></i>
+        </button>
+      </td> -->
+      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="90">
         {{ time?.hours }}
       </td>
       <td class="border-b border-black py-2 pl-2">
@@ -375,10 +406,20 @@
     }
     @case (timeStatus.Accepted) {
       <td class="border-b border-black py-2 bg-green-300 w-3"></td>
-      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
+      <td style="width: 13px" class="border-b border-black text-white">
+        <button
+          title="Duplicate time entry"
+          name="Duplicate time entry"
+          class="ml-2"
+          (click)="duplicateTime()"
+        >
+          <i class="bi bi-copy"></i>
+        </button>
+      </td>
+      <td class="border-b border-black py-2 pl-5 text-right px-3" width="105">
         {{ time?.hours }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 px-3">
         {{ time?.date }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
@@ -407,6 +448,16 @@
     }
     @case (timeStatus.Resubmitted) {
       <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
+      <td style="width: 13px" class="border-b border-black">
+        <button
+          title="Duplicate time entry"
+          name="Duplicate time entry"
+          class="ml-2"
+          (click)="duplicateTime()"
+        >
+          <i class="bi bi-copy"></i>
+        </button>
+      </td>
       <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
         {{ time?.hours }}
       </td>

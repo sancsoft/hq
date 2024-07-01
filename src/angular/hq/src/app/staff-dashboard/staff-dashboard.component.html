@@ -168,7 +168,10 @@
           <th
             scope="col"
             colspan="2"
-            width="120"
+            class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 pr-2 text-nowrap"
+          ></th>
+          <th
+            width="90"
             class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 pr-2 text-nowrap"
           >
             Hrs
@@ -230,6 +233,7 @@
                 hq-staff-dashboard-time-entry
                 (hqTimeChange)="upsertTime($event)"
                 (hqTimeDelete)="deleteTime($event)"
+                (hqTimeDuplicate)="duplicateTime($event)"
                 [time]="time"
               ></tr>
             }
@@ -238,6 +242,7 @@
                 hq-staff-dashboard-time-entry
                 (hqTimeChange)="upsertTime($event)"
                 (hqTimeDelete)="deleteTime($event)"
+                (hqTimeDuplicate)="duplicateTime($event)"
                 [time]="time"
               ></tr>
             }
@@ -246,6 +251,7 @@
                 hq-staff-dashboard-time-entry
                 (hqTimeChange)="upsertTime($event)"
                 (hqTimeDelete)="deleteTime($event)"
+                (hqTimeDuplicate)="duplicateTime($event)"
                 [time]="time"
                 class="even:bg-gray-850 odd:bg-black-alt text-gray-450"
               ></tr>

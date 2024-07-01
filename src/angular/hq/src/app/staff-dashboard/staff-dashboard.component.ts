@@ -45,6 +45,14 @@ export class StaffDashboardComponent {
   Period = Period;
   timeStatus = TimeStatus;
 
+  async duplicateTime(event: HQTimeChangeEvent) {
+    if (!event.date) {
+      this.toastService.show('Error', 'Time entry has no date');
+      return;
+    }
+    event.hours = null;
+    this.upsertTime(event);
+  }
   async deleteTime(event: HQTimeDeleteEvent) {
     const request = {
       id: event.id,
