@@ -110,7 +110,7 @@
     @for (time of time$ | async; track time.id) {
       @if (canManageProjectStatusReport$ | async) {
         @switch (time.status) {
-          @case (timeStatus.Pending) {
+          @case (timeStatus.Unsubmitted) {
             <tr
               [ngClass]="{
                 'bg-blue-950': isSelected(time.id) | async,
@@ -498,7 +498,7 @@
       } @else {
         <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
           @switch (time.status) {
-            @case (timeStatus.Pending) {
+            @case (timeStatus.Unsubmitted) {
               <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
             }
             @case (timeStatus.Accepted) {

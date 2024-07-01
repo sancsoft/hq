@@ -1,5 +1,5 @@
 export enum TimeStatus {
-  Pending = 0,
+  Unsubmitted = 0,
   Accepted = 1,
   Rejected = 2,
   Resubmitted = 3,

@@ -188,7 +188,15 @@ namespace HQ.Server.Controllers
         }
 
 
-
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(CaptureUnsubmittedTimeV1))]
+        [ProducesResponseType<CaptureUnsubmittedTimeV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> CaptureUnsubmittedTimeV1([FromBody] CaptureUnsubmittedTimeV1.Request request, CancellationToken ct = default)
+        {
+            return await _TimeEntryServiceV1.CaptureUnsubmittedTimeV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
 
         [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(DeleteTimeV1))]
