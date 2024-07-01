@@ -238,6 +238,7 @@ public class StaffServiceV1
     public async Task<Result<BulkSetTimeEntryCutoffV1.Response>> BulkSetTimeEntryCutoffV1(BulkSetTimeEntryCutoffV1.Request request, CancellationToken ct = default)
     {
         var staff = _context.Staff
+            .Where(t => t.TimeEntryCutoffDate != request.TimeEntryCutoffDate)
             .AsQueryable();
 
         if (request.StaffId.HasValue)
