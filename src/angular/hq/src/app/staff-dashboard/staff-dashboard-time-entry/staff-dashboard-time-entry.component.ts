@@ -257,7 +257,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     this.form.reset();
   }
   async chooseDate() {
-    var newDate = await firstValueFrom(
+    const newDate = await firstValueFrom(
       this.modalService.chooseDate(
         'Change Date',
         'Changing the date may make the time entry disappear from view.',

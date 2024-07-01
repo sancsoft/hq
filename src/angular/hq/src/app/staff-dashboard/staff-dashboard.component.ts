@@ -51,7 +51,7 @@ export class StaffDashboardComponent {
       return;
     }
     event.hours = null;
-    this.upsertTime(event);
+    await this.upsertTime(event);
   }
   async deleteTime(event: HQTimeDeleteEvent) {
     const request = {
