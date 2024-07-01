@@ -59,6 +59,7 @@
                 form.controls.clientId.errors && form.touched,
               'border-black': !form.controls.clientId.errors || !form.touched,
             }"
+            (keydown.enter)="blurInput($event.target)"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="clientId"
           >
@@ -88,6 +89,7 @@
                 form.controls.projectId.errors && form.touched,
               'border-black': !form.controls.projectId.errors || !form.touched,
             }"
+            (keydown.enter)="blurInput($event.target)"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="projectId"
           >
@@ -118,6 +120,7 @@
                     !form.controls.activityId.errors || !form.touched,
                 }"
                 class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+                (keydown.enter)="blurInput($event.target)"
                 formControlName="activityId"
               >
                 <option [ngValue]="null" class="text-gray-50">Activity</option>
@@ -158,7 +161,7 @@
       <td class="border-b border-black py-2 pl-2 pr-5">
         @if (form.controls.id.value) {
           <button
-            type="submit"
+            type="button"
             (click)="deleteTime()"
             class="h-[30px] px-2 py-2 rounded w-full"
           >
@@ -166,7 +169,7 @@
           </button>
         } @else {
           <button
-            type="submit"
+            type="button"
             (click)="resetTime()"
             class="h-[30px] px-2 py-2 rounded w-full"
           >
