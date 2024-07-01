@@ -20,22 +20,36 @@ public class MigrateCommand : AsyncCommand
 {
     public override async Task<int> ExecuteAsync(CommandContext context)
     {
-        var args = context.Remaining.Raw.ToArray();
-        var builder = WebApplication.CreateBuilder(args);
+        try
+        {
+            var args = context.Remaining.Raw.ToArray();
+            var builder = WebApplication.CreateBuilder(args);
 
-        builder.Configuration.AddEnvironmentVariables("HQ_");
+            builder.Configuration.AddEnvironmentVariables("HQ_");
 
-        // Add services to the container.
-        builder.Services.AddHQDbContext(builder.Configuration);
+            // Add services to the container.
+            builder.Services.AddHQDbContext(builder.Configuration);
 
-        var app = builder.Build();
+            var app = builder.Build();
 
-        var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-        await using var scope = serviceScopeFactory.CreateAsyncScope();
-        await using var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
+            var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+            await using var scope = serviceScopeFactory.CreateAsyncScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
 
-        await dbContext.Database.MigrateAsync();
+            await dbContext.Database.MigrateAsync();
 
-        return 0;
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            string type = ex.GetType().Name;
+            if (type.Equals("StopTheHostException", StringComparison.Ordinal))
+            {
+                throw;
+            }
+
+            return 1;
+        }
+
     }
 }
