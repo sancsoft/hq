@@ -106,7 +106,7 @@ export class StaffDashboardService {
         response.dates.some((date) =>
           date.times.some(
             (time) =>
-              time.timeStatus === TimeStatus.Pending ||
+              time.timeStatus === TimeStatus.Unsubmitted ||
               time.timeStatus === TimeStatus.Rejected,
           ),
         ),

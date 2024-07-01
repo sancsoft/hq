@@ -418,7 +418,7 @@ public class ProjectStatusReportServiceV1
 
         foreach (var time in times)
         {
-            if (time.Status != TimeStatus.Pending && time.Status != TimeStatus.Resubmitted && time.Status != TimeStatus.Submitted)
+            if (time.Status != TimeStatus.Unsubmitted && time.Status != TimeStatus.Resubmitted && time.Status != TimeStatus.Submitted)
             {
                 continue;
             }
@@ -485,7 +485,7 @@ public class ProjectStatusReportServiceV1
         //     return Result.Fail("Time entry is not accepted.");
         // }
 
-        time.Status = TimeStatus.Pending;
+        time.Status = TimeStatus.Unsubmitted;
 
         await _context.SaveChangesAsync(ct);
 

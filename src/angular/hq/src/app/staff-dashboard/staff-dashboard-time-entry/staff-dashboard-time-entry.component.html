@@ -1,6 +1,6 @@
 <ng-container [formGroup]="form">
   @switch (time?.timeStatus) {
-    @case (timeStatus.Pending) {
+    @case (timeStatus.Unsubmitted) {
       <td
         style="width: 15px"
         [ngClass]="{

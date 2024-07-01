@@ -191,7 +191,7 @@ namespace HQ.Server.Services
             }
             foreach (var time in timeEntries)
             {
-                if (time.Status == TimeStatus.Pending)
+                if (time.Status == TimeStatus.Unsubmitted)
                 {
                     time.Status = TimeStatus.Submitted;
                 }
@@ -687,7 +687,7 @@ namespace HQ.Server.Services
         public async Task<Result<CaptureUnsubmittedTimeV1.Response>> CaptureUnsubmittedTimeV1(CaptureUnsubmittedTimeV1.Request request, CancellationToken ct)
         {
             var times = _context.Times
-                .Where(t => t.Status == TimeStatus.Pending)
+                .Where(t => t.Status == TimeStatus.Unsubmitted)
                 .AsQueryable();
 
             if (request.From.HasValue)

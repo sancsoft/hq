@@ -38,7 +38,7 @@ namespace HQ.CLI.Commands.ChargeCode
         public bool Replace { get; set; }
 
         [CommandOption("--status|-s")]
-        [DefaultValue(TimeStatus.Pending)]
+        [DefaultValue(TimeStatus.Unsubmitted)]
         public TimeStatus Stauts { get; set; }
     }
 
