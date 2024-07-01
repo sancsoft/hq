@@ -33,11 +33,7 @@ export class ModalService {
     );
     return dialogRef.closed.pipe(map((t) => t == true));
   }
-  chooseDate(
-    title: string,
-    message: string = '',
-    date: string,
-  ) {
+  chooseDate(title: string, message: string = '', date: string) {
     const dialogRef = this.dialog.open<string | null, DateModalData>(
       DateModalComponent,
       {
