@@ -25,5 +25,7 @@ public class ImportVoltronTimeSheetsV1
         public int SkippedMissingChargeCode { get; set; }
         public int TimeCreated { get; set; }
         public int TimeDeleted { get; set; }
+        public List<string> UnknownStaff { get; set; } = new();
+        public List<string> UnknownChargeCodes { get; set; } = new();
     }
 }

@@ -83,8 +83,8 @@ namespace HQ.CLI.Commands.ChargeCode
                 return 1;
             }
 
-            Console.WriteLine("{0} Skipped (Missing Staff)", response.Value?.SkippedMissingStaff);
-            Console.WriteLine("{0} Deleted (Missing Charge Code)", response.Value?.SkippedMissingChargeCode);
+            Console.WriteLine("{0} Skipped (Unknown Staff - {1})", response.Value?.SkippedMissingStaff, String.Join(',', response.Value?.UnknownStaff ?? new()));
+            Console.WriteLine("{0} Skipped (Unknown Charge Code - {1})", response.Value?.SkippedMissingChargeCode, String.Join(',', response.Value?.UnknownChargeCodes ?? new()));
             Console.WriteLine("{0} Created", response.Value?.TimeCreated);
             Console.WriteLine("{0} Deleted", response.Value?.TimeDeleted);
 
