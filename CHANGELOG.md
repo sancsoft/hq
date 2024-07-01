@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.14] - 2024-06-30
+
+### Fixed
+- Charge code create form validation
+- Timesheet dashboard color consistency
+- Angular linter warnings and errors
+- Vacation hour calculations
+
+### Added
+- Skipped counts to voltron timesheet import response
+- Rejected time UI (red button if there is any rejected time for correction)
+- Storage service implementation
+  - Database
+  - Filesystem
+- RXJS linting rules
+- RXJS angular linting rules
+- Arguments to voltron import to support specifying status
+- CapturedAt timestamp to time entries
+- Endpoint to capture unsubmitted time based on time range
+- Endpoint to bulk set time entry cutoff dates on staff
+- Weekly time processing subcommand
+  - Captures unsubmitted time for previous PSR week
+  - Generates PSRs for previous PSR week
+  - Update time entry cutoff date on all staff to start of current PSR week
+
+### Changed
+- Restrict time creation, modification and delete based on cutoff date
+- PSR list will now highlight a row red if the report is unsubmitted or if there are any time entries within the PSR period that are not Accepted or Rejected
+
 ## [0.3.13] - 2024-06-28
 
 ### Fixed
@@ -195,7 +224,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.13...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.14...HEAD
+[0.3.14]: https://github.com/sancsoft/hq/compare/v0.3.13...v0.3.14
 [0.3.13]: https://github.com/sancsoft/hq/compare/v0.3.12...v0.3.13
 [0.3.12]: https://github.com/sancsoft/hq/compare/v0.3.11...v0.3.12
 [0.3.11]: https://github.com/sancsoft/hq/compare/v0.3.10...v0.3.11
