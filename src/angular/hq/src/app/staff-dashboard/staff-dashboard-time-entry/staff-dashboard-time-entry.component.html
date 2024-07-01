@@ -35,13 +35,21 @@
         />
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <input
-          class="w-full block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-          type="date"
-          (click)="chooseDate()"
-          formControlName="date"
-          readonly
-        />
+        <div class="grid relative w-full">
+          <input
+            class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+            type="date"
+            formControlName="date"
+            readonly
+          />
+          <span
+            (click)="chooseDate()"
+            title="Change date"
+            class="flex items-center justify-center h-full pointer-events-auto cursor-pointer z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+          >
+            <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
+          </span>
+        </div>
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         @if (form.controls.chargeCode.value) {
@@ -194,7 +202,10 @@
       </td>
     }
     @case (timeStatus.Rejected) {
-      <td class="border-b border-black py-2 bg-red-600 w-3"></td>
+      <td
+        class="border-b border-black py-2 bg-red-600 w-3"
+        style="width: 15px"
+      ></td>
       <td style="width: 13px" class="border-b border-black">
         <button
           title="Duplicate time entry"
@@ -205,7 +216,7 @@
           <i class="bi bi-copy"></i>
         </button>
       </td>
-      <td class="border-b border-black py-2 pl-3 pr-2" width="105">
+      <td class="border-b border-black py-2 pl-3 pr-2" width="90">
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
@@ -356,7 +367,7 @@
           <div>
             <i
               [title]="time?.rejectionNotes"
-              class="bi bi-exclamation-diamond-fill text-yellow-550"
+              class="h-[30px] px-2 py-2 rounded w-fullbi bi-exclamation-diamond-fill text-yellow-550"
             ></i>
           </div>
         }
