@@ -80,6 +80,12 @@ namespace HQ.Abstractions
                     return forDate.AddDays(-((int)forDate.DayOfWeek + 1) % 7).AddDays(6);
             }
         }
+
+        public static decimal CalculateEarnedVacationHours(this DateOnly forDate, DateOnly startDate, decimal maxVacationHours)
+        {
+            var totalMonths = ((forDate.Year - startDate.Year) * 12) + forDate.Month - startDate.Month;
+            return Math.Min(totalMonths * 8, maxVacationHours);
+        }
     }
 
 }
