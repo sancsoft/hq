@@ -683,5 +683,33 @@ namespace HQ.Server.Services
                 ContentType = "text/csv",
             };
         }
+
+        public async Task<Result<CaptureUnsubmittedTimeV1.Response>> CaptureUnsubmittedTimeV1(CaptureUnsubmittedTimeV1.Request request, CancellationToken ct)
+        {
+            var times = _context.Times
+                .Where(t => t.Status == TimeStatus.Pending)
+                .AsQueryable();
+
+            if (request.From.HasValue)
+            {
+                times = times.Where(t => t.Date >= request.From.Value);
+            }
+
+            if (request.To.HasValue)
+            {
+                times = times.Where(t => t.Date <= request.To.Value);
+            }
+
+            var capturedAt = DateTime.UtcNow;
+            var capturedCount = await times.ExecuteUpdateAsync(t => t
+                .SetProperty(x => x.CapturedAt, x => capturedAt)
+                .SetProperty(x => x.Status, x => TimeStatus.Submitted)
+            , ct);
+
+            return new CaptureUnsubmittedTimeV1.Response()
+            {
+                Captured = capturedCount
+            };
+        }
     }
 }
