@@ -49,7 +49,7 @@ public class WeeklyTimeProcessingCommand : AsyncCommand
         {
             To = lastWeekEnd
         });
-        logger.LogInformation("Capturing {CaptureCount} unsubmitted time entries.", captureResponse.Value.Captured);
+        logger.LogInformation("Captured {CaptureCount} unsubmitted time entries.", captureResponse.Value.Captured);
 
         logger.LogInformation("Bulk updating staff time entry cutoff date to {CutoffDate}.", currentWeekStart);
         var bulkUpdateResponse = await staffService.BulkSetTimeEntryCutoffV1(new()
@@ -63,7 +63,7 @@ public class WeeklyTimeProcessingCommand : AsyncCommand
         {
             ForDate = lastWeekStar
         });
-        logger.LogInformation("Create {CreateCount} PSRs, skipped {SkipCount}.", generatePsrResponse.Value.Created, generatePsrResponse.Value.Skipped);
+        logger.LogInformation("Created {CreateCount} PSRs, skipped {SkipCount}.", generatePsrResponse.Value.Created, generatePsrResponse.Value.Skipped);
 
         return 0;
     }
