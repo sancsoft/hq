@@ -234,4 +234,29 @@ public class StaffServiceV1
             Updated = updated
         };
     }
+
+    public async Task<Result<BulkSetTimeEntryCutoffV1.Response>> BulkSetTimeEntryCutoffV1(BulkSetTimeEntryCutoffV1.Request request, CancellationToken ct = default)
+    {
+        var staff = _context.Staff
+            .AsQueryable();
+
+        if (request.StaffId.HasValue)
+        {
+            staff = staff.Where(t => t.Id == request.StaffId.Value);
+        }
+
+        if (request.Jurisdiciton.HasValue)
+        {
+            staff = staff.Where(t => t.Jurisdiciton == request.Jurisdiciton.Value);
+        }
+
+        var updateCount = await staff.ExecuteUpdateAsync(t => t
+            .SetProperty(x => x.TimeEntryCutoffDate, x => request.TimeEntryCutoffDate)
+        , ct);
+
+        return new BulkSetTimeEntryCutoffV1.Response()
+        {
+            Updated = updateCount
+        };
+    }
 }
