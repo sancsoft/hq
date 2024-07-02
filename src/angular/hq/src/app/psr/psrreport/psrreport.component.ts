@@ -48,7 +48,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<object>;
   report = new FormControl<string | null>(null);
   previousReport: string | null = null;
-
+  editorInstance: any;
   sideBarCollapsed = false;
   leftWidth: number = 100;
 
@@ -188,13 +188,11 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         },
       });
   }
-  editorInstance: any;
 
   insertTextAtCursor() {
-    var selection = this.editorInstance.getSelection();
-    var id = { major: 1, minor: 1 };
-    // var text = fir
-    var op = {
+    const selection = this.editorInstance.getSelection();
+    const id = { major: 1, minor: 1 };
+    const op = {
       identifier: id,
       range: selection,
       text: this.previousReport,
