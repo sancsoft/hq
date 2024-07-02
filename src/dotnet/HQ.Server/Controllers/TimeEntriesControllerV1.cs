@@ -58,7 +58,7 @@ namespace HQ.Server.Controllers
                 {
                     return NotFound();
                 }
-
+                time.Date = request.Date;
                 var authorizationResult = await _authorizationService
                     .AuthorizeAsync(User, time, TimeEntryOperation.UpsertTime);
 
