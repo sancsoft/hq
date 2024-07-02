@@ -560,22 +560,13 @@ public class ProjectStatusReportServiceV1
     public async Task<Result<PreviousProjectStatusReportV1.Response>> GetPreviousProjectStatusReportV1(PreviousProjectStatusReportV1.Request request, CancellationToken ct = default)
     {
         var psr = await _context.ProjectStatusReports.FindAsync(request.ProjectStatusReportId);
+
         if (psr == null)
         {
             return Result.Fail("Unable to find project status report.");
         }
-        var previousStartDate = psr?.StartDate.GetPeriodStartDate(Period.LastWeek);
-        var previousEndDate = psr?.StartDate.GetPeriodEndDate(Period.LastWeek);
-        var PrevPSrRequest = new GetProjectStatusReportsV1.Request()
-        {
-            StartDate = previousStartDate,
-            EndDate = previousEndDate,
-            ProjectManagerId = psr?.ProjectManagerId,
-            ProjectId = psr?.ProjectId,
-        };
-        var previousPsr = await this.GetProjectStatusReportsV1(PrevPSrRequest, ct);
+        var previousPsr = await _context.ProjectStatusReports.AsNoTracking().Where(t => t.ProjectId == psr.ProjectId && t.StartDate < psr.StartDate).OrderByDescending(t => t.StartDate).FirstOrDefaultAsync();
 
-        // var previousPsr = await 
         if (previousPsr == null)
         {
             return Result.Fail("Unable to find previous project status report.");
@@ -583,8 +574,8 @@ public class ProjectStatusReportServiceV1
 
         return new PreviousProjectStatusReportV1.Response()
         {
-            ProjectStatusReportId = previousPsr.Value.Records.First().Id,
-            Report = previousPsr.Value.Records.First().Report
+            ProjectStatusReportId = previousPsr.Id,
+            Report = previousPsr.Report
         };
     }
 }

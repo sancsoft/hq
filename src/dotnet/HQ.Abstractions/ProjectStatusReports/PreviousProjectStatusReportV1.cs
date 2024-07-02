@@ -9,7 +9,7 @@ public class PreviousProjectStatusReportV1
 
     public class Response
     {
-        public Guid ProjectStatusReportId { get; set; }
+        public Guid? ProjectStatusReportId { get; set; }
         public string? Report { get; set; }
     }
 }

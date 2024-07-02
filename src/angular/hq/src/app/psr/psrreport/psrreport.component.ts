@@ -19,6 +19,8 @@ import {
   takeUntil,
   firstValueFrom,
   filter,
+  catchError,
+  of,
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
@@ -64,7 +66,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   submitButtonState: ButtonState = ButtonState.Enabled;
   prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
 
-  prevPsr$: Observable<GetPrevPsrResponseV1>;
+  prevPsr$: Observable<GetPrevPsrResponseV1 | null>;
   ButtonState = ButtonState;
   HQRole = HQRole;
 
@@ -116,7 +118,12 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     );
     this.prevPsr$ = this.psrId$.pipe(
       switchMap((psrId) =>
-        this.hqService.getPrevPSRV1({ projectStatusReportId: psrId }),
+        this.hqService.getPrevPSRV1({ projectStatusReportId: psrId }).pipe(
+          catchError((error) => {
+            console.error('Error fetching previous PSR:', error);
+            return of(null);
+          }),
+        ),
       ),
     );
 
