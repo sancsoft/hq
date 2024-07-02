@@ -20,8 +20,10 @@
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
           formControlName="hours"
+          #hoursInput
           step="0.25"
-          (keydown.enter)="blurInput($event.target)"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
         />
       </td>
       <td class="border-b border-black py-2 pl-2">
@@ -59,6 +61,8 @@
                 form.controls.clientId.errors && form.touched,
               'border-black': !form.controls.clientId.errors || !form.touched,
             }"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="clientId"
           >
@@ -88,6 +92,8 @@
                 form.controls.projectId.errors && form.touched,
               'border-black': !form.controls.projectId.errors || !form.touched,
             }"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="projectId"
           >
@@ -118,6 +124,8 @@
                     !form.controls.activityId.errors || !form.touched,
                 }"
                 class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+                (blur)="save()"
+                (keydown.enter)="onEnter($event.target)"
                 formControlName="activityId"
               >
                 <option [ngValue]="null" class="text-gray-50">Activity</option>
@@ -136,7 +144,8 @@
               class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
               type="text"
               formControlName="task"
-              (keydown.enter)="blurInput($event.target)"
+              (blur)="save()"
+              (keydown.enter)="onEnter($event.target)"
             />
           }
         }
@@ -152,13 +161,14 @@
           class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
           type="text"
           formControlName="notes"
-          (keydown.enter)="blurInput($event.target)"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
         />
       </td>
       <td class="border-b border-black py-2 pl-2 pr-5">
         @if (form.controls.id.value) {
           <button
-            type="submit"
+            type="button"
             (click)="deleteTime()"
             class="h-[30px] px-2 py-2 rounded w-full"
           >
@@ -166,7 +176,7 @@
           </button>
         } @else {
           <button
-            type="submit"
+            type="button"
             (click)="resetTime()"
             class="h-[30px] px-2 py-2 rounded w-full"
           >
@@ -188,8 +198,10 @@
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
           formControlName="hours"
+          #hoursInput
           step="0.25"
-          (keydown.enter)="blurInput($event.target)"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
         />
       </td>
       <td class="border-b border-black py-2 pl-2">
@@ -222,6 +234,8 @@
             }"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="clientId"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
           >
             <option [ngValue]="null" class="text-gray-50">Client</option>
             <!-- <option [ngValue]="form.controls.clientId.value">
@@ -251,6 +265,8 @@
             }"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="projectId"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
           >
             <option [ngValue]="null" class="text-gray-50">Project</option>
             <!-- <option [ngValue]="form.controls.projectId.value">
@@ -280,6 +296,8 @@
                 }"
                 class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
                 formControlName="activityId"
+                (blur)="save()"
+                (keydown.enter)="onEnter($event.target)"
               >
                 <option [ngValue]="null" class="text-gray-50">Activity</option>
                 @for (activity of activities$ | async; track activity.id) {
@@ -297,7 +315,8 @@
               class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
               type="text"
               formControlName="task"
-              (keydown.enter)="blurInput($event.target)"
+              (blur)="save()"
+              (keydown.enter)="onEnter($event.target)"
             />
           }
         }
@@ -313,16 +332,19 @@
           class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
           type="text"
           formControlName="notes"
-          (keydown.enter)="blurInput($event.target)"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
         />
       </td>
-      <td class="border-b border-black py-2 pl-2 pr-5">
+      <td class="border-b border-black py-2 pl-2 pr-5 text-center">
         @if (time?.rejectionNotes) {
           <div>
-            <i
-              [title]="time?.rejectionNotes"
-              class="bi bi-exclamation-diamond-fill text-yellow-550"
-            ></i>
+            <button type="button" (click)="showRejectionNotes()">
+              <i
+                [title]="time?.rejectionNotes"
+                class="bi bi-exclamation-diamond-fill text-yellow-550"
+              ></i>
+            </button>
           </div>
         }
       </td>
