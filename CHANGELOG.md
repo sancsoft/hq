@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored time entry component to use explicit blur events to trigger event emitter to prevent duplicate requests and conflicts with observable streams based on valueChanges
 - Made toast styling a little more apparent
+- After creating a new time entry, the new time row hours is automatically focused
 
 ### Added
 - `To PSR date` to `hrs total` summary underneath progress bar on PSR list page to indicate the total is for the PSR week, not now
