@@ -20,6 +20,7 @@
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
           formControlName="hours"
+          min="0"
           #hoursInput
           step="0.25"
           (blur)="save()"
@@ -197,6 +198,7 @@
           }"
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
+          min="0"
           formControlName="hours"
           #hoursInput
           step="0.25"
