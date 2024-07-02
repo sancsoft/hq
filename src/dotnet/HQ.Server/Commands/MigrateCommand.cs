@@ -40,16 +40,9 @@ public class MigrateCommand : AsyncCommand
 
             return 0;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is HostAbortedException && ex.Source == "Microsoft.EntityFrameworkCore.Design") // see https://github.com/dotnet/efcore/issues/29923
         {
-            string type = ex.GetType().Name;
-            if (type.Equals("StopTheHostException", StringComparison.Ordinal))
-            {
-                throw;
-            }
-
-            return 1;
+            return 0;
         }
-
     }
 }
