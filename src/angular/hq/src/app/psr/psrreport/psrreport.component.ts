@@ -48,6 +48,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<object>;
   report = new FormControl<string | null>(null);
   previousReport: string | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;
   sideBarCollapsed = false;
   leftWidth: number = 100;
@@ -200,6 +201,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     };
     this.editorInstance.executeEdits('my-source', [op]);
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditorInit(editor: any) {
     this.editorInstance = editor;
   }
