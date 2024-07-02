@@ -34,8 +34,8 @@ public class APICommand : AsyncCommand
             builder.Services.AddHealthChecks();
             builder.Services.AddHQServices(builder.Configuration);
             builder.Services.AddHQDbContext(builder.Configuration);
-	        builder.Services.AddDataProtection()
-	            .PersistKeysToDbContext<HQDbContext>();
+            builder.Services.AddDataProtection()
+                .PersistKeysToDbContext<HQDbContext>();
 
             builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             builder.Services.AddSwaggerGen(c =>
