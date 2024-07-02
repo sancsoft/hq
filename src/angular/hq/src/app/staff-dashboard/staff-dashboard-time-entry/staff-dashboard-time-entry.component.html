@@ -13,9 +13,9 @@
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
-              form.controls.hours.errors && form.controls.hours.touched,
+              form.controls.hours.errors && form.touched,
             'focus:border-white placeholder:text-gray-100':
-              !form.controls.hours.errors || !form.controls.hours.touched,
+              !form.controls.hours.errors || !form.touched,
           }"
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
@@ -56,10 +56,8 @@
           <select
             [ngClass]="{
               'border-red-700 focus:border-red-700':
-                form.controls.clientId.errors && form.controls.clientId.touched,
-              'border-black':
-                !form.controls.clientId.errors ||
-                !form.controls.clientId.touched,
+                form.controls.clientId.errors && form.touched,
+              'border-black': !form.controls.clientId.errors || !form.touched,
             }"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="clientId"
@@ -87,11 +85,8 @@
           <select
             [ngClass]="{
               'border-red-700 focus:border-red-700':
-                form.controls.projectId.errors &&
-                form.controls.projectId.touched,
-              'border-black':
-                !form.controls.projectId.errors ||
-                !form.controls.projectId.touched,
+                form.controls.projectId.errors && form.touched,
+              'border-black': !form.controls.projectId.errors || !form.touched,
             }"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="projectId"
@@ -118,11 +113,9 @@
               <select
                 [ngClass]="{
                   'border-red-700 focus:border-red-700':
-                    form.controls.activityId.errors &&
-                    form.controls.activityId.touched,
+                    form.controls.activityId.errors && form.touched,
                   'border-black':
-                    !form.controls.activityId.errors ||
-                    !form.controls.activityId.touched,
+                    !form.controls.activityId.errors || !form.touched,
                 }"
                 class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
                 formControlName="activityId"
@@ -152,9 +145,9 @@
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
-              form.controls.notes.errors && form.controls.notes.touched,
+              form.controls.notes.errors && form.touched,
             'focus:border-white placeholder:text-gray-100':
-              !form.controls.notes.errors || !form.controls.notes.touched,
+              !form.controls.notes.errors || !form.touched,
           }"
           class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
           type="text"
@@ -188,9 +181,9 @@
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
-              form.controls.hours.errors && form.controls.hours.touched,
+              form.controls.hours.errors && form.touched,
             'focus:border-white placeholder:text-gray-100':
-              !form.controls.hours.errors || !form.controls.hours.touched,
+              !form.controls.hours.errors || !form.touched,
           }"
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
@@ -224,10 +217,8 @@
           <select
             [ngClass]="{
               'border-red-700 focus:border-red-700':
-                form.controls.clientId.errors && form.controls.clientId.touched,
-              'border-black':
-                !form.controls.clientId.errors ||
-                !form.controls.clientId.touched,
+                form.controls.clientId.errors && form.touched,
+              'border-black': !form.controls.clientId.errors || !form.touched,
             }"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="clientId"
@@ -255,11 +246,8 @@
           <select
             [ngClass]="{
               'border-red-700 focus:border-red-700':
-                form.controls.projectId.errors &&
-                form.controls.projectId.touched,
-              'border-black':
-                !form.controls.projectId.errors ||
-                !form.controls.projectId.touched,
+                form.controls.projectId.errors && form.touched,
+              'border-black': !form.controls.projectId.errors || !form.touched,
             }"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="projectId"
@@ -286,11 +274,9 @@
               <select
                 [ngClass]="{
                   'border-red-700 focus:border-red-700':
-                    form.controls.activityId.errors &&
-                    form.controls.activityId.touched,
+                    form.controls.activityId.errors && form.touched,
                   'border-black':
-                    !form.controls.activityId.errors ||
-                    !form.controls.activityId.touched,
+                    !form.controls.activityId.errors || !form.touched,
                 }"
                 class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
                 formControlName="activityId"
@@ -320,9 +306,9 @@
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
-              form.controls.notes.errors && form.controls.notes.touched,
+              form.controls.notes.errors && form.touched,
             'focus:border-white placeholder:text-gray-100':
-              !form.controls.notes.errors || !form.controls.notes.touched,
+              !form.controls.notes.errors || !form.touched,
           }"
           class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
           type="text"
