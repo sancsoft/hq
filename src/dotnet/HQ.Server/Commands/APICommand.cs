@@ -1,21 +1,16 @@
-﻿using System.Security.Claims;
-
-using Duende.AccessTokenManagement.OpenIdConnect;
-
-using HQ.Server.API;
+﻿using HQ.Server.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
 using HQ.Server.Services;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-
-using Npgsql;
 
 using Spectre.Console.Cli;
 
@@ -39,6 +34,8 @@ public class APICommand : AsyncCommand
             builder.Services.AddHealthChecks();
             builder.Services.AddHQServices(builder.Configuration);
             builder.Services.AddHQDbContext(builder.Configuration);
+            builder.Services.AddDataProtection()
+                .PersistKeysToDbContext<HQDbContext>();
 
             builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             builder.Services.AddSwaggerGen(c =>
