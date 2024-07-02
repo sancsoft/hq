@@ -114,6 +114,10 @@ import {
   SubmitTimeResponseV1,
   SubmitTimesRequestV1,
 } from '../models/times/submit-times-v1';
+import {
+  GetPrevPSRRequestV1,
+  GetPrevPsrResponseV1,
+} from '../models/PSR/get-previous-PSR-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -207,6 +211,18 @@ export class HQService {
       ),
     );
   }
+
+  getPrevPSRV1(request: Partial<GetPrevPSRRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPrevPsrResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/GetPreviousProjectStatusReportsV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
   getProjectPSRV1(id: string) {
     return this.getPSRV1({ projectId: id });
   }

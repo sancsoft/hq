@@ -49,6 +49,13 @@ namespace HQ.Server.Controllers
             .ToActionResult(new HQResultEndpointProfile());
 
         [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetPreviousProjectStatusReportsV1))]
+        [ProducesResponseType<PreviousProjectStatusReportV1.Response>(StatusCodes.Status200OK)]
+        public Task<ActionResult> GetPreviousProjectStatusReportsV1([FromBody] PreviousProjectStatusReportV1.Request request, CancellationToken ct = default) =>
+            _ProjectStatusReportService.GetPreviousProjectStatusReportV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(GetProjectStatusReportTimeV1))]
         [ProducesResponseType<GetProjectStatusReportTimeV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> GetProjectStatusReportTimeV1([FromBody] GetProjectStatusReportTimeV1.Request request, CancellationToken ct = default) =>
