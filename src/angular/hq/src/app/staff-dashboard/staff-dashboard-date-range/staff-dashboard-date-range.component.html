@@ -12,7 +12,7 @@
           type="button"
           [title]="
             'Previous ' +
-            (staffDashboardService.period.value ==
+            (staffDashboardService.period.value ===
             staffDashboardService.Period.Today
               ? 'Day'
               : staffDashboardService.Period[
@@ -101,7 +101,7 @@
           type="button"
           [title]="
             'Next ' +
-            (staffDashboardService.period.value ==
+            (staffDashboardService.period.value ===
             staffDashboardService.Period.Today
               ? 'Day'
               : staffDashboardService.Period[
