@@ -7,6 +7,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.18] - 2024-07-02
+
+### Changed
+- Refactored time entry component to use explicit blur events to trigger event emitter to prevent duplicate requests and conflicts with observable streams based on valueChanges
+- Made toast styling a little more apparent
+- After creating a new time entry, the new time row hours is automatically focused
+
+### Added
+- `To PSR date` to `hrs total` summary underneath progress bar on PSR list page to indicate the total is for the PSR week, not now
+- `Microsoft.AspNetCore.DataProtection.EntityFrameworkCore` for data protection key persistence to Entity Framework context
+- `min` validator to hours on time entry
+- Display rejection notes in modal when clicking the icon
+
+### Fixed
+- Red validation borders on time entry are now displayed when form is touched
+- Ignore `HostAbortedException` exception when host is stopping
+- Bug when resetting time the date is cleared
+- Extra whitespace in confirm modal when rejecting a time entry from PSR time list
+
+## [0.3.17] - 2024-07-01
+
+### Fixed
+- Vacation calculations
+
+## [0.3.16] - 2024-07-01
+
+### Change
+- Sort projects by name on timesheet entry
+
+## [0.3.15] - 2024-06-30
+
+### Added
+- Additional debug output to voltron time import
+
+## [0.3.14] - 2024-06-30
+
+### Fixed
+- Charge code create form validation
+- Timesheet dashboard color consistency
+- Angular linter warnings and errors
+- Vacation hour calculations
+
+### Added
+- Skipped counts to voltron timesheet import response
+- Rejected time UI (red button if there is any rejected time for correction)
+- Storage service implementation
+  - Database
+  - Filesystem
+- RXJS linting rules
+- RXJS angular linting rules
+- Arguments to voltron import to support specifying status
+- CapturedAt timestamp to time entries
+- Endpoint to capture unsubmitted time based on time range
+- Endpoint to bulk set time entry cutoff dates on staff
+- Weekly time processing subcommand
+  - Captures unsubmitted time for previous PSR week
+  - Generates PSRs for previous PSR week
+  - Update time entry cutoff date on all staff to start of current PSR week
+
+### Changed
+- Restrict time creation, modification and delete based on cutoff date
+- PSR list will now highlight a row red if the report is unsubmitted or if there are any time entries within the PSR period that are not Accepted or Rejected
+
 ## [0.3.13] - 2024-06-28
 
 ### Fixed
@@ -195,7 +258,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.13...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.18...HEAD
+[0.3.18]: https://github.com/sancsoft/hq/compare/v0.3.17...v0.3.18
+[0.3.17]: https://github.com/sancsoft/hq/compare/v0.3.16...v0.3.17
+[0.3.16]: https://github.com/sancsoft/hq/compare/v0.3.15...v0.3.16
+[0.3.15]: https://github.com/sancsoft/hq/compare/v0.3.14...v0.3.15
+[0.3.14]: https://github.com/sancsoft/hq/compare/v0.3.13...v0.3.14
 [0.3.13]: https://github.com/sancsoft/hq/compare/v0.3.12...v0.3.13
 [0.3.12]: https://github.com/sancsoft/hq/compare/v0.3.11...v0.3.12
 [0.3.11]: https://github.com/sancsoft/hq/compare/v0.3.10...v0.3.11

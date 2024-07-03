@@ -1,5 +1,5 @@
 import { GetStaffV1Record } from './../../models/staff-members/get-staff-member-v1';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -8,7 +8,14 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  firstValueFrom,
+  map,
+  takeUntil,
+} from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
@@ -32,7 +39,7 @@ interface Form {
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './users-create.component.html',
 })
-export class UsersCreateComponent {
+export class UsersCreateComponent implements OnDestroy {
   apiErrors: string[] = [];
   staffMembers$: Observable<GetStaffV1Record[]>;
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
@@ -74,6 +81,8 @@ export class UsersCreateComponent {
     }),
   });
 
+  private destroy = new Subject<void>();
+
   constructor(
     private hqService: HQService,
     private router: Router,
@@ -87,16 +96,27 @@ export class UsersCreateComponent {
       }),
     );
 
-    this.form.controls.isStaff.valueChanges.subscribe((value) => {
-      this.showStaffMembers$.next(value);
-      if (value) {
-        this.form.controls.staffId.setValidators([Validators.required]);
-        this.form.controls.staffId.updateValueAndValidity();
-      } else {
-        this.form.controls.staffId.clearValidators();
-        this.form.controls.staffId.updateValueAndValidity();
-      }
-    });
+    this.form.controls.isStaff.valueChanges
+      .pipe(takeUntil(this.destroy))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (value) => {
+          this.showStaffMembers$.next(value);
+          if (value) {
+            this.form.controls.staffId.setValidators([Validators.required]);
+            this.form.controls.staffId.updateValueAndValidity();
+          } else {
+            this.form.controls.staffId.clearValidators();
+            this.form.controls.staffId.updateValueAndValidity();
+          }
+        },
+        error: console.error,
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
   }
 
   async submit() {
@@ -113,10 +133,8 @@ export class UsersCreateComponent {
 
     try {
       const request = this.form.value;
-      const response = await firstValueFrom(
-        this.hqService.upsertUsersV1(request),
-      );
-      this.router.navigate(['../'], { relativeTo: this.route });
+      await firstValueFrom(this.hqService.upsertUsersV1(request));
+      await this.router.navigate(['../'], { relativeTo: this.route });
       this.toastService.show('Accepted', 'Client has been created.');
     } catch (err) {
       if (err instanceof APIError) {

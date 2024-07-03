@@ -1,12 +1,10 @@
 import {
-  AuthInterceptor,
   PassedInitialConfig,
   StsConfigHttpLoader,
   StsConfigLoader,
 } from 'angular-auth-oidc-client';
 import { AppSettingsService } from './app-settings.service';
-import { map, tap } from 'rxjs';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { map } from 'rxjs';
 
 export const authConfig: PassedInitialConfig = {
   loader: {

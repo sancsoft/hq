@@ -15,10 +15,9 @@ import {
   shareReplay,
   BehaviorSubject,
 } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs';
 import { ClientDetailsService } from '../../clients/client-details.service';
 import { SortDirection } from '../../models/common/sort-direction';
-import { GetUsersRecordV1 } from '../../models/users/get-users-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
@@ -77,7 +76,7 @@ export class StaffListComponent {
       startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(clientDetailService.search.value),
     );
 
@@ -94,7 +93,7 @@ export class StaffListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getStaffMembersV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.staffMembers$ = response$.pipe(

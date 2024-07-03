@@ -20,20 +20,29 @@ public class MigrateCommand : AsyncCommand
 {
     public override async Task<int> ExecuteAsync(CommandContext context)
     {
-        var args = context.Remaining.Raw.ToArray();
-        var builder = WebApplication.CreateBuilder(args);
+        try
+        {
+            var args = context.Remaining.Raw.ToArray();
+            var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-        builder.Services.AddHQDbContext(builder.Configuration);
+            builder.Configuration.AddEnvironmentVariables("HQ_");
 
-        var app = builder.Build();
+            // Add services to the container.
+            builder.Services.AddHQDbContext(builder.Configuration);
 
-        var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-        await using var scope = serviceScopeFactory.CreateAsyncScope();
-        await using var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
+            var app = builder.Build();
 
-        await dbContext.Database.MigrateAsync();
+            var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+            await using var scope = serviceScopeFactory.CreateAsyncScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
 
-        return 0;
+            await dbContext.Database.MigrateAsync();
+
+            return 0;
+        }
+        catch (Exception ex) when (ex is HostAbortedException && ex.Source == "Microsoft.EntityFrameworkCore.Design") // see https://github.com/dotnet/efcore/issues/29923
+        {
+            return 0;
+        }
     }
 }

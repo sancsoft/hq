@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   HostBinding,
   Input,
@@ -7,6 +8,7 @@ import {
   OnDestroy,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import {
   GetDashboardTimeV1Project,
@@ -25,20 +27,17 @@ import {
   Observable,
   Subject,
   combineLatest,
-  debounceTime,
   distinctUntilChanged,
-  filter,
   map,
   pairwise,
   shareReplay,
-  skip,
   startWith,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 import { TimeStatus } from '../../models/common/time-status';
+import { ModalService } from '../../services/modal.service';
 
 export interface HQTimeChangeEvent {
   id?: string | null;
@@ -93,12 +92,14 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   chargeCodeToColor = chargeCodeToColor;
 
+  @ViewChild('hoursInput') hoursInput!: ElementRef<HTMLInputElement>;
+
   form = new FormGroup<Form>({
     id: new FormControl<string | null>(null),
     date: new FormControl<string | null>(null),
     hours: new FormControl<number | null>(null, {
       updateOn: 'blur',
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.min(0.25)],
     }),
     notes: new FormControl<string | null>(null, {
       updateOn: 'blur',
@@ -107,8 +108,14 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     task: new FormControl<string | null>(null, { updateOn: 'blur' }),
     chargeCode: new FormControl<string | null>(null),
     chargeCodeId: new FormControl<string | null>(null, [Validators.required]),
-    clientId: new FormControl<string | null>(null, [Validators.required]),
-    projectId: new FormControl<string | null>(null, [Validators.required]),
+    clientId: new FormControl<string | null>(null, {
+      updateOn: 'change',
+      validators: [Validators.required],
+    }),
+    projectId: new FormControl<string | null>(null, {
+      updateOn: 'change',
+      validators: [Validators.required],
+    }),
     activityId: new FormControl<string | null>(null),
   });
 
@@ -117,8 +124,13 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   timeStatus = TimeStatus;
 
-  constructor(public staffDashboardService: StaffDashboardService) {
-    const form$ = this.form.valueChanges.pipe(shareReplay(1));
+  constructor(
+    public staffDashboardService: StaffDashboardService,
+    private modalService: ModalService,
+  ) {
+    const form$ = this.form.valueChanges.pipe(
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     const clientId$ = form$.pipe(
       map((t) => t.clientId),
@@ -152,9 +164,9 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       startWith([]),
     );
 
-    clientId$
-      .pipe(pairwise(), takeUntil(this.destroyed$))
-      .subscribe(([previousClientId, currentClientId]) => {
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    clientId$.pipe(pairwise(), takeUntil(this.destroyed$)).subscribe({
+      next: ([previousClientId, currentClientId]) => {
         if (currentClientId != previousClientId) {
           this.form.patchValue({
             chargeCodeId: null,
@@ -162,65 +174,76 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
             projectId: null,
           });
         }
-      });
-
-    project$.pipe(takeUntil(this.destroyed$)).subscribe((project) => {
-      if (project) {
-        this.form.patchValue({
-          chargeCodeId: project.chargeCodeId,
-          chargeCode: project.chargeCode,
-        });
-      }
+      },
+      error: console.error,
     });
 
-    hours$
-      .pipe(debounceTime(500), takeUntil(this.destroyed$))
-      .subscribe((hours) => {
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    project$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (project) => {
+        if (project) {
+          this.form.patchValue({
+            chargeCodeId: project.chargeCodeId,
+            chargeCode: project.chargeCode,
+          });
+        }
+      },
+      error: console.error,
+    });
+
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    hours$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (hours) => {
         if (hours != null) {
           this.form.patchValue({ hours: roundToNextQuarter(hours) });
         }
-      });
-
-    form$
-      .pipe(
-        distinctUntilChanged(
-          (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr),
-        ),
-        debounceTime(750),
-        takeUntil(this.destroyed$),
-      )
-      .subscribe((time) => {
-        if (this.form.touched) {
-          // this.class = this.form.invalid
-          //   ? ''
-          //   : 'even:bg-gray-850 odd:bg-black-alt';
-
-          if (this.form.valid) {
-            this.hqTimeChange.emit(time);
-          }
-        }
-      });
+      },
+      error: console.error,
+    });
 
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(() => {
-        if (!this.time?.id) {
-          this.form.reset();
-          this.form.patchValue({
-            date: this.time?.date,
-          });
-        }
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: () => {
+          if (!this.time?.id) {
+            this.resetTime();
+          }
+        },
+        error: console.error,
       });
+  }
+
+  async onEnter(target: EventTarget | null) {
+    if (
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLSelectElement
+    ) {
+      target.blur();
+    }
+  }
+
+  async save() {
+    if (this.form.valid && this.form.dirty) {
+      this.hqTimeChange.emit(this.form.value);
+      this.form.markAsPristine();
+      if (!this.form.value.id) {
+        this.hoursInput?.nativeElement?.focus();
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['time'].currentValue) {
       this.form.patchValue(changes['time'].currentValue);
+      if (this.form.value.id) {
+        // Force validation to run and highlight invalid fields red
+        this.form.markAllAsTouched();
+      }
     }
   }
 
   ngOnDestroy() {
-    console.log('destroying');
     this.destroyed$.next();
     this.destroyed$.complete();
   }
@@ -232,15 +255,12 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     }
   }
   resetTime() {
-    this.form.reset();
+    this.form.reset({ date: this.form.controls.date.value });
   }
 
-  blurInput(target: EventTarget | null) {
-    if (
-      target instanceof HTMLInputElement ||
-      target instanceof HTMLSelectElement
-    ) {
-      target.blur();
+  async showRejectionNotes() {
+    if (this.time?.rejectionNotes) {
+      await this.modalService.alert('Rejection', this.time.rejectionNotes);
     }
   }
 }

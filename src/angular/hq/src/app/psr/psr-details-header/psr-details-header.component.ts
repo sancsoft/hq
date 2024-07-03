@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { GetPSRRequestV1 } from './../../models/PSR/get-PSR-v1';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   Observable,
   combineLatest,
@@ -37,7 +36,7 @@ export class PsrDetailsHeaderComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getPSRV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.projectReportStatus$ = response$.pipe(

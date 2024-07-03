@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -41,7 +40,7 @@ export class ClientEditComponent implements OnInit {
       (await (
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('clientId')) ?? undefined;
-    this.getClient();
+    await this.getClient();
   }
   apiErrors?: string[];
 
@@ -93,7 +92,7 @@ export class ClientEditComponent implements OnInit {
         this.hqService.upsertClientV1(request),
       );
       console.log(response);
-      this.router.navigate(['clients', response.id]);
+      await this.router.navigate(['clients', response.id]);
       this.toastService.show('Updated', 'Client has been updated');
     } catch (err) {
       console.log(err);

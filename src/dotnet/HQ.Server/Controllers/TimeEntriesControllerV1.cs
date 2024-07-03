@@ -13,6 +13,7 @@ using HQ.Abstractions.Times;
 using HQ.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
+using HQ.Server.Data.Models;
 using HQ.Server.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -69,6 +70,18 @@ namespace HQ.Server.Controllers
             else
             {
                 request.StaffId = User.GetStaffId();
+                if (!request.StaffId.HasValue)
+                {
+                    return Forbid();
+                }
+
+                var authorizationResult = await _authorizationService
+                    .AuthorizeAsync(User, new Time() { StaffId = request.StaffId.Value, Date = request.Date }, TimeEntryOperation.UpsertTime);
+
+                if (!authorizationResult.Succeeded)
+                {
+                    return Forbid();
+                }
             }
 
             return await _TimeEntryServiceV1.UpsertTimeV1(request, ct)
@@ -175,7 +188,15 @@ namespace HQ.Server.Controllers
         }
 
 
-
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(CaptureUnsubmittedTimeV1))]
+        [ProducesResponseType<CaptureUnsubmittedTimeV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> CaptureUnsubmittedTimeV1([FromBody] CaptureUnsubmittedTimeV1.Request request, CancellationToken ct = default)
+        {
+            return await _TimeEntryServiceV1.CaptureUnsubmittedTimeV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
 
         [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(DeleteTimeV1))]

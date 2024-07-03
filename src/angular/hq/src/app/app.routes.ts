@@ -1,4 +1,3 @@
-import { UsersEditComponent } from './users/users-edit/users-edit.component';
 import { Routes } from '@angular/router';
 import { AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 import { userRoleGuard } from './guards/user-role.guard';

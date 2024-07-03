@@ -9,6 +9,8 @@ public class WorkerCommand : AsyncCommand
         var args = context.Remaining.Raw.ToArray();
         var builder = Host.CreateApplicationBuilder(args);
 
+        builder.Configuration.AddEnvironmentVariables("HQ_");
+
         var host = builder.Build();
         host.Run();
 

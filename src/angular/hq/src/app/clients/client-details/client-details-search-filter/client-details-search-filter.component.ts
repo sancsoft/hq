@@ -1,9 +1,8 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { NavigationEnd, Router, ActivatedRoute } from '@angular/router';
-import { Subject, Subscription, filter, map, takeUntil } from 'rxjs';
+import { Component } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ClientDetailsService } from '../../client-details.service';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'hq-client-details-search-filter',

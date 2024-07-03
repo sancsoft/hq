@@ -23,7 +23,7 @@ export class AppSettingsService {
   constructor(httpClient: HttpClient) {
     this.appSettings$ = httpClient
       .get<AppSettings>('/config/settings.json')
-      .pipe(shareReplay(1));
+      .pipe(shareReplay({ bufferSize: 1, refCount: false }));
     this.apiUrl$ = this.appSettings$.pipe(map((t) => t.apiUrl));
     this.version$ = this.appSettings$.pipe(map((t) => t.version));
   }

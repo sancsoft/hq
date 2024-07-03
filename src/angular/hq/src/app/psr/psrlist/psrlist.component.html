@@ -177,7 +177,9 @@
     @for ((report of projectStatusReports$ | async); track report.id) {
       <tr
         [class]="
-          report.isLate ? 'bg-red-850' : 'even:bg-gray-850 odd:bg-black-alt'
+          !report.submittedAt || report.thisPendingHours > 0
+            ? 'bg-red-850'
+            : 'even:bg-gray-850 odd:bg-black-alt'
         "
       >
         <td class="border-b border-black py-2 pl-5">{{ report.chargeCode }}</td>
@@ -270,7 +272,10 @@
               </div>
             }
             <div class="flex justify-between gap-2 text-xs text-gray-300">
-              <span>{{ report.totalHours | number: "0.2-2" }} hrs total</span>
+              <span
+                >{{ report.totalHours | number: "0.2-2" }} hrs total to psr
+                date</span
+              >
               <span>{{
                 report.totalPercentComplete !== null
                   ? (report.totalPercentComplete | percent)

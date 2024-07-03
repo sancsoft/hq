@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { GetPSRRecordV1, GetPSRV1 } from '../../models/PSR/get-PSR-v1';
+import { Component } from '@angular/core';
+import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 import { HQService } from '../../services/hq.service';
-import { filter, map, Observable, shareReplay, switchMap } from 'rxjs';
+import { filter, map, Observable, switchMap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 

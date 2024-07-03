@@ -7,27 +7,21 @@ import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpResponse,
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   GetClientRequestV1,
   GetClientResponseV1,
 } from '../models/clients/get-client-v1';
 import { AppSettingsService } from '../app-settings.service';
-import { catchError, map, Observable, switchMap, throwError } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 import {
   UpsertClientRequestV1,
   UpsertClientResponseV1,
 } from '../models/clients/upsert-client-v1';
-import { APIError } from '../errors/apierror';
 import {
   GetProjectRecordsV1,
   GetProjectRequestV1,
-  GetProjectResponseV1,
 } from '../models/projects/get-project-v1';
 import {
   GetQuotesRecordsV1,
@@ -39,14 +33,12 @@ import {
 } from '../models/Services/get-services-v1';
 import {
   GetInvoicesRecordsV1,
-  GetInvoicesRecordV1,
   GetInvoicesRequestV1,
 } from '../models/Invoices/get-invoices-v1';
 import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
 import {
   GetPSRTimeRecordsV1,
   GetPSRTimeRequestV1,
-  GetPSRTimeV1,
 } from '../models/PSR/get-psr-time-v1';
 import {
   ApprovePSRTimeRequestV1,
@@ -122,6 +114,10 @@ import {
   SubmitTimeResponseV1,
   SubmitTimesRequestV1,
 } from '../models/times/submit-times-v1';
+import {
+  GetPrevPSRRequestV1,
+  GetPrevPsrResponseV1,
+} from '../models/PSR/get-previous-PSR-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -151,13 +147,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-
-        throw err;
-      }),
     );
   }
 
@@ -222,6 +211,18 @@ export class HQService {
       ),
     );
   }
+
+  getPrevPSRV1(request: Partial<GetPrevPSRRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPrevPsrResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/GetPreviousProjectStatusReportsV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
   getProjectPSRV1(id: string) {
     return this.getPSRV1({ projectId: id });
   }
@@ -356,12 +357,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-        throw err;
-      }),
     );
   }
 
@@ -374,12 +369,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-        throw err;
-      }),
     );
   }
 
@@ -392,12 +381,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-        throw err;
-      }),
     );
   }
 
@@ -409,12 +392,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-        throw err;
-      }),
     );
   }
 
@@ -447,13 +424,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-
-        throw err;
-      }),
     );
   }
   submitTimesV1(request: Partial<SubmitTimesRequestV1>) {
@@ -464,13 +434,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-
-        throw err;
-      }),
     );
   }
   deleteTimeV1(request: Partial<DeleteTimeV1Request>) {
@@ -481,13 +444,6 @@ export class HQService {
           request,
         ),
       ),
-      catchError((err: HttpErrorResponse) => {
-        if (err.status == 400) {
-          return throwError(() => new APIError(err.error));
-        }
-
-        throw err;
-      }),
     );
   }
 

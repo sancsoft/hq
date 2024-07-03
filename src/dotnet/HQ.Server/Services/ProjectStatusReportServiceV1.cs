@@ -154,19 +154,6 @@ public class ProjectStatusReportServiceV1
             records = records.Where(t => t.StartDate >= request.StartDate && t.EndDate <= request.EndDate);
         }
 
-        if (request.IsSubmitted != null)
-        {
-            if (request.IsSubmitted == true)
-            {
-                records = records.Where(t => t.SubmittedAt != null);
-            }
-            else
-            {
-                records = records.Where(t => t.SubmittedAt == null);
-
-            }
-        }
-
         var mapped = records
             .Select(t => new
             {
@@ -190,7 +177,7 @@ public class ProjectStatusReportServiceV1
                 IsLate = t.Row.SubmittedAt == null,
 
                 ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
-                ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
+                ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Status != TimeStatus.Rejected && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
 
                 LastId = t.Previous != null ? t.Previous.Id : null,
                 LastHours = t.Previous != null && t.Previous.Project.ChargeCode != null ? t.Previous.Project.ChargeCode.Times.Where(x => x.Date >= t.Previous.StartDate && x.Date <= t.Previous.EndDate).Sum(x => x.Hours) : null,
@@ -250,6 +237,18 @@ public class ProjectStatusReportServiceV1
                 SummaryPercentComplete = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
                 SummaryPercentCompleteSort = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort
             });
+
+        if (request.IsSubmitted != null)
+        {
+            if (request.IsSubmitted == true)
+            {
+                mapped = mapped.Where(t => t.SubmittedAt != null && t.ThisPendingHours == 0);
+            }
+            else
+            {
+                mapped = mapped.Where(t => t.SubmittedAt == null || t.ThisPendingHours > 0);
+            }
+        }
 
         var totalHours = await mapped.SumAsync(t => t.TotalHours, ct);
         var total = await mapped.CountAsync(ct);
@@ -419,7 +418,7 @@ public class ProjectStatusReportServiceV1
 
         foreach (var time in times)
         {
-            if (time.Status != TimeStatus.Pending && time.Status != TimeStatus.RejectedPendingReview && time.Status != TimeStatus.Submitted)
+            if (time.Status != TimeStatus.Unsubmitted && time.Status != TimeStatus.Resubmitted && time.Status != TimeStatus.Submitted)
             {
                 continue;
             }
@@ -486,7 +485,7 @@ public class ProjectStatusReportServiceV1
         //     return Result.Fail("Time entry is not accepted.");
         // }
 
-        time.Status = TimeStatus.Pending;
+        time.Status = TimeStatus.Unsubmitted;
 
         await _context.SaveChangesAsync(ct);
 
@@ -555,6 +554,28 @@ public class ProjectStatusReportServiceV1
         {
             ProjectStatusReportId = psr.Id,
             SubmittedAt = psr.SubmittedAt.Value
+        };
+    }
+
+    public async Task<Result<PreviousProjectStatusReportV1.Response>> GetPreviousProjectStatusReportV1(PreviousProjectStatusReportV1.Request request, CancellationToken ct = default)
+    {
+        var psr = await _context.ProjectStatusReports.FindAsync(request.ProjectStatusReportId);
+
+        if (psr == null)
+        {
+            return Result.Fail("Unable to find project status report.");
+        }
+        var previousPsr = await _context.ProjectStatusReports.AsNoTracking().Where(t => t.ProjectId == psr.ProjectId && t.StartDate < psr.StartDate).OrderByDescending(t => t.StartDate).FirstOrDefaultAsync();
+
+        if (previousPsr == null)
+        {
+            return Result.Fail("Unable to find previous project status report.");
+        }
+
+        return new PreviousProjectStatusReportV1.Response()
+        {
+            ProjectStatusReportId = previousPsr.Id,
+            Report = previousPsr.Report
         };
     }
 }

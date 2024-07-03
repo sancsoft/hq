@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { ProjectStatus } from '../../../clients/client-details.service';
 import { GetPSRTimeRecordStaffV1 } from '../../../models/PSR/get-psr-time-v1';
 import { HQService } from '../../../services/hq.service';
@@ -15,7 +15,8 @@ export enum ActivityName {
   providedIn: 'root',
 })
 export class PsrListService {
-  staffMembers$ = new BehaviorSubject<GetPSRTimeRecordStaffV1[]>([]);
+  staffMembers$: Observable<GetPSRTimeRecordStaffV1[]>;
+
   search = new FormControl<string | null>('');
   roaster = new FormControl<string | null>('');
 
@@ -43,7 +44,20 @@ export class PsrListService {
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
 
-  constructor(private hqService: HQService) {}
+  constructor(private hqService: HQService) {
+    this.staffMembers$ = this.hqService
+      .getStaffMembersV1({ isAssignedProjectManager: true })
+      .pipe(
+        map((response) => response.records),
+        map((records) =>
+          records.map((record) => ({
+            id: record.id,
+            name: record.name,
+            totalHours: record.workHours,
+          })),
+        ),
+      );
+  }
 
   resetFilter() {
     this.search.setValue('');

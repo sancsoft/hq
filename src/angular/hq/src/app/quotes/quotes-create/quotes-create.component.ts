@@ -1,18 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { PdfViewerComponent } from '../../common/pdf-viewer/pdf-viewer.component';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
+import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { HQService } from '../../services/hq.service';
@@ -75,7 +73,7 @@ export class QuotesCreateComponent {
           this.hqService.upsertQuoteV1(request),
         );
         console.log(response.id);
-        this.router.navigate(['../'], { relativeTo: this.route });
+        await this.router.navigate(['../'], { relativeTo: this.route });
         this.toastService.show('Accepted', 'Quote has been created.');
       } else {
         this.apiErrors.length = 0;

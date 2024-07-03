@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { ModalData } from '../../services/modal.service';
 
 @Component({

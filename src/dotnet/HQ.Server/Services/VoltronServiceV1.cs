@@ -48,6 +48,10 @@ public class VoltronServiceV1
             if (!staffLookup.ContainsKey(staffName))
             {
                 response.SkippedMissingStaff++;
+                if (!response.UnknownStaff.Contains(staffName))
+                {
+                    response.UnknownStaff.Add(staffName);
+                }
                 continue;
             }
 
@@ -72,10 +76,16 @@ public class VoltronServiceV1
                 if (!chargeCodes.ContainsKey(timeRecord.ChargeCode))
                 {
                     response.SkippedMissingChargeCode++;
+                    if (!response.UnknownChargeCodes.Contains(timeRecord.ChargeCode))
+                    {
+                        response.UnknownChargeCodes.Add(timeRecord.ChargeCode);
+                    }
+
                     continue;
                 }
 
                 var time = new Time();
+                time.Status = request.Status;
                 time.Staff = staff;
                 time.ChargeCode = chargeCodes[timeRecord.ChargeCode];
                 time.Date = timeRecord.Date;

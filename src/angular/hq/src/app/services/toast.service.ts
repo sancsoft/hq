@@ -1,15 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
-  BehaviorSubject,
   Subject,
-  combineLatest,
   map,
   scan,
   switchMap,
-  takeWhile,
-  timer,
-  of,
-  filter,
   shareReplay,
   interval,
   Observable,
@@ -32,8 +26,8 @@ export class ToastService {
 
   constructor() {
     const allToasts$ = this.toasts$.pipe(
-      scan((acc: Toast[], value: Toast, index: number) => [...acc, value], []),
-      shareReplay(1),
+      scan((acc: Toast[], value: Toast) => [...acc, value], []),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.toastsToDisplay$ = interval(1000).pipe(
@@ -42,7 +36,7 @@ export class ToastService {
       map((t) =>
         t.filter((t) => t.timestamp >= new Date().getTime() - t.timeout),
       ),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
   }
 

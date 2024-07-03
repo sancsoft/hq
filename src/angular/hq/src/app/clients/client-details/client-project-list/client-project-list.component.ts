@@ -1,9 +1,8 @@
 import { SortIconComponent } from './../../../common/sort-icon/sort-icon.component';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import {
-  catchError,
   debounceTime,
   map,
   shareReplay,
@@ -16,12 +15,10 @@ import {
   GetProjectRecordV1,
   SortColumn,
 } from '../../../models/projects/get-project-v1';
-import { APIError } from '../../../errors/apierror';
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 import { ClientDetailsService } from '../../client-details.service';
-import { GetClientRequestV1 } from '../../../models/clients/get-client-v1';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { HQRole } from '../../../enums/hqrole';
@@ -76,11 +73,11 @@ export class ClientProjectListComponent {
       startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(clientDetailService.search.value),
     );
     const projectStatus$ = clientDetailService.projectStatus.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(clientDetailService.projectStatus.value),
     );
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
@@ -98,7 +95,7 @@ export class ClientProjectListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getProjectsV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.projects$ = response$.pipe(

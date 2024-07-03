@@ -19,13 +19,10 @@ import {
   SortColumn,
 } from '../../models/charge-codes/get-chargecodes-v1';
 import { SortDirection } from '../../models/common/sort-direction';
-import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
-import { PsrService } from '../../psr/psr-service';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { PsrSearchFilterComponent } from '../../psr/psr-search-filter/psr-search-filter.component';
 import { ChargeCodeSearchFilterComponent } from '../SearchFilter/charge-code-search-filter.component';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
@@ -82,7 +79,7 @@ export class ChargeCodeListComponent implements OnInit {
       startWith(0),
     );
     const search$ = chargeCodeListService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(chargeCodeListService.search.value),
     );
 
@@ -99,7 +96,7 @@ export class ChargeCodeListComponent implements OnInit {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getChargeCodeseV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.chargeCodes$ = response$.pipe(
@@ -109,9 +106,6 @@ export class ChargeCodeListComponent implements OnInit {
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
-    this.chargeCodes$.subscribe((records) => {
-      console.log(records);
-    });
 
     this.takeToDisplay$ = combineLatest([
       skip$,

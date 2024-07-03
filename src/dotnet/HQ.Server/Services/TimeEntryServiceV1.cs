@@ -29,7 +29,6 @@ namespace HQ.Server.Services
         public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default)
         {
             var validationResult = Result.Merge(
-                Result.FailIf(string.IsNullOrEmpty(request.Notes), "Notes are required."),
                 Result.FailIf(!request.Id.HasValue && request.StaffId == null, "Staff is required."),
                 Result.FailIf(request.Hours <= 0, "Hours must be greater than 0.")
             );
@@ -191,14 +190,14 @@ namespace HQ.Server.Services
             }
             foreach (var time in timeEntries)
             {
-                if (time.Status == TimeStatus.Pending)
+                if (time.Status == TimeStatus.Unsubmitted)
                 {
                     time.Status = TimeStatus.Submitted;
                 }
 
                 if (time.Status == TimeStatus.Rejected)
                 {
-                    time.Status = TimeStatus.RejectedPendingReview;
+                    time.Status = TimeStatus.Resubmitted;
                 }
             }
             await _context.SaveChangesAsync(ct);
@@ -482,8 +481,9 @@ namespace HQ.Server.Services
 
             var timesQuery = _context.Times
                 .AsNoTracking()
-                .Where(t => t.StaffId == request.StaffId && t.Date >= startDate && t.Date <= endDate)
+                .Where(t => t.StaffId == request.StaffId && (request.Status == null ? (t.Date >= startDate && t.Date <= endDate) : (t.Status == request.Status)))
                 .AsQueryable();
+
             var hrsThisWeekQuery = _context.Times
                 .AsNoTracking()
                 .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.Week) && t.Date <= request.Date.GetPeriodEndDate(Period.Week))
@@ -504,7 +504,7 @@ namespace HQ.Server.Services
             }
 
             var currentYearStart = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Year);
-            var totalVacationHours = staff.VacationHours;
+            var totalVacationHours = !staff.StartDate.HasValue ? 0 : DateOnly.FromDateTime(DateTime.Today).CalculateEarnedVacationHours(staff.StartDate.Value, staff.VacationHours);
 
             var usedVacationHours = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Date >= currentYearStart && t.ChargeCode.Project!.Name.ToLower().Contains("vacation")).SumAsync(t => t.Hours);
             var vacationHours = totalVacationHours - usedVacationHours;
@@ -557,9 +557,9 @@ namespace HQ.Server.Services
                 })
                 .ToListAsync(ct);
 
-
             var clients = await _context.Clients
                 .AsNoTracking()
+                .Where(t => !t.Projects.All(x => x.ChargeCode!.Active == false))
                 .OrderBy(t => t.Name)
                 .Include(t => t.Projects)
                 .ThenInclude(t => t.Activities)
@@ -567,7 +567,7 @@ namespace HQ.Server.Services
                 {
                     Id = t.Id,
                     Name = t.Name,
-                    Projects = t.Projects.Where(x => x.ChargeCode!.Active == true).Select(x => new Abstractions.Times.GetDashboardTimeV1.Project()
+                    Projects = t.Projects.Where(x => x.ChargeCode!.Active == true).OrderBy(x => x.Name).Select(x => new Abstractions.Times.GetDashboardTimeV1.Project()
                     {
                         Id = x.Id,
                         ChargeCodeId = x.ChargeCode != null ? x.ChargeCode.Id : null,
@@ -596,22 +596,39 @@ namespace HQ.Server.Services
             response.NextDate = nextDate;
             response.PreviousDate = previousDate;
             response.StaffName = staff.Name;
+            response.RejectedCount = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Status == TimeStatus.Rejected).CountAsync(ct);
 
-            DateOnly date = endDate;
-            do
+            if (request.Status.HasValue)
             {
-                var timeForDate = new GetDashboardTimeV1.TimeForDate();
-                timeForDate.Date = date;
-                if (times.ContainsKey(date))
+                foreach (var date in times)
                 {
-                    timeForDate.Times = times[date];
+                    var timeForDate = new GetDashboardTimeV1.TimeForDate();
+                    timeForDate.Date = date.Key;
+                    timeForDate.Times = date.Value;
                     timeForDate.TotalHours = timeForDate.Times.Sum(t => t.Hours);
+                    response.Dates.Add(timeForDate);
                 }
-
-                response.Dates.Add(timeForDate);
-                date = date.AddDays(-1);
             }
-            while (date >= startDate);
+            else
+            {
+                DateOnly date = endDate;
+                do
+                {
+                    var timeForDate = new GetDashboardTimeV1.TimeForDate();
+                    timeForDate.Date = date;
+                    if (times.ContainsKey(date))
+                    {
+                        timeForDate.Times = times[date];
+                        timeForDate.TotalHours = timeForDate.Times.Sum(t => t.Hours);
+                    }
+
+                    timeForDate.CanCreateTime = !staff.TimeEntryCutoffDate.HasValue || timeForDate.Date >= staff.TimeEntryCutoffDate.Value;
+
+                    response.Dates.Add(timeForDate);
+                    date = date.AddDays(-1);
+                }
+                while (date >= startDate);
+            }
 
             return response;
         }
@@ -663,6 +680,34 @@ namespace HQ.Server.Services
                 File = stream,
                 FileName = $"HQTimeExport_{DateTime.Now:yyyyMMddHHmm}.csv",
                 ContentType = "text/csv",
+            };
+        }
+
+        public async Task<Result<CaptureUnsubmittedTimeV1.Response>> CaptureUnsubmittedTimeV1(CaptureUnsubmittedTimeV1.Request request, CancellationToken ct = default)
+        {
+            var times = _context.Times
+                .Where(t => t.Status == TimeStatus.Unsubmitted)
+                .AsQueryable();
+
+            if (request.From.HasValue)
+            {
+                times = times.Where(t => t.Date >= request.From.Value);
+            }
+
+            if (request.To.HasValue)
+            {
+                times = times.Where(t => t.Date <= request.To.Value);
+            }
+
+            var capturedAt = DateTime.UtcNow;
+            var capturedCount = await times.ExecuteUpdateAsync(t => t
+                .SetProperty(x => x.CapturedAt, x => capturedAt)
+                .SetProperty(x => x.Status, x => TimeStatus.Submitted)
+            , ct);
+
+            return new CaptureUnsubmittedTimeV1.Response()
+            {
+                Captured = capturedCount
             };
         }
     }

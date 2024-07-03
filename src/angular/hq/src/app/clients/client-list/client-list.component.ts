@@ -1,5 +1,5 @@
 import { ClientListService } from './../Services/ClientListService';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
 import {
@@ -7,20 +7,13 @@ import {
   SortColumn,
 } from '../../models/clients/get-client-v1';
 import { SortDirection } from '../../models/common/sort-direction';
-import {
-  FormControl,
-  FormControlDirective,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
   Observable,
-  Subject,
   combineLatest,
   debounceTime,
   map,
-  of,
   shareReplay,
   startWith,
   switchMap,
@@ -75,12 +68,12 @@ export class ClientListComponent {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Name);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const search$ = this.ClientListService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(this.ClientListService.search.value),
     );
 
     const itemsPerPage$ = this.ClientListService.itemsPerPage.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(this.ClientListService.itemsPerPage.value),
     );
 
@@ -103,7 +96,7 @@ export class ClientListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => hqService.getClientsV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.records$ = response$.pipe(map((t) => t.records));

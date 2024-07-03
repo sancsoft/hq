@@ -6,6 +6,7 @@ export interface GetDashboardTimeV1Request {
   period: Period;
   date?: string;
   search?: string | null;
+  status?: TimeStatus | null;
 }
 
 export interface GetDashboardTimeV1Response {
@@ -23,12 +24,14 @@ export interface GetDashboardTimeV1Response {
   dates: GetDashboardTimeV1TimeForDate[];
   chargeCodes: GetDashboardTimeV1ChargeCode[];
   clients: GetDashboardTimeV1Client[];
+  rejectedCount: number;
 }
 
 export interface GetDashboardTimeV1TimeForDate {
   date: string;
   times: GetDashboardTimeV1TimeForDateTimes[];
   totalHours: number;
+  canCreateTime: boolean;
 }
 
 export interface GetDashboardTimeV1TimeForDateTimes {

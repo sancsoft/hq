@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, map, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { AlertModalComponent } from '../common/alert-modal/alert-modal.component';
 import { ConfirmModalComponent } from '../common/confirm-modal/confirm-modal.component';
@@ -42,7 +42,7 @@ export class ModalService {
       },
     );
 
-    return dialogRef.closed.pipe(map((t) => true));
+    return dialogRef.closed.pipe(map(() => true));
   }
 
   prompt(title: string, message: string = ''): Observable<string | undefined> {

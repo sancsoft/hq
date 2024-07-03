@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -66,7 +65,9 @@ export class ClientCreateComponent {
       const response = await firstValueFrom(
         this.hqService.upsertClientV1(request),
       );
-      this.router.navigate(['../', response.id], { relativeTo: this.route });
+      await this.router.navigate(['../', response.id], {
+        relativeTo: this.route,
+      });
       this.toastService.show('Accepted', 'Client has been created.');
     } catch (err) {
       if (err instanceof APIError) {

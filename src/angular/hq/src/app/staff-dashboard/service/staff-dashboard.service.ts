@@ -9,6 +9,7 @@ import {
   Subject,
   combineLatest,
   debounceTime,
+  distinctUntilChanged,
   map,
   merge,
   shareReplay,
@@ -29,6 +30,7 @@ import { TimeStatus } from '../../models/common/time-status';
 export class StaffDashboardService {
   search = new FormControl<string | null>(null);
   period = new FormControl<Period>(Period.Today, { nonNullable: true });
+  timeStatus = new FormControl<TimeStatus | null>(null);
   date = new FormControl<string>(
     new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
@@ -43,6 +45,8 @@ export class StaffDashboardService {
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
   clients$: Observable<GetDashboardTimeV1Client[]>;
   anyTimePending$: Observable<boolean>;
+  showAllRejectedTimes$ = new BehaviorSubject<boolean>(false);
+  rejectedCount$: Observable<number>;
 
   refresh$ = new Subject<void>();
 
@@ -53,10 +57,15 @@ export class StaffDashboardService {
     const staffId$ = oidcSecurityService.userData$.pipe(
       map((t) => t.userData),
       map((t) => t.staff_id as string),
+      distinctUntilChanged(),
     );
 
     const search$ = this.search.valueChanges.pipe(startWith(this.search.value));
     const period$ = this.period.valueChanges.pipe(startWith(this.period.value));
+    const timeStatus$ = this.timeStatus.valueChanges.pipe(
+      startWith(this.timeStatus.value),
+    );
+
     const date$ = this.date.valueChanges
       .pipe(startWith(this.date.value))
       .pipe(
@@ -76,7 +85,8 @@ export class StaffDashboardService {
       period: period$,
       search: search$,
       date: date$,
-    }).pipe(shareReplay(1));
+      status: timeStatus$,
+    }).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
     const time$ = request$.pipe(
       debounceTime(250),
@@ -84,21 +94,23 @@ export class StaffDashboardService {
       tap((response) =>
         this.date.setValue(response.startDate, { emitEvent: false }),
       ),
-      map((response) => {
-        const anyPending = response.dates.some((date) =>
-          date.times.some((time) => time.timeStatus === TimeStatus.Pending),
-        );
-        return response;
-      }),
     );
-    const refreshTime$ = this.refresh$.pipe(switchMap((t) => time$));
 
-    this.time$ = merge(time$, refreshTime$).pipe(shareReplay(1));
+    const refreshTime$ = this.refresh$.pipe(switchMap(() => time$));
+
+    this.time$ = merge(time$, refreshTime$).pipe(
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
+    this.rejectedCount$ = this.time$.pipe(map((t) => t.rejectedCount));
 
     this.anyTimePending$ = this.time$.pipe(
       map((response) =>
         response.dates.some((date) =>
-          date.times.some((time) => time.timeStatus === TimeStatus.Pending),
+          date.times.some(
+            (time) =>
+              time.timeStatus === TimeStatus.Unsubmitted ||
+              time.timeStatus === TimeStatus.Rejected,
+          ),
         ),
       ),
     );

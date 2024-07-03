@@ -18,6 +18,7 @@ import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-fi
 import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/staff-dashboard-date-range.component';
 import { TimeStatus } from '../models/common/time-status';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -67,6 +68,11 @@ export class StaffDashboardComponent {
     } catch (err) {
       if (err instanceof APIError) {
         this.toastService.show('Error', err.errors.join('\n'));
+      } else if (err instanceof HttpErrorResponse && err.status == 403) {
+        this.toastService.show(
+          'Unauthorized',
+          'You are not authorized to delete for this date.',
+        );
       } else {
         this.toastService.show('Error', 'An unexpected error has occurred.');
       }
@@ -100,10 +106,30 @@ export class StaffDashboardComponent {
     } catch (err) {
       if (err instanceof APIError) {
         this.toastService.show('Error', err.errors.join('\n'));
+      } else if (err instanceof HttpErrorResponse && err.status == 403) {
+        this.toastService.show(
+          'Unauthorized',
+          'You are not authorized to create or modify time for this date.',
+        );
       } else {
         this.toastService.show('Error', 'An unexpected error has occurred.');
       }
     }
+  }
+  handleRejectedTimes() {
+    this.staffDashboardService.showAllRejectedTimes$.getValue()
+      ? this.hideAllRejectedTimes()
+      : this.showAllRejectedTimes();
+  }
+  private showAllRejectedTimes() {
+    this.staffDashboardService.showAllRejectedTimes$.next(true);
+    this.staffDashboardService.timeStatus.setValue(TimeStatus.Rejected);
+    this.staffDashboardService.period.disable();
+  }
+  private hideAllRejectedTimes() {
+    this.staffDashboardService.showAllRejectedTimes$.next(false);
+    this.staffDashboardService.timeStatus.reset();
+    this.staffDashboardService.period.enable();
   }
   async submitTimes() {
     const confirm = await firstValueFrom(
@@ -134,6 +160,7 @@ export class StaffDashboardComponent {
           'Success',
           'Time entries successfully submitted.',
         );
+        this.hideAllRejectedTimes();
         this.staffDashboardService.refresh();
       } else {
         console.log('ERROR: Could not find staff');

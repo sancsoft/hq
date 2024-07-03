@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FluentResults;
 
 using HQ.Abstractions.ChargeCodes;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Voltron;
 using HQ.SDK;
 
@@ -35,6 +36,10 @@ namespace HQ.CLI.Commands.ChargeCode
         [CommandOption("--replace|-r")]
         [DefaultValue(false)]
         public bool Replace { get; set; }
+
+        [CommandOption("--status|-s")]
+        [DefaultValue(TimeStatus.Unsubmitted)]
+        public TimeStatus Stauts { get; set; }
     }
 
     internal class ImportVoltronTimeCommand : AsyncCommand<ImportVoltronTimeSettings>
@@ -67,6 +72,7 @@ namespace HQ.CLI.Commands.ChargeCode
                 From = settings.From,
                 To = settings.To,
                 Replace = settings.Replace,
+                Status = settings.Stauts,
                 Files = files.Select(t => (t.Name, (Stream)t.OpenRead())).ToList()
             };
 
@@ -77,8 +83,8 @@ namespace HQ.CLI.Commands.ChargeCode
                 return 1;
             }
 
-            Console.WriteLine("{0} Skipped (Missing Staff)", response.Value?.SkippedMissingStaff);
-            Console.WriteLine("{0} Deleted (Missing Charge Code)", response.Value?.SkippedMissingChargeCode);
+            Console.WriteLine("{0} Skipped (Unknown Staff - {1})", response.Value?.SkippedMissingStaff, String.Join(',', response.Value?.UnknownStaff ?? new()));
+            Console.WriteLine("{0} Skipped (Unknown Charge Code - {1})", response.Value?.SkippedMissingChargeCode, String.Join(',', response.Value?.UnknownChargeCodes ?? new()));
             Console.WriteLine("{0} Created", response.Value?.TimeCreated);
             Console.WriteLine("{0} Deleted", response.Value?.TimeDeleted);
 

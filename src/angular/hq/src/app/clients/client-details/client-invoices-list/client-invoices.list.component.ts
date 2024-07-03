@@ -7,7 +7,6 @@ import {
   combineLatest,
   map,
   tap,
-  of,
   debounceTime,
   switchMap,
   shareReplay,
@@ -75,7 +74,7 @@ export class ClientInvoicesComponent {
       startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(clientDetailService.search.value),
     );
 
@@ -93,7 +92,7 @@ export class ClientInvoicesComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getInvoicesV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.invoices$ = response$.pipe(

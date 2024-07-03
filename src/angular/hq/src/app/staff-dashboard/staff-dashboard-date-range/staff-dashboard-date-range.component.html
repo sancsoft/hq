@@ -4,6 +4,11 @@
       <!-- column -->
       <div class="grid grid-flow-col gap-[15px]">
         <button
+          [ngClass]="{
+            'text-gray-450 cursor-not-allowed':
+              staffDashboardService.showAllRejectedTimes$ | async,
+          }"
+          [disabled]="staffDashboardService.showAllRejectedTimes$ | async"
           type="button"
           [name]="
             'Previous ' +
@@ -26,17 +31,29 @@
           class="flex align-middle justify-center items-center mt-1"
           (click)="staffDashboardService.date.setValue(dashboard.previousDate)"
         >
-          <i class="bi bi-arrow-left-short text-[28px] cursor-pointer"></i>
+          <i class="bi bi-arrow-left-short text-[28px]"></i>
         </button>
         <div>
           <!-- input date -->
           <div class="grid relative w-full" style="width: 150px">
             <input
+              [ngClass]="{
+                'text-gray-450 bg-gray-850 border-none cursor-not-allowed':
+                  staffDashboardService.showAllRejectedTimes$ | async,
+                'bg-blue-900':
+                  (staffDashboardService.showAllRejectedTimes$ | async) ===
+                  false,
+              }"
+              [readonly]="staffDashboardService.showAllRejectedTimes$ | async"
               [formControl]="staffDashboardService.date"
               type="date"
-              class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+              class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 rounded h-[36px] uppercase"
             />
             <span
+              [ngClass]="{
+                'text-gray-450 cursor-not-allowed':
+                  staffDashboardService.showAllRejectedTimes$ | async,
+              }"
               class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
             >
               <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
@@ -48,19 +65,39 @@
           staffDashboardService.Period.Today
         ) {
           <div class="flex align-middle justify-center items-center mt-1">
-            <span class="w-3 h-1 bg-white"></span>
+            <span
+              [ngClass]="{
+                ' bg-gray-450':
+                  (staffDashboardService.showAllRejectedTimes$ | async),
+                ' bg-white':
+                  (staffDashboardService.showAllRejectedTimes$ | async) ===
+                  false,
+              }"
+              class="w-3 h-1"
+            ></span>
           </div>
           <div>
             <!-- input date -->
             <div class="grid relative w-full" style="width: 150px">
               <input
+                [ngClass]="{
+                  'text-gray-450 bg-gray-850 border-none cursor-not-allowed':
+                    staffDashboardService.showAllRejectedTimes$ | async,
+                  'bg-blue-900':
+                    (staffDashboardService.showAllRejectedTimes$ | async) ===
+                    false,
+                }"
                 readonly
                 [value]="(staffDashboardService.time$ | async)?.endDate"
                 type="date"
                 id="endDate"
-                class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+                class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 rounded h-[36px] uppercase"
               />
               <span
+                [ngClass]="{
+                  'text-gray-450 cursor-not-allowed':
+                    staffDashboardService.showAllRejectedTimes$ | async,
+                }"
                 class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
               >
                 <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
@@ -90,9 +127,14 @@
                 ])
           "
           class="flex align-middle justify-center items-center mt-1"
+          [ngClass]="{
+            'text-gray-450 cursor-not-allowed':
+              staffDashboardService.showAllRejectedTimes$ | async,
+          }"
+          [disabled]="staffDashboardService.showAllRejectedTimes$ | async"
           (click)="staffDashboardService.date.setValue(dashboard.nextDate)"
         >
-          <i class="bi bi-arrow-right-short text-[28px] cursor-pointer"></i>
+          <i class="bi bi-arrow-right-short text-[28px]"></i>
         </button>
       </div>
     </div>

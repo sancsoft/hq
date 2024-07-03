@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { InRolePipe } from './pipes/in-role.pipe';
 import { HQRole } from './enums/hqrole';
-import { ModalService } from './services/modal.service';
 
 @Component({
   selector: 'hq-layout',
@@ -40,9 +39,7 @@ export class LayoutComponent {
     );
   }
 
-  public logout() {
-    this.oidcSecurityService
-      .logoff()
-      .subscribe((result) => console.log(result));
+  public async logout() {
+    await firstValueFrom(this.oidcSecurityService.logoff());
   }
 }

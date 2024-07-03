@@ -81,27 +81,73 @@
 </div>
 
 <div class="px-5 py-2 bg-black-alt">
-  <div class="flex items-end gap-[20px] justify-between">
+  <div class="flex gap-[20px] justify-between items-center">
     <hq-staff-dashboard-date-range />
-    <button
-      [disabled]="(staffDashboardService.anyTimePending$ | async) === false"
-      [ngClass]="{
-        'text-gray-50 border-gray-500 bg-gray-500 ':
-          (staffDashboardService.anyTimePending$ | async) === false,
-        'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-          staffDashboardService.anyTimePending$ | async,
-      }"
-      [name]="
-        'Submit time entry for start date ' + staffDashboardService.date.value
-      "
-      class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
-      type="button"
-      (click)="submitTimes()"
-    >
-      Submit
-    </button>
+    <div>
+      @if (staffDashboardService.rejectedCount$ | async) {
+        <button
+          [title]="
+            (staffDashboardService.showAllRejectedTimes$ | async)
+              ? 'Dismiss all rejected time entries'
+              : 'Show all rejected time entries'
+          "
+          [name]="
+            (staffDashboardService.showAllRejectedTimes$ | async)
+              ? 'Dismiss all rejected time entries'
+              : 'Show all rejected time entries'
+          "
+          type="button"
+          (click)="handleRejectedTimes()"
+        >
+          <i
+            [class.border]="staffDashboardService.showAllRejectedTimes$ | async"
+            class="bi bi-exclamation-triangle-fill py-2 px-2 rounded-sm mr-3 text-white bg-red-700"
+          ></i>
+        </button>
+      }
+      <button
+        [title]="
+          (staffDashboardService.anyTimePending$ | async)
+            ? 'Submit all time entries for the shown date period'
+            : 'No time entries to be submitted '
+        "
+        [disabled]="(staffDashboardService.anyTimePending$ | async) === false"
+        [ngClass]="{
+          'text-gray-50 border-gray-500 bg-gray-500 ':
+            (staffDashboardService.anyTimePending$ | async) === false,
+          'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+            staffDashboardService.anyTimePending$ | async,
+        }"
+        class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
+        type="button"
+        (click)="submitTimes()"
+      >
+        Submit
+      </button>
+    </div>
   </div>
 </div>
+@if (staffDashboardService.showAllRejectedTimes$ | async) {
+  <div
+    class="flex align-middle justify-between h-5 w-full bg-red-850 mb-10 pt-1 px-5"
+  >
+    <div class="uppercase">
+      currently editing {{ staffDashboardService.rejectedCount$ | async }}
+      {{
+        ((staffDashboardService.rejectedCount$ | async) ?? 0) > 1
+          ? "errors"
+          : "error"
+      }}
+    </div>
+    <button
+      (click)="handleRejectedTimes()"
+      class="text-white"
+      title="Dismiss all rejected time entries"
+    >
+      <i class="bi bi-x-lg font-bold"></i>
+    </button>
+  </div>
+}
 
 @if (staffDashboardService.time$ | async; as dashboard) {
   @for (date of dashboard.dates; track date.date) {
@@ -164,14 +210,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          hq-staff-dashboard-time-entry
-          (hqTimeChange)="upsertTime($event)"
-          [time]="{ date: date.date, timeStatus: timeStatus.Pending }"
-        ></tr>
+        @if (
+          (staffDashboardService.showAllRejectedTimes$ | async) === false &&
+          date.canCreateTime
+        ) {
+          <tr
+            hq-staff-dashboard-time-entry
+            (hqTimeChange)="upsertTime($event)"
+            [time]="{ date: date.date, timeStatus: timeStatus.Unsubmitted }"
+          ></tr>
+        }
         @for (time of date.times; track time.id) {
           @switch (time.timeStatus) {
-            @case (timeStatus.Pending) {
+            @case (timeStatus.Unsubmitted) {
               <tr
                 hq-staff-dashboard-time-entry
                 (hqTimeChange)="upsertTime($event)"

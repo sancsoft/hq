@@ -10,6 +10,7 @@ public class GetDashboardTimeV1
         public DateOnly Date { get; set; }
         public Period Period { get; set; }
         public string? Search { get; set; }
+        public TimeStatus? Status { get; set; }
     }
 
     public class Response
@@ -28,6 +29,7 @@ public class GetDashboardTimeV1
         public decimal HoursLastWeek { get; set; }
         public string? StaffName { get; set; }
         public decimal Vacation { get; set; }
+        public int RejectedCount { get; set; }
 
     }
 
@@ -63,6 +65,7 @@ public class GetDashboardTimeV1
 
     public class TimeForDate
     {
+        public bool CanCreateTime { get; set; }
         public DateOnly Date { get; set; }
         public List<TimeEntry> Times { get; set; } = new List<TimeEntry>();
         public decimal TotalHours { get; set; }

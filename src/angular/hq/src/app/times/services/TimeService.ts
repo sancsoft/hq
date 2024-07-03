@@ -1,13 +1,20 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { GetPSRTimeRecordStaffV1 } from '../../models/PSR/get-psr-time-v1';
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  map,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import {
   GetTimeRecordClientsV1,
   GetTimeRecordProjectsV1,
   GetTimeRecordStaffV1,
   Period,
 } from '../../models/times/get-time-v1';
+import { HQService } from '../../services/hq.service';
 
 export enum ActivityName {
   Support = 0,
@@ -19,9 +26,9 @@ export enum ActivityName {
   providedIn: 'root',
 })
 export class TimeService {
-  staffMembers$ = new BehaviorSubject<GetTimeRecordStaffV1[]>([]);
-  clients$ = new BehaviorSubject<GetTimeRecordClientsV1[]>([]);
-  projects$ = new BehaviorSubject<GetTimeRecordProjectsV1[]>([]);
+  staffMembers$: Observable<GetTimeRecordStaffV1[]>;
+  clients$: Observable<GetTimeRecordClientsV1[]>;
+  projects$: Observable<GetTimeRecordProjectsV1[]>;
 
   search = new FormControl<string | null>('');
   roaster = new FormControl<string | null>('');
@@ -57,7 +64,28 @@ export class TimeService {
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
 
-  constructor() {}
+  clientId$ = this.client.valueChanges.pipe(startWith(this.client.value));
+
+  constructor(private hqService: HQService) {
+    this.staffMembers$ = this.hqService
+      .getStaffMembersV1({})
+      .pipe(map((members) => members.records));
+
+    this.clients$ = this.hqService
+      .getClientsV1({})
+      .pipe(map((clients) => clients.records));
+
+    const projectRequest$ = combineLatest({
+      clientId: this.clientId$,
+    });
+
+    this.projects$ = projectRequest$.pipe(
+      switchMap((projectRequest) =>
+        this.hqService.getProjectsV1(projectRequest),
+      ),
+      map((clients) => clients.records),
+    );
+  }
 
   resetFilter() {
     this.search.setValue('');

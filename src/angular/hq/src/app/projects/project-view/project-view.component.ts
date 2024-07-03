@@ -8,9 +8,9 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { Observable, filter, map, of, switchMap, tap } from 'rxjs';
+import { Observable, filter, map, switchMap } from 'rxjs';
 import { PsrWorkWeekComponent } from './psr-work-week/psr-work-week.component';
-import { GetPSRRecordsV1, GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
+import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
 import { HQService } from '../../services/hq.service';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';

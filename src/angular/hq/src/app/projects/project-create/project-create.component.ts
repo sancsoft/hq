@@ -1,15 +1,7 @@
 import { PdfViewerComponent } from './../../common/pdf-viewer/pdf-viewer.component';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import {
-  BehaviorSubject,
-  Observable,
-  debounceTime,
-  firstValueFrom,
-  map,
-  shareReplay,
-  switchMap,
-} from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import {
@@ -21,12 +13,10 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { ClientListComponent } from '../../clients/client-list/client-list.component';
 import { GetQuotesRecordV1 } from '../../models/quotes/get-quotes-v1';
 import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
-import { UpsertProjectRequestV1 } from '../../models/projects/upsert-project-v1';
 import { Router, ActivatedRoute } from '@angular/router';
 
 export enum Period {
@@ -112,9 +102,6 @@ export class ProjectCreateComponent {
         return response.records;
       }),
     );
-    this.quotes$.subscribe((records) => {
-      console.log(records);
-    });
   }
   updateSelectedClient(client: GetClientRecordV1) {
     console.log(client);
@@ -151,7 +138,9 @@ export class ProjectCreateComponent {
         );
         this.generatedChargeCode$.next(response.chargeCode);
         console.log(response.id);
-        this.router.navigate(['../', response.id], { relativeTo: this.route });
+        await this.router.navigate(['../', response.id], {
+          relativeTo: this.route,
+        });
       } else {
         this.apiErrors.length = 0;
         this.apiErrors.push(

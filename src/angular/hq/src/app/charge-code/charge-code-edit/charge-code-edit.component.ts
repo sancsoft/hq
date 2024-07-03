@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -7,7 +7,14 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
+import {
+  Observable,
+  BehaviorSubject,
+  map,
+  firstValueFrom,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { ChargeCodeActivity } from '../../models/charge-codes/get-chargecodes-v1';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
@@ -38,7 +45,7 @@ interface Form {
 
   templateUrl: './charge-code-edit.component.html',
 })
-export class ChargeCodeEditComponent implements OnInit {
+export class ChargeCodeEditComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];
   ChargeCodeActivity = ChargeCodeActivity;
 
@@ -79,7 +86,14 @@ export class ChargeCodeEditComponent implements OnInit {
       (await (
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('chargeCodeId')) ?? undefined;
-    this.getChargeCode();
+    await this.getChargeCode();
+  }
+
+  private destroy = new Subject<void>();
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
   }
 
   constructor(
@@ -107,27 +121,33 @@ export class ChargeCodeEditComponent implements OnInit {
       }),
     );
 
-    this.form.controls.Activity.valueChanges.subscribe((chargeCodeActivity) => {
-      this.form.controls.ProjectId.setValue(null);
-      this.form.controls.QuoteId.setValue(null);
-      this.form.controls.ServiceAgreementId.setValue(null);
+    this.form.controls.Activity.valueChanges
+      .pipe(takeUntil(this.destroy))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (chargeCodeActivity) => {
+          this.form.controls.ProjectId.setValue(null);
+          this.form.controls.QuoteId.setValue(null);
+          this.form.controls.ServiceAgreementId.setValue(null);
 
-      this.showProjects$.next(false);
-      this.showQuotes$.next(false);
-      this.showServices$.next(false);
+          this.showProjects$.next(false);
+          this.showQuotes$.next(false);
+          this.showServices$.next(false);
 
-      switch (chargeCodeActivity) {
-        case ChargeCodeActivity.Project:
-          this.showProjects$.next(true);
-          break;
-        case ChargeCodeActivity.Quote:
-          this.showQuotes$.next(true);
-          break;
-        case ChargeCodeActivity.Service:
-          this.showServices$.next(true);
-          break;
-      }
-    });
+          switch (chargeCodeActivity) {
+            case ChargeCodeActivity.Project:
+              this.showProjects$.next(true);
+              break;
+            case ChargeCodeActivity.Quote:
+              this.showQuotes$.next(true);
+              break;
+            case ChargeCodeActivity.Service:
+              this.showServices$.next(true);
+              break;
+          }
+        },
+        error: console.error,
+      });
   }
 
   async submit() {
@@ -142,13 +162,13 @@ export class ChargeCodeEditComponent implements OnInit {
 
     try {
       const request = this.form.value;
-      const response = await firstValueFrom(
+      await firstValueFrom(
         this.hqService.upsertChargecodesV1({
           ...request,
           id: this.chargeCodeId,
         }),
       );
-      this.router.navigate(['../../'], { relativeTo: this.route });
+      await this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;

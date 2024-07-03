@@ -6,15 +6,13 @@ import {
   FormGroup,
   FormControl,
   Validators,
-  ValidationErrors,
 } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { Jurisdiciton } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
-import { HttpErrorResponse } from '@angular/common/http';
 
 interface Form {
   name: FormControl<string | null>;
@@ -27,6 +25,7 @@ interface Form {
   jurisdiciton: FormControl<Jurisdiciton | null>;
   startDate: FormControl<Date | null>;
   endDate: FormControl<Date | null>;
+  createUser: FormControl<boolean | null>;
 }
 
 @Component({
@@ -58,7 +57,7 @@ export class StaffCreateComponent {
       validators: [Validators.minLength(1)],
     }),
     email: new FormControl(null, {
-      validators: [Validators.email],
+      validators: [Validators.email, Validators.required],
     }),
     workHours: new FormControl(0, {
       validators: [Validators.min(0)],
@@ -73,6 +72,7 @@ export class StaffCreateComponent {
       validators: [],
     }),
     endDate: new FormControl(null, {}),
+    createUser: new FormControl(false, {}),
   });
 
   constructor(
@@ -95,10 +95,8 @@ export class StaffCreateComponent {
 
     try {
       const request = this.form.value;
-      const response = await firstValueFrom(
-        this.hqService.upsertStaffV1(request),
-      );
-      this.router.navigate(['../'], { relativeTo: this.route });
+      await firstValueFrom(this.hqService.upsertStaffV1(request));
+      await this.router.navigate(['../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
