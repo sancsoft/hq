@@ -9,16 +9,20 @@
         }"
         class="border-b border-black py-2"
       ></td>
-      <td style="width: 13px" class="border-b border-black">
-        <button
-          title="Duplicate time entry"
-          name="Duplicate time entry"
-          class="ml-2"
-          (click)="duplicateTime()"
-        >
-          <i class="bi bi-copy"></i>
-        </button>
-      </td>
+      @if (time?.id) {
+        <td style="width: 13px" class="border-b border-black text-white">
+          <button
+            title="Duplicate time entry"
+            name="Duplicate time entry"
+            class="ml-2"
+            (click)="duplicateTime()"
+          >
+            <i class="bi bi-copy"></i>
+          </button>
+        </td>
+      } @else {
+        <td style="width: 13px" class="border-b border-black"></td>
+      }
       <td class="border-b border-black py-2 pl-3 pr-2" width="90">
         <input
           [ngClass]="{
@@ -207,7 +211,7 @@
         class="border-b border-black py-2 bg-red-600 w-3"
         style="width: 15px"
       ></td>
-      <td style="width: 13px" class="border-b border-black">
+      <td style="width: 13px" class="border-b border-black text-white">
         <button
           title="Duplicate time entry"
           name="Duplicate time entry"
@@ -386,7 +390,7 @@
     }
     @case (timeStatus.Submitted) {
       <td class="border-b border-black py-2 bg-gray-300 w-3"></td>
-      <!-- <td style="width: 13px" class="border-b border-black">
+      <td style="width: 13px" class="border-b border-black text-white">
         <button
           title="Duplicate time entry"
           name="Duplicate time entry"
@@ -395,12 +399,12 @@
         >
           <i class="bi bi-copy"></i>
         </button>
-      </td> -->
-      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="90">
+      </td>
+      <td class="border-b border-black py-2 pl-5 text-right px-3" width="105">
         {{ time?.hours }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ time?.date }}
+      <td class="border-b border-black py-2 px-4">
+        {{ time?.date | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         <span
@@ -410,16 +414,16 @@
           {{ time?.chargeCode }}
         </span>
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.clientName }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.projectName }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-3">
         @if (time?.notes; as notes) {
           {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
         }
@@ -441,8 +445,8 @@
       <td class="border-b border-black py-2 pl-5 text-right px-3" width="105">
         {{ time?.hours }}
       </td>
-      <td class="border-b border-black py-2 px-3">
-        {{ time?.date }}
+      <td class="border-b border-black py-2 px-4">
+        {{ time?.date | date: "shortDate" | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         <span
@@ -452,16 +456,16 @@
           {{ time?.chargeCode }}
         </span>
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.clientName }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.projectName }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-3">
         @if (time?.notes; as notes) {
           {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
         }
@@ -470,7 +474,7 @@
     }
     @case (timeStatus.Resubmitted) {
       <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
-      <td style="width: 13px" class="border-b border-black">
+      <td style="width: 13px" class="border-b border-black text-white">
         <button
           title="Duplicate time entry"
           name="Duplicate time entry"
@@ -480,11 +484,11 @@
           <i class="bi bi-copy"></i>
         </button>
       </td>
-      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
+      <td class="border-b border-black py-2 pl-5 text-right px-3" width="105">
         {{ time?.hours }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ time?.date }}
+      <td class="border-b border-black py-2 px-4">
+        {{ time?.date | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         <span
@@ -494,16 +498,16 @@
           {{ time?.chargeCode }}
         </span>
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.clientName }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.projectName }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-3">
         @if (time?.notes; as notes) {
           {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
         }
