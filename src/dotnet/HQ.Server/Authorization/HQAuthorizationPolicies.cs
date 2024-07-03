@@ -7,5 +7,4 @@ public class HQAuthorizationPolicies
     public const string Partner = nameof(Partner);
     public const string Executive = nameof(Executive);
     public const string Administrator = nameof(Administrator);
-    
 }
