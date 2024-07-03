@@ -9,6 +9,7 @@ import {
   Subject,
   combineLatest,
   debounceTime,
+  distinctUntilChanged,
   map,
   merge,
   shareReplay,
@@ -56,6 +57,7 @@ export class StaffDashboardService {
     const staffId$ = oidcSecurityService.userData$.pipe(
       map((t) => t.userData),
       map((t) => t.staff_id as string),
+      distinctUntilChanged(),
     );
 
     const search$ = this.search.valueChanges.pipe(startWith(this.search.value));

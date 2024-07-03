@@ -83,7 +83,12 @@ namespace HQ.Abstractions
 
         public static decimal CalculateEarnedVacationHours(this DateOnly forDate, DateOnly startDate, decimal maxVacationHours)
         {
-            var totalMonths = ((forDate.Year - startDate.Year) * 12) + forDate.Month - startDate.Month;
+            var totalMonths = Math.Max(((forDate.Year - startDate.Year) * 12) + forDate.Month - startDate.Month - 1, 0);
+            if (forDate.Year > startDate.Year)
+            {
+                return maxVacationHours;
+            }
+
             return Math.Min(totalMonths * 8, maxVacationHours);
         }
     }

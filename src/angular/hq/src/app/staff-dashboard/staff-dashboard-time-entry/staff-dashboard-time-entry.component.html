@@ -3,6 +3,7 @@
     @case (timeStatus.Unsubmitted) {
       <td
         style="width: 15px"
+        [title]="form.valid || !form.touched ? 'Pending' : 'Invalid Time Entry'"
         [ngClass]="{
           'bg-red-700 w-3': form.invalid && form.touched,
           'bg-gray-300 w-3': form.valid || !form.touched,
@@ -23,15 +24,19 @@
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
-              form.controls.hours.errors && form.controls.hours.touched,
+              form.controls.hours.errors && form.touched,
             'focus:border-white placeholder:text-gray-100':
-              !form.controls.hours.errors || !form.controls.hours.touched,
+              !form.controls.hours.errors || !form.touched,
           }"
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
           formControlName="hours"
+          min="0"
+          #hoursInput
           step="0.25"
-          (keydown.enter)="blurInput($event.target)"
+          aria-label="Hours"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
         />
       </td>
       <td class="border-b border-black py-2 pl-2">
@@ -74,13 +79,14 @@
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
           <select
+            aria-label="Select Client"
             [ngClass]="{
               'border-red-700 focus:border-red-700':
-                form.controls.clientId.errors && form.controls.clientId.touched,
-              'border-black':
-                !form.controls.clientId.errors ||
-                !form.controls.clientId.touched,
+                form.controls.clientId.errors && form.touched,
+              'border-black': !form.controls.clientId.errors || !form.touched,
             }"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="clientId"
           >
@@ -105,14 +111,14 @@
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
           <select
+            aria-label="Select Project"
             [ngClass]="{
               'border-red-700 focus:border-red-700':
-                form.controls.projectId.errors &&
-                form.controls.projectId.touched,
-              'border-black':
-                !form.controls.projectId.errors ||
-                !form.controls.projectId.touched,
+                form.controls.projectId.errors && form.touched,
+              'border-black': !form.controls.projectId.errors || !form.touched,
             }"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="projectId"
           >
@@ -138,13 +144,13 @@
               <select
                 [ngClass]="{
                   'border-red-700 focus:border-red-700':
-                    form.controls.activityId.errors &&
-                    form.controls.activityId.touched,
+                    form.controls.activityId.errors && form.touched,
                   'border-black':
-                    !form.controls.activityId.errors ||
-                    !form.controls.activityId.touched,
+                    !form.controls.activityId.errors || !form.touched,
                 }"
                 class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+                (blur)="save()"
+                (keydown.enter)="onEnter($event.target)"
                 formControlName="activityId"
               >
                 <option [ngValue]="null" class="text-gray-50">Activity</option>
@@ -163,7 +169,8 @@
               class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
               type="text"
               formControlName="task"
-              (keydown.enter)="blurInput($event.target)"
+              (blur)="save()"
+              (keydown.enter)="onEnter($event.target)"
             />
           }
         }
@@ -172,20 +179,22 @@
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
-              form.controls.notes.errors && form.controls.notes.touched,
+              form.controls.notes.errors && form.touched,
             'focus:border-white placeholder:text-gray-100':
-              !form.controls.notes.errors || !form.controls.notes.touched,
+              !form.controls.notes.errors || !form.touched,
           }"
           class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
           type="text"
           formControlName="notes"
-          (keydown.enter)="blurInput($event.target)"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
         />
       </td>
       <td class="border-b border-black py-2 pl-2 pr-5">
         @if (form.controls.id.value) {
           <button
-            type="submit"
+            type="button"
+            [title]="'Delete Time Entry'"
             (click)="deleteTime()"
             class="h-[30px] px-2 py-2 rounded w-full"
           >
@@ -193,7 +202,8 @@
           </button>
         } @else {
           <button
-            type="submit"
+            type="button"
+            [title]="'Reset Time Entry'"
             (click)="resetTime()"
             class="h-[30px] px-2 py-2 rounded w-full"
           >
@@ -221,15 +231,19 @@
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
-              form.controls.hours.errors && form.controls.hours.touched,
+              form.controls.hours.errors && form.touched,
             'focus:border-white placeholder:text-gray-100':
-              !form.controls.hours.errors || !form.controls.hours.touched,
+              !form.controls.hours.errors || !form.touched,
           }"
           class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
           type="number"
+          min="0"
           formControlName="hours"
+          aria-label="Hours"
+          #hoursInput
           step="0.25"
-          (keydown.enter)="blurInput($event.target)"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
         />
       </td>
       <td class="border-b border-black py-2 pl-2" style="width: 140">
@@ -243,7 +257,6 @@
           <button
             (click)="chooseDate()"
             title="Change date"
-            name="Change date"
             class="flex items-center justify-center h-full pointer-events-auto cursor-pointer z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
           >
             <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
@@ -267,13 +280,13 @@
           <select
             [ngClass]="{
               'border-red-700 focus:border-red-700':
-                form.controls.clientId.errors && form.controls.clientId.touched,
-              'border-black':
-                !form.controls.clientId.errors ||
-                !form.controls.clientId.touched,
+                form.controls.clientId.errors && form.touched,
+              'border-black': !form.controls.clientId.errors || !form.touched,
             }"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="clientId"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
           >
             <option [ngValue]="null" class="text-gray-50">Client</option>
             <!-- <option [ngValue]="form.controls.clientId.value">
@@ -298,14 +311,13 @@
           <select
             [ngClass]="{
               'border-red-700 focus:border-red-700':
-                form.controls.projectId.errors &&
-                form.controls.projectId.touched,
-              'border-black':
-                !form.controls.projectId.errors ||
-                !form.controls.projectId.touched,
+                form.controls.projectId.errors && form.touched,
+              'border-black': !form.controls.projectId.errors || !form.touched,
             }"
             class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             formControlName="projectId"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
           >
             <option [ngValue]="null" class="text-gray-50">Project</option>
             <!-- <option [ngValue]="form.controls.projectId.value">
@@ -329,14 +341,14 @@
               <select
                 [ngClass]="{
                   'border-red-700 focus:border-red-700':
-                    form.controls.activityId.errors &&
-                    form.controls.activityId.touched,
+                    form.controls.activityId.errors && form.touched,
                   'border-black':
-                    !form.controls.activityId.errors ||
-                    !form.controls.activityId.touched,
+                    !form.controls.activityId.errors || !form.touched,
                 }"
                 class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
                 formControlName="activityId"
+                (blur)="save()"
+                (keydown.enter)="onEnter($event.target)"
               >
                 <option [ngValue]="null" class="text-gray-50">Activity</option>
                 @for (activity of activities$ | async; track activity.id) {
@@ -353,8 +365,10 @@
             <input
               class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
               type="text"
+              aria-label="Task"
               formControlName="task"
-              (keydown.enter)="blurInput($event.target)"
+              (blur)="save()"
+              (keydown.enter)="onEnter($event.target)"
             />
           }
         }
@@ -363,23 +377,27 @@
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
-              form.controls.notes.errors && form.controls.notes.touched,
+              form.controls.notes.errors && form.touched,
             'focus:border-white placeholder:text-gray-100':
-              !form.controls.notes.errors || !form.controls.notes.touched,
+              !form.controls.notes.errors || !form.touched,
           }"
           class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
           type="text"
+          aria-label="Time Entry Description"
           formControlName="notes"
-          (keydown.enter)="blurInput($event.target)"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
         />
       </td>
-      <td class="border-b border-black py-2 pl-2 pr-5">
+      <td class="border-b border-black py-2 pl-2 pr-5 text-center">
         @if (time?.rejectionNotes) {
           <div>
-            <i
-              [title]="time?.rejectionNotes"
-              class="h-[30px] px-2 py-2 rounded w-fullbi bi-exclamation-diamond-fill text-yellow-550"
-            ></i>
+            <button type="button" (click)="showRejectionNotes()">
+              <i
+                [title]="time?.rejectionNotes"
+                class="bi bi-exclamation-diamond-fill text-yellow-550"
+              ></i>
+            </button>
           </div>
         }
       </td>

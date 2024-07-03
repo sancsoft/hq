@@ -25,6 +25,7 @@ interface Form {
   jurisdiciton: FormControl<Jurisdiciton | null>;
   startDate: FormControl<Date | null>;
   endDate: FormControl<Date | null>;
+  createUser: FormControl<boolean | null>;
 }
 
 @Component({
@@ -56,7 +57,7 @@ export class StaffCreateComponent {
       validators: [Validators.minLength(1)],
     }),
     email: new FormControl(null, {
-      validators: [Validators.email],
+      validators: [Validators.email, Validators.required],
     }),
     workHours: new FormControl(0, {
       validators: [Validators.min(0)],
@@ -71,6 +72,7 @@ export class StaffCreateComponent {
       validators: [],
     }),
     endDate: new FormControl(null, {}),
+    createUser: new FormControl(false, {}),
   });
 
   constructor(

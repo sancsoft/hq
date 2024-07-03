@@ -272,7 +272,10 @@
               </div>
             }
             <div class="flex justify-between gap-2 text-xs text-gray-300">
-              <span>{{ report.totalHours | number: "0.2-2" }} hrs total</span>
+              <span
+                >{{ report.totalHours | number: "0.2-2" }} hrs total to psr
+                date</span
+              >
               <span>{{
                 report.totalPercentComplete !== null
                   ? (report.totalPercentComplete | percent)

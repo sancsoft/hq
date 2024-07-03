@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.18] - 2024-07-02
+
+### Changed
+- Refactored time entry component to use explicit blur events to trigger event emitter to prevent duplicate requests and conflicts with observable streams based on valueChanges
+- Made toast styling a little more apparent
+- After creating a new time entry, the new time row hours is automatically focused
+
+### Added
+- `To PSR date` to `hrs total` summary underneath progress bar on PSR list page to indicate the total is for the PSR week, not now
+- `Microsoft.AspNetCore.DataProtection.EntityFrameworkCore` for data protection key persistence to Entity Framework context
+- `min` validator to hours on time entry
+- Display rejection notes in modal when clicking the icon
+
+### Fixed
+- Red validation borders on time entry are now displayed when form is touched
+- Ignore `HostAbortedException` exception when host is stopping
+- Bug when resetting time the date is cleared
+- Extra whitespace in confirm modal when rejecting a time entry from PSR time list
+
+## [0.3.17] - 2024-07-01
+
+### Fixed
+- Vacation calculations
+
 ## [0.3.16] - 2024-07-01
 
 ### Change
@@ -234,7 +258,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.16...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.18...HEAD
+[0.3.18]: https://github.com/sancsoft/hq/compare/v0.3.17...v0.3.18
+[0.3.17]: https://github.com/sancsoft/hq/compare/v0.3.16...v0.3.17
 [0.3.16]: https://github.com/sancsoft/hq/compare/v0.3.15...v0.3.16
 [0.3.15]: https://github.com/sancsoft/hq/compare/v0.3.14...v0.3.15
 [0.3.14]: https://github.com/sancsoft/hq/compare/v0.3.13...v0.3.14

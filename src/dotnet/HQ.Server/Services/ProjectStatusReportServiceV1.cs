@@ -556,4 +556,26 @@ public class ProjectStatusReportServiceV1
             SubmittedAt = psr.SubmittedAt.Value
         };
     }
+
+    public async Task<Result<PreviousProjectStatusReportV1.Response>> GetPreviousProjectStatusReportV1(PreviousProjectStatusReportV1.Request request, CancellationToken ct = default)
+    {
+        var psr = await _context.ProjectStatusReports.FindAsync(request.ProjectStatusReportId);
+
+        if (psr == null)
+        {
+            return Result.Fail("Unable to find project status report.");
+        }
+        var previousPsr = await _context.ProjectStatusReports.AsNoTracking().Where(t => t.ProjectId == psr.ProjectId && t.StartDate < psr.StartDate).OrderByDescending(t => t.StartDate).FirstOrDefaultAsync();
+
+        if (previousPsr == null)
+        {
+            return Result.Fail("Unable to find previous project status report.");
+        }
+
+        return new PreviousProjectStatusReportV1.Response()
+        {
+            ProjectStatusReportId = previousPsr.Id,
+            Report = previousPsr.Report
+        };
+    }
 }

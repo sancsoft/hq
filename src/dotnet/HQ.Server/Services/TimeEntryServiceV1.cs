@@ -29,7 +29,6 @@ namespace HQ.Server.Services
         public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default)
         {
             var validationResult = Result.Merge(
-                Result.FailIf(string.IsNullOrEmpty(request.Notes), "Notes are required."),
                 Result.FailIf(!request.Id.HasValue && request.StaffId == null, "Staff is required."),
                 Result.FailIf(request.Hours <= 0, "Hours must be greater than 0.")
             );
