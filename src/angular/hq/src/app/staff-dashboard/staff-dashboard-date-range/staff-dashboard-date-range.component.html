@@ -10,15 +10,6 @@
           }"
           [disabled]="staffDashboardService.showAllRejectedTimes$ | async"
           type="button"
-          [name]="
-            'Previous ' +
-            (staffDashboardService.period.value ==
-            staffDashboardService.Period.Today
-              ? 'Day'
-              : staffDashboardService.Period[
-                  staffDashboardService.period.value
-                ])
-          "
           [title]="
             'Previous ' +
             (staffDashboardService.period.value ==
@@ -109,15 +100,6 @@
         <button
           type="button"
           [title]="
-            'Next ' +
-            (staffDashboardService.period.value ==
-            staffDashboardService.Period.Today
-              ? 'Day'
-              : staffDashboardService.Period[
-                  staffDashboardService.period.value
-                ])
-          "
-          [name]="
             'Next ' +
             (staffDashboardService.period.value ==
             staffDashboardService.Period.Today

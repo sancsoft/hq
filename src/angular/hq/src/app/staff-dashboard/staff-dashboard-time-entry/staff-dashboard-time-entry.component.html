@@ -3,7 +3,7 @@
     @case (timeStatus.Unsubmitted) {
       <td
         style="width: 15px"
-        [title]='form.valid || !form.touched ? "Pending" : "Invalid Time Entry"'
+        [title]="form.valid || !form.touched ? 'Pending' : 'Invalid Time Entry'"
         [ngClass]="{
           'bg-red-700 w-3': form.invalid && form.touched,
           'bg-gray-300 w-3': form.valid || !form.touched,
