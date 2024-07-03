@@ -1,14 +1,13 @@
-@model HQ.Email.NotificationEmail
-
+@model HQ.Abstractions.Emails.NotificationEmail
 <mj-column>
     <mj-text>
         @if (!String.IsNullOrEmpty(Model.Heading))
         {
-            <h1 class="heading-1">@Model.Heading</h1>
+                <h1 class="heading-1">@Model.Heading</h1>
         }
         @if (!String.IsNullOrEmpty(Model.Message))
         {
-            <p>@Model.Message</p>
+                <p>@Model.Message</p>
         }
     </mj-text>
     @if (!String.IsNullOrEmpty(Model.ButtonLabel) && Model.ButtonUrl != null)

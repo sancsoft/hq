@@ -1,4 +1,4 @@
-namespace HQ.Email;
+namespace HQ.Abstractions.Emails;
 
 public class NotificationEmail : BaseEmail
 {

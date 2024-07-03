@@ -29,7 +29,7 @@ public class RazorViewToStringRendererService : IRazorViewToStringRendererServic
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model)
+    public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model, CancellationToken ct = default)
     {
         var actionContext = GetActionContext();
         var view = FindView(actionContext, viewName);

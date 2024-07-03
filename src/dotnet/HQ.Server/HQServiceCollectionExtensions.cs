@@ -26,6 +26,7 @@ namespace HQ.Server
             services.AddScoped<ServicesAgreementServiceV1>();
             services.AddScoped<TimeEntryServiceV1>();
             services.AddScoped<UserServiceV1>();
+            services.AddScoped<EmailTemplateServiceV1>();
             services.AddScoped<IRazorViewToStringRendererService, RazorViewToStringRendererService>();
 
             var storageServiceType = configuration.GetValue<StorageService?>("StorageService") ?? StorageService.Database;
