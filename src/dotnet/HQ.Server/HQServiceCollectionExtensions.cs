@@ -29,6 +29,25 @@ namespace HQ.Server
             services.AddScoped<EmailTemplateServiceV1>();
             services.AddScoped<IRazorViewToStringRendererService, RazorViewToStringRendererService>();
 
+            var emailService = configuration.GetValue<EmailService?>("EmailService") ?? EmailService.Logger;
+            switch (emailService)
+            {
+                case EmailService.Logger:
+                    services.AddScoped<IEmailService, LoggerEmailService>();
+                    services.AddOptions<LoggerEmailService.Options>()
+                        .Bind(configuration.GetSection(LoggerEmailService.Options.LoggerEmail))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
+
+                    break;
+                case EmailService.SMTP:
+                    // TODO: Register scoped service and add configuration options
+                    break;
+                case EmailService.Mailgun:
+                    // TODO: Register scoped service and add configuration options
+                    break;
+            }
+
             var storageServiceType = configuration.GetValue<StorageService?>("StorageService") ?? StorageService.Database;
             switch (storageServiceType)
             {

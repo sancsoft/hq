@@ -38,7 +38,11 @@ public class EmailTemplateServiceV1
         var response = new GetEmailTemplateV1.Response();
 
         var mjmlRenderer = new MjmlRenderer();
-        var mjmlOptions = new MjmlOptions();
+        var mjmlOptions = new MjmlOptions()
+        {
+            Minify = true,
+            Beautify = false,
+        };
 
         var text = await _razorViewToStringRendererService.RenderViewToStringAsync($"/Views/Emails/Text/{request.EmailMessage}.cshtml", request.Model, ct);
         var mjml = await _razorViewToStringRendererService.RenderViewToStringAsync($"/Views/Emails/HTML/{request.EmailMessage}.cshtml", request.Model, ct);
