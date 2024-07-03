@@ -46,6 +46,10 @@ export class TimeListComponent {
 
   skipDisplay$: Observable<number>;
   takeToDisplay$: Observable<number>;
+  billableHours$: Observable<number>;
+  TotalHours$: Observable<number>;
+  AcceptedHours$: Observable<number>;
+  AcceptedBillableHours$: Observable<number>;
   totalRecords$: Observable<number>;
   times$: Observable<GetTimeRecordV1[]>;
   sortOption$: BehaviorSubject<SortColumn>;
@@ -148,6 +152,12 @@ export class TimeListComponent {
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
+    this.billableHours$ = response$.pipe(map((t) => t.billableHours!));
+    this.TotalHours$ = response$.pipe(map((t) => t.totalHours!));
+    this.AcceptedHours$ = response$.pipe(map((t) => t.acceptedHours!));
+    this.AcceptedBillableHours$ = response$.pipe(
+      map((t) => t.acceptedBillableHours!),
+    );
     this.takeToDisplay$ = combineLatest([
       skip$,
       itemsPerPage$,

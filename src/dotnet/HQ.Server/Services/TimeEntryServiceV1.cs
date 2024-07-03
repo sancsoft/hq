@@ -375,7 +375,14 @@ namespace HQ.Server.Services
                 records = records.Where(t => t.Activity!.Name == request.Activity);
             }
 
+            // Timing Hours Queries
             var total = await records.CountAsync(ct);
+
+            var totalHours = await records.SumAsync(t => t.Hours, ct);
+            var billableHours = await records.Where(t => t.ChargeCode.Billable).SumAsync(t => t.Hours, ct);
+            var acceptedHours = await records.Where(t => t.Status == TimeStatus.Accepted).SumAsync(t => t.HoursApproved, ct);
+            var acceptedBillableHours = await records.Where(t => t.Status == TimeStatus.Accepted && t.ChargeCode.Billable).SumAsync(t => t.HoursApproved, ct);
+
 
             var mapped = records
             .Select(t => new GetTimesV1.Record()
@@ -441,12 +448,17 @@ namespace HQ.Server.Services
                 mapped = mapped.Take(request.Take.Value);
             }
 
+
+
             var response = new GetTimesV1.Response()
             {
                 Records = await mapped.ToListAsync(ct),
+                TotalHours = totalHours,
+                BillableHours = billableHours,
+                AcceptedHours = acceptedHours ?? 0,
+                AcceptedBillableHours = acceptedBillableHours ?? 0,
                 Total = total
             };
-
 
             return response;
         }
