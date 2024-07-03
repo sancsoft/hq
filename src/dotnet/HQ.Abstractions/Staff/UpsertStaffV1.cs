@@ -23,7 +23,7 @@ public class UpsertStaffV1
         public DateOnly? EndDate { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public bool? CreateUser { get; set; }
+        public bool CreateUser { get; set; }
         public string Email { get; set; } = null!;
     }
 
