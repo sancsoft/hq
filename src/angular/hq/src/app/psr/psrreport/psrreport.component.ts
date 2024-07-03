@@ -19,6 +19,8 @@ import {
   takeUntil,
   firstValueFrom,
   filter,
+  catchError,
+  of,
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
@@ -29,6 +31,7 @@ import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
+import { GetPrevPsrResponseV1 } from '../../models/PSR/get-previous-PSR-v1';
 
 @Component({
   selector: 'hq-psrreport',
@@ -46,7 +49,9 @@ import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<object>;
   report = new FormControl<string | null>(null);
-
+  previousReport: string | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editorInstance: any;
   sideBarCollapsed = false;
   leftWidth: number = 100;
 
@@ -59,6 +64,9 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   savedStatus?: string;
 
   submitButtonState: ButtonState = ButtonState.Enabled;
+  prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
+
+  prevPsr$: Observable<GetPrevPsrResponseV1 | null>;
   ButtonState = ButtonState;
   HQRole = HQRole;
 
@@ -71,12 +79,19 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.psrService.hideIsSubmitted();
 
     const psr = await firstValueFrom(this.psr$);
+    const prevPsr = await firstValueFrom(this.prevPsr$);
     if (psr && psr.report) {
       this.report.setValue(psr.report);
+    }
+    if (prevPsr && prevPsr.report) {
+      this.previousReport = prevPsr.report;
     }
 
     this.submitButtonState =
       psr && psr.submittedAt ? ButtonState.Disabled : ButtonState.Enabled;
+
+    this.prevPSRReportButtonState =
+      prevPsr && prevPsr.report ? ButtonState.Enabled : ButtonState.Disabled;
   }
 
   ngOnDestroy(): void {
@@ -100,6 +115,16 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.psr$ = this.psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
       map((t) => t.records[0]),
+    );
+    this.prevPsr$ = this.psrId$.pipe(
+      switchMap((psrId) =>
+        this.hqService.getPrevPSRV1({ projectStatusReportId: psrId }).pipe(
+          catchError((error: unknown) => {
+            console.error('Error fetching previous PSR:', error);
+            return of(null);
+          }),
+        ),
+      ),
     );
 
     const canManageProjectStatusReport$ = combineLatest({
@@ -170,6 +195,22 @@ export class PSRReportComponent implements OnInit, OnDestroy {
           );
         },
       });
+  }
+
+  insertTextAtCursor() {
+    const selection = this.editorInstance.getSelection();
+    const id = { major: 1, minor: 1 };
+    const op = {
+      identifier: id,
+      range: selection,
+      text: this.previousReport,
+      forceMoveMarkers: true,
+    };
+    this.editorInstance.executeEdits('my-source', [op]);
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onEditorInit(editor: any) {
+    this.editorInstance = editor;
   }
 
   async onReportSubmit() {

@@ -10,6 +10,15 @@
           }"
           [disabled]="staffDashboardService.showAllRejectedTimes$ | async"
           type="button"
+          [title]="
+            'Previous ' +
+            (staffDashboardService.period.value ===
+            staffDashboardService.Period.Today
+              ? 'Day'
+              : staffDashboardService.Period[
+                  staffDashboardService.period.value
+                ])
+          "
           class="flex align-middle justify-center items-center mt-1"
           (click)="staffDashboardService.date.setValue(dashboard.previousDate)"
         >
@@ -90,6 +99,15 @@
 
         <button
           type="button"
+          [title]="
+            'Next ' +
+            (staffDashboardService.period.value ===
+            staffDashboardService.Period.Today
+              ? 'Day'
+              : staffDashboardService.Period[
+                  staffDashboardService.period.value
+                ])
+          "
           class="flex align-middle justify-center items-center mt-1"
           [ngClass]="{
             'text-gray-450 cursor-not-allowed':
