@@ -119,7 +119,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.prevPsr$ = this.psrId$.pipe(
       switchMap((psrId) =>
         this.hqService.getPrevPSRV1({ projectStatusReportId: psrId }).pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             console.error('Error fetching previous PSR:', error);
             return of(null);
           }),
