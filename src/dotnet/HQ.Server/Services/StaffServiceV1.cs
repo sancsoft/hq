@@ -62,7 +62,7 @@ public class StaffServiceV1
                 staff.Email = request.Email;
 
                 await _context.SaveChangesAsync(ct);
-                if (request.CreateUser.HasValue && request.CreateUser.Value == true)
+                if (request.CreateUser)
                 {
                     var upsertUserRequest = new UpsertUserV1.Request
                     {
