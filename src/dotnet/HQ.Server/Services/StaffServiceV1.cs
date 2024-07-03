@@ -8,57 +8,90 @@ using FluentResults;
 
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Staff;
+using HQ.Abstractions.Users;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HQ.Server.Services;
 
 public class StaffServiceV1
 {
     private readonly HQDbContext _context;
+    private readonly UserServiceV1 _UserServiceV1;
 
-    public StaffServiceV1(HQDbContext context)
+    public StaffServiceV1(HQDbContext context, UserServiceV1 userServiceV1)
     {
         _context = context;
+        _UserServiceV1 = userServiceV1;
     }
 
     public async Task<Result<UpsertStaffV1.Response>> UpsertStaffV1(UpsertStaffV1.Request request, CancellationToken ct = default)
     {
-        var validationResult = Result.Merge(
+        using (var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, ct))
+        {
+            try
+            {
+                var validationResult = Result.Merge(
             Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
             Result.FailIf(await _context.Staff.AnyAsync(t => t.Id != request.Id && t.Name == request.Name, ct), "Name must be unique.")
         );
 
-        if (validationResult.IsFailed)
-        {
-            return validationResult;
+                if (validationResult.IsFailed)
+                {
+                    return validationResult;
+                }
+
+                var staff = await _context.Staff.FindAsync(request.Id);
+                if (staff == null)
+                {
+                    staff = new();
+                    _context.Staff.Add(staff);
+                }
+
+                staff.Name = request.Name;
+                staff.WorkHours = request.WorkHours;
+                staff.VacationHours = request.VacationHours;
+                staff.Jurisdiciton = request.Jurisdiciton;
+                staff.StartDate = request.StartDate;
+                staff.EndDate = request.EndDate;
+                staff.FirstName = request.FirstName;
+                staff.LastName = request.LastName;
+                staff.Email = request.Email;
+
+                await _context.SaveChangesAsync(ct);
+                if (request.CreateUser)
+                {
+                    var upsertUserRequest = new UpsertUserV1.Request
+                    {
+                        FirstName = staff.FirstName,
+                        LastName = staff.LastName,
+                        IsStaff = true,
+                        Enabled = true,
+                        StaffId = staff.Id,
+                        Email = staff.Email,
+                    };
+                    var createdUser = await _UserServiceV1.UpsertUserV1(upsertUserRequest, ct);
+                    return new UpsertStaffV1.Response()
+                    {
+                        Id = staff.Id,
+                        UserId = createdUser.Value.Id
+                    };
+                }
+                return new UpsertStaffV1.Response()
+                {
+                    Id = staff.Id
+                };
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(ct);
+                return Result.Fail(new Error("An error occurred while upserting the staff.").CausedBy(ex));
+            }
         }
 
-        var staff = await _context.Staff.FindAsync(request.Id);
-        if (staff == null)
-        {
-            staff = new();
-            _context.Staff.Add(staff);
-        }
-
-        staff.Name = request.Name;
-        staff.WorkHours = request.WorkHours;
-        staff.VacationHours = request.VacationHours;
-        staff.Jurisdiciton = request.Jurisdiciton;
-        staff.StartDate = request.StartDate;
-        staff.EndDate = request.EndDate;
-        staff.FirstName = request.FirstName;
-        staff.LastName = request.LastName;
-        staff.Email = request.Email;
-
-        await _context.SaveChangesAsync(ct);
-
-        return new UpsertStaffV1.Response()
-        {
-            Id = staff.Id
-        };
     }
 
     public async Task<Result<DeleteStaffV1.Response?>> DeleteStaffV1(DeleteStaffV1.Request request, CancellationToken ct = default)
