@@ -356,6 +356,46 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'holiday',
+    title: 'Holiday',
+    canActivate: [
+      AutoLoginPartialRoutesGuard,
+      userRoleGuard(HQRole.Administrator),
+    ],
+    loadComponent: () =>
+      import('.//holiday/holiday.component').then((m) => m.HolidayComponent),
+    children: [
+      {
+        path: '',
+        title: 'Holiday List',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./holiday/holiday-list/holiday-list.component').then(
+            (m) => m.HolidayListComponent,
+          ),
+      },
+      {
+        path: 'create',
+        title: 'Create Holiday',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./holiday/holiday-create/holiday-create.component').then(
+            (m) => m.HolidayCreateComponent,
+          ),
+      },
+      {
+        path: 'edit/:holidayId',
+        title: 'Edit Holiday',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./holiday/holiday-edit/holiday-edit.component').then(
+            (m) => m.HolidayEditComponent,
+          ),
+      },
+    ],
+  },
+
+  {
     path: 'staff',
     title: 'Staff',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],

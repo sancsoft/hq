@@ -12,5 +12,7 @@ public class HolidayConfiguration : BaseConfiguration<Holiday>
         base.Configure(builder);
 
         builder.ToTable("holidays");
+        builder.HasIndex(t => new { t.Id, t.Name })
+    .IsUnique();
     }
 }
