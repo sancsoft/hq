@@ -1,0 +1,52 @@
+@model HQ.Email.BaseEmail
+<mjml>
+    <mj-head>
+        <mj-title>HQ</mj-title>
+        <!-- Set styles -->
+        <mj-attributes>
+            <mj-text font-family="open Sans, sans-serif" color="#fff" font-size="14px" line-height="175%" />
+            <mj-body background-color="#3e3e3e" />
+            <mj-button font-family="open Sans, sans-serif" align="center" background-color="#f17d15"> />
+                <mj-class name="btn" align="left" font-size="14px" color="#202631" font-weight="500"
+                    background-color="#b2edf1" />
+        </mj-attributes>
+        <mj-style>
+            .heading-1 {
+            font-size: 22px;
+            line-height: 1.05;
+            font-weight: 400;
+            color: #ffaf30;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 15px;
+            }
+        </mj-style>
+    </mj-head>
+    <mj-body>
+
+        <!-- Company Header -->
+        <mj-section>
+            <mj-column>
+                <mj-image align="center" padding="10px 25px" src="https://www.sancsoft.com/Images/logo.png"
+                    width="145px"></mj-image>
+            </mj-column>
+        </mj-section>
+        <!-- Title -->
+
+        <!-- Info -->
+        <mj-section background-color="#313131" padding="20px">
+            @RenderBody()
+        </mj-section>
+
+        <!-- Company Information -->
+        <mj-section padding-top="10px" padding-bottom="50px">
+            <mj-column width="500px">
+                <mj-button align="center" font-style="normal" color="#707070" background-color="transparent"
+                    href="https://www.sancsoft.com/" padding="0" target="_blank">&copy; Sanctuary Software Studio
+                    Inc.</mj-button>
+            </mj-column>
+        </mj-section>
+
+    </mj-body>
+</mjml>

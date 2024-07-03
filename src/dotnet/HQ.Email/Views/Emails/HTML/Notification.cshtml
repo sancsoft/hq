@@ -1,0 +1,18 @@
+@model HQ.Email.NotificationEmail
+
+<mj-column>
+    <mj-text>
+        @if (!String.IsNullOrEmpty(Model.Heading))
+        {
+            <h1 class="heading-1">@Model.Heading</h1>
+        }
+        @if (!String.IsNullOrEmpty(Model.Message))
+        {
+            <p>@Model.Message</p>
+        }
+    </mj-text>
+    @if (!String.IsNullOrEmpty(Model.ButtonLabel) && Model.ButtonUrl != null)
+    {
+        <mj-button mj-class="btn" href="@Model.ButtonUrl" target="_blank">@Model.ButtonLabel</mj-button>
+    }
+</mj-column>

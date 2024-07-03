@@ -1,5 +1,6 @@
 ﻿using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Services;
+using HQ.Email;
 using HQ.Server.Data;
 using HQ.Server.Invoices;
 using HQ.Server.Services;
@@ -25,6 +26,7 @@ namespace HQ.Server
             services.AddScoped<ServicesAgreementServiceV1>();
             services.AddScoped<TimeEntryServiceV1>();
             services.AddScoped<UserServiceV1>();
+            services.AddScoped<IRazorViewToStringRendererService, RazorViewToStringRendererService>();
 
             var storageServiceType = configuration.GetValue<StorageService?>("StorageService") ?? StorageService.Database;
             switch (storageServiceType)
