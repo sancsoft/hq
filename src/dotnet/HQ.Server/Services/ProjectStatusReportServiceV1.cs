@@ -22,12 +22,26 @@ namespace HQ.Server.Services;
 public class ProjectStatusReportServiceV1
 {
     private readonly HQDbContext _context;
+    private readonly ILogger<ProjectStatusReportServiceV1> _logger;
 
-    public ProjectStatusReportServiceV1(HQDbContext context)
+    public ProjectStatusReportServiceV1(HQDbContext context, ILogger<ProjectStatusReportServiceV1> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
+    public async Task BackgroundGenerateWeeklyProjectStatusReportsV1(CancellationToken ct)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var lastWeekStart = today.GetPeriodStartDate(Period.LastWeek);
+
+        _logger.LogInformation("Generating weekly project status reports for week of {WeekOf}.", lastWeekStart);
+        var generatePsrResponse = await GenerateWeeklyProjectStatusReportsV1(new()
+        {
+            ForDate = lastWeekStart
+        }, ct);
+        _logger.LogInformation("Created {CreateCount} PSRs, skipped {SkipCount}.", generatePsrResponse.Value.Created, generatePsrResponse.Value.Skipped);
+    }
 
     public async Task<Result<GenerateWeeklyProjectStatusReportsV1.Response>> GenerateWeeklyProjectStatusReportsV1(GenerateWeeklyProjectStatusReportsV1.Request request, CancellationToken ct = default)
     {

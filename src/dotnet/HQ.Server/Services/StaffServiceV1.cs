@@ -6,6 +6,7 @@ using CsvHelper.Configuration;
 
 using FluentResults;
 
+using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Staff;
 using HQ.Abstractions.Users;
@@ -21,11 +22,13 @@ public class StaffServiceV1
 {
     private readonly HQDbContext _context;
     private readonly UserServiceV1 _UserServiceV1;
+    private readonly ILogger<StaffServiceV1> _logger;
 
-    public StaffServiceV1(HQDbContext context, UserServiceV1 userServiceV1)
+    public StaffServiceV1(HQDbContext context, UserServiceV1 userServiceV1, ILogger<StaffServiceV1> logger)
     {
         _context = context;
         _UserServiceV1 = userServiceV1;
+        _logger = logger;
     }
 
     public async Task<Result<UpsertStaffV1.Response>> UpsertStaffV1(UpsertStaffV1.Request request, CancellationToken ct = default)
@@ -266,6 +269,19 @@ public class StaffServiceV1
             Created = created,
             Updated = updated
         };
+    }
+
+    public async Task BackgroundBulkSetTimeEntryCutoffV1(CancellationToken ct)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var currentWeekStart = today.GetPeriodStartDate(Period.Week);
+
+        _logger.LogInformation("Bulk updating staff time entry cutoff date to {CutoffDate}.", currentWeekStart);
+        var bulkUpdateResponse = await BulkSetTimeEntryCutoffV1(new()
+        {
+            TimeEntryCutoffDate = currentWeekStart
+        }, ct);
+        _logger.LogInformation("Updated {UpdateCount} staff.", bulkUpdateResponse.Value.Updated);
     }
 
     public async Task<Result<BulkSetTimeEntryCutoffV1.Response>> BulkSetTimeEntryCutoffV1(BulkSetTimeEntryCutoffV1.Request request, CancellationToken ct = default)
