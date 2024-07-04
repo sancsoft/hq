@@ -213,16 +213,43 @@ public class APICommand : AsyncCommand
             app.MapGet("/unauthorized", () => "Unauthorized").ExcludeFromDescription();
             app.MapControllers();
 
+            var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+            await using var scope = serviceScopeFactory.CreateAsyncScope();
+
             if (builder.Environment.IsDevelopment())
             {
-                var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-                await using var scope = serviceScopeFactory.CreateAsyncScope();
-                await using var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
-
+                var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
                 await dbContext.Database.MigrateAsync();
             }
 
-            app.Run();
+            // Setup recurring hangfire jobs
+            var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+            var timezone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+            var recurringJobOptions = new RecurringJobOptions()
+            {
+                TimeZone = timezone,
+                MisfireHandling = MisfireHandlingMode.Ignorable
+            };
+
+            recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
+                nameof(TimeEntryServiceV1.BackgroundCaptureUnsubmittedTimeV1),
+                (t) => t.BackgroundCaptureUnsubmittedTimeV1(CancellationToken.None),
+                Cron.Weekly(DayOfWeek.Monday, 12),
+                recurringJobOptions);
+
+            recurringJobManager.AddOrUpdate<StaffServiceV1>(
+                nameof(StaffServiceV1.BackgroundBulkSetTimeEntryCutoffV1),
+                (t) => t.BackgroundBulkSetTimeEntryCutoffV1(CancellationToken.None),
+                Cron.Weekly(DayOfWeek.Monday, 12),
+                recurringJobOptions);
+
+            recurringJobManager.AddOrUpdate<ProjectStatusReportServiceV1>(
+                nameof(ProjectStatusReportServiceV1.BackgroundGenerateWeeklyProjectStatusReportsV1),
+                (t) => t.BackgroundGenerateWeeklyProjectStatusReportsV1(CancellationToken.None),
+                Cron.Weekly(DayOfWeek.Monday, 12),
+                recurringJobOptions);
+
+            await app.RunAsync();
 
             return 0;
         }

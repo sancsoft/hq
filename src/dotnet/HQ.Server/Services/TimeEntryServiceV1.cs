@@ -22,10 +22,14 @@ namespace HQ.Server.Services
     public class TimeEntryServiceV1
     {
         private readonly HQDbContext _context;
-        public TimeEntryServiceV1(HQDbContext context)
+        private readonly ILogger<TimeEntryServiceV1> _logger;
+
+        public TimeEntryServiceV1(HQDbContext context, ILogger<TimeEntryServiceV1> logger)
         {
             this._context = context;
+            _logger = logger;
         }
+
         public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default)
         {
             var validationResult = Result.Merge(
@@ -693,6 +697,19 @@ namespace HQ.Server.Services
                 FileName = $"HQTimeExport_{DateTime.Now:yyyyMMddHHmm}.csv",
                 ContentType = "text/csv",
             };
+        }
+
+        public async Task BackgroundCaptureUnsubmittedTimeV1(CancellationToken ct)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var lastWeekEnd = today.GetPeriodEndDate(Period.LastWeek);
+
+            _logger.LogInformation("Capturing unsubmitted time through {To}.", lastWeekEnd);
+            var captureResponse = await CaptureUnsubmittedTimeV1(new()
+            {
+                To = lastWeekEnd
+            }, ct);
+            _logger.LogInformation("Captured {CaptureCount} unsubmitted time entries.", captureResponse.Value.Captured);
         }
 
         public async Task<Result<CaptureUnsubmittedTimeV1.Response>> CaptureUnsubmittedTimeV1(CaptureUnsubmittedTimeV1.Request request, CancellationToken ct = default)
