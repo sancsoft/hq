@@ -52,6 +52,12 @@ namespace HQ.Server
                     // TODO: Register scoped service and add configuration options
                     break;
                 case EmailService.Mailgun:
+                    services.AddHttpClient<IEmailService, MailgunEmailService>();
+                    services.AddOptions<MailgunOptions>()
+                        .Bind(configuration.GetSection("Mailgun"))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
+
                     // TODO: Register scoped service and add configuration options
                     break;
             }
