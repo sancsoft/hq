@@ -1,9 +1,13 @@
-﻿using HQ.Server.API;
+﻿using Hangfire;
+
+using HQ.Server.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
 using HQ.Server.Services;
 
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -104,10 +108,37 @@ public class APICommand : AsyncCommand
 
                 options.Authority = builder.Configuration["AUTH_ISSUER"] ?? throw new ArgumentNullException("Undefined AUTH_ISSUER");
                 options.Audience = builder.Configuration["AUTH_AUDIENCE"] ?? throw new ArgumentNullException("Undefined AUTH_AUDIENCE");
+            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            {
+                options.AccessDeniedPath = "/unauthorized";
+            })
+            .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+            {
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.SignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
+                options.Authority = builder.Configuration["AUTH_ISSUER"] ?? throw new ArgumentNullException("Undefined AUTH_ISSUER");
+                options.SaveTokens = true;
+                options.ClientId = "hq";
+                options.ResponseType = "code";
+                options.UsePkce = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
+
+                options.Scope.Add("hq");
+                options.Scope.Add("openid");
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
+                options.Scope.Add("offline_access");
             });
 
             builder.Services.AddAuthorization(options =>
             {
+                options.AddPolicy(HQAuthorizationPolicies.Hangfire, pb => pb
+                    .AddAuthenticationSchemes(OpenIdConnectDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .RequireRole("administrator"));
+
                 options.AddPolicy(HQAuthorizationPolicies.Administrator, pb => pb
                     .RequireAuthenticatedUser()
                     .RequireRole("administrator"));
@@ -171,8 +202,15 @@ public class APICommand : AsyncCommand
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapGet("/", () => $"HQ {VersionNumber.GetVersionNumber()}").ExcludeFromDescription();
+            app.MapHangfireDashboard("/hangfire", new()
+            {
+                Authorization = [],
+                AppPath = null
+            })
+            .RequireAuthorization(HQAuthorizationPolicies.Hangfire);
 
+            app.MapGet("/", () => $"HQ {VersionNumber.GetVersionNumber()}").ExcludeFromDescription();
+            app.MapGet("/unauthorized", () => "Unauthorized").ExcludeFromDescription();
             app.MapControllers();
 
             if (builder.Environment.IsDevelopment())
