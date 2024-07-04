@@ -394,17 +394,14 @@ export const routes: Routes = [
   {
     path: 'times',
     title: 'Times',
-    canActivate: [
-      AutoLoginPartialRoutesGuard,
-      userRoleGuard(HQRole.Administrator),
-    ],
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
       import('./times/times.component').then((m) => m.TimesComponent),
     children: [
       {
         path: '',
         title: 'Time List',
-        canActivate: [userRoleGuard(HQRole.Administrator)],
+        canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
           import('./times/time-list/time-list.component').then(
             (m) => m.TimeListComponent,

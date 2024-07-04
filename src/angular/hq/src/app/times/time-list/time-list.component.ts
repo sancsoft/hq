@@ -27,6 +27,8 @@ import { TimeService } from '../services/TimeService';
 import { TimeSearchFilterComponent } from '../search-filter/time-search-filter/time-search-filter.component';
 import { saveAs } from 'file-saver';
 import { ToastService } from '../../services/toast.service';
+import { InRolePipe } from '../../pipes/in-role.pipe';
+import { HQRole } from '../../enums/hqrole';
 
 @Component({
   selector: 'hq-time-list',
@@ -38,6 +40,7 @@ import { ToastService } from '../../services/toast.service';
     PaginatorComponent,
     SortIconComponent,
     TimeSearchFilterComponent,
+    InRolePipe,
   ],
   templateUrl: './time-list.component.html',
 })
@@ -56,6 +59,7 @@ export class TimeListComponent {
   sortDirection$: BehaviorSubject<SortDirection>;
   date$ = new BehaviorSubject<Date | null>(null);
 
+  HQRole = HQRole;
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   timeRequest$: Observable<Partial<GetTimeRequestV1>>;
