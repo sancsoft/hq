@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hours input on timesheet missing `min` attribute allowing negative values
 - Admin time edit authorization check
 - Staff access to time list
+- Green color on timesheet
 
 ### Added
 
