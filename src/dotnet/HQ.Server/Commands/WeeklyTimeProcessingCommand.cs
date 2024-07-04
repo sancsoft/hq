@@ -21,7 +21,6 @@ public class WeeklyTimeProcessingCommand : AsyncCommand
 
         // Add services to the container.
         builder.Services.AddHQServices(builder.Configuration);
-        builder.Services.AddHQDbContext(builder.Configuration);
 
         // TODO: Configure client secret auth for server-to-server authentication, right now this won't actually work
         builder.Services.AddHttpClient<UserServiceV1>(client =>

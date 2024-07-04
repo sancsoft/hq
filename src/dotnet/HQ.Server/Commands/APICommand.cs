@@ -33,9 +33,6 @@ public class APICommand : AsyncCommand
             // Add services to the container.
             builder.Services.AddHealthChecks();
             builder.Services.AddHQServices(builder.Configuration);
-            builder.Services.AddHQDbContext(builder.Configuration);
-            builder.Services.AddDataProtection()
-                .PersistKeysToDbContext<HQDbContext>();
 
             builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             builder.Services.AddSwaggerGen(c =>
@@ -68,7 +65,6 @@ public class APICommand : AsyncCommand
             builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizationHandler>();
             builder.Services.AddScoped<IAuthorizationHandler, TimeEntryAuthorizationHandler>();
 
-
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAny", policy => policy.AllowAnyHeader().AllowAnyOrigin().WithExposedHeaders("Content-Disposition")); // TODO: Replace with explicit allow URLs
@@ -89,8 +85,6 @@ public class APICommand : AsyncCommand
                     options.GroupNameFormat = "'v'VVV";
                     options.SubstituteApiVersionInUrl = true;
                 });
-
-            builder.Services.AddDistributedMemoryCache();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

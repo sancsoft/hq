@@ -4,6 +4,7 @@ using HQ.Server.Data;
 using HQ.Server.Invoices;
 using HQ.Server.Services;
 
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 
 using Npgsql;
@@ -25,6 +26,13 @@ namespace HQ.Server
             services.AddScoped<ServicesAgreementServiceV1>();
             services.AddScoped<TimeEntryServiceV1>();
             services.AddScoped<UserServiceV1>();
+
+            services.AddHQDbContext(configuration);
+            services.AddDataProtection()
+                .SetApplicationName("HQ")
+                .PersistKeysToDbContext<HQDbContext>();
+
+            services.AddDistributedMemoryCache();
 
             var storageServiceType = configuration.GetValue<StorageService?>("StorageService") ?? StorageService.Database;
             switch (storageServiceType)
