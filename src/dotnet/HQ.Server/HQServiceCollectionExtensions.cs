@@ -2,6 +2,7 @@
 using HQ.Abstractions.Services;
 using HQ.Email;
 using HQ.Server.Data;
+using HQ.Server.Data.Models;
 using HQ.Server.Invoices;
 using HQ.Server.Services;
 
@@ -41,6 +42,13 @@ namespace HQ.Server
 
                     break;
                 case EmailService.SMTP:
+                    // var emailOptions= new SMTPEmailOptions();
+                    // configuration.GetSection("SMTP").Bind(emailOptions);
+                    services.AddScoped<IEmailService, SMTPEmailService>();
+                    services.AddOptions<SMTPEmailOptions>()
+                        .Bind(configuration.GetSection("SMTP"))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
                     // TODO: Register scoped service and add configuration options
                     break;
                 case EmailService.Mailgun:
