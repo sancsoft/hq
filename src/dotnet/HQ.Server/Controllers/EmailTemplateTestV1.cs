@@ -1,5 +1,6 @@
 using Asp.Versioning;
 
+using FluentResults;
 using FluentResults.Extensions.AspNetCore;
 
 using HQ.Abstractions.Common;
@@ -27,9 +28,10 @@ namespace HQ.Server.Controllers
     public class EmailTemplateTestControllerV1 : ControllerBase
     {
         private readonly EmailTemplateServiceV1 _emailTemplateService;
-        private readonly IEmailService _emailService;
+        private readonly EmailService _emailService;
 
-        public EmailTemplateTestControllerV1(EmailTemplateServiceV1 emailTemplateService, IEmailService emailService)
+
+        public EmailTemplateTestControllerV1(EmailTemplateServiceV1 emailTemplateService, EmailService emailService)
         {
             _emailTemplateService = emailTemplateService;
             _emailService = emailService;
@@ -52,29 +54,15 @@ namespace HQ.Server.Controllers
 
         [HttpPost(nameof(NotificationSendEmail))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public Task<ActionResult> NotificationSendEmail([FromForm] string to, CancellationToken ct = default) =>
-            SendEmail(EmailMessage.Notification, NotificationEmail.Sample, to, ct);
-
-        private async Task<ActionResult> SendEmail<T>(EmailMessage emailMessage, T model, string to, CancellationToken ct = default) where T : BaseEmail
+        public Task<Result> NotificationSendEmail([FromForm] string to, CancellationToken ct = default)
         {
-            var request = new GetEmailTemplateV1.Request<T>()
-            {
-                EmailMessage = emailMessage,
-                Model = model
-            };
 
-            var result = await _emailTemplateService.GetEmailTemplateV1(request, ct);
-            if (!result.IsSuccess)
-            {
-                return result.ToActionResult(new HQResultEndpointProfile());
-            }
+            return _emailService.SendEmail(EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, to, ct);
 
-            var response = result.Value;
-
-            await _emailService.SendAsync($"{emailMessage} Test", response.HTML, response.Text, [to]);
-
-            return NoContent();
         }
+
+
+
 
         private async Task<ActionResult> GetEmailTemplate<T>(EmailMessageOutput output, EmailMessage emailMessage, T model, CancellationToken ct = default) where T : BaseEmail
         {

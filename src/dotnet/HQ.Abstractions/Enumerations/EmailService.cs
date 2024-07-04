@@ -1,6 +1,6 @@
 ﻿namespace HQ.Abstractions.Enumerations;
 
-public enum EmailService
+public enum EmailServiceType
 {
     Logger,
     SMTP,

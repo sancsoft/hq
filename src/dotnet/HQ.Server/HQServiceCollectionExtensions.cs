@@ -29,11 +29,12 @@ namespace HQ.Server
             services.AddScoped<UserServiceV1>();
             services.AddScoped<EmailTemplateServiceV1>();
             services.AddScoped<IRazorViewToStringRendererService, RazorViewToStringRendererService>();
+            services.AddScoped<EmailService>();
 
-            var emailService = configuration.GetValue<EmailService?>("EmailService") ?? EmailService.Logger;
-            switch (emailService)
+            var emailServiceType = configuration.GetValue<EmailServiceType?>("EmailService") ?? EmailServiceType.Logger;
+            switch (emailServiceType)
             {
-                case EmailService.Logger:
+                case EmailServiceType.Logger:
                     services.AddScoped<IEmailService, LoggerEmailService>();
                     services.AddOptions<LoggerEmailService.Options>()
                         .Bind(configuration.GetSection(LoggerEmailService.Options.LoggerEmail))
@@ -41,7 +42,7 @@ namespace HQ.Server
                         .ValidateOnStart();
 
                     break;
-                case EmailService.SMTP:
+                case EmailServiceType.SMTP:
                     // var emailOptions= new SMTPEmailOptions();
                     // configuration.GetSection("SMTP").Bind(emailOptions);
                     services.AddScoped<IEmailService, SMTPEmailService>();
@@ -51,7 +52,7 @@ namespace HQ.Server
                         .ValidateOnStart();
                     // TODO: Register scoped service and add configuration options
                     break;
-                case EmailService.Mailgun:
+                case EmailServiceType.Mailgun:
                     services.AddHttpClient<IEmailService, MailgunEmailService>();
                     services.AddOptions<MailgunOptions>()
                         .Bind(configuration.GetSection("Mailgun"))
