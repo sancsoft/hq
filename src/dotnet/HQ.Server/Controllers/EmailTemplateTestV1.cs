@@ -54,15 +54,28 @@ namespace HQ.Server.Controllers
 
         [HttpPost(nameof(NotificationSendEmail))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public Task<Result> NotificationSendEmail([FromForm] string to, CancellationToken ct = default)
-        {
+        public Task<Result> NotificationSendEmail([FromForm] string to, CancellationToken ct = default) =>
+            _emailService.SendEmail(EmailMessage.Notification, NotificationEmail.Sample, to, ct);
 
-            return _emailService.SendEmail(EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, to, ct);
+        [HttpGet(nameof(RejectTimeEntryText))]
+        [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/plain")]
+        public Task<ActionResult> RejectTimeEntryText(CancellationToken ct = default) =>
+            GetEmailTemplate(EmailMessageOutput.Text, EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, ct);
 
-        }
+        [HttpGet(nameof(RejectTimeEntryMJML))]
+        [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/plain")]
+        public Task<ActionResult> RejectTimeEntryMJML(CancellationToken ct = default) =>
+            GetEmailTemplate(EmailMessageOutput.MJML, EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, ct);
 
+        [HttpGet(nameof(RejectTimeEntryHTML))]
+        [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/html")]
+        public Task<ActionResult> RejectTimeEntryHTML(CancellationToken ct = default) =>
+            GetEmailTemplate(EmailMessageOutput.HTML, EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, ct);
 
-
+        [HttpPost(nameof(RejectTimeEntrySendEmail))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public Task<Result> RejectTimeEntrySendEmail([FromForm] string to, CancellationToken ct = default) =>
+            _emailService.SendEmail(EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, to, ct);
 
         private async Task<ActionResult> GetEmailTemplate<T>(EmailMessageOutput output, EmailMessage emailMessage, T model, CancellationToken ct = default) where T : BaseEmail
         {
