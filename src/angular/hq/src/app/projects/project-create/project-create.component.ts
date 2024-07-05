@@ -139,7 +139,6 @@ export class ProjectCreateComponent implements OnDestroy {
             const clientRate = this.clients.find(
               (q) => q.id == clientId,
             )?.hourlyRate;
-            console.log(clientRate);
             this.projectFormGroup.controls.hourlyRate.setValue(
               clientRate ?? null,
             );
@@ -177,7 +176,6 @@ export class ProjectCreateComponent implements OnDestroy {
     this.destroy.complete();
   }
   updateSelectedClient(client: GetClientRecordV1) {
-    console.log(client);
     this.projectFormGroup.get('clientId')?.setValue(client.id);
     this.selectedClientName$.next(client.name);
   }
@@ -209,7 +207,6 @@ export class ProjectCreateComponent implements OnDestroy {
           this.hqService.upsertProjectV1(request),
         );
         this.generatedChargeCode$.next(response.chargeCode);
-        console.log(response.id);
         await this.router.navigate(['../', response.id], {
           relativeTo: this.route,
         });

@@ -513,25 +513,6 @@
                 </div>
 
                 <!-- row grid -->
-                <label
-                  for="val"
-                  class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-5"
-                  >Value</label
-                >
-                <div
-                  class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5"
-                >
-                  <!-- column -->
-                  <div>
-                    <input
-                      type="text"
-                      name=""
-                      id="val"
-                      class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Value"
-                    />
-                  </div>
-                </div>
 
                 <!-- engagement tab form fields below: hidden for now incase we need these on another screen -->
                 <div class="hidden">
@@ -662,7 +643,7 @@
                 </div>
               </div>
               <!-- flex flex-col flex-grow -->
-              <hq-pdf-viewer [pdfURL]="quotePdfURL"></hq-pdf-viewer>
+              <hq-pdf-viewer [pdfURL]="null"></hq-pdf-viewer>
             </div>
           </div>
         </form>
