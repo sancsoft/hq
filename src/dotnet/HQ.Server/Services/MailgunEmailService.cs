@@ -27,7 +27,7 @@ public class MailgunEmailService : IEmailService
         var recipientsJoinedWithCommas = String.Join(",", recipients);
         var formContent = new FormUrlEncodedContent(new[]
         {
-            new KeyValuePair<string, string>("from", $"@{_options.CurrentValue.FromDisplayName} <postmaster@{_options.CurrentValue.Domain}>"),
+            new KeyValuePair<string, string>("from", $"{_options.CurrentValue.FromDisplayName} <{_options.CurrentValue.From}>"),
             new KeyValuePair<string, string>("to", recipientsJoinedWithCommas),
             new KeyValuePair<string, string>("subject", subject),
             new KeyValuePair<string, string>("html", htmlBody)

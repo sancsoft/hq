@@ -11,5 +11,7 @@ public class MailgunOptions
     [Required]
     public string BaseUri { get; set; } = null!;
     [Required]
+    public string From { get; set; } = null!;
+    [Required]
     public string FromDisplayName { get; set; } = null!;
 }
