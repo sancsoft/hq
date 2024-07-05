@@ -4,6 +4,8 @@ namespace HQ.Abstractions.Emails;
 
 public class NotificationEmail : BaseEmail
 {
+    public string? Heading { get; set; }
+    public string? Message { get; set; }
     public string? ButtonLabel { get; set; }
     public Uri? ButtonUrl { get; set; }
 
