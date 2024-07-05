@@ -26,6 +26,7 @@
         <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
         <PackageReference Include="FluentResults" Version="3.15.2" />
         <PackageReference Include="FluentResults.Extensions.AspNetCore" Version="0.1.0" />
+        <PackageReference Include="MailKit" Version="4.7.0" />
         <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
         <PackageReference Include="Hangfire.PostgreSql" Version="1.20.9" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
@@ -34,6 +35,8 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="MimeKit" Version="4.7.0" />
+        <PackageReference Include="Mjml.Net" Version="3.11.0" />
         <PackageReference Include="Npgsql" Version="8.0.3" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
         <PackageReference Include="Spectre.Console.Cli" Version="0.48.1-preview.0.38" />
@@ -43,6 +46,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\HQ.Abstractions\HQ.Abstractions.csproj" />
+        <ProjectReference Include="..\HQ.Email\HQ.Email.csproj" />
     </ItemGroup>
 
 </Project>

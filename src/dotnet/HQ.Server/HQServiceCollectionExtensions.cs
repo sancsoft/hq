@@ -3,7 +3,9 @@ using Hangfire.PostgreSql;
 
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Services;
+using HQ.Email;
 using HQ.Server.Data;
+using HQ.Server.Data.Models;
 using HQ.Server.Invoices;
 using HQ.Server.Services;
 
@@ -29,6 +31,9 @@ namespace HQ.Server
             services.AddScoped<ServicesAgreementServiceV1>();
             services.AddScoped<TimeEntryServiceV1>();
             services.AddScoped<UserServiceV1>();
+            services.AddScoped<EmailTemplateServiceV1>();
+            services.AddScoped<IRazorViewToStringRendererService, RazorViewToStringRendererService>();
+            services.AddScoped<EmailMessageService>();
             services.AddScoped<HolidayServiceV1>();
 
             var connectionString = configuration.BuildConnectionString();
@@ -44,6 +49,39 @@ namespace HQ.Server
             services.AddHangfireServer();
 
             services.AddDistributedMemoryCache();
+
+
+            var emailServiceType = configuration.GetValue<EmailServiceType?>("EmailService") ?? EmailServiceType.Logger;
+            switch (emailServiceType)
+            {
+                case EmailServiceType.Logger:
+                    services.AddScoped<IEmailService, LoggerEmailService>();
+                    services.AddOptions<LoggerEmailService.Options>()
+                        .Bind(configuration.GetSection(LoggerEmailService.Options.LoggerEmail))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
+
+                    break;
+                case EmailServiceType.SMTP:
+                    // var emailOptions= new SMTPEmailOptions();
+                    // configuration.GetSection("SMTP").Bind(emailOptions);
+                    services.AddScoped<IEmailService, SMTPEmailService>();
+                    services.AddOptions<SMTPEmailService.Options>()
+                        .Bind(configuration.GetSection("SMTP"))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
+                    // TODO: Register scoped service and add configuration options
+                    break;
+                case EmailServiceType.Mailgun:
+                    services.AddHttpClient<IEmailService, MailgunEmailService>();
+                    services.AddOptions<MailgunEmailService.Options>()
+                        .Bind(configuration.GetSection("Mailgun"))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
+
+                    // TODO: Register scoped service and add configuration options
+                    break;
+            }
 
             var storageServiceType = configuration.GetValue<StorageService?>("StorageService") ?? StorageService.Database;
             switch (storageServiceType)

@@ -74,7 +74,7 @@ public class APICommand : AsyncCommand
                 options.AddPolicy("AllowAny", policy => policy.AllowAnyHeader().AllowAnyOrigin().WithExposedHeaders("Content-Disposition")); // TODO: Replace with explicit allow URLs
             });
 
-            builder.Services.AddControllers(options =>
+            builder.Services.AddControllersWithViews(options =>
             {
                 options.Filters.Add<HQModelStateInvalidFilter>();
             });
