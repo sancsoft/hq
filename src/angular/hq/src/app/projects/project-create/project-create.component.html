@@ -74,14 +74,14 @@
                       >
                         <option
                           *ngIf="(selectedClientName$ | async) === null"
-                          value=""
+                          [ngValue]="null"
                         >
                           Select Client
                         </option>
 
                         <option
                           *ngIf="selectedClientName$ | async as clientId"
-                          [value]="clientId"
+                          [ngValue]="clientId"
                         >
                           {{ clientId }}
                         </option>
@@ -607,12 +607,12 @@
                           id="quoteId"
                           class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
                         >
-                          <option [ngValue]="null" disabled selected>
+                          <option [ngValue]="null" selected>
                             Select a quote
                           </option>
                           <option
                             *ngFor="let quote of quotes"
-                            [value]="quote.id"
+                            [ngValue]="quote.id"
                           >
                             {{ quote.chargeCode }}
                           </option>

@@ -65,8 +65,8 @@ export class ProjectCreateComponent {
 
   projectFormGroup = new FormGroup<Form>(
     {
-      clientId: new FormControl(''),
-      name: new FormControl('', [Validators.required]),
+      clientId: new FormControl(null),
+      name: new FormControl(null, [Validators.required]),
       projectManagerId: new FormControl(null, [Validators.required]),
       hourlyRate: new FormControl(0, [Validators.required, Validators.min(0)]),
       totalHours: new FormControl(0, [Validators.required, Validators.min(0)]),
@@ -101,6 +101,17 @@ export class ProjectCreateComponent {
       map((response) => {
         return response.records;
       }),
+    );
+    this.projectFormGroup.controls.quoteId.disable();
+    this.projectFormGroup.controls.clientId.valueChanges.subscribe(
+      (clientId) => {
+        console.log(clientId);
+        if (!clientId) {
+          this.projectFormGroup.controls.quoteId.disable();
+        } else {
+          this.projectFormGroup.controls.quoteId.enable();
+        }
+      },
     );
   }
   updateSelectedClient(client: GetClientRecordV1) {
@@ -170,6 +181,7 @@ export class ProjectCreateComponent {
   }
   modalCancelClicked() {
     this.selectedClientName$.next(null);
+    this.projectFormGroup.get('clientId')?.setValue(null);
     this.closeModal();
   }
 
