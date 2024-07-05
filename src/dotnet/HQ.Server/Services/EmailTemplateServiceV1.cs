@@ -9,14 +9,15 @@ using CsvHelper.Configuration;
 
 using FluentResults;
 
-using HQ.Abstractions.Enumerations;
+using HQ.Abstractions.Emails;
 using HQ.Abstractions.EmailTemplates;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Services;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 
 using Microsoft.EntityFrameworkCore;
-using HQ.Abstractions.Emails;
+
 using Mjml.Net;
 
 namespace HQ.Server.Services;

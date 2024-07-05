@@ -50,7 +50,7 @@ namespace HQ.Server
 
             services.AddDistributedMemoryCache();
 
-            
+
             var emailServiceType = configuration.GetValue<EmailServiceType?>("EmailService") ?? EmailServiceType.Logger;
             switch (emailServiceType)
             {

@@ -1,19 +1,21 @@
-using System.Net.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 
+using HQ.Abstractions.Services;
+using HQ.Server.Data.Models;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using MimeKit;
 // using static Org.BouncyCastle.Math.EC.ECCurve;
 using ContentType = System.Net.Mime.ContentType;
-using HQ.Abstractions.Services;
-using HQ.Server.Data.Models;
 
 public class SMTPEmailService : IEmailService
 {
