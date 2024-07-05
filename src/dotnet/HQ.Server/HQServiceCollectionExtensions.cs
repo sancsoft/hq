@@ -66,7 +66,7 @@ namespace HQ.Server
                     // var emailOptions= new SMTPEmailOptions();
                     // configuration.GetSection("SMTP").Bind(emailOptions);
                     services.AddScoped<IEmailService, SMTPEmailService>();
-                    services.AddOptions<SMTPEmailOptions>()
+                    services.AddOptions<SMTPEmailService.Options>()
                         .Bind(configuration.GetSection("SMTP"))
                         .ValidateDataAnnotations()
                         .ValidateOnStart();
@@ -74,7 +74,7 @@ namespace HQ.Server
                     break;
                 case EmailServiceType.Mailgun:
                     services.AddHttpClient<IEmailService, MailgunEmailService>();
-                    services.AddOptions<MailgunOptions>()
+                    services.AddOptions<MailgunEmailService.Options>()
                         .Bind(configuration.GetSection("Mailgun"))
                         .ValidateDataAnnotations()
                         .ValidateOnStart();

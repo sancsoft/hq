@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 using System.Text;
 
@@ -9,10 +10,10 @@ using Microsoft.Extensions.Options;
 public class MailgunEmailService : IEmailService
 {
     private readonly HttpClient _httpClient;
-    private readonly IOptionsMonitor<MailgunOptions> _options;
+    private readonly IOptionsMonitor<Options> _options;
     private readonly ILogger<MailgunEmailService> _logger;
 
-    public MailgunEmailService(HttpClient httpClient, IOptionsMonitor<MailgunOptions> options, ILogger<MailgunEmailService> logger)
+    public MailgunEmailService(HttpClient httpClient, IOptionsMonitor<Options> options, ILogger<MailgunEmailService> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
@@ -36,5 +37,19 @@ public class MailgunEmailService : IEmailService
         var response = await _httpClient.PostAsync($"{_options.CurrentValue.BaseUri}/{_options.CurrentValue.Domain}/messages", formContent, ct);
 
         response.EnsureSuccessStatusCode();
+    }
+
+    public class Options
+    {
+        [Required]
+        public string ApiKey { get; set; } = null!;
+        [Required]
+        public string Domain { get; set; } = null!;
+        [Required]
+        public string BaseUri { get; set; } = null!;
+        [Required]
+        public string From { get; set; } = null!;
+        [Required]
+        public string FromDisplayName { get; set; } = null!;
     }
 }

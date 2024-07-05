@@ -36,7 +36,7 @@ namespace HQ.Server.Services
             var result = await _emailTemplateService.GetEmailTemplateV1(request, ct);
             if (!result.IsSuccess)
             {
-                return Result.Fail($"@{new HQResultEndpointProfile()}");
+                return Result.Fail(result.Errors);
             }
 
             var response = result.Value;

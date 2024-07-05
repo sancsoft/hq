@@ -54,8 +54,9 @@ namespace HQ.Server.Controllers
 
         [HttpPost(nameof(NotificationSendEmail))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public Task<Result> NotificationSendEmail([FromForm] string to, CancellationToken ct = default) =>
-            _emailService.SendEmail(EmailMessage.Notification, NotificationEmail.Sample, to, "Notification Test", System.Net.Mail.MailPriority.Low, null, ct);
+        public Task<ActionResult> NotificationSendEmail([FromForm] string to, CancellationToken ct = default) =>
+            _emailService.SendEmail(EmailMessage.Notification, NotificationEmail.Sample, to, "Notification Test", System.Net.Mail.MailPriority.Low, null, ct)
+            .ToActionResult(new HQResultEndpointProfile());
 
         [HttpGet(nameof(RejectTimeEntryText))]
         [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/plain")]
@@ -74,8 +75,9 @@ namespace HQ.Server.Controllers
 
         [HttpPost(nameof(RejectTimeEntrySendEmail))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public Task<Result> RejectTimeEntrySendEmail([FromForm] string to, CancellationToken ct = default) =>
-            _emailService.SendEmail(EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, to, "Reject Time Entry Test", System.Net.Mail.MailPriority.Low, null, ct);
+        public Task<ActionResult> RejectTimeEntrySendEmail([FromForm] string to, CancellationToken ct = default) =>
+            _emailService.SendEmail(EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, to, "Reject Time Entry Test", System.Net.Mail.MailPriority.Low, null, ct)
+            .ToActionResult(new HQResultEndpointProfile());
 
         private async Task<ActionResult> GetEmailTemplate<T>(EmailMessageOutput output, EmailMessage emailMessage, T model, CancellationToken ct = default) where T : BaseEmail
         {
