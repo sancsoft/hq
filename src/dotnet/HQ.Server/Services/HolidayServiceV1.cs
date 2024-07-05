@@ -28,7 +28,7 @@ public class HolidayServiceV1
     {
         var validationResult = Result.Merge(
             Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
-            Result.FailIf(await _context.Holidays.AnyAsync(t => t.Id != request.Id && t.Name == request.Name, ct), "Name must be unique.")
+            Result.FailIf(await _context.Holidays.AnyAsync(t => t.Id != request.Id && t.Date == request.Date && t.Jurisdiciton == request.Jurisdiciton, ct), "Another holiday already exists on that date.")
         );
 
         if (validationResult.IsFailed)

@@ -356,19 +356,16 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'holiday',
+    path: 'holidays',
     title: 'Holiday',
-    canActivate: [
-      AutoLoginPartialRoutesGuard,
-      userRoleGuard(HQRole.Administrator),
-    ],
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
-      import('.//holiday/holiday.component').then((m) => m.HolidayComponent),
+      import('./holiday/holiday.component').then((m) => m.HolidayComponent),
     children: [
       {
         path: '',
         title: 'Holiday List',
-        canActivate: [userRoleGuard(HQRole.Administrator)],
+        canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
           import('./holiday/holiday-list/holiday-list.component').then(
             (m) => m.HolidayListComponent,
