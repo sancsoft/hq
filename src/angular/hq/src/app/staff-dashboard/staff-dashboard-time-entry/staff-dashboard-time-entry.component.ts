@@ -267,6 +267,10 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     this.form.reset({ date: this.form.controls.date.value });
   }
   async chooseDate() {
+    if (!this.form.value.id || !this.form.valid) {
+      return;
+    }
+
     const newDate = await firstValueFrom(
       this.modalService.chooseDate(
         'Change Date',
@@ -276,6 +280,8 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     );
     if (newDate) {
       this.form.patchValue({ date: newDate });
+      this.form.markAsDirty();
+      await this.save();
     }
   }
 

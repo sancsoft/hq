@@ -107,16 +107,16 @@
       }
       <button
         [title]="
-          (staffDashboardService.anyTimePending$ | async)
+          (staffDashboardService.canSubmit$ | async)
             ? 'Submit all time entries for the shown date period'
             : 'No time entries to be submitted '
         "
-        [disabled]="(staffDashboardService.anyTimePending$ | async) === false"
+        [disabled]="(staffDashboardService.canSubmit$ | async) === false"
         [ngClass]="{
           'text-gray-50 border-gray-500 bg-gray-500 ':
-            (staffDashboardService.anyTimePending$ | async) === false,
+            (staffDashboardService.canSubmit$ | async) === false,
           'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-            staffDashboardService.anyTimePending$ | async,
+            staffDashboardService.canSubmit$ | async,
         }"
         class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
         type="button"

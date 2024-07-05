@@ -194,6 +194,11 @@ namespace HQ.Server.Services
             }
             foreach (var time in timeEntries)
             {
+                if (time.Hours == 0 || String.IsNullOrEmpty(time.Notes))
+                {
+                    continue;
+                }
+
                 if (time.Status == TimeStatus.Unsubmitted)
                 {
                     time.Status = TimeStatus.Submitted;
@@ -645,6 +650,8 @@ namespace HQ.Server.Services
                 }
                 while (date >= startDate);
             }
+
+            response.CanSubmit = times.Count > 0 && !times.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && times.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Unsubmitted || x.TimeStatus == TimeStatus.Rejected));
 
             return response;
         }

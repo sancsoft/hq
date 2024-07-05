@@ -41,10 +41,10 @@ export class StaffDashboardService {
   );
 
   Period = Period;
+  canSubmit$: Observable<boolean>;
   time$: Observable<GetDashboardTimeV1Response>;
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
   clients$: Observable<GetDashboardTimeV1Client[]>;
-  anyTimePending$: Observable<boolean>;
   showAllRejectedTimes$ = new BehaviorSubject<boolean>(false);
   rejectedCount$: Observable<number>;
 
@@ -101,19 +101,10 @@ export class StaffDashboardService {
     this.time$ = merge(time$, refreshTime$).pipe(
       shareReplay({ bufferSize: 1, refCount: false }),
     );
-    this.rejectedCount$ = this.time$.pipe(map((t) => t.rejectedCount));
 
-    this.anyTimePending$ = this.time$.pipe(
-      map((response) =>
-        response.dates.some((date) =>
-          date.times.some(
-            (time) =>
-              time.timeStatus === TimeStatus.Unsubmitted ||
-              time.timeStatus === TimeStatus.Rejected,
-          ),
-        ),
-      ),
-    );
+    this.canSubmit$ = this.time$.pipe(map((t) => t.canSubmit));
+
+    this.rejectedCount$ = this.time$.pipe(map((t) => t.rejectedCount));
 
     this.chargeCodes$ = this.time$.pipe(map((t) => t.chargeCodes));
     this.clients$ = this.time$.pipe(map((t) => t.clients));
