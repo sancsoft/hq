@@ -501,6 +501,9 @@
             @case (timeStatus.Unsubmitted) {
               <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
             }
+            @case (timeStatus.Submitted) {
+              <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
+            }
             @case (timeStatus.Accepted) {
               <td class="border-b border-black py-2 bg-green-600 w-3"></td>
             }
@@ -536,11 +539,10 @@
               disabled
             />
           </td>
-          <td class="border-b border-black py-2 pr-5">
-            <div
-              class="flex flex-nowrap justify-between space-x-2 items-center"
-            >
-              <div></div>
+          <td class="border-b border-black py-2 text-right pr-5">
+            <div class="flex justify-between flex-nowrap space-x-2 items-center">
+              <div>&nbsp;</div>
+              <div class="text-nowrap divide-x divide-teal-200"></div>
             </div>
           </td>
         </tr>
