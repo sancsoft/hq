@@ -21,6 +21,14 @@ public class TimeEntryAuthorizationHandler : AuthorizationHandler<OperationAutho
     {
         var staffId = context.User.GetStaffId();
         var isStaff = context.User.IsInRole("staff");
+        var isExecutive = context.User.IsInRole("executive");
+        var isAdmin = context.User.IsInRole("administrator");
+
+        if (isExecutive || isAdmin)
+        {
+            context.Succeed(requirement);
+            return;
+        }
 
         if (!isStaff)
         {

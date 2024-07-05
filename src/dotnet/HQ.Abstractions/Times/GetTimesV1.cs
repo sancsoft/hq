@@ -45,8 +45,12 @@ namespace HQ.Abstractions.Times
 
         public class Response : PagedResponseV1<Record>
         {
-
+            public decimal TotalHours { get; set; }
+            public decimal BillableHours { get; set; }
+            public decimal AcceptedHours { get; set; }
+            public decimal AcceptedBillableHours { get; set; }
         }
+
 
 
 

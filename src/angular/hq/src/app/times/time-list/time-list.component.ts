@@ -27,6 +27,8 @@ import { TimeService } from '../services/TimeService';
 import { TimeSearchFilterComponent } from '../search-filter/time-search-filter/time-search-filter.component';
 import { saveAs } from 'file-saver';
 import { ToastService } from '../../services/toast.service';
+import { InRolePipe } from '../../pipes/in-role.pipe';
+import { HQRole } from '../../enums/hqrole';
 
 @Component({
   selector: 'hq-time-list',
@@ -38,6 +40,7 @@ import { ToastService } from '../../services/toast.service';
     PaginatorComponent,
     SortIconComponent,
     TimeSearchFilterComponent,
+    InRolePipe,
   ],
   templateUrl: './time-list.component.html',
 })
@@ -46,12 +49,17 @@ export class TimeListComponent {
 
   skipDisplay$: Observable<number>;
   takeToDisplay$: Observable<number>;
+  billableHours$: Observable<number>;
+  TotalHours$: Observable<number>;
+  AcceptedHours$: Observable<number>;
+  AcceptedBillableHours$: Observable<number>;
   totalRecords$: Observable<number>;
   times$: Observable<GetTimeRecordV1[]>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
   date$ = new BehaviorSubject<Date | null>(null);
 
+  HQRole = HQRole;
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   timeRequest$: Observable<Partial<GetTimeRequestV1>>;
@@ -148,6 +156,12 @@ export class TimeListComponent {
     );
 
     this.totalRecords$ = response$.pipe(map((t) => t.total!));
+    this.billableHours$ = response$.pipe(map((t) => t.billableHours!));
+    this.TotalHours$ = response$.pipe(map((t) => t.totalHours!));
+    this.AcceptedHours$ = response$.pipe(map((t) => t.acceptedHours!));
+    this.AcceptedBillableHours$ = response$.pipe(
+      map((t) => t.acceptedBillableHours!),
+    );
     this.takeToDisplay$ = combineLatest([
       skip$,
       itemsPerPage$,

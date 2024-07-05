@@ -1,5 +1,39 @@
-<div class="px-5">
+<div class="flex items-center justify-between px-5">
   <h1 class="font-rajdhani font-semibold text-3xl">Time Entries</h1>
+  <div class="flex space-x-8 p-4">
+    <div class="text-center text-white">
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+        Total Hours
+      </div>
+      <p class="text-right">
+        {{ (TotalHours$ | async)?.toFixed(2) || "-" }}
+      </p>
+    </div>
+    <div class="text-center text-white">
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+        Billable Hours
+      </div>
+      <p class="text-right">
+        {{ (billableHours$ | async)?.toFixed(2) || "-" }}
+      </p>
+    </div>
+    <div class="text-center text-white">
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+        Accepted Hours
+      </div>
+      <p class="text-right">
+        {{ (AcceptedHours$ | async)?.toFixed(2) || "-" }}
+      </p>
+    </div>
+    <div class="text-center text-white">
+      <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+        Accepted Billable Hours
+      </div>
+      <p class="text-right">
+        {{ (AcceptedBillableHours$ | async)?.toFixed(2) || "-" }}
+      </p>
+    </div>
+  </div>
 </div>
 
 <div class="px-5 pt-4 mb-[8px]">
@@ -153,11 +187,13 @@
         <td class="border-b border-black py-2">{{ time.invoiceNumber }}</td>
 
         <td class="border-b border-black py-2 text-right pr-5">
-          <a
-            [routerLink]="['edit', time.id]"
-            class="text-teal-200 hover:text-teal-300"
-            >EDIT</a
-          >
+          @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+            <a
+              [routerLink]="['edit', time.id]"
+              class="text-teal-200 hover:text-teal-300"
+              >EDIT</a
+            >
+          }
         </td>
       </tr>
     }
