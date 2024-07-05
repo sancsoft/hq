@@ -64,6 +64,10 @@ interface Form {
 export class ProjectCreateComponent implements OnDestroy {
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
+  quotes: GetQuotesRecordV1[] = [];
+  clients$: Observable<GetClientRecordV1[]>;
+  clients: GetClientRecordV1[] = [];
+
   selectedQuote$ = new Observable<string>();
   quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
 
@@ -101,6 +105,7 @@ export class ProjectCreateComponent implements OnDestroy {
   ) {
     const response$ = this.hqService.getStaffMembersV1({});
     const quotesResponse$ = this.hqService.getQuotesV1({});
+    const clientsResponse$ = this.hqService.getClientsV1({});
 
     this.projectManagers$ = response$.pipe(
       map((response) => {
@@ -110,6 +115,13 @@ export class ProjectCreateComponent implements OnDestroy {
 
     this.quotes$ = quotesResponse$.pipe(
       map((response) => {
+        this.quotes = response.records;
+        return response.records;
+      }),
+    );
+    this.clients$ = clientsResponse$.pipe(
+      map((response) => {
+        this.clients = response.records;
         return response.records;
       }),
     );
@@ -124,6 +136,35 @@ export class ProjectCreateComponent implements OnDestroy {
             this.projectFormGroup.controls.quoteId.disable();
           } else {
             this.projectFormGroup.controls.quoteId.enable();
+            const clientRate = this.clients.find(
+              (q) => q.id == clientId,
+            )?.hourlyRate;
+            console.log(clientRate);
+            this.projectFormGroup.controls.hourlyRate.setValue(
+              clientRate ?? null,
+            );
+          }
+        },
+        error: console.error,
+      });
+
+    this.projectFormGroup.controls.quoteId.valueChanges
+      .pipe(startWith(this.projectFormGroup.controls.quoteId.value))
+      .pipe(takeUntil(this.destroy))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (quoteId) => {
+          if (quoteId != null) {
+            const quoteName = this.quotes.find((q) => q.id == quoteId)?.name;
+            this.projectFormGroup.controls.name.setValue(quoteName ?? null);
+
+            this.projectFormGroup.controls.bookingPeriod.removeValidators([
+              Validators.required,
+            ]);
+          } else {
+            this.projectFormGroup.controls.bookingPeriod.addValidators([
+              Validators.required,
+            ]);
           }
         },
         error: console.error,
@@ -147,7 +188,6 @@ export class ProjectCreateComponent implements OnDestroy {
     const quoteId = (event.target as HTMLSelectElement).value;
     this.selectedQuote$ = this.quotes$.pipe(
       map((quotes) => {
-        console.log(quotes);
         const quote = quotes.find((quote) => quote.id === quoteId);
         return quote ? quote.chargeCode : 'Quote not found';
       }),
