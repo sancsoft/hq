@@ -7,9 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.20] - 2024-07-04
+
+### Fixed
+
+- Sort staff dropdown by name on time list
+- Voltron charge code import not setting project status
+- Filter used vacation hours to current year
+
+### Added
+
+- Hangfire with weekly time processing recurring jobs
+- Duplicate time entry button
+- Ability to change dates on time entries
+- Holiday admin
+- Email template and email services
+- `This Year` to period dropdown on time list
+
+### Changed
+
+- When importing voltron time as `Accepted` status, automatically set approved hours
+
 ## [0.3.19] - 2024-07-03
 
-### Fixes
+### Fixed
 
 - Hours input on timesheet missing `min` attribute allowing negative values
 - Admin time edit authorization check
@@ -312,7 +333,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.19...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.20...HEAD
+[0.3.20]: https://github.com/sancsoft/hq/compare/v0.3.19...v0.3.20
 [0.3.19]: https://github.com/sancsoft/hq/compare/v0.3.18...v0.3.19
 [0.3.18]: https://github.com/sancsoft/hq/compare/v0.3.17...v0.3.18
 [0.3.17]: https://github.com/sancsoft/hq/compare/v0.3.16...v0.3.17
