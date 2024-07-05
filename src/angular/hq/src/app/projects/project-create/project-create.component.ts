@@ -74,7 +74,7 @@ export class ProjectCreateComponent {
         Validators.required,
         Validators.min(0),
       ]),
-      quoteId: new FormControl(null, [Validators.required]),
+      quoteId: new FormControl(null),
       startDate: new FormControl(null, Validators.required),
       endDate: new FormControl(null, Validators.required),
     },
