@@ -29,6 +29,7 @@ namespace HQ.Server
             services.AddScoped<ServicesAgreementServiceV1>();
             services.AddScoped<TimeEntryServiceV1>();
             services.AddScoped<UserServiceV1>();
+            services.AddScoped<HolidayServiceV1>();
 
             var connectionString = configuration.BuildConnectionString();
             services.AddHQDbContext(connectionString);
