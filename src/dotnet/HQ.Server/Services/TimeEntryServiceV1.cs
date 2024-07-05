@@ -525,9 +525,10 @@ namespace HQ.Server.Services
             }
 
             var currentYearStart = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Year);
+            var currentYearEnd = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(Period.Year);
             var totalVacationHours = !staff.StartDate.HasValue ? 0 : DateOnly.FromDateTime(DateTime.Today).CalculateEarnedVacationHours(staff.StartDate.Value, staff.VacationHours);
 
-            var usedVacationHours = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Date >= currentYearStart && t.ChargeCode.Project!.Name.ToLower().Contains("vacation")).SumAsync(t => t.Hours);
+            var usedVacationHours = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Date >= currentYearStart && t.Date <= currentYearEnd && t.ChargeCode.Project!.Name.ToLower().Contains("vacation")).SumAsync(t => t.Hours);
             var vacationHours = totalVacationHours - usedVacationHours;
 
             if (!String.IsNullOrEmpty(request.Search))
