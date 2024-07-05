@@ -92,6 +92,11 @@ public class VoltronServiceV1
                 time.Hours = timeRecord.Hours;
                 time.Notes = timeRecord.Notes;
 
+                if (request.Status == TimeStatus.Accepted)
+                {
+                    time.HoursApproved = time.Hours;
+                }
+
                 if (String.IsNullOrEmpty(time.Notes))
                 {
                     time.Notes = null;
