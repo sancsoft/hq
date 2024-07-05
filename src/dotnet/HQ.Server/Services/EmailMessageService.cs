@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 
 using FluentResults;
@@ -14,17 +15,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HQ.Server.Services
 {
-    public class EmailService
+    public class EmailMessageService
     {
         private readonly EmailTemplateServiceV1 _emailTemplateService;
         private readonly IEmailService _emailService;
-        public EmailService(EmailTemplateServiceV1 emailTemplateService, IEmailService emailService)
+        public EmailMessageService(EmailTemplateServiceV1 emailTemplateService, IEmailService emailService)
         {
             _emailTemplateService = emailTemplateService;
             _emailService = emailService;
         }
 
-        public async Task<Result> SendEmail<T>(EmailMessage emailMessage, T model, string to, CancellationToken ct = default) where T : BaseEmail
+        public async Task<Result> SendEmail<T>(EmailMessage emailMessage, T model, string to, string subject, MailPriority priority = MailPriority.Normal, IEnumerable<Attachment>? attachments = null, CancellationToken ct = default) where T : BaseEmail
         {
             var request = new GetEmailTemplateV1.Request<T>()
             {
@@ -39,21 +40,8 @@ namespace HQ.Server.Services
             }
 
             var response = result.Value;
-            string subject;
-            switch (emailMessage)
-            {
-                case EmailMessage.Notification:
-                    subject = "Notification";
-                    break;
-                case EmailMessage.RejectTimeEntry:
-                    subject = "Time Entry Rejected";
-                    break;
-                default:
-                    subject = "Default Subject";
-                    break;
 
-            }
-            await _emailService.SendAsync(subject, response.HTML, response.Text, [to]);
+            await _emailService.SendAsync(subject, response.HTML, response.Text, [to], attachments, priority, ct);
 
             return Result.Ok();
         }

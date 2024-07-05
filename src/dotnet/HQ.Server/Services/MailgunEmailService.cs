@@ -22,7 +22,7 @@ public class MailgunEmailService : IEmailService
         _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authToken);
     }
 
-    public async Task SendAsync(string subject, string htmlBody, string textBody, List<string> recipients, IEnumerable<Attachment>? attachments = null, MailPriority mailPriority = MailPriority.Normal)
+    public async Task SendAsync(string subject, string htmlBody, string textBody, List<string> recipients, IEnumerable<Attachment>? attachments = null, MailPriority mailPriority = MailPriority.Normal, CancellationToken ct = default)
     {
         var recipientsJoinedWithCommas = String.Join(",", recipients);
         var formContent = new FormUrlEncodedContent(new[]
@@ -33,7 +33,7 @@ public class MailgunEmailService : IEmailService
             new KeyValuePair<string, string>("html", htmlBody)
         });
 
-        var response = await _httpClient.PostAsync($"{_options.CurrentValue.BaseUri}/{_options.CurrentValue.Domain}/messages", formContent);
+        var response = await _httpClient.PostAsync($"{_options.CurrentValue.BaseUri}/{_options.CurrentValue.Domain}/messages", formContent, ct);
 
         response.EnsureSuccessStatusCode();
     }

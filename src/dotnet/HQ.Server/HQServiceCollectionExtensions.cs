@@ -33,7 +33,7 @@ namespace HQ.Server
             services.AddScoped<UserServiceV1>();
             services.AddScoped<EmailTemplateServiceV1>();
             services.AddScoped<IRazorViewToStringRendererService, RazorViewToStringRendererService>();
-            services.AddScoped<EmailService>();
+            services.AddScoped<EmailMessageService>();
             services.AddScoped<HolidayServiceV1>();
 
             var connectionString = configuration.BuildConnectionString();

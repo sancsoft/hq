@@ -28,10 +28,10 @@ namespace HQ.Server.Controllers
     public class EmailTemplateTestControllerV1 : ControllerBase
     {
         private readonly EmailTemplateServiceV1 _emailTemplateService;
-        private readonly EmailService _emailService;
+        private readonly EmailMessageService _emailService;
 
 
-        public EmailTemplateTestControllerV1(EmailTemplateServiceV1 emailTemplateService, EmailService emailService)
+        public EmailTemplateTestControllerV1(EmailTemplateServiceV1 emailTemplateService, EmailMessageService emailService)
         {
             _emailTemplateService = emailTemplateService;
             _emailService = emailService;
@@ -55,7 +55,7 @@ namespace HQ.Server.Controllers
         [HttpPost(nameof(NotificationSendEmail))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public Task<Result> NotificationSendEmail([FromForm] string to, CancellationToken ct = default) =>
-            _emailService.SendEmail(EmailMessage.Notification, NotificationEmail.Sample, to, ct);
+            _emailService.SendEmail(EmailMessage.Notification, NotificationEmail.Sample, to, "Notification Test", System.Net.Mail.MailPriority.Low, null, ct);
 
         [HttpGet(nameof(RejectTimeEntryText))]
         [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/plain")]
@@ -75,7 +75,7 @@ namespace HQ.Server.Controllers
         [HttpPost(nameof(RejectTimeEntrySendEmail))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public Task<Result> RejectTimeEntrySendEmail([FromForm] string to, CancellationToken ct = default) =>
-            _emailService.SendEmail(EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, to, ct);
+            _emailService.SendEmail(EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, to, "Reject Time Entry Test", System.Net.Mail.MailPriority.Low, null, ct);
 
         private async Task<ActionResult> GetEmailTemplate<T>(EmailMessageOutput output, EmailMessage emailMessage, T model, CancellationToken ct = default) where T : BaseEmail
         {

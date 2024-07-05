@@ -28,7 +28,7 @@ public class SMTPEmailService : IEmailService
         _logger = logger;
     }
 
-    public async Task SendAsync(string subject, string htmlBody, string textBody, List<string> recipients, IEnumerable<Attachment>? attachments = null, MailPriority mailPriority = MailPriority.Normal)
+    public async Task SendAsync(string subject, string htmlBody, string textBody, List<string> recipients, IEnumerable<Attachment>? attachments = null, MailPriority mailPriority = MailPriority.Normal, CancellationToken ct = default)
     {
         var joinedRecipients = String.Join(";", recipients);
         using (var objMail = CreateMessage(subject, htmlBody, textBody, joinedRecipients, true, attachments, mailPriority))
