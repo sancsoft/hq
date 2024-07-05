@@ -1,7 +1,15 @@
 import { PdfViewerComponent } from './../../common/pdf-viewer/pdf-viewer.component';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  firstValueFrom,
+  map,
+  startWith,
+  takeUntil,
+} from 'rxjs';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import {
@@ -38,8 +46,8 @@ interface Form {
   totalHours: FormControl<number | null>;
   bookingPeriod: FormControl<number | null>;
   quoteId: FormControl<string | null>;
-  startDate: FormControl<Date | null>;
-  endDate: FormControl<Date | null>;
+  startDate: FormControl<string | null>;
+  endDate: FormControl<string | null>;
 }
 @Component({
   selector: 'hq-project-create',
@@ -53,7 +61,7 @@ interface Form {
   ],
   templateUrl: './project-create.component.html',
 })
-export class ProjectCreateComponent {
+export class ProjectCreateComponent implements OnDestroy {
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
   selectedQuote$ = new Observable<string>();
@@ -70,12 +78,15 @@ export class ProjectCreateComponent {
       projectManagerId: new FormControl(null, [Validators.required]),
       hourlyRate: new FormControl(0, [Validators.required, Validators.min(0)]),
       totalHours: new FormControl(0, [Validators.required, Validators.min(0)]),
-      bookingPeriod: new FormControl(null, [
+      bookingPeriod: new FormControl(Period.Month, [
         Validators.required,
         Validators.min(0),
       ]),
       quoteId: new FormControl(null),
-      startDate: new FormControl(null, Validators.required),
+      startDate: new FormControl(
+        new Date().toISOString().substring(0, 10),
+        Validators.required,
+      ),
       endDate: new FormControl(null, Validators.required),
     },
     { validators: this.dateRangeValidator },
@@ -102,17 +113,27 @@ export class ProjectCreateComponent {
         return response.records;
       }),
     );
-    this.projectFormGroup.controls.quoteId.disable();
-    this.projectFormGroup.controls.clientId.valueChanges.subscribe(
-      (clientId) => {
-        console.log(clientId);
-        if (!clientId) {
-          this.projectFormGroup.controls.quoteId.disable();
-        } else {
-          this.projectFormGroup.controls.quoteId.enable();
-        }
-      },
-    );
+
+    this.projectFormGroup.controls.clientId.valueChanges
+      .pipe(startWith(this.projectFormGroup.controls.clientId.value))
+      .pipe(takeUntil(this.destroy))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (clientId) => {
+          if (clientId == null) {
+            this.projectFormGroup.controls.quoteId.disable();
+          } else {
+            this.projectFormGroup.controls.quoteId.enable();
+          }
+        },
+        error: console.error,
+      });
+  }
+  private destroy = new Subject<void>();
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
   }
   updateSelectedClient(client: GetClientRecordV1) {
     console.log(client);
