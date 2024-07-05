@@ -16,6 +16,13 @@ export const routes: Routes = [
       import('./callback.component').then((m) => m.CallbackComponent),
   },
   {
+    path: 'test',
+    title: 'Test',
+    canActivate: [AutoLoginPartialRoutesGuard],
+    loadComponent: () =>
+      import('./test/test.component').then((m) => m.TestComponent),
+  },
+  {
     path: 'chargecodes',
     title: 'Charge Codes',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
