@@ -4,7 +4,6 @@ namespace HQ.Abstractions.Emails
     {
         public string? Date { get; set; }
         public string? ChargeCode { get; set; }
-        public string? TimeEntryId { get; set; }
         public string? Client { get; set; }
         public string? Project { get; set; }
         public string? ActivityTask { get; set; }
@@ -12,8 +11,8 @@ namespace HQ.Abstractions.Emails
         public string? ReasonForRejection { get; set; }
         public static new RejectTimeEntryEmail Sample = new()
         {
-            Heading = "[HQ] Time Rejected",
-            Message = "Your time entry has been rejected. Please review the details and resubmit.",
+            Heading = "Time Rejected",
+            Message = "Your time entry has been rejected. Please review and resubmit.",
             ButtonLabel = "Open HQ",
             ButtonUrl = new Uri("http://hq.localhost:4200/dashboard"),
             Date = "07/03/2024",
