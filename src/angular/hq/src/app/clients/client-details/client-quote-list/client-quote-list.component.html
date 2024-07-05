@@ -13,8 +13,17 @@
           [activeSortDirection]="sortDirection$ | async"
         />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3"
+        (click)="onSortClick(sortColumn.QuoteNumber)"
+      >
         Quote number
+        <hq-sort-icon
+          [column]="sortColumn.QuoteNumber"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
       <th
         scope="col"
@@ -28,8 +37,17 @@
           [activeSortDirection]="sortDirection$ | async"
         />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3"
+        (click)="onSortClick(sortColumn.ChargeCode)"
+      >
         Charge Code
+        <hq-sort-icon
+          [column]="sortColumn.ChargeCode"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
       <th
         scope="col"
@@ -55,8 +73,17 @@
           [activeSortDirection]="sortDirection$ | async"
         />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Created at
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3"
+        (click)="onSortClick(sortColumn.Date)"
+      >
+        Date
+        <hq-sort-icon
+          [column]="sortColumn.Date"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
       <th
         scope="col"
@@ -90,7 +117,9 @@
         <td class="border-b border-black py-2">{{ quote.clientName }}</td>
         <td class="border-b border-black py-2">{{ quote.chargeCode }}</td>
         <td class="border-b border-black py-2">$ {{ quote.value ?? "0.0" }}</td>
-        <td class="border-b border-black py-2">{{ quote.status ?? "0.0" }}</td>
+        <td class="border-b border-black py-2">
+          {{ getQuoteStatusString(quote.status) }}
+        </td>
         <td class="border-b border-black py-2">
           {{ quote.date ?? "mm/dd/yyyy" }}
         </td>

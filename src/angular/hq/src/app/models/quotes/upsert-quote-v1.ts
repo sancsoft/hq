@@ -1,3 +1,4 @@
+import { QuoteStatus } from '../common/quote-status';
 export interface UpsertQuoteRequestV1 {
   id?: string;
   clientId: string | null;
@@ -6,6 +7,7 @@ export interface UpsertQuoteRequestV1 {
   status: number | null;
   date: Date | null;
   value: number | null;
+  quoteNumber: number | null;
 }
 
 export interface UpsertQuoteResponsetV1 {

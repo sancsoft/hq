@@ -15,7 +15,6 @@ public class ImportQuotesV1
 
     public class Record : UpsertQuotestV1.Request
     {
-        public int? QuoteNumber { get; set; }
         public string? ClientName { get; set; }
     }
 

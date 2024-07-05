@@ -87,6 +87,10 @@ import {
   UpsertChargeCodesResponseV1,
 } from '../models/charge-codes/upsert-chargecodes';
 import {
+  UploadQuotePDFRequestV1,
+  UploadQuotePDFResponseV1,
+} from '../models/quotes/upload-quotePDF-v1';
+import {
   GetProjectActivitiesResponseV1,
   GetProjectActivityRequestV1,
 } from '../models/PSR/get-project-activity-v1';
@@ -490,6 +494,14 @@ export class HQService {
       })),
     );
   }
+  // uploadQuotePDFV1(request: Partial<UploadQuotePDFRequestV1>) {
+  //   return this.appSettings.apiUrl$.pipe(
+  //     switchMap((apiUrl) =>
+  //       this.http.post<UploadQuotePDFResponseV1>(
+  //         `${apiUrl}/v1/Quotes/UploadQuotePDFV1`,
+  //         request,
+  //       ),
+  //     ),
+  //   );
+  // }
 }
-
-// UpdateProjectStatusReportTimeV1

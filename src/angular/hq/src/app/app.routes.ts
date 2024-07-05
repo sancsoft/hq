@@ -296,6 +296,15 @@ export const routes: Routes = [
             (m) => m.QuotesCreateComponent,
           ),
       },
+      {
+        path: 'edit/:quoteId',
+        title: 'Edit Quote',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./quotes/quotes-edit/quotes-edit.component').then(
+            (m) => m.QuotesEditComponent,
+          ),
+      },
     ],
   },
   {
