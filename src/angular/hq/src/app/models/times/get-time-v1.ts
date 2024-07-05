@@ -69,6 +69,10 @@ export interface GetTimeRecordsV1 {
   records: [GetTimeRecordV1];
   staff: [GetTimeRecordStaffV1];
   total: number | null;
+  totalHours: number;
+  billableHours: number;
+  acceptedHours: number;
+  acceptedBillableHours: number;
 }
 
 export enum Period {

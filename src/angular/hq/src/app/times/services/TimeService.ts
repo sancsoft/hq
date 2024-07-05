@@ -15,6 +15,7 @@ import {
   Period,
 } from '../../models/times/get-time-v1';
 import { HQService } from '../../services/hq.service';
+import { SortColumn } from '../../models/staff-members/get-staff-member-v1';
 
 export enum ActivityName {
   Support = 0,
@@ -68,7 +69,9 @@ export class TimeService {
 
   constructor(private hqService: HQService) {
     this.staffMembers$ = this.hqService
-      .getStaffMembersV1({})
+      .getStaffMembersV1({
+        sortBy: SortColumn.Name,
+      })
       .pipe(map((members) => members.records));
 
     this.clients$ = this.hqService

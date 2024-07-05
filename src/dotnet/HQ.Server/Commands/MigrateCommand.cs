@@ -28,7 +28,7 @@ public class MigrateCommand : AsyncCommand
             builder.Configuration.AddEnvironmentVariables("HQ_");
 
             // Add services to the container.
-            builder.Services.AddHQDbContext(builder.Configuration);
+            builder.Services.AddHQDbContext(builder.Configuration.BuildConnectionString());
 
             var app = builder.Build();
 
