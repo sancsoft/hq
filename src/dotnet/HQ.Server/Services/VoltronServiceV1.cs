@@ -214,6 +214,16 @@ public class VoltronServiceV1
                 project.ClientId = client.Id;
                 project.Name = projectRow.Project;
 
+                switch (chargeCode.Activity)
+                {
+                    case ChargeCodeActivity.Project:
+                        project.Status = ProjectStatus.Ongoing;
+                        break;
+                    case ChargeCodeActivity.Quote:
+                        project.Status = ProjectStatus.InProduction;
+                        break;
+                }
+
                 if (chargeCode.Activity == ChargeCodeActivity.Project && Int32.TryParse(chargeCode.Code.Substring(1), out int projectNumber))
                 {
                     project.ProjectNumber = projectNumber;
