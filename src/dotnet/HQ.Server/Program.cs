@@ -87,10 +87,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TimeEntryAuthorizationHandler>();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAny", policy => policy.AllowAnyHeader().AllowAnyOrigin().WithExposedHeaders("Content-Disposition")); // TODO: Replace with explicit allow URLs
-});
+builder.Services.AddCors();
 
 builder.Services.AddControllersWithViews(options =>
 {
@@ -216,7 +213,12 @@ app.UseSwaggerUI(c =>
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAny");
+var corsAllowOrigin = app.Configuration.GetSection("AllowOrigins").Get<string[]>() ?? [];
+app.UseCors(policy => policy
+    .WithOrigins(corsAllowOrigin)
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .WithExposedHeaders("Content-Disposition"));
 
 app.UseAuthentication();
 app.UseAuthorization();
