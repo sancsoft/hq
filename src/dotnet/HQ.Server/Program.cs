@@ -1,3 +1,5 @@
+using System.Net;
+
 using Hangfire;
 
 using HQ;
@@ -13,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -30,6 +33,28 @@ var serverOptions = builder.Configuration.GetSection(HQServerOptions.Server).Get
 // Add services to the container.
 builder.Services.AddHealthChecks();
 builder.Services.AddHQServices(builder.Configuration);
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    var forwardedHeadersOptions = builder.Configuration.GetSection("ForwardedHeadersOptions");
+    forwardedHeadersOptions.Bind(options);
+
+    options.KnownProxies.Clear();
+    foreach (var knownProxy in forwardedHeadersOptions.GetSection("KnownProxies").GetChildren())
+    {
+        options.KnownProxies.Add(IPAddress.Parse(knownProxy.Value!));
+    }
+
+    options.KnownNetworks.Clear();
+    foreach (var knownNetwork in forwardedHeadersOptions.GetSection("KnownNetworks").GetChildren())
+    {
+        options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(
+            IPAddress.Parse(knownNetwork.GetValue<string>("Prefix")!),
+            knownNetwork.GetValue<int>("PrefixLength")!));
+
+        Console.WriteLine(String.Join(',', options.KnownNetworks.Select(t => t.Prefix + "/" + t.PrefixLength)));
+    }
+});
 
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(c =>
@@ -163,6 +188,7 @@ builder.Services.AddHttpClient<UserServiceV1>(client =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseForwardedHeaders();
 
 // Run all health checks
 app.MapHealthChecks("/health/startup");
