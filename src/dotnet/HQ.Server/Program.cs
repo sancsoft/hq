@@ -213,7 +213,7 @@ app.UseSwaggerUI(c =>
 
 app.UseHttpsRedirection();
 
-var corsAllowOrigin = app.Configuration.GetSection("AllowOrigins").Get<string[]>() ?? [];
+var corsAllowOrigin = app.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? [];
 app.UseCors(policy => policy
     .WithOrigins(corsAllowOrigin)
     .AllowAnyHeader()
