@@ -34,6 +34,8 @@ public class APICommand : AsyncCommand
 
             builder.Configuration.AddEnvironmentVariables("HQ_");
 
+            var serverOptions = builder.Configuration.GetSection(HQServerOptions.Server).Get<HQServerOptions>() ?? throw new Exception("Error parsing configuration section 'Server'.");
+
             // Add services to the container.
             builder.Services.AddHealthChecks();
             builder.Services.AddHQServices(builder.Configuration);
@@ -216,7 +218,7 @@ public class APICommand : AsyncCommand
             var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
             await using var scope = serviceScopeFactory.CreateAsyncScope();
 
-            if (builder.Environment.IsDevelopment())
+            if (serverOptions.AutoMigrate)
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
                 await dbContext.Database.MigrateAsync();
