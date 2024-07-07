@@ -1,46 +1,20 @@
 @model HQ.Abstractions.Emails.RejectTimeEntryEmail
-<mj-column>
-    <mj-text>
-        @if (!String.IsNullOrEmpty(Model.Heading))
-        {
-            <h1 class="heading-1">@Model.Heading</h1>
-        }
-        @if (!String.IsNullOrEmpty(Model.Message))
-        {
-            <p>@Model.Message</p>
-        }
-        @if (!String.IsNullOrEmpty(Model.Date))
-        {
-            <div><strong>Date:</strong> @Model.Date</div>
-        }
-        @if (!String.IsNullOrEmpty(Model.ChargeCode))
-        {
-            <div><strong>Charge Code:</strong> @Model.ChargeCode</div>
-        }
-        @if (!String.IsNullOrEmpty(Model.Client))
-        {
-            <div><strong>Client:</strong> @Model.Client</div>
-        }
-        @if (!String.IsNullOrEmpty(Model.Project))
-        {
-            <div><strong>Project:</strong> @Model.Project</div>
-        }
-        @if (!String.IsNullOrEmpty(Model.ActivityTask))
-        {
-            <div><strong>Activity/Task:</strong> @Model.ActivityTask</div>
-        }
-        @if (!String.IsNullOrEmpty(Model.Description))
-        {
-            <div><strong>Description:</strong> @Model.Description</div>
-        }
-        <br>
-        @if (!String.IsNullOrEmpty(Model.ReasonForRejection))
-        {
-            <div><strong>Reason for Rejection:</strong> @Model.ReasonForRejection</div>
-        }
-    </mj-text>
-    @if (!String.IsNullOrEmpty(Model.ButtonLabel) && Model.ButtonUrl != null)
+@{
+    Layout = "_LayoutEmailNotificationHTML";
+}
+<mj-text>
+    <div><strong>Date:</strong> @Model.Date</div>
+    <div><strong>Hours:</strong> @Model.Hours.ToString("0.00")</div>
+    <div><strong>Charge Code:</strong> @Model.ChargeCode</div>
+    <div><strong>Client:</strong> @Model.Client</div>
+    <div><strong>Project:</strong> @Model.Project</div>
+    <div><strong>Activity/Task:</strong> @Model.ActivityTask</div>
+    <div><strong>Description:</strong> @Model.Description</div>
+</mj-text>
+<mj-text>
+    @if (!String.IsNullOrEmpty(Model.ReasonForRejection))
     {
-        <mj-button mj-class="btn" href="@Model.ButtonUrl" target="_blank">@Model.ButtonLabel</mj-button>
+        <div><strong>Reason for Rejection:</strong> @Model.ReasonForRejection</div>
     }
-</mj-column>
+    <div><strong>Rejected By :</strong> @Model.RejectedBy</div>
+</mj-text>
