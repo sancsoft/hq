@@ -2,7 +2,7 @@ namespace HQ.Abstractions.Emails
 {
     public class RejectTimeEntryEmail : NotificationEmail
     {
-        public string Date { get; set; } = null!;
+        public DateOnly Date { get; set; }
         public decimal Hours { get; set; }
         public string ChargeCode { get; set; } = null!;
         public string Client { get; set; } = null!;
@@ -18,7 +18,7 @@ namespace HQ.Abstractions.Emails
             Hours = 0,
             ButtonLabel = "Open HQ",
             ButtonUrl = new Uri("http://hq.localhost:4200/dashboard"),
-            Date = "07/03/2024",
+            Date = new DateOnly(2024, 7, 3),
             ChargeCode = "P1041",
             Client = "SANCSOFT",
             Project = "HQ",
