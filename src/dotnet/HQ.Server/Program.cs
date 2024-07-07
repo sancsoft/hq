@@ -265,6 +265,12 @@ recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     Cron.Weekly(DayOfWeek.Friday, 8),
     recurringJobOptions);
 
+recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
+    nameof(TimeEntryServiceV1.BackgroundSendTimeSubmissionReminderEmail),
+    (t) => t.BackgroundSendTimeSubmissionReminderEmail(Period.LastWeek, CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Monday, 8),
+    recurringJobOptions);
+
 recurringJobManager.AddOrUpdate<StaffServiceV1>(
     nameof(StaffServiceV1.BackgroundBulkSetTimeEntryCutoffV1),
     (t) => t.BackgroundBulkSetTimeEntryCutoffV1(CancellationToken.None),

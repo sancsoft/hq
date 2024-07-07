@@ -145,25 +145,37 @@ namespace HQ.Server.Services
                 return;
             }
 
-            var entries = await _context.Times
-                .AsNoTracking()
-                .Where(t => t.StaffId == staffId && t.Date >= from && t.Date <= to)
-                .CountAsync(ct);
+            var model = new NotificationEmail()
+            {
+                Heading = "Time Entry Reminder",
+                Message = $"You have 0 hours entered in HQ from {from} to {to}. Please remember to enter time into HQ and submit for review by Monday at 12PM EST.",
+                ButtonLabel = "Open HQ",
+                ButtonUrl = _options.CurrentValue.WebUrl
+            };
 
-            if (entries > 0)
+            await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Time Entry Reminder", MailPriority.Normal, null, ct);
+        }
+
+        public async Task SendTimeSubmissionReminderEmail(Guid staffId, DateOnly from, DateOnly to, CancellationToken ct)
+        {
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId, ct);
+
+            if (staff == null || String.IsNullOrEmpty(staff.Email))
             {
                 return;
             }
 
             var model = new NotificationEmail()
             {
-                Heading = "Time Entry Reminder",
-                Message = $"You currently have 0 hours entered into HQ between {from} and {to}. Please remember to enter time into HQ and submit for review by Monday at 12PM EST.",
+                Heading = "Time Submission Reminder",
+                Message = $"You have unsubmitted time in HQ from {from} to {to}. Please remember to submit for review by 12PM EST.",
                 ButtonLabel = "Open HQ",
                 ButtonUrl = _options.CurrentValue.WebUrl
             };
 
-            await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Time Entry Reminder", MailPriority.Normal, null, ct);
+            await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Time Submission Reminder", MailPriority.High, null, ct);
         }
     }
 }

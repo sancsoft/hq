@@ -731,6 +731,25 @@ namespace HQ.Server.Services
             }
         }
 
+        public async Task BackgroundSendTimeSubmissionReminderEmail(Period period, CancellationToken ct)
+        {
+            var startDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
+            var endDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodEndDate(period);
+            var times = _context.Times.Where(t => t.Date >= startDate && t.Date <= endDate);
+            var unsubmittedTimes = times.Where(t => t.Status != TimeStatus.Submitted);
+
+            var staffToNotify = await _context.Staff
+                .AsNoTracking()
+                .Where(t => times.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedTimes.Where(x => x.StaffId == t.Id).Count() > 0)
+                .Take(1)
+                .ToListAsync(ct);
+
+            foreach (var staff in staffToNotify)
+            {
+                _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendTimeSubmissionReminderEmail(staff.Id, startDate, endDate, CancellationToken.None));
+            }
+        }
+
         public async Task BackgroundCaptureUnsubmittedTimeV1(CancellationToken ct)
         {
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
