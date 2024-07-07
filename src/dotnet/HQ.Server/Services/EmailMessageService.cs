@@ -14,6 +14,7 @@ using HQ.Server.Services;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace HQ.Server.Services
 {
@@ -22,12 +23,14 @@ namespace HQ.Server.Services
         private readonly EmailTemplateServiceV1 _emailTemplateService;
         private readonly IEmailService _emailService;
         private readonly HQDbContext _context;
+        private readonly IOptionsMonitor<HQServerOptions> _options;
 
-        public EmailMessageService(EmailTemplateServiceV1 emailTemplateService, IEmailService emailService, HQDbContext context)
+        public EmailMessageService(EmailTemplateServiceV1 emailTemplateService, IEmailService emailService, HQDbContext context, IOptionsMonitor<HQServerOptions> options)
         {
             _emailTemplateService = emailTemplateService;
             _emailService = emailService;
             _context = context;
+            _options = options;
         }
 
         public async Task<Result> SendEmail<T>(EmailMessage emailMessage, T model, string to, string subject, MailPriority priority = MailPriority.Normal, IEnumerable<Attachment>? attachments = null, CancellationToken ct = default) where T : BaseEmail
@@ -80,10 +83,55 @@ namespace HQ.Server.Services
                 ReasonForRejection = time.RejectionNotes,
                 RejectedBy = time.RejectedBy?.Name,
                 Heading = "Time Rejected",
-                Message = "Your time entry has been rejected. Please review and resubmit."
+                Message = "Your time entry has been rejected. Please review and resubmit.",
+                ButtonLabel = "Open HQ",
+                ButtonUrl = _options.CurrentValue.WebUrl
             };
 
             await SendEmail(EmailMessage.RejectTimeEntry, model, time.Staff.Email, "[HQ] Time Rejected", MailPriority.High, null, ct);
+        }
+
+        public async Task SendResubmitTimeEntryEmail(Guid timeId, CancellationToken ct)
+        {
+            var time = await _context.Times
+                .AsNoTracking()
+                .Include(t => t.Staff)
+                .Include(t => t.RejectedBy)
+                .Include(t => t.Activity)
+                .Include(t => t.ChargeCode)
+                .ThenInclude(t => t.Project)
+                .ThenInclude(t => t!.Client)
+                .SingleAsync(t => t.Id == timeId, ct);
+
+            var psr = await _context.ProjectStatusReports
+                .AsNoTracking()
+                .Include(t => t.ProjectManager)
+                .SingleOrDefaultAsync(t => t.ProjectId == time.ChargeCode.ProjectId && time.Date >= t.StartDate && time.Date <= t.EndDate, ct);
+
+            if (psr == null || String.IsNullOrEmpty(psr.ProjectManager?.Email))
+            {
+                return;
+            }
+
+            var buttonUrl = new Uri(_options.CurrentValue.WebUrl, $"/psr/{psr.Id}/time");
+            var model = new RejectTimeEntryEmail()
+            {
+                Date = time.Date,
+                Hours = time.Hours,
+                Description = time.Notes,
+                ActivityTask = time.Activity?.Name ?? time.Task,
+                ChargeCode = time.ChargeCode.Code,
+                Client = time.ChargeCode.Project?.Client?.Name ?? String.Empty,
+                Project = time.ChargeCode.Project?.Name ?? String.Empty,
+                ReasonForRejection = time.RejectionNotes,
+                RejectedBy = time.RejectedBy?.Name,
+                Heading = "Time Resubmitted",
+                Message = "A rejected time entry has been resubmitted.",
+                ButtonLabel = "View PSR",
+                ButtonUrl = buttonUrl
+            };
+
+            await SendEmail(EmailMessage.RejectTimeEntry, model, psr.ProjectManager.Email, "[HQ] Time Resubmitted", MailPriority.Normal, null, ct);
         }
     }
 }

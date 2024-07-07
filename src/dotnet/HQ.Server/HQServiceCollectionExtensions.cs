@@ -43,6 +43,10 @@ namespace HQ.Server
                 .PersistKeysToDbContext<HQDbContext>();
 
             var serverOptions = configuration.GetSection(HQServerOptions.Server).Get<HQServerOptions>() ?? throw new Exception("Error parsing configuration section 'Server'.");
+            services.AddOptions<HQServerOptions>()
+                .Bind(configuration.GetSection(HQServerOptions.Server))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
 
             if (serverOptions.HangfireInMemory)
             {
