@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.23] - 2024-07-07
+
+### Fixed
+
+- Staff role PSR view table layout bug
+
+### Added
+
+- Email notifications
+  - Added Rejected email notification when PSR time entry is rejected
+  - Added Resubmitted email notification when time entry is resubmitted
+  - Added time entry reminder email notification that sends an email to any staff who have 0 entries in HQ Friday @ 8AM
+  - Added time submission reminder email notification that sends an email to any staff who have 0 entries or any unsubmitted entries in HQ Monday @ 8AM
+
+## [0.3.21] - 2024-07-05
+
+### Added
+
+- `ForwardedHeadersOptions` section to configuration so forward headers from Nginx are handled properly
+- `AllowedOrigins` section to configuration to configure CORS
+
 ## [0.3.20] - 2024-07-04
 
 ### Fixed
@@ -333,7 +354,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.20...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.23...HEAD
+[0.3.23]: https://github.com/sancsoft/hq/compare/v0.3.21...v0.3.23
+[0.3.21]: https://github.com/sancsoft/hq/compare/v0.3.20...v0.3.21
 [0.3.20]: https://github.com/sancsoft/hq/compare/v0.3.19...v0.3.20
 [0.3.19]: https://github.com/sancsoft/hq/compare/v0.3.18...v0.3.19
 [0.3.18]: https://github.com/sancsoft/hq/compare/v0.3.17...v0.3.18
