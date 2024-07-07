@@ -133,5 +133,37 @@ namespace HQ.Server.Services
 
             await SendEmail(EmailMessage.RejectTimeEntry, model, psr.ProjectManager.Email, "[HQ] Time Resubmitted", MailPriority.Normal, null, ct);
         }
+
+        public async Task SendTimeEntryReminderEmail(Guid staffId, DateOnly from, DateOnly to, CancellationToken ct)
+        {
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId, ct);
+
+            if (staff == null || String.IsNullOrEmpty(staff.Email))
+            {
+                return;
+            }
+
+            var entries = await _context.Times
+                .AsNoTracking()
+                .Where(t => t.StaffId == staffId && t.Date >= from && t.Date <= to)
+                .CountAsync(ct);
+
+            if (entries > 0)
+            {
+                return;
+            }
+
+            var model = new NotificationEmail()
+            {
+                Heading = "Time Entry Reminder",
+                Message = $"You currently have 0 hours entered into HQ between {from} and {to}. Please remember to enter time into HQ and submit for review by Monday at 12PM EST.",
+                ButtonLabel = "Open HQ",
+                ButtonUrl = _options.CurrentValue.WebUrl
+            };
+
+            await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Time Entry Reminder", MailPriority.Normal, null, ct);
+        }
     }
 }

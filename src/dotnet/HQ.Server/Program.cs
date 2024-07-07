@@ -3,6 +3,7 @@ using System.Net;
 using Hangfire;
 
 using HQ;
+using HQ.Abstractions.Enumerations;
 using HQ.Server;
 using HQ.Server.API;
 using HQ.Server.Authorization;
@@ -256,6 +257,12 @@ recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     nameof(TimeEntryServiceV1.BackgroundCaptureUnsubmittedTimeV1),
     (t) => t.BackgroundCaptureUnsubmittedTimeV1(CancellationToken.None),
     Cron.Weekly(DayOfWeek.Monday, 12),
+    recurringJobOptions);
+
+recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
+    nameof(TimeEntryServiceV1.BackgroundSendTimeEntryReminderEmail),
+    (t) => t.BackgroundSendTimeEntryReminderEmail(Period.Week, CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Friday, 8),
     recurringJobOptions);
 
 recurringJobManager.AddOrUpdate<StaffServiceV1>(
