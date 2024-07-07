@@ -741,7 +741,6 @@ namespace HQ.Server.Services
             var staffToNotify = await _context.Staff
                 .AsNoTracking()
                 .Where(t => times.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedTimes.Where(x => x.StaffId == t.Id).Count() > 0)
-                .Take(1)
                 .ToListAsync(ct);
 
             foreach (var staff in staffToNotify)
