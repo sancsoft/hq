@@ -5,6 +5,8 @@ using CsvHelper.Configuration;
 
 using FluentResults;
 
+using Hangfire;
+
 using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Times;
@@ -23,11 +25,13 @@ namespace HQ.Server.Services
     {
         private readonly HQDbContext _context;
         private readonly ILogger<TimeEntryServiceV1> _logger;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public TimeEntryServiceV1(HQDbContext context, ILogger<TimeEntryServiceV1> logger)
+        public TimeEntryServiceV1(HQDbContext context, ILogger<TimeEntryServiceV1> logger, IBackgroundJobClient backgroundJobClient)
         {
             this._context = context;
             _logger = logger;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default)
@@ -207,9 +211,12 @@ namespace HQ.Server.Services
                 if (time.Status == TimeStatus.Rejected)
                 {
                     time.Status = TimeStatus.Resubmitted;
+                    _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendResubmitTimeEntryEmail(time.Id, CancellationToken.None));
                 }
             }
+
             await _context.SaveChangesAsync(ct);
+
             return Result.Ok(new SubmitTimesV1.Response() { });
         }
         public async Task<Result<UpsertTimeActivityV1.Response>> UpsertTimeActivityV1(UpsertTimeActivityV1.Request request, CancellationToken ct = default)
@@ -705,6 +712,42 @@ namespace HQ.Server.Services
                 FileName = $"HQTimeExport_{DateTime.Now:yyyyMMddHHmm}.csv",
                 ContentType = "text/csv",
             };
+        }
+
+        public async Task BackgroundSendTimeEntryReminderEmail(Period period, CancellationToken ct)
+        {
+            var startDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
+            var endDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodEndDate(period);
+            var times = _context.Times.Where(t => t.Date >= startDate && t.Date <= endDate);
+
+            var staffToNotify = await _context.Staff
+                .AsNoTracking()
+                .Where(t => times.Where(x => x.StaffId == t.Id).Count() == 0)
+                .ToListAsync(ct);
+
+            foreach (var staff in staffToNotify)
+            {
+                _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendTimeEntryReminderEmail(staff.Id, startDate, endDate, CancellationToken.None));
+            }
+        }
+
+        public async Task BackgroundSendTimeSubmissionReminderEmail(Period period, CancellationToken ct)
+        {
+            var startDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
+            var endDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodEndDate(period);
+            var times = _context.Times.Where(t => t.Date >= startDate && t.Date <= endDate);
+            var unsubmittedTimes = times.Where(t => t.Status != TimeStatus.Submitted);
+
+            var staffToNotify = await _context.Staff
+                .AsNoTracking()
+                .Where(t => times.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedTimes.Where(x => x.StaffId == t.Id).Count() > 0)
+                .Take(1)
+                .ToListAsync(ct);
+
+            foreach (var staff in staffToNotify)
+            {
+                _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendTimeSubmissionReminderEmail(staff.Id, startDate, endDate, CancellationToken.None));
+            }
         }
 
         public async Task BackgroundCaptureUnsubmittedTimeV1(CancellationToken ct)
