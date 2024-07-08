@@ -18,6 +18,7 @@ import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
+import { ClientDetailsService } from '../../clients/client-details.service';
 
 interface Form {
   firstName: FormControl<string | null>;
@@ -48,6 +49,7 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
+    private clientDetailService: ClientDetailsService,
   ) {
     const response$ = this.hqService.getStaffMembersV1({});
     this.staffMembers$ = response$.pipe(
@@ -160,6 +162,7 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     try {
       const request = { id: this.userId, ...this.form.value };
       await firstValueFrom(this.hqService.upsertUsersV1(request));
+      this.clientDetailService.resetFilters();
       await this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       console.log(err);
