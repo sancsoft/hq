@@ -235,7 +235,9 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       }),
       tap((times) => {
         const isPendingTime = times.find(
-          (record) => record.status === TimeStatus.Unsubmitted,
+          (record) =>
+            record.status === TimeStatus.Submitted ||
+            record.status === TimeStatus.Resubmitted,
         );
         if (isPendingTime) {
           this.acceptButtonState = ButtonState.Enabled;
@@ -355,7 +357,13 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   async acceptAll() {
     const allTime = await firstValueFrom(
       this.time$.pipe(
-        map((t) => t.filter((x) => x.status == TimeStatus.Unsubmitted)),
+        map((t) =>
+          t.filter(
+            (x) =>
+              x.status == TimeStatus.Submitted ||
+              x.status == TimeStatus.Resubmitted,
+          ),
+        ),
         map((filteredArray) => filteredArray.map((x) => x.id)),
       ),
     );
