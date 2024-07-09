@@ -4,8 +4,9 @@ export interface UpsertQuoteRequestV1 {
   name: string | null;
   quoteId: string | null;
   status: number | null;
-  date: Date | null;
+  date: string | null;
   value: number | null;
+  quoteNumber: number | null;
 }
 
 export interface UpsertQuoteResponsetV1 {

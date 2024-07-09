@@ -1,9 +1,9 @@
 <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
   <div class="px-5">
-    <h1 class="font-rajdhani font-semibold text-3xl">Create Quote</h1>
+    <h1 class="font-rajdhani font-semibold text-3xl">Edit Quote</h1>
 
     <div class="py-3">
-      <a href="/quotes" class="text-gray-50 underline">Quote List</a>
+      <a routerLink="/quotes" class="text-gray-50 underline">Quote List</a>
     </div>
   </div>
 
@@ -30,7 +30,7 @@
 
             <div class="flex flex-column justify-center items-center">
               <button
-                (click)="onSubmitProject()"
+                (click)="onSubmit()"
                 class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
               >
                 Save
@@ -40,12 +40,14 @@
         </div>
         @if (this.apiErrors) {
           @for (error of this.apiErrors; track $index) {
-            <div class="text-red-700 text-xs leading-normal inline-block">
+            <div
+              class="text-red-700 text-xs leading-normal inline-block pl-5 pt-5 -mb-3"
+            >
               {{ error }}
             </div>
           }
         }
-        <form [formGroup]="quoteFormGroup" (ngSubmit)="onSubmitProject()">
+        <form [formGroup]="quoteFormGroup" (ngSubmit)="onSubmit()">
           <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
             <div class="p-5 pr-0">
               <div class="grid gap-[20px]">
@@ -63,10 +65,6 @@
                     >
                     <div class="grid relative w-full max-w-[395px]">
                       <select
-                        [class.border-red-700]="
-                          quoteFormGroup.controls.clientId.errors &&
-                          quoteFormGroup.controls.clientId.touched
-                        "
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
                         (click)="openModal()"
                         (mousedown)="$event.preventDefault()"
@@ -87,20 +85,6 @@
                         <i class="bi bi-arrow-right-short text-[24px]"></i>
                       </span>
                     </div>
-                    @if (
-                      quoteFormGroup.get("clientId")?.touched &&
-                      quoteFormGroup.get("clientId")?.errors
-                    ) {
-                      @if (
-                        quoteFormGroup.get("clientId")?.errors?.["required"]
-                      ) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                        >
-                          Client name is required.
-                        </span>
-                      }
-                    }
                   </div>
                 </div>
                 <!-- row grid -->
@@ -116,10 +100,6 @@
                     >
                     <!-- text input -->
                     <input
-                      [class.border-red-700]="
-                        quoteFormGroup.controls.name.errors &&
-                        quoteFormGroup.controls.name.touched
-                      "
                       formControlName="name"
                       type="text"
                       name="fullname"
@@ -193,15 +173,11 @@
                     <!-- select dropdown -->
                     <div class="grid relative w-full max-w-[220px]">
                       <select
-                        [class.border-red-700]="
-                          quoteFormGroup.get('status')?.touched &&
-                          quoteFormGroup.get('status')?.errors?.['required']
-                        "
                         formControlName="status"
                         id="quoteStatus"
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
                       >
-                        <option value="null" selected disabled>
+                        <option value="" selected disabled>
                           Select Quote Status
                         </option>
                         <option [value]="quoteStatus.Draft">
@@ -234,16 +210,6 @@
                       >
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
-                      @if (
-                        quoteFormGroup.get("status")?.touched &&
-                        quoteFormGroup.get("status")?.errors?.["required"]
-                      ) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                        >
-                          Quote status is required.</span
-                        >
-                      }
                     </div>
                   </div>
                   <!-- column -->
@@ -256,15 +222,7 @@
                     <div class="flex items-center">
                       <!-- text input w/icon to left -->
                       <div
-                        [ngClass]="{
-                          'border-red-700':
-                            quoteFormGroup.controls.value.errors &&
-                            quoteFormGroup.controls.value.touched,
-                          'border-black':
-                            !quoteFormGroup.controls.value.errors ||
-                            !quoteFormGroup.controls.value.touched,
-                        }"
-                        class="flex items-stretch border text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]"
+                        class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]"
                       >
                         <span
                           class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block"
@@ -330,9 +288,9 @@
                     class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                     placeholder="Quote Number"
                   />
-
                   <!-- </div> -->
                 </div>
+
                 <!-- row grid -->
                 <div class="grid gap-[20px] grid-flow-row pr-5">
                   <label
@@ -346,25 +304,10 @@
                     <!-- input date -->
                     <div class="grid relative w-full max-w-[220px]">
                       <input
-                        [class.border-red-700]="
-                          quoteFormGroup.controls.date.errors &&
-                          quoteFormGroup.touched
-                        "
                         formControlName="date"
                         type="date"
                         class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
                       />
-                      @if (
-                        quoteFormGroup.controls.date.errors &&
-                        quoteFormGroup.controls.date.touched
-                      ) {
-                        @if (quoteFormGroup.controls.date.errors["required"]) {
-                          <span
-                            class="text-red-700 text-xs leading-normal inline-block"
-                            >Date is required.</span
-                          >
-                        }
-                      }
                       <span
                         class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
                       >
@@ -373,6 +316,18 @@
                         ></i>
                       </span>
                     </div>
+
+                    @if (
+                      quoteFormGroup.get("date")?.touched &&
+                      quoteFormGroup.get("date")?.errors
+                    ) {
+                      @if (quoteFormGroup.get("date")?.errors?.["required"]) {}
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                      >
+                        date is required.
+                      </span>
+                    }
                   </div>
                 </div>
 
@@ -438,7 +393,7 @@
                   <div class="flex items-center">
                     <div>Upload quote pdf</div>
                     <a
-                      href="#"
+                      href=""
                       class="block p-2 hover:text-gray-50"
                       title="Download"
                       ><i class="bi bi-cloud-upload-fill"></i

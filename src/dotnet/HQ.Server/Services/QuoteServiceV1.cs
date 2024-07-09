@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using FluentResults;
 
 using HQ.Abstractions.Enumerations;
@@ -33,6 +35,11 @@ public class QuoteServiceV1
 
     public async Task<Result<UpsertQuotestV1.Response>> UpsertQuoteV1(UpsertQuotestV1.Request request, CancellationToken ct = default)
     {
+        var records = _context.Quotes
+            .AsNoTracking()
+            .OrderByDescending(t => t.CreatedAt)
+            .AsQueryable();
+
         using (var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, ct))
         {
             try
@@ -56,13 +63,29 @@ public class QuoteServiceV1
                 var latestQuoteNumber = await _context.Quotes.MaxAsync((q) => q.QuoteNumber, ct);
                 var nextQuoteNumber = latestQuoteNumber + 1;
 
+                if (request.QuoteNumber.HasValue)
+                {
+                    var filteredRecords = records.Where(t => t.QuoteNumber == request.QuoteNumber && t.Id != request.Id);
+                    if (filteredRecords.Any())
+                    {
+                        return Result.Fail(new Error("This quote number already exists."));
+                    }
+                    else
+                    {
+                        quote.QuoteNumber = request.QuoteNumber ?? 0;
+                    }
+                }
+                else
+                {
+                    quote.QuoteNumber = nextQuoteNumber;
+                }
+
                 quote.ClientId = request.ClientId;
                 quote.Name = request.Name;
                 quote.Value = request.Value;
                 quote.Date = request.Date;
                 quote.Status = request.Status;
                 quote.Description = request.Description;
-                quote.QuoteNumber = nextQuoteNumber;
 
 
                 await _context.SaveChangesAsync(ct);
@@ -125,7 +148,9 @@ public class QuoteServiceV1
         var sortMap = new Dictionary<GetQuotesV1.SortColumn, string>()
         {
             { Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteName, "Name" },
+            { Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteNumber, "QuoteNumber" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.ClientName, "ClientName" },
+            { Abstractions.Quotes.GetQuotesV1.SortColumn.ChargeCode, "ChargeCode" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.Value, "Value" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.Status, "Status" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.Date, "Date" },
