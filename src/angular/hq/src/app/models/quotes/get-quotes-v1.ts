@@ -1,6 +1,7 @@
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
+import { QuoteStatus } from '../../models/common/quote-status';
 
 export interface GetQuotesRequestV1 extends PagedRequestV1 {
   search?: string | null;
@@ -12,9 +13,12 @@ export interface GetQuotesRequestV1 extends PagedRequestV1 {
 
 export enum SortColumn {
   QuoteName = 1,
-  ClientName = 2,
-  Value = 3,
-  Status = 4,
+  QuoteNumber = 2,
+  ClientName = 3,
+  ChargeCode = 4,
+  Value = 5,
+  Status = 6,
+  Date = 7,
 }
 
 export interface GetQuotesRecordV1 {
@@ -23,11 +27,11 @@ export interface GetQuotesRecordV1 {
   clientId: string;
   clientName: string;
   name: string;
-  quoteNumber: string | null;
+  quoteNumber: number | null;
   chargeCode: string;
-  date: Date | null;
+  date: string | null;
   value: number | null;
-  status: string | null;
+  status: QuoteStatus;
 }
 
 export interface GetQuotesRecordsV1 {

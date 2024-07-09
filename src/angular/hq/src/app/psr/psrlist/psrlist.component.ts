@@ -106,9 +106,11 @@ export class PSRListComponent implements OnInit {
     );
     const startDate$ = psrListService.startDate.valueChanges.pipe(
       startWith(psrListService.startDate.value),
+      map((date) => date || null),
     );
     const endDate$ = psrListService.endDate.valueChanges.pipe(
       startWith(psrListService.endDate.value),
+      map((date) => date || null),
     );
 
     const request$ = combineLatest({

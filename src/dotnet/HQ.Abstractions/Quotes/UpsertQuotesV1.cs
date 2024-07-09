@@ -21,6 +21,7 @@ public class UpsertQuotestV1
         public decimal Value { get; set; }
         public ProjectStatus Status { get; set; }
         public DateOnly Date { get; set; }
+        public int? QuoteNumber { get; set; }
     }
 
     public class Response

@@ -26,6 +26,7 @@ import { ClientDetailsSearchFilterComponent } from '../../clients/client-details
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 
+import { QuoteStatus } from '../../models/common/quote-status';
 @Component({
   selector: 'hq-quotes-list',
   standalone: true,
@@ -134,5 +135,8 @@ export class QuotesListComponent {
       this.sortDirection$.next(SortDirection.Asc);
     }
     this.page.setValue(1);
+  }
+  getQuoteStatusString(status: QuoteStatus): string {
+    return QuoteStatus[status];
   }
 }

@@ -42,14 +42,27 @@ namespace HQ.Server
                 .SetApplicationName("HQ")
                 .PersistKeysToDbContext<HQDbContext>();
 
-            services.AddHangfire(config =>
-                config.UsePostgreSqlStorage(c =>
+            var serverOptions = configuration.GetSection(HQServerOptions.Server).Get<HQServerOptions>() ?? throw new Exception("Error parsing configuration section 'Server'.");
+            services.AddOptions<HQServerOptions>()
+                .Bind(configuration.GetSection(HQServerOptions.Server))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            if (serverOptions.HangfireInMemory)
+            {
+                services.AddHangfire(config =>
+                    config.UseInMemoryStorage());
+            }
+            else
+            {
+                services.AddHangfire(config =>
+                    config.UsePostgreSqlStorage(c =>
                     c.UseNpgsqlConnection(connectionString)));
+            }
 
             services.AddHangfireServer();
 
             services.AddDistributedMemoryCache();
-
 
             var emailServiceType = configuration.GetValue<EmailServiceType?>("EmailService") ?? EmailServiceType.Logger;
             switch (emailServiceType)

@@ -19,10 +19,12 @@ namespace HQ.Abstractions.Quotes
         public enum SortColumn
         {
             QuoteName = 1,
-            ClientName = 2,
-            Value = 3,
-            Status = 4,
-            Date = 5
+            QuoteNumber = 2,
+            ClientName = 3,
+            ChargeCode = 4,
+            Value = 5,
+            Status = 6,
+            Date = 7,
         }
 
         public class Response : PagedResponseV1<Record>;

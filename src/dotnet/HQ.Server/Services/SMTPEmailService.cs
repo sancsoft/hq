@@ -36,7 +36,18 @@ public class SMTPEmailService : IEmailService
         message.From.Add(new MailboxAddress(_options.CurrentValue.FromDisplayName, _options.CurrentValue.From));
         message.To.AddRange(recipients.Select(t => new MailboxAddress(null, t)));
         message.Subject = subject;
-        message.Priority = (MessagePriority)mailPriority;
+        switch (mailPriority)
+        {
+            case MailPriority.Normal:
+                message.Priority = MessagePriority.Normal;
+                break;
+            case MailPriority.High:
+                message.Priority = MessagePriority.Urgent;
+                break;
+            case MailPriority.Low:
+                message.Priority = MessagePriority.NonUrgent;
+                break;
+        }
 
         var builder = new BodyBuilder();
         builder.TextBody = textBody;

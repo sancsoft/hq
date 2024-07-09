@@ -193,6 +193,8 @@ export class ProjectCreateComponent implements OnDestroy {
   }
 
   async onSubmitProject() {
+    this.projectFormGroup.markAllAsTouched();
+
     console.log(this.projectFormGroup);
     try {
       if (
