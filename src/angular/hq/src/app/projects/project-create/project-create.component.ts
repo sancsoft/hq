@@ -26,6 +26,7 @@ import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { Router, ActivatedRoute } from '@angular/router';
+import { localISODate } from '../../common/functions/local-iso-date';
 
 export enum Period {
   Week = 1,
@@ -87,10 +88,7 @@ export class ProjectCreateComponent implements OnDestroy {
         Validators.min(0),
       ]),
       quoteId: new FormControl(null),
-      startDate: new FormControl(
-        new Date().toISOString().substring(0, 10),
-        Validators.required,
-      ),
+      startDate: new FormControl(localISODate(), Validators.required),
       endDate: new FormControl(null, Validators.required),
     },
     { validators: this.dateRangeValidator },
