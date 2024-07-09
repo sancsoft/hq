@@ -29,7 +29,7 @@ export interface GetQuotesRecordV1 {
   name: string;
   quoteNumber: number | null;
   chargeCode: string;
-  date: Date | null;
+  date: string | null;
   value: number | null;
   status: QuoteStatus;
 }

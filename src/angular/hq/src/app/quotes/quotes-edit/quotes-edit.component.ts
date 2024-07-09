@@ -22,7 +22,7 @@ interface quoteFormGroup {
   name: FormControl<string>;
   value: FormControl<number | null>;
   status: FormControl<number | null>;
-  date: FormControl<Date | null>;
+  date: FormControl<string | null>;
   quoteNumber: FormControl<number | null>;
 }
 
@@ -63,7 +63,7 @@ export class QuotesEditComponent implements OnInit {
     status: new FormControl(1, {
       validators: [Validators.required],
     }),
-    date: new FormControl(new Date(), {
+    date: new FormControl(null, {
       validators: [Validators.required],
     }),
     quoteNumber: new FormControl(null, {}),

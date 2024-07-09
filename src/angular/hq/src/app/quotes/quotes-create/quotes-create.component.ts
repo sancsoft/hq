@@ -16,13 +16,14 @@ import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { HQService } from '../../services/hq.service';
 import { QuoteStatus } from '../../models/common/quote-status';
 import { ToastService } from '../../services/toast.service';
+import { localISODate } from '../../common/functions/local-iso-date';
 
 interface quoteFormGroup {
   clientId: FormControl<string>;
   name: FormControl<string>;
   value: FormControl<number | null>;
   status: FormControl<number | null>;
-  date: FormControl<Date | null>;
+  date: FormControl<string | null>;
   quoteNumber: FormControl<number | null>;
 }
 @Component({
@@ -43,7 +44,6 @@ export class QuotesCreateComponent {
   selectedQuote$ = new Observable<string>();
   quoteStatus = QuoteStatus;
   quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
-  dateString = new Date().toISOString().substring(0, 10);
 
   apiErrors: string[] = [];
   selectedClientName$ = new BehaviorSubject<string | null>(null);
@@ -63,7 +63,7 @@ export class QuotesCreateComponent {
     status: new FormControl(1, {
       validators: [Validators.required],
     }),
-    date: new FormControl(new Date(this.dateString), {
+    date: new FormControl(localISODate(), {
       nonNullable: true,
       validators: [Validators.required],
     }),
