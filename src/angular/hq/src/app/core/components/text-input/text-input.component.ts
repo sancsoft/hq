@@ -30,14 +30,17 @@ export class TextInputComponent {
   @Input()
   label: string | null = null;
 
+  @Input()
+  color: 'primary' | 'secondary' = 'secondary';
+
+  @Input()
+  public disabled = false;
+
   @ContentChildren(ValidationErrorDirective)
   validationErrors!: QueryList<ValidationErrorDirective>;
 
   protected focused = false;
   protected uniqueId = generateUniqueInputId();
-
-  @Input()
-  public disabled = false;
 
   private _value: string | null = null;
 

@@ -10,6 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
 import { TextInputComponent } from '../text-input/text-input.component';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'hq-kitchen-sink',
@@ -22,6 +23,7 @@ import { TextInputComponent } from '../text-input/text-input.component';
     ReactiveFormsModule,
     ValidationErrorDirective,
     TextInputComponent,
+    ButtonComponent,
   ],
   templateUrl: './kitchen-sink.component.html',
 })

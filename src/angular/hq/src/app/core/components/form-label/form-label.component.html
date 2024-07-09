@@ -1,5 +1,8 @@
 <label
   [for]="for"
   class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+  [ngClass]="{
+    'cursor-pointer': for,
+  }"
   ><ng-content></ng-content
 ></label>

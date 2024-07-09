@@ -31,6 +31,9 @@ export class SearchInputComponent implements ControlValueAccessor {
   label: string | null = null;
 
   @Input()
+  color: 'primary' | 'secondary' = 'primary';
+
+  @Input()
   public disabled = false;
 
   @ContentChildren(ValidationErrorDirective)
