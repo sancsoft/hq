@@ -1,21 +1,12 @@
 <div class="p-3">
-  <pre>String: {{ string | json }}</pre>
-  <pre>String (Form Control): {{ stringFormControl.value | json }}</pre>
+  <pre>Search: {{ search.value | json }}</pre>
+  <pre>Text: {{ text.value | json }}</pre>
+
+  <button type="button" (click)="toggleDisabled()">Toggle Disabled</button>
 </div>
 
 <div class="p-3">
-  <h1>Form Label</h1>
-  <hq-form-label>Some Label Example</hq-form-label>
-</div>
-
-<div class="p-3">
-  <h1>Search Input bound using ngModel</h1>
-  <hq-search-input [(ngModel)]="string" />
-</div>
-
-<div class="p-3">
-  <h1>Search Input bound using formControl</h1>
-  <hq-search-input [formControl]="stringFormControl">
+  <hq-search-input [formControl]="search" label="Search Input">
     <ng-template hqValidationError="required">
       The search field is required.
     </ng-template>
@@ -23,4 +14,19 @@
       The minimum length is invalid.
     </ng-template>
   </hq-search-input>
+</div>
+
+<div class="p-3">
+  <hq-text-input
+    [formControl]="text"
+    placeholder="Placeholder text here"
+    label="Text Input"
+  >
+    <ng-template hqValidationError="required">
+      The text field is required.
+    </ng-template>
+    <ng-template hqValidationError="minlength">
+      The minimum length is invalid.
+    </ng-template>
+  </hq-text-input>
 </div>

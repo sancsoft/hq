@@ -1,8 +1,13 @@
 @if (label) {
   <hq-form-label (click)="focus()" [for]="uniqueId">{{ label }}</hq-form-label>
 }
-<div
-  class="flex items-stretch border border-steel-blue-600 bg-blue-900 rounded h-[36px] w-full"
+<input
+  #input
+  [id]="uniqueId"
+  (focus)="onFocus()"
+  (blur)="onBlur()"
+  type="text"
+  class="w-full block text-[14px] px-2 py-1 appearance-none focus:outline-none font-medium rounded border border-steel-blue-600 bg-blue-900 h-[36px]"
   [ngClass]="{
     'border-red-500 text-gray-100': ngControl?.invalid && ngControl?.touched,
     'border-steel-blue-600 text-gray-100':
@@ -10,29 +15,10 @@
     'border-gray-450 text-gray-450': disabled,
     'border-white text-gray-100': focused,
   }"
->
-  <button
-    type="button"
-    [disabled]="disabled"
-    (click)="focus()"
-    class="w-[36px]"
-    [class.cursor-pointer]="!disabled"
-    tabindex="-1"
-  >
-    <i class="bi bi-search text-[14px]"></i>
-  </button>
-  <input
-    #input
-    [id]="uniqueId"
-    (focus)="onFocus()"
-    (blur)="onBlur()"
-    type="text"
-    class="w-full block text-[14px] pl-0 px-2 py-1 appearance-none focus:outline-none font-medium bg-inherit rounded"
-    [placeholder]="placeholder"
-    [(ngModel)]="value"
-    [disabled]="disabled"
-  />
-</div>
+  [placeholder]="placeholder"
+  [(ngModel)]="value"
+  [disabled]="disabled"
+/>
 @for (error of validationErrors; track error.hqValidationError) {
   @if (
     ngControl &&

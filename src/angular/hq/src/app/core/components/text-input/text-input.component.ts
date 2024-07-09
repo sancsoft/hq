@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
   ContentChildren,
@@ -9,35 +8,36 @@ import {
   Self,
   ViewChild,
 } from '@angular/core';
-import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
+import { FormsModule, NgControl } from '@angular/forms';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
+import { CommonModule } from '@angular/common';
 import { FormLabelComponent } from '../form-label/form-label.component';
 import { generateUniqueInputId } from '../../functions/generate-unique-input-id';
 
 @Component({
-  selector: 'hq-search-input',
+  selector: 'hq-text-input',
   standalone: true,
   imports: [FormsModule, CommonModule, FormLabelComponent],
-  templateUrl: './search-input.component.html',
+  templateUrl: './text-input.component.html',
 })
-export class SearchInputComponent implements ControlValueAccessor {
+export class TextInputComponent {
   @ViewChild('input')
   input?: ElementRef<HTMLInputElement>;
 
   @Input()
-  placeholder: string = 'Search';
+  placeholder: string = '';
 
   @Input()
   label: string | null = null;
-
-  @Input()
-  public disabled = false;
 
   @ContentChildren(ValidationErrorDirective)
   validationErrors!: QueryList<ValidationErrorDirective>;
 
   protected focused = false;
   protected uniqueId = generateUniqueInputId();
+
+  @Input()
+  public disabled = false;
 
   private _value: string | null = null;
 

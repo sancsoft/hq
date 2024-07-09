@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
+import { TextInputComponent } from '../text-input/text-input.component';
 
 @Component({
   selector: 'hq-kitchen-sink',
@@ -20,12 +21,26 @@ import { ValidationErrorDirective } from '../../directives/validation-error.dire
     FormsModule,
     ReactiveFormsModule,
     ValidationErrorDirective,
+    TextInputComponent,
   ],
   templateUrl: './kitchen-sink.component.html',
 })
 export class KitchenSinkComponent {
-  public string = 'String value';
-  public stringFormControl = new FormControl<string | null>('String value', {
+  public search = new FormControl<string | null>(null, {
     validators: [Validators.required, Validators.minLength(3)],
   });
+
+  public text = new FormControl<string | null>(null, {
+    validators: [Validators.required, Validators.minLength(3)],
+  });
+
+  toggleDisabled() {
+    if (this.search.disabled) {
+      this.search.enable();
+      this.text.enable();
+    } else {
+      this.search.disable();
+      this.text.disable();
+    }
+  }
 }
