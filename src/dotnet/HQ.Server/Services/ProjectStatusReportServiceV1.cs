@@ -157,19 +157,14 @@ public class ProjectStatusReportServiceV1
             records = records.Where(t => t.Project.ProjectManagerId == request.ProjectManagerId.Value);
         }
 
-        if (request.StartDate.HasValue && !request.EndDate.HasValue)
+        if (request.StartDate.HasValue)
         {
-            records = records.Where(t => t.StartDate >= request.StartDate);
+            records = records.Where(t => t.StartDate >= request.StartDate || (request.StartDate.Value >= t.StartDate && request.StartDate.Value <= t.EndDate));
         }
 
-        if (request.EndDate.HasValue && !request.StartDate.HasValue)
+        if (request.EndDate.HasValue)
         {
-            records = records.Where(t => t.EndDate <= request.EndDate);
-        }
-
-        if (request.StartDate.HasValue && request.EndDate.HasValue)
-        {
-            records = records.Where(t => t.StartDate >= request.StartDate && t.EndDate <= request.EndDate);
+            records = records.Where(t => t.EndDate <= request.EndDate || (request.EndDate.Value >= t.StartDate && request.EndDate.Value <= t.EndDate));
         }
 
         var mapped = records
