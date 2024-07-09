@@ -722,7 +722,7 @@ namespace HQ.Server.Services
 
             var staffToNotify = await _context.Staff
                 .AsNoTracking()
-                .Where(t => times.Where(x => x.StaffId == t.Id).Count() == 0)
+                .Where(t => t.EndDate == null && times.Where(x => x.StaffId == t.Id).Count() == 0)
                 .ToListAsync(ct);
 
             foreach (var staff in staffToNotify)
@@ -736,11 +736,11 @@ namespace HQ.Server.Services
             var startDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
             var endDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodEndDate(period);
             var times = _context.Times.Where(t => t.Date >= startDate && t.Date <= endDate);
-            var unsubmittedTimes = times.Where(t => t.Status != TimeStatus.Submitted);
+            var unsubmittedTimes = times.Where(t => t.Status != TimeStatus.Submitted && t.Status != TimeStatus.Resubmitted && t.Status != TimeStatus.Accepted);
 
             var staffToNotify = await _context.Staff
                 .AsNoTracking()
-                .Where(t => times.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedTimes.Where(x => x.StaffId == t.Id).Count() > 0)
+                .Where(t => t.EndDate == null && times.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedTimes.Where(x => x.StaffId == t.Id).Count() > 0)
                 .ToListAsync(ct);
 
             foreach (var staff in staffToNotify)
