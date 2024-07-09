@@ -1,6 +1,10 @@
 <div
   class="flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full"
-  [class.border-white]="focused"
+  [ngClass]="{
+    'border-red-500': ngControl?.invalid && ngControl?.touched,
+    'border-steel-blue-600': !(ngControl?.invalid && ngControl?.touched),
+    'border-white': focused,
+  }"
 >
   <button
     type="button"
@@ -12,10 +16,23 @@
   </button>
   <input
     #input
-    (focus)="focused = true"
-    (blur)="focused = false"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
     type="text"
     class="w-full block text-[14px] pl-0 px-2 py-1 appearance-none focus:outline-none font-medium bg-inherit rounded"
     [placeholder]="placeholder"
+    [(ngModel)]="value"
   />
 </div>
+@for (error of validationErrors; track error.hqValidationError) {
+  @if (
+    ngControl &&
+    ngControl.errors &&
+    error.hqValidationError &&
+    ngControl.errors[error.hqValidationError]
+  ) {
+    <div class="text-red-700 text-xs leading-normal">
+      <ng-container [ngTemplateOutlet]="error.templateRef"></ng-container>
+    </div>
+  }
+}

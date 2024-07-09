@@ -1,16 +1,32 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  ContentChildren,
+  ElementRef,
+  Input,
+  Optional,
+  QueryList,
+  Self,
+  ViewChild,
+} from '@angular/core';
+import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
+import { ValidationErrorDirective } from '../../directives/validation-error.directive';
 
 @Component({
   selector: 'hq-search-input',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, CommonModule],
   templateUrl: './search-input.component.html',
 })
 export class SearchInputComponent implements ControlValueAccessor {
-  constructor(public ngControl: NgControl) {
-    ngControl.valueAccessor = this;
-  }
+  @ViewChild('input')
+  input?: ElementRef<HTMLInputElement>;
+
+  @Input()
+  placeholder?: string = 'Search';
+
+  @ContentChildren(ValidationErrorDirective)
+  validationErrors!: QueryList<ValidationErrorDirective>;
 
   protected focused = false;
   protected disabled = false;
@@ -29,6 +45,12 @@ export class SearchInputComponent implements ControlValueAccessor {
   onChange: (value: string | null) => void = () => {};
   onTouched: (value: string | null) => void = () => {};
 
+  constructor(@Self() @Optional() public ngControl: NgControl | null) {
+    if (ngControl) {
+      ngControl.valueAccessor = this;
+    }
+  }
+
   writeValue(value: string): void {
     this.value = value;
   }
@@ -45,13 +67,21 @@ export class SearchInputComponent implements ControlValueAccessor {
     this.disabled = isDisabled;
   }
 
-  @ViewChild('input')
-  input?: ElementRef<HTMLInputElement>;
+  onFocus() {
+    this.focused = true;
+  }
 
-  @Input()
-  placeholder?: string = 'Search';
+  onBlur() {
+    this.focused = false;
+    if (this.input?.nativeElement) {
+      this.onTouched(this.input.nativeElement.value);
+    }
+
+    console.log(this.validationErrors);
+  }
 
   focus() {
     this.input?.nativeElement?.focus();
+    this.input?.nativeElement?.select();
   }
 }
