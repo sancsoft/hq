@@ -57,6 +57,14 @@ import {
   GetStaffV1Response,
 } from '../models/staff-members/get-staff-member-v1';
 import {
+  UpsertHolidayRequestV1,
+  UpsertHolidayResponseV1,
+} from '../models/holiday/upsert-holiday-v1';
+import {
+  GetHolidayV1Request,
+  GetHolidayV1Response,
+} from '../models/holiday/get-holiday-v1';
+import {
   UpsertProjectRequestV1,
   UpsertProjectResponsetV1,
 } from '../models/projects/upsert-project-v1';
@@ -307,7 +315,16 @@ export class HQService {
       ),
     );
   }
-
+  getHolidayV1(request: Partial<GetHolidayV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetHolidayV1Response>(
+          `${apiUrl}/v1/Holiday/GetHolidayV1`,
+          request,
+        ),
+      ),
+    );
+  }
   upsertProjectV1(request: Partial<UpsertProjectRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
@@ -375,7 +392,17 @@ export class HQService {
       ),
     );
   }
-
+  upsertHolidayV1(request: Partial<UpsertHolidayRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertHolidayResponseV1>(
+          `${apiUrl}/v1/Holiday/UpsertHolidayV1
+          `,
+          request,
+        ),
+      ),
+    );
+  }
   upsertChargecodesV1(request: Partial<UpsertChargeCodesRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>

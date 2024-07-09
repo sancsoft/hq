@@ -17,7 +17,7 @@ namespace HQ.Server.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -303,6 +303,10 @@ namespace HQ.Server.Data.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_holidays");
+
+                    b.HasIndex("Jurisdiciton", "Date")
+                        .IsUnique()
+                        .HasDatabaseName("ix_holidays_jurisdiciton_date");
 
                     b.ToTable("holidays", (string)null);
                 });

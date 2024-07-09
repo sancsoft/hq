@@ -30,6 +30,7 @@ public class GetDashboardTimeV1
         public string? StaffName { get; set; }
         public decimal Vacation { get; set; }
         public int RejectedCount { get; set; }
+        public bool CanSubmit { get; set; }
 
     }
 

@@ -1,0 +1,29 @@
+@model HQ.Abstractions.Emails.RejectTimeEntryEmail
+@if (!String.IsNullOrEmpty(Model.Heading))
+{
+    <text>@Model.Heading</text>
+    <text>---</text>
+    <text></text>
+}
+@if (!String.IsNullOrEmpty(Model.Message))
+{
+    <text>@Model.Message</text>
+    <text></text>
+}
+
+Details:
+
+Date: @Model.Date
+Hours: @Model.Hours.ToString("0.00")
+Charge Code: @Model.ChargeCode
+Client: @Model.Client
+Project: @Model.Project
+Activity/Task: @Model.ActivityTask
+Description: @Model.Description
+Reason for Rejection: @Model.ReasonForRejection
+Rejected By: @Model.RejectedBy
+
+@if (!String.IsNullOrEmpty(Model.ButtonLabel) && Model.ButtonUrl != null)
+{
+    <text>@Model.ButtonLabel: @Model.ButtonUrl</text>
+}

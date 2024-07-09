@@ -1,0 +1,20 @@
+@model HQ.Abstractions.Emails.NotificationEmail
+@{
+    Layout = "_LayoutEmailText";
+}
+@if (!String.IsNullOrEmpty(Model.Heading))
+{
+    <text>@Model.Heading</text>
+    <text>---</text>
+    <text></text>
+}
+@if (!String.IsNullOrEmpty(Model.Message))
+{
+    <text>@Model.Message</text>
+    <text></text>
+}
+@RenderBody()
+@if (!String.IsNullOrEmpty(Model.ButtonLabel) && Model.ButtonUrl != null)
+{
+    <text>@Model.ButtonLabel: @Model.ButtonUrl</text>
+}

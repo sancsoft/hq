@@ -28,6 +28,7 @@ import {
   Subject,
   combineLatest,
   distinctUntilChanged,
+  firstValueFrom,
   map,
   pairwise,
   shareReplay,
@@ -84,6 +85,9 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   @Output()
   hqTimeDelete = new EventEmitter<HQTimeDeleteEvent>();
+
+  @Output()
+  hqTimeDuplicate = new EventEmitter<HQTimeChangeEvent>();
 
   @HostBinding('class')
   class = 'even:bg-gray-850 odd:bg-black-alt';
@@ -254,8 +258,31 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       this.hqTimeDelete.emit({ id });
     }
   }
+  duplicateTime() {
+    const time = { ...this.form.value };
+    time.id = null; // to create a new time
+    this.hqTimeDuplicate.emit(time);
+  }
   resetTime() {
     this.form.reset({ date: this.form.controls.date.value });
+  }
+  async chooseDate() {
+    if (!this.form.value.id || !this.form.valid) {
+      return;
+    }
+
+    const newDate = await firstValueFrom(
+      this.modalService.chooseDate(
+        'Change Date',
+        'Changing the date may make the time entry disappear from view.',
+        this.form.controls.date.value ?? '',
+      ),
+    );
+    if (newDate) {
+      this.form.patchValue({ date: newDate });
+      this.form.markAsDirty();
+      await this.save();
+    }
   }
 
   async showRejectionNotes() {

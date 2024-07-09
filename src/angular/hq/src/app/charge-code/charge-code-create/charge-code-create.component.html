@@ -59,8 +59,16 @@
                     >
                     <div class="grid relative w-full max-w-[220px]">
                       <select
+                        [ngClass]="{
+                          'border-red-700':
+                            form.controls.Activity.errors &&
+                            form.controls.Activity.touched,
+                          'border-steel-blue-600':
+                            !form.controls.Activity.errors ||
+                            !form.controls.Activity.touched,
+                        }"
                         formControlName="Activity"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border text-gray-100 bg-blue-900 rounded h-[36px]"
                       >
                         <option [ngValue]="null" selected>
                           Select Activity
@@ -83,6 +91,15 @@
                       >
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
+                      @if (
+                        form.get("Activity")?.touched &&
+                        form.get("Activity")?.errors?.["required"]
+                      ) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                          >Selecting Activity is required.</span
+                        >
+                      }
                     </div>
                   </div>
                   @if (showProjects$ | async) {
@@ -223,6 +240,14 @@
                     >
                     <div class="grid relative w-full max-w-[220px]">
                       <select
+                        [ngClass]="{
+                          'border-red-700':
+                            form.controls.Billable.errors &&
+                            form.controls.Billable.touched,
+                          'border-steel-blue-600':
+                            !form.controls.Billable.errors ||
+                            !form.controls.Billable.touched,
+                        }"
                         formControlName="Billable"
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
                       >
@@ -235,16 +260,33 @@
                       >
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
+                      @if (
+                        form.get("Billable")?.touched &&
+                        form.get("Billable")?.errors?.["required"]
+                      ) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                          >Selecting billing status is required.</span
+                        >
+                      }
                     </div>
                   </div>
                   <div>
                     <label
-                      for="fullname"
+                      for=""
                       class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
                       >Active</label
                     >
                     <div class="grid relative w-full max-w-[220px]">
                       <select
+                        [ngClass]="{
+                          'border-red-700':
+                            form.controls.Active.errors &&
+                            form.controls.Active.touched,
+                          'border-steel-blue-600':
+                            !form.controls.Active.errors ||
+                            !form.controls.Activity.touched,
+                        }"
                         formControlName="Active"
                         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
                       >
@@ -257,6 +299,16 @@
                       >
                         <i class="bi bi-arrow-down-short text-[24px]"></i>
                       </span>
+                      @if (
+                        form.get("Active")?.touched &&
+                        form.get("Active")?.errors?.["required"]
+                      ) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                        >
+                          Selecting active status is required.</span
+                        >
+                      }
                     </div>
                   </div>
                   <div>

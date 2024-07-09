@@ -92,6 +92,11 @@ public class VoltronServiceV1
                 time.Hours = timeRecord.Hours;
                 time.Notes = timeRecord.Notes;
 
+                if (request.Status == TimeStatus.Accepted)
+                {
+                    time.HoursApproved = time.Hours;
+                }
+
                 if (String.IsNullOrEmpty(time.Notes))
                 {
                     time.Notes = null;
@@ -213,6 +218,16 @@ public class VoltronServiceV1
                 project.BookingPeriod = Period.Month;
                 project.ClientId = client.Id;
                 project.Name = projectRow.Project;
+
+                switch (chargeCode.Activity)
+                {
+                    case ChargeCodeActivity.Project:
+                        project.Status = ProjectStatus.Ongoing;
+                        break;
+                    case ChargeCodeActivity.Quote:
+                        project.Status = ProjectStatus.InProduction;
+                        break;
+                }
 
                 if (chargeCode.Activity == ChargeCodeActivity.Project && Int32.TryParse(chargeCode.Code.Substring(1), out int projectNumber))
                 {

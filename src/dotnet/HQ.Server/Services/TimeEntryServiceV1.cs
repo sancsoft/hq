@@ -5,6 +5,8 @@ using CsvHelper.Configuration;
 
 using FluentResults;
 
+using Hangfire;
+
 using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Times;
@@ -22,10 +24,16 @@ namespace HQ.Server.Services
     public class TimeEntryServiceV1
     {
         private readonly HQDbContext _context;
-        public TimeEntryServiceV1(HQDbContext context)
+        private readonly ILogger<TimeEntryServiceV1> _logger;
+        private readonly IBackgroundJobClient _backgroundJobClient;
+
+        public TimeEntryServiceV1(HQDbContext context, ILogger<TimeEntryServiceV1> logger, IBackgroundJobClient backgroundJobClient)
         {
             this._context = context;
+            _logger = logger;
+            _backgroundJobClient = backgroundJobClient;
         }
+
         public async Task<Result<UpsertTimeV1.Response>> UpsertTimeV1(UpsertTimeV1.Request request, CancellationToken ct = default)
         {
             var validationResult = Result.Merge(
@@ -190,6 +198,11 @@ namespace HQ.Server.Services
             }
             foreach (var time in timeEntries)
             {
+                if (time.Hours == 0 || String.IsNullOrEmpty(time.Notes))
+                {
+                    continue;
+                }
+
                 if (time.Status == TimeStatus.Unsubmitted)
                 {
                     time.Status = TimeStatus.Submitted;
@@ -198,9 +211,12 @@ namespace HQ.Server.Services
                 if (time.Status == TimeStatus.Rejected)
                 {
                     time.Status = TimeStatus.Resubmitted;
+                    _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendResubmitTimeEntryEmail(time.Id, CancellationToken.None));
                 }
             }
+
             await _context.SaveChangesAsync(ct);
+
             return Result.Ok(new SubmitTimesV1.Response() { });
         }
         public async Task<Result<UpsertTimeActivityV1.Response>> UpsertTimeActivityV1(UpsertTimeActivityV1.Request request, CancellationToken ct = default)
@@ -375,7 +391,14 @@ namespace HQ.Server.Services
                 records = records.Where(t => t.Activity!.Name == request.Activity);
             }
 
+            // Timing Hours Queries
             var total = await records.CountAsync(ct);
+
+            var totalHours = await records.SumAsync(t => t.Hours, ct);
+            var billableHours = await records.Where(t => t.ChargeCode.Billable).SumAsync(t => t.Hours, ct);
+            var acceptedHours = await records.Where(t => t.Status == TimeStatus.Accepted).SumAsync(t => t.HoursApproved, ct);
+            var acceptedBillableHours = await records.Where(t => t.Status == TimeStatus.Accepted && t.ChargeCode.Billable).SumAsync(t => t.HoursApproved, ct);
+
 
             var mapped = records
             .Select(t => new GetTimesV1.Record()
@@ -441,12 +464,17 @@ namespace HQ.Server.Services
                 mapped = mapped.Take(request.Take.Value);
             }
 
+
+
             var response = new GetTimesV1.Response()
             {
                 Records = await mapped.ToListAsync(ct),
+                TotalHours = totalHours,
+                BillableHours = billableHours,
+                AcceptedHours = acceptedHours ?? 0,
+                AcceptedBillableHours = acceptedBillableHours ?? 0,
                 Total = total
             };
-
 
             return response;
         }
@@ -504,9 +532,10 @@ namespace HQ.Server.Services
             }
 
             var currentYearStart = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Year);
+            var currentYearEnd = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(Period.Year);
             var totalVacationHours = !staff.StartDate.HasValue ? 0 : DateOnly.FromDateTime(DateTime.Today).CalculateEarnedVacationHours(staff.StartDate.Value, staff.VacationHours);
 
-            var usedVacationHours = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Date >= currentYearStart && t.ChargeCode.Project!.Name.ToLower().Contains("vacation")).SumAsync(t => t.Hours);
+            var usedVacationHours = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Date >= currentYearStart && t.Date <= currentYearEnd && t.ChargeCode.Project!.Name.ToLower().Contains("vacation")).SumAsync(t => t.Hours);
             var vacationHours = totalVacationHours - usedVacationHours;
 
             if (!String.IsNullOrEmpty(request.Search))
@@ -630,6 +659,8 @@ namespace HQ.Server.Services
                 while (date >= startDate);
             }
 
+            response.CanSubmit = times.Count > 0 && !times.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && times.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Unsubmitted || x.TimeStatus == TimeStatus.Rejected));
+
             return response;
         }
 
@@ -681,6 +712,54 @@ namespace HQ.Server.Services
                 FileName = $"HQTimeExport_{DateTime.Now:yyyyMMddHHmm}.csv",
                 ContentType = "text/csv",
             };
+        }
+
+        public async Task BackgroundSendTimeEntryReminderEmail(Period period, CancellationToken ct)
+        {
+            var startDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
+            var endDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodEndDate(period);
+            var times = _context.Times.Where(t => t.Date >= startDate && t.Date <= endDate);
+
+            var staffToNotify = await _context.Staff
+                .AsNoTracking()
+                .Where(t => t.EndDate == null && times.Where(x => x.StaffId == t.Id).Count() == 0)
+                .ToListAsync(ct);
+
+            foreach (var staff in staffToNotify)
+            {
+                _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendTimeEntryReminderEmail(staff.Id, startDate, endDate, CancellationToken.None));
+            }
+        }
+
+        public async Task BackgroundSendTimeSubmissionReminderEmail(Period period, CancellationToken ct)
+        {
+            var startDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
+            var endDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodEndDate(period);
+            var times = _context.Times.Where(t => t.Date >= startDate && t.Date <= endDate);
+            var unsubmittedTimes = times.Where(t => t.Status != TimeStatus.Submitted && t.Status != TimeStatus.Resubmitted && t.Status != TimeStatus.Accepted);
+
+            var staffToNotify = await _context.Staff
+                .AsNoTracking()
+                .Where(t => t.EndDate == null && times.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedTimes.Where(x => x.StaffId == t.Id).Count() > 0)
+                .ToListAsync(ct);
+
+            foreach (var staff in staffToNotify)
+            {
+                _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendTimeSubmissionReminderEmail(staff.Id, startDate, endDate, CancellationToken.None));
+            }
+        }
+
+        public async Task BackgroundCaptureUnsubmittedTimeV1(CancellationToken ct)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var lastWeekEnd = today.GetPeriodEndDate(Period.LastWeek);
+
+            _logger.LogInformation("Capturing unsubmitted time through {To}.", lastWeekEnd);
+            var captureResponse = await CaptureUnsubmittedTimeV1(new()
+            {
+                To = lastWeekEnd
+            }, ct);
+            _logger.LogInformation("Captured {CaptureCount} unsubmitted time entries.", captureResponse.Value.Captured);
         }
 
         public async Task<Result<CaptureUnsubmittedTimeV1.Response>> CaptureUnsubmittedTimeV1(CaptureUnsubmittedTimeV1.Request request, CancellationToken ct = default)

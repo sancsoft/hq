@@ -82,6 +82,7 @@ export class QuotesCreateComponent {
     this.selectedClientName$.next(client.name);
   }
   async onSubmitProject() {
+    this.quoteFormGroup.markAllAsTouched();
     console.log(this.quoteFormGroup);
     try {
       if (
@@ -90,7 +91,6 @@ export class QuotesCreateComponent {
         this.quoteFormGroup.dirty
       ) {
         const request = this.quoteFormGroup.value;
-        request.status = Number(request.status);
         console.log('Sending Request:', request);
         const response = await firstValueFrom(
           this.hqService.upsertQuoteV1(request),

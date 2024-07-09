@@ -6,18 +6,9 @@
       "dotnetRunMessages": true,
       "launchBrowser": false,
       "launchUrl": "swagger",
-      "commandLineArgs": "api",
       "applicationUrl": "http://api.hq.localhost:5186",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "worker": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "commandLineArgs": "worker",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
       }
     }
   }

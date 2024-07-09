@@ -10,7 +10,21 @@
         }"
         class="border-b border-black py-2"
       ></td>
-      <td class="border-b border-black py-2 pl-3 pr-2" width="105">
+      @if (time?.id) {
+        <td style="width: 13px" class="border-b border-black text-white">
+          <button
+            title="Duplicate time entry"
+            name="Duplicate time entry"
+            class="ml-2"
+            (click)="duplicateTime()"
+          >
+            <i class="bi bi-copy"></i>
+          </button>
+        </td>
+      } @else {
+        <td style="width: 13px" class="border-b border-black"></td>
+      }
+      <td class="border-b border-black py-2 pl-3 pr-2" width="90">
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
@@ -30,12 +44,23 @@
         />
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <input
-          class="w-full block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-          type="date"
-          formControlName="date"
-          readonly
-        />
+        <div class="grid relative w-full">
+          <input
+            class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+            type="date"
+            formControlName="date"
+            readonly
+          />
+          <button
+            [tabindex]="-1"
+            (click)="chooseDate()"
+            title="Change date"
+            [disabled]="!(form.value.id && form.valid)"
+            class="flex items-center justify-center h-full pointer-events-auto z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+          >
+            <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
+          </button>
+        </div>
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         @if (form.controls.chargeCode.value) {
@@ -193,8 +218,20 @@
       </td>
     }
     @case (timeStatus.Rejected) {
-      <td class="border-b border-black py-2 bg-red-600 w-3"></td>
-      <td class="border-b border-black py-2 pl-3 pr-2" width="105">
+      <td
+        class="border-b border-black py-2 bg-red-600 w-3"
+        style="width: 15px"
+      ></td>
+      <td style="width: 13px" class="border-b border-black text-white">
+        <button
+          title="Duplicate time entry"
+          class="ml-2"
+          (click)="duplicateTime()"
+        >
+          <i class="bi bi-copy"></i>
+        </button>
+      </td>
+      <td class="border-b border-black py-2 pl-3 pr-2" width="90">
         <input
           [ngClass]="{
             'border-red-700 focus:border-red-700':
@@ -213,14 +250,24 @@
           (keydown.enter)="onEnter($event.target)"
         />
       </td>
-      <td class="border-b border-black py-2 pl-2">
-        <input
-          class="w-full block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-          type="date"
-          aria-label="Time Date"
-          formControlName="date"
-          readonly
-        />
+      <td class="border-b border-black py-2 pl-2" style="width: 140">
+        <div class="grid relative w-full">
+          <input
+            class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+            type="date"
+            formControlName="date"
+            readonly
+          />
+          <button
+            [tabindex]="-1"
+            (click)="chooseDate()"
+            title="Change date"
+            [disabled]="!(form.value.id && form.valid)"
+            class="flex items-center justify-center h-full pointer-events-auto cursor-pointer z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+          >
+            <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
+          </button>
+        </div>
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         @if (form.controls.chargeCode.value) {
@@ -363,11 +410,20 @@
     }
     @case (timeStatus.Submitted) {
       <td class="border-b border-black py-2 bg-gray-300 w-3"></td>
-      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
+      <td style="width: 13px" class="border-b border-black text-white">
+        <button
+          title="Duplicate time entry"
+          class="ml-2"
+          (click)="duplicateTime()"
+        >
+          <i class="bi bi-copy"></i>
+        </button>
+      </td>
+      <td class="border-b border-black py-2 pl-5 text-right px-3" width="105">
         {{ time?.hours }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ time?.date }}
+      <td class="border-b border-black py-2 px-4">
+        {{ time?.date | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         <span
@@ -377,16 +433,16 @@
           {{ time?.chargeCode }}
         </span>
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.clientName }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.projectName }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-3">
         @if (time?.notes; as notes) {
           {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
         }
@@ -394,12 +450,22 @@
       <td class="border-b border-black py-2 pl-2 pr-5"></td>
     }
     @case (timeStatus.Accepted) {
-      <td class="border-b border-black py-2 bg-green-300 w-3"></td>
-      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
+      <td class="border-b border-black py-2 bg-green-600 w-3"></td>
+      <td style="width: 13px" class="border-b border-black text-white">
+        <button
+          title="Duplicate time entry"
+          name="Duplicate time entry"
+          class="ml-2"
+          (click)="duplicateTime()"
+        >
+          <i class="bi bi-copy"></i>
+        </button>
+      </td>
+      <td class="border-b border-black py-2 pl-5 text-right px-3" width="105">
         {{ time?.hours }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ time?.date }}
+      <td class="border-b border-black py-2 px-4">
+        {{ time?.date | date: "shortDate" | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         <span
@@ -409,16 +475,16 @@
           {{ time?.chargeCode }}
         </span>
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.clientName }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.projectName }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-3">
         @if (time?.notes; as notes) {
           {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
         }
@@ -427,11 +493,21 @@
     }
     @case (timeStatus.Resubmitted) {
       <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
-      <td class="border-b border-black py-2 pl-5 text-right pr-2" width="105">
+      <td style="width: 13px" class="border-b border-black text-white">
+        <button
+          title="Duplicate time entry"
+          name="Duplicate time entry"
+          class="ml-2"
+          (click)="duplicateTime()"
+        >
+          <i class="bi bi-copy"></i>
+        </button>
+      </td>
+      <td class="border-b border-black py-2 pl-5 text-right px-3" width="105">
         {{ time?.hours }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ time?.date }}
+      <td class="border-b border-black py-2 px-4">
+        {{ time?.date | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         <span
@@ -441,16 +517,16 @@
           {{ time?.chargeCode }}
         </span>
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.clientName }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-4">
         {{ time?.projectName }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
       </td>
-      <td class="border-b border-black py-2 pl-2">
+      <td class="border-b border-black py-2 pl-3">
         @if (time?.notes; as notes) {
           {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
         }
