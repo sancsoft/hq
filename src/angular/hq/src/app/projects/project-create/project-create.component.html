@@ -74,14 +74,14 @@
                       >
                         <option
                           *ngIf="(selectedClientName$ | async) === null"
-                          value=""
+                          [ngValue]="null"
                         >
                           Select Client
                         </option>
 
                         <option
                           *ngIf="selectedClientName$ | async as clientId"
-                          [value]="clientId"
+                          [ngValue]="clientId"
                         >
                           {{ clientId }}
                         </option>
@@ -193,6 +193,7 @@
                             projectFormGroup.controls.projectManagerId.touched
                           "
                           class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
+                          formControlName="projectManagerId"
                         >
                           <option [ngValue]="null" disabled selected>
                             Select Project Manager
@@ -532,25 +533,6 @@
                 </div>
 
                 <!-- row grid -->
-                <label
-                  for="val"
-                  class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-5"
-                  >Value</label
-                >
-                <div
-                  class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)] pr-5"
-                >
-                  <!-- column -->
-                  <div>
-                    <input
-                      type="text"
-                      name=""
-                      id="val"
-                      class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Value"
-                    />
-                  </div>
-                </div>
 
                 <!-- engagement tab form fields below: hidden for now incase we need these on another screen -->
                 <div class="hidden">
@@ -630,12 +612,12 @@
                           id="quoteId"
                           class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
                         >
-                          <option [ngValue]="null" disabled selected>
+                          <option [ngValue]="null" selected>
                             Select a quote
                           </option>
                           <option
                             *ngFor="let quote of quotes"
-                            [value]="quote.id"
+                            [ngValue]="quote.id"
                           >
                             {{ quote.chargeCode }}
                           </option>
@@ -685,7 +667,7 @@
                 </div>
               </div>
               <!-- flex flex-col flex-grow -->
-              <hq-pdf-viewer [pdfURL]="quotePdfURL"></hq-pdf-viewer>
+              <hq-pdf-viewer [pdfURL]="null"></hq-pdf-viewer>
             </div>
           </div>
         </form>
