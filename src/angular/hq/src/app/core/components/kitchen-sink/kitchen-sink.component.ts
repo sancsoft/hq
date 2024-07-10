@@ -15,6 +15,7 @@ import { DateInputComponent } from '../date-input/date-input.component';
 import { SelectInputComponent } from '../select-input/select-input.component';
 import { StatLabelComponent } from '../stat-label/stat-label.component';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
+import { TextareaInputComponent } from '../textarea-input/textarea-input.component';
 
 @Component({
   selector: 'hq-kitchen-sink',
@@ -32,6 +33,7 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
     SelectInputComponent,
     StatLabelComponent,
     ProgressBarComponent,
+    TextareaInputComponent,
   ],
   templateUrl: './kitchen-sink.component.html',
 })
