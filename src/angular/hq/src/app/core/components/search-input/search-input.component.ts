@@ -31,7 +31,7 @@ export class SearchInputComponent implements ControlValueAccessor {
   label: string | null = null;
 
   @Input()
-  color: 'primary' | 'secondary' = 'primary';
+  variant: 'primary' | 'secondary' = 'primary';
 
   @Input()
   public disabled = false;
@@ -63,7 +63,7 @@ export class SearchInputComponent implements ControlValueAccessor {
   }
 
   writeValue(value: string): void {
-    this.value = value;
+    this._value = value;
   }
 
   registerOnChange(onChange: (value: string | null) => void) {

@@ -31,7 +31,10 @@ export class TextInputComponent {
   label: string | null = null;
 
   @Input()
-  color: 'primary' | 'secondary' = 'secondary';
+  variant: 'primary' | 'secondary' = 'primary';
+
+  @Input()
+  type: 'text' | 'email' | 'password' = 'text';
 
   @Input()
   public disabled = false;
@@ -63,7 +66,7 @@ export class TextInputComponent {
   }
 
   writeValue(value: string): void {
-    this.value = value;
+    this._value = value;
   }
 
   registerOnChange(onChange: (value: string | null) => void) {

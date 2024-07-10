@@ -7,9 +7,9 @@
     'border-gray-450 text-gray-450': disabled,
     'border-red-500 text-gray-100': ngControl?.invalid && ngControl?.touched,
     'border-steel-blue-600 text-gray-100':
-      !(ngControl?.invalid && ngControl?.touched) && color === 'primary',
+      !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
     'border-black text-gray-100':
-      !(ngControl?.invalid && ngControl?.touched) && color === 'secondary',
+      !(ngControl?.invalid && ngControl?.touched) && variant === 'secondary',
     'border-white text-gray-100': focused,
   }"
 >

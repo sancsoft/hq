@@ -3,17 +3,17 @@
 }
 <input
   #input
+  [type]="type"
   [id]="uniqueId"
   (focus)="onFocus()"
   (blur)="onBlur()"
-  type="text"
   class="w-full block text-[14px] px-2 py-1 appearance-none focus:outline-none font-medium rounded border bg-blue-900 h-[36px]"
   [ngClass]="{
     'border-red-500 text-gray-100': ngControl?.invalid && ngControl?.touched,
     'border-steel-blue-600 text-gray-100':
-      !(ngControl?.invalid && ngControl?.touched) && color === 'primary',
+      !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
     'border-black text-gray-100':
-      !(ngControl?.invalid && ngControl?.touched) && color === 'secondary',
+      !(ngControl?.invalid && ngControl?.touched) && variant === 'secondary',
     'border-gray-450 text-gray-450': disabled,
     'border-white text-gray-100': focused,
   }"
