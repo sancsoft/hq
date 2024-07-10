@@ -16,9 +16,9 @@ import { ToastService } from '../services/toast.service';
 import { ModalService } from '../services/modal.service';
 import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-filter/staff-dashboard-search-filter.component';
 import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/staff-dashboard-date-range.component';
-import { TimeStatus } from '../models/common/time-status';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TimeStatus } from '../enums/time-status';
 
 @Component({
   selector: 'hq-staff-dashboard',

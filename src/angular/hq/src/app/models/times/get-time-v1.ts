@@ -1,6 +1,6 @@
+import { TimeStatus } from '../../enums/time-status';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
-import { TimeStatus } from '../common/time-status';
 
 export interface GetTimeRequestV1 {
   Id?: string | null;

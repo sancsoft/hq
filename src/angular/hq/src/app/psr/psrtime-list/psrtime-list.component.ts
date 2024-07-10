@@ -27,13 +27,11 @@ import {
 import { HQService } from '../../services/hq.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { TimeStatus } from '../../models/common/time-status';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 import { FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
-import { ButtonState } from '../../enums/ButtonState';
 import { ModalService } from '../../services/modal.service';
 import { GetProjectActivityRecordV1 } from '../../models/PSR/get-project-activity-v1';
 import { ToastService } from '../../services/toast.service';
@@ -41,6 +39,8 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 import { HQRole } from '../../enums/hqrole';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
+import { TimeStatus } from '../../enums/time-status';
+import { ButtonState } from '../../enums/button-state';
 
 export interface ChargeCodeViewModel {
   id: string;

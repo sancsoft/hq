@@ -37,8 +37,8 @@ import {
 } from 'rxjs';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
-import { TimeStatus } from '../../models/common/time-status';
 import { ModalService } from '../../services/modal.service';
+import { TimeStatus } from '../../enums/time-status';
 
 export interface HQTimeChangeEvent {
   id?: string | null;

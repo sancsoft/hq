@@ -22,8 +22,8 @@ import {
   GetDashboardTimeV1Client,
   GetDashboardTimeV1Response,
 } from '../../models/staff-dashboard/get-dashboard-time-v1';
-import { TimeStatus } from '../../models/common/time-status';
 import { localISODate } from '../../common/functions/local-iso-date';
+import { TimeStatus } from '../../enums/time-status';
 
 @Injectable({
   providedIn: 'root',
