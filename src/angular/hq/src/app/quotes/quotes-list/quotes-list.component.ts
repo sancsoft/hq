@@ -20,7 +20,7 @@ import {
 import { SortDirection } from '../../models/common/sort-direction';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ClientDetailsService } from '../../clients/client-details.service';
+import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
 import { HQRole } from '../../enums/hqrole';
@@ -61,7 +61,7 @@ export class QuotesListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    private clientDetailService: ClientDetailsServiceToReplace,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.QuoteName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);

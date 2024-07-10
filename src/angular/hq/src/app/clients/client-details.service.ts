@@ -39,3 +39,28 @@ export class ClientDetailsService {
     this.showProjectStatus$.next(false);
   }
 }
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ClientDetailsServiceToReplace {
+  search = new FormControl<string | null>('');
+  projectStatus = new FormControl<ProjectStatus | null>(null);
+  ProjectStatus = ProjectStatus;
+  showProjectStatus$ = new BehaviorSubject<boolean>(true);
+
+  constructor() {}
+
+  resetFilters() {
+    this.search.setValue('');
+    this.projectStatus.setValue(null);
+  }
+
+  showProjectStatus() {
+    this.showProjectStatus$.next(true);
+  }
+
+  hideProjectStatus() {
+    this.showProjectStatus$.next(false);
+  }
+}

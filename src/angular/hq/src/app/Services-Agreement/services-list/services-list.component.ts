@@ -13,7 +13,7 @@ import {
   switchMap,
   shareReplay,
 } from 'rxjs';
-import { ClientDetailsService } from '../../clients/client-details.service';
+import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
 import { SortColumn } from '../../models/Services/get-services-v1';
 import { SortDirection } from '../../models/common/sort-direction';
@@ -60,7 +60,7 @@ export class ServicesListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    private clientDetailService: ClientDetailsServiceToReplace,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.chargeCode);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);

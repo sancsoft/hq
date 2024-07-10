@@ -16,7 +16,7 @@ import {
   BehaviorSubject,
 } from 'rxjs';
 import { Observable } from 'rxjs';
-import { ClientDetailsService } from '../../clients/client-details.service';
+import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
@@ -62,7 +62,7 @@ export class HolidayListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    private clientDetailService: ClientDetailsServiceToReplace,
   ) {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value),
