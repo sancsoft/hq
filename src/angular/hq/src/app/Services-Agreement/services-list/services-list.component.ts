@@ -114,7 +114,6 @@ export class ServicesListComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.hideProjectStatus();
-    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {

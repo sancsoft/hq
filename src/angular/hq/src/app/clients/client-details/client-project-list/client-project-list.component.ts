@@ -119,7 +119,6 @@ export class ClientProjectListComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.showProjectStatus();
-    this.clientDetailService.showCurrentOnly();
   }
 
   goToPage(page: number) {

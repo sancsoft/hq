@@ -116,7 +116,6 @@ export class HolidayListComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.hideProjectStatus();
-    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {

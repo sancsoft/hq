@@ -115,7 +115,6 @@ export class ClientInvoicesComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.hideProjectStatus();
-    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {

@@ -116,7 +116,6 @@ export class StaffListComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.hideProjectStatus();
-    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {
