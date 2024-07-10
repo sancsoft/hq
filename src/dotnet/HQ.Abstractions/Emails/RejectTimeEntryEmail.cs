@@ -2,6 +2,7 @@ namespace HQ.Abstractions.Emails
 {
     public class RejectTimeEntryEmail : NotificationEmail
     {
+        public string? StaffName { get; set; }
         public DateOnly Date { get; set; }
         public decimal Hours { get; set; }
         public string ChargeCode { get; set; } = null!;
