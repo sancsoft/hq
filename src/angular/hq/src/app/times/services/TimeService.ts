@@ -12,10 +12,10 @@ import {
   GetTimeRecordClientsV1,
   GetTimeRecordProjectsV1,
   GetTimeRecordStaffV1,
-  Period,
 } from '../../models/times/get-time-v1';
 import { HQService } from '../../services/hq.service';
 import { SortColumn } from '../../models/staff-members/get-staff-member-v1';
+import { Period } from '../../enums/period';
 
 @Injectable({
   providedIn: 'root',

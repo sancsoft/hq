@@ -27,17 +27,7 @@ import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { localISODate } from '../../common/functions/local-iso-date';
-
-export enum Period {
-  Week = 1,
-  Month = 2,
-  Quarter = 3,
-  Year = 4,
-  Today = 5,
-  LastWeek = 6,
-  LastMonth = 7,
-  Custom = 8,
-}
+import { Period } from '../../enums/period';
 
 interface Form {
   clientId: FormControl<string | null>;

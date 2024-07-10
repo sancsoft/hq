@@ -1,5 +1,5 @@
+import { Period } from '../../enums/period';
 import { TimeStatus } from '../../enums/time-status';
-import { Period } from '../../projects/project-create/project-create.component';
 
 export interface GetDashboardTimeV1Request {
   staffId: string;

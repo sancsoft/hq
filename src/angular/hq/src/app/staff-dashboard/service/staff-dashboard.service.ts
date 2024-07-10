@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Period } from '../../projects/project-create/project-create.component';
 import { HQService } from '../../services/hq.service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import {
@@ -24,6 +23,7 @@ import {
 } from '../../models/staff-dashboard/get-dashboard-time-v1';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { TimeStatus } from '../../enums/time-status';
+import { Period } from '../../enums/period';
 
 @Injectable({
   providedIn: 'root',

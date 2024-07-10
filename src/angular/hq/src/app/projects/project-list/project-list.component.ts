@@ -24,8 +24,8 @@ import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { ProjectListSearchFilterComponent } from '../project-list-search-filter/project-list-search-filter.component';
 import { ProjectSearchFilterService } from '../services/ProjectSearchFilterService';
-import { Period } from '../../models/times/get-time-v1';
 import { ProjectStatus } from '../../enums/project-status';
+import { Period } from '../../enums/period';
 
 @Component({
   selector: 'hq-project-list',

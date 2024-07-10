@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Period } from '../models/times/get-time-v1';
 import {
   HQTimeChangeEvent,
   HQTimeDeleteEvent,
@@ -19,6 +18,7 @@ import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/s
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TimeStatus } from '../enums/time-status';
+import { Period } from '../enums/period';
 
 @Component({
   selector: 'hq-staff-dashboard',

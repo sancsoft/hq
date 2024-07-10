@@ -1,3 +1,4 @@
+import { Period } from '../../enums/period';
 import { TimeStatus } from '../../enums/time-status';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
@@ -73,17 +74,6 @@ export interface GetTimeRecordsV1 {
   billableHours: number;
   acceptedHours: number;
   acceptedBillableHours: number;
-}
-
-export enum Period {
-  Week = 1,
-  Month = 2,
-  Quarter = 3,
-  Year = 4,
-  Today = 5,
-  LastWeek = 6,
-  LastMonth = 7,
-  Custom = 8,
 }
 
 export interface GetTimeV1 extends PagedResponseV1<GetTimeRecordV1> {}
