@@ -8,6 +8,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './tab.component.html',
 })
 export class TabComponent {
-  @Input() title?: string;
-  @Input() router?: string;
+  @Input()
+  title?: string;
+  @Input()
+  routerLink?: string | unknown[] | null;
 }
