@@ -126,8 +126,10 @@ namespace HQ.Server.Services
                 ReasonForRejection = time.RejectionNotes,
                 RejectedBy = time.RejectedBy?.Name,
                 Heading = "Time Resubmitted",
+                StaffName = time.Staff.Name,
                 Message = "A rejected time entry has been resubmitted.",
                 ButtonLabel = "View PSR",
+
                 ButtonUrl = buttonUrl
             };
 

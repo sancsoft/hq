@@ -22,6 +22,7 @@ namespace HQ.Abstractions.Emails
             ChargeCode = "P1041",
             Client = "SANCSOFT",
             Project = "HQ",
+            StaffName = "amahdy",
             ActivityTask = "#123",
             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
             ReasonForRejection = "The hours entered (0) are not valid. Please ensure that the hours reflect actual time worked.",
