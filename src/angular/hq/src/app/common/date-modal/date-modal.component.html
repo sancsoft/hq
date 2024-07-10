@@ -6,7 +6,11 @@
     {{ data.message }}
   </div>
   <form>
-    <div class="grid relative w-full" style="width: 150px">
+    <div style="width: 150px">
+      <hq-date-input [readonly]="false" [formControl]="dateFormControl" />
+    </div>
+
+    <!-- <div class="grid relative w-full" style="width: 150px">
       <input
         [formControl]="dateFormControl"
         type="date"
@@ -17,7 +21,7 @@
       >
         <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
       </span>
-    </div>
+    </div> -->
   </form>
   <div class="text-right">
     <button

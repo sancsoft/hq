@@ -44,7 +44,15 @@
         />
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full">
+        <hq-date-input
+          [readonly]="true"
+          [form]="form"
+          [handleDateChange]="true"
+          [formControlName]='"date"'
+          [disabled]="!(form.value.id && form.valid)"
+          (dateSelected)="chooseDate()"
+        />
+        <!-- <div class="grid relative w-full">
           <input
             class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             type="date"
@@ -60,7 +68,7 @@
           >
             <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
           </button>
-        </div>
+        </div> -->
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         @if (form.controls.chargeCode.value) {
@@ -250,8 +258,18 @@
           (keydown.enter)="onEnter($event.target)"
         />
       </td>
-      <td class="border-b border-black py-2 pl-2" style="width: 140">
-        <div class="grid relative w-full">
+      <td class="border-b border-black py-2 pl-2">
+        <hq-date-input
+          [readonly]="true"
+          [form]="form"
+          [width]="140"
+          [handleDateChange]="true"
+          [formControlName]="'date'"
+          [disabled]="!(form.value.id && form.valid)"
+          (dateSelected)="chooseDate()"
+        />
+
+        <!-- <div class="grid relative w-full">
           <input
             class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
             type="date"
@@ -267,7 +285,7 @@
           >
             <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
           </button>
-        </div>
+        </div> -->
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
         @if (form.controls.chargeCode.value) {
