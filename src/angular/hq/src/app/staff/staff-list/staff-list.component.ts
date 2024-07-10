@@ -1,7 +1,4 @@
-import {
-  Jurisdiciton,
-  SortColumn,
-} from './../../models/staff-members/get-staff-member-v1';
+import { SortColumn } from './../../models/staff-members/get-staff-member-v1';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -26,6 +23,7 @@ import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
+import { Jurisdiciton } from '../../enums/jurisdiciton';
 
 @Component({
   selector: 'hq-staff-list',
