@@ -1,20 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+import { ProjectStatus } from '../enums/project-status';
 
-// enum ProjectStatus {
-export enum ProjectStatus {
-  Unknown = 0,
-  Draft = 1,
-  WaitingForSale = 2,
-  WaitingForClient = 3,
-  WaitingForStaff = 4,
-  InProduction = 5,
-  Ongoing = 6,
-  Completed = 7,
-  Closed = 8,
-  Lost = 9,
-}
 @Injectable({
   providedIn: 'root',
 })

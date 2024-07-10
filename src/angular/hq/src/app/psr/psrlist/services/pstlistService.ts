@@ -1,9 +1,9 @@
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject, Observable, map } from 'rxjs';
-import { ProjectStatus } from '../../../clients/client-details.service';
 import { GetPSRTimeRecordStaffV1 } from '../../../models/PSR/get-psr-time-v1';
 import { HQService } from '../../../services/hq.service';
 import { Injectable } from '@angular/core';
+import { ProjectStatus } from '../../../enums/project-status';
 
 export enum ActivityName {
   Support = 0,
