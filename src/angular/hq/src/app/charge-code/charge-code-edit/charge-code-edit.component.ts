@@ -16,13 +16,13 @@ import {
   takeUntil,
 } from 'rxjs';
 import { APIError } from '../../errors/apierror';
-import { ChargeCodeActivity } from '../../models/charge-codes/get-chargecodes-v1';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { GetQuotesRecordV1 } from '../../models/quotes/get-quotes-v1';
 import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
+import { ChargeCodeActivity } from '../../enums/charge-code-activity';
 
 interface Form {
   Activity: FormControl<ChargeCodeActivity | null>;

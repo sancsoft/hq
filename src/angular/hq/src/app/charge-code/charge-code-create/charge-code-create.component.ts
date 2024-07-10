@@ -1,4 +1,3 @@
-import { ChargeCodeActivity } from './../../models/charge-codes/get-chargecodes-v1';
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -23,6 +22,7 @@ import { ErrorDisplayComponent } from '../../errors/error-display/error-display.
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
 import { GetQuotesRecordV1 } from '../../models/quotes/get-quotes-v1';
+import { ChargeCodeActivity } from '../../enums/charge-code-activity';
 
 interface Form {
   Activity: FormControl<ChargeCodeActivity | null>;

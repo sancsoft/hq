@@ -1,3 +1,4 @@
+import { ChargeCodeActivity } from '../../enums/charge-code-activity';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
@@ -12,12 +13,6 @@ export interface GetChargeCodesRequestV1 extends PagedRequestV1 {
   clientId?: string | null;
   billable?: boolean;
   active?: boolean;
-}
-export enum ChargeCodeActivity {
-  General = 1,
-  Project = 2,
-  Quote = 3,
-  Service = 4,
 }
 
 // Enum for specifying the sortable columns in charge code requests
