@@ -22,7 +22,7 @@ import { SortDirection } from '../../../models/common/sort-direction';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { HQRole } from '../../../enums/hqrole';
-import { QuoteStatus } from '../../../models/common/quote-status';
+import { ProjectStatus } from '../../../enums/project-status';
 
 @Component({
   selector: 'hq-client-quote-list',
@@ -135,7 +135,7 @@ export class ClientQuoteListComponent {
     }
     this.page.setValue(1);
   }
-  getQuoteStatusString(status: QuoteStatus): string {
-    return QuoteStatus[status];
+  getProjectStatusString(status: ProjectStatus): string {
+    return ProjectStatus[status];
   }
 }

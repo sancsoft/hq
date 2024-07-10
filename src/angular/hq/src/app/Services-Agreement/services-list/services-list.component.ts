@@ -21,9 +21,9 @@ import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { QuoteStatus } from '../../models/common/quote-status';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
+import { ProjectStatus } from '../../enums/project-status';
 
 @Component({
   selector: 'hq-services-list',
@@ -120,8 +120,8 @@ export class ServicesListComponent {
     this.page.setValue(page);
   }
 
-  getQuoteStatusString(status: QuoteStatus): string {
-    return QuoteStatus[status];
+  getProjectStatusString(status: ProjectStatus): string {
+    return ProjectStatus[status];
   }
 
   onSortClick(sortColumn: SortColumn) {

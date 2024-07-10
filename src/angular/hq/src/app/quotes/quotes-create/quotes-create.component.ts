@@ -14,9 +14,9 @@ import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { HQService } from '../../services/hq.service';
-import { QuoteStatus } from '../../models/common/quote-status';
 import { ToastService } from '../../services/toast.service';
 import { localISODate } from '../../common/functions/local-iso-date';
+import { ProjectStatus } from '../../enums/project-status';
 
 interface quoteFormGroup {
   clientId: FormControl<string>;
@@ -42,7 +42,7 @@ interface quoteFormGroup {
 export class QuotesCreateComponent {
   modalOpen$ = new BehaviorSubject<boolean>(false);
   selectedQuote$ = new Observable<string>();
-  quoteStatus = QuoteStatus;
+  quoteStatus = ProjectStatus;
   quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
 
   apiErrors: string[] = [];

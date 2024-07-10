@@ -25,8 +25,8 @@ import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
+import { ProjectStatus } from '../../enums/project-status';
 
-import { QuoteStatus } from '../../models/common/quote-status';
 @Component({
   selector: 'hq-quotes-list',
   standalone: true,
@@ -135,7 +135,7 @@ export class QuotesListComponent {
     }
     this.page.setValue(1);
   }
-  getQuoteStatusString(status: QuoteStatus): string {
-    return QuoteStatus[status];
+  getProjectStatusString(status: ProjectStatus): string {
+    return ProjectStatus[status];
   }
 }

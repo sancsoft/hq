@@ -126,7 +126,7 @@
         <td class="border-b border-black py-2">{{ quote.chargeCode }}</td>
         <td class="border-b border-black py-2">$ {{ quote.value ?? "0.0" }}</td>
         <td class="border-b border-black py-2">
-          {{ getQuoteStatusString(quote.status) }}
+          {{ getProjectStatusString(quote.status) }}
         </td>
         <td class="border-b border-black py-2">
           {{ quote.date ?? "mm/dd/yyyy" }}

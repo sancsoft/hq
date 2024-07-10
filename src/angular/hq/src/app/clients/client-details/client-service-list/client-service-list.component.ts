@@ -20,9 +20,9 @@ import { PaginatorComponent } from '../../../common/paginator/paginator.componen
 import { ClientDetailsService } from '../../client-details.service';
 import { SortColumn } from '../../../models/Services/get-services-v1';
 import { SortDirection } from '../../../models/common/sort-direction';
-import { QuoteStatus } from '../../../models/common/quote-status';
 import { HQRole } from '../../../enums/hqrole';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
+import { ProjectStatus } from '../../../enums/project-status';
 
 @Component({
   selector: 'hq-client-service-list',
@@ -121,8 +121,8 @@ export class ClientServiceListComponent {
     this.page.setValue(page);
   }
 
-  getQuoteStatusString(status: QuoteStatus): string {
-    return QuoteStatus[status];
+  getProjectStatusString(status: ProjectStatus): string {
+    return ProjectStatus[status];
   }
 
   onSortClick(sortColumn: SortColumn) {
