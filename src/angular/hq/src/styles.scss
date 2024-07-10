@@ -54,6 +54,21 @@ body {
   hr {
     @apply mb-[1rem];
   }
+  table {
+    @apply w-full my-2;
+  }
+  th {
+    @apply bg-blue-900 border-steel-blue-600 border-y p-2 text-left;
+  }
+  tbody {
+    @apply p-5;
+  }
+  tr {
+    @apply even:bg-gray-850 odd:bg-black-alt;
+  }
+  tr td {
+    @apply border-b border-black p-2 text-left;
+  }
 }
 
 @-moz-document url-prefix() {
