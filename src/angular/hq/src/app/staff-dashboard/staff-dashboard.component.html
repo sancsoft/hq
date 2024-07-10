@@ -3,50 +3,34 @@
     <div class="text-4xl text-white">
       {{ (staffDashboardService.time$ | async)?.staffName || "-" }}
     </div>
+
     <div class="flex space-x-8 p-4">
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          HRS THIS WEEK
-        </div>
-        <p class="text-right">
-          {{
-            (staffDashboardService.time$ | async)?.hoursThisWeek?.toFixed(2) ||
-              "-"
-          }}
-        </p>
-      </div>
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          HRS LAST WEEK
-        </div>
-        <p class="text-right">
-          {{
-            (staffDashboardService.time$ | async)?.hoursLastWeek?.toFixed(2) ||
-              "-"
-          }}
-        </p>
-      </div>
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          HRS THIS MONTH
-        </div>
-        <p class="text-right">
-          {{
-            (staffDashboardService.time$ | async)?.hoursThisMonth?.toFixed(2) ||
-              "-"
-          }}
-        </p>
-      </div>
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          VACATION
-        </div>
-        <p class="text-right">
-          {{
-            (staffDashboardService.time$ | async)?.vacation?.toFixed(2) || "-"
-          }}
-        </p>
-      </div>
+      <hq-stat-display
+        [title]="'HRS THIS WEEK'"
+        [value]="(staffDashboardService.time$ | async)?.hoursThisWeek"
+        [fallback]="'-'"
+        [large]="false"
+      ></hq-stat-display>
+      <hq-stat-display
+        [title]="'HRS LAST WEEK'"
+        [value]="(staffDashboardService.time$ | async)?.hoursLastWeek"
+        [fallback]="'-'"
+        [large]="false"
+      ></hq-stat-display>
+
+      <hq-stat-display
+        [title]="'HRS THIS MONTH'"
+        [value]="(staffDashboardService.time$ | async)?.hoursThisMonth"
+        [fallback]="'-'"
+        [large]="false"
+      ></hq-stat-display>
+
+      <hq-stat-display
+        [title]="'VACATION'"
+        [value]="(staffDashboardService.time$ | async)?.vacation"
+        [fallback]="'-'"
+        [large]="false"
+      ></hq-stat-display>
     </div>
   </div>
 </div>
@@ -54,28 +38,19 @@
   <div class="flex items-end gap-[20px]">
     <hq-staff-dashboard-search-filter />
     <div class="inline-flex gap-20 ml-20">
-      <div class="text-white">
-        <label for="Total hours" class="uppercase font-bold text-xs"
-          >Total Hours</label
-        >
-        <div class="text-right font-rajdhani font-semibold text-3xl">
-          {{
-            (staffDashboardService.time$ | async)?.totalHours?.toFixed(2) || "-"
-          }}
-        </div>
-      </div>
+      <hq-stat-display
+        [title]="'Total Hours'"
+        [value]="(staffDashboardService.time$ | async)?.totalHours"
+        [fallback]="'-'"
+        [large]="true"
+      ></hq-stat-display>
       <!-- Billable Hours Display -->
-      <div class="text-white">
-        <label for="BillableHours" class="uppercase font-bold text-xs"
-          >Billable Hours</label
-        >
-        <div class="text-right font-rajdhani font-semibold text-3xl">
-          {{
-            (staffDashboardService.time$ | async)?.billableHours?.toFixed(2) ||
-              "-"
-          }}
-        </div>
-      </div>
+      <hq-stat-display
+        [title]="'Billable Hours'"
+        [value]="(staffDashboardService.time$ | async)?.billableHours"
+        [fallback]="'-'"
+        [large]="true"
+      ></hq-stat-display>
     </div>
   </div>
 </div>
