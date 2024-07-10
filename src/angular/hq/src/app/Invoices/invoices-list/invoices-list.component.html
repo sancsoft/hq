@@ -89,7 +89,7 @@
   </thead>
   <tbody>
     @if ((invoices$ | async)?.length === 0) {
-      <td colspan="6">
+      <td colspan="6" class="bg-black-alt">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
     }
