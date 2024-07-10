@@ -17,12 +17,6 @@ import {
 import { HQService } from '../../services/hq.service';
 import { SortColumn } from '../../models/staff-members/get-staff-member-v1';
 
-export enum ActivityName {
-  Support = 0,
-  Development = 1,
-  Todo = 2,
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -34,7 +28,6 @@ export class TimeService {
   search = new FormControl<string | null>('');
   roaster = new FormControl<string | null>('');
 
-  activityName = new FormControl<ActivityName>(ActivityName.Development);
   itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
   staffMember = new FormControl<string | null>(null);
@@ -50,7 +43,6 @@ export class TimeService {
   startDate = new FormControl<Date | null>(null);
   endDate = new FormControl<Date | null>(null);
 
-  ActivityName = ActivityName;
   Period = Period;
 
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
@@ -62,7 +54,6 @@ export class TimeService {
   showStartDate$ = new BehaviorSubject<boolean>(false);
   showEndDate$ = new BehaviorSubject<boolean>(false);
 
-  showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
 
   clientId$ = this.client.valueChanges.pipe(startWith(this.client.value));
@@ -92,7 +83,6 @@ export class TimeService {
 
   resetFilter() {
     this.search.setValue('');
-    this.activityName.setValue(ActivityName.Development);
     this.staffMember.setValue(null);
     this.roaster.setValue('');
     this.isSubmitted.setValue(null);
@@ -118,13 +108,6 @@ export class TimeService {
   }
   hideProjectStatus() {
     this.showProjectStatus$.next(false);
-  }
-
-  showActivityName() {
-    this.showActivityName$.next(true);
-  }
-  hideActivityName() {
-    this.showActivityName$.next(false);
   }
   showRoaster() {
     this.showRoaster$.next(true);

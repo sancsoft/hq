@@ -6,12 +6,6 @@ import { GetPSRTimeRecordStaffV1 } from '../models/PSR/get-psr-time-v1';
 import { GetProjectActivityRecordV1 } from '../models/PSR/get-project-activity-v1';
 import { ProjectStatus } from '../enums/project-status';
 
-export enum ActivityName {
-  Support = 0,
-  Development = 1,
-  Todo = 2,
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -26,7 +20,6 @@ export class PsrService implements OnDestroy {
   roaster = new FormControl<string | null>('');
 
   projectStatus = new FormControl<ProjectStatus>(ProjectStatus.InProduction);
-  activityName = new FormControl<ActivityName>(ActivityName.Development);
   staffMember = new FormControl<string | null>(null);
   projectActivity = new FormControl<string | null>(null);
   isSubmitted = new FormControl<boolean | null>(null);
@@ -34,7 +27,6 @@ export class PsrService implements OnDestroy {
   endDate = new FormControl<Date | null>(null);
 
   ProjectStatus = ProjectStatus;
-  ActivityName = ActivityName;
 
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
   showSearch$ = new BehaviorSubject<boolean>(true);
@@ -45,7 +37,6 @@ export class PsrService implements OnDestroy {
   showStartDate$ = new BehaviorSubject<boolean>(true);
   showEndDate$ = new BehaviorSubject<boolean>(true);
 
-  showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
 
   constructor(private hqService: HQService) {}
@@ -53,7 +44,6 @@ export class PsrService implements OnDestroy {
   resetFilter() {
     this.search.setValue('');
     this.projectStatus.setValue(ProjectStatus.InProduction);
-    this.activityName.setValue(ActivityName.Development);
     this.staffMember.setValue(null);
     this.roaster.setValue('');
     this.isSubmitted.setValue(null);
@@ -79,13 +69,6 @@ export class PsrService implements OnDestroy {
   }
   hideProjectStatus() {
     this.showProjectStatus$.next(false);
-  }
-
-  showActivityName() {
-    this.showActivityName$.next(true);
-  }
-  hideActivityName() {
-    this.showActivityName$.next(false);
   }
   showRoaster() {
     this.showRoaster$.next(true);
