@@ -17,12 +17,12 @@ import { HQService } from '../../../services/hq.service';
 import { GetServicesRecordV1 } from '../../../models/Services/get-services-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
-import { ClientDetailsService } from '../../client-details.service';
 import { SortColumn } from '../../../models/Services/get-services-v1';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { HQRole } from '../../../enums/hqrole';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { ProjectStatus } from '../../../enums/project-status';
+import { ClientDetailsService } from '../client-details.service';
 
 @Component({
   selector: 'hq-client-service-list',
@@ -58,10 +58,8 @@ export class ClientServiceListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    public clientDetailService: ClientDetailsService,
   ) {
-    const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
-
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.chargeCode);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
@@ -86,7 +84,7 @@ export class ClientServiceListComponent {
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
-      clientId: clientId$,
+      clientId: clientDetailService.clientId$,
     });
 
     const response$ = request$.pipe(

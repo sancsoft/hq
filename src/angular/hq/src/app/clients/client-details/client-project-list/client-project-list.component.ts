@@ -18,10 +18,10 @@ import {
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
-import { ClientDetailsService } from '../../client-details.service';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { HQRole } from '../../../enums/hqrole';
+import { ClientDetailsService } from '../client-details.service';
 
 @Component({
   selector: 'hq-client-project-list',
@@ -57,13 +57,12 @@ export class ClientProjectListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    public clientDetailService: ClientDetailsService,
   ) {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value),
     );
 
-    const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ProjectName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
@@ -84,7 +83,7 @@ export class ClientProjectListComponent {
 
     const request$ = combineLatest({
       projectStatus: projectStatus$,
-      clientId: clientId$,
+      clientId: clientDetailService.clientId$,
       search: search$,
       skip: skip$,
       take: itemsPerPage$,

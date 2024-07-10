@@ -17,12 +17,12 @@ import { HQService } from '../../../services/hq.service';
 import { GetQuotesRecordV1 } from '../../../models/quotes/get-quotes-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
-import { ClientDetailsService } from '../../client-details.service';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { HQRole } from '../../../enums/hqrole';
 import { ProjectStatus } from '../../../enums/project-status';
+import { ClientDetailsService } from '../client-details.service';
 
 @Component({
   selector: 'hq-client-quote-list',
@@ -58,10 +58,8 @@ export class ClientQuoteListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    public clientDetailService: ClientDetailsService,
   ) {
-    const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
-
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.QuoteName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
@@ -87,7 +85,7 @@ export class ClientQuoteListComponent {
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
-      clientId: clientId$,
+      clientId: clientDetailService.clientId$,
     });
 
     const response$ = request$.pipe(
@@ -115,7 +113,7 @@ export class ClientQuoteListComponent {
     );
 
     this.clientDetailService.resetFilters();
-    this.clientDetailService.hideProjectStatus();
+    this.clientDetailService.showProjectStatus();
   }
 
   goToPage(page: number) {
