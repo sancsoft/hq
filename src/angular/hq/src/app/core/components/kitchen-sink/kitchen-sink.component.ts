@@ -11,6 +11,10 @@ import { CommonModule } from '@angular/common';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
 import { TextInputComponent } from '../text-input/text-input.component';
 import { ButtonComponent } from '../button/button.component';
+import { DateInputComponent } from '../date-input/date-input.component';
+import { SelectInputComponent } from '../select-input/select-input.component';
+import { StatLabelComponent } from '../stat-label/stat-label.component';
+import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 
 @Component({
   selector: 'hq-kitchen-sink',
@@ -24,6 +28,10 @@ import { ButtonComponent } from '../button/button.component';
     ValidationErrorDirective,
     TextInputComponent,
     ButtonComponent,
+    DateInputComponent,
+    SelectInputComponent,
+    StatLabelComponent,
+    ProgressBarComponent,
   ],
   templateUrl: './kitchen-sink.component.html',
 })
