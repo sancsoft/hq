@@ -101,4 +101,20 @@ Text: {{ text.value | json }}
       The minimum length is invalid.
     </ng-template>
   </hq-text-input>
+  <hq-text-input
+    [formControl]="text"
+    placeholder="Placeholder text here"
+    label="Text Input (Number)"
+    variant="secondary"
+    type="number"
+    [min]="0"
+    [step]="0.25"
+  >
+    <ng-template hqValidationError="required">
+      The text field is required.
+    </ng-template>
+    <ng-template hqValidationError="minlength">
+      The minimum length is invalid.
+    </ng-template>
+  </hq-text-input>
 </div>

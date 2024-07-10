@@ -34,7 +34,16 @@ export class TextInputComponent {
   variant: 'primary' | 'secondary' = 'primary';
 
   @Input()
-  type: 'text' | 'email' | 'password' = 'text';
+  type: 'text' | 'email' | 'password' | 'number' = 'text';
+
+  @Input()
+  step: number | null = null;
+
+  @Input()
+  min: number | null = null;
+
+  @Input()
+  max: number | null = null;
 
   @Input()
   public disabled = false;
