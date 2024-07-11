@@ -3,6 +3,7 @@ Search: {{ search.value | json }}
 Text: {{ text.value | json }}
 Date: {{ date.value | json }}
 Date using form group: {{ form.controls.date.value | json }}
+Select: {{ select.value | json }}
 
 
 </pre>
@@ -139,7 +140,12 @@ Date using form group: {{ form.controls.date.value | json }}
 </div>
 
 <div class="p-3">
-  <hq-select-input></hq-select-input>
+  <hq-select-input [formControl]="select">
+    <option [ngValue]="null" disabled>Please Select an option</option>
+    <option [ngValue]="'bmw'">BMW</option>
+    <option [ngValue]="'Toyota'">Toyota</option>
+    <option [ngValue]="'Ford'">Ford</option>
+  </hq-select-input>
 </div>
 
 <div class="p-3">
