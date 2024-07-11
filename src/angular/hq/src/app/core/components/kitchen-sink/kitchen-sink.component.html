@@ -146,10 +146,92 @@ Date using form group: {{ form.controls.date.value | json }}
   <hq-textarea-input></hq-textarea-input>
 </div>
 
-<div class="p-3">
-  <hq-stat-label></hq-stat-label>
+<div class="flex space-x-8 p-4">
+  <hq-stat-display
+    [title]="'HRS THIS WEEK'"
+    [value]="13.5"
+    [fallback]="'-'"
+    [large]="false"
+  ></hq-stat-display>
+  <hq-stat-display
+    [title]="'HRS THIS WEEK'"
+    [value]="13.5"
+    [fallback]="'-'"
+    [large]="true"
+  ></hq-stat-display>
 </div>
-
 <div class="p-3">
-  <hq-progress-bar></hq-progress-bar>
+  <hq-progress-bar
+    [text]="
+      report.status === ProjectStatus.Ongoing
+        ? (report.bookingHours | number: '0.2-2') +
+          ' hrs ' +
+          getPeriodName(report.bookingPeriod) +
+          ' to psr date '
+        : (report.totalHours | number: '0.2-2') + '  hrs total to psr date '
+    "
+    [percent]="report.bookingPercentComplete"
+    [tooltip]="
+      report.status === ProjectStatus.Ongoing
+        ? report.bookingStartDate + ' - ' + report.bookingEndDate
+        : report.totalStartDate + ' - ' + report.totalEndDate
+    "
+  ></hq-progress-bar>
+</div>
+<div class="p-3">
+  <hq-progress-bar
+    [text]="
+      second_report.status === ProjectStatus.Ongoing
+        ? (second_report.bookingHours | number: '0.2-2') +
+          ' hrs ' +
+          getPeriodName(second_report.bookingPeriod) +
+          ' to psr date '
+        : (second_report.totalHours | number: '0.2-2') +
+          '  hrs total to psr date '
+    "
+    [percent]="second_report.bookingPercentComplete"
+    [tooltip]="
+      second_report.status === ProjectStatus.Ongoing
+        ? second_report.bookingStartDate + ' - ' + second_report.bookingEndDate
+        : second_report.totalStartDate + ' - ' + second_report.totalEndDate
+    "
+  ></hq-progress-bar>
+</div>
+<div class="p-3">
+  <hq-progress-bar
+    [text]="
+      third_report.status === ProjectStatus.Ongoing
+        ? (third_report.bookingHours | number: '0.2-2') +
+          ' hrs ' +
+          getPeriodName(third_report.bookingPeriod) +
+          ' to psr date '
+        : (third_report.totalHours | number: '0.2-2') +
+          '  hrs total to psr date '
+    "
+    [percent]="third_report.bookingPercentComplete"
+    [tooltip]="
+      third_report.status === ProjectStatus.Ongoing
+        ? third_report.bookingStartDate + ' - ' + third_report.bookingEndDate
+        : third_report.totalStartDate + ' - ' + third_report.totalEndDate
+    "
+  ></hq-progress-bar>
+</div>
+<div class="p-3">
+  <hq-progress-bar
+    [text]="
+      fourth_report.status === ProjectStatus.Ongoing
+        ? (fourth_report.bookingHours | number: '0.2-2') +
+          ' hrs ' +
+          getPeriodName(fourth_report.bookingPeriod) +
+          ' to psr date '
+        : (fourth_report.totalHours | number: '0.2-2') +
+          '  hrs total to psr date '
+    "
+    [percent]="fourth_report.bookingPercentComplete"
+    [tooltip]="
+      fourth_report.status === ProjectStatus.Ongoing
+        ? fourth_report.bookingStartDate + ' - ' + fourth_report.bookingEndDate
+        : fourth_report.totalStartDate + ' - ' + third_report.totalEndDate
+    "
+  ></hq-progress-bar>
 </div>
