@@ -6,7 +6,7 @@ import { Observable, filter, map, switchMap } from 'rxjs';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { Period } from '../project-create/project-create.component';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
-import { PdfViewerComponent } from '../../common/pdf-viewer/pdf-viewer.component';
+import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
 
 @Component({
   selector: 'hq-project-details',

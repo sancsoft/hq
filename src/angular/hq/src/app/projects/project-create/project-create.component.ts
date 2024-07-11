@@ -1,4 +1,3 @@
-import { PdfViewerComponent } from './../../common/pdf-viewer/pdf-viewer.component';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import {
@@ -27,6 +26,7 @@ import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { localISODate } from '../../common/functions/local-iso-date';
+import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
 
 export enum Period {
   Week = 1,

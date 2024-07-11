@@ -8,7 +8,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
-import { PdfViewerComponent } from '../../common/pdf-viewer/pdf-viewer.component';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
@@ -17,6 +16,7 @@ import { HQService } from '../../services/hq.service';
 import { QuoteStatus } from '../../models/common/quote-status';
 import { ToastService } from '../../services/toast.service';
 import { localISODate } from '../../common/functions/local-iso-date';
+import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
 
 interface quoteFormGroup {
   clientId: FormControl<string>;
