@@ -1,21 +1,15 @@
 <div class="grid relative w-full" [ngStyle]="{ 'width.px': width }">
-  @if (formControl) {
-    <input
-      [formControl]="formControl"
-      class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-      type="date"
-      [readonly]="readonly"
-    />
-  } @else if (form) {
-    <ng-container [formGroup]="form">
-      <input
-        class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-        type="date"
-        [formControlName]="formControlName"
-        [readonly]="readonly"
-      />
-    </ng-container>
-  }
+  <input
+    #input
+    [id]="uniqueId"
+    [(ngModel)]="value"
+    [disabled]="disabled"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+    type="date"
+    [readonly]="readonly"
+  />
   @if (handleDateChange) {
     <button
       type="button"

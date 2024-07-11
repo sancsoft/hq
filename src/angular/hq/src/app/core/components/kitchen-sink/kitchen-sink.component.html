@@ -1,6 +1,10 @@
 <pre class="p-3 bg-black-alt">
 Search: {{ search.value | json }}
 Text: {{ text.value | json }}
+Date: {{ date.value | json }}
+Date using form group: {{ form.controls.date.value | json }}
+
+
 </pre>
 
 <div class="p-3 flex flex-row gap-2">
@@ -119,8 +123,19 @@ Text: {{ text.value | json }}
   </hq-text-input>
 </div>
 
+<!-- Form control -->
 <div class="p-3">
-  <hq-date-input></hq-date-input>
+  <hq-date-input [formControl]="date"></hq-date-input>
+</div>
+<!-- Form Group with click -->
+<div class="p-3">
+  <form [formGroup]="form">
+    <hq-date-input
+      [formControlName]="'date'"
+      (dateSelected)="clicked()"
+      [handleDateChange]="true"
+    ></hq-date-input>
+  </form>
 </div>
 
 <div class="p-3">

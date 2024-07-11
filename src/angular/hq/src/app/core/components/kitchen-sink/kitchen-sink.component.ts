@@ -3,6 +3,7 @@ import { SearchInputComponent } from '../search-input/search-input.component';
 import { FormLabelComponent } from '../form-label/form-label.component';
 import {
   FormControl,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -16,6 +17,7 @@ import { SelectInputComponent } from '../select-input/select-input.component';
 import { StatLabelComponent } from '../stat-label/stat-label.component';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { TextareaInputComponent } from '../textarea-input/textarea-input.component';
+import { localISODate } from '../../../common/functions/local-iso-date';
 
 @Component({
   selector: 'hq-kitchen-sink',
@@ -38,6 +40,28 @@ import { TextareaInputComponent } from '../textarea-input/textarea-input.compone
   templateUrl: './kitchen-sink.component.html',
 })
 export class KitchenSinkComponent {
+  public form = new FormGroup({
+    select: new FormControl<string | null>(null, {
+      validators: [Validators.required],
+    }),
+    textarea: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.minLength(3)],
+    }),
+    checkbox: new FormControl<boolean>(false),
+    radio: new FormControl<string | null>('option1'),
+    date: new FormControl<string | null>(localISODate(), {
+      validators: [Validators.required],
+    }),
+    search: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.minLength(3)],
+    }),
+    text: new FormControl<string | null>(null, {
+      validators: [Validators.required, Validators.minLength(3)],
+    }),
+  });
+  public date = new FormControl<string | null>(localISODate(), {
+    validators: [Validators.required],
+  });
   public search = new FormControl<string | null>(null, {
     validators: [Validators.required, Validators.minLength(3)],
   });
@@ -54,5 +78,8 @@ export class KitchenSinkComponent {
       this.search.disable();
       this.text.disable();
     }
+  }
+  clicked() {
+    console.log('Button clicked');
   }
 }
