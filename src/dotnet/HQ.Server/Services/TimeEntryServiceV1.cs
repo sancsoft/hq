@@ -356,6 +356,11 @@ namespace HQ.Server.Services
                 var isAcceptedTimeRequired = request.TimeAccepted.Value;
                 records = records.Where(t => isAcceptedTimeRequired ? t.Status == TimeStatus.Accepted : t.Status != TimeStatus.Accepted);
             }
+            if (request.TimeStatus.HasValue)
+            {
+                var timeStatus = request.TimeStatus.Value;
+                records = records.Where(t => t.Status == timeStatus);
+            }
 
 
             if (request.StartDate.HasValue)
