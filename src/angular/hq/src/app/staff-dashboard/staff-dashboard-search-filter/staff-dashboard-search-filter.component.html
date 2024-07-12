@@ -59,4 +59,55 @@
       </span>
     </div>
   </div>
+  <div class="w-full">
+    <label
+      for="period"
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+      >Time Status</label
+    >
+    <div class="grid relative w-full max-w-[220px]">
+      <select
+        id="status"
+        aria-label="Select Time Status"
+        [ngClass]="{
+          'text-gray-450 bg-gray-850 border-none cursor-not-allowed':
+            staffDashboardService.showAllRejectedTimes$ | async,
+          'bg-blue-900 border-steel-blue-600 hover:cursor-pointer':
+            (staffDashboardService.showAllRejectedTimes$ | async) === false,
+        }"
+        [formControl]="staffDashboardService.timeStatus"
+        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none font-medium row-start-1 col-start-1 border text-gray-100 h-[36px]"
+      >
+        <option [ngValue]="null" selected>All</option>
+        <option [ngValue]="staffDashboardService.Status.Unsubmitted">
+          Unsubmitted
+        </option>
+        <option [ngValue]="staffDashboardService.Status.Submitted">
+          Submitted
+        </option>
+        <option [ngValue]="staffDashboardService.Status.Accepted">
+          Accepted
+        </option>
+        <option [ngValue]="staffDashboardService.Status.Rejected">
+          Rejected
+        </option>
+        <option [ngValue]="staffDashboardService.Status.Resubmitted">
+          Resubmitted
+        </option>
+
+        <!-- <option [ngValue]="staffDashboardService.Period.Month">Month</option> -->
+      </select>
+      <span
+        [ngClass]="{
+          'text-gray-450 after:bg-gray-700':
+            staffDashboardService.showAllRejectedTimes$ | async,
+          'after:bg-gray-100':
+            (staffDashboardService.showAllRejectedTimes$ | async) === false,
+        }"
+        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
+      >
+        <i class="bi bi-arrow-down-short text-[24px]"></i>
+      </span>
+    </div>
+  </div>
 </div>
