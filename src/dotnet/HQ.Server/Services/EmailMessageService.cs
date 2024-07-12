@@ -85,6 +85,7 @@ namespace HQ.Server.Services
                 Heading = "Time Rejected",
                 Message = "Your time entry has been rejected. Please review and resubmit.",
                 ButtonLabel = "Open HQ",
+                StaffName = time.Staff.Name,
                 ButtonUrl = _options.CurrentValue.WebUrl
             };
 
@@ -126,8 +127,10 @@ namespace HQ.Server.Services
                 ReasonForRejection = time.RejectionNotes,
                 RejectedBy = time.RejectedBy?.Name,
                 Heading = "Time Resubmitted",
+                StaffName = time.Staff.Name,
                 Message = "A rejected time entry has been resubmitted.",
                 ButtonLabel = "View PSR",
+
                 ButtonUrl = buttonUrl
             };
 

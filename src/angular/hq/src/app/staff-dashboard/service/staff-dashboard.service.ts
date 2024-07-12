@@ -37,6 +37,8 @@ export class StaffDashboardService {
   });
 
   Period = Period;
+  Status = TimeStatus;
+
   canSubmit$: Observable<boolean>;
   time$: Observable<GetDashboardTimeV1Response>;
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;

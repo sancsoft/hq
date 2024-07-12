@@ -485,9 +485,23 @@
                 <div
                   class="flex justify-between flex-nowrap space-x-2 items-center"
                 >
+                  <div>
+                    <button type="button" (click)="showRejectionNotes(time.id)">
+                      <i
+                        [title]="time.rejectionNotes"
+                        class="bi bi-exclamation-diamond-fill text-yellow-550"
+                      ></i>
+                    </button>
+                  </div>
                   <!-- warning icon -->
                   <div>&nbsp;</div>
                   <div class="text-nowrap divide-x divide-teal-200">
+                    <button
+                      class="text-teal-200 hover:text-teal-300 uppercase pr-3"
+                      (click)="reject(time.id)"
+                    >
+                      reject
+                    </button>
                     <button
                       class="text-teal-200 hover:text-teal-300 uppercase pl-3"
                       (click)="acceptTime(time.id)"

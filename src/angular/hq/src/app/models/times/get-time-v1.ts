@@ -16,7 +16,7 @@ export interface GetTimeRequestV1 {
   projectId?: string | null;
   clientId?: string | null;
   invoiced?: boolean | null;
-  TimeAccepted?: boolean | null;
+  TimeStatus?: TimeStatus | null;
   activityId: string | null;
 }
 
