@@ -53,6 +53,14 @@ Select: {{ select.value | json }}
 </div>
 
 <div class="p-3">
+  <hq-dual-panel >
+    <div left-header>
+      <div>LEFT</div>
+    </div>
+    <div right-header>
+      <div>RIGHT</div>
+    </div>
+  </hq-dual-panel>
   <hq-text-input
     [formControl]="text"
     placeholder="Placeholder text here"
@@ -149,7 +157,7 @@ Select: {{ select.value | json }}
 </div>
 
 <div class="p-3">
-  <hq-textarea-input></hq-textarea-input>
+  <hq-textarea-input [rows]="10"></hq-textarea-input>
 </div>
 
 <div class="flex space-x-8 p-4">

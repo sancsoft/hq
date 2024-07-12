@@ -1,12 +1,18 @@
 <div class="grid relative w-full" [ngStyle]="{ 'width.px': width }">
   <input
+    [ngClass]="{
+      'border-red-700 focus:border-red-700':
+        ngControl?.errors && ngControl?.touched,
+      'focus:border-white placeholder:text-gray-100':
+        !ngControl?.errors || !ngControl?.touched,
+    }"
     #input
     [id]="uniqueId"
     [(ngModel)]="value"
     [disabled]="disabled"
     (focus)="onFocus()"
     (blur)="onBlur()"
-    class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+    class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border bg-blue-900 rounded h-[30px]"
     type="date"
     [readonly]="readonly"
   />
