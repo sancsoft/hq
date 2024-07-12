@@ -489,6 +489,12 @@
                   <div>&nbsp;</div>
                   <div class="text-nowrap divide-x divide-teal-200">
                     <button
+                      class="text-teal-200 hover:text-teal-300 uppercase pr-3"
+                      (click)="reject(time.id)"
+                    >
+                      reject
+                    </button>
+                    <button
                       class="text-teal-200 hover:text-teal-300 uppercase pl-3"
                       (click)="acceptTime(time.id)"
                     >
