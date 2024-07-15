@@ -20,7 +20,7 @@ export interface ChargeCodeViewModel {
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
-    TabComponent
+    TabComponent,
   ],
   templateUrl: './psrdetails.component.html',
 })

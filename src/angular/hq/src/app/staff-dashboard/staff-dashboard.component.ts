@@ -31,7 +31,7 @@ import { StatDisplayComponent } from '../core/components/stat-display/stat-displ
     StaffDashboardTimeEntryComponent,
     StaffDashboardSearchFilterComponent,
     StaffDashboardDateRangeComponent,
-    StatDisplayComponent
+    StatDisplayComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',

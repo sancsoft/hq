@@ -13,9 +13,8 @@ import { TabComponent } from '../../core/components/tab/tab.component';
     RouterLinkActive,
     ClientDetailsSummaryComponent,
     ClientDetailsSearchFilterComponent,
-    TabComponent
+    TabComponent,
   ],
   templateUrl: './client-details.component.html',
-  // providers: [ClientDetailsService]
 })
 export class ClientDetailsComponent {}
