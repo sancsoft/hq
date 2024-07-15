@@ -15,7 +15,6 @@ import { TextInputComponent } from '../text-input/text-input.component';
 import { ButtonComponent } from '../button/button.component';
 import { DateInputComponent } from '../date-input/date-input.component';
 import { SelectInputComponent } from '../select-input/select-input.component';
-import { StatLabelComponent } from '../stat-label/stat-label.component';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { TextareaInputComponent } from '../textarea-input/textarea-input.component';
 import { localISODate } from '../../../common/functions/local-iso-date';
@@ -39,7 +38,6 @@ import { SelectInputOptionDirective } from '../../directives/select-input-option
     ButtonComponent,
     DateInputComponent,
     SelectInputComponent,
-    StatLabelComponent,
     ProgressBarComponent,
     TextareaInputComponent,
     StatDisplayComponent,

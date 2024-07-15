@@ -163,18 +163,12 @@ Select: {{ select.value | json }}
 </div>
 
 <div class="flex space-x-8 p-4">
-  <hq-stat-display
-    [title]="'HRS THIS WEEK'"
-    [value]="13.5"
-    [fallback]="'-'"
-    [large]="false"
-  ></hq-stat-display>
-  <hq-stat-display
-    [title]="'HRS THIS WEEK'"
-    [value]="13.5"
-    [fallback]="'-'"
-    [large]="true"
-  ></hq-stat-display>
+  <hq-stat-display [title]="'HRS THIS WEEK'" [large]="false"
+    >13.50</hq-stat-display
+  >
+  <hq-stat-display [title]="'HRS THIS WEEK'" [large]="true"
+    >30.00</hq-stat-display
+  >
 </div>
 <div class="p-3">
   <hq-progress-bar

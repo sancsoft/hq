@@ -12,15 +12,5 @@ export class StatDisplayComponent {
   title?: string;
 
   @Input()
-  value?: number | null;
-
-  @Input()
-  fallback: string = '-';
-
-  @Input()
   large: boolean = false;
-
-  get displayValue(): string | undefined {
-    return this.value !== null ? this.value?.toFixed(2) : '-';
-  }
 }
