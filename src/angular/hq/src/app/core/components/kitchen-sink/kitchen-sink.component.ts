@@ -42,7 +42,7 @@ import { DualPanelComponent } from '../dual-panel/dual-panel.component';
     ProgressBarComponent,
     TextareaInputComponent,
     StatDisplayComponent,
-    DualPanelComponent
+    DualPanelComponent,
   ],
   templateUrl: './kitchen-sink.component.html',
 })
