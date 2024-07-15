@@ -22,6 +22,7 @@ import { localISODate } from '../../../common/functions/local-iso-date';
 import { ProjectStatus } from '../../../clients/client-details.service';
 import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
 import { Period } from '../../../models/times/get-time-v1';
+import { DualPanelComponent } from '../dual-panel/dual-panel.component';
 
 @Component({
   selector: 'hq-kitchen-sink',
@@ -41,6 +42,7 @@ import { Period } from '../../../models/times/get-time-v1';
     ProgressBarComponent,
     TextareaInputComponent,
     StatDisplayComponent,
+    DualPanelComponent
   ],
   templateUrl: './kitchen-sink.component.html',
 })
