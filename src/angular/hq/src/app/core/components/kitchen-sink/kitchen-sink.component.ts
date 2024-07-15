@@ -69,7 +69,7 @@ export class KitchenSinkComponent {
   public date = new FormControl<string | null>(localISODate(), {
     validators: [Validators.required],
   });
-  public select = new FormControl<string | null>(null, {});
+  public select = new FormControl<string | null>('Toyota', {});
   public search = new FormControl<string | null>(null, {
     validators: [Validators.required, Validators.minLength(3)],
   });

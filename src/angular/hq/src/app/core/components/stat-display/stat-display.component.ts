@@ -10,10 +10,13 @@ import { Component, Input } from '@angular/core';
 export class StatDisplayComponent {
   @Input()
   title?: string;
+
   @Input()
   value?: number | null;
+
   @Input()
   fallback: string = '-';
+
   @Input()
   large: boolean = false;
 

@@ -22,11 +22,16 @@ import { generateUniqueInputId } from '../../functions/generate-unique-input-id'
 export class TextareaInputComponent {
   @ViewChild('input')
   input?: ElementRef<HTMLInputElement>;
+
   @Input()
-  placeholder: string = 'Optional Notes';
-  @Input() rows: number = 4;
+  placeholder: string | null = null;
+
+  @Input()
+  rows: number = 4;
+
   @Input()
   public disabled = false;
+
   @ContentChildren(ValidationErrorDirective)
   validationErrors!: QueryList<ValidationErrorDirective>;
 

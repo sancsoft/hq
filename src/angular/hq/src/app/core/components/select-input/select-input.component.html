@@ -12,9 +12,7 @@
     (keydown.enter)="onEnter($event.target)"
     class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
   >
-    @defer {
-      <ng-content></ng-content>
-    }
+    <ng-content></ng-content>
   </select>
   <span
     class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"

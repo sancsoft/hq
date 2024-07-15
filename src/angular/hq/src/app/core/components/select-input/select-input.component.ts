@@ -56,6 +56,7 @@ export class SelectInputComponent {
   private _value: string | null = null;
 
   set value(value: string | null) {
+    console.log('onchange', value);
     this._value = value;
     this.onChange(value);
   }

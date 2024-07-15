@@ -10,8 +10,10 @@ import { CommonModule } from '@angular/common';
 export class ProgressBarComponent {
   @Input()
   tooltip: string = '';
+
   @Input()
   text: string | null = '';
+
   @Input()
   percent: number | null | undefined = 0;
 

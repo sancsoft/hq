@@ -24,16 +24,22 @@ import { generateUniqueInputId } from '../../functions/generate-unique-input-id'
 export class DateInputComponent {
   @ViewChild('input')
   input?: ElementRef<HTMLInputElement>;
+
   @Input()
   readonly: boolean = false;
+
   @Input()
   disabled: boolean = false;
+
   @Input()
   handleDateChange: boolean = false;
+
   @Input()
   form?: FormGroup;
+
   @Input()
   width?: number;
+
   @Output()
   dateSelected = new EventEmitter<void>();
 
