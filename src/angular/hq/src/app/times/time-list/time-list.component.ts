@@ -122,8 +122,8 @@ export class TimeListComponent {
     const invoiced$ = this.timeListService.invoiced.valueChanges.pipe(
       startWith(this.timeListService.invoiced.value),
     );
-    const accepted$ = this.timeListService.timeAccepted.valueChanges.pipe(
-      startWith(this.timeListService.timeAccepted.value),
+    const timeStatus$ = this.timeListService.timeStatus.valueChanges.pipe(
+      startWith(this.timeListService.timeStatus.value),
     );
 
     this.timeRequest$ = combineLatest({
@@ -139,7 +139,7 @@ export class TimeListComponent {
       endDate: endDate$,
       period: period$,
       invoiced: invoiced$,
-      TimeAccepted: accepted$,
+      timeStatus: timeStatus$,
       sortDirection: this.sortDirection$,
     }).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 

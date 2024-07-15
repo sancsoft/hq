@@ -5,6 +5,7 @@
     <text>---</text>
     <text></text>
 }
+
 @if (!String.IsNullOrEmpty(Model.Message))
 {
     <text>@Model.Message</text>
@@ -12,7 +13,7 @@
 }
 
 Details:
-
+Staff: @Model.StaffName
 Date: @Model.Date
 Hours: @Model.Hours.ToString("0.00")
 Charge Code: @Model.ChargeCode

@@ -16,6 +16,7 @@ import {
 } from '../../models/times/get-time-v1';
 import { HQService } from '../../services/hq.service';
 import { SortColumn } from '../../models/staff-members/get-staff-member-v1';
+import { TimeStatus } from '../../models/common/time-status';
 
 export enum ActivityName {
   Support = 0,
@@ -45,7 +46,7 @@ export class TimeService {
   projectActivity = new FormControl<string | null>(null);
   isSubmitted = new FormControl<boolean | null>(null);
   invoiced = new FormControl<boolean | null>(null);
-  timeAccepted = new FormControl<boolean | null>(null);
+  timeStatus = new FormControl<TimeStatus | null>(null);
 
   startDate = new FormControl<Date | null>(null);
   endDate = new FormControl<Date | null>(null);
@@ -66,6 +67,7 @@ export class TimeService {
   showRoaster$ = new BehaviorSubject<boolean>(true);
 
   clientId$ = this.client.valueChanges.pipe(startWith(this.client.value));
+  Status = TimeStatus;
 
   constructor(private hqService: HQService) {
     this.staffMembers$ = this.hqService

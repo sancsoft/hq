@@ -11,7 +11,6 @@ import {
   combineLatest,
   debounceTime,
   map,
-  tap,
   skip,
   startWith,
   switchMap,
@@ -32,6 +31,7 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
 import { GetPrevPsrResponseV1 } from '../../models/PSR/get-previous-PSR-v1';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'hq-psrreport',
@@ -107,6 +107,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     private psrService: PsrService,
     private modalService: ModalService,
     private oidcSecurityService: OidcSecurityService,
+    private toastService: ToastService,
   ) {
     this.psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId']),
@@ -176,7 +177,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     request$
       .pipe(
         debounceTime(1000),
-        tap(() => (this.savedStatus = 'loading')),
+        // tap(() => (this.savedStatus = 'loading')),
         switchMap((request) =>
           this.hqService.updateProjectStatusReportMarkdownV1(request),
         ),
@@ -184,9 +185,16 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       )
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe({
-        next: () => (this.savedStatus = 'success'),
+        next: () => {
+          // this.savedStatus = 'success';
+          this.toastService.show('Success', 'PSR Report Saved Successfully');
+        },
         error: async () => {
-          this.savedStatus = 'fail';
+          // this.savedStatus = 'fail';
+          this.toastService.show(
+            'Error',
+            'There was an error saving the PM report.',
+          );
           await firstValueFrom(
             this.modalService.alert(
               'Error',
