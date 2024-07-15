@@ -1,6 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { ProjectStatus } from '../../../clients/client-details.service';
-import { Period } from '../../../models/times/get-time-v1';
 import { CommonModule } from '@angular/common';
 
 @Component({

@@ -19,7 +19,6 @@ import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/s
 import { TimeStatus } from '../models/common/time-status';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HttpErrorResponse } from '@angular/common/http';
-import { StatLabelComponent } from '../core/components/stat-label/stat-label.component';
 import { StatDisplayComponent } from '../core/components/stat-display/stat-display.component';
 
 @Component({

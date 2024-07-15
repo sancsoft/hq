@@ -11,15 +11,7 @@ import {
   Optional,
   Self,
 } from '@angular/core';
-import {
-  Form,
-  FormControl,
-  FormControlName,
-  FormGroup,
-  FormsModule,
-  NgControl,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormGroup, FormsModule, NgControl } from '@angular/forms';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
 import { generateUniqueInputId } from '../../functions/generate-unique-input-id';
 
