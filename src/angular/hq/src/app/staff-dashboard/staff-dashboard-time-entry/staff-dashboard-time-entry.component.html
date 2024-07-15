@@ -388,10 +388,14 @@
           (keydown.enter)="onEnter($event.target)"
         />
       </td>
-      <td class="border-b border-black py-2 pl-2 pr-5 text-center">
+      <td class="border-b border-black py-2 pl-2 pr-5">
         @if (time?.rejectionNotes) {
           <div>
-            <button type="button" (click)="showRejectionNotes()">
+            <button
+              type="button"
+              class="h-[30px] px-2 py-2 rounded w-full"
+              (click)="showRejectionNotes()"
+            >
               <i
                 [title]="time?.rejectionNotes"
                 class="bi bi-exclamation-diamond-fill text-yellow-550"
