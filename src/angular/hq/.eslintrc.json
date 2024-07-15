@@ -1,6 +1,9 @@
 {
   "root": true,
   "ignorePatterns": ["projects/**/*"],
+  "parserOptions": {
+    "project": ["tsconfig.(app|spec).json"]
+  },
   "overrides": [
     {
       "files": ["*.ts"],
