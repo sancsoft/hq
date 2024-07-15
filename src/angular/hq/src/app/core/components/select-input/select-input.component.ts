@@ -12,6 +12,7 @@ import {
 import { FormsModule, NgControl } from '@angular/forms';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
 import { generateUniqueInputId } from '../../functions/generate-unique-input-id';
+import { SelectInputOptionDirective } from '../../directives/select-input-option.directive';
 
 @Component({
   selector: 'hq-select-input',
@@ -19,7 +20,7 @@ import { generateUniqueInputId } from '../../functions/generate-unique-input-id'
   imports: [CommonModule, FormsModule],
   templateUrl: './select-input.component.html',
 })
-export class SelectInputComponent {
+export class SelectInputComponent<T> {
   @ViewChild('select')
   select?: ElementRef<HTMLInputElement>;
 
@@ -47,6 +48,9 @@ export class SelectInputComponent {
   @Input()
   public disabled = false;
 
+  @ContentChildren(SelectInputOptionDirective)
+  options!: QueryList<SelectInputOptionDirective<T>>;
+
   @ContentChildren(ValidationErrorDirective)
   validationErrors!: QueryList<ValidationErrorDirective>;
 
@@ -56,7 +60,6 @@ export class SelectInputComponent {
   private _value: string | null = null;
 
   set value(value: string | null) {
-    console.log('onchange', value);
     this._value = value;
     this.onChange(value);
   }

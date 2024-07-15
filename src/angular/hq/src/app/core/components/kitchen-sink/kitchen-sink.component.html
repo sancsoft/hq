@@ -149,10 +149,12 @@ Select: {{ select.value | json }}
 
 <div class="p-3">
   <hq-select-input [formControl]="select">
-    <option [ngValue]="null">Please Select an option</option>
-    <option [ngValue]="'bmw'">BMW</option>
-    <option [ngValue]="'Toyota'">Toyota</option>
-    <option [ngValue]="'Ford'">Ford</option>
+    <ng-template [hqSelectInputOption]="null"
+      >Please Select an option</ng-template
+    >
+    <ng-template [hqSelectInputOption]="'bmw'">BMW</ng-template>
+    <ng-template [hqSelectInputOption]="'Toyota'">Toyota</ng-template>
+    <ng-template [hqSelectInputOption]="'Ford'">Ford</ng-template>
   </hq-select-input>
 </div>
 
