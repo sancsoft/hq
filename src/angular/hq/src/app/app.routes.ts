@@ -16,6 +16,15 @@ export const routes: Routes = [
       import('./callback.component').then((m) => m.CallbackComponent),
   },
   {
+    path: 'kitchen-sink',
+    title: 'Kitchen Sink',
+    canActivate: [AutoLoginPartialRoutesGuard],
+    loadComponent: () =>
+      import('./core/components/kitchen-sink/kitchen-sink.component').then(
+        (m) => m.KitchenSinkComponent,
+      ),
+  },
+  {
     path: 'chargecodes',
     title: 'Charge Codes',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],

@@ -1,0 +1,27 @@
+@if (percent && percent > 1) {
+  <div
+    [class]="'w-full  bg-gray-450  border-red-950 border h-[10px]'"
+    [attr.title]="tooltip"
+  >
+    <div
+      [class]="'h-[8px] bg-red-950'"
+      [style.width.%]="Math.min(percent - 1, 1) * 100"
+    ></div>
+  </div>
+} @else {
+  <div
+    [class]="'w-full  bg-gray-500 border-white border h-[10px]'"
+    [attr.title]="tooltip"
+  >
+    <div
+      [class]="'h-[8px] bg-white'"
+      [style.width.%]="(percent ?? 0) * 100"
+    ></div>
+  </div>
+}
+<div class="border-b border-black py-2 pe-2">
+  <div class="flex justify-between gap-2 text-xs text-gray-300">
+    <span class="lowercase">{{ text }}</span>
+    <span>{{ percent !== null ? (percent | percent) : "-" }}</span>
+  </div>
+</div>
