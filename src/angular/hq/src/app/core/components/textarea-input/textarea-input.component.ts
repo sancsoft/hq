@@ -24,7 +24,7 @@ export class TextareaInputComponent {
   input?: ElementRef<HTMLInputElement>;
 
   @Input()
-  placeholder: string | null = null;
+  placeholder: string = '';
 
   @Input()
   rows: number = 4;
