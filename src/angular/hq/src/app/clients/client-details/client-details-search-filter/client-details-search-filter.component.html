@@ -1,63 +1,63 @@
 <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
-  <!-- search bar -->
-  <div
-    class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]"
-  >
-    <span
-      class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100"
-    >
-      <i class="bi bi-search text-[14px]"></i>
-    </span>
-    <input
-      type="text"
-      [formControl]="clientDetailService.search"
-      class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
-      name=""
-    />
-  </div>
+  <hq-search-input [formControl]="clientDetailService.search"></hq-search-input>
 
   <!-- select dropdown -->
   @if (clientDetailService.showProjectStatus$ | async) {
-    <div class="grid relative w-full max-w-[220px]">
-      <select
-        [formControl]="clientDetailService.projectStatus"
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+    <hq-select-input [formControl]="clientDetailService.projectStatus">
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      <ng-template
+        [hqSelectInputOption]="clientDetailService.ProjectStatus.Unknown"
       >
-        <option [ngValue]="null">All</option>
-        <option [ngValue]="clientDetailService.ProjectStatus.Unknown">
-          Unknown
-        </option>
-        <option [ngValue]="clientDetailService.ProjectStatus.Draft">
-          Draft
-        </option>
-        <option [ngValue]="clientDetailService.ProjectStatus.WaitingForSale">
-          Waiting For Sale
-        </option>
-        <option [ngValue]="clientDetailService.ProjectStatus.WaitingForClient">
-          Waiting For Client
-        </option>
-        <option [ngValue]="clientDetailService.ProjectStatus.WaitingForStaff">
-          Waiting For Staff
-        </option>
-        <option [ngValue]="clientDetailService.ProjectStatus.InProduction">
-          In Production
-        </option>
-        <option [ngValue]="clientDetailService.ProjectStatus.Ongoing">
-          Ongoing
-        </option>
-        <option [ngValue]="clientDetailService.ProjectStatus.Completed">
-          Completed
-        </option>
-        <option [ngValue]="clientDetailService.ProjectStatus.Closed">
-          Closed
-        </option>
-        <option [ngValue]="clientDetailService.ProjectStatus.Lost">Lost</option>
-      </select>
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+        Unknown
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="clientDetailService.ProjectStatus.Draft"
       >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div>
+        Draft
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="clientDetailService.ProjectStatus.WaitingForSale"
+      >
+        Waiting For Sale
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="
+          clientDetailService.ProjectStatus.WaitingForClient
+        "
+      >
+        Waiting For Client
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="
+          clientDetailService.ProjectStatus.WaitingForStaff
+        "
+      >
+        Waiting For Staff
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="clientDetailService.ProjectStatus.InProduction"
+      >
+        In Production
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="clientDetailService.ProjectStatus.Ongoing"
+      >
+        Ongoing
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="clientDetailService.ProjectStatus.Completed"
+      >
+        Completed
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="clientDetailService.ProjectStatus.Closed"
+      >
+        Closed
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="clientDetailService.ProjectStatus.Lost"
+        >Lost</ng-template
+      >
+    </hq-select-input>
   }
 </div>
