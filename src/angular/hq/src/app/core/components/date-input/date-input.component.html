@@ -1,0 +1,37 @@
+<div class="grid relative w-full" [ngStyle]="{ 'width.px': width }">
+  <input
+    [ngClass]="{
+      'border-red-700 focus:border-red-700':
+        ngControl?.errors && ngControl?.touched,
+      'focus:border-white placeholder:text-gray-100':
+        !ngControl?.errors || !ngControl?.touched,
+    }"
+    #input
+    [id]="uniqueId"
+    [(ngModel)]="value"
+    [disabled]="disabled"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border bg-blue-900 rounded h-[30px] placeholder:text-gray-450"
+    type="date"
+    [readonly]="readonly"
+  />
+  @if (handleDateChange) {
+    <button
+      type="button"
+      [tabindex]="-1"
+      (click)="onDateSelected()"
+      title="Change date"
+      [disabled]="disabled"
+      class="flex items-center justify-center h-full pointer-events-auto z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+    >
+      <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
+    </button>
+  } @else {
+    <span
+      class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+    >
+      <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
+    </span>
+  }
+</div>

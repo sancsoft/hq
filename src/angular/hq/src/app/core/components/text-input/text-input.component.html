@@ -1,0 +1,39 @@
+@if (label) {
+  <hq-form-label [for]="uniqueId">{{ label }}</hq-form-label>
+}
+<input
+  #input
+  [type]="type"
+  [id]="uniqueId"
+  [step]="step"
+  [min]="min"
+  [max]="max"
+  (focus)="onFocus()"
+  (blur)="onBlur()"
+  class="w-full block text-[14px] px-2 py-1 appearance-none focus:outline-none font-medium rounded border bg-blue-900 h-[36px] placeholder:text-gray-450"
+  [ngClass]="{
+    'border-red-500 text-gray-100': ngControl?.invalid && ngControl?.touched,
+    'border-steel-blue-600 text-gray-100':
+      !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
+    'border-black text-gray-100':
+      !(ngControl?.invalid && ngControl?.touched) && variant === 'secondary',
+    'border-gray-450 text-gray-450': disabled,
+    'border-white text-gray-100': focused,
+  }"
+  [placeholder]="placeholder"
+  [(ngModel)]="value"
+  [disabled]="disabled"
+/>
+@for (error of validationErrors; track error.hqValidationError) {
+  @if (
+    ngControl &&
+    ngControl.errors &&
+    ngControl.touched &&
+    error.hqValidationError &&
+    ngControl.errors[error.hqValidationError]
+  ) {
+    <div class="text-red-700 text-xs leading-normal">
+      <ng-container [ngTemplateOutlet]="error.templateRef"></ng-container>
+    </div>
+  }
+}

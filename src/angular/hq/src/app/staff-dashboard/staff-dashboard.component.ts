@@ -19,6 +19,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TimeStatus } from '../enums/time-status';
 import { Period } from '../enums/period';
+import { StatDisplayComponent } from '../core/components/stat-display/stat-display.component';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -29,6 +30,7 @@ import { Period } from '../enums/period';
     StaffDashboardTimeEntryComponent,
     StaffDashboardSearchFilterComponent,
     StaffDashboardDateRangeComponent,
+    StatDisplayComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',

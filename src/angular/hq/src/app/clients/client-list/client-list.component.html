@@ -66,13 +66,10 @@
         colspan="2"
       >
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-          <button
-            routerLink="/clients/create"
-            class="px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
-          >
+          <hq-button routerLink="/clients/create">
             <i class="bi bi-plus"></i>
             Client
-          </button>
+          </hq-button>
         }
       </th>
     </tr>

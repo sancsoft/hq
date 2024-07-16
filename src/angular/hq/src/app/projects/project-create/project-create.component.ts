@@ -1,4 +1,3 @@
-import { PdfViewerComponent } from './../../common/pdf-viewer/pdf-viewer.component';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import {
@@ -28,6 +27,7 @@ import { SelectableClientListComponent } from '../../clients/selectable-client-l
 import { Router, ActivatedRoute } from '@angular/router';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { Period } from '../../enums/period';
+import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
 
 interface Form {
   clientId: FormControl<string | null>;

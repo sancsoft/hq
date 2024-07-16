@@ -1,0 +1,38 @@
+<div
+  id="left-side"
+  class="grid transition-all duration-200 ease-in-out relative"
+  [ngClass]="{
+    'grid-cols-[1fr_20px_1fr]': !sideBarCollapsed,
+    'grid-cols-[1fr_20px_0fr]': sideBarCollapsed,
+  }"
+>
+  <aside
+    [ngStyle]="{ width: leftWidth }"
+    class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100vh-(var(--h-header)+var(--h-footer)))] transition-all duration-700 ease-in-out"
+  >
+    <div class="h-full">
+      <ng-content select="[left-header]"></ng-content>
+      <ng-content select="[left-content]"></ng-content>
+    </div>
+  </aside>
+  <button
+    type="button"
+    class="flex flex-col justify-center items-center bg-black-alt border-r border-black"
+    (click)="toggleSidebar()"
+    aria-controls="left-side"
+  >
+    <div class="cursor-pointer py-4">
+      <div class="leading-[0.5]">&bull;</div>
+      <div class="leading-[0.5]">&bull;</div>
+      <div class="leading-[0.5]">&bull;</div>
+    </div>
+  </button>
+  <main
+    [ngStyle]="{ width: rightWidth }"
+    class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100vh-(var(--h-header)+var(--h-footer)))] transition-all duration-700 ease-in-out p-4 break-all"
+    [ngClass]="{ hidden: sideBarCollapsed }"
+  >
+    <ng-content select="[right-header]"></ng-content>
+    <ng-content select="[right-content]"></ng-content>
+  </main>
+</div>

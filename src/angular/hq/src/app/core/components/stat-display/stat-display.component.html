@@ -1,0 +1,11 @@
+<div class="text-white">
+  <label [htmlFor]="title" class="uppercase font-bold text-xs">{{
+    title
+  }}</label>
+  <div
+    [ngClass]="{ 'text-3xl font-semibold': large, 'text-base ': !large }"
+    class="text-right font-rajdhani"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>
