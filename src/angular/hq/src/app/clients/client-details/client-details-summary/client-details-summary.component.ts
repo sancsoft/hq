@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { GetClientRecordV1 } from '../../../models/clients/get-client-v1';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../../errors/error-display/error-display.component';
 import { RouterLink } from '@angular/router';

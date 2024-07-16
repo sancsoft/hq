@@ -18,11 +18,11 @@ import { SelectInputComponent } from '../select-input/select-input.component';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { TextareaInputComponent } from '../textarea-input/textarea-input.component';
 import { localISODate } from '../../../common/functions/local-iso-date';
-import { ProjectStatus } from '../../../clients/client-details.service';
 import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
-import { Period } from '../../../models/times/get-time-v1';
 import { DualPanelComponent } from '../dual-panel/dual-panel.component';
 import { SelectInputOptionDirective } from '../../directives/select-input-option.directive';
+import { ProjectStatus } from '../../../enums/project-status';
+import { Period } from '../../../enums/period';
 
 @Component({
   selector: 'hq-kitchen-sink',
