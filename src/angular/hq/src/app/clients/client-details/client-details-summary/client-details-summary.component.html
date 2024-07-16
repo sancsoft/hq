@@ -31,36 +31,24 @@
     ) {
       <div class="grid grid-flow-col gap-[30px] auto-cols-max">
         <div>
-          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-            Month to Date
-          </div>
-          <div class="text-right">
+          <hq-stat-display title="Month to Date" [large]="false">
             {{ (clientInvoiceSummary.monthToDate | currency) ?? "None" }}
-          </div>
+          </hq-stat-display>
         </div>
         <div>
-          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-            Last Month to Date
-          </div>
-          <div class="text-right">
+          <hq-stat-display title="Last Month to Date" [large]="false">
             {{ (clientInvoiceSummary.lastMonthToDate | currency) ?? "None" }}
-          </div>
+          </hq-stat-display>
         </div>
         <div>
-          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-            Year to Date
-          </div>
-          <div class="text-right">
+          <hq-stat-display title="Year to Date" [large]="false">
             {{ (clientInvoiceSummary.yearToDate | currency) ?? "None" }}
-          </div>
+          </hq-stat-display>
         </div>
         <div>
-          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-            All Time to Date
-          </div>
-          <div class="text-right">
+          <hq-stat-display title="All Time to Date" [large]="false">
             {{ (clientInvoiceSummary.allTimeToDate | currency) ?? "None" }}
-          </div>
+          </hq-stat-display>
         </div>
       </div>
     }
