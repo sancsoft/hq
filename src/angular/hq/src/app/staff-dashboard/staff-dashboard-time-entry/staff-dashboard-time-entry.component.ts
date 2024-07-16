@@ -39,6 +39,7 @@ import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 import { TimeStatus } from '../../models/common/time-status';
 import { ModalService } from '../../services/modal.service';
+import { DateInputComponent } from '../../core/components/date-input/date-input.component';
 
 export interface HQTimeChangeEvent {
   id?: string | null;
@@ -73,7 +74,7 @@ interface Form {
 @Component({
   selector: 'tr[hq-staff-dashboard-time-entry]',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DateInputComponent],
   templateUrl: './staff-dashboard-time-entry.component.html',
 })
 export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {

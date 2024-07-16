@@ -9,6 +9,7 @@ import { DateModalComponent } from '../common/date-modal/date-modal.component';
 export interface ModalData {
   title: string;
   message?: string;
+  value?: string | null;
 }
 export interface DateModalData extends ModalData {
   date: string;
@@ -63,7 +64,11 @@ export class ModalService {
     return dialogRef.closed.pipe(map(() => true));
   }
 
-  prompt(title: string, message: string = ''): Observable<string | undefined> {
+  prompt(
+    title: string,
+    message: string = '',
+    value: string | undefined | null = '',
+  ): Observable<string | undefined> {
     const dialogRef = this.dialog.open<string, ModalData>(
       PromptModalComponent,
       {
@@ -71,6 +76,7 @@ export class ModalService {
         data: {
           title,
           message,
+          value,
         },
       },
     );

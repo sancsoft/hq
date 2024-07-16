@@ -25,6 +25,7 @@ import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { SearchFilterClientListComponent } from '../SearchFilter/search-filter-client-list/search-filter-client-list.component';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
+import { ButtonComponent } from '../../core/components/button/button.component';
 
 export interface ClientNameId {
   id: string;
@@ -42,6 +43,7 @@ export interface ClientNameId {
     SortIconComponent,
     SearchFilterClientListComponent,
     InRolePipe,
+    ButtonComponent,
   ],
   templateUrl: './client-list.component.html',
 })

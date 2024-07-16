@@ -30,7 +30,7 @@
     <div class="relative flex flex-col w-full max-w-[220px]">
       <label
         for="staffMember"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
         >Select Staff</label
       >
       <div class="grid relative">
@@ -60,7 +60,7 @@
     <div class="relative flex flex-col w-full max-w-[220px]">
       <label
         for="client"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
         >Select Client</label
       >
       <div class="grid relative">
@@ -87,7 +87,7 @@
     <div class="relative flex flex-col w-full max-w-[220px]">
       <label
         for="project"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
         >Select Project</label
       >
       <div class="grid relative">
@@ -112,18 +112,21 @@
   }
   <div class="relative flex flex-col w-full max-w-[220px]">
     <label
-      for="timeAccepted"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-      >Time Accepted</label
+      for="timeStatus"
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
+      >Time Status</label
     >
     <div class="grid relative">
       <select
-        [formControl]="timeService.timeAccepted"
+        [formControl]="timeService.timeStatus"
         class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
       >
-        <option [ngValue]="null">All</option>
-        <option [ngValue]="true">Yes</option>
-        <option [ngValue]="false">No</option>
+        <option [ngValue]="null" selected>All</option>
+        <option [ngValue]="timeService.Status.Unsubmitted">Unsubmitted</option>
+        <option [ngValue]="timeService.Status.Submitted">Submitted</option>
+        <option [ngValue]="timeService.Status.Accepted">Accepted</option>
+        <option [ngValue]="timeService.Status.Rejected">Rejected</option>
+        <option [ngValue]="timeService.Status.Resubmitted">Resubmitted</option>
       </select>
       <span
         class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
@@ -135,7 +138,7 @@
   <div class="relative flex flex-col w-full max-w-[220px]">
     <label
       for="invoiced"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
       >Invoiced</label
     >
     <div class="grid relative">
@@ -157,7 +160,7 @@
   <div class="relative flex flex-col w-full max-w-[220px]">
     <label
       for="selectedPeriod"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
       >Period</label
     >
     <div class="grid relative">
@@ -186,7 +189,7 @@
     <div class="relative flex flex-col w-full max-w-[220px]">
       <label
         for="startDate"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
         >Start Date</label
       >
       <div class="grid relative">
@@ -207,7 +210,7 @@
     <div class="relative flex flex-col w-full max-w-[220px]">
       <label
         for="endDate"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
         >End Date</label
       >
       <div class="grid relative">

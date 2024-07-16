@@ -1,0 +1,21 @@
+@model HQ.Abstractions.Emails.NotificationEmail
+@{
+    Layout = "_LayoutEmailHTML";
+}
+<mj-column>
+    <mj-text>
+        @if (!String.IsNullOrEmpty(Model.Heading))
+        {
+            <h1 class="heading-1">@Model.Heading</h1>
+        }
+        @if (!String.IsNullOrEmpty(Model.Message))
+        {
+            @Model.Message
+        }
+    </mj-text>
+    @RenderBody()
+    @if (!String.IsNullOrEmpty(Model.ButtonLabel) && Model.ButtonUrl != null)
+    {
+        <mj-button mj-class="btn" href="@Model.ButtonUrl" target="_blank">@Model.ButtonLabel</mj-button>
+    }
+</mj-column>

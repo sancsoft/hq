@@ -1,7 +1,14 @@
-import { PdfViewerComponent } from './../../common/pdf-viewer/pdf-viewer.component';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  firstValueFrom,
+  map,
+  startWith,
+  takeUntil,
+} from 'rxjs';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import {
@@ -18,6 +25,8 @@ import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { Router, ActivatedRoute } from '@angular/router';
+import { localISODate } from '../../common/functions/local-iso-date';
+import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
 
 export enum Period {
   Week = 1,
@@ -38,8 +47,8 @@ interface Form {
   totalHours: FormControl<number | null>;
   bookingPeriod: FormControl<number | null>;
   quoteId: FormControl<string | null>;
-  startDate: FormControl<Date | null>;
-  endDate: FormControl<Date | null>;
+  startDate: FormControl<string | null>;
+  endDate: FormControl<string | null>;
 }
 @Component({
   selector: 'hq-project-create',
@@ -53,9 +62,13 @@ interface Form {
   ],
   templateUrl: './project-create.component.html',
 })
-export class ProjectCreateComponent {
+export class ProjectCreateComponent implements OnDestroy {
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
+  quotes: GetQuotesRecordV1[] = [];
+  clients$: Observable<GetClientRecordV1[]>;
+  clients: GetClientRecordV1[] = [];
+
   selectedQuote$ = new Observable<string>();
   quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
 
@@ -65,17 +78,17 @@ export class ProjectCreateComponent {
 
   projectFormGroup = new FormGroup<Form>(
     {
-      clientId: new FormControl(''),
-      name: new FormControl('', [Validators.required]),
+      clientId: new FormControl(null),
+      name: new FormControl(null, [Validators.required]),
       projectManagerId: new FormControl(null, [Validators.required]),
       hourlyRate: new FormControl(0, [Validators.required, Validators.min(0)]),
       totalHours: new FormControl(0, [Validators.required, Validators.min(0)]),
-      bookingPeriod: new FormControl(null, [
+      bookingPeriod: new FormControl(Period.Month, [
         Validators.required,
         Validators.min(0),
       ]),
-      quoteId: new FormControl(null, [Validators.required]),
-      startDate: new FormControl(null, Validators.required),
+      quoteId: new FormControl(null),
+      startDate: new FormControl(localISODate(), Validators.required),
       endDate: new FormControl(null, Validators.required),
     },
     { validators: this.dateRangeValidator },
@@ -90,6 +103,7 @@ export class ProjectCreateComponent {
   ) {
     const response$ = this.hqService.getStaffMembersV1({});
     const quotesResponse$ = this.hqService.getQuotesV1({});
+    const clientsResponse$ = this.hqService.getClientsV1({});
 
     this.projectManagers$ = response$.pipe(
       map((response) => {
@@ -99,12 +113,67 @@ export class ProjectCreateComponent {
 
     this.quotes$ = quotesResponse$.pipe(
       map((response) => {
+        this.quotes = response.records;
         return response.records;
       }),
     );
+    this.clients$ = clientsResponse$.pipe(
+      map((response) => {
+        this.clients = response.records;
+        return response.records;
+      }),
+    );
+
+    this.projectFormGroup.controls.clientId.valueChanges
+      .pipe(startWith(this.projectFormGroup.controls.clientId.value))
+      .pipe(takeUntil(this.destroy))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (clientId) => {
+          if (clientId == null) {
+            this.projectFormGroup.controls.quoteId.disable();
+          } else {
+            this.projectFormGroup.controls.quoteId.enable();
+            const clientRate = this.clients.find(
+              (q) => q.id == clientId,
+            )?.hourlyRate;
+            this.projectFormGroup.controls.hourlyRate.setValue(
+              clientRate ?? null,
+            );
+          }
+        },
+        error: console.error,
+      });
+
+    this.projectFormGroup.controls.quoteId.valueChanges
+      .pipe(startWith(this.projectFormGroup.controls.quoteId.value))
+      .pipe(takeUntil(this.destroy))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (quoteId) => {
+          if (quoteId != null) {
+            const quoteName = this.quotes.find((q) => q.id == quoteId)?.name;
+            this.projectFormGroup.controls.name.setValue(quoteName ?? null);
+
+            this.projectFormGroup.controls.bookingPeriod.removeValidators([
+              Validators.required,
+            ]);
+          } else {
+            this.projectFormGroup.controls.bookingPeriod.addValidators([
+              Validators.required,
+            ]);
+          }
+        },
+        error: console.error,
+      });
+  }
+  private destroy = new Subject<void>();
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
   }
   updateSelectedClient(client: GetClientRecordV1) {
-    console.log(client);
     this.projectFormGroup.get('clientId')?.setValue(client.id);
     this.selectedClientName$.next(client.name);
   }
@@ -115,7 +184,6 @@ export class ProjectCreateComponent {
     const quoteId = (event.target as HTMLSelectElement).value;
     this.selectedQuote$ = this.quotes$.pipe(
       map((quotes) => {
-        console.log(quotes);
         const quote = quotes.find((quote) => quote.id === quoteId);
         return quote ? quote.chargeCode : 'Quote not found';
       }),
@@ -123,6 +191,8 @@ export class ProjectCreateComponent {
   }
 
   async onSubmitProject() {
+    this.projectFormGroup.markAllAsTouched();
+
     console.log(this.projectFormGroup);
     try {
       if (
@@ -137,7 +207,6 @@ export class ProjectCreateComponent {
           this.hqService.upsertProjectV1(request),
         );
         this.generatedChargeCode$.next(response.chargeCode);
-        console.log(response.id);
         await this.router.navigate(['../', response.id], {
           relativeTo: this.route,
         });
@@ -170,6 +239,7 @@ export class ProjectCreateComponent {
   }
   modalCancelClicked() {
     this.selectedClientName$.next(null);
+    this.projectFormGroup.get('clientId')?.setValue(null);
     this.closeModal();
   }
 

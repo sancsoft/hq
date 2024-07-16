@@ -16,11 +16,20 @@ export const routes: Routes = [
       import('./callback.component').then((m) => m.CallbackComponent),
   },
   {
-    path: 'test',
-    title: 'Test',
+    path: 'autocomplete',
+    title: 'Auto complete',
     canActivate: [AutoLoginPartialRoutesGuard],
     loadComponent: () =>
       import('./test/test.component').then((m) => m.TestComponent),
+  },
+  {
+    path: 'kitchen-sink',
+    title: 'Kitchen Sink',
+    canActivate: [AutoLoginPartialRoutesGuard],
+    loadComponent: () =>
+      import('./core/components/kitchen-sink/kitchen-sink.component').then(
+        (m) => m.KitchenSinkComponent,
+      ),
   },
   {
     path: 'chargecodes',
@@ -301,6 +310,15 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./quotes/quotes-create/quotes-create.component').then(
             (m) => m.QuotesCreateComponent,
+          ),
+      },
+      {
+        path: 'edit/:quoteId',
+        title: 'Edit Quote',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./quotes/quotes-edit/quotes-edit.component').then(
+            (m) => m.QuotesEditComponent,
           ),
       },
     ],

@@ -235,7 +235,9 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       }),
       tap((times) => {
         const isPendingTime = times.find(
-          (record) => record.status === TimeStatus.Unsubmitted,
+          (record) =>
+            record.status === TimeStatus.Submitted ||
+            record.status === TimeStatus.Resubmitted,
         );
         if (isPendingTime) {
           this.acceptButtonState = ButtonState.Enabled;
@@ -355,7 +357,13 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   async acceptAll() {
     const allTime = await firstValueFrom(
       this.time$.pipe(
-        map((t) => t.filter((x) => x.status == TimeStatus.Unsubmitted)),
+        map((t) =>
+          t.filter(
+            (x) =>
+              x.status == TimeStatus.Submitted ||
+              x.status == TimeStatus.Resubmitted,
+          ),
+        ),
         map((filteredArray) => filteredArray.map((x) => x.id)),
       ),
     );
@@ -603,6 +611,14 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     this.toastService.show('Updated', 'Approved hours have been updated.');
     this.refresh$.next();
   }
+  async showRejectionNotes(timeId: string) {
+    const time = await firstValueFrom(
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
+    );
+    if (time?.rejectionNotes) {
+      await this.modalService.alert('Rejection', time.rejectionNotes);
+    }
+  }
 
   // Reject
   async reject(timeId: string) {
@@ -610,6 +626,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     if (timeId === '') {
       return;
     }
+    this.time$;
     // Show modal with notes
     // this.hqConfirmationModalService.showModal(
     //   `Are you sure you want to change reject this time?`,
@@ -618,7 +635,12 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     // const actionTaken = await firstValueFrom(
     //   this.hqConfirmationModalService.cuurentAction
     // );
-    const notes = await firstValueFrom(this.modalService.prompt('Enter Notes'));
+    const time = await firstValueFrom(
+      this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
+    );
+    const notes = await firstValueFrom(
+      this.modalService.prompt('Enter Notes', '', time?.rejectionNotes),
+    );
     console.log(notes);
     // if (actionTaken != true) {
     //   this.refresh$.next();

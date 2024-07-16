@@ -44,7 +44,8 @@ public class ProjectServiceV1
                     return validationResult;
                 }
 
-                var project = await _context.Projects.FindAsync(request.Id);
+                var project = await _context.Projects.Include(p => p.Quote)
+                                        .ThenInclude(q => q!.ChargeCode).FirstOrDefaultAsync(p => p.Id == request.Id);
                 if (project == null)
                 {
                     project = new Project();
@@ -61,30 +62,42 @@ public class ProjectServiceV1
                 project.StartDate = request.StartDate;
                 project.EndDate = request.EndDate;
 
-                var latestProjectNumber = _context.Projects.Max((p) => p.ProjectNumber);
-                var newProjectNumber = latestProjectNumber + 1;
-                var newCode = "P" + newProjectNumber;
-                var newChargeCode = new ChargeCode
-                {
-                    Code = newCode,
-                    Billable = true,
-                    Active = true,
-                    ProjectId = project.Id
-                };
                 if (project.QuoteId == null)
                 {
+                    var latestProjectNumber = _context.Projects.Max(p => p.ProjectNumber);
+                    var newProjectNumber = latestProjectNumber + 1;
+                    var newCode = "P" + newProjectNumber;
+
+                    var newChargeCode = new ChargeCode
+                    {
+                        Code = newCode,
+                        Billable = true,
+                        Active = true,
+                        ProjectId = project.Id
+                    };
+
                     project.ProjectNumber = newProjectNumber;
                     project.ChargeCode = newChargeCode;
                     _context.ChargeCodes.Add(newChargeCode);
                 }
+                else
+                {
+                    var quote = await _context.Quotes
+                                              .Include(q => q.ChargeCode)
+                                              .FirstOrDefaultAsync(q => q.Id == project.QuoteId, ct);
+                    if (quote?.ChargeCode != null)
+                    {
+                        quote.ChargeCode.ProjectId = project.Id;
+                    }
+                }
                 await _context.SaveChangesAsync(ct);
-
                 await transaction.CommitAsync(ct);
 
-                var response = new UpsertProjectV1.Response()
+                var response = new UpsertProjectV1.Response
                 {
                     Id = project.Id,
                 };
+
                 return Result.Ok(response);
             }
             catch (Exception ex)
@@ -94,6 +107,7 @@ public class ProjectServiceV1
             }
         }
     }
+
 
 
     public async Task<Result<DeleteProjectV1.Response?>> DeleteProjectV1(DeleteProjectV1.Request request, CancellationToken ct = default)

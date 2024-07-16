@@ -1,0 +1,247 @@
+<pre class="p-3 bg-black-alt">
+Search: {{ search.value | json }}
+Text: {{ text.value | json }}
+Date: {{ date.value | json }}
+Date using form group: {{ form.controls.date.value | json }}
+Select: {{ select.value | json }}
+
+
+</pre>
+
+<div class="p-3 flex flex-row gap-2">
+  <div><hq-button>Primary Button</hq-button></div>
+  <div><hq-button routerLink="/psr">Primary Link Button</hq-button></div>
+  <div><hq-button [disabled]="true">Disabled Button</hq-button></div>
+  <div>
+    <hq-button [disabled]="true" routerLink="/psr"
+      >Disabled Link Button</hq-button
+    >
+  </div>
+  <div><hq-button variant="outline">Outline Button</hq-button></div>
+  <div>
+    <hq-button variant="outline" routerLink="/psr"
+      >Outline Link Button</hq-button
+    >
+  </div>
+</div>
+
+<div class="p-3">
+  <hq-button (click)="toggleDisabled()">Toggle Disabled</hq-button>
+</div>
+
+<div class="p-3">
+  <hq-search-input [formControl]="search" label="Search Input (Default)">
+    <ng-template hqValidationError="required">
+      The search field is required.
+    </ng-template>
+    <ng-template hqValidationError="minlength">
+      The minimum length is invalid.
+    </ng-template>
+  </hq-search-input>
+  <hq-search-input
+    [formControl]="search"
+    label="Search Input (Secondary)"
+    variant="secondary"
+  >
+    <ng-template hqValidationError="required">
+      The search field is required.
+    </ng-template>
+    <ng-template hqValidationError="minlength">
+      The minimum length is invalid.
+    </ng-template>
+  </hq-search-input>
+</div>
+
+<div class="p-3">
+  <hq-dual-panel>
+    <div left-header>
+      <div>LEFT</div>
+    </div>
+    <div right-header>
+      <div>RIGHT</div>
+    </div>
+  </hq-dual-panel>
+  <hq-text-input
+    [formControl]="text"
+    placeholder="Placeholder text here"
+    label="Text Input (Default)"
+  >
+    <ng-template hqValidationError="required">
+      The text field is required.
+    </ng-template>
+    <ng-template hqValidationError="minlength">
+      The minimum length is invalid.
+    </ng-template>
+  </hq-text-input>
+  <hq-text-input
+    [formControl]="text"
+    placeholder="Placeholder text here"
+    label="Text Input (Secondary)"
+    variant="secondary"
+  >
+    <ng-template hqValidationError="required">
+      The text field is required.
+    </ng-template>
+    <ng-template hqValidationError="minlength">
+      The minimum length is invalid.
+    </ng-template>
+  </hq-text-input>
+  <hq-text-input
+    [formControl]="text"
+    placeholder="Placeholder text here"
+    label="Text Input (Email)"
+    variant="secondary"
+    type="email"
+  >
+    <ng-template hqValidationError="required">
+      The text field is required.
+    </ng-template>
+    <ng-template hqValidationError="minlength">
+      The minimum length is invalid.
+    </ng-template>
+  </hq-text-input>
+  <hq-text-input
+    [formControl]="text"
+    placeholder="Placeholder text here"
+    label="Text Input (Password)"
+    variant="secondary"
+    type="password"
+  >
+    <ng-template hqValidationError="required">
+      The text field is required.
+    </ng-template>
+    <ng-template hqValidationError="minlength">
+      The minimum length is invalid.
+    </ng-template>
+  </hq-text-input>
+  <hq-text-input
+    [formControl]="text"
+    placeholder="Placeholder text here"
+    label="Text Input (Number)"
+    variant="secondary"
+    type="number"
+    [min]="0"
+    [step]="0.25"
+  >
+    <ng-template hqValidationError="required">
+      The text field is required.
+    </ng-template>
+    <ng-template hqValidationError="minlength">
+      The minimum length is invalid.
+    </ng-template>
+  </hq-text-input>
+</div>
+
+<!-- Form control -->
+<div class="p-3">
+  <hq-date-input [formControl]="date"></hq-date-input>
+</div>
+<!-- Form Group with click -->
+<div class="p-3">
+  <form [formGroup]="form">
+    <hq-date-input
+      [formControlName]="'date'"
+      (dateSelected)="clicked()"
+      [handleDateChange]="true"
+    ></hq-date-input>
+  </form>
+</div>
+
+<div class="p-3">
+  <hq-select-input [formControl]="select">
+    <ng-template [hqSelectInputOption]="null"
+      >Please Select an option</ng-template
+    >
+    <ng-template [hqSelectInputOption]="'bmw'">BMW</ng-template>
+    <ng-template [hqSelectInputOption]="'Toyota'">Toyota</ng-template>
+    <ng-template [hqSelectInputOption]="'Ford'">Ford</ng-template>
+  </hq-select-input>
+</div>
+
+<div class="p-3">
+  <hq-textarea-input [formControl]="text" [rows]="10"></hq-textarea-input>
+</div>
+
+<div class="flex space-x-8 p-4">
+  <hq-stat-display [title]="'HRS THIS WEEK'" [large]="false"
+    >13.50</hq-stat-display
+  >
+  <hq-stat-display [title]="'HRS THIS WEEK'" [large]="true"
+    >30.00</hq-stat-display
+  >
+</div>
+<div class="p-3">
+  <hq-progress-bar
+    [text]="
+      report.status === ProjectStatus.Ongoing
+        ? (report.bookingHours | number: '0.2-2') +
+          ' hrs ' +
+          getPeriodName(report.bookingPeriod) +
+          ' to psr date '
+        : (report.totalHours | number: '0.2-2') + '  hrs total to psr date '
+    "
+    [percent]="report.bookingPercentComplete"
+    [tooltip]="
+      report.status === ProjectStatus.Ongoing
+        ? report.bookingStartDate + ' - ' + report.bookingEndDate
+        : report.totalStartDate + ' - ' + report.totalEndDate
+    "
+  ></hq-progress-bar>
+</div>
+<div class="p-3">
+  <hq-progress-bar
+    [text]="
+      second_report.status === ProjectStatus.Ongoing
+        ? (second_report.bookingHours | number: '0.2-2') +
+          ' hrs ' +
+          getPeriodName(second_report.bookingPeriod) +
+          ' to psr date '
+        : (second_report.totalHours | number: '0.2-2') +
+          '  hrs total to psr date '
+    "
+    [percent]="second_report.bookingPercentComplete"
+    [tooltip]="
+      second_report.status === ProjectStatus.Ongoing
+        ? second_report.bookingStartDate + ' - ' + second_report.bookingEndDate
+        : second_report.totalStartDate + ' - ' + second_report.totalEndDate
+    "
+  ></hq-progress-bar>
+</div>
+<div class="p-3">
+  <hq-progress-bar
+    [text]="
+      third_report.status === ProjectStatus.Ongoing
+        ? (third_report.bookingHours | number: '0.2-2') +
+          ' hrs ' +
+          getPeriodName(third_report.bookingPeriod) +
+          ' to psr date '
+        : (third_report.totalHours | number: '0.2-2') +
+          '  hrs total to psr date '
+    "
+    [percent]="third_report.bookingPercentComplete"
+    [tooltip]="
+      third_report.status === ProjectStatus.Ongoing
+        ? third_report.bookingStartDate + ' - ' + third_report.bookingEndDate
+        : third_report.totalStartDate + ' - ' + third_report.totalEndDate
+    "
+  ></hq-progress-bar>
+</div>
+<div class="p-3">
+  <hq-progress-bar
+    [text]="
+      fourth_report.status === ProjectStatus.Ongoing
+        ? (fourth_report.bookingHours | number: '0.2-2') +
+          ' hrs ' +
+          getPeriodName(fourth_report.bookingPeriod) +
+          ' to psr date '
+        : (fourth_report.totalHours | number: '0.2-2') +
+          '  hrs total to psr date '
+    "
+    [percent]="fourth_report.bookingPercentComplete"
+    [tooltip]="
+      fourth_report.status === ProjectStatus.Ongoing
+        ? fourth_report.bookingStartDate + ' - ' + fourth_report.bookingEndDate
+        : fourth_report.totalStartDate + ' - ' + third_report.totalEndDate
+    "
+  ></hq-progress-bar>
+</div>

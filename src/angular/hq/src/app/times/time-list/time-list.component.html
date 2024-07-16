@@ -50,12 +50,13 @@
   </div>
 </div>
 
-<table class="min-w-full border-spacing-0 border-separate">
+<table class="w-full border-spacing-0 border-separate">
   <thead>
     <tr class="sticky top-0 text-left">
       <th
+        width="120px"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 pl-5 cursor-pointer whitespace-nowrap"
+        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
         (click)="onSortClick(sortColumn.Date)"
       >
         Date
@@ -67,7 +68,8 @@
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer"
+        width="120px"
+        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
         (click)="onSortClick(sortColumn.StaffName)"
       >
         Staff
@@ -78,18 +80,21 @@
         />
       </th>
       <th
+        width="150px"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer"
+        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
       >
         Client
       </th>
       <th
+        width="120px"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 whitespace-nowrap"
       >
         Project
       </th>
       <th
+        width="40px"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
         (click)="onSortClick(sortColumn.ChargeCode)"
@@ -102,18 +107,21 @@
         />
       </th>
       <th
+        width="130px"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
+        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
       >
         Activity/Task
       </th>
       <th
+        width="40px"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 whitespace-nowrap"
       >
         Billable
       </th>
       <th
+        width="40px"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
         (click)="onSortClick(sortColumn.Hours)"
@@ -126,46 +134,45 @@
         />
       </th>
       <th
+        width="80px"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer"
-      >
-        Description
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3"
       >
         Hours Approved
       </th>
       <th
+        width="100px"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3"
       >
-        Hours Approved By
+        Approved By
       </th>
       <th
+        width="80px"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 whitespace-nowrap"
       >
         Invoice #
       </th>
-
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
-        colspan="2"
+        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
       >
-        <!-- <button routerLink="/times/create" class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal">
-            <i class="bi bi-plus"></i>
-            time
-        </button> -->
+        Description
       </th>
+
+      <th
+        width="40px"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-2 whitespace-nowrap"
+        colspan="2"
+      ></th>
     </tr>
   </thead>
   <tbody>
     @for ((time of times$ | async); track $index) {
       <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black px-3 py-2 pl-5">{{ time.date }}</td>
+        <td class="border-b border-black px-3 py-2">{{ time.date }}</td>
         <td class="border-b px-3 border-black py-2">{{ time.staffName }}</td>
         <td class="border-b px-3 border-black py-2">
           {{ time.clientName }}
@@ -181,12 +188,12 @@
         <td class="border-b border-black px-3 py-2 text-right">
           {{ time.hours | number: "1.2-2" }}
         </td>
-        <td class="border-b border-black px-3 py-2">{{ time.description }}</td>
         <td class="border-b border-black py-2">{{ time.hoursApproved }}</td>
         <td class="border-b border-black py-2">{{ time.hoursApprovedBy }}</td>
         <td class="border-b border-black py-2">{{ time.invoiceNumber }}</td>
+        <td class="border-b border-black px-3 py-2">{{ time.description }}</td>
 
-        <td class="border-b border-black py-2 text-right pr-5">
+        <td class="border-b border-black py-2 text-right pr-2">
           @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
             <a
               [routerLink]="['edit', time.id]"

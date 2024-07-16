@@ -8,6 +8,8 @@ using DocumentFormat.OpenXml.Bibliography;
 
 using FluentResults;
 
+using Hangfire;
+
 using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.ProjectStatusReports;
@@ -23,11 +25,13 @@ public class ProjectStatusReportServiceV1
 {
     private readonly HQDbContext _context;
     private readonly ILogger<ProjectStatusReportServiceV1> _logger;
+    private readonly IBackgroundJobClient _backgroundJobClient;
 
-    public ProjectStatusReportServiceV1(HQDbContext context, ILogger<ProjectStatusReportServiceV1> logger)
+    public ProjectStatusReportServiceV1(HQDbContext context, ILogger<ProjectStatusReportServiceV1> logger, IBackgroundJobClient backgroundJobClient)
     {
         _context = context;
         _logger = logger;
+        _backgroundJobClient = backgroundJobClient;
     }
 
     public async Task BackgroundGenerateWeeklyProjectStatusReportsV1(CancellationToken ct)
@@ -153,19 +157,14 @@ public class ProjectStatusReportServiceV1
             records = records.Where(t => t.Project.ProjectManagerId == request.ProjectManagerId.Value);
         }
 
-        if (request.StartDate.HasValue && !request.EndDate.HasValue)
+        if (request.StartDate.HasValue)
         {
-            records = records.Where(t => t.StartDate >= request.StartDate);
+            records = records.Where(t => t.StartDate >= request.StartDate || (request.StartDate.Value >= t.StartDate && request.StartDate.Value <= t.EndDate));
         }
 
-        if (request.EndDate.HasValue && !request.StartDate.HasValue)
+        if (request.EndDate.HasValue)
         {
-            records = records.Where(t => t.EndDate <= request.EndDate);
-        }
-
-        if (request.StartDate.HasValue && request.EndDate.HasValue)
-        {
-            records = records.Where(t => t.StartDate >= request.StartDate && t.EndDate <= request.EndDate);
+            records = records.Where(t => t.EndDate <= request.EndDate || (request.EndDate.Value >= t.StartDate && request.EndDate.Value <= t.EndDate));
         }
 
         var mapped = records
@@ -186,6 +185,7 @@ public class ProjectStatusReportServiceV1
                 ProjectId = t.Row.Project.Id,
                 ClientId = t.Row.Project.Client.Id,
                 ClientName = t.Row.Project.Client.Name,
+                ProjectManagerId = t.Row.ProjectManagerId,
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
                 Status = t.Row.Status,
                 IsLate = t.Row.SubmittedAt == null,
@@ -222,6 +222,7 @@ public class ProjectStatusReportServiceV1
                 ProjectId = t.ProjectId,
                 ClientId = t.ClientId,
                 ClientName = t.ClientName,
+                ProjectManagerId = t.ProjectManagerId,
                 ProjectManagerName = t.ProjectManagerName,
                 Status = t.Status,
                 IsLate = t.IsLate,
@@ -477,6 +478,8 @@ public class ProjectStatusReportServiceV1
         time.RejectedById = request.RejectedById;
 
         await _context.SaveChangesAsync(ct);
+
+        _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendRejectTimeEntryEmail(time.Id, CancellationToken.None));
 
         return new RejectProjectStatusReportTimeV1.Response();
     }

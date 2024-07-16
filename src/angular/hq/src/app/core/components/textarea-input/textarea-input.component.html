@@ -1,0 +1,18 @@
+<textarea
+  #input
+  [id]="uniqueId"
+  (focus)="onFocus()"
+  (blur)="onBlur()"
+  [(ngModel)]="value"
+  [disabled]="disabled"
+  [ngClass]="{
+    'border-red-500 text-gray-100': ngControl?.invalid && ngControl?.touched,
+
+    'border-white text-gray-100': focused,
+  }"
+  [rows]="rows"
+  [class]="
+    'w-full block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-450 bg-blue-900 rounded'
+  "
+  [placeholder]="placeholder"
+></textarea>

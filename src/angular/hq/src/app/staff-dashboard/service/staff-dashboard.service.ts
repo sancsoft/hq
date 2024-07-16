@@ -23,6 +23,7 @@ import {
   GetDashboardTimeV1Response,
 } from '../../models/staff-dashboard/get-dashboard-time-v1';
 import { TimeStatus } from '../../models/common/time-status';
+import { localISODate } from '../../common/functions/local-iso-date';
 
 @Injectable({
   providedIn: 'root',
@@ -31,16 +32,13 @@ export class StaffDashboardService {
   search = new FormControl<string | null>(null);
   period = new FormControl<Period>(Period.Today, { nonNullable: true });
   timeStatus = new FormControl<TimeStatus | null>(null);
-  date = new FormControl<string>(
-    new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .split('T')[0],
-    {
-      nonNullable: true,
-    },
-  );
+  date = new FormControl<string>(localISODate(), {
+    nonNullable: true,
+  });
 
   Period = Period;
+  Status = TimeStatus;
+
   canSubmit$: Observable<boolean>;
   time$: Observable<GetDashboardTimeV1Response>;
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
@@ -68,17 +66,7 @@ export class StaffDashboardService {
 
     const date$ = this.date.valueChanges
       .pipe(startWith(this.date.value))
-      .pipe(
-        map(
-          (t) =>
-            t ||
-            new Date(
-              new Date().getTime() - new Date().getTimezoneOffset() * 60000,
-            )
-              .toISOString()
-              .split('T')[0],
-        ),
-      );
+      .pipe(map((t) => t || localISODate()));
 
     const request$ = combineLatest({
       staffId: staffId$,

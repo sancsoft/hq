@@ -8,7 +8,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
-import { PdfViewerComponent } from '../../common/pdf-viewer/pdf-viewer.component';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
@@ -16,7 +15,17 @@ import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { HQService } from '../../services/hq.service';
 import { QuoteStatus } from '../../models/common/quote-status';
 import { ToastService } from '../../services/toast.service';
+import { localISODate } from '../../common/functions/local-iso-date';
+import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
 
+interface quoteFormGroup {
+  clientId: FormControl<string>;
+  name: FormControl<string>;
+  value: FormControl<number | null>;
+  status: FormControl<number | null>;
+  date: FormControl<string | null>;
+  quoteNumber: FormControl<number | null>;
+}
 @Component({
   selector: 'hq-quotes-create',
   standalone: true,
@@ -39,12 +48,26 @@ export class QuotesCreateComponent {
   apiErrors: string[] = [];
   selectedClientName$ = new BehaviorSubject<string | null>(null);
 
-  quoteFormGroup = new FormGroup({
-    clientId: new FormControl('', Validators.required),
-    name: new FormControl('', [Validators.required, Validators.minLength(1)]),
-    value: new FormControl(null, [Validators.required, Validators.min(0)]),
-    status: new FormControl(0, [Validators.required]),
-    date: new FormControl(new Date(), Validators.required),
+  quoteFormGroup = new FormGroup<quoteFormGroup>({
+    clientId: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    value: new FormControl(null, {
+      validators: [Validators.required, Validators.min(0)],
+    }),
+    status: new FormControl(1, {
+      validators: [Validators.required],
+    }),
+    date: new FormControl(localISODate(), {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    quoteNumber: new FormControl(null, {}),
   });
 
   constructor(
@@ -59,6 +82,7 @@ export class QuotesCreateComponent {
     this.selectedClientName$.next(client.name);
   }
   async onSubmitProject() {
+    this.quoteFormGroup.markAllAsTouched();
     console.log(this.quoteFormGroup);
     try {
       if (
@@ -67,7 +91,6 @@ export class QuotesCreateComponent {
         this.quoteFormGroup.dirty
       ) {
         const request = this.quoteFormGroup.value;
-        request.status = Number(request.status);
         console.log('Sending Request:', request);
         const response = await firstValueFrom(
           this.hqService.upsertQuoteV1(request),
