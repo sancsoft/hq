@@ -14,9 +14,13 @@ import {
   ViewChild,
   ViewContainerRef,
   OnDestroy,
+  ContentChild,
+  Query,
+  ViewChildren,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { FormControl, NgControl } from '@angular/forms';
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { CdkConnectedOverlay, Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -24,6 +28,7 @@ import { generateUniqueInputId } from '../../core/functions/generate-unique-inpu
 import { ValidationErrorDirective } from '../../core/directives/validation-error.directive';
 import { Subject, takeUntil } from 'rxjs';
 import { CdkListbox, CdkOption } from '@angular/cdk/listbox';
+import { SearchInputComponent } from '../../core/components/search-input/search-input.component';
 
 export interface IdentifiableWithName {
   id: string | number;
@@ -38,6 +43,8 @@ export interface IdentifiableWithName {
     CommonModule,
     CdkListbox,
     CdkOption,
+    SearchInputComponent,
+    CdkConnectedOverlay,
   ],
   templateUrl: './autocomplete2.component.html',
 })
@@ -46,6 +53,10 @@ export class Autocomplete2Component
 {
   @Input()
   options: IdentifiableWithName[] = [];
+
+  @ViewChild(SearchInputComponent, { static: false })
+  search?: SearchInputComponent;
+
   @Input()
   width = 220;
   @Input()
@@ -56,7 +67,7 @@ export class Autocomplete2Component
   @ContentChildren(ValidationErrorDirective)
   validationErrors!: QueryList<ValidationErrorDirective>;
 
-  @ViewChild('input') input!: ElementRef<HTMLInputElement>;
+  @ViewChild('button') button!: ElementRef<HTMLButtonElement>;
   @ViewChild('dropdownTemplate', { static: true })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dropdownTemplate!: TemplateRef<any>;
@@ -66,6 +77,7 @@ export class Autocomplete2Component
 
   protected focused = false;
   protected uniqueId = generateUniqueInputId();
+  protected isOpen = false;
 
   private _value: string | null = null;
 
@@ -82,6 +94,7 @@ export class Autocomplete2Component
 
   constructor(
     private overlay: Overlay,
+    private cdr: ChangeDetectorRef,
     private viewContainerRef: ViewContainerRef,
     @Self() @Optional() public ngControl: NgControl | null,
   ) {
@@ -106,10 +119,15 @@ export class Autocomplete2Component
     this.destroy.complete();
   }
 
+  onAttach() {
+    this.cdr.detectChanges();
+    this.search?.focus();
+  }
+
   openDropdown() {
     const positionStrategy = this.overlay
       .position()
-      .flexibleConnectedTo(this.input.nativeElement)
+      .flexibleConnectedTo(this.button.nativeElement)
       .withPositions([
         {
           originX: 'start',
@@ -125,9 +143,7 @@ export class Autocomplete2Component
     );
   }
   handleBlur() {
-    setTimeout(() => {
-      this.closeDropdown();
-    }, 100);
+    // setTimeout(() => this.closeDropdown(), 100);
   }
 
   closeDropdown() {
@@ -182,13 +198,12 @@ export class Autocomplete2Component
 
   onBlur() {
     this.focused = false;
-    if (this.input?.nativeElement) {
-      this.onTouched(this.input.nativeElement.value);
+    if (this.button?.nativeElement) {
+      this.onTouched(null);
     }
   }
 
   focus() {
-    this.input?.nativeElement?.focus();
-    this.input?.nativeElement?.select();
+    this.button?.nativeElement?.focus();
   }
 }
