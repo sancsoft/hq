@@ -10,7 +10,9 @@
       !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
     'border-black text-gray-100':
       !(ngControl?.invalid && ngControl?.touched) && variant === 'secondary',
-    'border-white text-gray-100': focused,
+    'border-transparent text-gray-100':
+      !(ngControl?.invalid && ngControl?.touched) && variant === 'transparent',
+    'border-white text-gray-100': focused && variant !== 'transparent',
   }"
 >
   <button

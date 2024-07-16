@@ -3,8 +3,10 @@ import {
   Component,
   ContentChildren,
   ElementRef,
+  EventEmitter,
   Input,
   Optional,
+  Output,
   QueryList,
   Self,
   ViewChild,
@@ -31,10 +33,13 @@ export class SearchInputComponent implements ControlValueAccessor {
   label: string | null = null;
 
   @Input()
-  variant: 'primary' | 'secondary' = 'primary';
+  variant: 'primary' | 'secondary' | 'transparent' = 'primary';
 
   @Input()
   public disabled = false;
+
+  @Output()
+  hqBlur = new EventEmitter<void>();
 
   @ContentChildren(ValidationErrorDirective)
   validationErrors!: QueryList<ValidationErrorDirective>;
@@ -87,6 +92,7 @@ export class SearchInputComponent implements ControlValueAccessor {
     if (this.input?.nativeElement) {
       this.onTouched(this.input.nativeElement.value);
     }
+    this.hqBlur.emit();
   }
 
   focus() {
