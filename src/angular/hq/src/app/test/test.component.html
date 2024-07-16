@@ -1,2 +1,11 @@
 <h1>Autocomplete</h1>
-  <hq-autocomplete2 [width]="500" [options]="['Alaska', 'California', 'New York']" />
+<h2>Form control value {{ formControl.value?.id }}</h2>
+<hq-autocomplete2 [formControl]="formControl" [options]="options">
+  <!-- <ng-template let-option>
+    <button
+      class="block option px-4 py-2 text-gray-100 cursor-pointer hover:opacity-70 opacity-100 border-b border-gray-400 last:border-b-0"
+    >
+      {{ option.name }}
+    </button>
+  </ng-template> -->
+</hq-autocomplete2>

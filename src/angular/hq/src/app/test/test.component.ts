@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { AutocompleteComponent } from '../common/autocomplete/autocomplete.component';
 import { AutocompleteOptionComponent } from '../common/autocomplete-option/autocomplete-option.component';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalService } from '../services/modal.service';
 import { firstValueFrom } from 'rxjs';
 import { Autocomplete2Component } from '../common/autocomplete2/autocomplete2.component';
+import { CommonModule } from '@angular/common';
 
 interface TestOption {
   id: number;
@@ -18,13 +19,16 @@ interface TestOption {
     AutocompleteComponent,
     AutocompleteOptionComponent,
     ReactiveFormsModule,
-    Autocomplete2Component
+    Autocomplete2Component,
+    CommonModule,
   ],
   templateUrl: './test.component.html',
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class TestComponent {
-  formControl = new FormControl<TestOption | null>(null);
+  formControl = new FormControl<TestOption | null>(null, {
+    validators: [Validators.required],
+  });
 
   options: TestOption[] = [
     {

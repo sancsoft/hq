@@ -3,6 +3,9 @@
 
 <div class="grid relative w-full">
   <input
+    [ngClass]="{
+      'border-red-500 text-gray-100': ngControl?.invalid && ngControl?.touched,
+    }"
     #input
     [formControl]="control"
     (focus)="openDropdown()"
@@ -18,14 +21,33 @@
     <div class="left-0 mt-1 bg-blue-900 border border-gray-300 rounded-md">
       <ng-container>
         @for (option of filteredOptions; track $index) {
-          <div
-            class="option px-4 py-2 text-gray-100 cursor-pointer hover:opacity-70 opacity-100 border-b border-gray-400 last:border-b-0"
+          <!-- <ng-content
             (click)="selectOption(option)"
+            (keydown.enter)="selectOption(option)"
+            [ngTemplateOutletContext]="{ $implicit: option }"
+          ></ng-content> -->
+          <button
+            class="block option px-4 py-2 text-gray-100 cursor-pointer hover:opacity-70 opacity-100 border-b border-gray-400 last:border-b-0"
+            (click)="selectOption(option)"
+            (keydown.enter)="selectOption(option)"
           >
-            {{ option }}
-          </div>
+            {{ option.name }}
+          </button>
         }
       </ng-container>
     </div>
   </ng-template>
 </div>
+@for (error of validationErrors; track error.hqValidationError) {
+  @if (
+    ngControl &&
+    ngControl.errors &&
+    ngControl.touched &&
+    error.hqValidationError &&
+    ngControl.errors[error.hqValidationError]
+  ) {
+    <div class="text-red-700 text-xs leading-normal">
+      <ng-container [ngTemplateOutlet]="error.templateRef"></ng-container>
+    </div>
+  }
+}
