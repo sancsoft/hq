@@ -1,7 +1,7 @@
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
 
-<div class="grid relative w-full">
+<div class="grid relative w-full" #container>
   <input
     [ngClass]="{
       'border-red-500 text-gray-100': ngControl?.invalid && ngControl?.touched,
@@ -10,7 +10,7 @@
     [formControl]="control"
     (focus)="openDropdown()"
     (blur)="handleBlur()"
-    class="pl-2 pr-[43px] w-full appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+    class="pl-2 pr-[43px] w-full appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px] rounded-br-none rounded-bl-none"
   />
   <span
     class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
@@ -42,11 +42,16 @@
     </div>
   </ng-template>
 </div>
-<div *ngFor="let error of validationErrors">
-  <div
-    *ngIf="ngControl && ngControl.errors && ngControl.touched"
-    class="text-red-700 text-xs leading-normal"
-  >
-    <ng-container [ngTemplateOutlet]="error.templateRef"></ng-container>
-  </div>
-</div>
+@for (error of validationErrors; track error.hqValidationError) {
+  @if (
+    ngControl &&
+    ngControl.errors &&
+    ngControl.touched &&
+    error.hqValidationError &&
+    ngControl.errors[error.hqValidationError]
+  ) {
+    <div class="text-red-700 text-xs leading-normal">
+      <ng-container [ngTemplateOutlet]="error.templateRef"></ng-container>
+    </div>
+  }
+}
