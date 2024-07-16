@@ -6,11 +6,14 @@
     [ngClass]="{
       'border-red-700 focus:border-red-700':
         ngControl?.invalid && ngControl?.touched,
-      'border-black': !(ngControl?.invalid && ngControl?.touched),
+      'border-steel-blue-600':
+        !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
+      'border-black':
+        !(ngControl?.invalid && ngControl?.touched) && variant === 'secondary',
     }"
     (blur)="onBlur()"
     (keydown.enter)="onEnter($event.target)"
-    class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+    class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[36px]"
   >
     @for (option of options; track option.value) {
       <option [ngValue]="option.value">
