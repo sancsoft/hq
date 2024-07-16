@@ -15,6 +15,7 @@ namespace HQ.Abstractions.Quotes
             public Guid? clientId { get; set; }
             public SortColumn SortBy { get; set; } = SortColumn.QuoteName;
             public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+            public ProjectStatus? QuoteStatus { get; set; }
         }
         public enum SortColumn
         {

@@ -131,6 +131,11 @@ public class QuoteServiceV1
             records = records.Where(t => t.Id == request.Id.Value);
         }
 
+        if (request.QuoteStatus.HasValue)
+        {
+            records = records.Where(t => t.Status == request.QuoteStatus.Value);
+        }
+
         var mapped = records.Select(t => new GetQuotesV1.Record()
         {
             Id = t.Id,

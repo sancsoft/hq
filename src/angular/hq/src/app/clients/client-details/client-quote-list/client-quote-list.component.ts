@@ -77,6 +77,11 @@ export class ClientQuoteListComponent {
       startWith(clientDetailService.search.value),
     );
 
+    const quoteStatus$ = clientDetailService.projectStatus.valueChanges.pipe(
+      tap(() => this.goToPage(1)),
+      startWith(clientDetailService.projectStatus.value),
+    );
+
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
     const request$ = combineLatest({
@@ -86,6 +91,7 @@ export class ClientQuoteListComponent {
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
       clientId: clientDetailService.clientId$,
+      quoteStatus: quoteStatus$,
     });
 
     const response$ = request$.pipe(

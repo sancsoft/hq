@@ -9,6 +9,7 @@ export interface GetQuotesRequestV1 extends PagedRequestV1 {
   clientId?: string;
   sortBy: SortColumn;
   sortDirection: SortDirection;
+  quoteStatus: ProjectStatus | null;
 }
 
 export enum SortColumn {
