@@ -4,6 +4,7 @@ import { AutocompleteOptionComponent } from '../common/autocomplete-option/autoc
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ModalService } from '../services/modal.service';
 import { firstValueFrom } from 'rxjs';
+import { Autocomplete2Component } from '../common/autocomplete2/autocomplete2.component';
 
 interface TestOption {
   id: number;
@@ -17,6 +18,7 @@ interface TestOption {
     AutocompleteComponent,
     AutocompleteOptionComponent,
     ReactiveFormsModule,
+    Autocomplete2Component
   ],
   templateUrl: './test.component.html',
 })

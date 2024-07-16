@@ -1,14 +1,2 @@
 <h1>Autocomplete</h1>
-<hq-autocomplete
-  [formControl]="formControl"
-  [displayWith]="displayWith"
-  placeholder="Select Client"
->
-  @for (option of options; track option.id) {
-    <hq-autocomplete-option>{{ option.name }}</hq-autocomplete-option>
-  }
-</hq-autocomplete>
-
-<button type="button" (click)="setValue()">Set Value</button>
-
-<h1>Value: {{ formControl.value }}</h1>
+  <hq-autocomplete2 [width]="500" [options]="['Alaska', 'California', 'New York']" />
