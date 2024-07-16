@@ -11,6 +11,9 @@ import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { ToastService } from '../../services/toast.service';
+import { ButtonComponent } from '../../core/components/button/button.component';
+import { TextInputComponent } from '../../core/components/text-input/text-input.component';
+import { ValidationErrorDirective } from '../../core/directives/validation-error.directive';
 
 interface Form {
   name: FormControl<string>;
@@ -22,7 +25,14 @@ interface Form {
 @Component({
   selector: 'hq-client-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonComponent,
+    TextInputComponent,
+    ValidationErrorDirective,
+  ],
   templateUrl: './client-edit.component.html',
 })
 export class ClientEditComponent implements OnInit {
