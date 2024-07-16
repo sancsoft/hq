@@ -23,6 +23,7 @@ import { HQRole } from '../../../enums/hqrole';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { ProjectStatus } from '../../../enums/project-status';
 import { ClientDetailsService } from '../client-details.service';
+import { ButtonComponent } from '../../../core/components/button/button.component';
 
 @Component({
   selector: 'hq-client-service-list',
@@ -34,6 +35,7 @@ import { ClientDetailsService } from '../client-details.service';
     ReactiveFormsModule,
     SortIconComponent,
     InRolePipe,
+    ButtonComponent,
   ],
   templateUrl: './client-service-list.component.html',
 })

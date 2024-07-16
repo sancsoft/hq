@@ -22,6 +22,7 @@ import { SortDirection } from '../../../models/common/sort-direction';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { HQRole } from '../../../enums/hqrole';
 import { ClientDetailsService } from '../client-details.service';
+import { ButtonComponent } from '../../../core/components/button/button.component';
 
 @Component({
   selector: 'hq-client-project-list',
@@ -33,6 +34,7 @@ import { ClientDetailsService } from '../client-details.service';
     PaginatorComponent,
     SortIconComponent,
     InRolePipe,
+    ButtonComponent,
   ],
   templateUrl: './client-project-list.component.html',
 })

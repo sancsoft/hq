@@ -23,6 +23,7 @@ import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { HQRole } from '../../../enums/hqrole';
 import { ProjectStatus } from '../../../enums/project-status';
 import { ClientDetailsService } from '../client-details.service';
+import { ButtonComponent } from '../../../core/components/button/button.component';
 
 @Component({
   selector: 'hq-client-quote-list',
@@ -34,6 +35,7 @@ import { ClientDetailsService } from '../client-details.service';
     PaginatorComponent,
     SortIconComponent,
     InRolePipe,
+    ButtonComponent,
   ],
   templateUrl: './client-quote-list.component.html',
 })

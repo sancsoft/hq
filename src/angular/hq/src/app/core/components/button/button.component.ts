@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Params, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'hq-button',
@@ -17,6 +17,9 @@ export class ButtonComponent {
 
   @Input()
   routerLink?: string | unknown[] | null;
+
+  @Input()
+  queryParams?: Params;
 
   @Input()
   fullWidth = false;

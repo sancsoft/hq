@@ -85,15 +85,14 @@
         colspan="2"
       >
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-          <button
-            disabled
-            routerLink="/projects/create"
+          <hq-button
+            [disabled]="true"
+            routerLink="/services/create"
             [queryParams]="{ clientId: clientDetailService.clientId$ | async }"
-            class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
           >
             <i class="bi bi-plus"></i>
             Service
-          </button>
+          </hq-button>
         }
       </th>
     </tr>
