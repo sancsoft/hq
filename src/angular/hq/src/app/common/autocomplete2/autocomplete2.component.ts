@@ -23,6 +23,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { generateUniqueInputId } from '../../core/functions/generate-unique-input-id';
 import { ValidationErrorDirective } from '../../core/directives/validation-error.directive';
 import { Subject, takeUntil } from 'rxjs';
+import { CdkListbox, CdkOption } from '@angular/cdk/listbox';
 
 export interface IdentifiableWithName {
   id: string | number;
@@ -31,7 +32,13 @@ export interface IdentifiableWithName {
 @Component({
   selector: 'hq-autocomplete2',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    CdkListbox,
+    CdkOption,
+  ],
   templateUrl: './autocomplete2.component.html',
 })
 export class Autocomplete2Component
@@ -44,6 +51,7 @@ export class Autocomplete2Component
   @Input()
   public disabled = false;
   private destroy = new Subject<void>();
+  dropdownFocus: boolean = false;
 
   @ContentChildren(ValidationErrorDirective)
   validationErrors!: QueryList<ValidationErrorDirective>;
@@ -117,7 +125,9 @@ export class Autocomplete2Component
     );
   }
   handleBlur() {
-    setTimeout(() => this.closeDropdown(), 100);
+    setTimeout(() => {
+      this.closeDropdown();
+    }, 100);
   }
 
   closeDropdown() {
