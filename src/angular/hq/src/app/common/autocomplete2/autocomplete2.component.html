@@ -1,7 +1,7 @@
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
 
-<div class="grid relative w-full">
+<div class="grid relative w-full" #container>
   <input
     [ngClass]="{
       'border-red-500 text-gray-100': ngControl?.invalid && ngControl?.touched,
@@ -10,34 +10,35 @@
     [formControl]="control"
     (focus)="openDropdown()"
     (blur)="handleBlur()"
-    class="pl-2 pr-[43px] w-full appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+    class="pl-2 pr-[43px] w-full appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px] rounded-br-none rounded-bl-none"
   />
   <span
     class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
   >
     <i class="bi bi-arrow-down-short text-[24px]"></i>
   </span>
-  <ng-template #dropdownTemplate>
-    <div class="left-0 mt-1 bg-blue-900 border border-gray-300 rounded-md">
-      <ng-container>
-        @for (option of filteredOptions; track $index) {
-          <!-- <ng-content
-            (click)="selectOption(option)"
-            (keydown.enter)="selectOption(option)"
-            [ngTemplateOutletContext]="{ $implicit: option }"
-          ></ng-content> -->
-          <button
-            class="block option px-4 py-2 text-gray-100 cursor-pointer hover:opacity-70 opacity-100 border-b border-gray-400 last:border-b-0"
-            (click)="selectOption(option)"
-            (keydown.enter)="selectOption(option)"
-          >
-            {{ option.name }}
-          </button>
-        }
-      </ng-container>
-    </div>
-  </ng-template>
 </div>
+<ng-template #dropdownTemplate>
+  <div
+    class="bg-blue-900 border border-gray-100 rounded-md border-t-0 rounded-tr-none rounded-tl-none"
+    [style.width.px]="container.offsetWidth"
+  >
+    @for (option of filteredOptions; track $index) {
+      <!-- <ng-content
+          (click)="selectOption(option)"
+          (keydown.enter)="selectOption(option)"
+          [ngTemplateOutletContext]="{ $implicit: option }"
+        ></ng-content> -->
+      <button
+        class="block option px-4 py-2 text-gray-100 cursor-pointer hover:opacity-70 opacity-100 border-b border-gray-400 last:border-b-0 w-full text-left"
+        (click)="selectOption(option)"
+        (keydown.enter)="selectOption(option)"
+      >
+        {{ option.name }}
+      </button>
+    }
+  </div>
+</ng-template>
 @for (error of validationErrors; track error.hqValidationError) {
   @if (
     ngControl &&
