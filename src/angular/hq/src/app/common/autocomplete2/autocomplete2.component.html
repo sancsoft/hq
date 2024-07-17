@@ -5,6 +5,7 @@
   #button
   type="button"
   (focus)="isOpen = true"
+  (keydown)="handleButtonKeydown($event)"
   (blur)="handleBlur()"
   class="pl-2 pr-[43px] w-full appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px] rounded-br-none rounded-bl-none"
 >
@@ -17,19 +18,23 @@
   (attach)="onAttach()"
 >
   <div
-    class="bg-blue-900 border border-gray-100 rounded-md border-t-0 rounded-tr-none rounded-tl-none"
+    class="bg-blue-900 border border-gray-100 overflow-hidden rounded-md border-t-0 rounded-tr-none rounded-tl-none"
     [style.width.px]="button.offsetWidth"
   >
     <div class="border-b border-b-white">
       <hq-search-input
+        (keydown)="handleSearchInputKeydown($event)"
         variant="transparent"
+        (focusin)="handleFocusIn($event)"
+        (focusout)="handleFocusOut($event)"
         [formControl]="control"
         (hqBlur)="isOpen = false"
+        [attr.aria-selected]="activeOptionIndex === -1"
       >
       </hq-search-input>
     </div>
 
-    <div class="left-0 mt-1 bg-blue-900 border border-gray-300 rounded-md">
+    <div class="left-0 bg-blue-900 rounded-md">
       <ng-container>
         <ul
           cdkListbox
@@ -37,15 +42,32 @@
           cdkListboxUseActiveDescendant
           aria-labelledby="spatula-label"
           class="listbox"
+          [tabindex]="-1"
         >
           @for (option of filteredOptions; track $index) {
             <li
+              [tabindex]="-1"
+              [ngClass]="{
+                'bg-blue-800': $index === activeOptionIndex,
+              }"
+              #optionElement
               [cdkOption]="option"
+              role="option"
               class="block option px-4 py-2 text-gray-100 cursor-pointer hover:opacity-70 opacity-100 border-b border-gray-400 last:border-b-0"
-              (click)="selectOption(option)"
+              (click)="handleSelect(option)"
               (mousedown)="$event.preventDefault()"
+              [attr.aria-selected]="$index === activeOptionIndex"
             >
               {{ option.name }}
+            </li>
+          }
+          @if (filteredOptions.length === 0) {
+            <li
+              [tabindex]="-1"
+              (mousedown)="$event.preventDefault()"
+              class="block option px-4 py-2 text-gray-50 cursor-pointer-none cursor-default hover:opacity-70 opacity-100 border-b border-gray-400 last:border-b-0"
+            >
+              No Results Found
             </li>
           }
         </ul>

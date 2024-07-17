@@ -63,10 +63,13 @@ export class Autocomplete2Component
   public disabled = false;
   private destroy = new Subject<void>();
   dropdownFocus: boolean = false;
+  activeOptionIndex = -1;
 
   @ContentChildren(ValidationErrorDirective)
   validationErrors!: QueryList<ValidationErrorDirective>;
-
+  @ViewChildren('optionElement') optionElements!: QueryList<
+    ElementRef<HTMLLIElement>
+  >;
   @ViewChild('button') button!: ElementRef<HTMLButtonElement>;
   @ViewChild('dropdownTemplate', { static: true })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -121,7 +124,9 @@ export class Autocomplete2Component
 
   onAttach() {
     this.cdr.detectChanges();
-    this.search?.focus();
+    if (this.search) {
+      this.search.focus();
+    }
   }
 
   openDropdown() {
@@ -142,19 +147,22 @@ export class Autocomplete2Component
       new TemplatePortal(this.dropdownTemplate, this.viewContainerRef),
     );
   }
-  handleBlur() {
-    // setTimeout(() => this.closeDropdown(), 100);
-  }
 
   closeDropdown() {
+    console.log('Closing dropdown');
     if (this.overlayRef) {
       this.overlayRef.dispose();
+      console.log('Closed dropdown');
     }
+  }
+  // This function perform select and closes the overlay
+  handleSelect(option: IdentifiableWithName) {
+    this.selectOption(option);
+    this.isOpen = false;
   }
 
   selectOption(option: IdentifiableWithName) {
     this.control.setValue(option.name);
-    this.closeDropdown();
     this.ngControl?.control?.setValue(option);
     console.log(this.ngControl?.control);
   }
@@ -174,6 +182,7 @@ export class Autocomplete2Component
         regex.test(option.name),
       );
     }
+    this.activeOptionIndex = -1;
   }
 
   writeValue(value: string): void {
@@ -205,5 +214,73 @@ export class Autocomplete2Component
 
   focus() {
     this.button?.nativeElement?.focus();
+  }
+
+  handleButtonKeydown(event: KeyboardEvent) {
+    console.log('Button handler', event);
+    if (event.key === 'ArrowDown') {
+      this.isOpen = true;
+      console.log('Arrow down button');
+      this.setActiveOption(0);
+    }
+  }
+  handleSearchInputKeydown(event: KeyboardEvent) {
+    const maxIndex = this.filteredOptions.length - 1;
+    switch (event.key) {
+      case 'ArrowDown':
+        if (this.activeOptionIndex === null) {
+          this.setActiveOption(0);
+        } else {
+          this.setActiveOption((this.activeOptionIndex + 1) % (maxIndex + 1));
+        }
+        event.preventDefault();
+        break;
+      case 'ArrowUp':
+        if (this.activeOptionIndex === null) {
+          this.setActiveOption(maxIndex);
+        } else {
+          this.setActiveOption(
+            (this.activeOptionIndex - 1 + maxIndex + 1) % (maxIndex + 1),
+          );
+        }
+        event.preventDefault();
+        break;
+      case 'Enter':
+        if (this.activeOptionIndex !== null) {
+          console.log('Enter');
+          if (this.activeOptionIndex >= 0) {
+            this.selectOption(this.filteredOptions[this.activeOptionIndex]);
+          }
+          this.isOpen = false;
+        }
+        event.preventDefault();
+        break;
+      case 'Escape':
+        console.log('Escape');
+        this.isOpen = false;
+        event.preventDefault();
+        break;
+    }
+  }
+
+  private setActiveOption(index: number) {
+    this.activeOptionIndex = index;
+    console.log(this.activeOptionIndex, 'Active option index');
+    this.cdr.detectChanges();
+  }
+  handleBlur() {
+    setTimeout(() => {
+      if (!this.focused) {
+        this.closeDropdown();
+      }
+    }, 200);
+  }
+
+  handleFocusIn(event: FocusEvent) {
+    this.focused = true;
+  }
+
+  handleFocusOut(event: FocusEvent) {
+    this.focused = false;
   }
 }
