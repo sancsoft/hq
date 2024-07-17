@@ -699,6 +699,7 @@ namespace HQ.Server.Services
             var streamWriter = new StreamWriter(stream);
             var csvWriter = new CsvWriter(streamWriter, new CsvConfiguration(CultureInfo.InvariantCulture));
 
+            csvWriter.Context.RegisterClassMap<ExportTimeClassMap>();
 
             var mappedRequest = MapToGetTimesV1Request(request);
             var records = await this.GetTimesV1(mappedRequest);
@@ -718,6 +719,26 @@ namespace HQ.Server.Services
                 FileName = $"HQTimeExport_{DateTime.Now:yyyyMMddHHmm}.csv",
                 ContentType = "text/csv",
             };
+        }
+
+        private class ExportTimeClassMap : ClassMap<GetTimesV1.Record>
+        {
+            public ExportTimeClassMap()
+            {
+                Map(t => t.StaffName).Name("Staff");
+                Map(t => t.Status).Name("Status");
+                Map(t => t.Date).Name("Date");
+                Map(t => t.ClientName).Name("Client");
+                Map(t => t.ProjectName).Name("Project");
+                Map(t => t.ChargeCode).Name("ChargeCode");
+                Map(t => t.ActivityName).Name("Activity");
+                Map(t => t.Task).Name("Task");
+                Map(t => t.Hours).Name("Hours");
+                Map(t => t.Billable).Name("Billable");
+                Map(t => t.BillableHours).Name("AcceptedHours");
+                Map(t => t.HoursApprovedBy).Name("AcceptedBy");
+                Map(t => t.Description).Name("Description");
+            }
         }
 
         public async Task BackgroundSendTimeEntryReminderEmail(Period period, CancellationToken ct)
