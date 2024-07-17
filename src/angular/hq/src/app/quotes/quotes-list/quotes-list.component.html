@@ -11,24 +11,24 @@
     <tr class="sticky top-0 text-left">
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.QuoteName)"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+        (click)="onSortClick(sortColumn.QuoteNumber)"
       >
-        Quote Name
+        Quote number
         <hq-sort-icon
-          [column]="sortColumn.QuoteName"
+          [column]="sortColumn.QuoteNumber"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3"
-        (click)="onSortClick(sortColumn.QuoteNumber)"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.QuoteName)"
       >
-        Quote number
+        Quote Name
         <hq-sort-icon
-          [column]="sortColumn.QuoteNumber"
+          [column]="sortColumn.QuoteName"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
@@ -99,13 +99,10 @@
         colspan="2"
       >
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-          <button
-            routerLink="/quotes/create"
-            class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
-          >
+          <hq-button routerLink="/quotes/create">
             <i class="bi bi-plus"></i>
             Quote
-          </button>
+          </hq-button>
         }
       </th>
     </tr>
@@ -118,10 +115,10 @@
     }
     @for (quote of quotes$ | async; track $index) {
       <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black py-2 pl-5">{{ quote.name }}</td>
         <td class="border-b border-black py-2 pl-5">
           {{ quote.quoteNumber ?? "None" }}
         </td>
+        <td class="border-b border-black py-2 pl-5">{{ quote.name }}</td>
         <td class="border-b border-black py-2">{{ quote.clientName }}</td>
         <td class="border-b border-black py-2">{{ quote.chargeCode }}</td>
         <td class="border-b border-black py-2">$ {{ quote.value ?? "0.0" }}</td>

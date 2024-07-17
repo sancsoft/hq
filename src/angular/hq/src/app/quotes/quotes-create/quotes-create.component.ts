@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { HQService } from '../../services/hq.service';
@@ -17,13 +17,15 @@ import { ToastService } from '../../services/toast.service';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { ProjectStatus } from '../../enums/project-status';
 import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
+import { CoreModule } from '../../core/core.module';
 
 interface quoteFormGroup {
-  clientId: FormControl<string>;
+  clientId: FormControl<string | null>;
   name: FormControl<string>;
   value: FormControl<number | null>;
   status: FormControl<number | null>;
   date: FormControl<string | null>;
+  description: FormControl<string | null>;
   quoteNumber: FormControl<number | null>;
 }
 @Component({
@@ -36,21 +38,16 @@ interface quoteFormGroup {
     SelectableClientListComponent,
     PdfViewerComponent,
     RouterLink,
+    CoreModule,
   ],
   templateUrl: './quotes-create.component.html',
 })
-export class QuotesCreateComponent {
-  modalOpen$ = new BehaviorSubject<boolean>(false);
-  selectedQuote$ = new Observable<string>();
+export class QuotesCreateComponent implements OnInit {
   quoteStatus = ProjectStatus;
-  quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
-
   apiErrors: string[] = [];
-  selectedClientName$ = new BehaviorSubject<string | null>(null);
 
   quoteFormGroup = new FormGroup<quoteFormGroup>({
-    clientId: new FormControl('', {
-      nonNullable: true,
+    clientId: new FormControl(null, {
       validators: [Validators.required],
     }),
     name: new FormControl('', {
@@ -68,19 +65,27 @@ export class QuotesCreateComponent {
       validators: [Validators.required],
     }),
     quoteNumber: new FormControl(null, {}),
+    description: new FormControl(null, {}),
   });
+
+  clients$: Observable<GetClientRecordV1[]>;
 
   constructor(
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
     private toastService: ToastService,
-  ) {}
-  updateSelectedClient(client: GetClientRecordV1) {
-    console.log(client);
-    this.quoteFormGroup.get('clientId')?.setValue(client.id);
-    this.selectedClientName$.next(client.name);
+  ) {
+    this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
   }
+
+  async ngOnInit() {
+    const clientId = this.route.snapshot.queryParamMap.get('clientId');
+    if (clientId) {
+      this.quoteFormGroup.patchValue({ clientId });
+    }
+  }
+
   async onSubmitProject() {
     this.quoteFormGroup.markAllAsTouched();
     console.log(this.quoteFormGroup);
@@ -90,7 +95,10 @@ export class QuotesCreateComponent {
         this.quoteFormGroup.touched &&
         this.quoteFormGroup.dirty
       ) {
-        const request = this.quoteFormGroup.value;
+        const request = {
+          ...this.quoteFormGroup.value,
+          quoteNumber: this.quoteFormGroup.value.quoteNumber || null,
+        };
         console.log('Sending Request:', request);
         const response = await firstValueFrom(
           this.hqService.upsertQuoteV1(request),
@@ -113,18 +121,5 @@ export class QuotesCreateComponent {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
-  }
-  openModal() {
-    this.modalOpen$.next(true);
-  }
-  closeModal() {
-    this.modalOpen$.next(false);
-  }
-  modalOkClicked() {
-    this.closeModal();
-  }
-  modalCancelClicked() {
-    this.selectedClientName$.next(null);
-    this.closeModal();
   }
 }

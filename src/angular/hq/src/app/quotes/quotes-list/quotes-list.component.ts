@@ -26,6 +26,7 @@ import { ClientDetailsSearchFilterComponent } from '../../clients/client-details
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { ProjectStatus } from '../../enums/project-status';
+import { CoreModule } from '../../core/core.module';
 
 @Component({
   selector: 'hq-quotes-list',
@@ -38,6 +39,7 @@ import { ProjectStatus } from '../../enums/project-status';
     SortIconComponent,
     ClientDetailsSearchFilterComponent,
     InRolePipe,
+    CoreModule,
   ],
   templateUrl: './quotes-list.component.html',
 })
@@ -63,8 +65,10 @@ export class QuotesListComponent {
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsServiceToReplace,
   ) {
-    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.QuoteName);
-    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
+    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.QuoteNumber);
+    this.sortDirection$ = new BehaviorSubject<SortDirection>(
+      SortDirection.Desc,
+    );
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value),

@@ -60,19 +60,18 @@ public class QuoteServiceV1
                     _context.Quotes.Add(quote);
                 }
 
-                var latestQuoteNumber = await _context.Quotes.MaxAsync((q) => q.QuoteNumber, ct);
+                var latestQuoteNumber = await _context.Quotes.Where(t => t.Id != request.Id).MaxAsync((q) => q.QuoteNumber, ct);
                 var nextQuoteNumber = latestQuoteNumber + 1;
 
                 if (request.QuoteNumber.HasValue)
                 {
-                    var filteredRecords = records.Where(t => t.QuoteNumber == request.QuoteNumber && t.Id != request.Id);
-                    if (filteredRecords.Any())
+                    if (await records.AnyAsync(t => t.QuoteNumber == request.QuoteNumber && t.Id != request.Id, ct))
                     {
                         return Result.Fail(new Error("This quote number already exists."));
                     }
                     else
                     {
-                        quote.QuoteNumber = request.QuoteNumber ?? 0;
+                        quote.QuoteNumber = request.QuoteNumber.Value;
                     }
                 }
                 else
@@ -86,7 +85,6 @@ public class QuoteServiceV1
                 quote.Date = request.Date;
                 quote.Status = request.Status;
                 quote.Description = request.Description;
-
 
                 await _context.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);

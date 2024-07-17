@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
@@ -16,13 +16,15 @@ import { SelectableClientListComponent } from '../../clients/selectable-client-l
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { ToastService } from '../../services/toast.service';
 import { ProjectStatus } from '../../enums/project-status';
+import { CoreModule } from '../../core/core.module';
 
 interface quoteFormGroup {
-  clientId: FormControl<string>;
+  clientId: FormControl<string | null>;
   name: FormControl<string>;
   value: FormControl<number | null>;
   status: FormControl<number | null>;
   date: FormControl<string | null>;
+  description: FormControl<string | null>;
   quoteNumber: FormControl<number | null>;
 }
 
@@ -36,21 +38,17 @@ interface quoteFormGroup {
     ErrorDisplayComponent,
     RouterLink,
     SelectableClientListComponent,
+    CoreModule,
   ],
   templateUrl: './quotes-edit.component.html',
 })
 export class QuotesEditComponent implements OnInit {
-  modalOpen$ = new BehaviorSubject<boolean>(false);
-  selectedQuote$ = new Observable<string>();
   quoteStatus = ProjectStatus;
-  quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
   quoteId?: string;
   apiErrors: string[] = [];
-  selectedClientName$ = new BehaviorSubject<string | null>(null);
 
   quoteFormGroup = new FormGroup<quoteFormGroup>({
-    clientId: new FormControl('', {
-      nonNullable: true,
+    clientId: new FormControl(null, {
       validators: [Validators.required],
     }),
     name: new FormControl('', {
@@ -66,6 +64,7 @@ export class QuotesEditComponent implements OnInit {
     date: new FormControl(null, {
       validators: [Validators.required],
     }),
+    description: new FormControl(null, {}),
     quoteNumber: new FormControl(null, {}),
   });
 
@@ -77,17 +76,17 @@ export class QuotesEditComponent implements OnInit {
     await this.getQuote();
   }
 
+  clients$: Observable<GetClientRecordV1[]>;
+
   constructor(
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
     private toastService: ToastService,
-  ) {}
-  updateSelectedClient(client: GetClientRecordV1) {
-    console.log(client);
-    this.quoteFormGroup.get('clientId')?.setValue(client.id);
-    this.selectedClientName$.next(client.name);
+  ) {
+    this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
   }
+
   async onSubmit() {
     this.quoteFormGroup.markAllAsTouched();
     console.log(this.quoteFormGroup.value);
@@ -100,7 +99,11 @@ export class QuotesEditComponent implements OnInit {
     console.log('Form is valid');
 
     try {
-      const request = { id: this.quoteId, ...this.quoteFormGroup.value };
+      const request = {
+        id: this.quoteId,
+        ...this.quoteFormGroup.value,
+        quoteNumber: this.quoteFormGroup.value.quoteNumber || null,
+      };
       request.status = Number(request.status);
       const response = await firstValueFrom(
         this.hqService.upsertQuoteV1(request),
@@ -126,14 +129,7 @@ export class QuotesEditComponent implements OnInit {
         this.hqService.getQuotesV1(request),
       );
       const quoteMember = response.records[0];
-      this.quoteFormGroup.setValue({
-        clientId: quoteMember.clientId,
-        name: quoteMember.name,
-        status: Number(quoteMember.status) ?? null,
-        value: quoteMember.value ?? null,
-        date: quoteMember.date ?? null,
-        quoteNumber: quoteMember.quoteNumber ?? null,
-      });
+      this.quoteFormGroup.patchValue(quoteMember);
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
@@ -141,18 +137,5 @@ export class QuotesEditComponent implements OnInit {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
-  }
-  openModal() {
-    this.modalOpen$.next(true);
-  }
-  closeModal() {
-    this.modalOpen$.next(false);
-  }
-  modalOkClicked() {
-    this.closeModal();
-  }
-  modalCancelClicked() {
-    this.selectedClientName$.next(null);
-    this.closeModal();
   }
 }
