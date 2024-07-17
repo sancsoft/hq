@@ -422,7 +422,7 @@ namespace HQ.Server.Services
                 StaffName = t.Staff.Name,
                 StaffId = t.Staff.Id,
                 InvoiceId = t.InvoiceId,
-                HoursApprovedBy = null,
+                HoursApprovedBy = t.AcceptedBy != null ? t.AcceptedBy.Name : null,
                 Billable = t.ChargeCode.Billable,
                 Date = t.Date,
                 Description = t.Notes,
@@ -687,7 +687,8 @@ namespace HQ.Server.Services
                 TimeAccepted = exportRequest.TimeAccepted,
                 Invoiced = exportRequest.Invoiced,
                 SortBy = (GetTimesV1.SortColumn)exportRequest.SortBy,
-                SortDirection = exportRequest.SortDirection
+                SortDirection = exportRequest.SortDirection,
+                TimeStatus = exportRequest.TimeStatus
             };
         }
 
