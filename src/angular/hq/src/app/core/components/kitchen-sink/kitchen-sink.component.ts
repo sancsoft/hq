@@ -23,6 +23,8 @@ import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
 import { Period } from '../../../models/times/get-time-v1';
 import { DualPanelComponent } from '../dual-panel/dual-panel.component';
 import { SelectInputOptionDirective } from '../../directives/select-input-option.directive';
+import { PanelComponent } from '../panel/panel.component';
+import { AngularSplitModule } from 'angular-split';
 
 @Component({
   selector: 'hq-kitchen-sink',
@@ -41,8 +43,10 @@ import { SelectInputOptionDirective } from '../../directives/select-input-option
     ProgressBarComponent,
     TextareaInputComponent,
     StatDisplayComponent,
+    PanelComponent,
     DualPanelComponent,
     SelectInputOptionDirective,
+    AngularSplitModule,
   ],
   templateUrl: './kitchen-sink.component.html',
 })

@@ -1,6 +1,11 @@
 <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
-  <div class="w-full pt-4 mt-1">
+  <div class="w-full ">
     @if (psrService.showSearch$ | async) {
+      <label
+        for="Search"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        >Search</label
+      >
       <!-- search bar -->
       <div
         class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]"
@@ -22,7 +27,7 @@
   @if (psrService.staffMembers$ && psrService.showStaffMembers$ | async) {
     <div class="w-full">
       <label
-        for=""
+        for="Select staff member"
         class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
         >Staff Member</label
       >

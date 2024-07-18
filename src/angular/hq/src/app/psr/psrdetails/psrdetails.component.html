@@ -1,8 +1,8 @@
 <div
-  class="h-[calc(100dvh-(var(--h-footer)+var(--h-header)))] fixed top-[--h-header] left-0 w-full flex flex-col"
+  class="h-full w-full flex flex-col"
 >
   <hq-psr-details-header></hq-psr-details-header>
-
+<!--
   <div class="px-5 pt-3">
     <div
       class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row"
@@ -15,7 +15,7 @@
         <hq-tab routerLink="report">PM Report</hq-tab>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div class="overflow-auto flex-auto scrollbar-hide">
     <router-outlet></router-outlet>
