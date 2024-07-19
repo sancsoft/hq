@@ -6,4 +6,5 @@ public class Plan : Base
     public Guid StaffId { get; set; }
     public Staff Staff { get; set; } = null!;
     public string? Body { get; set; }
+    public string? Status {get; set;}
 }
