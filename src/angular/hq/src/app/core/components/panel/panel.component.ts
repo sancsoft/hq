@@ -29,7 +29,7 @@ export class PanelComponent implements OnInit {
       this.CSizes = [...this.originalCSizes];
       this.collapsed = false;
     } else {
-      this.CSizes = [100, 0];
+      this.CSizes = [99, 1];
       this.collapsed = true;
     }
   }

@@ -74,21 +74,49 @@ body {
   }
 }
 // Custom panel gutter
+// .custom-gutter {
+//   width: 100%;
+//   height: 100%;
+//   position: relative;
+// }
+
+// .custom-gutter-icon {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   background-color: black;
+//   transition: opacity 0.3s;
+//   height: 100%;
+//   width: 100%;
+//   $shadeSize: 8px;
+
+//   .as-horizontal & {
+//     width: 1 + ($shadeSize * 2);
+//     left: -$shadeSize;
+//     right: $shadeSize;
+//     flex-direction: column;
+//   }
+
+//   .as-vertical & {
+//     height: 1 + ($shadeSize * 2);
+//     top: -$shadeSize;
+//     bottom: $shadeSize;
+//     flex-direction: row;
+//   }
+// }
+
 .custom-gutter {
   width: 100%;
   height: 100%;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
 }
 
 .custom-gutter-icon {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
   background-color: black;
   transition: opacity 0.3s;
-  position: absolute;
 
   $shadeSize: 8px;
 
@@ -96,14 +124,14 @@ body {
     width: 1 + ($shadeSize * 2);
     left: -$shadeSize;
     right: $shadeSize;
-    flex-direction: column;
+    // flex-direction: column;
   }
 
   .as-vertical & {
     height: 1 + ($shadeSize * 2);
     top: -$shadeSize;
     bottom: $shadeSize;
-    flex-direction: row;
+    // flex-direction: row;
   }
 }
 

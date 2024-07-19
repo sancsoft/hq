@@ -1,10 +1,10 @@
 <as-split [direction]="Direction" restrictMove="true" gutterSize="8">
   <div
     *asSplitGutter="let isDragged = isDragged"
-    class="custom-gutter bg-black overflow-ellipsis"
+    class="custom-gutter bg-black"
     [class.dragged]="isDragged"
   >
-    <div class="custom-gutter-icon ">
+    <div class="custom-gutter-icon">
       <button title="collapse" (click)="collapseCArea()">
         <i
           [ngClass]="{
