@@ -28,5 +28,4 @@ export interface ChargeCodeViewModel {
 export class PSRDetailsComponent {
   constructor() {}
   HQRole = HQRole;
-
 }
