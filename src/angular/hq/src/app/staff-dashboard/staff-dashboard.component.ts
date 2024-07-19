@@ -1,7 +1,9 @@
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { PanelComponent } from './../core/components/panel/panel.component';
 import { Component } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Period } from '../models/times/get-time-v1';
 import {
   HQTimeChangeEvent,
@@ -9,7 +11,13 @@ import {
   StaffDashboardTimeEntryComponent,
 } from './staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import { updateTimeRequestV1 } from '../models/times/update-time-v1';
-import { firstValueFrom, map } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  map,
+  Observable,
+  startWith,
+} from 'rxjs';
 import { HQService } from '../services/hq.service';
 import { APIError } from '../errors/apierror';
 import { ToastService } from '../services/toast.service';
@@ -20,6 +28,9 @@ import { TimeStatus } from '../models/common/time-status';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HttpErrorResponse } from '@angular/common/http';
 import { StatDisplayComponent } from '../core/components/stat-display/stat-display.component';
+import { HQRole } from '../enums/hqrole';
+import { HQMarkdownComponent } from '../common/markdown/markdown.component';
+import { ButtonState } from '../enums/ButtonState';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -31,21 +42,70 @@ import { StatDisplayComponent } from '../core/components/stat-display/stat-displ
     StaffDashboardSearchFilterComponent,
     StaffDashboardDateRangeComponent,
     StatDisplayComponent,
+    PanelComponent,
+    MonacoEditorModule,
+    HQMarkdownComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
 })
 export class StaffDashboardComponent {
+  Period = Period;
+  HQRole = HQRole;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editorInstance: any;
+  timeStatus = TimeStatus;
+  editorOptions$: Observable<object>;
+  report = new FormControl<string | null>(null);
+  report$ = this.report.valueChanges;
+  prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
+  ButtonState = ButtonState;
+  currentDate = new Date();
+  previousReport: string | null = null;
+
   constructor(
     public staffDashboardService: StaffDashboardService,
     private hqService: HQService,
     private toastService: ToastService,
     private modalService: ModalService,
     private oidcSecurityService: OidcSecurityService,
-  ) {}
-
-  Period = Period;
-  timeStatus = TimeStatus;
+  ) {
+    const canManageProjectStatusReport$ = new BehaviorSubject<boolean>(true);
+    // Editor options
+    this.editorOptions$ = canManageProjectStatusReport$.pipe(
+      map((canManageProjectStatusReport) => {
+        return {
+          theme: 'vs-dark',
+          language: 'markdown',
+          automaticLayout: true,
+          readOnly: !canManageProjectStatusReport,
+          domReadOnly: !canManageProjectStatusReport,
+        };
+      }),
+      startWith({
+        theme: 'vs-dark',
+        language: 'markdown',
+        readOnly: true,
+        domReadOnly: true,
+      }),
+    );
+  }
+  insertTextAtCursor() {
+    const selection = this.editorInstance.getSelection();
+    const id = { major: 1, minor: 1 };
+    const op = {
+      identifier: id,
+      range: selection,
+      text: this.previousReport,
+      forceMoveMarkers: true,
+    };
+    this.editorInstance.executeEdits('my-source', [op]);
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onEditorInit(editor: any) {
+    this.editorInstance = editor;
+  }
 
   async duplicateTime(event: HQTimeChangeEvent) {
     if (!event.date) {
