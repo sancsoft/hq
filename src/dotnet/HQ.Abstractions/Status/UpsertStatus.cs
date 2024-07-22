@@ -1,15 +1,15 @@
 using HQ.Abstractions.Enumerations;
 
-namespace HQ.Abstractions.Plan;
+namespace HQ.Abstractions.Status;
 
-public class UpsertPlanV1
+public class UpsertStatusV1
 {
     public class Request
     {
         public Guid? Id { get; set; }
-        public DateOnly Date { get; set; }
         public Guid StaffId { get; set; }
-        public string Body { get; set; } = null!;
+        public string? Status { get; set; }
+
     }
 
     public class Response

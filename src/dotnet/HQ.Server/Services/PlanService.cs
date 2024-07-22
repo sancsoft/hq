@@ -36,7 +36,6 @@ Result.FailIf(string.IsNullOrEmpty(request.Body), "Body is required."));
 
         plan.Date = request.Date;
         plan.StaffId = request.StaffId;
-        plan.Status = request.Status;
         plan.Body = request.Body;
 
         await _context.SaveChangesAsync(ct);
@@ -65,7 +64,6 @@ Result.FailIf(string.IsNullOrEmpty(request.Body), "Body is required."));
             Id = t.Id,
             StaffId = t.StaffId,
             Body = t.Body,
-            Status = t.Status,
             Date = t.Date
         }).FirstOrDefaultAsync(ct);
 
@@ -74,7 +72,7 @@ Result.FailIf(string.IsNullOrEmpty(request.Body), "Body is required."));
             return Result.Fail<GetPlanV1.Response>("Record not found");
         }
 
-    
+
 
         return record;
     }

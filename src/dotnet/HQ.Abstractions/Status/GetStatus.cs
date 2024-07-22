@@ -7,25 +7,22 @@ using System.Threading.Tasks;
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
-namespace HQ.Abstractions.Staff
+namespace HQ.Abstractions.Status
 {
-    public class GetPlanV1
+    public class GetStatusV1
     {
         public class Request
         {
             public Guid? Id { get; set; }
             public Guid StaffId { get; set; }
-            public DateOnly Date { get; set; }
         }
 
         public class Response
         {
             public Guid Id { get; set; }
-            public DateOnly? Date { get; set; }
             public Guid StaffId { get; set; }
-            public string? Body { get; set; }
+            public DateOnly Date { get; set; }
+            public string? Status { get; set; }
         }
-
-
     }
 }
