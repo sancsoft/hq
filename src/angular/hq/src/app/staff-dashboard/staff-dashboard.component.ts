@@ -1,6 +1,6 @@
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { PanelComponent } from './../core/components/panel/panel.component';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -13,10 +13,20 @@ import {
 import { updateTimeRequestV1 } from '../models/times/update-time-v1';
 import {
   BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
   firstValueFrom,
   map,
   Observable,
+  of,
+  ReplaySubject,
+  skip,
   startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
 } from 'rxjs';
 import { HQService } from '../services/hq.service';
 import { APIError } from '../errors/apierror';
@@ -31,6 +41,8 @@ import { StatDisplayComponent } from '../core/components/stat-display/stat-displ
 import { HQRole } from '../enums/hqrole';
 import { HQMarkdownComponent } from '../common/markdown/markdown.component';
 import { ButtonState } from '../enums/ButtonState';
+import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
+import { localISODate } from '../common/functions/local-iso-date';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -49,7 +61,7 @@ import { ButtonState } from '../enums/ButtonState';
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
 })
-export class StaffDashboardComponent {
+export class StaffDashboardComponent implements OnInit {
   Period = Period;
   HQRole = HQRole;
 
@@ -57,12 +69,21 @@ export class StaffDashboardComponent {
   editorInstance: any;
   timeStatus = TimeStatus;
   editorOptions$: Observable<object>;
-  report = new FormControl<string | null>(null);
-  report$ = this.report.valueChanges;
+  plan = new FormControl<string | null>(null);
+  plan$ = this.plan.valueChanges;
+
   prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
   ButtonState = ButtonState;
   currentDate = new Date();
   previousReport: string | null = null;
+  planResponse$: Observable<GetPlanResponseV1>;
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
+  async ngOnInit() {}
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
 
   constructor(
     public staffDashboardService: StaffDashboardService,
@@ -71,25 +92,81 @@ export class StaffDashboardComponent {
     private modalService: ModalService,
     private oidcSecurityService: OidcSecurityService,
   ) {
-    const canManageProjectStatusReport$ = new BehaviorSubject<boolean>(true);
-    // Editor options
-    this.editorOptions$ = canManageProjectStatusReport$.pipe(
-      map((canManageProjectStatusReport) => {
-        return {
-          theme: 'vs-dark',
-          language: 'markdown',
-          automaticLayout: true,
-          readOnly: !canManageProjectStatusReport,
-          domReadOnly: !canManageProjectStatusReport,
-        };
-      }),
-      startWith({
-        theme: 'vs-dark',
-        language: 'markdown',
-        readOnly: true,
-        domReadOnly: true,
-      }),
+    const staffId$ = oidcSecurityService.userData$.pipe(
+      map((t) => t.userData),
+      map((t) => t.staff_id as string),
+      distinctUntilChanged(),
     );
+    const date$ = staffDashboardService.date.valueChanges
+      .pipe(startWith(staffDashboardService.date.value))
+      .pipe(map((t) => t || localISODate()));
+
+    const getPlanRequest$ = combineLatest({
+      date: date$,
+      staffId: staffId$,
+    });
+
+    this.planResponse$ = getPlanRequest$.pipe(
+      switchMap((request) => {
+        // this.plan.setValue('', { emitEvent: false });
+        return this.hqService.getPlanV1(request);
+      }),
+      takeUntil(this.destroyed$),
+    );
+    this.planResponse$.subscribe((planResponse) => {
+      this.plan.setValue(planResponse.body, {
+        onlySelf: true,
+        emitEvent: false,
+      });
+    });
+    const request$ = combineLatest({
+      staffId: staffId$.pipe(tap((t) => console.log('staffId', t))),
+      body: this.plan$.pipe(tap((t) => console.log('plan', t))),
+    });
+    this.staffDashboardService.date.valueChanges
+      .pipe(
+        switchMap((_) => {
+          return request$.pipe(
+            skip(1),
+            debounceTime(1000),
+            switchMap((request) =>
+              this.hqService.upsertPlanV1({
+                ...request,
+                date: this.staffDashboardService.date.value,
+              }),
+            ),
+            takeUntil(this.destroyed$),
+          );
+        }),
+      )
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: () => {
+          this.toastService.show('Success', 'PSR Report Saved Successfully');
+        },
+        error: async () => {
+          this.toastService.show(
+            'Error',
+            'There was an error saving the PM report.',
+          );
+          await firstValueFrom(
+            this.modalService.alert(
+              'Error',
+              'There was an error saving the PM report.',
+            ),
+          );
+        },
+      });
+
+    // Editor options
+    this.editorOptions$ = of({
+      theme: 'vs-dark',
+      language: 'markdown',
+      automaticLayout: true,
+    });
+  }
+  monacoChange(e: any) {
+    console.log('Monaco editor changed');
   }
   insertTextAtCursor() {
     const selection = this.editorInstance.getSelection();

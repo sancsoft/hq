@@ -301,16 +301,17 @@
     </div>
     <hq-panel Direction="vertical" [CSizes]="[30, 70]">
       <hq-panel first Direction="horizontal" [CSizes]="[50, 50]">
+        <!-- <textarea first class="h-full" [formControl]="plan"></textarea> -->
         <ngx-monaco-editor
           first
           [ngStyle]="{ height: '100%' }"
           [options]="editorOptions$ | async"
-          [formControl]="report"
+          [formControl]="plan"
           (onInit)="onEditorInit($event)"
         ></ngx-monaco-editor>
 
         <div class="bg-black-alt h-full" second>
-          <hq-markdown [data]="report$ | async"></hq-markdown>
+          <hq-markdown [data]="plan.value"></hq-markdown>
         </div>
       </hq-panel>
       <div second>

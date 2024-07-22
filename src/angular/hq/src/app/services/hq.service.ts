@@ -130,6 +130,14 @@ import {
   GetPrevPSRRequestV1,
   GetPrevPsrResponseV1,
 } from '../models/PSR/get-previous-PSR-v1';
+import {
+  GetPlanRequestV1,
+  GetPlanResponseV1,
+} from '../models/Plan/get-plan-v1';
+import {
+  UpsertPlanRequestV1,
+  UpsertPlanResponseV1,
+} from '../models/Plan/upsert-plan-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -521,6 +529,27 @@ export class HQService {
       })),
     );
   }
+  getPlanV1(request: Partial<GetPlanRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPlanResponseV1>(
+          `${apiUrl}/v1/Plan/GetPlanV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  upsertPlanV1(request: Partial<UpsertPlanRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertPlanResponseV1>(
+          `${apiUrl}/v1/Plan/UpsertPlanV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
   // uploadQuotePDFV1(request: Partial<UploadQuotePDFRequestV1>) {
   //   return this.appSettings.apiUrl$.pipe(
   //     switchMap((apiUrl) =>

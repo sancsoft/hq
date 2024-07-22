@@ -69,11 +69,13 @@ Result.FailIf(string.IsNullOrEmpty(request.Body), "Body is required."));
 
         if (record == null)
         {
-            return Result.Fail<GetPlanV1.Response>("Record not found");
+            return new GetPlanV1.Response()
+            {
+                StaffId = request.StaffId,
+                Body = "",
+                Date = request.Date
+            };
         }
-
-
-
         return record;
     }
 }
