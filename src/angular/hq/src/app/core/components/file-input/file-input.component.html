@@ -2,18 +2,25 @@
   <hq-form-label [for]="uniqueId">{{ label }}</hq-form-label>
 }
 <div
-  class="bg-gray-800 flex justify-between items-center cursor-default select-none border"
+  class="flex justify-between items-center cursor-default select-none border bg-blue-900"
   [ngClass]="{
-    'border-red-500': ngControl?.invalid && ngControl?.touched,
-    'border-transparent': !(ngControl?.invalid && ngControl?.touched),
+    'border-red-500 text-gray-100': ngControl?.invalid && ngControl?.touched,
+    'border-steel-blue-600 text-gray-100':
+      !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
+    'border-black text-gray-100':
+      !(ngControl?.invalid && ngControl?.touched) && variant === 'secondary',
     'border-gray-450 text-gray-450': disabled,
   }"
 >
   @if (value) {
-    <button class="p-2" (click)="input.click()">
-      <span class="mr-2 text-gray-450 font-bold"
-        >{{ value.size / 1024 / 1024 | number: "1.1-1" }} MB</span
-      >
+    <button class="flex items-center w-full h-[36px]" (click)="input.click()">
+      <i
+        class="bi bi-cloud-upload-fill text-[14px] w-[36px]"
+        [ngClass]="{
+          'text-gray-450': disabled,
+          'text-white': !disabled,
+        }"
+      ></i>
       {{ value.name }}
     </button>
     <button
@@ -26,20 +33,20 @@
       }"
       class="p-2"
     >
-      <i class="bi bi-trash"></i>
+      <i class="bi bi-trash text-[14px] w-[36px]"></i>
     </button>
   } @else {
     <button
       (click)="input.click()"
       type="button"
-      class="text-gray-450 flex items-center p-2 w-full"
+      class="text-gray-450 flex items-center w-full h-[36px]"
       title="Browse"
       [ngClass]="{
         'cursor-not-allowed': disabled,
       }"
     >
       <i
-        class="bi bi-cloud-upload-fill mr-1"
+        class="bi bi-cloud-upload-fill text-[14px] w-[36px]"
         [ngClass]="{
           'text-gray-450': disabled,
           'text-white': !disabled,
@@ -53,13 +60,12 @@
   [id]="uniqueId"
   [accept]="accept"
   [disabled]="disabled"
-  (click)="onClick()"
+  (cancel)="onCancel()"
   (change)="onFileSelected($event)"
   class="hidden"
   type="file"
   #input
 />
-
 @for (error of validationErrors; track error.hqValidationError) {
   @if (
     ngControl &&

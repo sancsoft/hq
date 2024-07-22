@@ -31,6 +31,9 @@ export class FileInputComponent implements ControlValueAccessor {
   label: string | null = null;
 
   @Input()
+  variant: 'primary' | 'secondary' = 'primary';
+
+  @Input()
   accept?: string | null;
 
   @Input()
@@ -81,6 +84,7 @@ export class FileInputComponent implements ControlValueAccessor {
     if (event.target instanceof HTMLInputElement && event.target.files) {
       if (event.target.files.length == 1) {
         this.value = event.target.files[0];
+        this.onTouched(this.value);
       }
     }
   }
@@ -89,7 +93,7 @@ export class FileInputComponent implements ControlValueAccessor {
     this.value = null;
   }
 
-  onClick() {
+  onCancel() {
     this.onTouched(this.value);
   }
 
