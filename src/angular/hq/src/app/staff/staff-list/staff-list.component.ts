@@ -26,6 +26,7 @@ import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
+import { StaffListService } from './staff-list.service';
 
 @Component({
   selector: 'hq-staff-list',
@@ -63,6 +64,7 @@ export class StaffListComponent {
     private hqService: HQService,
     private route: ActivatedRoute,
     private clientDetailService: ClientDetailsService,
+    public staffListService: StaffListService,
   ) {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value),
