@@ -1,0 +1,75 @@
+@if (label) {
+  <hq-form-label [for]="uniqueId">{{ label }}</hq-form-label>
+}
+<div
+  class="bg-gray-800 flex justify-between items-center cursor-default select-none border"
+  [ngClass]="{
+    'border-red-500': ngControl?.invalid && ngControl?.touched,
+    'border-transparent': !(ngControl?.invalid && ngControl?.touched),
+    'border-gray-450 text-gray-450': disabled,
+  }"
+>
+  @if (value) {
+    <button class="p-2" (click)="input.click()">
+      <span class="mr-2 text-gray-450 font-bold"
+        >{{ value.size / 1024 / 1024 | number: "1.1-1" }} MB</span
+      >
+      {{ value.name }}
+    </button>
+    <button
+      type="button"
+      [disabled]="disabled"
+      (click)="clearFile()"
+      [ngClass]="{
+        'text-red-600 hover:text-red-700': !disabled,
+        'text-gray-450': disabled,
+      }"
+      class="p-2"
+    >
+      <i class="bi bi-trash"></i>
+    </button>
+  } @else {
+    <button
+      (click)="input.click()"
+      type="button"
+      class="text-gray-450 flex items-center p-2 w-full"
+      title="Browse"
+      [ngClass]="{
+        'cursor-not-allowed': disabled,
+      }"
+    >
+      <i
+        class="bi bi-cloud-upload-fill mr-1"
+        [ngClass]="{
+          'text-gray-450': disabled,
+          'text-white': !disabled,
+        }"
+      ></i>
+      {{ placeholder }}
+    </button>
+  }
+</div>
+<input
+  [id]="uniqueId"
+  [accept]="accept"
+  [disabled]="disabled"
+  (click)="onClick()"
+  (change)="onFileSelected($event)"
+  class="hidden"
+  type="file"
+  #input
+/>
+
+@for (error of validationErrors; track error.hqValidationError) {
+  @if (
+    ngControl &&
+    ngControl.errors &&
+    ngControl.touched &&
+    error.hqValidationError &&
+    ngControl.errors[error.hqValidationError]
+  ) {
+    <div class="text-red-700 text-xs leading-normal">
+      <ng-container [ngTemplateOutlet]="error.templateRef"></ng-container>
+    </div>
+  }
+}

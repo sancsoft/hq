@@ -14,6 +14,7 @@ import { TextareaInputComponent } from './components/textarea-input/textarea-inp
 import { SelectInputOptionDirective } from './directives/select-input-option.directive';
 import { ValidationErrorDirective } from './directives/validation-error.directive';
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
+import { FileInputComponent } from './components/file-input/file-input.component';
 
 @NgModule({
   declarations: [],
@@ -33,6 +34,7 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
     TextareaInputComponent,
     SelectInputOptionDirective,
     ValidationErrorDirective,
+    FileInputComponent,
   ],
   exports: [
     TabComponent,
@@ -49,6 +51,7 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
     TextareaInputComponent,
     SelectInputOptionDirective,
     ValidationErrorDirective,
+    FileInputComponent,
   ],
 })
 export class CoreModule {}
