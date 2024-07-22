@@ -27,6 +27,7 @@ interface quoteFormGroup {
   date: FormControl<string | null>;
   description: FormControl<string | null>;
   quoteNumber: FormControl<number | null>;
+  pdf: FormControl<File | null>;
 }
 @Component({
   selector: 'hq-quotes-create',
@@ -66,6 +67,7 @@ export class QuotesCreateComponent implements OnInit {
     }),
     quoteNumber: new FormControl(null, {}),
     description: new FormControl(null, {}),
+    pdf: new FormControl(null, {}),
   });
 
   clients$: Observable<GetClientRecordV1[]>;
@@ -104,6 +106,16 @@ export class QuotesCreateComponent implements OnInit {
           this.hqService.upsertQuoteV1(request),
         );
         console.log(response.id);
+
+        if (this.quoteFormGroup.value.pdf) {
+          await firstValueFrom(
+            this.hqService.uploadQuotePDFV1(
+              response.id,
+              this.quoteFormGroup.value.pdf,
+            ),
+          );
+        }
+
         await this.router.navigate(['../'], { relativeTo: this.route });
         this.toastService.show('Accepted', 'Quote has been created.');
       } else {

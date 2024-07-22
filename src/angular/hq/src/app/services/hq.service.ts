@@ -521,14 +521,16 @@ export class HQService {
       })),
     );
   }
-  // uploadQuotePDFV1(request: Partial<UploadQuotePDFRequestV1>) {
-  //   return this.appSettings.apiUrl$.pipe(
-  //     switchMap((apiUrl) =>
-  //       this.http.post<UploadQuotePDFResponseV1>(
-  //         `${apiUrl}/v1/Quotes/UploadQuotePDFV1`,
-  //         request,
-  //       ),
-  //     ),
-  //   );
-  // }
+
+  uploadQuotePDFV1(quoteId: string, file: File) {
+    const formData = new FormData();
+    formData.append('id', quoteId);
+    formData.append('file', file);
+
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<void>(`${apiUrl}/v1/Quotes/UploadQuotePDFV1`, formData),
+      ),
+    );
+  }
 }

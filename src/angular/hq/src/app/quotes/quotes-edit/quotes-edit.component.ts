@@ -26,6 +26,7 @@ interface quoteFormGroup {
   date: FormControl<string | null>;
   description: FormControl<string | null>;
   quoteNumber: FormControl<number | null>;
+  pdf: FormControl<File | null>;
 }
 
 @Component({
@@ -66,6 +67,7 @@ export class QuotesEditComponent implements OnInit {
     }),
     description: new FormControl(null, {}),
     quoteNumber: new FormControl(null, {}),
+    pdf: new FormControl(null, {}),
   });
 
   async ngOnInit() {
@@ -109,6 +111,16 @@ export class QuotesEditComponent implements OnInit {
         this.hqService.upsertQuoteV1(request),
       );
       console.log(response);
+
+      if (this.quoteFormGroup.value.pdf) {
+        await firstValueFrom(
+          this.hqService.uploadQuotePDFV1(
+            response.id,
+            this.quoteFormGroup.value.pdf,
+          ),
+        );
+      }
+
       await this.router.navigate(['../../'], { relativeTo: this.route });
       this.toastService.show('Updated', 'Quote has been updated');
     } catch (err) {

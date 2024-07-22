@@ -13,11 +13,12 @@ import { FormsModule, NgControl } from '@angular/forms';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
 import { generateUniqueInputId } from '../../functions/generate-unique-input-id';
 import { SelectInputOptionDirective } from '../../directives/select-input-option.directive';
+import { FormLabelComponent } from '../form-label/form-label.component';
 
 @Component({
   selector: 'hq-select-input',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FormLabelComponent],
   templateUrl: './select-input.component.html',
 })
 export class SelectInputComponent<T> {

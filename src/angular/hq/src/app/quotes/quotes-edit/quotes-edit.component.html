@@ -72,6 +72,25 @@
                     </hq-select-input>
                   </div>
                 </div>
+
+                <!-- row grid -->
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
+                >
+                  <!-- column -->
+                  <div>
+                    <hq-text-input
+                      type="number"
+                      formControlName="quoteNumber"
+                      label="Quote Number"
+                      variant="secondary"
+                      placeholder="Quote Number"
+                    >
+                    </hq-text-input>
+                    <small class="text-gray-700">Leave blank to generate</small>
+                  </div>
+                </div>
+
                 <!-- row grid -->
                 <div
                   class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
@@ -171,15 +190,12 @@
                 >
                   <!-- column -->
                   <div>
-                    <hq-text-input
-                      type="number"
-                      formControlName="quoteNumber"
-                      label="Quote Number"
+                    <hq-date-input
+                      formControlName="date"
+                      label="Date"
                       variant="secondary"
-                      placeholder="Quote Number"
                     >
-                    </hq-text-input>
-                    <small class="text-gray-700">Leave blank to generate</small>
+                    </hq-date-input>
                   </div>
                 </div>
 
@@ -189,12 +205,14 @@
                 >
                   <!-- column -->
                   <div>
-                    <hq-date-input
-                      formControlName="date"
-                      label="Date"
+                    <hq-file-input
+                      formControlName="pdf"
+                      label="PDF"
                       variant="secondary"
+                      accept=".pdf"
                     >
-                    </hq-date-input>
+                    </hq-file-input>
+                    <small class="text-gray-700">Optional.</small>
                   </div>
                 </div>
 
