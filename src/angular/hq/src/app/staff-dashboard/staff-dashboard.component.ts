@@ -79,7 +79,12 @@ export class StaffDashboardComponent implements OnInit {
   planResponse$: Observable<GetPlanResponseV1>;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
-  async ngOnInit() {}
+  async ngOnInit() {
+    // this is added to make sure that the upsert method works in value changes
+    this.staffDashboardService.date.setValue(
+      this.staffDashboardService.date.value,
+    );
+  }
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();
@@ -125,7 +130,8 @@ export class StaffDashboardComponent implements OnInit {
     });
     this.staffDashboardService.date.valueChanges
       .pipe(
-        switchMap((_) => {
+        switchMap((date) => {
+          console.log(date);
           return request$.pipe(
             skip(1),
             debounceTime(1000),
