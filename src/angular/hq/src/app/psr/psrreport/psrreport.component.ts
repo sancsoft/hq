@@ -222,9 +222,10 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       identifier: id,
       range: selection,
       text: this.previousReport,
-      forceMoveMarkers: true,
+      forceMoveMarkers: false,
     };
     this.editorInstance.executeEdits('my-source', [op]);
+    this.editorInstance.focus();
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditorInit(editor: any) {

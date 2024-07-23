@@ -241,9 +241,10 @@ export class StaffDashboardComponent implements OnInit {
       identifier: id,
       range: selection,
       text: this.previousPlan,
-      forceMoveMarkers: true,
+      forceMoveMarkers: false,
     };
     this.editorInstance.executeEdits('my-source', [op]);
+    this.editorInstance.focus();
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditorInit(editor: any) {
