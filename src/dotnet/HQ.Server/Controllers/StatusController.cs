@@ -3,8 +3,8 @@ using Asp.Versioning;
 using FluentResults.Extensions.AspNetCore;
 
 using HQ.Abstractions.Common;
-using HQ.Abstractions.Status;
 using HQ.Abstractions.Staff;
+using HQ.Abstractions.Status;
 using HQ.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;

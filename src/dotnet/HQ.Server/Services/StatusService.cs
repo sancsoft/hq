@@ -1,8 +1,7 @@
 using FluentResults;
 
-using HQ.Abstractions.Status;
 using HQ.Abstractions.Staff;
-
+using HQ.Abstractions.Status;
 using HQ.Server.Data;
 
 using Microsoft.EntityFrameworkCore;

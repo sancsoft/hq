@@ -75,7 +75,7 @@ export class StaffDashboardService {
       date: date$,
       status: timeStatus$,
     }).pipe(shareReplay({ bufferSize: 1, refCount: false }));
-    
+
     const time$ = request$.pipe(
       debounceTime(250),
       switchMap((request) => this.hqService.getDashboardTimeV1(request)),
