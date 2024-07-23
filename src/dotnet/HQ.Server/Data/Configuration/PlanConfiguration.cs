@@ -11,7 +11,12 @@ public class PlanConfiguration : BaseConfiguration<Plan>
     {
         base.Configure(builder);
         builder.ToTable("plans");
-        builder.HasIndex(p => p.Date)
+        builder.HasIndex(p => new
+        {
+            p.StaffId,
+            p.Date
+        })
         .IsUnique();
+
     }
 }

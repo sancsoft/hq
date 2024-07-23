@@ -11,7 +11,7 @@
           [formControl]="status"
           class="bg-blue-900 border-steel-blue-600 hover:cursor-pointer w-full pl-2 pr-[43px] appearance-none focus:outline-none font-medium row-start-1 col-start-1 border text-gray-100 h-[26px]"
         >
-          <option [ngValue]="'None'">None</option>
+          <option selected [ngValue]="null">Select Status</option>
           <option [ngValue]="'In the office'">In the office</option>
           <option [ngValue]="'Working from home'">Working from home</option>
           <option [ngValue]="'Sick'">Sick</option>
@@ -182,13 +182,18 @@
   </div>
 }
 
-<div class="w-full h-screen bg-black-alt">
+<div class="w-full h-screen">
   <!-- @if (
     staffDashboardService.period.value === Period.Week ||
     (staffDashboardService.showAllRejectedTimes$ | async)
   ) { -->
-    <div [hidden]="staffDashboardService.period.value === Period.Today &&
-    (staffDashboardService.showAllRejectedTimes$ | async) !== true" >
+  <div
+    class="bg-black-alt"
+    [hidden]="
+      staffDashboardService.period.value === Period.Today &&
+      (staffDashboardService.showAllRejectedTimes$ | async) !== true
+    "
+  >
     @if (staffDashboardService.time$ | async; as dashboard) {
       @for (date of dashboard.dates; track date.date) {
         @if (dashboard.dates.length > 1) {
@@ -305,9 +310,14 @@
     }
   </div>
   <!-- } @else { -->
-    <div class="h-full" [hidden]="staffDashboardService.period.value === Period.Week ||
-    (staffDashboardService.showAllRejectedTimes$ | async)">
-    <div  class="bg-black-alt px-3">
+  <div
+    class="h-full"
+    [hidden]="
+      staffDashboardService.period.value === Period.Week ||
+      (staffDashboardService.showAllRejectedTimes$ | async)
+    "
+  >
+    <div class="bg-black-alt px-3">
       <div
         class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
       >
@@ -317,12 +327,12 @@
           {{ currentDate | date: "EEEE MM/dd/yyyy" }}
         </div>
         <div class="flex ml-aut float-right gap-2">
-          <button>
+          <!-- <button>
             <i
               title="Download report"
               class="bi bi-cloud-download-fill text-white"
             ></i>
-          </button>
+          </button> -->
           <button
             title="Insert Previous Report"
             [disabled]="prevPSRReportButtonState === ButtonState.Disabled"

@@ -142,6 +142,14 @@ import {
   GetStatusRequestV1,
   GetStatusResponseV1,
 } from '../models/status/get-status-v1';
+import {
+  GetPrevPlanRequestV1,
+  GetPrevPlanResponseV1,
+} from '../models/Plan/get-previous-PSR-v1';
+import {
+  UpsertStatusRequestV1,
+  UpsertStatusResponseV1,
+} from '../models/status/upsert-status-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -564,11 +572,22 @@ export class HQService {
       ),
     );
   }
-  upsertStatus(request: Partial<GetStatusRequestV1>) {
+  upsertStatus(request: Partial<UpsertStatusRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<GetStatusResponseV1>(
+        this.http.post<UpsertStatusResponseV1>(
           `${apiUrl}/v1/Status/UpsertStatusV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  getPreviousPlanV1(request: Partial<GetPrevPlanRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPrevPlanResponseV1>(
+          `${apiUrl}/v1/Plan/PreviousPlanV1`,
           request,
         ),
       ),

@@ -13,6 +13,7 @@ import {
 import { updateTimeRequestV1 } from '../models/times/update-time-v1';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
@@ -44,6 +45,7 @@ import { ButtonState } from '../enums/ButtonState';
 import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
 import { localISODate } from '../common/functions/local-iso-date';
 import { GetStatusResponseV1 } from '../models/status/get-status-v1';
+import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -70,16 +72,17 @@ export class StaffDashboardComponent implements OnInit {
   editorInstance: any;
   timeStatus = TimeStatus;
   editorOptions$: Observable<object>;
-  status = new FormControl<string | null>('None');
+  status = new FormControl<string | null>(null);
   plan = new FormControl<string | null>(null);
   plan$ = this.plan.valueChanges;
 
   prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
   ButtonState = ButtonState;
   currentDate = new Date();
-  previousReport: string | null = null;
+  previousPlan: string | null = null;
   planResponse$: Observable<GetPlanResponseV1>;
   staffStatus$: Observable<GetStatusResponseV1>;
+  prevPlan$: Observable<GetPrevPlanResponseV1 | null>;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
@@ -88,6 +91,9 @@ export class StaffDashboardComponent implements OnInit {
     this.staffDashboardService.date.setValue(
       this.staffDashboardService.date.value,
     );
+    const prevPlan = await firstValueFrom(this.prevPlan$);
+    this.prevPSRReportButtonState =
+      prevPlan && prevPlan.body ? ButtonState.Enabled : ButtonState.Disabled;
   }
   ngOnDestroy(): void {
     this.destroyed$.next(true);
@@ -110,6 +116,29 @@ export class StaffDashboardComponent implements OnInit {
       .pipe(startWith(staffDashboardService.date.value))
       .pipe(map((t) => t || localISODate()));
 
+    const prevPlanRequest$ = combineLatest({
+      date: date$,
+      staffId: staffId$,
+    }).pipe(distinctUntilChanged());
+    prevPlanRequest$.subscribe((t) => {
+      console.log(t);
+    });
+    this.prevPlan$ = prevPlanRequest$.pipe(
+      switchMap((request) => {
+        return this.hqService.getPreviousPlanV1(request).pipe(
+          catchError((error: unknown) => {
+            console.error('Error fetching previous Plan:', error);
+            return of(null);
+          }),
+        );
+      }),
+    );
+    this.prevPlan$.subscribe((prevPlan) => {
+      this.previousPlan = prevPlan?.body ?? '';
+      this.prevPSRReportButtonState =
+        prevPlan && prevPlan.body ? ButtonState.Enabled : ButtonState.Disabled;
+    });
+
     const getPlanRequest$ = combineLatest({
       date: date$,
       staffId: staffId$,
@@ -130,15 +159,9 @@ export class StaffDashboardComponent implements OnInit {
       }),
       takeUntil(this.destroyed$),
     );
-    this.staffStatus$
-      .pipe(
-        map((val) => {
-          return val.status == null || val.status == '' ? 'None' : val.status;
-        }),
-      )
-      .subscribe((staffStatus) => {
-        this.status.setValue(staffStatus);
-      });
+    this.staffStatus$.subscribe((staffStatus) => {
+      this.status.setValue(staffStatus.status);
+    });
 
     upsertStatusRequest$
       .pipe(
@@ -217,7 +240,7 @@ export class StaffDashboardComponent implements OnInit {
     const op = {
       identifier: id,
       range: selection,
-      text: this.previousReport,
+      text: this.previousPlan,
       forceMoveMarkers: true,
     };
     this.editorInstance.executeEdits('my-source', [op]);

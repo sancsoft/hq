@@ -19,14 +19,6 @@ public class StatusServiceV1
 
     public async Task<Result<UpsertStatusV1.Response>> UpsertStatusV1(UpsertStatusV1.Request request, CancellationToken ct = default)
     {
-        var validationResult = Result.Merge(
-Result.FailIf(string.IsNullOrEmpty(request.Status), "Status is required."));
-
-        if (validationResult.IsFailed)
-        {
-            return validationResult;
-        }
-
         var currentDay = DateOnly.FromDateTime(DateTime.Now);
         var status = await _context.Plans.Where((t) => t.Date == currentDay || t.Id == request.Id).FirstOrDefaultAsync(ct);
         if (status == null)
