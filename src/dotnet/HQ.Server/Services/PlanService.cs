@@ -19,7 +19,10 @@ public class PlanServiceV1
 
     public async Task<Result<UpsertPlanV1.Response>> UpsertPlanV1(UpsertPlanV1.Request request, CancellationToken ct = default)
     {
-        var plan = await _context.Plans.FindAsync(request.Id);
+        var plan = await _context.Plans
+            .Where(p => p.Date == request.Date || p.Id == request.Id)
+            .FirstOrDefaultAsync(ct);
+
         if (plan == null)
         {
             plan = new();
@@ -41,7 +44,7 @@ public class PlanServiceV1
     {
         var records = _context.Plans
             .AsNoTracking()
-            .OrderByDescending(t => t.CreatedAt)
+            .OrderByDescending(t => t.Date)
             .AsQueryable();
 
         if (request.Id.HasValue)
@@ -69,5 +72,23 @@ public class PlanServiceV1
             };
         }
         return record;
+    }
+
+    public async Task<Result<PreviousPlanV1.Response>> PreviousPlanV1(PreviousPlanV1.Request request, CancellationToken ct = default)
+    {
+
+        var previousPlan = await _context.Plans.AsNoTracking().Where(t => t.StaffId == request.StaffId && t.Date < request.Date).OrderByDescending(t => t.Date).FirstOrDefaultAsync();
+
+        if (previousPlan == null)
+        {
+            return Result.Fail("Unable to find previous Plan.");
+        }
+
+        return new PreviousPlanV1.Response()
+        {
+            PlanId = previousPlan.Id,
+            body = previousPlan.Body,
+            StaffId = previousPlan.StaffId
+        };
     }
 }

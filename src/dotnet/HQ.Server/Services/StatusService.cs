@@ -27,14 +27,15 @@ Result.FailIf(string.IsNullOrEmpty(request.Status), "Status is required."));
             return validationResult;
         }
 
-        var status = await _context.Plans.FindAsync(request.Id);
+        var currentDay = DateOnly.FromDateTime(DateTime.Now);
+        var status = await _context.Plans.Where((t) => t.Date == currentDay || t.Id == request.Id).FirstOrDefaultAsync(ct);
         if (status == null)
         {
             status = new();
             _context.Plans.Add(status);
         }
 
-        status.Date = DateOnly.FromDateTime(DateTime.Now);
+        status.Date = currentDay;
         status.StaffId = request.StaffId;
         status.Status = request.Status;
 
@@ -49,7 +50,7 @@ Result.FailIf(string.IsNullOrEmpty(request.Status), "Status is required."));
     {
         var records = _context.Plans
             .AsNoTracking()
-            .OrderByDescending(t => t.CreatedAt)
+            .OrderByDescending(t => t.Date)
             .AsQueryable();
 
         if (request.Id.HasValue)

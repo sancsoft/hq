@@ -45,6 +45,13 @@ namespace HQ.Server.Controllers
             .ToActionResult(new HQResultEndpointProfile());
 
         [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(PreviousPlanV1))]
+        [ProducesResponseType<PreviousPlanV1.Response>(StatusCodes.Status200OK)]
+        public Task<ActionResult> PreviousPlanV1([FromBody] PreviousPlanV1.Request request, CancellationToken ct = default) =>
+            _PlanService.PreviousPlanV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(UpsertPlanV1))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
