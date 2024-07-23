@@ -23,22 +23,20 @@ import { HQService } from '../../services/hq.service';
 })
 export class StaffListService {
   search = new FormControl<string | null>(null);
-  showCurrentOnly = new FormControl<boolean>(true);
-
   itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
-
   sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Name);
   sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
-
   records$: Observable<GetStaffV1Record[]>;
   skipDisplay$: Observable<number>;
   takeToDisplay$: Observable<number>;
   totalRecords$: Observable<number>;
+  currentOnly = new FormControl<boolean>(true);
 
   constructor(private hqService: HQService) {
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
+    const currentOnly$ = this.currentOnly.valueChanges.pipe(startWith(this.currentOnly.value));
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value),
     );
@@ -60,6 +58,7 @@ export class StaffListService {
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
+      currentOnly: currentOnly$
     });
 
     const response$ = request$.pipe(
@@ -86,8 +85,8 @@ export class StaffListService {
       ),
     );
   }
-
   goToPage(page: number) {
     this.page.setValue(page);
   }
+
 }

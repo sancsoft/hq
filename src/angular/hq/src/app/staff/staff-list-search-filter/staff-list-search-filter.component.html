@@ -1,0 +1,33 @@
+<div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+  <div class="">
+    <label for="" class="font-open-sans text-nav-disabled text-xs font-bold uppercase">Search</label>
+    <!-- search bar -->
+    <div
+      class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]">
+      <span
+        class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
+        <i class="bi bi-search text-[14px]"></i>
+      </span>
+      <input type="text" [formControl]="staffListService.search"
+        class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
+        name="" />
+    </div>
+  </div>
+  <!-- toggle switch -->
+  <div class="inline-flex items-center -mb-4">
+    <div class="text-[12px] mr-[10px] leading-none text-nowrap">
+      Show current only
+    </div>
+    <label class="relative inline-flex cursor-pointer items-center">
+      <input id="switch" type="checkbox" class="peer sr-only" [formControl]="staffListService.currentOnly" checked />
+      <label for="switch" class="hidden"></label>
+      <div
+        class="peer h-[14px] w-[33px] rounded-full bg-slate-200 after:absolute after:left-[4px] after:top-[3px] after:h-[8px] after:w-[8px] after:rounded-full after:bg-gray-500 peer-checked:after:bg-white after:transition-all after:content-[''] peer-checked:bg-steel-blue-600 peer-checked:after:translate-x-full peer-checked:after:right-[12px] peer-checked:after:left-auto">
+      </div>
+    </label>
+    <div class="text-xs ml-[6px]">On</div>
+  </div>
+</div>
+
+
+
