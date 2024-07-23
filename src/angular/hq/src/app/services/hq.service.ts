@@ -138,6 +138,10 @@ import {
   UpsertPlanRequestV1,
   UpsertPlanResponseV1,
 } from '../models/Plan/upsert-plan-v1';
+import {
+  GetStatusRequestV1,
+  GetStatusResponseV1,
+} from '../models/status/get-status-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -544,6 +548,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpsertPlanResponseV1>(
           `${apiUrl}/v1/Plan/UpsertPlanV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  getStatusV1(request: Partial<GetStatusRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetStatusResponseV1>(
+          `${apiUrl}/v1/Status/GetStatusV1`,
           request,
         ),
       ),

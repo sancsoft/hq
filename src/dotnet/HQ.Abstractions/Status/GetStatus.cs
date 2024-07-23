@@ -19,9 +19,8 @@ namespace HQ.Abstractions.Status
 
         public class Response
         {
-            public Guid Id { get; set; }
+            public Guid? Id { get; set; }
             public Guid StaffId { get; set; }
-            public DateOnly Date { get; set; }
             public string? Status { get; set; }
         }
     }

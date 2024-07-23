@@ -1,11 +1,11 @@
 <div class="px-5">
-  <div class="flex  justify-between gap-[20px]">
+  <div class="flex justify-between gap-[20px]">
     <div class="flex flex-col justify-between">
       <div class="text-4xl text-white">
         {{ (staffDashboardService.time$ | async)?.staffName || "-" }}
       </div>
       <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
-        Work from home
+        {{ (staffStatus$ | async)?.status ?? "Work from Office" }}
       </div>
     </div>
     <div class="flex space-x-8 p-4">

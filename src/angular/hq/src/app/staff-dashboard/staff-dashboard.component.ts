@@ -43,6 +43,7 @@ import { HQMarkdownComponent } from '../common/markdown/markdown.component';
 import { ButtonState } from '../enums/ButtonState';
 import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
 import { localISODate } from '../common/functions/local-iso-date';
+import { GetStatusResponseV1 } from '../models/status/get-status-v1';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -77,6 +78,8 @@ export class StaffDashboardComponent implements OnInit {
   currentDate = new Date();
   previousReport: string | null = null;
   planResponse$: Observable<GetPlanResponseV1>;
+  staffStatus$: Observable<GetStatusResponseV1>;
+
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   async ngOnInit() {
@@ -110,6 +113,16 @@ export class StaffDashboardComponent implements OnInit {
       date: date$,
       staffId: staffId$,
     });
+    const getStatusRequest$ = combineLatest({
+      staffId: staffId$,
+    });
+
+    this.staffStatus$ = getStatusRequest$.pipe(
+      switchMap((request) => {
+        return this.hqService.getStatusV1(request);
+      }),
+      takeUntil(this.destroyed$),
+    );
 
     this.planResponse$ = getPlanRequest$.pipe(
       switchMap((request) => {

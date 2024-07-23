@@ -64,12 +64,15 @@ Result.FailIf(string.IsNullOrEmpty(request.Status), "Status is required."));
             Id = t.Id,
             StaffId = t.StaffId,
             Status = t.Status,
-            Date = t.Date
         }).FirstOrDefaultAsync(ct);
 
         if (record == null)
         {
-            return Result.Fail<GetStatusV1.Response>("Record not found");
+            return new GetStatusV1.Response()
+            {
+                StaffId = request.StaffId,
+                Status = null,
+            };
         }
 
 
