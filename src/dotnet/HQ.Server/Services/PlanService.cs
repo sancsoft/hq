@@ -19,14 +19,6 @@ public class PlanServiceV1
 
     public async Task<Result<UpsertPlanV1.Response>> UpsertPlanV1(UpsertPlanV1.Request request, CancellationToken ct = default)
     {
-        var validationResult = Result.Merge(
-Result.FailIf(string.IsNullOrEmpty(request.Body), "Body is required."));
-
-        if (validationResult.IsFailed)
-        {
-            return validationResult;
-        }
-
         var plan = await _context.Plans.FindAsync(request.Id);
         if (plan == null)
         {

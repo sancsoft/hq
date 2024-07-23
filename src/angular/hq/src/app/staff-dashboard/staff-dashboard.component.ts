@@ -70,6 +70,7 @@ export class StaffDashboardComponent implements OnInit {
   editorInstance: any;
   timeStatus = TimeStatus;
   editorOptions$: Observable<object>;
+  status = new FormControl<string | null>('None');
   plan = new FormControl<string | null>(null);
   plan$ = this.plan.valueChanges;
 
@@ -116,6 +117,12 @@ export class StaffDashboardComponent implements OnInit {
     const getStatusRequest$ = combineLatest({
       staffId: staffId$,
     });
+    const status$ = this.status.valueChanges;
+    this.status.valueChanges.subscribe((status) => console.log(status));
+    const upsertStatusRequest$ = combineLatest({
+      staffId: staffId$,
+      status: status$,
+    });
 
     this.staffStatus$ = getStatusRequest$.pipe(
       switchMap((request) => {
@@ -123,10 +130,28 @@ export class StaffDashboardComponent implements OnInit {
       }),
       takeUntil(this.destroyed$),
     );
+    this.staffStatus$
+      .pipe(
+        map((val) => {
+          return val.status == null || val.status == '' ? 'None' : val.status;
+        }),
+      )
+      .subscribe((staffStatus) => {
+        this.status.setValue(staffStatus);
+      });
+
+    upsertStatusRequest$
+      .pipe(
+        skip(1),
+        switchMap((request) => {
+          return this.hqService.upsertStatus(request);
+        }),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe();
 
     this.planResponse$ = getPlanRequest$.pipe(
       switchMap((request) => {
-        // this.plan.setValue('', { emitEvent: false });
         return this.hqService.getPlanV1(request);
       }),
       takeUntil(this.destroyed$),
@@ -144,7 +169,6 @@ export class StaffDashboardComponent implements OnInit {
     this.staffDashboardService.date.valueChanges
       .pipe(
         switchMap((date) => {
-          console.log(date);
           return request$.pipe(
             skip(1),
             debounceTime(1000),

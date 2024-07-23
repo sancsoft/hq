@@ -564,6 +564,16 @@ export class HQService {
       ),
     );
   }
+  upsertStatus(request: Partial<GetStatusRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetStatusResponseV1>(
+          `${apiUrl}/v1/Status/UpsertStatusV1`,
+          request,
+        ),
+      ),
+    );
+  }
 
   // uploadQuotePDFV1(request: Partial<UploadQuotePDFRequestV1>) {
   //   return this.appSettings.apiUrl$.pipe(

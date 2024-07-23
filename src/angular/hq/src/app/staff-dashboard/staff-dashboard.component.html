@@ -4,9 +4,37 @@
       <div class="text-4xl text-white">
         {{ (staffDashboardService.time$ | async)?.staffName || "-" }}
       </div>
-      <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
-        {{ (staffStatus$ | async)?.status ?? "Work from Office" }}
+      <div class="grid relative w-full max-w-[220px]">
+        <select
+          id="status"
+          aria-label="Select Status"
+          [formControl]="status"
+          class="bg-blue-900 border-steel-blue-600 hover:cursor-pointer w-full pl-2 pr-[43px] appearance-none focus:outline-none font-medium row-start-1 col-start-1 border text-gray-100 h-[26px]"
+        >
+          <option [ngValue]="'None'">None</option>
+          <option [ngValue]="'In the office'">In the office</option>
+          <option [ngValue]="'Working from home'">Working from home</option>
+          <option [ngValue]="'Sick'">Sick</option>
+          <option [ngValue]="'Vacation'">Vacation</option>
+          <option [ngValue]="'Holiday'">Holiday</option>
+
+          <!-- <option [ngValue]="staffDashboardService.Period.Month">Month</option> -->
+        </select>
+        <span
+          [ngClass]="{
+            'text-gray-450 after:bg-gray-700':
+              staffDashboardService.showAllRejectedTimes$ | async,
+            'after:bg-gray-100':
+              (staffDashboardService.showAllRejectedTimes$ | async) === false,
+          }"
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
+        >
+          <i class="bi bi-arrow-down-short text-[24px]"></i>
+        </span>
       </div>
+      <!-- <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
+        {{ (staffStatus$ | async)?.status ?? "Work from Office" }}
+      </div> -->
     </div>
     <div class="flex space-x-8 p-4">
       <div class="text-center text-white">
@@ -155,10 +183,12 @@
 }
 
 <div class="w-full h-screen bg-black-alt">
-  @if (
+  <!-- @if (
     staffDashboardService.period.value === Period.Week ||
     (staffDashboardService.showAllRejectedTimes$ | async)
-  ) {
+  ) { -->
+    <div [hidden]="staffDashboardService.period.value === Period.Today &&
+    (staffDashboardService.showAllRejectedTimes$ | async) !== true" >
     @if (staffDashboardService.time$ | async; as dashboard) {
       @for (date of dashboard.dates; track date.date) {
         @if (dashboard.dates.length > 1) {
@@ -273,8 +303,11 @@
         </table>
       }
     }
-  } @else {
-    <div class="bg-black-alt px-3">
+  </div>
+  <!-- } @else { -->
+    <div class="h-full" [hidden]="staffDashboardService.period.value === Period.Week ||
+    (staffDashboardService.showAllRejectedTimes$ | async)">
+    <div  class="bg-black-alt px-3">
       <div
         class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
       >
@@ -438,5 +471,6 @@
         }
       </div>
     </hq-panel>
-  }
+  </div>
+  <!-- } -->
 </div>
