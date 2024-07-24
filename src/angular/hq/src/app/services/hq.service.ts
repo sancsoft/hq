@@ -533,4 +533,24 @@ export class HQService {
       ),
     );
   }
+
+  getQuotePDFV1(request: Partial<object>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.request('post', `${apiUrl}/v1/Quotes/GetQuotePDFV1`, {
+          body: request,
+          responseType: 'blob',
+          observe: 'response',
+        }),
+      ),
+      map((response) => ({
+        file: response.body,
+        fileName: (response.headers.get('content-disposition') ?? '')
+          .split(';')[1]
+          .split('filename')[1]
+          .split('=')[1]
+          .trim(),
+      })),
+    );
+  }
 }

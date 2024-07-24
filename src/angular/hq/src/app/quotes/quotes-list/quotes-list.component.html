@@ -118,7 +118,7 @@
         <td class="border-b border-black py-2 pl-5">
           {{ quote.quoteNumber ?? "None" }}
         </td>
-        <td class="border-b border-black py-2 pl-5">{{ quote.name }}</td>
+        <td class="border-b border-black py-2">{{ quote.name }}</td>
         <td class="border-b border-black py-2">{{ quote.clientName }}</td>
         <td class="border-b border-black py-2">{{ quote.chargeCode }}</td>
         <td class="border-b border-black py-2">$ {{ quote.value ?? "0.0" }}</td>
@@ -137,7 +137,17 @@
                 >EDIT</a
               >
             }
-            <a class="text-teal-200 hover:text-teal-300 pl-3">VIEW</a>
+            @if (quote.hasPDF) {
+              <button
+                type="button"
+                (click)="getPdf(quote.id)"
+                class="text-teal-200 hover:text-teal-300 pl-3"
+              >
+                PDF
+              </button>
+            } @else {
+              <span class="text-nav-disabled pl-3">PDF</span>
+            }
           </div>
         </td>
       </tr>

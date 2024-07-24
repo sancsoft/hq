@@ -33,6 +33,7 @@ export interface GetQuotesRecordV1 {
   date: string | null;
   value: number | null;
   status: ProjectStatus;
+  hasPDF: boolean;
 }
 
 export interface GetQuotesRecordsV1 {

@@ -11,6 +11,7 @@ import {
   startWith,
   tap,
   BehaviorSubject,
+  firstValueFrom,
 } from 'rxjs';
 import { HQService } from '../../services/hq.service';
 import {
@@ -27,6 +28,7 @@ import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { ProjectStatus } from '../../enums/project-status';
 import { CoreModule } from '../../core/core.module';
+import saveAs from 'file-saver';
 
 @Component({
   selector: 'hq-quotes-list',
@@ -141,5 +143,14 @@ export class QuotesListComponent {
   }
   getProjectStatusString(status: ProjectStatus): string {
     return ProjectStatus[status];
+  }
+
+  async getPdf(id: string) {
+    const result = await firstValueFrom(this.hqService.getQuotePDFV1({ id }));
+    if (result.file === null) {
+      return;
+    }
+
+    saveAs(result.file, result.fileName);
   }
 }

@@ -145,7 +145,8 @@ public class QuoteServiceV1
             QuoteNumber = t.QuoteNumber,
             Value = t.Value,
             Status = t.Status,
-            Date = t.Date
+            Date = t.Date,
+            HasPDF = t.HasPDF
         });
 
         var sortMap = new Dictionary<GetQuotesV1.SortColumn, string>()
@@ -202,11 +203,15 @@ public class QuoteServiceV1
         if (request.File == null)
         {
             await _storageService.DeleteAsync(path, ct);
+            quote.HasPDF = false;
         }
         else
         {
             await _storageService.WriteAsync(path, request.ContentType, request.File, ct);
+            quote.HasPDF = true;
         }
+
+        await _context.SaveChangesAsync(ct);
 
         return new UploadQuotePDFV1.Response();
     }
