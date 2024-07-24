@@ -4,72 +4,80 @@
   <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
 <div class="px-5 pt-4 pb-2">
-  <hq-client-details-search-filter></hq-client-details-search-filter>
+  <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+    <hq-search-input [formControl]="quoteListService.search"></hq-search-input>
+
+    <!-- select dropdown -->
+    <hq-select-input [formControl]="quoteListService.quoteStatus">
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      <ng-template
+        [hqSelectInputOption]="quoteListService.ProjectStatus.Unknown"
+      >
+        Unknown
+      </ng-template>
+      <ng-template [hqSelectInputOption]="quoteListService.ProjectStatus.Draft">
+        Draft
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="quoteListService.ProjectStatus.WaitingForSale"
+      >
+        Waiting For Sale
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="quoteListService.ProjectStatus.WaitingForClient"
+      >
+        Waiting For Client
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="quoteListService.ProjectStatus.WaitingForStaff"
+      >
+        Waiting For Staff
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="quoteListService.ProjectStatus.InProduction"
+      >
+        In Production
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="quoteListService.ProjectStatus.Ongoing"
+      >
+        Ongoing
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="quoteListService.ProjectStatus.Completed"
+      >
+        Completed
+      </ng-template>
+      <ng-template
+        [hqSelectInputOption]="quoteListService.ProjectStatus.Closed"
+      >
+        Closed
+      </ng-template>
+      <ng-template [hqSelectInputOption]="quoteListService.ProjectStatus.Lost"
+        >Lost</ng-template
+      >
+    </hq-select-input>
+  </div>
 </div>
+
 <table class="min-w-full border-spacing-0 border-separate">
   <thead>
     <tr class="sticky top-0 text-left">
       <th
+        width="110"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
         (click)="onSortClick(sortColumn.QuoteNumber)"
       >
-        Quote number
+        Quote
         <hq-sort-icon
           [column]="sortColumn.QuoteNumber"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
+          [activeColumn]="quoteListService.sortOption$ | async"
+          [activeSortDirection]="quoteListService.sortDirection$ | async"
         />
       </th>
       <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.QuoteName)"
-      >
-        Quote Name
-        <hq-sort-icon
-          [column]="sortColumn.QuoteName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ClientName)"
-      >
-        Client Name
-        <hq-sort-icon
-          [column]="sortColumn.ClientName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3"
-        (click)="onSortClick(sortColumn.ChargeCode)"
-      >
-        Charge Code
-        <hq-sort-icon
-          [column]="sortColumn.ChargeCode"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.Value)"
-      >
-        Value
-        <hq-sort-icon
-          [column]="sortColumn.Value"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
+        width="150"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
         (click)="onSortClick(sortColumn.Status)"
@@ -77,26 +85,65 @@
         Status
         <hq-sort-icon
           [column]="sortColumn.Status"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
+          [activeColumn]="quoteListService.sortOption$ | async"
+          [activeSortDirection]="quoteListService.sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="200"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.ClientName)"
+      >
+        Client
+        <hq-sort-icon
+          [column]="sortColumn.ClientName"
+          [activeColumn]="quoteListService.sortOption$ | async"
+          [activeSortDirection]="quoteListService.sortDirection$ | async"
         />
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.QuoteName)"
+      >
+        Name
+        <hq-sort-icon
+          [column]="sortColumn.QuoteName"
+          [activeColumn]="quoteListService.sortOption$ | async"
+          [activeSortDirection]="quoteListService.sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="110"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
         (click)="onSortClick(sortColumn.Date)"
       >
         Date
         <hq-sort-icon
           [column]="sortColumn.Date"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
+          [activeColumn]="quoteListService.sortOption$ | async"
+          [activeSortDirection]="quoteListService.sortDirection$ | async"
         />
       </th>
       <th
+        width="110"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right"
+        (click)="onSortClick(sortColumn.Value)"
+      >
+        Value
+        <hq-sort-icon
+          [column]="sortColumn.Value"
+          [activeColumn]="quoteListService.sortOption$ | async"
+          [activeSortDirection]="quoteListService.sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="160"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
-        colspan="2"
       >
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
           <hq-button routerLink="/quotes/create">
@@ -108,25 +155,24 @@
     </tr>
   </thead>
   <tbody>
-    @if ((quotes$ | async)?.length === 0) {
+    @if ((quoteListService.quotes$ | async)?.length === 0) {
       <td colspan="8" class="bg-black-alt">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
     }
-    @for (quote of quotes$ | async; track $index) {
+    @for (quote of quoteListService.quotes$ | async; track $index) {
       <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black py-2 pl-5">
-          {{ quote.quoteNumber ?? "None" }}
+        <td class="border-b border-black py-2 pl-5 pr-2">
+          {{ quote.quoteNumber }}
         </td>
-        <td class="border-b border-black py-2">{{ quote.name }}</td>
-        <td class="border-b border-black py-2">{{ quote.clientName }}</td>
-        <td class="border-b border-black py-2">{{ quote.chargeCode }}</td>
-        <td class="border-b border-black py-2">$ {{ quote.value ?? "0.0" }}</td>
         <td class="border-b border-black py-2">
           {{ getProjectStatusString(quote.status) }}
         </td>
-        <td class="border-b border-black py-2">
-          {{ quote.date ?? "mm/dd/yyyy" }}
+        <td class="border-b border-black py-2">{{ quote.clientName }}</td>
+        <td class="border-b border-black py-2">{{ quote.name }}</td>
+        <td class="border-b border-black py-2">{{ quote.date }}</td>
+        <td class="border-b border-black py-2 text-right">
+          {{ (quote.value | currency) ?? "-" }}
         </td>
         <td class="border-b border-black py-2 text-right pr-5">
           <div class="text-nowrap divide-x divide-teal-200">
@@ -160,7 +206,7 @@
   <div>
     <select
       class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="itemsPerPage"
+      [formControl]="quoteListService.itemsPerPage"
     >
       <option [ngValue]="10">10</option>
       <option [ngValue]="20">20</option>
@@ -171,13 +217,15 @@
     <span>items per page</span>
   </div>
   <hq-paginator
-    [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="itemsPerPage.value"
-    [currentPage]="page.value"
+    [total]="(quoteListService.totalRecords$ | async) ?? 0"
+    [pageSize]="quoteListService.itemsPerPage.value"
+    [currentPage]="quoteListService.page.value"
     (page)="goToPage($event)"
   ></hq-paginator>
   <div class="flex justify-end text-xs">
-    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
-    {{ totalRecords$ | async }} items
+    {{ quoteListService.skipDisplay$ | async }}-{{
+      quoteListService.takeToDisplay$ | async
+    }}
+    / {{ quoteListService.totalRecords$ | async }} items
   </div>
 </div>
