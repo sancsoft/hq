@@ -86,6 +86,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, PointsAuthorizationHandler>();
+
 builder.Services.AddScoped<IAuthorizationHandler, TimeEntryAuthorizationHandler>();
 
 builder.Services.AddCors();
