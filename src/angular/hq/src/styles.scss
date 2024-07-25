@@ -146,3 +146,42 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+table.hq-table {
+  @apply min-w-full border-spacing-0 border-separate;
+
+  thead {
+    tr {
+      @apply sticky top-0 text-left;
+
+      th {
+        @apply bg-blue-900 border-steel-blue-600 border-y py-3;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      @apply even:bg-gray-850 odd:bg-black-alt;
+
+      td {
+        @apply border-b border-black;
+      }
+    }
+  }
+
+  tr th,
+  tr td {
+    @apply p-2;
+  }
+
+  tr th:first-child,
+  tr td:first-child {
+    @apply pl-5 text-left;
+  }
+
+  tr th:last-child,
+  tr td:last-child {
+    @apply pe-5 text-right;
+  }
+}

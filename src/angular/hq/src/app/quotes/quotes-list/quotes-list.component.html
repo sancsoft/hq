@@ -60,13 +60,13 @@
   </div>
 </div>
 
-<table class="min-w-full border-spacing-0 border-separate">
+<table class="hq-table">
   <thead>
-    <tr class="sticky top-0 text-left">
+    <tr>
       <th
         width="110"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        class="cursor-pointer"
         (click)="onSortClick(sortColumn.QuoteNumber)"
       >
         Quote
@@ -79,7 +79,7 @@
       <th
         width="150"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="cursor-pointer"
         (click)="onSortClick(sortColumn.Status)"
       >
         Status
@@ -92,7 +92,7 @@
       <th
         width="200"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="cursor-pointer"
         (click)="onSortClick(sortColumn.ClientName)"
       >
         Client
@@ -104,7 +104,7 @@
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="cursor-pointer"
         (click)="onSortClick(sortColumn.QuoteName)"
       >
         Name
@@ -117,7 +117,7 @@
       <th
         width="110"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="cursor-pointer hidden xl:table-cell"
         (click)="onSortClick(sortColumn.Date)"
       >
         Date
@@ -130,7 +130,7 @@
       <th
         width="110"
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right"
+        class="cursor-pointer text-right hidden xl:table-cell"
         (click)="onSortClick(sortColumn.Value)"
       >
         Value
@@ -140,11 +140,7 @@
           [activeSortDirection]="quoteListService.sortDirection$ | async"
         />
       </th>
-      <th
-        width="160"
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
-      >
+      <th width="160" scope="col">
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
           <hq-button routerLink="/quotes/create">
             <i class="bi bi-plus"></i>
@@ -161,20 +157,20 @@
       </td>
     }
     @for (quote of quoteListService.quotes$ | async; track $index) {
-      <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black py-2 pl-5 pr-2">
+      <tr>
+        <td>
           {{ quote.quoteNumber }}
         </td>
-        <td class="border-b border-black py-2">
+        <td>
           {{ getProjectStatusString(quote.status) }}
         </td>
-        <td class="border-b border-black py-2">{{ quote.clientName }}</td>
-        <td class="border-b border-black py-2">{{ quote.name }}</td>
-        <td class="border-b border-black py-2">{{ quote.date }}</td>
-        <td class="border-b border-black py-2 text-right">
+        <td>{{ quote.clientName }}</td>
+        <td>{{ quote.name }}</td>
+        <td class="hidden xl:table-cell">{{ quote.date }}</td>
+        <td class="text-right hidden xl:table-cell">
           {{ (quote.value | currency) ?? "-" }}
         </td>
-        <td class="border-b border-black py-2 text-right pr-5">
+        <td class="text-right">
           <div class="text-nowrap divide-x divide-teal-200">
             @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
               <a

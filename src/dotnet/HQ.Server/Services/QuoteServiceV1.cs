@@ -120,6 +120,7 @@ public class QuoteServiceV1
             records = records.Where(t =>
                 t.Name.ToLower().Contains(request.Search.ToLower()) ||
                 t.Client.Name.ToLower().Contains(request.Search.ToLower()) ||
+                t.QuoteNumber!.ToString().Contains(request.Search.ToLower()) ||
                 (t.ChargeCode != null ? t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) : false)
             );
         }
