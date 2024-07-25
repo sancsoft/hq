@@ -150,49 +150,59 @@
       </th>
     </tr>
   </thead>
-  @if ((quoteListService.quotes$ | async)?.length === 0) {
-    <tbody>
-      <td colspan="8" class="bg-black-alt">
-        <h1 class="text-center py-4 font-bold">No matching records found</h1>
-      </td>
-    </tbody>
-  }
   <tbody>
-    @for (quote of quoteListService.quotes$ | async; track $index) {
+    @if (quoteListService.quotes$ | async; as quotes) {
+      @for (quote of quotes; track quote.id) {
+        <tr>
+          <td>
+            {{ quote.quoteNumber }}
+          </td>
+          <td>
+            {{ getProjectStatusString(quote.status) }}
+          </td>
+          <td>{{ quote.clientName }}</td>
+          <td>{{ quote.name }}</td>
+          <td class="hidden xl:table-cell">{{ quote.date }}</td>
+          <td class="text-right hidden xl:table-cell">
+            {{ (quote.value | currency) ?? "-" }}
+          </td>
+          <td class="text-right">
+            <div class="text-nowrap divide-x divide-teal-200">
+              @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+                <a
+                  [routerLink]="['edit', quote.id]"
+                  class="text-teal-200 hover:text-teal-300 pr-3"
+                  >EDIT</a
+                >
+              }
+              @if (quote.hasPDF) {
+                <button
+                  type="button"
+                  (click)="getPdf(quote.id)"
+                  class="text-teal-200 hover:text-teal-300 pl-3"
+                >
+                  PDF
+                </button>
+              } @else {
+                <span class="text-nav-disabled pl-3">PDF</span>
+              }
+            </div>
+          </td>
+        </tr>
+      }
+      @if (quotes.length === 0) {
+        <tr>
+          <td colspan="8" class="bg-black-alt">
+            <h1 class="text-center py-4 font-bold">
+              No matching records found
+            </h1>
+          </td>
+        </tr>
+      }
+    } @else {
       <tr>
-        <td>
-          {{ quote.quoteNumber }}
-        </td>
-        <td>
-          {{ getProjectStatusString(quote.status) }}
-        </td>
-        <td>{{ quote.clientName }}</td>
-        <td>{{ quote.name }}</td>
-        <td class="hidden xl:table-cell">{{ quote.date }}</td>
-        <td class="text-right hidden xl:table-cell">
-          {{ (quote.value | currency) ?? "-" }}
-        </td>
-        <td class="text-right">
-          <div class="text-nowrap divide-x divide-teal-200">
-            @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-              <a
-                [routerLink]="['edit', quote.id]"
-                class="text-teal-200 hover:text-teal-300 pr-3"
-                >EDIT</a
-              >
-            }
-            @if (quote.hasPDF) {
-              <button
-                type="button"
-                (click)="getPdf(quote.id)"
-                class="text-teal-200 hover:text-teal-300 pl-3"
-              >
-                PDF
-              </button>
-            } @else {
-              <span class="text-nav-disabled pl-3">PDF</span>
-            }
-          </div>
+        <td colspan="8" class="bg-black-alt">
+          <h1 class="text-center py-4 font-bold">Loading...</h1>
         </td>
       </tr>
     }
