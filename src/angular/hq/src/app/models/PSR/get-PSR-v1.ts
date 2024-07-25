@@ -75,6 +75,7 @@ export interface GetPSRRecordV1 {
   summaryHoursTotal: number;
   summaryHoursAvailable: number;
   summaryPercentComplete: number;
+  isCurrentPsrPeriod: boolean;
 }
 
 export interface GetPSRRecordsV1 {

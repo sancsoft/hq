@@ -88,7 +88,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     }
 
     this.submitButtonState =
-      psr && psr.submittedAt ? ButtonState.Disabled : ButtonState.Enabled;
+      psr && psr.submittedAt && psr.isCurrentPsrPeriod? ButtonState.Disabled : ButtonState.Enabled;
 
     this.prevPSRReportButtonState =
       prevPsr && prevPsr.report ? ButtonState.Enabled : ButtonState.Disabled;
@@ -112,7 +112,6 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId']),
     );
-
     this.psr$ = this.psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
       map((t) => t.records[0]),
@@ -127,7 +126,6 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         ),
       ),
     );
-
     const canManageProjectStatusReport$ = combineLatest({
       userData: oidcSecurityService.userData$.pipe(map((t) => t.userData)),
       psr: this.psr$,
