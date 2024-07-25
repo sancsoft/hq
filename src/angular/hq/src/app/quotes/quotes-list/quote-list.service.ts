@@ -37,6 +37,8 @@ export class QuoteListService {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
+  loading$ = new BehaviorSubject<boolean>(true);
+
   itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
 
@@ -75,7 +77,9 @@ export class QuoteListService {
     }).pipe(debounceTime(500), shareReplay({ bufferSize: 1, refCount: false }));
 
     const requestResponse$ = request$.pipe(
+      tap(() => this.loading$.next(true)),
       switchMap((request) => this.hqService.getQuotesV1(request)),
+      tap(() => this.loading$.next(false)),
     );
 
     const refreshResponse$ = this.refreshSubject.pipe(

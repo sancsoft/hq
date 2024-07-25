@@ -148,7 +148,7 @@ input[type="number"] {
 }
 
 table.hq-table {
-  @apply min-w-full border-spacing-0 border-separate;
+  @apply min-w-full border-spacing-0 border-separate table-fixed;
 
   thead {
     tr {
@@ -158,6 +158,10 @@ table.hq-table {
         @apply bg-blue-900 border-steel-blue-600 border-y py-3;
       }
     }
+  }
+
+  &.loading tbody {
+    @apply animate-loading;
   }
 
   tbody {

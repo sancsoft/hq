@@ -9,6 +9,16 @@ module.exports = {
       sans: ['"Open Sans"', ...defaultTheme.fontFamily.sans],
     },
     extend: {
+      animation: {
+        loading: "loading 1500ms cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      },
+      keyframes: {
+        loading: {
+          "50%": {
+            opacity: ".8",
+          },
+        },
+      },
       fontSize: {
         xs: "10px",
       },

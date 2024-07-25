@@ -60,7 +60,7 @@
   </div>
 </div>
 
-<table class="hq-table">
+<table class="hq-table" [class.loading]="quoteListService.loading$ | async">
   <thead>
     <tr>
       <th
@@ -150,12 +150,14 @@
       </th>
     </tr>
   </thead>
-  <tbody>
-    @if ((quoteListService.quotes$ | async)?.length === 0) {
+  @if ((quoteListService.quotes$ | async)?.length === 0) {
+    <tbody>
       <td colspan="8" class="bg-black-alt">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
-    }
+    </tbody>
+  }
+  <tbody>
     @for (quote of quoteListService.quotes$ | async; track $index) {
       <tr>
         <td>
