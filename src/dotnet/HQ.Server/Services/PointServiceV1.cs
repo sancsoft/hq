@@ -29,6 +29,8 @@ public class PointServiceV1
     {
         var records = _context.Points
                 .AsNoTracking()
+                .Include(t => t.ChargeCode)
+                .Include(t => t.ChargeCode.Project)
                 .OrderByDescending(t => t.CreatedAt)
                 .AsQueryable();
         if (request.Id != null)
@@ -36,25 +38,50 @@ public class PointServiceV1
             records = records.Where(t => t.Id == request.Id);
 
         }
-        var (startDate, endDate) = GetWeekRange(request.Date);
+        var startDate = request.Date.GetPeriodStartDate(Period.Week);
+        var endDate = request.Date.GetPeriodEndDate(Period.Week);
+
         records = records
                 .Where(p => p.StaffId == request.StaffId && p.Date >= startDate && p.Date <= endDate);
         var points = await records.ToListAsync(ct);
+
         var _points = points.Select(t => new Abstractions.Points.Point
         {
             ChargeCodeId = t.ChargeCodeId,
             Id = t.Id,
-            Sequence = t.Sequence
+            Sequence = t.Sequence,
+            ChargeCode = t.ChargeCode?.Code,
+            ProjectName = t.ChargeCode?.Project?.Name,
+            ProjectId = t.ChargeCode?.Project?.Id
+        }).OrderBy(t => t.Sequence).ToList();
 
-        }).ToArray();
+        for (int i = 0; i < 10; i++)
+        {
+            var sequence = i + 1;
+            var point = _points.Find(p => p.Sequence == sequence);
+            if (point == null)
+            {
+                var nullPoint = new Abstractions.Points.Point
+                {
+                    ChargeCodeId = null,
+                    Id = null,
+                    Sequence = sequence,
+                    ChargeCode = null,
+                    ProjectName = null,
+                    ProjectId = null
+                };
+                _points.Insert(i, nullPoint);
+            }
+        }
 
         var response = new GetPointsV1.Response()
         {
             StaffId = request.StaffId,
             Date = request.Date,
-            Points = _points,
-            PreviousDate = startDate.AddDays(-3), // for getting Friday for the prev week
-            NextDate = endDate.AddDays(3) // for getting Monday for the next week
+            Points = _points.ToArray(),
+            DisplayDate = startDate.AddPeriod(Period.Today, 2),
+            PreviousDate = request.Date.AddPeriod(Period.Week, -1),
+            NextDate = request.Date.AddPeriod(Period.Week, 1)
         };
 
         return response;
@@ -77,7 +104,8 @@ public class PointServiceV1
                 }
 
                 var pointIds = new List<Guid>();
-                var (startDate, endDate) = GetWeekRange(request.Date);
+                var startDate = request.Date.GetPeriodStartDate(Period.Week);
+                var endDate = request.Date.GetPeriodEndDate(Period.Week);
                 var points = await _context.Points
                         .Where(p => p.StaffId == request.StaffId && p.Date >= startDate && p.Date <= endDate).ToListAsync();
                 foreach (var p in points)
@@ -94,11 +122,15 @@ public class PointServiceV1
                     var point = request.Points[i];
                     if (point == null)
                         continue;
+                    if (point.ChargeCodeId == null)
+                    {
+                        return Result.Fail("Point charge code can't be null");
+                    }
                     var _Point = new Data.Models.Point();
                     _context.Points.Add(_Point);
 
                     pointIds.Add(_Point.Id);
-                    _Point.ChargeCodeId = point.ChargeCodeId;
+                    _Point.ChargeCodeId = point.ChargeCodeId.Value;
                     _Point.StaffId = request.StaffId!.Value;
                     _Point.Sequence = i + 1;
                     _Point.Date = request.Date;
@@ -119,15 +151,5 @@ public class PointServiceV1
             }
         }
     }
-    private (DateOnly start, DateOnly end) GetWeekRange(DateOnly date)
-    {
-        int daysToMonday = (int)date.DayOfWeek - (int)DayOfWeek.Monday;
-        if (daysToMonday < 0)
-        {
-            daysToMonday += 7;
-        }
-        DateOnly startOfWeek = date.AddDays(-daysToMonday);
-        DateOnly endOfWeek = startOfWeek.AddDays(4);
-        return (startOfWeek, endOfWeek);
-    }
+
 }

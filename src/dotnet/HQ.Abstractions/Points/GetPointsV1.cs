@@ -13,6 +13,7 @@ public class GetPointsV1
         public DateOnly Date { get; set; }
         public Guid StaffId { get; set; }
         public Point[] Points { get; set; } = null!;
+        public DateOnly DisplayDate { get; set; }
         public DateOnly PreviousDate { get; set; }
         public DateOnly NextDate { get; set; }
     }

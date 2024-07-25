@@ -8,8 +8,11 @@ namespace HQ.Abstractions.Points
 {
     public class Point
     {
-        public Guid Id { get; set; }
-        public Guid ChargeCodeId { get; set; }
+        public Guid? Id { get; set; }
+        public Guid? ChargeCodeId { get; set; }
+        public String? ChargeCode { get; set; }
+        public String? ProjectName { get; set; }
+        public Guid? ProjectId { get; set; }
         public int Sequence { get; set; }
     }
 
