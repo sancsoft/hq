@@ -274,7 +274,7 @@ recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
 recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     nameof(TimeEntryServiceV1.BackgroundSendRejectedTimeSubmissionReminderEmail),
     (t) => t.BackgroundSendRejectedTimeSubmissionReminderEmail(Period.LastWeek, CancellationToken.None),
-    Cron.Weekly(DayOfWeek.Monday, 8),
+    Cron.Daily(8),
     recurringJobOptions);
 
 recurringJobManager.AddOrUpdate<StaffServiceV1>(
