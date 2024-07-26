@@ -133,6 +133,9 @@ public class ProjectStatusReportServiceV1
 
     public async Task<Result<GetProjectStatusReportsV1.Response>> GetProjectStatusReportsV1(GetProjectStatusReportsV1.Request request, CancellationToken ct = default)
     {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var thisWeekStart = today.GetPeriodStartDate(Period.Week);
+
         var records = _context.ProjectStatusReports
             .AsNoTracking()
             .Include(t => t.Project).ThenInclude(t => t.ChargeCode)
@@ -260,7 +263,7 @@ public class ProjectStatusReportServiceV1
                 SummaryHoursAvailable = t.Status == ProjectStatus.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
                 SummaryPercentComplete = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
                 SummaryPercentCompleteSort = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
-                IsCurrentPsrPeriod = DateOnly.FromDateTime(DateTime.Now).GetPeriodStartDate(Period.Week) == t.StartDate
+                IsCurrentPsrPeriod = thisWeekStart == t.StartDate
             });
 
         if (request.IsSubmitted != null)
