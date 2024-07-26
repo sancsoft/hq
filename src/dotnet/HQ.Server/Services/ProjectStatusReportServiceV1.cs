@@ -38,13 +38,22 @@ public class ProjectStatusReportServiceV1
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var lastWeekStart = today.GetPeriodStartDate(Period.LastWeek);
+        var thisWeekStart = today.GetPeriodStartDate(Period.Week);
 
         _logger.LogInformation("Generating weekly project status reports for week of {WeekOf}.", lastWeekStart);
+        _logger.LogInformation("Generating weekly project status reports for week of {WeekOf}.", thisWeekStart);
+
         var generatePsrResponse = await GenerateWeeklyProjectStatusReportsV1(new()
         {
             ForDate = lastWeekStart
         }, ct);
-        _logger.LogInformation("Created {CreateCount} PSRs, skipped {SkipCount}.", generatePsrResponse.Value.Created, generatePsrResponse.Value.Skipped);
+        _logger.LogInformation("Created {CreateCount} PSRs for last week, skipped {SkipCount}.", generatePsrResponse.Value.Created, generatePsrResponse.Value.Skipped);
+
+        var generatePsrResponseThisWeek = await GenerateWeeklyProjectStatusReportsV1(new()
+        {
+            ForDate = thisWeekStart
+        }, ct);
+        _logger.LogInformation("Created {CreateCount} PSRs for this week, skipped {SkipCount}.", generatePsrResponseThisWeek.Value.Created, generatePsrResponseThisWeek.Value.Skipped);
     }
 
     public async Task<Result<GenerateWeeklyProjectStatusReportsV1.Response>> GenerateWeeklyProjectStatusReportsV1(GenerateWeeklyProjectStatusReportsV1.Request request, CancellationToken ct = default)
@@ -124,6 +133,9 @@ public class ProjectStatusReportServiceV1
 
     public async Task<Result<GetProjectStatusReportsV1.Response>> GetProjectStatusReportsV1(GetProjectStatusReportsV1.Request request, CancellationToken ct = default)
     {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var thisWeekStart = today.GetPeriodStartDate(Period.Week);
+
         var records = _context.ProjectStatusReports
             .AsNoTracking()
             .Include(t => t.Project).ThenInclude(t => t.ChargeCode)
@@ -250,7 +262,8 @@ public class ProjectStatusReportServiceV1
                 SummaryHoursTotal = t.Status == ProjectStatus.Ongoing ? t.BookingHours : t.TotalHours,
                 SummaryHoursAvailable = t.Status == ProjectStatus.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
                 SummaryPercentComplete = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
-                SummaryPercentCompleteSort = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort
+                SummaryPercentCompleteSort = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
+                IsCurrentPsrPeriod = thisWeekStart == t.StartDate
             });
 
         if (request.IsSubmitted != null)
@@ -561,6 +574,10 @@ public class ProjectStatusReportServiceV1
         if (psr.SubmittedAt.HasValue)
         {
             return Result.Fail("Project status report has already been submitted.");
+        }
+        if (DateOnly.FromDateTime(DateTime.Now).GetPeriodStartDate(Period.Week) == psr.StartDate)
+        {
+            return Result.Fail("Cannot submit project status report for current period");
         }
 
         psr.SubmittedAt = DateTime.UtcNow;
