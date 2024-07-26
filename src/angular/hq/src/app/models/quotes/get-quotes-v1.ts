@@ -36,10 +36,8 @@ export interface GetQuotesRecordV1 {
   hasPDF: boolean;
 }
 
-export interface GetQuotesRecordsV1 {
-  records: [GetQuotesRecordV1];
-  total: number | null;
-}
+export interface GetQuotesRecordsV1
+  extends PagedResponseV1<GetQuotesRecordV1> {}
 
 export interface GetQuotesResponseV1
   extends PagedResponseV1<GetQuotesRecordV1> {}

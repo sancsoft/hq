@@ -151,7 +151,7 @@
     </tr>
   </thead>
   <tbody>
-    @if (quoteListService.quotes$ | async; as quotes) {
+    @if (quoteListService.records$ | async; as quotes) {
       @for (quote of quotes; track quote.id) {
         <tr>
           <td>
