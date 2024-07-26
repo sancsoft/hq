@@ -15,7 +15,7 @@ module.exports = {
       keyframes: {
         loading: {
           "50%": {
-            opacity: ".8",
+            opacity: ".75",
           },
         },
       },
