@@ -43,6 +43,11 @@ namespace HQ.Server.Controllers
             .ToActionResult(new HQResultEndpointProfile());
 
         [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(GenerateAutoGenerateHolidayTimeEntryV1))]
+        public async Task GenerateAutoGenerateHolidayTimeEntryV1(CancellationToken ct = default) =>
+            await _holidayervice.BackgroundAutoGenerateHolidayTimeEntryV1(ct);
+
+        [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(DeleteHolidayV1))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

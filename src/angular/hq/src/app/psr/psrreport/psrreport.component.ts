@@ -163,6 +163,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
           automaticLayout: true,
           readOnly: !canManageProjectStatusReport,
           domReadOnly: !canManageProjectStatusReport,
+          wordWrap: 'on',
         };
       }),
       startWith({

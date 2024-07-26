@@ -581,7 +581,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       time.billableHours = roundedBillableHours;
     }
 
-    if (!time || billableHours == '0' || billableHours == '') {
+    if (!time || billableHours == '') {
       await firstValueFrom(
         this.modalService.alert(
           'Error',
