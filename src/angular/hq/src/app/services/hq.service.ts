@@ -150,6 +150,10 @@ import {
   UpsertStatusRequestV1,
   UpsertStatusResponseV1,
 } from '../models/status/upsert-status-v1';
+import {
+  getPointsRequestV1,
+  getPointsResponseV1,
+} from '../models/Points/get-points-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -588,6 +592,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetPrevPlanResponseV1>(
           `${apiUrl}/v1/Plan/PreviousPlanV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  getPlanningPointsV1(request: Partial<getPointsRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<getPointsResponseV1>(
+          `${apiUrl}/v1/Point/GetPointsV1`,
           request,
         ),
       ),

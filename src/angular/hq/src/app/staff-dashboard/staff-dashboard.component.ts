@@ -3,8 +3,21 @@ import { PanelComponent } from './../core/components/panel/panel.component';
 import { Component, OnInit } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Period } from '../models/times/get-time-v1';
+import {
+  CdkDragDrop,
+  CdkDropList,
+  CdkDrag,
+  moveItemInArray,
+  CdkDragPlaceholder,
+} from '@angular/cdk/drag-drop';
+
 import {
   HQTimeChangeEvent,
   HQTimeDeleteEvent,
@@ -46,6 +59,49 @@ import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
 import { localISODate } from '../common/functions/local-iso-date';
 import { GetStatusResponseV1 } from '../models/status/get-status-v1';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
+import {
+  getPointsResponseV1,
+  PlanningPoint,
+} from '../models/Points/get-points-v1';
+
+export interface PeriodicElement {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+  quantity: number;
+}
+
+export const ELEMENT_DATA: PeriodicElement[] = [
+  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', quantity: 100 },
+  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', quantity: 100 },
+  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', quantity: 100 },
+  {
+    position: 4,
+    name: 'Beryllium',
+    weight: 9.0122,
+    symbol: 'Be',
+    quantity: 100,
+  },
+  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B', quantity: 100 },
+  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C', quantity: 100 },
+  {
+    position: 7,
+    name: 'Nitrogen',
+    weight: 14.0067,
+    symbol: 'N',
+    quantity: 100,
+  },
+  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O', quantity: 100 },
+  {
+    position: 9,
+    name: 'Fluorine',
+    weight: 18.9984,
+    symbol: 'F',
+    quantity: 100,
+  },
+  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne', quantity: 100 },
+];
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -60,6 +116,9 @@ import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
     PanelComponent,
     MonacoEditorModule,
     HQMarkdownComponent,
+    CdkDropList,
+    CdkDrag,
+    CdkDragPlaceholder,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
@@ -67,6 +126,10 @@ import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 export class StaffDashboardComponent implements OnInit {
   Period = Period;
   HQRole = HQRole;
+
+  // Planning Points
+  planningPointsforms: FormGroup[] = [];
+  planningPoints$: Observable<getPointsResponseV1 | null>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;
@@ -83,8 +146,15 @@ export class StaffDashboardComponent implements OnInit {
   planResponse$: Observable<GetPlanResponseV1>;
   staffStatus$: Observable<GetStatusResponseV1>;
   prevPlan$: Observable<GetPrevPlanResponseV1 | null>;
+  dataSource = ELEMENT_DATA;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+  onDrop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.dataSource, event.previousIndex, event.currentIndex);
+    this.dataSource.forEach((user, idx) => {
+      user.position = idx + 1;
+    });
+  }
 
   async ngOnInit() {
     // this is added to make sure that the upsert method works in value changes
@@ -122,6 +192,25 @@ export class StaffDashboardComponent implements OnInit {
     }).pipe(distinctUntilChanged());
     prevPlanRequest$.subscribe((t) => {
       console.log(t);
+    });
+    const planningPointsRequest$ = combineLatest({
+      date: date$,
+      staffId: staffId$,
+    });
+    this.planningPoints$ = planningPointsRequest$.pipe(
+      switchMap((request) => {
+        return this.hqService.getPlanningPointsV1(request).pipe(
+          catchError((error: unknown) => {
+            console.error('Error fetching previous Plan:', error);
+            return of(null);
+          }),
+        );
+      }),
+    );
+    this.planningPoints$.subscribe((response) => {
+      if (response) {
+        this.initializeForms(response.points);
+      }
     });
     this.prevPlan$ = prevPlanRequest$.pipe(
       switchMap((request) => {
@@ -387,4 +476,23 @@ export class StaffDashboardComponent implements OnInit {
       }
     }
   }
+
+  createForm(data: PlanningPoint): FormGroup<PlanPointForm> {
+    return new FormGroup({
+      id: new FormControl<string | null>(data.id),
+      chargeCodeId: new FormControl<string | null>(data.chargeCodeId),
+      sequence: new FormControl<number>(data.sequence, {
+        validators: [Validators.required],
+      }),
+    });
+  }
+  initializeForms(points: PlanningPoint[]): void {
+    this.planningPointsforms = points.map((point) => this.createForm(point));
+  }
+}
+
+export interface PlanPointForm {
+  id: FormControl<string | null>;
+  chargeCodeId: FormControl<string | null>;
+  sequence: FormControl<number | null>;
 }
