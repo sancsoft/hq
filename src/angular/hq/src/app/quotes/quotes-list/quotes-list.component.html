@@ -208,32 +208,4 @@
     }
   </tbody>
 </table>
-<div
-  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
->
-  <div>
-    <select
-      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="quoteListService.itemsPerPage"
-    >
-      <option [ngValue]="10">10</option>
-      <option [ngValue]="20">20</option>
-      <option [ngValue]="50">50</option>
-      <option [ngValue]="100">100</option>
-      <!-- Add more options as needed -->
-    </select>
-    <span>items per page</span>
-  </div>
-  <hq-paginator
-    [total]="(quoteListService.totalRecords$ | async) ?? 0"
-    [pageSize]="quoteListService.itemsPerPage.value"
-    [currentPage]="quoteListService.page.value"
-    (page)="goToPage($event)"
-  ></hq-paginator>
-  <div class="flex justify-end text-xs">
-    {{ quoteListService.skipDisplay$ | async }}-{{
-      quoteListService.takeToDisplay$ | async
-    }}
-    / {{ quoteListService.totalRecords$ | async }} items
-  </div>
-</div>
+<hq-table-footer [listService]="quoteListService"></hq-table-footer>

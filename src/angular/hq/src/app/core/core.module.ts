@@ -15,6 +15,7 @@ import { SelectInputOptionDirective } from './directives/select-input-option.dir
 import { ValidationErrorDirective } from './directives/validation-error.directive';
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
 import { FileInputComponent } from './components/file-input/file-input.component';
+import { TableFooterComponent } from './components/table-footer/table-footer.component';
 
 @NgModule({
   declarations: [],
@@ -35,6 +36,7 @@ import { FileInputComponent } from './components/file-input/file-input.component
     SelectInputOptionDirective,
     ValidationErrorDirective,
     FileInputComponent,
+    TableFooterComponent,
   ],
   exports: [
     TabComponent,
@@ -52,6 +54,7 @@ import { FileInputComponent } from './components/file-input/file-input.component
     SelectInputOptionDirective,
     ValidationErrorDirective,
     FileInputComponent,
+    TableFooterComponent,
   ],
 })
 export class CoreModule {}
