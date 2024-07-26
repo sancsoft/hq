@@ -3,9 +3,9 @@ import { FormControl } from '@angular/forms';
 import {
   BehaviorSubject,
   combineLatest,
-  concat,
   defer,
   map,
+  merge,
   Observable,
   shareReplay,
   Subject,
@@ -82,10 +82,8 @@ export abstract class BaseListService<
       switchMap(() => response$),
     );
 
-    this.response$ = concat(response$, refreshResponse$).pipe(
-      tap(() => this.loadingSubject.next(true)),
+    this.response$ = merge(response$, refreshResponse$).pipe(
       shareReplay({ bufferSize: 1, refCount: false }),
-      tap(() => this.loadingSubject.next(false)),
     );
 
     this.records$ = this.response$.pipe(

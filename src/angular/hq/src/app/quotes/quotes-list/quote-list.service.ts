@@ -47,8 +47,9 @@ export class QuoteListService extends BaseListService<
       sortDirection: this.sortDirection$,
     }).pipe(
       debounceTime(500),
-      shareReplay({ bufferSize: 1, refCount: false }),
+      tap(() => this.loadingSubject.next(true)),
       switchMap((request) => this.hqService.getQuotesV1(request)),
+      tap(() => this.loadingSubject.next(false)),
     );
   }
 
