@@ -25,7 +25,7 @@ import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { StaffListService } from './staff-list.service';
-import { StaffListSearchFilterComponent } from "../staff-list-search-filter/staff-list-search-filter.component";
+import { StaffListSearchFilterComponent } from '../staff-list-search-filter/staff-list-search-filter.component';
 
 @Component({
   selector: 'hq-staff-list',
@@ -38,8 +38,8 @@ import { StaffListSearchFilterComponent } from "../staff-list-search-filter/staf
     SortIconComponent,
     RouterLink,
     InRolePipe,
-    StaffListSearchFilterComponent
-],
+    StaffListSearchFilterComponent,
+  ],
   templateUrl: './staff-list.component.html',
 })
 export class StaffListComponent {
@@ -56,7 +56,6 @@ export class StaffListComponent {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   HQRole = HQRole;
-
 
   constructor(
     private hqService: HQService,

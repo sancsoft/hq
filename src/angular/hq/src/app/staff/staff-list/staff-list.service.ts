@@ -36,7 +36,9 @@ export class StaffListService {
   constructor(private hqService: HQService) {
     const page$ = this.page.valueChanges.pipe(startWith(this.page.value));
 
-    const currentOnly$ = this.currentOnly.valueChanges.pipe(startWith(this.currentOnly.value));
+    const currentOnly$ = this.currentOnly.valueChanges.pipe(
+      startWith(this.currentOnly.value),
+    );
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value),
     );
@@ -58,7 +60,7 @@ export class StaffListService {
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
-      currentOnly: currentOnly$
+      currentOnly: currentOnly$,
     });
 
     const response$ = request$.pipe(
@@ -88,5 +90,4 @@ export class StaffListService {
   goToPage(page: number) {
     this.page.setValue(page);
   }
-
 }
