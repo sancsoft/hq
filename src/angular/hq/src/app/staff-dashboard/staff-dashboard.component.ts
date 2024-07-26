@@ -78,7 +78,6 @@ export class StaffDashboardComponent implements OnInit {
 
   prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
   ButtonState = ButtonState;
-  currentDate = new Date();
   previousPlan: string | null = null;
   planResponse$: Observable<GetPlanResponseV1>;
   staffStatus$: Observable<GetStatusResponseV1>;
@@ -171,7 +170,9 @@ export class StaffDashboardComponent implements OnInit {
         }),
         takeUntil(this.destroyed$),
       )
-      .subscribe();
+      .subscribe((_) => {
+        this.toastService.show('Success', 'Status successfully updated.');
+      });
 
     this.planResponse$ = getPlanRequest$.pipe(
       switchMap((request) => {
@@ -208,7 +209,7 @@ export class StaffDashboardComponent implements OnInit {
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe({
         next: () => {
-          this.toastService.show('Success', 'PSR Report Saved Successfully');
+          this.toastService.show('Success', 'Plan saved successfully');
         },
         error: async () => {
           this.toastService.show(
