@@ -164,6 +164,7 @@ export class StaffDashboardComponent implements OnInit {
     moveItemInArray(this.points, event.previousIndex, event.currentIndex);
 
     this.updateSequence();
+    this.upsertPoints();
   }
 
   updateSequence(): void {
@@ -524,9 +525,9 @@ export class StaffDashboardComponent implements OnInit {
         f.controls['sequence'].value === updatedForm.controls['sequence'].value,
     );
     if (formIndex !== -1) {
-      console.log(formIndex);
       // Update the existing form
       this.planningPointsforms[formIndex] = updatedForm;
+      this.upsertPoints();
     }
   }
   createForm(data: PlanningPoint): FormGroup<PlanPointForm> {
@@ -537,6 +538,17 @@ export class StaffDashboardComponent implements OnInit {
         validators: [Validators.required],
       }),
     });
+  }
+  upsertPoints() {
+    this.hqService
+      .upsertPlanningPointsV1({
+        date: '2024-07-26',
+        staffId: '7078a1de-3e36-43b2-95d1-90c760f2c40b',
+        points: this.getPlanningPointsFormValues(),
+      })
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
   initializeForms(points: PlanningPoint[]): void {
     this.planningPointsforms = points.map((point) => this.createForm(point));
