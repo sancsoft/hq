@@ -21,6 +21,8 @@ public class HolidayServiceV1
     private readonly HQDbContext _context;
 
     private readonly ILogger<ProjectStatusReportServiceV1> _logger;
+    private const string VacationChargeCode = "S1001"; // S1001 is the code for vacation
+
 
 
     public HolidayServiceV1(HQDbContext context, ILogger<ProjectStatusReportServiceV1> logger)
@@ -216,50 +218,56 @@ public class HolidayServiceV1
         var holidays = _context.Holidays
         .AsNoTracking()
         .AsQueryable();
-        // retrieve upcoming holiday based on today's date
-        var upcomingHoliday = await holidays.Where(t => t.Date >= today && t.Jurisdiciton == Jurisdiciton.USA).FirstOrDefaultAsync(ct);
-        if (upcomingHoliday == null)
+        var jurisdicitons = Enum.GetValues(typeof(Jurisdiciton));
+        foreach (Jurisdiciton jurisdiciton in jurisdicitons)
         {
-            return;
-        }
-        var staff = _context.Staff.
-        AsNoTracking()
-        .AsQueryable();
-        var vacationChargeCode = await _context.ChargeCodes.Where(t => t.Code == "S1001").FirstOrDefaultAsync(ct); // S1001 is the code for vacation
-        if (vacationChargeCode == null)
-        {
-            return;
-        }
-        staff = staff.Where(t => t.EndDate == null && t.Jurisdiciton == Jurisdiciton.USA);
-        var times = _context.Times
-        .AsNoTracking()
-        .AsQueryable()
-        .Include(t => t.Staff);
-        var staffWithVacation = await times.Where(t => t.Date == upcomingHoliday.Date && t.ChargeCode == vacationChargeCode && t.Staff.Jurisdiciton == Jurisdiciton.USA && t.Staff.EndDate == null).Select(t => t.Staff).ToListAsync(ct);
-
-        var staffWithVacationIds = staffWithVacation.Select(s => s.Id).ToList();
-        var staffWithoutEnteredVacation = await staff.Where(t => !staffWithVacationIds.Contains(t.Id)).ToListAsync(ct);
-
-        _logger.LogInformation($"Creating time entries for Holiday {upcomingHoliday.Name} for staff count {staffWithoutEnteredVacation.Count()}");
-        foreach (var staffMember in staffWithoutEnteredVacation)
-        {
-
-            var timeEntry = new Time
+            // retrieve upcoming holiday based on today's date
+            var upcomingHoliday = await holidays.Where(t => t.Date >= today && t.Jurisdiciton == jurisdiciton).FirstOrDefaultAsync(ct);
+            if (upcomingHoliday == null)
             {
-                ChargeCodeId = vacationChargeCode.Id,
-                Hours = 8,
-                HoursApproved = 8,
-                Notes = upcomingHoliday.Name,
-                StaffId = staffMember.Id,
-                Date = upcomingHoliday.Date,
-                Status = TimeStatus.Accepted,
-            };
-            _context.Times.Add(timeEntry);
+                return;
+            }
+            var staff = _context.Staff.
+            AsNoTracking()
+            .AsQueryable();
+            var vacationChargeCode = await _context.ChargeCodes.Where(t => t.Code == VacationChargeCode).FirstOrDefaultAsync(ct);
+            if (vacationChargeCode == null)
+            {
+                return;
+            }
+            staff = staff.Where(t => t.EndDate == null && t.Jurisdiciton == jurisdiciton);
+            var times = _context.Times
+            .AsNoTracking()
+            .AsQueryable()
+            .Include(t => t.Staff);
+            var staffWithVacation = await times.Where(t => t.Date == upcomingHoliday.Date && t.ChargeCode == vacationChargeCode && t.Staff.Jurisdiciton == jurisdiciton && t.Staff.EndDate == null).Select(t => t.Staff).ToListAsync(ct);
+
+            var staffWithVacationIds = staffWithVacation.Select(s => s.Id).ToList();
+            var staffWithoutEnteredVacation = await staff.Where(t => !staffWithVacationIds.Contains(t.Id)).ToListAsync(ct);
+
+            _logger.LogInformation($"Creating time entries for Holiday {upcomingHoliday.Name} for staff count {staffWithoutEnteredVacation.Count()}");
+            foreach (var staffMember in staffWithoutEnteredVacation)
+            {
+
+                var timeEntry = new Time
+                {
+                    ChargeCodeId = vacationChargeCode.Id,
+                    Hours = 8,
+                    HoursApproved = 8,
+                    Notes = upcomingHoliday.Name,
+                    StaffId = staffMember.Id,
+                    Date = upcomingHoliday.Date,
+                    Status = TimeStatus.Accepted,
+                    HolidayId = upcomingHoliday.Id
+                };
+                _context.Times.Add(timeEntry);
+            }
+            await _context.SaveChangesAsync(ct);
+
+
+            _logger.LogInformation($"Created time entries for Holiday {upcomingHoliday.Name} for staff count {staffWithoutEnteredVacation.Count()}");
         }
-        await _context.SaveChangesAsync(ct);
 
-
-        _logger.LogInformation($"Created time entries for Holiday {upcomingHoliday.Name} for staff count {staffWithoutEnteredVacation.Count()}");
     }
 
 }
