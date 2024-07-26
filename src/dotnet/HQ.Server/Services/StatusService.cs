@@ -48,8 +48,9 @@ public class StatusServiceV1
         {
             records = records.Where(t => t.Id == request.Id.Value);
         }
+        var currentDay = DateOnly.FromDateTime(DateTime.Now);
 
-        records = records.Where(t => t.StaffId == request.StaffId);
+        records = records.Where(t => t.StaffId == request.StaffId && t.Date == currentDay);
 
         var record = await records.Select(t => new GetStatusV1.Response()
         {

@@ -1,3 +1,4 @@
+import { StaffDashboardPlanningPointComponent } from './staff-dashboard-planning-point/staff-dashboard-planning-point.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { PanelComponent } from './../core/components/panel/panel.component';
 import { Component, OnInit } from '@angular/core';
@@ -35,6 +36,7 @@ import {
   Observable,
   of,
   ReplaySubject,
+  shareReplay,
   skip,
   startWith,
   switchMap,
@@ -63,6 +65,7 @@ import {
   getPointsResponseV1,
   PlanningPoint,
 } from '../models/Points/get-points-v1';
+import { GetChargeCodeRecordV1 } from '../models/charge-codes/get-chargecodes-v1';
 
 export interface PeriodicElement {
   name: string;
@@ -119,6 +122,7 @@ export const ELEMENT_DATA: PeriodicElement[] = [
     CdkDropList,
     CdkDrag,
     CdkDragPlaceholder,
+    StaffDashboardPlanningPointComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
@@ -130,6 +134,8 @@ export class StaffDashboardComponent implements OnInit {
   // Planning Points
   planningPointsforms: FormGroup[] = [];
   planningPoints$: Observable<getPointsResponseV1 | null>;
+  points: PlanningPoint[] = [];
+  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;
@@ -149,10 +155,24 @@ export class StaffDashboardComponent implements OnInit {
   dataSource = ELEMENT_DATA;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-  onDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.dataSource, event.previousIndex, event.currentIndex);
-    this.dataSource.forEach((user, idx) => {
-      user.position = idx + 1;
+  onDrop(event: CdkDragDrop<FormGroup[]>): void {
+    moveItemInArray(
+      this.planningPointsforms,
+      event.previousIndex,
+      event.currentIndex,
+    );
+    moveItemInArray(this.points, event.previousIndex, event.currentIndex);
+
+    this.updateSequence();
+  }
+
+  updateSequence(): void {
+    this.planningPointsforms.forEach((form, idx) => {
+      form.controls['sequence'].setValue(idx + 1);
+      this.points[idx].sequence = idx + 1;
+    });
+    this.planningPointsforms.map((v) => {
+      // console.log(v.value);
     });
   }
 
@@ -197,6 +217,18 @@ export class StaffDashboardComponent implements OnInit {
       date: date$,
       staffId: staffId$,
     });
+    // const upsertPlanningPointsRequest$ = combineLatest({
+    //   date: date$,
+    //   staffId: staffId$,
+    //   points: of(this.getPlanningPointsFormValues()),
+    // });
+
+    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({});
+
+    this.chargeCodes$ = chargeCodeResponse$.pipe(
+      map((chargeCode) => chargeCode.records),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
     this.planningPoints$ = planningPointsRequest$.pipe(
       switchMap((request) => {
         return this.hqService.getPlanningPointsV1(request).pipe(
@@ -209,6 +241,7 @@ export class StaffDashboardComponent implements OnInit {
     );
     this.planningPoints$.subscribe((response) => {
       if (response) {
+        this.points = response.points;
         this.initializeForms(response.points);
       }
     });
@@ -261,6 +294,15 @@ export class StaffDashboardComponent implements OnInit {
         takeUntil(this.destroyed$),
       )
       .subscribe();
+    // upsertPlanningPointsRequest$
+    //   .pipe(
+    //     skip(1),
+    //     switchMap((request) => {
+    //       return this.hqService.upsertPlanningPointsV1(request);
+    //     }),
+    //     takeUntil(this.destroyed$),
+    //   )
+    //   .subscribe();
 
     this.planResponse$ = getPlanRequest$.pipe(
       switchMap((request) => {
@@ -476,7 +518,17 @@ export class StaffDashboardComponent implements OnInit {
       }
     }
   }
-
+  onHqPlanChange(updatedForm: FormGroup): void {
+    const formIndex = this.planningPointsforms.findIndex(
+      (f) =>
+        f.controls['sequence'].value === updatedForm.controls['sequence'].value,
+    );
+    if (formIndex !== -1) {
+      console.log(formIndex);
+      // Update the existing form
+      this.planningPointsforms[formIndex] = updatedForm;
+    }
+  }
   createForm(data: PlanningPoint): FormGroup<PlanPointForm> {
     return new FormGroup({
       id: new FormControl<string | null>(data.id),
@@ -488,6 +540,9 @@ export class StaffDashboardComponent implements OnInit {
   }
   initializeForms(points: PlanningPoint[]): void {
     this.planningPointsforms = points.map((point) => this.createForm(point));
+  }
+  getPlanningPointsFormValues(): PlanningPoint[] {
+    return this.planningPointsforms.map((form) => form.value as PlanningPoint);
   }
 }
 
