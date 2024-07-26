@@ -34,15 +34,9 @@
     class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
   >
     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
-      {{ currentDate | date: "EEEE MM/dd/yyyy" }}
+      {{ (psr$ | async)?.submittedAt | date: "EEEE MM/dd/yyyy" }}
     </div>
     <div class="flex ml-aut float-right gap-2">
-      <button>
-        <i
-          title="Download report"
-          class="bi bi-cloud-download-fill text-white"
-        ></i>
-      </button>
       <button
         title="Insert Previous Report"
         [disabled]="prevPSRReportButtonState === ButtonState.Disabled"
