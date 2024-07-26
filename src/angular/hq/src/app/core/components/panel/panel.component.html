@@ -1,0 +1,24 @@
+<as-split [direction]="Direction" restrictMove="true" gutterSize="8">
+  <div
+    *asSplitGutter="let isDragged = isDragged"
+    class="custom-gutter bg-black"
+    [class.dragged]="isDragged"
+  >
+    <div class="custom-gutter-icon">
+      <button title="collapse" (click)="collapseCArea()">
+        <i
+          [ngClass]="{
+            'bi bi-three-dots-vertical': Direction === 'horizontal',
+            'bi bi-three-dots': Direction === 'vertical',
+          }"
+        ></i>
+      </button>
+    </div>
+  </div>
+  <as-split-area [size]="CSizes[0]">
+    <ng-content select="[first]"></ng-content>
+  </as-split-area>
+  <as-split-area [size]="CSizes[1]">
+    <ng-content select="[second]"></ng-content>
+  </as-split-area>
+</as-split>

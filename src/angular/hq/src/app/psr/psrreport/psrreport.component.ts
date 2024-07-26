@@ -32,6 +32,10 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
 import { GetPrevPsrResponseV1 } from '../../models/PSR/get-previous-PSR-v1';
 import { ToastService } from '../../services/toast.service';
+import { PSRTimeListComponent } from '../psrtime-list/psrtime-list.component';
+import { AngularSplitModule } from 'angular-split';
+import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
+import { PanelComponent } from '../../core/components/panel/panel.component';
 
 @Component({
   selector: 'hq-psrreport',
@@ -42,6 +46,10 @@ import { ToastService } from '../../services/toast.service';
     MonacoEditorModule,
     HQMarkdownComponent,
     InRolePipe,
+    PSRTimeListComponent,
+    AngularSplitModule,
+    PsrSearchFilterComponent,
+    PanelComponent,
   ],
   templateUrl: './psrreport.component.html',
   encapsulation: ViewEncapsulation.None,
@@ -69,6 +77,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   prevPsr$: Observable<GetPrevPsrResponseV1 | null>;
   ButtonState = ButtonState;
   HQRole = HQRole;
+  currentDate = new Date();
 
   async ngOnInit() {
     this.psrService.resetFilter();
@@ -177,6 +186,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
     request$
       .pipe(
+        skip(1),
         debounceTime(1000),
         // tap(() => (this.savedStatus = 'loading')),
         switchMap((request) =>
