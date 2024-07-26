@@ -3,6 +3,7 @@ using System;
 using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    partial class HQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240719214525_AddedStatusForPlanEntity")]
+    partial class AddedStatusForPlanEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -394,9 +397,8 @@ namespace HQ.Server.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_plans");
 
-                    b.HasIndex("StaffId", "Date")
-                        .IsUnique()
-                        .HasDatabaseName("ix_plans_staff_id_date");
+                    b.HasIndex("StaffId")
+                        .HasDatabaseName("ix_plans_staff_id");
 
                     b.ToTable("plans", (string)null);
                 });
@@ -442,9 +444,8 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("ChargeCodeId")
                         .HasDatabaseName("ix_points_charge_code_id");
 
-                    b.HasIndex("StaffId", "Sequence", "Date")
-                        .IsUnique()
-                        .HasDatabaseName("ix_points_staff_id_sequence_date");
+                    b.HasIndex("StaffId")
+                        .HasDatabaseName("ix_points_staff_id");
 
                     b.ToTable("points", (string)null);
                 });

@@ -36,6 +36,9 @@ namespace HQ.Server
             services.AddScoped<EmailMessageService>();
             services.AddScoped<HolidayServiceV1>();
             services.AddScoped<PointServiceV1>();
+            services.AddScoped<PlanServiceV1>();
+            services.AddScoped<StatusServiceV1>();
+
 
 
             var connectionString = configuration.BuildConnectionString();

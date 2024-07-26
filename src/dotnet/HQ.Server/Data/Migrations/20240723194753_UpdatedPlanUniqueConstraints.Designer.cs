@@ -3,6 +3,7 @@ using System;
 using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    partial class HQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240723194753_UpdatedPlanUniqueConstraints")]
+    partial class UpdatedPlanUniqueConstraints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -442,9 +445,8 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("ChargeCodeId")
                         .HasDatabaseName("ix_points_charge_code_id");
 
-                    b.HasIndex("StaffId", "Sequence", "Date")
-                        .IsUnique()
-                        .HasDatabaseName("ix_points_staff_id_sequence_date");
+                    b.HasIndex("StaffId")
+                        .HasDatabaseName("ix_points_staff_id");
 
                     b.ToTable("points", (string)null);
                 });

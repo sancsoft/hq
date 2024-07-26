@@ -89,6 +89,8 @@ builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizati
 builder.Services.AddScoped<IAuthorizationHandler, PointsAuthorizationHandler>();
 
 builder.Services.AddScoped<IAuthorizationHandler, TimeEntryAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, PlanAuthorizationHandler>();
+
 
 builder.Services.AddCors();
 
