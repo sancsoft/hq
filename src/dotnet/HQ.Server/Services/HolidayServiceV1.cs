@@ -245,7 +245,7 @@ public class HolidayServiceV1
                 .AsNoTracking()
                 .AsQueryable()
                 .Include(t => t.Staff);
-                var staffWithHoliday = await times.Where(t => t.Date == upcomingHoliday.Date && t.ChargeCode == holidayChargeCode && t.Staff.Jurisdiciton == jurisdiciton && t.Staff.EndDate == null).Select(t => t.Staff).ToListAsync(ct);
+                var staffWithHoliday = await times.Where(t => t.Date == upcomingHoliday.Date && t.ChargeCode.Id == holidayChargeCode.Id && t.Staff.Jurisdiciton == jurisdiciton && t.Staff.EndDate == null).AsNoTracking().Select(t => t.Staff).ToListAsync(ct);
 
                 var staffWithHolidayIds = staffWithHoliday.Select(s => s.Id).ToList();
                 var staffWithoutEnteredHoliday = await staff.Where(t => !staffWithHolidayIds.Contains(t.Id)).ToListAsync(ct);
