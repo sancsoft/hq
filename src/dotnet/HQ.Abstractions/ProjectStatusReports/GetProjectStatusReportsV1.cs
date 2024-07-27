@@ -114,5 +114,6 @@ public class GetProjectStatusReportsV1
         public decimal? SummaryHoursAvailable { get; set; }
         public decimal? SummaryPercentComplete { get; set; }
         public decimal? SummaryPercentCompleteSort { get; set; }
+        public bool IsCurrentPsrPeriod { get; set; }
     }
 }

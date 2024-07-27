@@ -39,6 +39,7 @@ public class StatusServiceV1
     }
     public async Task<Result<GetStatusV1.Response>> GetStatusV1(GetStatusV1.Request request, CancellationToken ct = default)
     {
+        var currentDay = DateOnly.FromDateTime(DateTime.Now);
         var records = _context.Plans
             .AsNoTracking()
             .OrderByDescending(t => t.Date)
@@ -48,7 +49,6 @@ public class StatusServiceV1
         {
             records = records.Where(t => t.Id == request.Id.Value);
         }
-        var currentDay = DateOnly.FromDateTime(DateTime.Now);
 
         records = records.Where(t => t.StaffId == request.StaffId && t.Date == currentDay);
 

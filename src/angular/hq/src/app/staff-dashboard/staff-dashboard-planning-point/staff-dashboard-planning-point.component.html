@@ -14,7 +14,8 @@
         <option [ngValue]="null" class="text-gray-50">ChargeCode</option>
         @for (chargeCode of chargeCodes; track $index) {
           <option [ngValue]="chargeCode.id">
-            {{ chargeCode.code }}
+            {{ chargeCode.code }} {{ chargeCode.clientName }}
+            {{ chargeCode.projectName }}
           </option>
         }
       </select>

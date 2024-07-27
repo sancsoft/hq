@@ -4,12 +4,8 @@ import { PanelComponent } from './../core/components/panel/panel.component';
 import { Component, OnInit } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Period } from '../models/times/get-time-v1';
 import {
   CdkDragDrop,
@@ -75,37 +71,6 @@ export interface PeriodicElement {
   quantity: number;
 }
 
-export const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', quantity: 100 },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', quantity: 100 },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', quantity: 100 },
-  {
-    position: 4,
-    name: 'Beryllium',
-    weight: 9.0122,
-    symbol: 'Be',
-    quantity: 100,
-  },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B', quantity: 100 },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C', quantity: 100 },
-  {
-    position: 7,
-    name: 'Nitrogen',
-    weight: 14.0067,
-    symbol: 'N',
-    quantity: 100,
-  },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O', quantity: 100 },
-  {
-    position: 9,
-    name: 'Fluorine',
-    weight: 18.9984,
-    symbol: 'F',
-    quantity: 100,
-  },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne', quantity: 100 },
-];
-
 @Component({
   selector: 'hq-staff-dashboard',
   standalone: true,
@@ -136,6 +101,11 @@ export class StaffDashboardComponent implements OnInit {
   planningPoints$: Observable<getPointsResponseV1 | null>;
   points: PlanningPoint[] = [];
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
+  private staffId$: Observable<string>;
+  private PlanningPointdateForm = new FormControl(localISODate(), {
+    nonNullable: true,
+  });
+  private planningPointDate$: Observable<string>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;
@@ -152,7 +122,6 @@ export class StaffDashboardComponent implements OnInit {
   planResponse$: Observable<GetPlanResponseV1>;
   staffStatus$: Observable<GetStatusResponseV1>;
   prevPlan$: Observable<GetPrevPlanResponseV1 | null>;
-  dataSource = ELEMENT_DATA;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   onDrop(event: CdkDragDrop<FormGroup[]>): void {
@@ -206,6 +175,10 @@ export class StaffDashboardComponent implements OnInit {
     const date$ = staffDashboardService.date.valueChanges
       .pipe(startWith(staffDashboardService.date.value))
       .pipe(map((t) => t || localISODate()));
+    this.staffId$ = staffId$;
+    this.planningPointDate$ = this.PlanningPointdateForm.valueChanges
+      .pipe(startWith(this.PlanningPointdateForm.value))
+      .pipe(map((t) => t || localISODate()));
 
     const prevPlanRequest$ = combineLatest({
       date: date$,
@@ -215,7 +188,7 @@ export class StaffDashboardComponent implements OnInit {
       console.log(t);
     });
     const planningPointsRequest$ = combineLatest({
-      date: date$,
+      date: this.planningPointDate$,
       staffId: staffId$,
     });
     // const upsertPlanningPointsRequest$ = combineLatest({
@@ -294,16 +267,9 @@ export class StaffDashboardComponent implements OnInit {
         }),
         takeUntil(this.destroyed$),
       )
-      .subscribe();
-    // upsertPlanningPointsRequest$
-    //   .pipe(
-    //     skip(1),
-    //     switchMap((request) => {
-    //       return this.hqService.upsertPlanningPointsV1(request);
-    //     }),
-    //     takeUntil(this.destroyed$),
-    //   )
-    //   .subscribe();
+      .subscribe((_) => {
+        this.toastService.show('Success', 'Status successfully updated.');
+      });
 
     this.planResponse$ = getPlanRequest$.pipe(
       switchMap((request) => {
@@ -340,7 +306,7 @@ export class StaffDashboardComponent implements OnInit {
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe({
         next: () => {
-          this.toastService.show('Success', 'PSR Report Saved Successfully');
+          this.toastService.show('Success', 'Plan saved successfully');
         },
         error: async () => {
           this.toastService.show(
@@ -539,22 +505,59 @@ export class StaffDashboardComponent implements OnInit {
       }),
     });
   }
-  upsertPoints() {
-    this.hqService
-      .upsertPlanningPointsV1({
-        date: '2024-07-26',
-        staffId: '7078a1de-3e36-43b2-95d1-90c760f2c40b',
-        points: this.getPlanningPointsFormValues(),
-      })
-      .subscribe((res) => {
-        console.log(res);
-      });
+  async upsertPoints() {
+    const request = {
+      date: await firstValueFrom(this.planningPointDate$),
+      staffId: await firstValueFrom(this.staffId$),
+      points: this.getPlanningPointsFormValues(),
+    };
+
+    try {
+      await firstValueFrom(this.hqService.upsertPlanningPointsV1(request));
+      this.toastService.show(
+        'Success',
+        'Planning points successfully upserted.',
+      );
+      this.refreshPlanningPoints();
+    } catch (error) {
+      console.error('Error upserting planning points:', error);
+    }
+  }
+  private async refreshPlanningPoints() {
+    this.planningPoints$ = combineLatest({
+      date: this.planningPointDate$,
+      staffId: this.staffId$,
+    }).pipe(
+      switchMap((request) => {
+        return this.hqService.getPlanningPointsV1(request).pipe(
+          catchError((error: unknown) => {
+            console.error('Error fetching planning points:', error);
+            return of(null);
+          }),
+        );
+      }),
+    );
+
+    this.planningPoints$.subscribe((response) => {
+      if (response) {
+        this.points = response.points;
+        this.initializeForms(response.points);
+      }
+    });
   }
   initializeForms(points: PlanningPoint[]): void {
     this.planningPointsforms = points.map((point) => this.createForm(point));
   }
   getPlanningPointsFormValues(): PlanningPoint[] {
     return this.planningPointsforms.map((form) => form.value as PlanningPoint);
+  }
+  async prevPlanningPoint() {
+    const prevDate = (await firstValueFrom(this.planningPoints$))?.previousDate;
+    if (prevDate) this.PlanningPointdateForm.setValue(prevDate);
+  }
+  async nextPlanningPoint() {
+    const nextDate = (await firstValueFrom(this.planningPoints$))?.nextDate;
+    if (nextDate) this.PlanningPointdateForm.setValue(nextDate);
   }
 }
 

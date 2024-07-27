@@ -287,4 +287,10 @@ recurringJobManager.AddOrUpdate<ProjectStatusReportServiceV1>(
     Cron.Weekly(DayOfWeek.Monday, 12),
     recurringJobOptions);
 
+recurringJobManager.AddOrUpdate<HolidayServiceV1>(
+    nameof(HolidayServiceV1.BackgroundAutoGenerateHolidayTimeEntryV1),
+    (t) => t.BackgroundAutoGenerateHolidayTimeEntryV1(CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Monday, 12),
+    recurringJobOptions);
+
 await app.RunAsync();

@@ -38,13 +38,22 @@ public class ProjectStatusReportServiceV1
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var lastWeekStart = today.GetPeriodStartDate(Period.LastWeek);
+        var thisWeekStart = today.GetPeriodStartDate(Period.Week);
 
         _logger.LogInformation("Generating weekly project status reports for week of {WeekOf}.", lastWeekStart);
+        _logger.LogInformation("Generating weekly project status reports for week of {WeekOf}.", thisWeekStart);
+
         var generatePsrResponse = await GenerateWeeklyProjectStatusReportsV1(new()
         {
             ForDate = lastWeekStart
         }, ct);
-        _logger.LogInformation("Created {CreateCount} PSRs, skipped {SkipCount}.", generatePsrResponse.Value.Created, generatePsrResponse.Value.Skipped);
+        _logger.LogInformation("Created {CreateCount} PSRs for last week, skipped {SkipCount}.", generatePsrResponse.Value.Created, generatePsrResponse.Value.Skipped);
+
+        var generatePsrResponseThisWeek = await GenerateWeeklyProjectStatusReportsV1(new()
+        {
+            ForDate = thisWeekStart
+        }, ct);
+        _logger.LogInformation("Created {CreateCount} PSRs for this week, skipped {SkipCount}.", generatePsrResponseThisWeek.Value.Created, generatePsrResponseThisWeek.Value.Skipped);
     }
 
     public async Task<Result<GenerateWeeklyProjectStatusReportsV1.Response>> GenerateWeeklyProjectStatusReportsV1(GenerateWeeklyProjectStatusReportsV1.Request request, CancellationToken ct = default)
@@ -124,6 +133,9 @@ public class ProjectStatusReportServiceV1
 
     public async Task<Result<GetProjectStatusReportsV1.Response>> GetProjectStatusReportsV1(GetProjectStatusReportsV1.Request request, CancellationToken ct = default)
     {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var thisWeekStart = today.GetPeriodStartDate(Period.Week);
+
         var records = _context.ProjectStatusReports
             .AsNoTracking()
             .Include(t => t.Project).ThenInclude(t => t.ChargeCode)
@@ -190,23 +202,23 @@ public class ProjectStatusReportServiceV1
                 Status = t.Row.Status,
                 IsLate = t.Row.SubmittedAt == null,
 
-                ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
-                ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Status != TimeStatus.Rejected && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
+                ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours),
+                ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Status != TimeStatus.Rejected && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours),
 
                 LastId = t.Previous != null ? t.Previous.Id : null,
-                LastHours = t.Previous != null && t.Previous.Project.ChargeCode != null ? t.Previous.Project.ChargeCode.Times.Where(x => x.Date >= t.Previous.StartDate && x.Date <= t.Previous.EndDate).Sum(x => x.Hours) : null,
+                LastHours = t.Previous != null && t.Previous.Project.ChargeCode != null ? t.Previous.Project.ChargeCode.Times.Where(x => x.Date >= t.Previous.StartDate && x.Date <= t.Previous.EndDate).Sum(x => x.HoursApproved ?? x.Hours) : null,
 
                 BookingPeriod = t.Row.BookingPeriod,
                 BookingStartDate = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Min(x => x.Date),
                 BookingEndDate = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Max(x => x.Date),
-                BookingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
-                BookingAvailableHours = t.Row.Project.BookingHours - t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours),
-                BookingPercentComplete = t.Row.Project.BookingHours == 0 ? 0 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.Hours) / t.Row.Project.BookingHours,
+                BookingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours),
+                BookingAvailableHours = t.Row.Project.BookingHours - t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours),
+                BookingPercentComplete = t.Row.Project.BookingHours == 0 ? 0 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.BookingStartDate && x.Date <= t.Row.BookingEndDate && x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours) / t.Row.Project.BookingHours,
 
-                TotalHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.Hours),
-                TotalAvailableHours = t.Row.Project.TotalHours != null ? t.Row.Project.TotalHours.Value - t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.Hours) : null,
-                TotalPercentComplete = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? null : t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.Hours) / t.Row.Project.TotalHours.Value,
-                TotalPercentCompleteSort = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? -1 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.Hours) / t.Row.Project.TotalHours.Value,
+                TotalHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours),
+                TotalAvailableHours = t.Row.Project.TotalHours != null ? t.Row.Project.TotalHours.Value - t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours) : null,
+                TotalPercentComplete = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? null : t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours) / t.Row.Project.TotalHours.Value,
+                TotalPercentCompleteSort = !t.Row.Project.TotalHours.HasValue || t.Row.Project.TotalHours == 0 ? -1 : t.Row.Project.ChargeCode!.Times.Where(x => x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours) / t.Row.Project.TotalHours.Value,
                 TotalStartDate = t.Row.Project.ChargeCode.Times.Where(x => x.Date <= t.Row.EndDate).Min(t => t.Date),
                 TotalEndDate = t.Row.Project.ChargeCode.Times.Where(x => x.Date <= t.Row.EndDate).Max(t => t.Date),
             })
@@ -250,7 +262,8 @@ public class ProjectStatusReportServiceV1
                 SummaryHoursTotal = t.Status == ProjectStatus.Ongoing ? t.BookingHours : t.TotalHours,
                 SummaryHoursAvailable = t.Status == ProjectStatus.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
                 SummaryPercentComplete = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
-                SummaryPercentCompleteSort = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort
+                SummaryPercentCompleteSort = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
+                IsCurrentPsrPeriod = thisWeekStart == t.StartDate
             });
 
         if (request.IsSubmitted != null)
@@ -561,6 +574,10 @@ public class ProjectStatusReportServiceV1
         if (psr.SubmittedAt.HasValue)
         {
             return Result.Fail("Project status report has already been submitted.");
+        }
+        if (DateOnly.FromDateTime(DateTime.Now).GetPeriodStartDate(Period.Week) == psr.StartDate)
+        {
+            return Result.Fail("Cannot submit project status report for current period");
         }
 
         psr.SubmittedAt = DateTime.UtcNow;

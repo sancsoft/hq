@@ -120,12 +120,8 @@ public class PointServiceV1
                 for (int i = 0; i < request.Points.Length; i++)
                 {
                     var point = request.Points[i];
-                    if (point == null)
+                    if (point == null || point.ChargeCodeId == null)
                         continue;
-                    if (point.ChargeCodeId == null)
-                    {
-                        return Result.Fail("Point charge code can't be null");
-                    }
                     var _Point = new Data.Models.Point();
                     _context.Points.Add(_Point);
 
