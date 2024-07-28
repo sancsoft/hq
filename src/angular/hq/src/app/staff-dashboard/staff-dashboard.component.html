@@ -502,7 +502,11 @@
 
       <div class="flex justify-center">
         <div class="flex items-center space-x-4 py-1">
-          <button (click)="prevPlanningPoint()" class="focus:outline-none">
+          <button
+            title="Previous plan"
+            (click)="prevPlanningPoint()"
+            class="focus:outline-none"
+          >
             <i class="bi bi-arrow-left-short text-[28px]"></i>
           </button>
 
@@ -510,7 +514,11 @@
             <span>
               {{ (planningPoints$ | async)?.date | date: "EEEE MM/dd/yyyy" }}
             </span>
-            <button (click)="nextPlanningPoint()" class="focus:outline-none">
+            <button
+              title="Next plan"
+              (click)="nextPlanningPoint()"
+              class="focus:outline-none"
+            >
               <i class="bi bi-arrow-right-short text-[28px]"></i>
             </button>
           </div>
@@ -542,7 +550,7 @@
               (hqPlanPointChange)="onHqPlanChange($event)"
               [form]="planningPointsforms[$index]"
               [chargeCodes]="chargeCodes"
-              class="even:bg-gray-850 odd:bg-black-alt text-center"
+              class="even:bg-gray-850 odd:bg-black-alt text-center hover: cursor-move"
               cdkDrag
             ></tr>
           }
