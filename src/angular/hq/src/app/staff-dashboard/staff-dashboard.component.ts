@@ -35,6 +35,7 @@ import {
   shareReplay,
   skip,
   startWith,
+  Subject,
   switchMap,
   take,
   takeUntil,
@@ -102,9 +103,9 @@ export class StaffDashboardComponent implements OnInit {
   points: PlanningPoint[] = [];
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   private staffId$: Observable<string>;
-  private PlanningPointdateForm = new FormControl(localISODate(), {
-    nonNullable: true,
-  });
+  private planningPointsRequest$: Observable<any>;
+  private planningPointsRequestTrigger$ = new Subject<void>();
+
   private planningPointDate$: Observable<string>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -176,9 +177,10 @@ export class StaffDashboardComponent implements OnInit {
       .pipe(startWith(staffDashboardService.date.value))
       .pipe(map((t) => t || localISODate()));
     this.staffId$ = staffId$;
-    this.planningPointDate$ = this.PlanningPointdateForm.valueChanges
-      .pipe(startWith(this.PlanningPointdateForm.value))
-      .pipe(map((t) => t || localISODate()));
+    this.planningPointDate$ =
+      staffDashboardService.planningPointdateForm.valueChanges
+        .pipe(startWith(staffDashboardService.planningPointdateForm.value))
+        .pipe(map((t) => t || localISODate()));
 
     const prevPlanRequest$ = combineLatest({
       date: date$,
@@ -187,10 +189,16 @@ export class StaffDashboardComponent implements OnInit {
     prevPlanRequest$.subscribe((t) => {
       console.log(t);
     });
-    const planningPointsRequest$ = combineLatest({
+    this.planningPointsRequest$ = combineLatest({
       date: this.planningPointDate$,
       staffId: staffId$,
-    });
+      trigger: this.planningPointsRequestTrigger$.pipe(startWith(void 0)),
+    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+    // this.chargeCodes$ = this.hqService.getChargeCodeseV1({}).pipe(
+    //   map((chargeCode) => chargeCode.records),
+    //   shareReplay({ bufferSize: 1, refCount: false }),
+    // );
     // const upsertPlanningPointsRequest$ = combineLatest({
     //   date: date$,
     //   staffId: staffId$,
@@ -203,9 +211,9 @@ export class StaffDashboardComponent implements OnInit {
       map((chargeCode) => chargeCode.records),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
-    this.planningPoints$ = planningPointsRequest$.pipe(
-      switchMap((request) => {
-        return this.hqService.getPlanningPointsV1(request).pipe(
+    this.planningPoints$ = this.planningPointsRequest$.pipe(
+      switchMap(({ date, staffId }) => {
+        return this.hqService.getPlanningPointsV1({ date, staffId }).pipe(
           catchError((error: unknown) => {
             console.error('Error fetching previous Plan:', error);
             return of(null);
@@ -506,45 +514,49 @@ export class StaffDashboardComponent implements OnInit {
     });
   }
   async upsertPoints() {
-    const request = {
-      date: await firstValueFrom(this.planningPointDate$),
-      staffId: await firstValueFrom(this.staffId$),
-      points: this.getPlanningPointsFormValues(),
-    };
-
     try {
+      const date = this.staffDashboardService.planningPointdateForm.value;
+      const staffId = await firstValueFrom(this.staffId$);
+      const points = this.getPlanningPointsFormValues();
+
+      const request = {
+        date,
+        staffId,
+        points,
+      };
+
       await firstValueFrom(this.hqService.upsertPlanningPointsV1(request));
+
       this.toastService.show(
         'Success',
         'Planning points successfully upserted.',
       );
-      this.refreshPlanningPoints();
+
+      // Trigger the refresh of planning points
+      this.planningPointsRequestTrigger$.next();
     } catch (error) {
       console.error('Error upserting planning points:', error);
     }
   }
-  private async refreshPlanningPoints() {
-    this.planningPoints$ = combineLatest({
-      date: this.planningPointDate$,
-      staffId: this.staffId$,
-    }).pipe(
-      switchMap((request) => {
-        return this.hqService.getPlanningPointsV1(request).pipe(
-          catchError((error: unknown) => {
-            console.error('Error fetching planning points:', error);
-            return of(null);
-          }),
-        );
-      }),
-    );
+  // private async refreshPlanningPoints() {
+  //   this.planningPointsRequest$.pipe(
+  //     switchMap((request) => {
+  //       return this.hqService.getPlanningPointsV1(request).pipe(
+  //         catchError((error: unknown) => {
+  //           console.error('Error fetching planning points:', error);
+  //           return of(null);
+  //         }),
+  //       );
+  //     }),
+  //   );
 
-    this.planningPoints$.subscribe((response) => {
-      if (response) {
-        this.points = response.points;
-        this.initializeForms(response.points);
-      }
-    });
-  }
+  //   this.planningPoints$.subscribe((response) => {
+  //     if (response) {
+  //       this.points = response.points;
+  //       this.initializeForms(response.points);
+  //     }
+  //   });
+  // }
   initializeForms(points: PlanningPoint[]): void {
     this.planningPointsforms = points.map((point) => this.createForm(point));
   }
@@ -552,12 +564,20 @@ export class StaffDashboardComponent implements OnInit {
     return this.planningPointsforms.map((form) => form.value as PlanningPoint);
   }
   async prevPlanningPoint() {
-    const prevDate = (await firstValueFrom(this.planningPoints$))?.previousDate;
-    if (prevDate) this.PlanningPointdateForm.setValue(prevDate);
+    const planningPoints = await firstValueFrom(this.planningPoints$);
+    if (planningPoints?.previousDate) {
+      this.staffDashboardService.planningPointdateForm.setValue(
+        planningPoints.previousDate,
+      );
+    }
   }
   async nextPlanningPoint() {
-    const nextDate = (await firstValueFrom(this.planningPoints$))?.nextDate;
-    if (nextDate) this.PlanningPointdateForm.setValue(nextDate);
+    const planningPoints = await firstValueFrom(this.planningPoints$);
+    if (planningPoints?.nextDate) {
+      this.staffDashboardService.planningPointdateForm.setValue(
+        planningPoints.nextDate,
+      );
+    }
   }
 }
 
