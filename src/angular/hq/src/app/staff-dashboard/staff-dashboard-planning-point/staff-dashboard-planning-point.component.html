@@ -1,6 +1,16 @@
 <ng-container [formGroup]="form">
+  <td
+    class="border-b border-black py-2 w-3"
+    [ngClass]="{
+      'bg-green-600': point.chargeCodeId !== null,
+      'bg-gray-600': point.chargeCodeId === null,
+    }"
+  >
+    {{ point.sequence }}
+  </td>
+
   <td class="border-b border-black py-2 pl-5">
-    <div class="grid relative w-full max-w-[220px]">
+    <div class="grid relative w-auto">
       <select
         id="chargeCode"
         formControlName="chargeCodeId"
