@@ -1,11 +1,9 @@
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { PanelComponent } from './../core/components/panel/panel.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Period } from '../models/times/get-time-v1';
 import {
   HQTimeChangeEvent,
   HQTimeDeleteEvent,
@@ -13,7 +11,6 @@ import {
 } from './staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import { updateTimeRequestV1 } from '../models/times/update-time-v1';
 import {
-  BehaviorSubject,
   catchError,
   combineLatest,
   debounceTime,
@@ -26,7 +23,6 @@ import {
   skip,
   startWith,
   switchMap,
-  take,
   takeUntil,
   tap,
 } from 'rxjs';
@@ -43,11 +39,11 @@ import { Period } from '../enums/period';
 import { StatDisplayComponent } from '../core/components/stat-display/stat-display.component';
 import { HQRole } from '../enums/hqrole';
 import { HQMarkdownComponent } from '../common/markdown/markdown.component';
-import { ButtonState } from '../enums/ButtonState';
 import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
 import { localISODate } from '../common/functions/local-iso-date';
 import { GetStatusResponseV1 } from '../models/status/get-status-v1';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
+import { ButtonState } from '../enums/button-state';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -66,7 +62,7 @@ import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
 })
-export class StaffDashboardComponent implements OnInit {
+export class StaffDashboardComponent implements OnInit, OnDestroy {
   Period = Period;
   HQRole = HQRole;
 

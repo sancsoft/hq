@@ -14,6 +14,9 @@ import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
 import { ProjectStatus } from '../../../enums/project-status';
 import { Period } from '../../../enums/period';
 import { CoreModule } from '../../core.module';
+import { map, Observable, shareReplay } from 'rxjs';
+import { GetChargeCodeRecordV1 } from '../../../models/charge-codes/get-chargecodes-v1';
+import { HQService } from '../../../services/hq.service';
 
 @Component({
   selector: 'hq-kitchen-sink',
