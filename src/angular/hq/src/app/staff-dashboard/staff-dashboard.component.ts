@@ -419,9 +419,11 @@ export class StaffDashboardComponent implements OnInit {
       if (event.id) {
         this.toastService.show('Success', 'Time entry successfully updated.');
         this.staffDashboardService.refresh();
+        this.planningPointsRequestTrigger$.next();
       } else {
         this.toastService.show('Success', 'Time entry successfully created.');
         this.staffDashboardService.refresh();
+        this.planningPointsRequestTrigger$.next();
       }
     } catch (err) {
       if (err instanceof APIError) {

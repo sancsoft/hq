@@ -11,6 +11,7 @@ export interface PlanningPoint {
   projectName: string | null;
   projectId: string | null;
   sequence: number;
+  completed: boolean;
 }
 
 export interface getPointsResponseV1 {

@@ -507,28 +507,26 @@
             <i class="bi bi-arrow-left-short text-[28px]"></i>
           </button>
 
-          <div class="flex items-center space-x-2">
-            <span>
-              {{ (planningPoints$ | async)?.date | date: "EEEE MM/dd/yyyy" }}
-            </span>
-            <button
-              title="Next plan"
-              (click)="nextPlanningPoint()"
-              class="focus:outline-none"
-            >
-              <i class="bi bi-arrow-right-short text-[28px]"></i>
-            </button>
-          </div>
+          <span>
+            {{ (planningPoints$ | async)?.date | date: "MM/dd/yyyy" }}
+          </span>
+          <button
+            title="Next plan"
+            (click)="nextPlanningPoint()"
+            class="focus:outline-none"
+          >
+            <i class="bi bi-arrow-right-short text-[28px]"></i>
+          </button>
         </div>
       </div>
     </div>
 
     <table class="w-full border-spacing-0 border-separate table-fixed">
       <thead>
-        <tr class="top-0 ">
+        <tr class="top-0">
           <th
             class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
-            width="30px"
+            width="18px"
           ></th>
           <th
             class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
@@ -551,7 +549,7 @@
               (hqPlanPointChange)="onHqPlanChange($event)"
               [form]="planningPointsforms[$index]"
               [chargeCodes]="chargeCodes"
-              class="even:bg-gray-850 odd:bg-black-alt text-center hover: cursor-move"
+              class="even:bg-gray-850 odd:bg-black-alt text-center"
               cdkDrag
             ></tr>
           }

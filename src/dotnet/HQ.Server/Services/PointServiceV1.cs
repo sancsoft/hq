@@ -39,11 +39,15 @@ public class PointServiceV1
 
         }
         var startDate = request.Date.GetPeriodStartDate(Period.Week);
-        var endDate = request.Date.GetPeriodEndDate(Period.Week);
 
         records = records
-                .Where(p => p.StaffId == request.StaffId && p.Date >= startDate && p.Date <= endDate);
+                .Where(p => p.StaffId == request.StaffId && p.Date == startDate);
         var points = await records.ToListAsync(ct);
+        var times = _context.Times.AsNoTracking().AsQueryable().Where(t => t.StaffId == request.StaffId && t.Date >= startDate);
+        var pointTime = 4m; // A point represents 4 hours of logged work
+        var timesDictionary = await times
+        .GroupBy(x => x.ChargeCodeId)
+        .ToDictionaryAsync(g => g.Key, g => g.Sum(x => x.Hours));
 
         var _points = points.Select(t => new Abstractions.Points.Point
         {
@@ -52,13 +56,15 @@ public class PointServiceV1
             Sequence = t.Sequence,
             ChargeCode = t.ChargeCode?.Code,
             ProjectName = t.ChargeCode?.Project?.Name,
-            ProjectId = t.ChargeCode?.Project?.Id
+            ProjectId = t.ChargeCode?.Project?.Id,
         }).OrderBy(t => t.Sequence).ToList();
 
         for (int i = 0; i < 10; i++)
         {
             var sequence = i + 1;
             var point = _points.Find(p => p.Sequence == sequence);
+
+
             if (point == null)
             {
                 var nullPoint = new Abstractions.Points.Point
@@ -66,12 +72,22 @@ public class PointServiceV1
                     ChargeCodeId = null,
                     Id = null,
                     Sequence = sequence,
+                    Completed = false,
                     ChargeCode = null,
                     ProjectName = null,
                     ProjectId = null
                 };
                 _points.Insert(i, nullPoint);
             }
+            else
+            {
+                if (!point.ChargeCodeId.HasValue) continue;
+                var hours = timesDictionary.GetValueOrDefault(point.ChargeCodeId.Value, 0);
+                if (hours < pointTime) continue;
+                point.Completed = true;
+                timesDictionary[point.ChargeCodeId.Value] -= pointTime;
+            }
+
         }
 
         var response = new GetPointsV1.Response()
@@ -79,7 +95,7 @@ public class PointServiceV1
             StaffId = request.StaffId,
             Date = request.Date,
             Points = _points.ToArray(),
-            DisplayDate = startDate.AddPeriod(Period.Today, 2),
+            DisplayDate = startDate.AddDays(2),
             PreviousDate = request.Date.AddPeriod(Period.Week, -1),
             NextDate = request.Date.AddPeriod(Period.Week, 1)
         };
@@ -105,9 +121,8 @@ public class PointServiceV1
 
                 var pointIds = new List<Guid>();
                 var startDate = request.Date.GetPeriodStartDate(Period.Week);
-                var endDate = request.Date.GetPeriodEndDate(Period.Week);
                 var points = await _context.Points
-                        .Where(p => p.StaffId == request.StaffId && p.Date >= startDate && p.Date <= endDate).ToListAsync();
+                        .Where(p => p.StaffId == request.StaffId && p.Date == startDate).ToListAsync();
                 foreach (var p in points)
                 {
                     _context.Points.Remove(p);
@@ -129,7 +144,7 @@ public class PointServiceV1
                     _Point.ChargeCodeId = point.ChargeCodeId.Value;
                     _Point.StaffId = request.StaffId!.Value;
                     _Point.Sequence = i + 1;
-                    _Point.Date = request.Date;
+                    _Point.Date = startDate;
                 }
 
                 await _context.SaveChangesAsync(ct);

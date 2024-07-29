@@ -14,6 +14,7 @@ namespace HQ.Abstractions.Points
         public String? ProjectName { get; set; }
         public Guid? ProjectId { get; set; }
         public int Sequence { get; set; }
+        public bool Completed { get; set; }
     }
 
     public class UpsertPointsV1

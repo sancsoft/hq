@@ -9,11 +9,12 @@ import {
 } from '@angular/forms';
 import { PlanningPoint } from '../../models/Points/get-points-v1';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
+import { CdkDragHandle } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'tr[hq-staff-dashboard-planning-point]',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CdkDragHandle],
   templateUrl: './staff-dashboard-planning-point.component.html',
 })
 export class StaffDashboardPlanningPointComponent {
