@@ -16,13 +16,6 @@ export const routes: Routes = [
       import('./callback.component').then((m) => m.CallbackComponent),
   },
   {
-    path: 'autocomplete',
-    title: 'Auto complete',
-    canActivate: [AutoLoginPartialRoutesGuard],
-    loadComponent: () =>
-      import('./test/test.component').then((m) => m.TestComponent),
-  },
-  {
     path: 'kitchen-sink',
     title: 'Kitchen Sink',
     canActivate: [AutoLoginPartialRoutesGuard],
