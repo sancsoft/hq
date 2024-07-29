@@ -19,6 +19,7 @@ public class GetStaffV1
         public bool? IsAssignedProjectManager { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.FirstName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+        public bool? CurrentOnly { get; set; } = true;
     }
 
     public enum SortColumn

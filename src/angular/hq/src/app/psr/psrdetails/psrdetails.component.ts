@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import { TabComponent } from '../../core/components/tab/tab.component';
+import { HQRole } from '../../enums/hqrole';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -26,4 +27,5 @@ export interface ChargeCodeViewModel {
 })
 export class PSRDetailsComponent {
   constructor() {}
+  HQRole = HQRole;
 }

@@ -35,6 +35,10 @@ namespace HQ.Server
             services.AddScoped<IRazorViewToStringRendererService, RazorViewToStringRendererService>();
             services.AddScoped<EmailMessageService>();
             services.AddScoped<HolidayServiceV1>();
+            services.AddScoped<PlanServiceV1>();
+            services.AddScoped<StatusServiceV1>();
+
+
 
             var connectionString = configuration.BuildConnectionString();
             services.AddHQDbContext(connectionString);

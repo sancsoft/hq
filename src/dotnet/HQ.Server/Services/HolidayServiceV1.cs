@@ -6,8 +6,10 @@ using CsvHelper.Configuration;
 
 using FluentResults;
 
+using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Holiday;
+using HQ.Abstractions.Times;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 
@@ -19,9 +21,12 @@ public class HolidayServiceV1
 {
     private readonly HQDbContext _context;
 
-    public HolidayServiceV1(HQDbContext context)
+    private readonly ILogger<ProjectStatusReportServiceV1> _logger;
+
+    public HolidayServiceV1(HQDbContext context, ILogger<ProjectStatusReportServiceV1> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<Result<UpsertHolidayV1.Response>> UpsertHolidayV1(UpsertHolidayV1.Request request, CancellationToken ct = default)
@@ -204,6 +209,72 @@ public class HolidayServiceV1
             Created = created,
             Updated = updated
         };
+    }
+    public async Task BackgroundAutoGenerateHolidayTimeEntryV1(CancellationToken ct)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var startDate = today.GetPeriodStartDate(Period.Week);
+        var endDate = today.GetPeriodEndDate(Period.Week);
+
+        var holidays = _context.Holidays
+        .AsNoTracking()
+        .AsQueryable();
+        var jurisdicitons = Enum.GetValues(typeof(Jurisdiciton));
+        var holidayChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("holiday")).FirstOrDefaultAsync(ct);
+        if (holidayChargeCode == null)
+        {
+            return;
+        }
+        foreach (Jurisdiciton jurisdiciton in jurisdicitons)
+        {
+            var upcomingHolidays = await holidays.Where(t => t.Date >= startDate && t.Date <= endDate && t.Jurisdiciton == jurisdiciton).ToListAsync(ct);
+            foreach (var upcomingHoliday in upcomingHolidays)
+            {
+
+                if (upcomingHoliday == null)
+                {
+                    return;
+                }
+                var staff = _context.Staff.
+                AsNoTracking()
+                .AsQueryable();
+
+
+                staff = staff.Where(t => t.EndDate == null && t.Jurisdiciton == jurisdiciton);
+                var times = _context.Times
+                .AsNoTracking()
+                .AsQueryable()
+                .Include(t => t.Staff);
+                var staffWithHoliday = await times.Where(t => t.Date == upcomingHoliday.Date && t.ChargeCode.Id == holidayChargeCode.Id && t.Staff.Jurisdiciton == jurisdiciton && t.Staff.EndDate == null).AsNoTracking().Select(t => t.Staff).ToListAsync(ct);
+
+                var staffWithHolidayIds = staffWithHoliday.Select(s => s.Id).ToList();
+                var staffWithoutEnteredHoliday = await staff.Where(t => !staffWithHolidayIds.Contains(t.Id)).ToListAsync(ct);
+
+                _logger.LogInformation($"Creating time entries for Holiday {upcomingHoliday.Name} for staff count {staffWithoutEnteredHoliday.Count()}");
+                foreach (var staffMember in staffWithoutEnteredHoliday)
+                {
+
+                    var timeEntry = new Time
+                    {
+                        ChargeCodeId = holidayChargeCode.Id,
+                        Hours = 8,
+                        HoursApproved = 8,
+                        Notes = upcomingHoliday.Name,
+                        StaffId = staffMember.Id,
+                        Date = upcomingHoliday.Date,
+                        Status = TimeStatus.Accepted,
+                        HolidayId = upcomingHoliday.Id
+                    };
+                    _context.Times.Add(timeEntry);
+                }
+                await _context.SaveChangesAsync(ct);
+
+
+                _logger.LogInformation($"Created time entries for Holiday {upcomingHoliday.Name} for staff count {staffWithoutEnteredHoliday.Count()}");
+            }
+
+        }
+
     }
 
 }

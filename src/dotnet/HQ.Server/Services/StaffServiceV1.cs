@@ -77,12 +77,14 @@ public class StaffServiceV1
                         Email = staff.Email,
                     };
                     var createdUser = await _UserServiceV1.UpsertUserV1(upsertUserRequest, ct);
+                    await transaction.CommitAsync(ct);
                     return new UpsertStaffV1.Response()
                     {
                         Id = staff.Id,
                         UserId = createdUser.Value.Id
                     };
                 }
+                await transaction.CommitAsync(ct);
                 return new UpsertStaffV1.Response()
                 {
                     Id = staff.Id
@@ -147,6 +149,13 @@ public class StaffServiceV1
             else
             {
                 records = records.Where(t => !_context.Projects.Any(x => x.ProjectManagerId == t.Id));
+            }
+        }
+        if (request.CurrentOnly.HasValue)
+        {
+            if (request.CurrentOnly.Value)
+            {
+                records = records.Where(t => t.EndDate == null);
             }
         }
 

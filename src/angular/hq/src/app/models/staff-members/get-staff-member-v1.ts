@@ -24,6 +24,7 @@ export interface GetStaffV1Request extends PagedRequestV1 {
   jurisdiciton?: Jurisdiciton;
   sortBy?: SortColumn;
   sortDirection?: SortDirection;
+  currentOnly: boolean | null;
 }
 
 export interface GetStaffV1Record {

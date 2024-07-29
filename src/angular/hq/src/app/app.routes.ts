@@ -184,7 +184,7 @@ export const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
-            redirectTo: 'time',
+            redirectTo: 'report',
           },
           {
             path: 'time',
