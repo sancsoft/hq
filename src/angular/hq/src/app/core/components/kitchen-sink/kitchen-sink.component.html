@@ -1,4 +1,4 @@
-<div class="w-full h-80">
+<!-- <div class="w-full h-80">
   <as-split [direction]="'vertical'" restrictMove="true" gutterSize="8">
     <div
       *asSplitGutter="let isDragged = isDragged"
@@ -48,7 +48,7 @@
       </div>
     </as-split-area>
   </as-split>
-</div>
+</div> -->
 
 <!-- <div class="w-full h-60 bg-yellow-700">
   <hq-panel Direction="vertical" [CSizes]="[50, 50]">
@@ -82,8 +82,6 @@ Text: {{ text.value | json }}
 Date: {{ date.value | json }}
 Date using form group: {{ form.controls.date.value | json }}
 Select: {{ select.value | json }}
-
-\
 </pre>
 
 <div class="p-3 flex flex-row gap-2">
@@ -130,7 +128,7 @@ Select: {{ select.value | json }}
   </hq-search-input>
 </div>
 
-<div class="p-3">
+<!-- <div class="p-3">
   <hq-dual-panel>
     <div left-header>
       <div>LEFT</div>
@@ -208,7 +206,7 @@ Select: {{ select.value | json }}
       The minimum length is invalid.
     </ng-template>
   </hq-text-input>
-</div>
+</div> -->
 
 <!-- Form control -->
 <div class="p-3">
@@ -226,13 +224,66 @@ Select: {{ select.value | json }}
 </div>
 
 <div class="p-3">
-  <hq-select-input [formControl]="select">
+  <hq-select-input
+    [formControl]="select"
+    [autocomplete]="true"
+    variant="pill"
+    [inline]="true"
+  >
+    <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
+    @for (code of chargeCodes$ | async; track code.id) {
+      <ng-template
+        [hqSelectInputOption]="code.id"
+        [hqSelectInputOptionSelectedDisplay]="code.code"
+        [hqSelectInputOptionSearch]="
+          code.code + ': ' + code.clientName + ': ' + code.projectName
+        "
+        >{{
+          code.code + ": " + code.clientName + ": " + code.projectName
+        }}</ng-template
+      >
+    }
+  </hq-select-input>
+  <hr class="my-3" />
+  <hq-select-input
+    [formControl]="select"
+    [autocomplete]="true"
+    variant="secondary"
+  >
+    <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
+    @for (code of chargeCodes$ | async; track code.id) {
+      <ng-template
+        [hqSelectInputOption]="code.id"
+        [hqSelectInputOptionSelectedDisplay]="code.code"
+        [hqSelectInputOptionSearch]="
+          code.code + ': ' + code.clientName + ': ' + code.projectName
+        "
+        >{{
+          code.code + ": " + code.clientName + ": " + code.projectName
+        }}</ng-template
+      >
+    }
+  </hq-select-input>
+  <hr class="my-3" />
+  <hq-select-input
+    [formControl]="select"
+    [autocomplete]="false"
+    variant="secondary"
+  >
     <ng-template [hqSelectInputOption]="null"
-      >Please Select an option</ng-template
+      >Please Select a charge code</ng-template
     >
-    <ng-template [hqSelectInputOption]="'bmw'">BMW</ng-template>
-    <ng-template [hqSelectInputOption]="'Toyota'">Toyota</ng-template>
-    <ng-template [hqSelectInputOption]="'Ford'">Ford</ng-template>
+    @for (code of chargeCodes$ | async; track code.id) {
+      <ng-template
+        [hqSelectInputOption]="code.id"
+        [hqSelectInputOptionSearch]="
+          code.code + ': ' + code.clientName + ': ' + code.projectName
+        "
+        >{{
+          code.code + ": " + code.clientName + ": " + code.projectName
+        }}</ng-template
+      >
+    }
   </hq-select-input>
 </div>
 

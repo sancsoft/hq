@@ -44,8 +44,14 @@ function hexToRgb(hex: string) {
     : null;
 }
 
-export function chargeCodeToColor(code: string, opacity = 0.5) {
-  const value = code.charCodeAt(0) * 10000 + parseInt(code.substring(1));
+export function chargeCodeToColor(code?: string, opacity = 0.5) {
+  code ??= '';
+
+  const value = code
+    .split('')
+    .map((t) => t.charCodeAt(0))
+    .reduce((acc, curr) => acc + curr, 0);
+
   const hexColor = colors[value % colors.length];
   const rgb = hexToRgb(hexColor);
   if (!rgb) {
