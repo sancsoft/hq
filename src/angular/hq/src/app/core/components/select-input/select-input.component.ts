@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterContentChecked,
   AfterViewInit,
   ChangeDetectorRef,
   Component,
@@ -27,7 +28,6 @@ import {
   BehaviorSubject,
   combineLatest,
   concat,
-  debounceTime,
   defer,
   firstValueFrom,
   map,
@@ -50,7 +50,9 @@ import { chargeCodeToColor } from '../../../common/functions/charge-code-to-colo
   ],
   templateUrl: './select-input.component.html',
 })
-export class SelectInputComponent<T> implements AfterViewInit {
+export class SelectInputComponent<T>
+  implements AfterViewInit, AfterContentChecked
+{
   @ViewChild('select')
   select?: ElementRef<HTMLInputElement>;
 
@@ -196,6 +198,10 @@ export class SelectInputComponent<T> implements AfterViewInit {
     }
   }
 
+  ngAfterContentChecked() {
+    this.cdr.detectChanges();
+  }
+
   ngAfterViewInit() {
     const options$ = this.options.changes.pipe(
       map((queryList: QueryList<SelectInputOptionDirective<T>>) =>
@@ -206,6 +212,11 @@ export class SelectInputComponent<T> implements AfterViewInit {
     const search$ = concat(
       defer(() => of(this.searchForm.value)),
       this.searchForm.valueChanges,
+    );
+
+    this.selectedOption$ = combineLatest([options$, this._value]).pipe(
+      map(([options, value]) => options.find((t) => t.value == value)),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.options$ = combineLatest([options$, search$]).pipe(
@@ -224,11 +235,6 @@ export class SelectInputComponent<T> implements AfterViewInit {
 
         return options;
       }),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
-
-    this.selectedOption$ = combineLatest([options$, this._value]).pipe(
-      map(([options, value]) => options.find((t) => t.value == value)),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
   }
