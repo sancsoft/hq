@@ -543,18 +543,18 @@
       </thead>
       <tbody cdkDropList (cdkDropListDropped)="onDrop($event)">
         @for (point of points; track $index) {
-          @if (chargeCodes$ | async; as chargeCodes) {
-            <tr
-              hq-staff-dashboard-planning-point
-              [point]="point"
-              (hqPlanPointChange)="onHqPlanChange($event)"
-              [form]="planningPointsforms[$index]"
-              [chargeCodes]="chargeCodes"
-              class="even:bg-gray-850 odd:bg-black-alt text-center"
-              cdkDrag
-            ></tr>
-          }
+          <!-- @if (chargeCodes$ | async; as chargeCodes) { -->
+          <tr
+            hq-staff-dashboard-planning-point
+            [point]="point"
+            (hqPlanPointChange)="onHqPlanChange($event)"
+            [form]="planningPointsforms[$index]"
+            [chargeCodes]="chargeCodes$ | async"
+            class="even:bg-gray-850 odd:bg-black-alt text-center"
+            cdkDrag
+          ></tr>
         }
+        <!-- } -->
       </tbody>
     </table>
   </div>

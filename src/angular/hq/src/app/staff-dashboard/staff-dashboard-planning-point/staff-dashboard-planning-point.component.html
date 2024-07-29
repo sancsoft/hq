@@ -9,7 +9,27 @@
   ></td>
 
   <td class="border-b border-black py-2 pl-5">
-    <div class="grid relative w-auto">
+    <hq-select-input
+      [formControlName]="'chargeCodeId'"
+      [autocomplete]="true"
+      variant="pill"
+      [inline]="true"
+    >
+      <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
+      @for (code of chargeCodes; track code.id) {
+        <ng-template
+          [hqSelectInputOption]="code.id"
+          [hqSelectInputOptionSelectedDisplay]="code.code"
+          [hqSelectInputOptionSearch]="
+            code.code + ': ' + code.clientName + ': ' + code.projectName
+          "
+          >{{
+            code.code + ": " + code.clientName + ": " + code.projectName
+          }}</ng-template
+        >
+      }
+    </hq-select-input>
+    <!-- <div class="grid relative w-auto">
       <select
         id="chargeCode"
         formControlName="chargeCodeId"
@@ -36,7 +56,7 @@
       >
         <i class="bi bi-arrow-down-short text-[24px]"></i>
       </span>
-    </div>
+    </div> -->
   </td>
   <td class="border-b border-black py-2">
     {{ point.projectName }}
