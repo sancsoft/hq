@@ -130,6 +130,26 @@ import {
   GetPrevPSRRequestV1,
   GetPrevPsrResponseV1,
 } from '../models/PSR/get-previous-PSR-v1';
+import {
+  GetPlanRequestV1,
+  GetPlanResponseV1,
+} from '../models/Plan/get-plan-v1';
+import {
+  UpsertPlanRequestV1,
+  UpsertPlanResponseV1,
+} from '../models/Plan/upsert-plan-v1';
+import {
+  GetStatusRequestV1,
+  GetStatusResponseV1,
+} from '../models/status/get-status-v1';
+import {
+  GetPrevPlanRequestV1,
+  GetPrevPlanResponseV1,
+} from '../models/Plan/get-previous-PSR-v1';
+import {
+  UpsertStatusRequestV1,
+  UpsertStatusResponseV1,
+} from '../models/status/upsert-status-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -519,6 +539,59 @@ export class HQService {
           .split('=')[1]
           .trim(),
       })),
+    );
+  }
+  
+  getPlanV1(request: Partial<GetPlanRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPlanResponseV1>(
+          `${apiUrl}/v1/Plan/GetPlanV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  upsertPlanV1(request: Partial<UpsertPlanRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertPlanResponseV1>(
+          `${apiUrl}/v1/Plan/UpsertPlanV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  getStatusV1(request: Partial<GetStatusRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetStatusResponseV1>(
+          `${apiUrl}/v1/Status/GetStatusV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  upsertStatus(request: Partial<UpsertStatusRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertStatusResponseV1>(
+          `${apiUrl}/v1/Status/UpsertStatusV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  getPreviousPlanV1(request: Partial<GetPrevPlanRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPrevPlanResponseV1>(
+          `${apiUrl}/v1/Plan/PreviousPlanV1`,
+          request,
+        ),
+      ),
     );
   }
 

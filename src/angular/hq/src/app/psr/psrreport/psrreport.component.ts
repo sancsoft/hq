@@ -32,6 +32,10 @@ import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
 import { GetPrevPsrResponseV1 } from '../../models/PSR/get-previous-PSR-v1';
 import { ToastService } from '../../services/toast.service';
 import { ButtonState } from '../../enums/button-state';
+import { PSRTimeListComponent } from '../psrtime-list/psrtime-list.component';
+import { AngularSplitModule } from 'angular-split';
+import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
+import { PanelComponent } from '../../core/components/panel/panel.component';
 
 @Component({
   selector: 'hq-psrreport',
@@ -42,6 +46,10 @@ import { ButtonState } from '../../enums/button-state';
     MonacoEditorModule,
     HQMarkdownComponent,
     InRolePipe,
+    PSRTimeListComponent,
+    AngularSplitModule,
+    PsrSearchFilterComponent,
+    PanelComponent,
   ],
   templateUrl: './psrreport.component.html',
   encapsulation: ViewEncapsulation.None,
@@ -69,6 +77,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   prevPsr$: Observable<GetPrevPsrResponseV1 | null>;
   ButtonState = ButtonState;
   HQRole = HQRole;
+  currentDate = new Date();
 
   async ngOnInit() {
     this.psrService.resetFilter();
@@ -88,7 +97,9 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     }
 
     this.submitButtonState =
-      psr && psr.submittedAt ? ButtonState.Disabled : ButtonState.Enabled;
+      psr && psr.submittedAt && psr.isCurrentPsrPeriod
+        ? ButtonState.Disabled
+        : ButtonState.Enabled;
 
     this.prevPSRReportButtonState =
       prevPsr && prevPsr.report ? ButtonState.Enabled : ButtonState.Disabled;
@@ -112,7 +123,6 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId']),
     );
-
     this.psr$ = this.psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
       map((t) => t.records[0]),
@@ -127,7 +137,6 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         ),
       ),
     );
-
     const canManageProjectStatusReport$ = combineLatest({
       userData: oidcSecurityService.userData$.pipe(map((t) => t.userData)),
       psr: this.psr$,
@@ -154,6 +163,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
           automaticLayout: true,
           readOnly: !canManageProjectStatusReport,
           domReadOnly: !canManageProjectStatusReport,
+          wordWrap: 'on',
         };
       }),
       startWith({
@@ -176,6 +186,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
     request$
       .pipe(
+        skip(1),
         debounceTime(1000),
         // tap(() => (this.savedStatus = 'loading')),
         switchMap((request) =>
@@ -212,9 +223,10 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       identifier: id,
       range: selection,
       text: this.previousReport,
-      forceMoveMarkers: true,
+      forceMoveMarkers: false,
     };
     this.editorInstance.executeEdits('my-source', [op]);
+    this.editorInstance.focus();
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onEditorInit(editor: any) {

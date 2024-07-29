@@ -1,3 +1,81 @@
+<!-- <div class="w-full h-80">
+  <as-split [direction]="'vertical'" restrictMove="true" gutterSize="8">
+    <div
+      *asSplitGutter="let isDragged = isDragged"
+      class="custom-gutter bg-black overflow-ellipsis"
+      [class.dragged]="isDragged"
+    >
+      <div class="custom-gutter-icon">
+        <button title="collapse">
+          <i class="bi bi-three-dots"></i>
+        </button>
+      </div>
+    </div>
+    <as-split-area [size]="50">
+      <as-split [direction]="'horizontal'" restrictMove="true" gutterSize="8">
+        <div
+          *asSplitGutter="let isDragged = isDragged"
+          class="custom-gutter bg-black overflow-ellipsis"
+          [class.dragged]="isDragged"
+        >
+          <div class="custom-gutter-icon">
+            <button title="collapse">
+              <i class="bi bi-three-dots"></i>
+            </button>
+          </div>
+        </div>
+        <as-split-area [size]="50">
+          <div>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel totam
+            facilis dicta, quos aliquam reprehenderit fugit ullam! Nihil,
+            tenetur quam.
+          </div>
+        </as-split-area>
+        <as-split-area [size]="50">
+          <div>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel totam
+            facilis dicta, quos aliquam reprehenderit fugit ullam! Nihil,
+            tenetur quam.
+          </div>
+        </as-split-area>
+      </as-split>
+    </as-split-area>
+    <as-split-area [size]="50">
+      <div>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel totam
+        facilis dicta, quos aliquam reprehenderit fugit ullam! Nihil, tenetur
+        quam.
+      </div>
+    </as-split-area>
+  </as-split>
+</div> -->
+
+<!-- <div class="w-full h-60 bg-yellow-700">
+  <hq-panel Direction="vertical" [CSizes]="[50, 50]">
+    <hq-panel first Direction="horizontal" [CSizes]="[30, 70]">
+      <p first>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa illo
+        consequatur, commodi dolores illum dolorem laboriosam perspiciatis sunt
+        earum est nulla asperiores modi assumenda excepturi eos labore atque
+        repellendus fugit nam veniam! Minima, magni beatae officia cum labore
+        tenetur nostrum libero recusandae debitis tempore ea illo? Facere
+        dolorum asperiores quae?
+      </p>
+      <p second>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa illo
+        consequatur, commodi dolores illum dolorem laboriosam perspiciatis sunt
+        earum est nulla asperiores modi assumenda excepturi eos labore atque
+        repellendus fugit nam veniam! Minima, magni beatae officia cum labore
+        tenetur nostrum libero recusandae debitis tempore ea illo? Facere
+        dolorum asperiores quae?
+      </p>
+    </hq-panel>
+    <div second>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, assumenda
+      atque. Nisi eos veritatis ipsam quia consequuntur cumque, dolore vitae?
+    </div>
+  </hq-panel>
+</div> -->
 <pre class="p-3 bg-black-alt">
 Search: {{ search.value | json }}
 Text: {{ text.value | json }}
@@ -60,7 +138,7 @@ File: {{ file.value?.name }}
   </hq-search-input>
 </div>
 
-<div class="p-3">
+<!-- <div class="p-3">
   <hq-dual-panel>
     <div left-header>
       <div>LEFT</div>
@@ -138,7 +216,7 @@ File: {{ file.value?.name }}
       The minimum length is invalid.
     </ng-template>
   </hq-text-input>
-</div>
+</div> -->
 
 <!-- Form control -->
 <div class="p-3">
@@ -156,13 +234,66 @@ File: {{ file.value?.name }}
 </div>
 
 <div class="p-3">
-  <hq-select-input [formControl]="select">
+  <hq-select-input
+    [formControl]="select"
+    [autocomplete]="true"
+    variant="pill"
+    [inline]="true"
+  >
+    <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
+    @for (code of chargeCodes$ | async; track code.id) {
+      <ng-template
+        [hqSelectInputOption]="code.id"
+        [hqSelectInputOptionSelectedDisplay]="code.code"
+        [hqSelectInputOptionSearch]="
+          code.code + ': ' + code.clientName + ': ' + code.projectName
+        "
+        >{{
+          code.code + ": " + code.clientName + ": " + code.projectName
+        }}</ng-template
+      >
+    }
+  </hq-select-input>
+  <hr class="my-3" />
+  <hq-select-input
+    [formControl]="select"
+    [autocomplete]="true"
+    variant="secondary"
+  >
+    <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
+    @for (code of chargeCodes$ | async; track code.id) {
+      <ng-template
+        [hqSelectInputOption]="code.id"
+        [hqSelectInputOptionSelectedDisplay]="code.code"
+        [hqSelectInputOptionSearch]="
+          code.code + ': ' + code.clientName + ': ' + code.projectName
+        "
+        >{{
+          code.code + ": " + code.clientName + ": " + code.projectName
+        }}</ng-template
+      >
+    }
+  </hq-select-input>
+  <hr class="my-3" />
+  <hq-select-input
+    [formControl]="select"
+    [autocomplete]="false"
+    variant="secondary"
+  >
     <ng-template [hqSelectInputOption]="null"
-      >Please Select an option</ng-template
+      >Please Select a charge code</ng-template
     >
-    <ng-template [hqSelectInputOption]="'bmw'">BMW</ng-template>
-    <ng-template [hqSelectInputOption]="'Toyota'">Toyota</ng-template>
-    <ng-template [hqSelectInputOption]="'Ford'">Ford</ng-template>
+    @for (code of chargeCodes$ | async; track code.id) {
+      <ng-template
+        [hqSelectInputOption]="code.id"
+        [hqSelectInputOptionSearch]="
+          code.code + ': ' + code.clientName + ': ' + code.projectName
+        "
+        >{{
+          code.code + ": " + code.clientName + ": " + code.projectName
+        }}</ng-template
+      >
+    }
   </hq-select-input>
 </div>
 

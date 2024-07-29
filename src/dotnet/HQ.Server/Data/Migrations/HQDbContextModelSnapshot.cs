@@ -383,6 +383,10 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("staff_id");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("text")
+                        .HasColumnName("status");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -390,8 +394,9 @@ namespace HQ.Server.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_plans");
 
-                    b.HasIndex("StaffId")
-                        .HasDatabaseName("ix_plans_staff_id");
+                    b.HasIndex("StaffId", "Date")
+                        .IsUnique()
+                        .HasDatabaseName("ix_plans_staff_id_date");
 
                     b.ToTable("plans", (string)null);
                 });
@@ -924,6 +929,10 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("date")
                         .HasColumnName("date");
 
+                    b.Property<Guid?>("HolidayId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("holiday_id");
+
                     b.Property<decimal>("Hours")
                         .HasColumnType("numeric")
                         .HasColumnName("hours");
@@ -979,6 +988,9 @@ namespace HQ.Server.Data.Migrations
 
                     b.HasIndex("ChargeCodeId")
                         .HasDatabaseName("ix_times_charge_code_id");
+
+                    b.HasIndex("HolidayId")
+                        .HasDatabaseName("ix_times_holiday_id");
 
                     b.HasIndex("InvoiceId")
                         .HasDatabaseName("ix_times_invoice_id");
@@ -1248,6 +1260,11 @@ namespace HQ.Server.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_times_charge_codes_charge_code_id");
 
+                    b.HasOne("HQ.Server.Data.Models.Holiday", "Holiday")
+                        .WithMany()
+                        .HasForeignKey("HolidayId")
+                        .HasConstraintName("fk_times_holidays_holiday_id");
+
                     b.HasOne("HQ.Server.Data.Models.Invoice", "Invoice")
                         .WithMany()
                         .HasForeignKey("InvoiceId")
@@ -1270,6 +1287,8 @@ namespace HQ.Server.Data.Migrations
                     b.Navigation("Activity");
 
                     b.Navigation("ChargeCode");
+
+                    b.Navigation("Holiday");
 
                     b.Navigation("Invoice");
 

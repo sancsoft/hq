@@ -1,14 +1,35 @@
-import { Component } from '@angular/core';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { PanelComponent } from './../core/components/panel/panel.component';
+import { Component, OnInit } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Period } from '../models/times/get-time-v1';
 import {
   HQTimeChangeEvent,
   HQTimeDeleteEvent,
   StaffDashboardTimeEntryComponent,
 } from './staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import { updateTimeRequestV1 } from '../models/times/update-time-v1';
-import { firstValueFrom, map } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  ReplaySubject,
+  skip,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { HQService } from '../services/hq.service';
 import { APIError } from '../errors/apierror';
 import { ToastService } from '../services/toast.service';
@@ -20,6 +41,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TimeStatus } from '../enums/time-status';
 import { Period } from '../enums/period';
 import { StatDisplayComponent } from '../core/components/stat-display/stat-display.component';
+import { HQRole } from '../enums/hqrole';
+import { HQMarkdownComponent } from '../common/markdown/markdown.component';
+import { ButtonState } from '../enums/ButtonState';
+import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
+import { localISODate } from '../common/functions/local-iso-date';
+import { GetStatusResponseV1 } from '../models/status/get-status-v1';
+import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 
 @Component({
   selector: 'hq-staff-dashboard',
@@ -31,21 +59,200 @@ import { StatDisplayComponent } from '../core/components/stat-display/stat-displ
     StaffDashboardSearchFilterComponent,
     StaffDashboardDateRangeComponent,
     StatDisplayComponent,
+    PanelComponent,
+    MonacoEditorModule,
+    HQMarkdownComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
 })
-export class StaffDashboardComponent {
+export class StaffDashboardComponent implements OnInit {
+  Period = Period;
+  HQRole = HQRole;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editorInstance: any;
+  timeStatus = TimeStatus;
+  editorOptions$: Observable<object>;
+  status = new FormControl<string | null>(null);
+  plan = new FormControl<string | null>(null);
+  plan$ = this.plan.valueChanges;
+
+  prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
+  ButtonState = ButtonState;
+  previousPlan: string | null = null;
+  planResponse$: Observable<GetPlanResponseV1>;
+  staffStatus$: Observable<GetStatusResponseV1>;
+  prevPlan$: Observable<GetPrevPlanResponseV1 | null>;
+
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
+  async ngOnInit() {
+    // this is added to make sure that the upsert method works in value changes
+    this.staffDashboardService.date.setValue(
+      this.staffDashboardService.date.value,
+    );
+    const prevPlan = await firstValueFrom(this.prevPlan$);
+    this.prevPSRReportButtonState =
+      prevPlan && prevPlan.body ? ButtonState.Enabled : ButtonState.Disabled;
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
+
   constructor(
     public staffDashboardService: StaffDashboardService,
     private hqService: HQService,
     private toastService: ToastService,
     private modalService: ModalService,
     private oidcSecurityService: OidcSecurityService,
-  ) {}
+  ) {
+    const staffId$ = oidcSecurityService.userData$.pipe(
+      map((t) => t.userData),
+      map((t) => t.staff_id as string),
+      distinctUntilChanged(),
+    );
+    const date$ = staffDashboardService.date.valueChanges
+      .pipe(startWith(staffDashboardService.date.value))
+      .pipe(map((t) => t || localISODate()));
 
-  Period = Period;
-  timeStatus = TimeStatus;
+    const prevPlanRequest$ = combineLatest({
+      date: date$,
+      staffId: staffId$,
+    }).pipe(distinctUntilChanged());
+    prevPlanRequest$.subscribe((t) => {
+      console.log(t);
+    });
+    this.prevPlan$ = prevPlanRequest$.pipe(
+      switchMap((request) => {
+        return this.hqService.getPreviousPlanV1(request).pipe(
+          catchError((error: unknown) => {
+            console.error('Error fetching previous Plan:', error);
+            return of(null);
+          }),
+        );
+      }),
+    );
+    this.prevPlan$.subscribe((prevPlan) => {
+      this.previousPlan = prevPlan?.body ?? '';
+      this.prevPSRReportButtonState =
+        prevPlan && prevPlan.body ? ButtonState.Enabled : ButtonState.Disabled;
+    });
+
+    const getPlanRequest$ = combineLatest({
+      date: date$,
+      staffId: staffId$,
+    });
+    const getStatusRequest$ = combineLatest({
+      staffId: staffId$,
+    });
+    const status$ = this.status.valueChanges;
+    this.status.valueChanges.subscribe((status) => console.log(status));
+    const upsertStatusRequest$ = combineLatest({
+      staffId: staffId$,
+      status: status$,
+    });
+
+    this.staffStatus$ = getStatusRequest$.pipe(
+      switchMap((request) => {
+        return this.hqService.getStatusV1(request);
+      }),
+      takeUntil(this.destroyed$),
+    );
+    this.staffStatus$.subscribe((staffStatus) => {
+      this.status.setValue(staffStatus.status);
+    });
+
+    upsertStatusRequest$
+      .pipe(
+        skip(1),
+        switchMap((request) => {
+          return this.hqService.upsertStatus(request);
+        }),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe((_) => {
+        this.toastService.show('Success', 'Status successfully updated.');
+      });
+
+    this.planResponse$ = getPlanRequest$.pipe(
+      switchMap((request) => {
+        return this.hqService.getPlanV1(request);
+      }),
+      takeUntil(this.destroyed$),
+    );
+    this.planResponse$.subscribe((planResponse) => {
+      this.plan.setValue(planResponse.body, {
+        onlySelf: true,
+        emitEvent: false,
+      });
+    });
+    const request$ = combineLatest({
+      staffId: staffId$.pipe(tap((t) => console.log('staffId', t))),
+      body: this.plan$.pipe(tap((t) => console.log('plan', t))),
+    });
+    this.staffDashboardService.date.valueChanges
+      .pipe(
+        switchMap((date) => {
+          return request$.pipe(
+            skip(1),
+            debounceTime(1000),
+            switchMap((request) =>
+              this.hqService.upsertPlanV1({
+                ...request,
+                date: this.staffDashboardService.date.value,
+              }),
+            ),
+            takeUntil(this.destroyed$),
+          );
+        }),
+      )
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: () => {
+          this.toastService.show('Success', 'Plan saved successfully');
+        },
+        error: async () => {
+          this.toastService.show(
+            'Error',
+            'There was an error saving the PM report.',
+          );
+          await firstValueFrom(
+            this.modalService.alert(
+              'Error',
+              'There was an error saving the PM report.',
+            ),
+          );
+        },
+      });
+
+    // Editor options
+    this.editorOptions$ = of({
+      theme: 'vs-dark',
+      language: 'markdown',
+      automaticLayout: true,
+    });
+  }
+  monacoChange(e: any) {
+    console.log('Monaco editor changed');
+  }
+  insertTextAtCursor() {
+    const selection = this.editorInstance.getSelection();
+    const id = { major: 1, minor: 1 };
+    const op = {
+      identifier: id,
+      range: selection,
+      text: this.previousPlan,
+      forceMoveMarkers: false,
+    };
+    this.editorInstance.executeEdits('my-source', [op]);
+    this.editorInstance.focus();
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onEditorInit(editor: any) {
+    this.editorInstance = editor;
+  }
 
   async duplicateTime(event: HQTimeChangeEvent) {
     if (!event.date) {

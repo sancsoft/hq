@@ -6,7 +6,13 @@ import { Directive, Input, TemplateRef } from '@angular/core';
 })
 export class SelectInputOptionDirective<T> {
   @Input('hqSelectInputOption')
-  value?: T;
+  value?: T | string | null | undefined;
+
+  @Input('hqSelectInputOptionSearch')
+  search?: string;
+
+  @Input('hqSelectInputOptionSelectedDisplay')
+  selectedDisplay?: string;
 
   constructor(public templateRef: TemplateRef<unknown>) {}
 }
