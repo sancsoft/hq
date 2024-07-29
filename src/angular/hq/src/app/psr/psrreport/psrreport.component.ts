@@ -97,7 +97,9 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     }
 
     this.submitButtonState =
-      psr && psr.submittedAt && psr.isCurrentPsrPeriod? ButtonState.Disabled : ButtonState.Enabled;
+      psr && psr.submittedAt && psr.isCurrentPsrPeriod
+        ? ButtonState.Disabled
+        : ButtonState.Enabled;
 
     this.prevPSRReportButtonState =
       prevPsr && prevPsr.report ? ButtonState.Enabled : ButtonState.Disabled;

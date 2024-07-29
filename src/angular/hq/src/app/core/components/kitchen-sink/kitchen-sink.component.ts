@@ -25,6 +25,9 @@ import { DualPanelComponent } from '../dual-panel/dual-panel.component';
 import { SelectInputOptionDirective } from '../../directives/select-input-option.directive';
 import { PanelComponent } from '../panel/panel.component';
 import { AngularSplitModule } from 'angular-split';
+import { map, Observable, shareReplay } from 'rxjs';
+import { GetChargeCodeRecordV1 } from '../../../models/charge-codes/get-chargecodes-v1';
+import { HQService } from '../../../services/hq.service';
 
 @Component({
   selector: 'hq-kitchen-sink',
@@ -51,6 +54,15 @@ import { AngularSplitModule } from 'angular-split';
   templateUrl: './kitchen-sink.component.html',
 })
 export class KitchenSinkComponent {
+  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
+
+  constructor(private hqService: HQService) {
+    this.chargeCodes$ = this.hqService.getChargeCodeseV1({}).pipe(
+      map((t) => t.records),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
+  }
+
   public form = new FormGroup({
     select: new FormControl<string | null>(null, {
       validators: [Validators.required],
@@ -73,7 +85,7 @@ export class KitchenSinkComponent {
   public date = new FormControl<string | null>(localISODate(), {
     validators: [Validators.required],
   });
-  public select = new FormControl<string | null>('Toyota', {});
+  public select = new FormControl<string | null>(null, {});
   public search = new FormControl<string | null>(null, {
     validators: [Validators.required, Validators.minLength(3)],
   });
