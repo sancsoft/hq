@@ -223,7 +223,9 @@ export class SelectInputComponent<T>
       map(([options, search]) => {
         if (search) {
           const filteredOptions = options.filter((t) =>
-            t.search?.toLowerCase().includes(search?.toLowerCase() || ''),
+            (search.toLowerCase() || '')
+              .split(' ')
+              .every((x) => t.search?.toLowerCase()?.includes(x)),
           );
 
           if (filteredOptions.length > 0) {
