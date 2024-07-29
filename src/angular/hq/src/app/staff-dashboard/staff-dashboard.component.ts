@@ -350,6 +350,7 @@ export class StaffDashboardComponent implements OnInit {
       forceMoveMarkers: false,
     };
     this.editorInstance.executeEdits('my-source', [op]);
+
     this.editorInstance.focus();
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -540,25 +541,7 @@ export class StaffDashboardComponent implements OnInit {
       console.error('Error upserting planning points:', error);
     }
   }
-  // private async refreshPlanningPoints() {
-  //   this.planningPointsRequest$.pipe(
-  //     switchMap((request) => {
-  //       return this.hqService.getPlanningPointsV1(request).pipe(
-  //         catchError((error: unknown) => {
-  //           console.error('Error fetching planning points:', error);
-  //           return of(null);
-  //         }),
-  //       );
-  //     }),
-  //   );
 
-  //   this.planningPoints$.subscribe((response) => {
-  //     if (response) {
-  //       this.points = response.points;
-  //       this.initializeForms(response.points);
-  //     }
-  //   });
-  // }
   initializeForms(points: PlanningPoint[]): void {
     this.planningPointsforms = points.map((point) => this.createForm(point));
   }
