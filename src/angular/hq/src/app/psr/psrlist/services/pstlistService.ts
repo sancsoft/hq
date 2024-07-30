@@ -4,6 +4,7 @@ import { ProjectStatus } from '../../../clients/client-details.service';
 import { GetPSRTimeRecordStaffV1 } from '../../../models/PSR/get-psr-time-v1';
 import { HQService } from '../../../services/hq.service';
 import { Injectable } from '@angular/core';
+import { Period } from '../../../models/times/get-time-v1';
 
 export enum ActivityName {
   Support = 0,
@@ -26,7 +27,8 @@ export class PsrListService {
   isSubmitted = new FormControl<boolean | null>(null);
   startDate = new FormControl<Date | null>(null);
   endDate = new FormControl<Date | null>(null);
-
+  selectedPeriod = new FormControl<Period | null>(Period.LastWeek);
+  Period = Period;
   // Pagination form controls
   itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
@@ -38,8 +40,8 @@ export class PsrListService {
   showSearch$ = new BehaviorSubject<boolean>(true);
   showStaffMembers$ = new BehaviorSubject<boolean>(true);
   showIsSubmitted$ = new BehaviorSubject<boolean>(true);
-  showStartDate$ = new BehaviorSubject<boolean>(true);
-  showEndDate$ = new BehaviorSubject<boolean>(true);
+  showStartDate$ = new BehaviorSubject<boolean>(false);
+  showEndDate$ = new BehaviorSubject<boolean>(false);
 
   showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
