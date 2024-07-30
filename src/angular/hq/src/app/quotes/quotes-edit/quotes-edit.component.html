@@ -54,6 +54,7 @@
                   <!-- column -->
                   <div>
                     <hq-select-input
+                      [autocomplete]="true"
                       formControlName="clientId"
                       label="Client"
                       variant="secondary"
@@ -65,9 +66,11 @@
                         Client is required.
                       </ng-template>
                       @for (client of clients$ | async; track client.id) {
-                        <ng-template [hqSelectInputOption]="client.id">{{
-                          client.name
-                        }}</ng-template>
+                        <ng-template
+                          [hqSelectInputOption]="client.id"
+                          [hqSelectInputOptionSearch]="client.name"
+                          >{{ client.name }}</ng-template
+                        >
                       }
                     </hq-select-input>
                   </div>
