@@ -63,6 +63,7 @@ import {
   PlanningPoint,
 } from '../models/Points/get-points-v1';
 import { GetChargeCodeRecordV1 } from '../models/charge-codes/get-chargecodes-v1';
+import { ButtonComponent } from '../core/components/button/button.component';
 
 export interface PeriodicElement {
   name: string;
@@ -89,6 +90,7 @@ export interface PeriodicElement {
     CdkDrag,
     CdkDragPlaceholder,
     StaffDashboardPlanningPointComponent,
+    ButtonComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
@@ -105,6 +107,8 @@ export class StaffDashboardComponent implements OnInit {
   private staffId$: Observable<string>;
   private planningPointsRequest$: Observable<any>;
   private planningPointsRequestTrigger$ = new Subject<void>();
+  private editPlanButtonSubject = new BehaviorSubject<boolean>(false);
+  editPlanButton$ = this.editPlanButtonSubject.asObservable();
 
   private planningPointDate$: Observable<string>;
 
@@ -571,6 +575,9 @@ export class StaffDashboardComponent implements OnInit {
         planningPoints.nextDate,
       );
     }
+  }
+  toggleButtonValue() {
+    this.editPlanButtonSubject.next(!this.editPlanButtonSubject.value);
   }
 }
 

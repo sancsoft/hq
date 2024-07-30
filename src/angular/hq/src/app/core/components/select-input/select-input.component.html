@@ -3,7 +3,7 @@
     #button
     [tabIndex]="isOpen ? -1 : 0"
     type="button"
-    class="flex items-center border justify-between bg-blue-900 rounded h-[36px] select-none overflow-hidden px-1"
+    class="flex items-center border justify-between bg-blue-900 rounded select-none overflow-hidden px-1"
     (focus)="onFocus()"
     [style.background-color]="
       variant === 'pill'
@@ -21,7 +21,7 @@
         !(ngControl?.invalid && ngControl?.touched) && variant === 'pill',
       'border-white text-white': focused && variant !== 'pill',
       'border-transparent text-center': variant === 'pill',
-      'text-left': variant !== 'pill',
+      'text-left h-[36px]': variant !== 'pill',
       'rounded-br-none rounded-bl-none': isOpen && variant !== 'pill',
       'w-full': !inline,
     }"
@@ -38,7 +38,7 @@
       }
     </div>
     <span
-      class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
+      class="flex items-center justify-center pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
       [ngClass]="{
         'after:bg-gray-100': variant !== 'pill',
       }"

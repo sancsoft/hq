@@ -1,19 +1,27 @@
 <ng-container [formGroup]="form">
-  <td
-    cdkDragHandle
-    class="border-b border-black py-2 w-3 hover: cursor-move"
-    [ngClass]="{
-      'bg-green-600': point.completed,
-      'bg-gray-600': !point.completed,
-    }"
-  ></td>
-
+  @if (editMode) {
+    <td cdkDragHandle class="bg-black w-3 hover:cursor-move">
+      <i class="bi bi-pause"></i>
+    </td>
+  } @else {
+    <td
+      [ngStyle]="{ height: '40px' }"
+      class="border-b border-black py-2 pl-5"
+      [title]="point.completed ? 'Completed' : 'Uncompleted'"
+      [ngClass]="{
+        'bg-green-600': point.completed,
+        'bg-gray-600': !point.completed,
+      }"
+    ></td>
+  }
   <td class="border-b border-black py-2 pl-5">
     <hq-select-input
+      [readonly]="!editMode"
       [formControlName]="'chargeCodeId'"
       [autocomplete]="true"
       variant="pill"
       [inline]="true"
+      [pillCode]="chargeCode"
     >
       <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
       @for (code of chargeCodes; track code.id) {
@@ -29,35 +37,8 @@
         >
       }
     </hq-select-input>
-    <!-- <div class="grid relative w-auto">
-      <select
-        id="chargeCode"
-        formControlName="chargeCodeId"
-        (change)="planningPointChargeCodeChanged($event)"
-        aria-label="Select Charge code"
-        [ngClass]="{
-          'bg-blue-900 border-steel-blue-600 hover:cursor-pointer': true,
-        }"
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none font-medium row-start-1 col-start-1 border text-gray-100 h-[26px]"
-      >
-        <option [ngValue]="null" class="text-gray-50">ChargeCode</option>
-        @for (chargeCode of chargeCodes; track $index) {
-          <option [ngValue]="chargeCode.id">
-            {{ chargeCode.code }} {{ chargeCode.clientName }}
-            {{ chargeCode.projectName }}
-          </option>
-        }
-      </select>
-      <span
-        [ngClass]="{
-          'after:bg-gray-100': true,
-        }"
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
-      >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div> -->
   </td>
+
   <td class="border-b border-black py-2">
     {{ point.projectName }}
   </td>

@@ -6,8 +6,10 @@ import {
   Component,
   ContentChildren,
   ElementRef,
+  EventEmitter,
   Input,
   Optional,
+  Output,
   QueryList,
   Self,
   ViewChild,
@@ -66,7 +68,7 @@ export class SelectInputComponent<T>
   variant: 'primary' | 'secondary' | 'pill' = 'primary';
 
   @Input()
-  pillCode? = null;
+  pillCode?: string | null = null;
 
   chargeCodeToColor = chargeCodeToColor;
 
@@ -89,7 +91,12 @@ export class SelectInputComponent<T>
   inline = false;
 
   @Input()
+  readonly: boolean | null = false;
+
+  @Input()
   public disabled = false;
+  @Output()
+  hqBlur = new EventEmitter();
 
   @ContentChildren(SelectInputOptionDirective)
   options!: QueryList<SelectInputOptionDirective<T>>;
@@ -194,6 +201,7 @@ export class SelectInputComponent<T>
       case 'Escape':
         event.preventDefault();
         this.isOpen = false;
+        this.hqBlur.emit();
         break;
     }
   }
@@ -261,6 +269,9 @@ export class SelectInputComponent<T>
   }
 
   onFocus() {
+    if (this.readonly) {
+      return;
+    }
     this.focused = true;
     this.isOpen = true;
     this.cdr.detectChanges();
@@ -272,6 +283,7 @@ export class SelectInputComponent<T>
   onBlur() {
     this.isOpen = false;
     this.focused = false;
+    this.hqBlur.emit();
 
     if (this.select?.nativeElement) {
       this.onTouched(this.select.nativeElement.value);

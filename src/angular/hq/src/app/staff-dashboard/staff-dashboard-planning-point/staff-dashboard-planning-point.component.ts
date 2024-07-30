@@ -10,12 +10,13 @@ import {
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PlanningPoint } from '../../models/Points/get-points-v1';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
-import { CdkDragHandle } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { SelectInputOptionDirective } from '../../core/directives/select-input-option.directive';
 import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
 import { HQService } from '../../services/hq.service';
 import { shareReplay, takeUntil } from 'rxjs/operators';
 import { map, Observable, ReplaySubject, Subscription } from 'rxjs';
+import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 
 @Component({
   selector: 'tr[hq-staff-dashboard-planning-point]',
@@ -24,6 +25,7 @@ import { map, Observable, ReplaySubject, Subscription } from 'rxjs';
     CommonModule,
     ReactiveFormsModule,
     CdkDragHandle,
+    CdkDrag,
     SelectInputOptionDirective,
     SelectInputComponent,
   ],
@@ -36,10 +38,15 @@ export class StaffDashboardPlanningPointComponent {
   point!: PlanningPoint;
   @Input()
   chargeCodes: GetChargeCodeRecordV1[] | null = [];
+  @Input()
+  editMode!: boolean | null;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   @Output()
   hqPlanPointChange = new EventEmitter<FormGroup>();
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
+  @Input()
+  chargeCode: string | null = null;
+  chargeCodeToColor = chargeCodeToColor;
 
   constructor(private hqService: HQService) {
     this.chargeCodes$ = this.hqService.getChargeCodeseV1({}).pipe(
