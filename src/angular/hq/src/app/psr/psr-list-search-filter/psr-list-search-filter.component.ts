@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PsrListService } from '../psrlist/services/pstlistService';
-import { Period } from '../../models/times/get-time-v1';
+import { Period } from '../../enums/period';
 
 @Component({
   selector: 'hq-psr-list-search-filter',
