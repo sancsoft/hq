@@ -144,6 +144,18 @@ public class ProjectStatusReportServiceV1
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
 
+        if (request.Period.HasValue && request.Period == Period.Custom)
+        {
+            if (request.StartDate.HasValue && request.EndDate.HasValue && request.StartDate.Value > request.EndDate.Value)
+            {
+                return Result.Fail("Invalid date range.");
+            }
+        }
+        else if (request.Period.HasValue)
+        {
+            request.StartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(request.Period.Value);
+            request.EndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(request.Period.Value);
+        }
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
