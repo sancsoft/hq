@@ -544,6 +544,14 @@ export class StaffDashboardComponent implements OnInit {
 
   initializeForms(points: PlanningPoint[]): void {
     this.planningPointsforms = points.map((point) => this.createForm(point));
+    this.planningPointsforms.forEach((formGroup) => {
+      formGroup
+        .get('chargeCodeId')
+        ?.valueChanges.pipe(takeUntil(this.destroyed$))
+        .subscribe((values) => {
+          this.upsertPoints();
+        });
+    });
   }
   getPlanningPointsFormValues(): PlanningPoint[] {
     return this.planningPointsforms.map((form) => form.value as PlanningPoint);

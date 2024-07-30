@@ -1,3 +1,5 @@
+import { SelectInputComponent } from './../../core/components/select-input/select-input.component';
+import { SelectInputOptionDirective } from './../../core/directives/select-input-option.directive';
 import {
   Component,
   ElementRef,
@@ -74,7 +76,13 @@ interface Form {
 @Component({
   selector: 'tr[hq-staff-dashboard-time-entry]',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DateInputComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DateInputComponent,
+    SelectInputOptionDirective,
+    SelectInputComponent,
+  ],
   templateUrl: './staff-dashboard-time-entry.component.html',
 })
 export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
