@@ -203,8 +203,10 @@ export class SelectInputComponent<T>
   }
 
   ngAfterViewInit() {
-    console.log(this.options);
-    const options$ = this.options.changes.pipe(
+    const options$ = concat(
+      defer(() => of(this.options)),
+      this.options.changes.pipe(map(() => this.options)),
+    ).pipe(
       map((queryList: QueryList<SelectInputOptionDirective<T>>) =>
         queryList.toArray(),
       ),
