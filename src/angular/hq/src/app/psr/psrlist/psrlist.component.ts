@@ -57,8 +57,6 @@ export class PSRListComponent implements OnInit {
     this.psrListService.showSearch();
     this.psrListService.showStaffMembers();
     this.psrListService.showIsSubmitted();
-    this.psrListService.showStartDate();
-    this.psrListService.showEndDate();
 
     const staffId = await firstValueFrom(
       this.oidcSecurityService.userData$.pipe(map((t) => t.userData?.staff_id)),
@@ -101,6 +99,11 @@ export class PSRListComponent implements OnInit {
       startWith(psrListService.staffMember.value),
     );
 
+    const period$ = this.psrListService.selectedPeriod.valueChanges.pipe(
+      startWith(this.psrListService.selectedPeriod.value),
+      tap((date) => date || new Date()),
+    );
+
     const isSubmitted$ = psrListService.isSubmitted.valueChanges.pipe(
       startWith(psrListService.isSubmitted.value),
     );
@@ -123,6 +126,7 @@ export class PSRListComponent implements OnInit {
       isSubmitted: isSubmitted$,
       startDate: startDate$ ?? null,
       endDate: endDate$ ?? null,
+      period: period$ ?? null,
     });
 
     const response$ = request$.pipe(

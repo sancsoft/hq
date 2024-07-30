@@ -15,6 +15,7 @@ export interface GetPSRRequestV1 extends PagedRequestV1 {
   isSubmitted?: boolean | null;
   startDate?: Date | null;
   endDate?: Date | null;
+  period?: Period | null;
 }
 
 export enum SortColumn {

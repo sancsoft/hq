@@ -113,35 +113,9 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right"
         (click)="onSortClick(sortColumn.ThisHours)"
       >
-        Hrs This
+        Hrs
         <hq-sort-icon
           [column]="sortColumn.ThisHours"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        width="170"
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right"
-        (click)="onSortClick(sortColumn.SummaryHoursTotal)"
-      >
-        Hrs Total
-        <hq-sort-icon
-          [column]="sortColumn.SummaryHoursTotal"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        width="170"
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right pe-2"
-        (click)="onSortClick(sortColumn.SummaryHoursAvailable)"
-      >
-        Hrs Available
-        <hq-sort-icon
-          [column]="sortColumn.SummaryHoursAvailable"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
@@ -190,14 +164,8 @@
         <td class="border-b border-black py-2">
           {{ report.projectManagerName }}
         </td>
-        <td class="border-b border-black py-2 text-right">
+        <td class="border-b border-black py-2 pr-2 text-right">
           {{ report.thisHours | number: "0.2-2" }}
-        </td>
-        <td class="border-b border-black py-2 text-right">
-          {{ report.summaryHoursTotal | number: "0.2-2" }}
-        </td>
-        <td class="border-b border-black py-2 text-right pe-2">
-          {{ report.summaryHoursAvailable | number: "0.2-2" }}
         </td>
         <td class="border-b border-black py-2">
           {{ getProjectSatusString(report.status) }}

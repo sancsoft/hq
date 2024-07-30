@@ -24,6 +24,7 @@ public class GetProjectStatusReportsV1
         public DateOnly? EndDate { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.ChargeCode;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+        public Period? Period { get; set; }
     }
 
     public enum SortColumn
