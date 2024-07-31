@@ -16,7 +16,12 @@
       <th scope="col" width="250" [hq-sort-header]="sortColumn.Name">
         Client Name
       </th>
-      <th scope="col" width="100" [hq-sort-header]="sortColumn.HourlyRate">
+      <th
+        scope="col"
+        width="100"
+        [hq-sort-header]="sortColumn.HourlyRate"
+        class="text-right"
+      >
         Rate
       </th>
       <th scope="col" width="250" [hq-sort-header]="sortColumn.BillingEmail">
@@ -43,7 +48,7 @@
     @for (client of listService.records$ | async; track client.id) {
       <tr>
         <td>{{ client.name }}</td>
-        <td>
+        <td class="text-right">
           {{ (client.hourlyRate | currency) ?? "-" }}
         </td>
         <td>
