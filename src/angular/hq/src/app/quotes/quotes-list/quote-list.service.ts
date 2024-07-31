@@ -29,6 +29,7 @@ export class QuoteListService extends BaseListService<
 > {
   // Enums
   public ProjectStatus = ProjectStatus;
+  public SortColumn = SortColumn;
 
   // Filters
   public quoteStatus = new FormControl<ProjectStatus | null>(null);

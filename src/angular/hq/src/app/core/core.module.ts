@@ -16,6 +16,9 @@ import { ValidationErrorDirective } from './directives/validation-error.directiv
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
 import { FileInputComponent } from './components/file-input/file-input.component';
 import { TableFooterComponent } from './components/table-footer/table-footer.component';
+import { SortHeaderComponent } from './components/sort-header/sort-header.component';
+import { TableBodyComponent } from './components/table-body/table-body.component';
+import { TableComponent } from './components/table/table.component';
 
 @NgModule({
   declarations: [],
@@ -37,6 +40,9 @@ import { TableFooterComponent } from './components/table-footer/table-footer.com
     ValidationErrorDirective,
     FileInputComponent,
     TableFooterComponent,
+    SortHeaderComponent,
+    TableBodyComponent,
+    TableComponent,
   ],
   exports: [
     TabComponent,
@@ -55,6 +61,9 @@ import { TableFooterComponent } from './components/table-footer/table-footer.com
     ValidationErrorDirective,
     FileInputComponent,
     TableFooterComponent,
+    SortHeaderComponent,
+    TableBodyComponent,
+    TableComponent,
   ],
 })
 export class CoreModule {}

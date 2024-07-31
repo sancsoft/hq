@@ -18,7 +18,11 @@ import { PagedResponseV1 } from '../../../models/common/paged-response-v1';
   ],
   templateUrl: './table-footer.component.html',
 })
-export class TableFooterComponent {
+export class TableFooterComponent<
+  TResponse extends PagedResponseV1<TRecord>,
+  TRecord,
+  TSort,
+> {
   @Input()
-  listService?: unknown; // TODO: Figure out how to type this properly
+  listService?: BaseListService<TResponse, TRecord, TSort> | null;
 }

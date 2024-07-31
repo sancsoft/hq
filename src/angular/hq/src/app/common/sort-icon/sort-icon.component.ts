@@ -7,15 +7,15 @@ import { SortDirection } from '../../models/common/sort-direction';
   imports: [],
   templateUrl: './sort-icon.component.html',
 })
-export class SortIconComponent {
+export class SortIconComponent<TSort> {
   @Input()
-  activeColumn?: number | null;
+  activeColumn?: TSort | null;
 
   @Input()
   activeSortDirection?: SortDirection | null;
 
   @Input()
-  column?: number | null;
+  column?: TSort | null;
 
   SortDirection = SortDirection;
 }

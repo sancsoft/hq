@@ -24,6 +24,9 @@ export abstract class BaseListService<
   TRecord,
   TSort,
 > {
+  // Enums
+  SortDirection = SortDirection;
+
   // Loading status
   protected loadingSubject = new BehaviorSubject<boolean>(true);
   public loading$ = this.loadingSubject.asObservable();
@@ -107,6 +110,20 @@ export abstract class BaseListService<
 
   goToPage(page: number) {
     this.page.setValue(page);
+  }
+
+  onSortClick(sortColumn: TSort) {
+    if (this.sortOption$.value == sortColumn) {
+      this.sortDirection$.next(
+        this.sortDirection$.value == SortDirection.Asc
+          ? SortDirection.Desc
+          : SortDirection.Asc,
+      );
+    } else {
+      this.sortOption$.next(sortColumn);
+      this.sortDirection$.next(SortDirection.Asc);
+    }
+    this.goToPage(1);
   }
 
   refresh() {

@@ -225,7 +225,7 @@ table.hq-table {
     @apply animate-loading;
   }
 
-  tbody {
+  tbody[hq-table-body] {
     tr {
       @apply even:bg-gray-850 odd:bg-black-alt;
 
@@ -235,18 +235,21 @@ table.hq-table {
     }
   }
 
-  tr th,
-  tr td {
-    @apply p-2;
-  }
+  thead,
+  tbody[hq-table-body] {
+    tr th,
+    tr td {
+      @apply p-2;
+    }
 
-  tr th:first-child,
-  tr td:first-child {
-    @apply pl-5 text-left;
-  }
+    tr th:first-child,
+    tr td:first-child {
+      @apply pl-5 text-left;
+    }
 
-  tr th:last-child,
-  tr td:last-child {
-    @apply pe-5 text-right;
+    tr th:last-child,
+    tr td:last-child {
+      @apply pe-5 text-right;
+    }
   }
 }

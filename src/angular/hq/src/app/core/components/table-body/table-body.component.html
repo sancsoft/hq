@@ -1,0 +1,17 @@
+@if (listService.records$ | async; as records) {
+  @if (records.length === 0) {
+    <tr>
+      <td [colSpan]="table.columnCount" class="bg-black-alt">
+        <h1 class="text-center py-4 font-bold">No matching records found</h1>
+      </td>
+    </tr>
+  } @else {
+    <ng-content></ng-content>
+  }
+} @else {
+  <tr>
+    <td [colSpan]="table.columnCount" class="bg-black-alt">
+      <h1 class="text-center py-4 font-bold">Loading...</h1>
+    </td>
+  </tr>
+}

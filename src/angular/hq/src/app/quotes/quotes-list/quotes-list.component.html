@@ -5,140 +5,95 @@
 </div>
 <div class="px-5 pt-4 pb-2">
   <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
-    <hq-search-input [formControl]="quoteListService.search"></hq-search-input>
+    <hq-search-input [formControl]="listService.search"></hq-search-input>
 
     <!-- select dropdown -->
-    <hq-select-input [formControl]="quoteListService.quoteStatus">
+    <hq-select-input [formControl]="listService.quoteStatus">
       <ng-template [hqSelectInputOption]="null">All</ng-template>
-      <ng-template
-        [hqSelectInputOption]="quoteListService.ProjectStatus.Unknown"
-      >
+      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Unknown">
         Unknown
       </ng-template>
-      <ng-template [hqSelectInputOption]="quoteListService.ProjectStatus.Draft">
+      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Draft">
         Draft
       </ng-template>
       <ng-template
-        [hqSelectInputOption]="quoteListService.ProjectStatus.WaitingForSale"
+        [hqSelectInputOption]="listService.ProjectStatus.WaitingForSale"
       >
         Waiting For Sale
       </ng-template>
       <ng-template
-        [hqSelectInputOption]="quoteListService.ProjectStatus.WaitingForClient"
+        [hqSelectInputOption]="listService.ProjectStatus.WaitingForClient"
       >
         Waiting For Client
       </ng-template>
       <ng-template
-        [hqSelectInputOption]="quoteListService.ProjectStatus.WaitingForStaff"
+        [hqSelectInputOption]="listService.ProjectStatus.WaitingForStaff"
       >
         Waiting For Staff
       </ng-template>
       <ng-template
-        [hqSelectInputOption]="quoteListService.ProjectStatus.InProduction"
+        [hqSelectInputOption]="listService.ProjectStatus.InProduction"
       >
         In Production
       </ng-template>
-      <ng-template
-        [hqSelectInputOption]="quoteListService.ProjectStatus.Ongoing"
-      >
+      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Ongoing">
         Ongoing
       </ng-template>
-      <ng-template
-        [hqSelectInputOption]="quoteListService.ProjectStatus.Completed"
-      >
+      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Completed">
         Completed
       </ng-template>
-      <ng-template
-        [hqSelectInputOption]="quoteListService.ProjectStatus.Closed"
-      >
+      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Closed">
         Closed
       </ng-template>
-      <ng-template [hqSelectInputOption]="quoteListService.ProjectStatus.Lost"
+      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Lost"
         >Lost</ng-template
       >
     </hq-select-input>
   </div>
 </div>
 
-<table class="hq-table" [class.loading]="quoteListService.loading$ | async">
+<hq-table>
   <thead>
     <tr>
       <th
         width="110"
         scope="col"
-        class="cursor-pointer"
-        (click)="onSortClick(sortColumn.QuoteNumber)"
+        [hq-sort-header]="listService.SortColumn.QuoteNumber"
       >
         Quote
-        <hq-sort-icon
-          [column]="sortColumn.QuoteNumber"
-          [activeColumn]="quoteListService.sortOption$ | async"
-          [activeSortDirection]="quoteListService.sortDirection$ | async"
-        />
       </th>
       <th
         width="150"
         scope="col"
-        class="cursor-pointer"
-        (click)="onSortClick(sortColumn.Status)"
+        [hq-sort-header]="listService.SortColumn.Status"
       >
         Status
-        <hq-sort-icon
-          [column]="sortColumn.Status"
-          [activeColumn]="quoteListService.sortOption$ | async"
-          [activeSortDirection]="quoteListService.sortDirection$ | async"
-        />
       </th>
       <th
         width="200"
         scope="col"
-        class="cursor-pointer"
-        (click)="onSortClick(sortColumn.ClientName)"
+        [hq-sort-header]="listService.SortColumn.ClientName"
       >
         Client
-        <hq-sort-icon
-          [column]="sortColumn.ClientName"
-          [activeColumn]="quoteListService.sortOption$ | async"
-          [activeSortDirection]="quoteListService.sortDirection$ | async"
-        />
       </th>
-      <th
-        scope="col"
-        class="cursor-pointer"
-        (click)="onSortClick(sortColumn.QuoteName)"
-      >
+      <th scope="col" [hq-sort-header]="listService.SortColumn.QuoteName">
         Name
-        <hq-sort-icon
-          [column]="sortColumn.QuoteName"
-          [activeColumn]="quoteListService.sortOption$ | async"
-          [activeSortDirection]="quoteListService.sortDirection$ | async"
-        />
       </th>
       <th
         width="110"
         scope="col"
-        class="cursor-pointer hidden xl:table-cell"
-        (click)="onSortClick(sortColumn.Date)"
+        class="hidden xl:table-cell"
+        [hq-sort-header]="listService.SortColumn.Date"
       >
         Date
-        <hq-sort-icon
-          [column]="sortColumn.Date"
-          [activeColumn]="quoteListService.sortOption$ | async"
-          [activeSortDirection]="quoteListService.sortDirection$ | async"
-        />
       </th>
       <th
         width="110"
         scope="col"
-        class="cursor-pointer text-right hidden xl:table-cell"
-        (click)="onSortClick(sortColumn.Value)"
+        class="text-right hidden xl:table-cell"
+        [hq-sort-header]="listService.SortColumn.Value"
       >
         Value
-        <hq-sort-icon
-          [column]="sortColumn.Value"
-          [activeColumn]="quoteListService.sortOption$ | async"
-          [activeSortDirection]="quoteListService.sortDirection$ | async"
-        />
       </th>
       <th width="160" scope="col">
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
@@ -150,62 +105,44 @@
       </th>
     </tr>
   </thead>
-  <tbody>
-    @if (quoteListService.records$ | async; as quotes) {
-      @for (quote of quotes; track quote.id) {
-        <tr>
-          <td>
-            {{ quote.quoteNumber }}
-          </td>
-          <td>
-            {{ getProjectStatusString(quote.status) }}
-          </td>
-          <td>{{ quote.clientName }}</td>
-          <td>{{ quote.name }}</td>
-          <td class="hidden xl:table-cell">{{ quote.date }}</td>
-          <td class="text-right hidden xl:table-cell">
-            {{ (quote.value | currency) ?? "-" }}
-          </td>
-          <td class="text-right">
-            <div class="text-nowrap divide-x divide-teal-200">
-              @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-                <a
-                  [routerLink]="['edit', quote.id]"
-                  class="text-teal-200 hover:text-teal-300 pr-3"
-                  >EDIT</a
-                >
-              }
-              @if (quote.hasPDF) {
-                <button
-                  type="button"
-                  (click)="getPdf(quote.id)"
-                  class="text-teal-200 hover:text-teal-300 pl-3"
-                >
-                  PDF
-                </button>
-              } @else {
-                <span class="text-nav-disabled pl-3">PDF</span>
-              }
-            </div>
-          </td>
-        </tr>
-      }
-      @if (quotes.length === 0) {
-        <tr>
-          <td colspan="8" class="bg-black-alt">
-            <h1 class="text-center py-4 font-bold">
-              No matching records found
-            </h1>
-          </td>
-        </tr>
-      }
-    } @else {
+  <tbody hq-table-body>
+    @for (record of listService.records$ | async; track record.id) {
       <tr>
-        <td colspan="8" class="bg-black-alt">
-          <h1 class="text-center py-4 font-bold">Loading...</h1>
+        <td>
+          {{ record.quoteNumber }}
+        </td>
+        <td>
+          {{ listService.ProjectStatus[record.status] }}
+        </td>
+        <td>{{ record.clientName }}</td>
+        <td>{{ record.name }}</td>
+        <td class="hidden xl:table-cell">{{ record.date }}</td>
+        <td class="text-right hidden xl:table-cell">
+          {{ (record.value | currency) ?? "-" }}
+        </td>
+        <td class="text-right">
+          <div class="text-nowrap divide-x divide-teal-200">
+            @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+              <a
+                [routerLink]="['edit', record.id]"
+                class="text-teal-200 hover:text-teal-300 pr-3"
+                >EDIT</a
+              >
+            }
+            @if (record.hasPDF) {
+              <button
+                type="button"
+                (click)="getPdf(record.id)"
+                class="text-teal-200 hover:text-teal-300 pl-3"
+              >
+                PDF
+              </button>
+            } @else {
+              <span class="text-nav-disabled pl-3">PDF</span>
+            }
+          </div>
         </td>
       </tr>
     }
   </tbody>
-</table>
-<hq-table-footer [listService]="quoteListService"></hq-table-footer>
+</hq-table>
