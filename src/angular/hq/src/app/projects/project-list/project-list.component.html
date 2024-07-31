@@ -70,10 +70,10 @@
         width="250"
         [hq-sort-header]="listService.SortColumn.ProjectManagerName"
       >
-        Client Name
+        Client
       </th>
       <th scope="col" [hq-sort-header]="listService.SortColumn.ProjectName">
-        Project Name
+        Project
       </th>
       <th
         scope="col"
@@ -86,6 +86,7 @@
         scope="col"
         width="150"
         [hq-sort-header]="listService.SortColumn.StartDate"
+        class="hidden xl:table-cell"
       >
         Start Date
       </th>
@@ -93,6 +94,7 @@
         scope="col"
         width="150"
         [hq-sort-header]="listService.SortColumn.EndDate"
+        class="hidden xl:table-cell"
       >
         End Date
       </th>
@@ -107,6 +109,7 @@
         scope="col"
         width="250"
         [hq-sort-header]="listService.SortColumn.SummaryPercentComplete"
+        class="hidden xl:table-cell"
       >
         Complete %
       </th>
@@ -132,12 +135,12 @@
         <td>
           {{ record.projectManagerName }}
         </td>
-        <td>{{ record.startDate }}</td>
-        <td>{{ record.endDate }}</td>
+        <td class="hidden xl:table-cell">{{ record.startDate }}</td>
+        <td class="hidden xl:table-cell">{{ record.endDate }}</td>
         <td>
           {{ listService.ProjectStatus[record.projectStatus] }}
         </td>
-        <td>
+        <td class="hidden xl:table-cell">
           @if (record.projectStatus === listService.ProjectStatus.Ongoing) {
             @if (
               record.bookingPercentComplete && record.bookingPercentComplete > 1
