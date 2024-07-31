@@ -4,11 +4,14 @@
   <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
 <div class="px-5 pt-4 pb-2">
-  <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+  <div class="flex w-full flex-1 items-end gap-[20px] mb-[8px] xl:mb-0">
     <hq-search-input [formControl]="listService.search"></hq-search-input>
 
     <!-- select dropdown -->
-    <hq-select-input [formControl]="listService.quoteStatus">
+    <hq-select-input
+      [formControl]="listService.quoteStatus"
+      label="Quote Status"
+    >
       <ng-template [hqSelectInputOption]="null">All</ng-template>
       <ng-template [hqSelectInputOption]="listService.ProjectStatus.Unknown">
         Unknown

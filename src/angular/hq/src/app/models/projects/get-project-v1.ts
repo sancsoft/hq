@@ -11,7 +11,7 @@ export interface GetProjectRequestV1 extends PagedRequestV1 {
   sortBy: SortColumn;
   projectManagerId: string | null;
   sortDirection: SortDirection;
-  ProjectStatus?: ProjectStatus;
+  projectStatus?: ProjectStatus | null;
 }
 
 export enum SortColumn {
@@ -68,11 +68,6 @@ export interface GetProjectRecordV1 {
   totalPercentComplete?: number;
   bookingPercentComplete?: number;
   totalHours: number;
-}
-
-export interface GetProjectRecordsV1 {
-  records: [GetProjectRecordV1];
-  total: number | null;
 }
 
 export interface GetProjectResponseV1

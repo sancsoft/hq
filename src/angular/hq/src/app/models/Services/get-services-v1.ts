@@ -43,5 +43,5 @@ export interface GetServicesRecordsV1 {
   total: number | null;
 }
 
-export interface GetProjectResponseV1
+export interface GetServiceResponseV1
   extends PagedResponseV1<GetServicesRecordsV1> {}

@@ -2,7 +2,7 @@
   <ng-content></ng-content>
   <tbody>
     <tr>
-      <td [colSpan]="columnCount">
+      <td [colSpan]="999">
         <div
           class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
         >
@@ -12,7 +12,8 @@
               [formControl]="$any(listService).itemsPerPage"
             >
               <option [ngValue]="10">10</option>
-              <option [ngValue]="20">20</option>
+              <option [ngValue]="15">15</option>
+              <option [ngValue]="20">25</option>
               <option [ngValue]="50">50</option>
               <option [ngValue]="100">100</option>
               <!-- Add more options as needed -->

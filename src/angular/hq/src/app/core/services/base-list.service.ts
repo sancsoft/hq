@@ -15,6 +15,7 @@ import {
 import { formControlChanges } from '../functions/form-control-changes';
 import { PagedResponseV1 } from '../../models/common/paged-response-v1';
 import { SortDirection } from '../../models/common/sort-direction';
+import { DataSource } from '@angular/cdk/collections';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ export abstract class BaseListService<
   TResponse extends PagedResponseV1<TRecord>,
   TRecord,
   TSort,
-> {
+> extends DataSource<TRecord> {
   // Enums
   SortDirection = SortDirection;
 
@@ -40,7 +41,7 @@ export abstract class BaseListService<
 
   // Filters
   public search = new FormControl<string | null>(null);
-  public itemsPerPage = new FormControl(20, { nonNullable: true });
+  public itemsPerPage = new FormControl(15, { nonNullable: true });
   public page = new FormControl<number>(1, { nonNullable: true });
 
   public takeToDisplay$: Observable<number>;
@@ -58,6 +59,7 @@ export abstract class BaseListService<
   protected abstract getResponse(): Observable<TResponse>;
 
   constructor(defaultSortOption: TSort, defaultSortDirection: SortDirection) {
+    super();
     this.sortOption$ = new BehaviorSubject(defaultSortOption);
     this.sortDirection$ = new BehaviorSubject(defaultSortDirection);
 
@@ -107,6 +109,12 @@ export abstract class BaseListService<
       ),
     );
   }
+
+  override connect() {
+    return this.records$;
+  }
+
+  override disconnect() {}
 
   goToPage(page: number) {
     this.page.setValue(page);

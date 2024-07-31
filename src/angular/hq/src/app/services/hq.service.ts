@@ -20,7 +20,7 @@ import {
   UpsertClientResponseV1,
 } from '../models/clients/upsert-client-v1';
 import {
-  GetProjectRecordsV1,
+  GetProjectResponseV1,
   GetProjectRequestV1,
 } from '../models/projects/get-project-v1';
 import {
@@ -186,7 +186,7 @@ export class HQService {
   getProjectsV1(request: Partial<GetProjectRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<GetProjectRecordsV1>(
+        this.http.post<GetProjectResponseV1>(
           `${apiUrl}/v1/Projects/GetProjectsV1`,
           request,
         ),
@@ -541,7 +541,7 @@ export class HQService {
       })),
     );
   }
-  
+
   getPlanV1(request: Partial<GetPlanRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
