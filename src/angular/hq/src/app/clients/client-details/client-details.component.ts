@@ -10,6 +10,7 @@ import { ClientDetailsSummaryComponent } from './client-details-summary/client-d
 import { map, Subscription } from 'rxjs';
 import { ClientDetailsService } from './client-details.service';
 import { TabComponent } from '../../core/components/tab/tab.component';
+import { ClientQuoteListService } from './client-quote-list/client-quote-list.service';
 
 @Component({
   selector: 'hq-client-details',
@@ -23,7 +24,7 @@ import { TabComponent } from '../../core/components/tab/tab.component';
     TabComponent,
   ],
   templateUrl: './client-details.component.html',
-  providers: [ClientDetailsService],
+  providers: [ClientDetailsService, ClientQuoteListService],
 })
 export class ClientDetailsComponent {
   private subscriptions: Subscription[] = [];
