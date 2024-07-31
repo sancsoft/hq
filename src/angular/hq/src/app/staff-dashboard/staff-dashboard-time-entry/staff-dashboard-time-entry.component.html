@@ -258,63 +258,48 @@
       </td>
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
-          <select
-            [ngClass]="{
-              'border-red-700 focus:border-red-700':
-                form.controls.clientId.errors && form.touched,
-              'border-black': !form.controls.clientId.errors || !form.touched,
-            }"
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+          <hq-select-input
+            (hqBlur)="save()"
+            [autocomplete]="true"
             formControlName="clientId"
-            (blur)="save()"
-            (keydown.enter)="onEnter($event.target)"
+            variant="secondary"
           >
-            <option [ngValue]="null" class="text-gray-50">Client</option>
-            <!-- <option [ngValue]="form.controls.clientId.value">
-        {{ form.controls.clientId.value }}
-      </option> -->
+            <ng-template [hqSelectInputOption]="null">Client</ng-template>
             @for (
               client of staffDashboardService.clients$ | async;
               track client.id
             ) {
-              <option [ngValue]="client.id">{{ client.name }}</option>
+              <ng-template
+                [hqSelectInputOption]="client.id"
+                [hqSelectInputOptionSelectedDisplay]="client.name"
+                [hqSelectInputOptionSearch]="client.name"
+                >{{ client.name }}</ng-template
+              >
             }
-          </select>
-          <span
-            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-arrow-down-short text-[24px]"></i>
-          </span>
+          </hq-select-input>
         </div>
       </td>
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
-          <select
-            [ngClass]="{
-              'border-red-700 focus:border-red-700':
-                form.controls.projectId.errors && form.touched,
-              'border-black': !form.controls.projectId.errors || !form.touched,
-            }"
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+          <hq-select-input
+            (hqBlur)="save()"
+            [autocomplete]="true"
             formControlName="projectId"
-            (blur)="save()"
-            (keydown.enter)="onEnter($event.target)"
+            variant="secondary"
           >
-            <option [ngValue]="null" class="text-gray-50">Project</option>
-            <!-- <option [ngValue]="form.controls.projectId.value">
-        {{ form.controls.projectId.value }}
-      </option> -->
+            <ng-template [hqSelectInputOption]="null">Project</ng-template>
             @for (project of projects$ | async; track project.id) {
-              <option [ngValue]="project.id">{{ project.name }}</option>
+              <ng-template
+                [hqSelectInputOption]="project.id"
+                [hqSelectInputOptionSelectedDisplay]="project.name"
+                [hqSelectInputOptionSearch]="project.name"
+                >{{ project.name }}</ng-template
+              >
             }
-          </select>
-          <span
-            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-arrow-down-short text-[24px]"></i>
-          </span>
+          </hq-select-input>
         </div>
       </td>
+
       <td class="border-b border-black py-2 pl-2">
         @if (activities$ | async; as activities) {
           @if (activities.length > 0) {
