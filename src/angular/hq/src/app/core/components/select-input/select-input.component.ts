@@ -195,6 +195,7 @@ export class SelectInputComponent<T>
       case 'Escape':
         event.preventDefault();
         this.isOpen = false;
+        this.searchForm.reset(null);
         break;
     }
   }
@@ -273,6 +274,7 @@ export class SelectInputComponent<T>
   onBlur() {
     this.isOpen = false;
     this.focused = false;
+    this.searchForm.reset(null);
 
     if (this.select?.nativeElement) {
       this.onTouched(this.select.nativeElement.value);

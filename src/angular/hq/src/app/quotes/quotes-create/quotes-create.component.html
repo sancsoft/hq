@@ -128,43 +128,17 @@
                       <ng-template hqValidationError="required">
                         Status is required.
                       </ng-template>
-                      <ng-template [hqSelectInputOption]="null">
-                        Select Quote Status
-                      </ng-template>
-                      <ng-template [hqSelectInputOption]="quoteStatus.Draft">
-                        {{ quoteStatus[quoteStatus.Draft] }}
-                      </ng-template>
-                      <ng-template [hqSelectInputOption]="quoteStatus.Closed">
-                        {{ quoteStatus[quoteStatus.Closed] }}
-                      </ng-template>
-                      <ng-template
-                        [hqSelectInputOption]="quoteStatus.Completed"
-                      >
-                        {{ quoteStatus[quoteStatus.Completed] }}
-                      </ng-template>
-                      <ng-template
-                        [hqSelectInputOption]="quoteStatus.InProduction"
-                      >
-                        {{ quoteStatus[quoteStatus.InProduction] }}
-                      </ng-template>
-                      <ng-template [hqSelectInputOption]="quoteStatus.Lost">
-                        {{ quoteStatus[quoteStatus.Lost] }}
-                      </ng-template>
-                      <ng-template
-                        [hqSelectInputOption]="quoteStatus.WaitingForClient"
-                      >
-                        {{ quoteStatus[quoteStatus.WaitingForClient] }}
-                      </ng-template>
-                      <ng-template
-                        [hqSelectInputOption]="quoteStatus.WaitingForSale"
-                      >
-                        {{ quoteStatus[quoteStatus.WaitingForSale] }}
-                      </ng-template>
-                      <ng-template
-                        [hqSelectInputOption]="quoteStatus.WaitingForStaff"
-                      >
-                        {{ quoteStatus[quoteStatus.WaitingForStaff] }}
-                      </ng-template>
+                      @for (
+                        status of projectStatusEnum$ | async;
+                        track status.id
+                      ) {
+                        <ng-template
+                          [hqSelectInputOption]="status.id"
+                          [hqSelectInputOptionSelectedDisplay]="status.name"
+                          [hqSelectInputOptionSearch]="status.name"
+                          >{{ status.name }}</ng-template
+                        >
+                      }
                     </hq-select-input>
                   </div>
                 </div>

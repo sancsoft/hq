@@ -9,48 +9,20 @@
 
     <!-- select dropdown -->
     <hq-select-input
+      class="w-52"
       [formControl]="listService.quoteStatus"
       label="Quote Status"
+      [autocomplete]="true"
     >
       <ng-template [hqSelectInputOption]="null">All</ng-template>
-      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Unknown">
-        Unknown
-      </ng-template>
-      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Draft">
-        Draft
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="listService.ProjectStatus.WaitingForSale"
-      >
-        Waiting For Sale
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="listService.ProjectStatus.WaitingForClient"
-      >
-        Waiting For Client
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="listService.ProjectStatus.WaitingForStaff"
-      >
-        Waiting For Staff
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="listService.ProjectStatus.InProduction"
-      >
-        In Production
-      </ng-template>
-      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Ongoing">
-        Ongoing
-      </ng-template>
-      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Completed">
-        Completed
-      </ng-template>
-      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Closed">
-        Closed
-      </ng-template>
-      <ng-template [hqSelectInputOption]="listService.ProjectStatus.Lost"
-        >Lost</ng-template
-      >
+      @for (status of listService.projectStatusEnum$ | async; track status.id) {
+        <ng-template
+          [hqSelectInputOption]="status.id"
+          [hqSelectInputOptionSelectedDisplay]="status.name"
+          [hqSelectInputOptionSearch]="status.name"
+          >{{ status.name }}</ng-template
+        >
+      }
     </hq-select-input>
   </div>
 </div>

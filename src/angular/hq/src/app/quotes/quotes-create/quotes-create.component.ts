@@ -18,6 +18,7 @@ import { localISODate } from '../../common/functions/local-iso-date';
 import { ProjectStatus } from '../../enums/project-status';
 import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
 import { CoreModule } from '../../core/core.module';
+import { enumToArrayObservable } from '../../core/functions/enum-to-array';
 
 interface quoteFormGroup {
   clientId: FormControl<string | null>;
@@ -46,6 +47,8 @@ interface quoteFormGroup {
 export class QuotesCreateComponent implements OnInit {
   quoteStatus = ProjectStatus;
   apiErrors: string[] = [];
+
+  public projectStatusEnum$ = enumToArrayObservable(ProjectStatus);
 
   quoteFormGroup = new FormGroup<quoteFormGroup>({
     clientId: new FormControl(null, {

@@ -3,61 +3,20 @@
 
   <!-- select dropdown -->
   @if (clientDetailService.showProjectStatus$ | async) {
-    <hq-select-input [formControl]="clientDetailService.projectStatus">
+    <hq-select-input
+      [formControl]="clientDetailService.projectStatus"
+      [autocomplete]="true"
+      class="w-52"
+    >
       <ng-template [hqSelectInputOption]="null">All</ng-template>
-      <ng-template
-        [hqSelectInputOption]="clientDetailService.ProjectStatus.Unknown"
-      >
-        Unknown
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="clientDetailService.ProjectStatus.Draft"
-      >
-        Draft
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="clientDetailService.ProjectStatus.WaitingForSale"
-      >
-        Waiting For Sale
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="
-          clientDetailService.ProjectStatus.WaitingForClient
-        "
-      >
-        Waiting For Client
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="
-          clientDetailService.ProjectStatus.WaitingForStaff
-        "
-      >
-        Waiting For Staff
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="clientDetailService.ProjectStatus.InProduction"
-      >
-        In Production
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="clientDetailService.ProjectStatus.Ongoing"
-      >
-        Ongoing
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="clientDetailService.ProjectStatus.Completed"
-      >
-        Completed
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="clientDetailService.ProjectStatus.Closed"
-      >
-        Closed
-      </ng-template>
-      <ng-template
-        [hqSelectInputOption]="clientDetailService.ProjectStatus.Lost"
-        >Lost</ng-template
-      >
+      @for (status of projectStatusEnum$ | async; track status.id) {
+        <ng-template
+          [hqSelectInputOption]="status.id"
+          [hqSelectInputOptionSelectedDisplay]="status.name"
+          [hqSelectInputOptionSearch]="status.name"
+          >{{ status.name }}</ng-template
+        >
+      }
     </hq-select-input>
   }
 </div>

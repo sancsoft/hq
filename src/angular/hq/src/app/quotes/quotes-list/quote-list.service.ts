@@ -18,6 +18,7 @@ import {
 } from '../../models/quotes/get-quotes-v1';
 import { formControlChanges } from '../../core/functions/form-control-changes';
 import { BaseListService } from '../../core/services/base-list.service';
+import { enumToArrayObservable } from '../../core/functions/enum-to-array';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +31,9 @@ export class QuoteListService extends BaseListService<
   // Enums
   public ProjectStatus = ProjectStatus;
   public SortColumn = SortColumn;
+
+  // Enum lists
+  public projectStatusEnum$ = enumToArrayObservable(ProjectStatus);
 
   // Filters
   public quoteStatus = new FormControl<ProjectStatus | null>(null);

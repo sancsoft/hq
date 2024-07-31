@@ -17,6 +17,7 @@ import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { ToastService } from '../../services/toast.service';
 import { ProjectStatus } from '../../enums/project-status';
 import { CoreModule } from '../../core/core.module';
+import { enumToArrayObservable } from '../../core/functions/enum-to-array';
 
 interface quoteFormGroup {
   clientId: FormControl<string | null>;
@@ -47,6 +48,8 @@ export class QuotesEditComponent implements OnInit {
   quoteStatus = ProjectStatus;
   quoteId?: string;
   apiErrors: string[] = [];
+
+  public projectStatusEnum$ = enumToArrayObservable(ProjectStatus);
 
   quoteFormGroup = new FormGroup<quoteFormGroup>({
     clientId: new FormControl(null, {

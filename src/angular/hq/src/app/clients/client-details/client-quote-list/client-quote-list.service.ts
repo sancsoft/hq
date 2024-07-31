@@ -19,6 +19,7 @@ import {
 } from '../../../models/quotes/get-quotes-v1';
 import { HQService } from '../../../services/hq.service';
 import { ClientDetailsService } from '../client-details.service';
+import { enumToArrayObservable } from '../../../core/functions/enum-to-array';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,9 @@ export class ClientQuoteListService extends BaseListService<
   // Enums
   public ProjectStatus = ProjectStatus;
   public SortColumn = SortColumn;
+
+  // Enum lists
+  public projectStatusEnum$ = enumToArrayObservable(ProjectStatus);
 
   protected override getResponse(): Observable<GetQuotesResponseV1> {
     const search$ = formControlChanges(this.clientDetailsService.search).pipe(
