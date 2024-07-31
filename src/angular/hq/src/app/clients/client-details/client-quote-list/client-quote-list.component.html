@@ -73,7 +73,7 @@
           <div class="text-nowrap divide-x divide-teal-200">
             @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
               <a
-                [routerLink]="['edit', record.id]"
+                [routerLink]="['/quotes', 'edit', record.id]"
                 class="text-teal-200 hover:text-teal-300 pr-3"
                 >EDIT</a
               >
