@@ -7,10 +7,10 @@
     <td
       [ngStyle]="{ height: '40px' }"
       class="border-b border-black py-2 pl-5"
-      [title]="point.completed ? 'Completed' : 'Uncompleted'"
+      [title]="point?.completed ? 'Completed' : 'Uncompleted'"
       [ngClass]="{
-        'bg-green-600': point.completed,
-        'bg-gray-600': !point.completed,
+        'bg-green-600': point?.completed,
+        'bg-gray-600': !point?.completed,
       }"
     ></td>
   }
@@ -21,7 +21,6 @@
       [autocomplete]="true"
       variant="pill"
       [inline]="true"
-      [pillCode]="chargeCode"
     >
       <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
       @for (code of chargeCodes; track code.id) {
@@ -40,6 +39,6 @@
   </td>
 
   <td class="border-b border-black py-2">
-    {{ point.projectName }}
+    {{ point?.projectName }}
   </td>
 </ng-container>

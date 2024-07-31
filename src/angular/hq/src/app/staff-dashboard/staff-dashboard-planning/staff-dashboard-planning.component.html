@@ -1,0 +1,92 @@
+<div>
+  <div class="flex flex-col items-start pl-4 bg-black-alt">
+    <span
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase flex justify-between"
+      >WEEK PLAN - WEEK OF</span
+    >
+
+    <div class="flex justify-center">
+      <div class="flex items-center space-x-4 py-1">
+        <button
+          title="Previous plan"
+          (click)="prevPlanningPoint()"
+          class="focus:outline-none"
+        >
+          <i class="bi bi-arrow-left-short text-[28px]"></i>
+        </button>
+
+        <span>
+          {{ (planningPoints$ | async)?.date | date: "MM/dd/yyyy" }}
+        </span>
+        <button
+          title="Next plan"
+          (click)="nextPlanningPoint()"
+          class="focus:outline-none"
+        >
+          <i class="bi bi-arrow-right-short text-[28px]"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <table class="w-full border-spacing-0 border-separate table-fixed">
+    <thead>
+      <tr class="top-0">
+        <th
+          class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
+          width="18px"
+        ></th>
+        <th
+          class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
+        >
+          Charge Code
+        </th>
+        <th
+          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
+        >
+          Project Name
+        </th>
+      </tr>
+    </thead>
+    <tbody cdkDropList (cdkDropListDropped)="onDrop($event)">
+      @for (point of points; track point.sequence) {
+        @if (editPlanButton$ | async) {
+          <tr
+            hq-staff-dashboard-planning-point
+            [editMode]="editPlanButton$ | async"
+            [point]="point"
+            [chargeCodes]="chargeCodes$ | async"
+            class="even:bg-gray-850 odd:bg-black-alt text-center"
+            cdkDrag
+          ></tr>
+        } @else {
+          <tr
+            hq-staff-dashboard-planning-point
+            [point]="point"
+            [editMode]="editPlanButton$ | async"
+            [chargeCodes]="chargeCodes$ | async"
+            class="even:bg-gray-850 odd:bg-black-alt text-center"
+          ></tr>
+        }
+      }
+      <!-- } -->
+    </tbody>
+  </table>
+  <div class="flex justify-end mt-3 mr-3">
+    <hq-button
+      (click)="toggleButtonValue()"
+      [variant]="(editPlanButton$ | async) ? 'primary' : 'outline'"
+    >
+      {{ (editPlanButton$ | async) ? "Save Plan" : "Edit Plan" }}</hq-button
+    >
+    <!-- <button
+      [ngClass]="{
+        ' bg-orange-500  ': (editPlanButton$ | async) === true,
+      }"
+
+      class="px-2 py-2 bg-transparent border rounded min-w-[120px] font-normal text-white border-orange-500 hover:border-orange-600 hover:bg-orange-600"
+    >
+
+    </button> -->
+  </div>
+</div>

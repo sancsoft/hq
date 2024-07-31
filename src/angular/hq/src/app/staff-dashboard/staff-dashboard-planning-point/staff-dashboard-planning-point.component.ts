@@ -1,22 +1,40 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  EventEmitter,
   Input,
-  Output,
   OnInit,
   OnDestroy,
+  SimpleChanges,
+  OnChanges,
 } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { PlanningPoint } from '../../models/Points/get-points-v1';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { SelectInputOptionDirective } from '../../core/directives/select-input-option.directive';
 import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
 import { HQService } from '../../services/hq.service';
-import { shareReplay, takeUntil } from 'rxjs/operators';
-import { map, Observable, ReplaySubject, Subscription } from 'rxjs';
-import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
+
+import { PlanningPoint } from '../../models/Points/get-points-v1';
+import { ReplaySubject, skip, takeUntil } from 'rxjs';
+
+export interface HQPlanningPointChangeEvent {
+  id?: string | null;
+  chargeCodeId?: string | null;
+  chargeCode?: string | null;
+  projectName?: string | null;
+  projectId?: string | null;
+  sequence?: number | null;
+  completed?: boolean | null;
+}
+export interface PointForm {
+  id: FormControl<string | null>;
+  chargeCodeId: FormControl<string | null>;
+  chargeCode: FormControl<string | null>;
+  projectName: FormControl<string | null>;
+  projectId: FormControl<string | null>;
+  sequence: FormControl<number | null>;
+  completed: FormControl<boolean | null>;
+}
 
 @Component({
   selector: 'tr[hq-staff-dashboard-planning-point]',
@@ -31,42 +49,48 @@ import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
   ],
   templateUrl: './staff-dashboard-planning-point.component.html',
 })
-export class StaffDashboardPlanningPointComponent {
+export class StaffDashboardPlanningPointComponent
+  implements OnInit, OnDestroy, OnChanges
+{
   @Input()
-  form!: FormGroup;
-  @Input()
-  point!: PlanningPoint;
+  point?: Partial<PlanningPoint>;
   @Input()
   chargeCodes: GetChargeCodeRecordV1[] | null = [];
   @Input()
   editMode!: boolean | null;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-  @Output()
-  hqPlanPointChange = new EventEmitter<FormGroup>();
-  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
-  @Input()
-  chargeCode: string | null = null;
-  chargeCodeToColor = chargeCodeToColor;
+  projectName?: string | null;
+
+  form = new FormGroup<PointForm>({
+    id: new FormControl<string | null>(null),
+    chargeCodeId: new FormControl<string | null>(null, { updateOn: 'change' }),
+    chargeCode: new FormControl<string | null>(null),
+    projectName: new FormControl<string | null>(null),
+    projectId: new FormControl<string | null>(null),
+    completed: new FormControl<boolean | null>(null),
+    sequence: new FormControl<number | null>(null),
+  });
 
   constructor(private hqService: HQService) {
-    this.chargeCodes$ = this.hqService.getChargeCodeseV1({}).pipe(
-      map((t) => t.records),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
+    this.form.controls.chargeCodeId.valueChanges
+      .pipe(skip(1), takeUntil(this.destroyed$))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error
+      .subscribe((t) => {
+        this.point!.projectName = this.chargeCodes?.find(
+          (c) => c.id === t,
+        )?.projectName;
+      });
   }
 
   ngOnInit(): void {
     console.log('ngOnit planning point');
-    console.log(this.form.controls);
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
-    // this.form.controls['chargeCodeId'].valueChanges.subscribe((d) => {
-    //   this.hqPlanPointChange.emit(this.form);
-    // });
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['point'] && changes['point'].currentValue) {
+      this.form.patchValue(changes['point'].currentValue);
+    }
   }
 
-  planningPointChargeCodeChanged(event: any) {
-    this.hqPlanPointChange.emit(this.form);
-  }
   ngOnDestroy(): void {
     console.log('Component Destroyed');
     this.destroyed$.next(true);

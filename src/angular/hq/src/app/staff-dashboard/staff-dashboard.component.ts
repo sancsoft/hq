@@ -1,17 +1,14 @@
 import { StaffDashboardPlanningPointComponent } from './staff-dashboard-planning-point/staff-dashboard-planning-point.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { PanelComponent } from './../core/components/panel/panel.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
-import { FormGroup, Validators } from '@angular/forms';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Period } from '../models/times/get-time-v1';
 import {
-  CdkDragDrop,
   CdkDropList,
   CdkDrag,
-  moveItemInArray,
   CdkDragPlaceholder,
 } from '@angular/cdk/drag-drop';
 
@@ -22,7 +19,6 @@ import {
 } from './staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import { updateTimeRequestV1 } from '../models/times/update-time-v1';
 import {
-  BehaviorSubject,
   catchError,
   combineLatest,
   debounceTime,
@@ -32,12 +28,9 @@ import {
   Observable,
   of,
   ReplaySubject,
-  shareReplay,
   skip,
   startWith,
-  Subject,
   switchMap,
-  take,
   takeUntil,
   tap,
 } from 'rxjs';
@@ -57,13 +50,10 @@ import { ButtonState } from '../enums/ButtonState';
 import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
 import { localISODate } from '../common/functions/local-iso-date';
 import { GetStatusResponseV1 } from '../models/status/get-status-v1';
-import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
-import {
-  getPointsResponseV1,
-  PlanningPoint,
-} from '../models/Points/get-points-v1';
-import { GetChargeCodeRecordV1 } from '../models/charge-codes/get-chargecodes-v1';
+
 import { ButtonComponent } from '../core/components/button/button.component';
+import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staff-dashboard-planning.component';
+import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 
 export interface PeriodicElement {
   name: string;
@@ -71,6 +61,15 @@ export interface PeriodicElement {
   weight: number;
   symbol: string;
   quantity: number;
+}
+export interface PointForm {
+  id: FormControl<string | null>;
+  chargeCodeId: FormControl<string | null>;
+  chargeCode: FormControl<string | null>;
+  projectName: FormControl<string | null>;
+  projectId: FormControl<string | null>;
+  sequence: FormControl<number | null>;
+  completed: FormControl<boolean | null>;
 }
 
 @Component({
@@ -91,26 +90,14 @@ export interface PeriodicElement {
     CdkDragPlaceholder,
     StaffDashboardPlanningPointComponent,
     ButtonComponent,
+    StaffDashboardPlanningComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
 })
-export class StaffDashboardComponent implements OnInit {
+export class StaffDashboardComponent implements OnInit, OnDestroy {
   Period = Period;
   HQRole = HQRole;
-
-  // Planning Points
-  planningPointsforms: FormGroup[] = [];
-  planningPoints$: Observable<getPointsResponseV1 | null>;
-  points: PlanningPoint[] = [];
-  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
-  private staffId$: Observable<string>;
-  private planningPointsRequest$: Observable<any>;
-  private planningPointsRequestTrigger$ = new Subject<void>();
-  private editPlanButtonSubject = new BehaviorSubject<boolean>(false);
-  editPlanButton$ = this.editPlanButtonSubject.asObservable();
-
-  private planningPointDate$: Observable<string>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;
@@ -120,36 +107,15 @@ export class StaffDashboardComponent implements OnInit {
   plan = new FormControl<string | null>(null);
   plan$ = this.plan.valueChanges;
 
-  prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
   ButtonState = ButtonState;
   currentDate = new Date();
   previousPlan: string | null = null;
   planResponse$: Observable<GetPlanResponseV1>;
   staffStatus$: Observable<GetStatusResponseV1>;
   prevPlan$: Observable<GetPrevPlanResponseV1 | null>;
+  prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-  onDrop(event: CdkDragDrop<FormGroup[]>): void {
-    moveItemInArray(
-      this.planningPointsforms,
-      event.previousIndex,
-      event.currentIndex,
-    );
-    moveItemInArray(this.points, event.previousIndex, event.currentIndex);
-
-    this.updateSequence();
-    this.upsertPoints();
-  }
-
-  updateSequence(): void {
-    this.planningPointsforms.forEach((form, idx) => {
-      form.controls['sequence'].setValue(idx + 1);
-      this.points[idx].sequence = idx + 1;
-    });
-    this.planningPointsforms.map((v) => {
-      // console.log(v.value);
-    });
-  }
 
   async ngOnInit() {
     // this is added to make sure that the upsert method works in value changes
@@ -171,6 +137,7 @@ export class StaffDashboardComponent implements OnInit {
     private toastService: ToastService,
     private modalService: ModalService,
     private oidcSecurityService: OidcSecurityService,
+    private cdr: ChangeDetectorRef,
   ) {
     const staffId$ = oidcSecurityService.userData$.pipe(
       map((t) => t.userData),
@@ -180,72 +147,6 @@ export class StaffDashboardComponent implements OnInit {
     const date$ = staffDashboardService.date.valueChanges
       .pipe(startWith(staffDashboardService.date.value))
       .pipe(map((t) => t || localISODate()));
-    this.staffId$ = staffId$;
-    this.planningPointDate$ =
-      staffDashboardService.planningPointdateForm.valueChanges
-        .pipe(startWith(staffDashboardService.planningPointdateForm.value))
-        .pipe(map((t) => t || localISODate()));
-
-    const prevPlanRequest$ = combineLatest({
-      date: date$,
-      staffId: staffId$,
-    }).pipe(distinctUntilChanged());
-    prevPlanRequest$.subscribe((t) => {
-      console.log(t);
-    });
-    this.planningPointsRequest$ = combineLatest({
-      date: this.planningPointDate$,
-      staffId: staffId$,
-      trigger: this.planningPointsRequestTrigger$.pipe(startWith(void 0)),
-    }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
-
-    // this.chargeCodes$ = this.hqService.getChargeCodeseV1({}).pipe(
-    //   map((chargeCode) => chargeCode.records),
-    //   shareReplay({ bufferSize: 1, refCount: false }),
-    // );
-    // const upsertPlanningPointsRequest$ = combineLatest({
-    //   date: date$,
-    //   staffId: staffId$,
-    //   points: of(this.getPlanningPointsFormValues()),
-    // });
-
-    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({});
-
-    this.chargeCodes$ = chargeCodeResponse$.pipe(
-      map((chargeCode) => chargeCode.records),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
-    this.planningPoints$ = this.planningPointsRequest$.pipe(
-      switchMap(({ date, staffId }) => {
-        return this.hqService.getPlanningPointsV1({ date, staffId }).pipe(
-          catchError((error: unknown) => {
-            console.error('Error fetching previous Plan:', error);
-            return of(null);
-          }),
-        );
-      }),
-    );
-    this.planningPoints$.subscribe((response) => {
-      if (response) {
-        this.points = response.points;
-        this.initializeForms(response.points);
-      }
-    });
-    this.prevPlan$ = prevPlanRequest$.pipe(
-      switchMap((request) => {
-        return this.hqService.getPreviousPlanV1(request).pipe(
-          catchError((error: unknown) => {
-            console.error('Error fetching previous Plan:', error);
-            return of(null);
-          }),
-        );
-      }),
-    );
-    this.prevPlan$.subscribe((prevPlan) => {
-      this.previousPlan = prevPlan?.body ?? '';
-      this.prevPSRReportButtonState =
-        prevPlan && prevPlan.body ? ButtonState.Enabled : ButtonState.Disabled;
-    });
 
     const getPlanRequest$ = combineLatest({
       date: date$,
@@ -255,6 +156,7 @@ export class StaffDashboardComponent implements OnInit {
       staffId: staffId$,
     });
     const status$ = this.status.valueChanges;
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
     this.status.valueChanges.subscribe((status) => console.log(status));
     const upsertStatusRequest$ = combineLatest({
       staffId: staffId$,
@@ -267,6 +169,7 @@ export class StaffDashboardComponent implements OnInit {
       }),
       takeUntil(this.destroyed$),
     );
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
     this.staffStatus$.subscribe((staffStatus) => {
       this.status.setValue(staffStatus.status);
     });
@@ -279,7 +182,8 @@ export class StaffDashboardComponent implements OnInit {
         }),
         takeUntil(this.destroyed$),
       )
-      .subscribe((_) => {
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
+      .subscribe(() => {
         this.toastService.show('Success', 'Status successfully updated.');
       });
 
@@ -289,11 +193,36 @@ export class StaffDashboardComponent implements OnInit {
       }),
       takeUntil(this.destroyed$),
     );
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
     this.planResponse$.subscribe((planResponse) => {
       this.plan.setValue(planResponse.body, {
         onlySelf: true,
         emitEvent: false,
       });
+    });
+    const prevPlanRequest$ = combineLatest({
+      date: date$,
+      staffId: staffId$,
+    }).pipe(distinctUntilChanged());
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
+    prevPlanRequest$.subscribe((t) => {
+      console.log(t);
+    });
+    this.prevPlan$ = prevPlanRequest$.pipe(
+      switchMap((request) => {
+        return this.hqService.getPreviousPlanV1(request).pipe(
+          catchError((error: unknown) => {
+            console.error('Error fetching previous Plan:', error);
+            return of(null);
+          }),
+        );
+      }),
+    );
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
+    this.prevPlan$.subscribe((prevPlan) => {
+      this.previousPlan = prevPlan?.body ?? '';
+      this.prevPSRReportButtonState =
+        prevPlan && prevPlan.body ? ButtonState.Enabled : ButtonState.Disabled;
     });
     const request$ = combineLatest({
       staffId: staffId$.pipe(tap((t) => console.log('staffId', t))),
@@ -301,7 +230,7 @@ export class StaffDashboardComponent implements OnInit {
     });
     this.staffDashboardService.date.valueChanges
       .pipe(
-        switchMap((date) => {
+        switchMap(() => {
           return request$.pipe(
             skip(1),
             debounceTime(1000),
@@ -315,7 +244,7 @@ export class StaffDashboardComponent implements OnInit {
           );
         }),
       )
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs-angular/prefer-takeuntil
       .subscribe({
         next: () => {
           this.toastService.show('Success', 'Plan saved successfully');
@@ -323,12 +252,12 @@ export class StaffDashboardComponent implements OnInit {
         error: async () => {
           this.toastService.show(
             'Error',
-            'There was an error saving the PM report.',
+            'There was an error saving the report.',
           );
           await firstValueFrom(
             this.modalService.alert(
               'Error',
-              'There was an error saving the PM report.',
+              'There was an error saving the report.',
             ),
           );
         },
@@ -341,9 +270,7 @@ export class StaffDashboardComponent implements OnInit {
       automaticLayout: true,
     });
   }
-  monacoChange(e: any) {
-    console.log('Monaco editor changed');
-  }
+
   insertTextAtCursor() {
     const selection = this.editorInstance.getSelection();
     const id = { major: 1, minor: 1 };
@@ -424,11 +351,11 @@ export class StaffDashboardComponent implements OnInit {
       if (event.id) {
         this.toastService.show('Success', 'Time entry successfully updated.');
         this.staffDashboardService.refresh();
-        this.planningPointsRequestTrigger$.next();
+        // this.planningPointsRequestTrigger$.next(); // TODO: Trigger this
       } else {
         this.toastService.show('Success', 'Time entry successfully created.');
         this.staffDashboardService.refresh();
-        this.planningPointsRequestTrigger$.next();
+        // this.planningPointsRequestTrigger$.next();
       }
     } catch (err) {
       if (err instanceof APIError) {
@@ -499,85 +426,6 @@ export class StaffDashboardComponent implements OnInit {
         this.toastService.show('Error', 'An unexpected error has occurred.');
       }
     }
-  }
-  onHqPlanChange(updatedForm: FormGroup): void {
-    const formIndex = this.planningPointsforms.findIndex(
-      (f) =>
-        f.controls['sequence'].value === updatedForm.controls['sequence'].value,
-    );
-    if (formIndex !== -1) {
-      // Update the existing form
-      this.planningPointsforms[formIndex] = updatedForm;
-      this.upsertPoints();
-    }
-  }
-  createForm(data: PlanningPoint): FormGroup<PlanPointForm> {
-    return new FormGroup({
-      id: new FormControl<string | null>(data.id),
-      chargeCodeId: new FormControl<string | null>(data.chargeCodeId),
-      sequence: new FormControl<number>(data.sequence, {
-        validators: [Validators.required],
-      }),
-    });
-  }
-  async upsertPoints() {
-    try {
-      const date = this.staffDashboardService.planningPointdateForm.value;
-      const staffId = await firstValueFrom(this.staffId$);
-      const points = this.getPlanningPointsFormValues();
-
-      const request = {
-        date,
-        staffId,
-        points,
-      };
-
-      await firstValueFrom(this.hqService.upsertPlanningPointsV1(request));
-
-      this.toastService.show(
-        'Success',
-        'Planning points successfully upserted.',
-      );
-
-      // Trigger the refresh of planning points
-      this.planningPointsRequestTrigger$.next();
-    } catch (error) {
-      console.error('Error upserting planning points:', error);
-    }
-  }
-
-  initializeForms(points: PlanningPoint[]): void {
-    this.planningPointsforms = points.map((point) => this.createForm(point));
-    this.planningPointsforms.forEach((formGroup) => {
-      formGroup
-        .get('chargeCodeId')
-        ?.valueChanges.pipe(takeUntil(this.destroyed$))
-        .subscribe((values) => {
-          this.upsertPoints();
-        });
-    });
-  }
-  getPlanningPointsFormValues(): PlanningPoint[] {
-    return this.planningPointsforms.map((form) => form.value as PlanningPoint);
-  }
-  async prevPlanningPoint() {
-    const planningPoints = await firstValueFrom(this.planningPoints$);
-    if (planningPoints?.previousDate) {
-      this.staffDashboardService.planningPointdateForm.setValue(
-        planningPoints.previousDate,
-      );
-    }
-  }
-  async nextPlanningPoint() {
-    const planningPoints = await firstValueFrom(this.planningPoints$);
-    if (planningPoints?.nextDate) {
-      this.staffDashboardService.planningPointdateForm.setValue(
-        planningPoints.nextDate,
-      );
-    }
-  }
-  toggleButtonValue() {
-    this.editPlanButtonSubject.next(!this.editPlanButtonSubject.value);
   }
 }
 
