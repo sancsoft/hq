@@ -4,67 +4,32 @@
   <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
 
-<div class="px-5 mb-[8px]">
-  <hq-search-filter-client-list />
+<div class="px-5 pt-4 pb-2">
+  <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+    <hq-search-input [formControl]="listService.search"></hq-search-input>
+  </div>
 </div>
 
-<table class="min-w-full border-spacing-0 border-separate">
+<hq-table>
   <thead>
     <tr class="sticky top-0 text-left">
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.Name)"
-      >
+      <th scope="col" width="250" [hq-sort-header]="sortColumn.Name">
         Client Name
-        <hq-sort-icon
-          [column]="sortColumn.Name"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.HourlyRate)"
-      >
+      <th scope="col" width="100" [hq-sort-header]="sortColumn.HourlyRate">
         Rate
-        <hq-sort-icon
-          [column]="sortColumn.HourlyRate"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.BillingEmail)"
-      >
+      <th scope="col" width="250" [hq-sort-header]="sortColumn.BillingEmail">
         Billing Email
-        <hq-sort-icon
-          [column]="sortColumn.BillingEmail"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.OfficialName)"
+        [hq-sort-header]="sortColumn.OfficialName"
+        class="hidden xl:table-cell"
       >
         Official Name
-        <hq-sort-icon
-          [column]="sortColumn.OfficialName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
-
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
-        colspan="2"
-      >
+      <th scope="col" width="160">
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
           <hq-button routerLink="/clients/create">
             <i class="bi bi-plus"></i>
@@ -74,19 +39,14 @@
       </th>
     </tr>
   </thead>
-  <tbody>
-    @if ((records$ | async)?.length === 0) {
-      <td colspan="6" class="bg-black-alt">
-        <h1 class="text-center py-4 font-bold">No matching records found</h1>
-      </td>
-    }
-    @for (client of records$ | async; track client.id) {
-      <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black py-2 pl-5">{{ client.name }}</td>
-        <td class="border-b border-black py-2 pl-5">
-          {{ (client.hourlyRate | currency) ?? "None" }}
+  <tbody hq-table-body>
+    @for (client of listService.records$ | async; track client.id) {
+      <tr>
+        <td>{{ client.name }}</td>
+        <td>
+          {{ (client.hourlyRate | currency) ?? "-" }}
         </td>
-        <td class="border-b border-black py-2 pl-5">
+        <td>
           @if (client.billingEmail) {
             <a href="mailto:{{ client.billingEmail }}">{{
               client.billingEmail
@@ -95,10 +55,10 @@
             None
           }
         </td>
-        <td class="border-b border-black py-2 pl-5">
-          {{ client.officialName ?? "None" }}
+        <td class="hidden xl:table-cell">
+          {{ client.officialName ?? "-" }}
         </td>
-        <td class="border-b border-black py-2 text-right pr-5">
+        <td>
           <div class="text-nowrap divide-x divide-teal-200">
             @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
               <a
@@ -117,32 +77,4 @@
       </tr>
     }
   </tbody>
-</table>
-
-<div
-  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
->
-  <div>
-    <select
-      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="ClientListService.itemsPerPage"
-    >
-      <option [ngValue]="10">10</option>
-      <option [ngValue]="20">20</option>
-      <option [ngValue]="50">50</option>
-      <option [ngValue]="100">100</option>
-      <!-- Add more options as needed -->
-    </select>
-    <span>items per page</span>
-  </div>
-  <hq-paginator
-    [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="ClientListService.itemsPerPage.value"
-    [currentPage]="ClientListService.page.value"
-    (page)="goToPage($event)"
-  ></hq-paginator>
-  <div class="flex justify-end text-xs">
-    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
-    {{ totalRecords$ | async }} items
-  </div>
-</div>
+</hq-table>

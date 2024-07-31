@@ -16,6 +16,7 @@ export class TableBodyComponent<
   TSort,
 > {
   constructor(
+    private elRef: ElementRef<HTMLTableSectionElement>,
     public table: TableComponent<TResponse, TRecord, TSort>,
     public listService: BaseListService<TResponse, TRecord, TSort>,
   ) {}
