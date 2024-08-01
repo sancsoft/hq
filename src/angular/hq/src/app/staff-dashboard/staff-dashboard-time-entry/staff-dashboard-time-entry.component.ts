@@ -70,6 +70,8 @@ interface Form {
   task: FormControl<string | null>;
   chargeCode: FormControl<string | null>;
   chargeCodeId: FormControl<string | null>;
+  clientName: FormControl<string | null>;
+  projectName: FormControl<string | null>;
   clientId: FormControl<string | null>;
   projectId: FormControl<string | null>;
   activityId: FormControl<string | null>;
@@ -128,6 +130,9 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       updateOn: 'change',
       validators: [Validators.required],
     }),
+    clientName: new FormControl<string | null>(null),
+    projectName: new FormControl<string | null>(null),
+
     clientId: new FormControl<string | null>(null, {
       updateOn: 'change',
       validators: [Validators.required],
@@ -141,6 +146,8 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   projects$: Observable<GetDashboardTimeV1Project[]>;
   activities$: Observable<GetDashboardTimeV1ProjectActivity[]>;
+  projectName$: Observable<string | null | undefined>;
+  clientName$: Observable<string | null | undefined>;
 
   timeStatus = TimeStatus;
 
@@ -154,6 +161,14 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
     const clientId$ = form$.pipe(
       map((t) => t.clientId),
+      distinctUntilChanged(),
+    );
+    this.projectName$ = form$.pipe(
+      map((t) => t.projectName),
+      distinctUntilChanged(),
+    );
+    this.clientName$ = form$.pipe(
+      map((t) => t.clientName),
       distinctUntilChanged(),
     );
 
@@ -199,6 +214,8 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
               {
                 clientId: chargeCode.clientId,
                 projectId: chargeCode.projectId,
+                clientName: chargeCode.clientName,
+                projectName: chargeCode.projectName,
               },
               { emitEvent: false },
             );
@@ -207,6 +224,8 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
               {
                 clientId: null,
                 projectId: null,
+                clientName: null,
+                projectName: null,
               },
               { emitEvent: false },
             );
@@ -215,42 +234,42 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
         error: console.error,
       });
 
-    clientId$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: () => {
-        this.form.patchValue(
-          {
-            chargeCodeId: null,
-            projectId: null,
-            chargeCode: null,
-          },
-          { emitEvent: false },
-        );
-      },
-      error: console.error,
-    });
+    // clientId$.pipe(takeUntil(this.destroyed$)).subscribe({
+    //   next: () => {
+    //     this.form.patchValue(
+    //       {
+    //         chargeCodeId: null,
+    //         projectId: null,
+    //         chargeCode: null,
+    //       },
+    //       { emitEvent: false },
+    //     );
+    //   },
+    //   error: console.error,
+    // });
 
-    project$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (project) => {
-        if (project) {
-          this.form.patchValue(
-            {
-              chargeCodeId: project.chargeCodeId,
-              chargeCode: project.chargeCode,
-            },
-            { emitEvent: false },
-          );
-        } else {
-          this.form.patchValue(
-            {
-              chargeCodeId: null,
-              chargeCode: null,
-            },
-            { emitEvent: false },
-          );
-        }
-      },
-      error: console.error,
-    });
+    // project$.pipe(takeUntil(this.destroyed$)).subscribe({
+    //   next: (project) => {
+    //     if (project) {
+    //       this.form.patchValue(
+    //         {
+    //           chargeCodeId: project.chargeCodeId,
+    //           chargeCode: project.chargeCode,
+    //         },
+    //         { emitEvent: false },
+    //       );
+    //     } else {
+    //       this.form.patchValue(
+    //         {
+    //           chargeCodeId: null,
+    //           chargeCode: null,
+    //         },
+    //         { emitEvent: false },
+    //       );
+    //     }
+    //   },
+    //   error: console.error,
+    // });
 
     // eslint-disable-next-line rxjs-angular/prefer-async-pipe
     hours$.pipe(takeUntil(this.destroyed$)).subscribe({

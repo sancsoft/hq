@@ -102,47 +102,10 @@
         } -->
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full max-w-[220px]">
-          <hq-select-input
-            (hqBlur)="save()"
-            [autocomplete]="true"
-            formControlName="clientId"
-            variant="secondary"
-          >
-            <ng-template [hqSelectInputOption]="null">Client</ng-template>
-            @for (
-              client of staffDashboardService.clients$ | async;
-              track client.id
-            ) {
-              <ng-template
-                [hqSelectInputOption]="client.id"
-                [hqSelectInputOptionSelectedDisplay]="client.name"
-                [hqSelectInputOptionSearch]="client.name"
-                >{{ client.name }}</ng-template
-              >
-            }
-          </hq-select-input>
-        </div>
+        {{ clientName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full max-w-[220px]">
-          <hq-select-input
-            (hqBlur)="save()"
-            [autocomplete]="true"
-            formControlName="projectId"
-            variant="secondary"
-          >
-            <ng-template [hqSelectInputOption]="null">Project</ng-template>
-            @for (project of projects$ | async; track project.id) {
-              <ng-template
-                [hqSelectInputOption]="project.id"
-                [hqSelectInputOptionSelectedDisplay]="project.name"
-                [hqSelectInputOptionSearch]="project.name"
-                >{{ project.name }}</ng-template
-              >
-            }
-          </hq-select-input>
-        </div>
+        {{ projectName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         @if (activities$ | async; as activities) {
@@ -294,47 +257,10 @@
         </div>
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full max-w-[220px]">
-          <hq-select-input
-            (hqBlur)="save()"
-            [autocomplete]="true"
-            formControlName="clientId"
-            variant="secondary"
-          >
-            <ng-template [hqSelectInputOption]="null">Client</ng-template>
-            @for (
-              client of staffDashboardService.clients$ | async;
-              track client.id
-            ) {
-              <ng-template
-                [hqSelectInputOption]="client.id"
-                [hqSelectInputOptionSelectedDisplay]="client.name"
-                [hqSelectInputOptionSearch]="client.name"
-                >{{ client.name }}</ng-template
-              >
-            }
-          </hq-select-input>
-        </div>
+        {{ clientName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full max-w-[220px]">
-          <hq-select-input
-            (hqBlur)="save()"
-            [autocomplete]="true"
-            formControlName="projectId"
-            variant="secondary"
-          >
-            <ng-template [hqSelectInputOption]="null">Project</ng-template>
-            @for (project of projects$ | async; track project.id) {
-              <ng-template
-                [hqSelectInputOption]="project.id"
-                [hqSelectInputOptionSelectedDisplay]="project.name"
-                [hqSelectInputOptionSearch]="project.name"
-                >{{ project.name }}</ng-template
-              >
-            }
-          </hq-select-input>
-        </div>
+        {{ projectName$ | async }}
       </td>
 
       <td class="border-b border-black py-2 pl-2">
@@ -451,11 +377,11 @@
           </hq-select-input>
         </div>
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.clientName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ clientName$ | async }}
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.projectName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ projectName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
@@ -510,11 +436,11 @@
           </hq-select-input>
         </div>
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.clientName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ clientName$ | async }}
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.projectName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ projectName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
@@ -569,11 +495,11 @@
           </hq-select-input>
         </div>
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.clientName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ clientName$ | async }}
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.projectName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ projectName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
