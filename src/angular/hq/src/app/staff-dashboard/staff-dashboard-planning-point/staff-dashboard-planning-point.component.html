@@ -1,12 +1,11 @@
 <ng-container [formGroup]="form">
   @if (editMode) {
-    <td cdkDragHandle class="bg-black w-3 hover:cursor-move">
-      <i class="bi bi-pause"></i>
+    <td cdkDragHandle class="bg-black w-4 hover:cursor-move">
+      <i class="bi bi-pause flex justify-center"></i>
     </td>
   } @else {
     <td
-      [ngStyle]="{ height: '40px' }"
-      class="border-b border-black py-2 pl-5"
+      class="border-b border-black w-4"
       [title]="point?.completed ? 'Completed' : 'Uncompleted'"
       [ngClass]="{
         'bg-green-600': point?.completed,

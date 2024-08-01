@@ -113,7 +113,11 @@
   </div>
 </div>
 
-<hq-panel [Direction]="'horizontal'" [CSizes]="[75, 25]">
+<hq-panel
+  [Direction]="'horizontal'"
+  GutterVariant="secondary"
+  [CSizes]="[74, 26]"
+>
   <div first>
     <div class="px-5 py-2 bg-black-alt">
       <div class="flex gap-[20px] justify-between items-center">
@@ -353,8 +357,8 @@
             </div>
           </div>
         </div>
-        <hq-panel Direction="vertical" [CSizes]="[30, 70]">
-          <hq-panel first Direction="horizontal" [CSizes]="[50, 50]">
+        <hq-panel CollapseItem="first" Direction="vertical" [CSizes]="[30, 70]">
+          <hq-panel first Direction="horizontal" [CSizes]="[100, 0]">
             <!-- <textarea first class="h-full" [formControl]="plan"></textarea> -->
             <ngx-monaco-editor
               first
@@ -491,5 +495,8 @@
       <!-- } -->
     </div>
   </div>
-  <hq-staff-dashboard-planning second> </hq-staff-dashboard-planning>
+  <div second class="border-b-black border-b-[1px] pb-2">
+    <hq-staff-dashboard-planning class="bg-blue-100">
+    </hq-staff-dashboard-planning>
+  </div>
 </hq-panel>

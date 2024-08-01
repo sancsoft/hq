@@ -16,7 +16,7 @@
         </button>
 
         <span>
-          {{ (planningPoints$ | async)?.date | date: "MM/dd/yyyy" }}
+          {{ (planningPoints$ | async)?.displayDate | date: "MM/dd/yyyy" }}
         </span>
         <button
           title="Next plan"
@@ -29,21 +29,19 @@
     </div>
   </div>
 
-  <table class="w-full border-spacing-0 border-separate table-fixed">
+  <table class="w-full border-spacing-0 border-separate">
     <thead>
-      <tr class="top-0">
+      <tr class="top-0 text-left">
         <th
-          class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
-          width="18px"
+          class="bg-blue-900 border-steel-blue-600 border-y py-3 text-nowrap"
+          width="4px"
         ></th>
         <th
-          class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
+          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 text-nowrap"
         >
           Charge Code
         </th>
-        <th
-          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
-        >
+        <th class="bg-blue-900 border-steel-blue-600 border-y py-3 text-nowrap">
           Project Name
         </th>
       </tr>
@@ -56,7 +54,7 @@
             [editMode]="editPlanButton$ | async"
             [point]="point"
             [chargeCodes]="chargeCodes$ | async"
-            class="even:bg-gray-850 odd:bg-black-alt text-center"
+            class="even:bg-gray-850 odd:bg-black-alt"
             cdkDrag
           ></tr>
         } @else {
@@ -65,7 +63,7 @@
             [point]="point"
             [editMode]="editPlanButton$ | async"
             [chargeCodes]="chargeCodes$ | async"
-            class="even:bg-gray-850 odd:bg-black-alt text-center"
+            class="even:bg-gray-850 odd:bg-black-alt"
           ></tr>
         }
       }

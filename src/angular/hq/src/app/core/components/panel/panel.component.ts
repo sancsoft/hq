@@ -6,6 +6,8 @@ export enum PanelDirection {
   Horizontal,
   Vertical,
 }
+export type CollapseItem = 'first' | 'second';
+
 @Component({
   selector: 'hq-panel',
   standalone: true,
@@ -17,19 +19,27 @@ export class PanelComponent implements OnInit {
   Direction: ISplitDirection = 'horizontal';
   @Input()
   CSizes: number[] = [50, 50];
+  @Input()
+  CollapseItem: CollapseItem = 'second';
+  @Input()
+  GutterVariant: 'primary' | 'secondary' = 'primary';
+
   // TODO: make this configurable for collapse direction
   private collapsed = false;
   private originalCSizes: number[] = [];
   ngOnInit(): void {
+    this.collapsed = this.CSizes.includes(100);
     this.originalCSizes = [...this.CSizes];
   }
   // This method is configured for two splitted views
   collapseCArea() {
     if (this.collapsed) {
-      this.CSizes = [...this.originalCSizes];
+      // this.CSizes = [...this.originalCSizes];
+      this.CSizes = [50, 50];
+
       this.collapsed = false;
     } else {
-      this.CSizes = [99, 1];
+      this.CSizes = this.CollapseItem == 'second' ? [100, 0] : [0, 100];
       this.collapsed = true;
     }
   }
