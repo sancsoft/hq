@@ -31,6 +31,7 @@ import {
   combineLatest,
   concat,
   defer,
+  distinctUntilChanged,
   firstValueFrom,
   map,
   Observable,
@@ -113,6 +114,8 @@ export class SelectInputComponent<T>
   protected focused = false;
   protected uniqueId = generateUniqueInputId();
 
+  protected chargeCodeColor$: Observable<string | null>;
+
   private _value = new BehaviorSubject<T | string | null | undefined>(null);
 
   set value(value: T | string | null | undefined) {
@@ -146,6 +149,11 @@ export class SelectInputComponent<T>
     if (ngControl) {
       ngControl.valueAccessor = this;
     }
+
+    this.chargeCodeColor$ = this._value.pipe(
+      map((t) => chargeCodeToColor(t ? t.toString() : null)),
+      distinctUntilChanged(),
+    );
   }
 
   selectOption(option: SelectInputOptionDirective<T>) {

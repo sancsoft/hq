@@ -6,9 +6,7 @@
     class="flex items-center border justify-between bg-blue-900 rounded select-none overflow-hidden px-1"
     (focus)="onFocus()"
     [style.background-color]="
-      variant === 'pill'
-        ? chargeCodeToColor(pillCode ?? value?.toString())
-        : null
+      variant === 'pill' ? (chargeCodeColor$ | async) : null
     "
     [ngClass]="{
       'border-gray-450 text-gray-450': disabled,
@@ -17,10 +15,10 @@
         !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
       'border-black text-white':
         !(ngControl?.invalid && ngControl?.touched) && variant === 'secondary',
-      'px-3 py-1 font-semibold rounded-full text-':
+      'border-transparent':
         !(ngControl?.invalid && ngControl?.touched) && variant === 'pill',
       'border-white text-white': focused && variant !== 'pill',
-      'border-transparent text-center': variant === 'pill',
+      'text-center font-semibold rounded-full px-3 py-1': variant === 'pill',
       'text-left h-[36px]': variant !== 'pill',
       'rounded-br-none rounded-bl-none': isOpen && variant !== 'pill',
       'w-full': !inline,

@@ -215,21 +215,19 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
         error: console.error,
       });
 
-    // clientId$.pipe(pairwise(), takeUntil(this.destroyed$)).subscribe({
-    //   next: ([previousClientId, currentClientId]) => {
-    //     if (currentClientId != previousClientId) {
-    //       this.form.patchValue(
-    //         {
-    //           chargeCodeId: null,
-    //           projectId: null,
-    //           chargeCode: null,
-    //         },
-    //         { emitEvent: false },
-    //       );
-    //     }
-    //   },
-    //   error: console.error,
-    // });
+    clientId$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: () => {
+        this.form.patchValue(
+          {
+            chargeCodeId: null,
+            projectId: null,
+            chargeCode: null,
+          },
+          { emitEvent: false },
+        );
+      },
+      error: console.error,
+    });
 
     project$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (project) => {
@@ -297,7 +295,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['time'].currentValue) {
+    if (changes['time'] && changes['time'].currentValue) {
       this.form.patchValue(changes['time'].currentValue);
       if (this.form.value.id) {
         // Force validation to run and highlight invalid fields red

@@ -44,9 +44,8 @@ function hexToRgb(hex: string) {
     : null;
 }
 
-export function chargeCodeToColor(code?: string, opacity = 0.5) {
-  console.log(code);
-  code ??= '';
+export function chargeCodeToColor(code?: string | null, opacity = 0.5) {
+  code ??= 'undefined';
 
   const value = code
     .split('')

@@ -40,6 +40,7 @@ import {
   of,
   ReplaySubject,
   shareReplay,
+  skip,
   startWith,
   Subject,
   switchMap,
@@ -167,22 +168,25 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
         );
       }),
     );
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
+
     this.planningPoints$.subscribe((response) => {
       if (response) {
         this.points = response.points;
       }
     });
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error
-    this.editPlanButton$.pipe(takeUntil(this.destroyed$)).subscribe((val) => {
-      if (val == false) {
-        // means save plan triggered
-        try {
-          void this.upsertPoints();
-        } catch (error) {
-          console.error('Error upserting planning points:', error);
+
+    this.editPlanButton$.pipe(skip(1), takeUntil(this.destroyed$)).subscribe({
+      next: (val) => {
+        if (val == false) {
+          // means save plan triggered
+          try {
+            void this.upsertPoints();
+          } catch (error) {
+            console.error('Error upserting planning points:', error);
+          }
         }
-      }
+      },
+      error: console.error,
     });
   }
   onDrop(event: CdkDragDrop<FormGroup[]>): void {
