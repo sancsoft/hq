@@ -59,7 +59,31 @@
         </div>
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        @if (form.controls.chargeCode.value) {
+        <div class="px-3">
+          <hq-select-input
+            (hqBlur)="save()"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
+
+        <!-- @if (form.controls.chargeCode.value) {
           <span
             class="px-3 py-1 font-semibold rounded-full"
             [style.background-color]="
@@ -75,7 +99,7 @@
           >
             Chrge
           </span>
-        }
+        } -->
       </td>
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
@@ -245,16 +269,29 @@
         </div>
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        @if (form.controls.chargeCode.value) {
-          <span
-            class="px-3 py-1 font-semibold rounded-full"
-            [style.background-color]="
-              chargeCodeToColor(form.controls.chargeCode.value)
-            "
+        <div class="px-3">
+          <hq-select-input
+            (hqBlur)="save()"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
           >
-            {{ form.controls.chargeCode.value }}
-          </span>
-        }
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
       </td>
       <td class="border-b border-black py-2 pl-2">
         <div class="grid relative w-full max-w-[220px]">
@@ -390,12 +427,29 @@
         {{ time?.date | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        <span
-          class="px-3 py-1 font-semibold rounded-full"
-          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
-        >
-          {{ time?.chargeCode }}
-        </span>
+        <div class="px-3">
+          <hq-select-input
+            [readonly]="true"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
       </td>
       <td class="border-b border-black py-2 pl-4">
         {{ time?.clientName }}
@@ -432,12 +486,29 @@
         {{ time?.date | date: "shortDate" | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        <span
-          class="px-3 py-1 font-semibold rounded-full"
-          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
-        >
-          {{ time?.chargeCode }}
-        </span>
+        <div class="px-3">
+          <hq-select-input
+            [readonly]="true"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
       </td>
       <td class="border-b border-black py-2 pl-4">
         {{ time?.clientName }}
@@ -474,12 +545,29 @@
         {{ time?.date | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        <span
-          class="px-3 py-1 font-semibold rounded-full"
-          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
-        >
-          {{ time?.chargeCode }}
-        </span>
+        <div class="px-3">
+          <hq-select-input
+            [readonly]="true"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
       </td>
       <td class="border-b border-black py-2 pl-4">
         {{ time?.clientName }}

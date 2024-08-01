@@ -29,6 +29,7 @@ import {
   Observable,
   Subject,
   combineLatest,
+  debounceTime,
   distinctUntilChanged,
   firstValueFrom,
   map,
@@ -42,6 +43,7 @@ import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 import { TimeStatus } from '../../models/common/time-status';
 import { ModalService } from '../../services/modal.service';
 import { DateInputComponent } from '../../core/components/date-input/date-input.component';
+import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 
 export interface HQTimeChangeEvent {
   id?: string | null;
@@ -88,6 +90,8 @@ interface Form {
 export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
   @Input()
   time?: Partial<GetDashboardTimeV1TimeForDateTimes>;
+  @Input()
+  chargeCodes: GetChargeCodeRecordV1[] | null = [];
 
   @Output()
   hqTimeChange = new EventEmitter<HQTimeChangeEvent>();
@@ -120,7 +124,10 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     }),
     task: new FormControl<string | null>(null, { updateOn: 'blur' }),
     chargeCode: new FormControl<string | null>(null),
-    chargeCodeId: new FormControl<string | null>(null, [Validators.required]),
+    chargeCodeId: new FormControl<string | null>(null, {
+      updateOn: 'change',
+      validators: [Validators.required],
+    }),
     clientId: new FormControl<string | null>(null, {
       updateOn: 'change',
       validators: [Validators.required],
@@ -155,6 +162,11 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       distinctUntilChanged(),
     );
 
+    const chargeCodeId$ = form$.pipe(
+      map((t) => t.chargeCodeId),
+      distinctUntilChanged(),
+    );
+
     const hours$ = form$.pipe(
       map((t) => t.hours),
       distinctUntilChanged(),
@@ -162,7 +174,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
     const client$ = combineLatest({
       clientId: clientId$,
-      clients: staffDashboardService.clients$,
+      clients: this.staffDashboardService.clients$,
     }).pipe(map((t) => t.clients.find((x) => x.id == t.clientId)));
 
     this.projects$ = client$.pipe(map((t) => t?.projects ?? []));
@@ -177,28 +189,66 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       startWith([]),
     );
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    clientId$.pipe(pairwise(), takeUntil(this.destroyed$)).subscribe({
-      next: ([previousClientId, currentClientId]) => {
-        if (currentClientId != previousClientId) {
-          this.form.patchValue({
-            chargeCodeId: null,
-            chargeCode: null,
-            projectId: null,
-          });
-        }
-      },
-      error: console.error,
-    });
+    this.form.controls.chargeCodeId.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (id) => {
+          const chargeCode = this.chargeCodes?.find((t) => t.id === id);
+          if (chargeCode) {
+            this.form.patchValue(
+              {
+                clientId: chargeCode.clientId,
+                projectId: chargeCode.projectId,
+              },
+              { emitEvent: false },
+            );
+          } else {
+            this.form.patchValue(
+              {
+                clientId: null,
+                projectId: null,
+              },
+              { emitEvent: false },
+            );
+          }
+        },
+        error: console.error,
+      });
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    // clientId$.pipe(pairwise(), takeUntil(this.destroyed$)).subscribe({
+    //   next: ([previousClientId, currentClientId]) => {
+    //     if (currentClientId != previousClientId) {
+    //       this.form.patchValue(
+    //         {
+    //           chargeCodeId: null,
+    //           projectId: null,
+    //           chargeCode: null,
+    //         },
+    //         { emitEvent: false },
+    //       );
+    //     }
+    //   },
+    //   error: console.error,
+    // });
+
     project$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (project) => {
         if (project) {
-          this.form.patchValue({
-            chargeCodeId: project.chargeCodeId,
-            chargeCode: project.chargeCode,
-          });
+          this.form.patchValue(
+            {
+              chargeCodeId: project.chargeCodeId,
+              chargeCode: project.chargeCode,
+            },
+            { emitEvent: false },
+          );
+        } else {
+          this.form.patchValue(
+            {
+              chargeCodeId: null,
+              chargeCode: null,
+            },
+            { emitEvent: false },
+          );
         }
       },
       error: console.error,
