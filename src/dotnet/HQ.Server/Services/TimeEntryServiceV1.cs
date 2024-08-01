@@ -727,18 +727,16 @@ namespace HQ.Server.Services
             {
                 Map(t => t.Date).Name("Date");
                 Map(t => t.StaffName).Name("Staff");
-                Map(t => t.Status).Name("Status");
-
                 Map(t => t.ClientName).Name("Client");
                 Map(t => t.ProjectName).Name("Project");
                 Map(t => t.ChargeCode).Name("ChargeCode");
                 Map(t => t.Billable).Name("Billable").Convert(t => t.Value.Billable ? "Y" : "N");
-                Map(t => t.ActivityName).Name("Activity");
-                Map(t => t.Task).Name("Task");
+                Map(t => t.ActivityName).Name("Activity / Task").Convert(t => t.Value.ActivityName ?? t.Value.Task);
                 Map(t => t.Hours).Name("Hours");
                 Map(t => t.BillableHours).Name("AcceptedHours");
                 Map(t => t.HoursApprovedBy).Name("AcceptedBy");
                 Map(t => t.Description).Name("Description");
+                Map(t => t.Status).Name("Status");
             }
         }
 
