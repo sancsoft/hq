@@ -5,6 +5,7 @@ export interface UpsertQuoteRequestV1 {
   quoteId: string | null;
   status: number | null;
   date: string | null;
+  description: string | null;
   value: number | null;
   quoteNumber: number | null;
 }

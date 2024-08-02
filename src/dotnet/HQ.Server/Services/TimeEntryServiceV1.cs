@@ -422,7 +422,7 @@ namespace HQ.Server.Services
                 StaffName = t.Staff.Name,
                 StaffId = t.Staff.Id,
                 InvoiceId = t.InvoiceId,
-                HoursApprovedBy = null,
+                HoursApprovedBy = t.AcceptedBy != null ? t.AcceptedBy.Name : null,
                 Billable = t.ChargeCode.Billable,
                 Date = t.Date,
                 Description = t.Notes,
@@ -687,7 +687,8 @@ namespace HQ.Server.Services
                 TimeAccepted = exportRequest.TimeAccepted,
                 Invoiced = exportRequest.Invoiced,
                 SortBy = (GetTimesV1.SortColumn)exportRequest.SortBy,
-                SortDirection = exportRequest.SortDirection
+                SortDirection = exportRequest.SortDirection,
+                TimeStatus = exportRequest.TimeStatus
             };
         }
 
@@ -698,6 +699,7 @@ namespace HQ.Server.Services
             var streamWriter = new StreamWriter(stream);
             var csvWriter = new CsvWriter(streamWriter, new CsvConfiguration(CultureInfo.InvariantCulture));
 
+            csvWriter.Context.RegisterClassMap<ExportTimeClassMap>();
 
             var mappedRequest = MapToGetTimesV1Request(request);
             var records = await this.GetTimesV1(mappedRequest);
@@ -717,6 +719,25 @@ namespace HQ.Server.Services
                 FileName = $"HQTimeExport_{DateTime.Now:yyyyMMddHHmm}.csv",
                 ContentType = "text/csv",
             };
+        }
+
+        private class ExportTimeClassMap : ClassMap<GetTimesV1.Record>
+        {
+            public ExportTimeClassMap()
+            {
+                Map(t => t.Date).Name("Date");
+                Map(t => t.StaffName).Name("Staff");
+                Map(t => t.ClientName).Name("Client");
+                Map(t => t.ProjectName).Name("Project");
+                Map(t => t.ChargeCode).Name("ChargeCode");
+                Map(t => t.Billable).Name("Billable").Convert(t => t.Value.Billable ? "Y" : "N");
+                Map(t => t.ActivityName).Name("Activity / Task").Convert(t => t.Value.ActivityName ?? t.Value.Task);
+                Map(t => t.Hours).Name("Hours");
+                Map(t => t.BillableHours).Name("AcceptedHours");
+                Map(t => t.HoursApprovedBy).Name("AcceptedBy");
+                Map(t => t.Description).Name("Description");
+                Map(t => t.Status).Name("Status");
+            }
         }
 
         public async Task BackgroundSendTimeEntryReminderEmail(Period period, CancellationToken ct)

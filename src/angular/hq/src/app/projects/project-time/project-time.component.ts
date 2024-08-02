@@ -12,9 +12,9 @@ import { SortColumn } from '../../models/PSR/get-psr-time-v1';
 import { HQService } from '../../services/hq.service';
 import { GetPSRTimeRecordV1 } from '../../models/PSR/get-psr-time-v1';
 import { CommonModule } from '@angular/common';
-import { TimeStatus } from '../../models/common/time-status';
 import { SortDirection } from '../../models/common/sort-direction';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
+import { TimeStatus } from '../../enums/time-status';
 
 @Component({
   selector: 'hq-project-time',

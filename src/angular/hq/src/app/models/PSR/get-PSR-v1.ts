@@ -1,5 +1,5 @@
-import { ProjectStatus } from '../../clients/client-details.service';
-import { Period } from '../../projects/project-create/project-create.component';
+import { Period } from '../../enums/period';
+import { ProjectStatus } from '../../enums/project-status';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';

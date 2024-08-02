@@ -206,3 +206,49 @@ input[type="number"] {
   min-height: 60px;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+table.hq-table {
+  @apply min-w-full border-spacing-0 border-separate table-fixed;
+
+  thead {
+    tr {
+      @apply sticky top-0 text-left;
+
+      th {
+        @apply bg-blue-900 border-steel-blue-600 border-y py-3;
+      }
+    }
+  }
+
+  &.loading tbody {
+    @apply animate-loading;
+  }
+
+  tbody[hq-table-body] {
+    tr {
+      @apply even:bg-gray-850 odd:bg-black-alt;
+
+      td {
+        @apply border-b border-black;
+      }
+    }
+  }
+
+  thead,
+  tbody[hq-table-body] {
+    tr th,
+    tr td {
+      @apply p-2;
+    }
+
+    tr th:first-child,
+    tr td:first-child {
+      @apply pl-5 text-left;
+    }
+
+    tr th:last-child,
+    tr td:last-child {
+      @apply pe-5 text-right;
+    }
+  }
+}

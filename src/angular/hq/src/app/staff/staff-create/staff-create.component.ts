@@ -10,9 +10,9 @@ import {
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
-import { Jurisdiciton } from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
+import { Jurisdiciton } from '../../enums/jurisdiciton';
 
 interface Form {
   name: FormControl<string | null>;

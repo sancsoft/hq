@@ -14,16 +14,16 @@ import {
   shareReplay,
   firstValueFrom,
 } from 'rxjs';
-import { ProjectStatus } from '../../clients/client-details.service';
 import { GetPSRRecordV1, SortColumn } from '../../models/PSR/get-PSR-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { Period } from '../../projects/project-create/project-create.component';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { PsrListService } from './services/pstlistService';
+import { ProjectStatus } from '../../enums/project-status';
+import { Period } from '../../enums/period';
 
 @Component({
   selector: 'hq-psrlist',

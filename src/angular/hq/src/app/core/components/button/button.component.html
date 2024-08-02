@@ -2,6 +2,7 @@
 @if (routerLink) {
   <a
     [routerLink]="disabled ? null : routerLink"
+    [queryParams]="queryParams"
     [target]="target"
     class="px-4 py-2 border rounded font-normal select-none transition-colors duration-300"
     [ngClass]="{

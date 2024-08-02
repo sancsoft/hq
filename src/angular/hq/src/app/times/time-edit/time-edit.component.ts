@@ -14,10 +14,7 @@ import {
 } from '@angular/router';
 import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
-import {
-  ChargeCodeActivity,
-  GetChargeCodeRecordV1,
-} from '../../models/charge-codes/get-chargecodes-v1';
+import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
@@ -27,6 +24,7 @@ import {
 } from '../../models/times/get-time-v1';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
+import { ChargeCodeActivity } from '../../enums/charge-code-activity';
 
 interface Form {
   ProjectId: FormControl<string | null>;

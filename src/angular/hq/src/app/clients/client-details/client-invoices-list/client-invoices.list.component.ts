@@ -15,13 +15,14 @@ import {
 import { SortColumn } from '../../../models/Invoices/get-invoices-v1';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { HQService } from '../../../services/hq.service';
-import { ClientDetailsService } from '../../client-details.service';
 import { GetInvoicesRecordV1 } from '../../../models/Invoices/get-invoices-v1';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 import { HQRole } from '../../../enums/hqrole';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
+import { ClientDetailsService } from '../client-details.service';
+import { ButtonComponent } from '../../../core/components/button/button.component';
 
 @Component({
   selector: 'hq-client-invoices-list',
@@ -33,6 +34,7 @@ import { InRolePipe } from '../../../pipes/in-role.pipe';
     PaginatorComponent,
     SortIconComponent,
     InRolePipe,
+    ButtonComponent,
   ],
   templateUrl: './client-invoices.component-list.html',
 })
@@ -57,10 +59,8 @@ export class ClientInvoicesComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    public clientDetailService: ClientDetailsService,
   ) {
-    const clientId$ = this.route.parent!.params.pipe(map((t) => t['clientId']));
-
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ClientName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
 
@@ -86,7 +86,7 @@ export class ClientInvoicesComponent {
       take: itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
-      clientId: clientId$,
+      clientId: clientDetailService.clientId$,
     });
 
     const response$ = request$.pipe(
@@ -115,7 +115,6 @@ export class ClientInvoicesComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.hideProjectStatus();
-    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {

@@ -1,6 +1,6 @@
+import { ProjectStatus } from '../../enums/project-status';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
-import { QuoteStatus } from '../common/quote-status';
 import { SortDirection } from '../common/sort-direction';
 
 export interface GetServicesRequestV1 extends PagedRequestV1 {
@@ -35,7 +35,7 @@ export interface GetServicesRecordV1 {
   endDate?: Date;
   chargeCode?: string;
   chargeCodeDescription?: string;
-  quoteStatus: QuoteStatus;
+  quoteStatus: ProjectStatus;
 }
 
 export interface GetServicesRecordsV1 {
@@ -43,5 +43,5 @@ export interface GetServicesRecordsV1 {
   total: number | null;
 }
 
-export interface GetProjectResponseV1
+export interface GetServiceResponseV1
   extends PagedResponseV1<GetServicesRecordsV1> {}

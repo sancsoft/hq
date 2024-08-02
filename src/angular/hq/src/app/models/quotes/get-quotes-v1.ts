@@ -1,7 +1,7 @@
+import { ProjectStatus } from '../../enums/project-status';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
-import { QuoteStatus } from '../../models/common/quote-status';
 
 export interface GetQuotesRequestV1 extends PagedRequestV1 {
   search?: string | null;
@@ -9,6 +9,7 @@ export interface GetQuotesRequestV1 extends PagedRequestV1 {
   clientId?: string;
   sortBy: SortColumn;
   sortDirection: SortDirection;
+  quoteStatus: ProjectStatus | null;
 }
 
 export enum SortColumn {
@@ -31,13 +32,12 @@ export interface GetQuotesRecordV1 {
   chargeCode: string;
   date: string | null;
   value: number | null;
-  status: QuoteStatus;
+  status: ProjectStatus;
+  hasPDF: boolean;
 }
 
-export interface GetQuotesRecordsV1 {
-  records: [GetQuotesRecordV1];
-  total: number | null;
-}
+export interface GetQuotesRecordsV1
+  extends PagedResponseV1<GetQuotesRecordV1> {}
 
 export interface GetQuotesResponseV1
   extends PagedResponseV1<GetQuotesRecordV1> {}

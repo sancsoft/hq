@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TimeService } from '../../services/TimeService';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { Period } from '../../../models/times/get-time-v1';
+import { Period } from '../../../enums/period';
 
 @Component({
   selector: 'hq-time-search-filter',

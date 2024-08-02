@@ -50,6 +50,7 @@ import { chargeCodeToColor } from '../../../common/functions/charge-code-to-colo
     FormLabelComponent,
     CdkConnectedOverlay,
     SearchInputComponent,
+    FormLabelComponent,
   ],
   templateUrl: './select-input.component.html',
 })
@@ -63,7 +64,7 @@ export class SelectInputComponent<T>
   placeholder: string = '';
 
   @Input()
-  label: T | string | null | undefined = null;
+  label: string | null = null;
 
   @Input()
   variant: 'primary' | 'secondary' | 'pill' = 'primary';
@@ -164,8 +165,12 @@ export class SelectInputComponent<T>
       'button.selected',
     ) as HTMLButtonElement;
 
-    const parent = selected.parentNode as HTMLDivElement;
-    parent.scrollTop = selected.offsetTop - parent.offsetTop;
+    if (selected) {
+      const parent = selected.parentNode as HTMLDivElement;
+      if (parent) {
+        parent.scrollTop = selected.offsetTop - parent.offsetTop;
+      }
+    }
   }
 
   async onSearchKeyDown(event: KeyboardEvent) {
@@ -209,6 +214,7 @@ export class SelectInputComponent<T>
       case 'Escape':
         event.preventDefault();
         this.isOpen = false;
+        this.searchForm.reset(null);
         this.hqBlur.emit();
         break;
     }
@@ -291,6 +297,7 @@ export class SelectInputComponent<T>
   onBlur() {
     this.isOpen = false;
     this.focused = false;
+    this.searchForm.reset(null);
     this.hqBlur.emit();
 
     if (this.select?.nativeElement) {

@@ -20,8 +20,8 @@ import {
   UpsertClientResponseV1,
 } from '../models/clients/upsert-client-v1';
 import {
-  GetProjectRecordsV1,
   GetProjectRequestV1,
+  GetProjectResponseV1,
 } from '../models/projects/get-project-v1';
 import {
   GetQuotesRecordsV1,
@@ -194,7 +194,7 @@ export class HQService {
   getProjectsV1(request: Partial<GetProjectRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<GetProjectRecordsV1>(
+        this.http.post<GetProjectResponseV1>(
           `${apiUrl}/v1/Projects/GetProjectsV1`,
           request,
         ),
@@ -623,14 +623,35 @@ export class HQService {
     );
   }
 
-  // uploadQuotePDFV1(request: Partial<UploadQuotePDFRequestV1>) {
-  //   return this.appSettings.apiUrl$.pipe(
-  //     switchMap((apiUrl) =>
-  //       this.http.post<UploadQuotePDFResponseV1>(
-  //         `${apiUrl}/v1/Quotes/UploadQuotePDFV1`,
-  //         request,
-  //       ),
-  //     ),
-  //   );
-  // }
+  uploadQuotePDFV1(quoteId: string, file: File) {
+    const formData = new FormData();
+    formData.append('id', quoteId);
+    formData.append('file', file);
+
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<void>(`${apiUrl}/v1/Quotes/UploadQuotePDFV1`, formData),
+      ),
+    );
+  }
+
+  getQuotePDFV1(request: Partial<object>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.request('post', `${apiUrl}/v1/Quotes/GetQuotePDFV1`, {
+          body: request,
+          responseType: 'blob',
+          observe: 'response',
+        }),
+      ),
+      map((response) => ({
+        file: response.body,
+        fileName: (response.headers.get('content-disposition') ?? '')
+          .split(';')[1]
+          .split('filename')[1]
+          .split('=')[1]
+          .trim(),
+      })),
+    );
+  }
 }

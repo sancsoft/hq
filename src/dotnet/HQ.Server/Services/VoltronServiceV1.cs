@@ -160,20 +160,6 @@ public class VoltronServiceV1
                 chargeCode.Active = projectRow.Active;
                 chargeCode.Billable = projectRow.Billable;
 
-                var chargeCodePrefix = chargeCode.Code.ToUpper()[0];
-                switch (chargeCodePrefix)
-                {
-                    case 'S':
-                        chargeCode.Activity = ChargeCodeActivity.General;
-                        break;
-                    case 'P':
-                        chargeCode.Activity = ChargeCodeActivity.Project;
-                        break;
-                    case 'Q':
-                        chargeCode.Activity = ChargeCodeActivity.Quote;
-                        break;
-                }
-
                 var project = await _context.Projects.SingleOrDefaultAsync(t => t.ChargeCode != null && t.ChargeCode.Code == projectRow.Code);
                 if (project == null)
                 {
@@ -185,6 +171,23 @@ public class VoltronServiceV1
                 else
                 {
                     response.ProjectsUpdated++;
+                }
+
+                var chargeCodePrefix = chargeCode.Code.ToUpper()[0];
+                switch (chargeCodePrefix)
+                {
+                    case 'S':
+                        chargeCode.Activity = ChargeCodeActivity.General;
+                        project.Type = ProjectType.General;
+                        break;
+                    case 'P':
+                        chargeCode.Activity = ChargeCodeActivity.Project;
+                        project.Type = ProjectType.Ongoing;
+                        break;
+                    case 'Q':
+                        chargeCode.Activity = ChargeCodeActivity.Quote;
+                        project.Type = ProjectType.Quote;
+                        break;
                 }
 
                 if (!String.IsNullOrEmpty(projectRow.ProjectManager))

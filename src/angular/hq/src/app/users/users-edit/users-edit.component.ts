@@ -18,7 +18,7 @@ import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
-import { ClientDetailsService } from '../../clients/client-details.service';
+import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 
 interface Form {
   firstName: FormControl<string | null>;
@@ -49,7 +49,7 @@ export class UsersEditComponent implements OnInit, OnDestroy {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    private clientDetailService: ClientDetailsServiceToReplace,
   ) {
     const response$ = this.hqService.getStaffMembersV1({});
     this.staffMembers$ = response$.pipe(

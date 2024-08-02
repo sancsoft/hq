@@ -509,6 +509,10 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("total_hours");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -671,6 +675,10 @@ namespace HQ.Server.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
+
+                    b.Property<bool>("HasPDF")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_pdf");
 
                     b.Property<string>("Name")
                         .IsRequired()

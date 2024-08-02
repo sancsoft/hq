@@ -24,7 +24,6 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
-import { ButtonState } from '../../enums/ButtonState';
 import { ModalService } from '../../services/modal.service';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
@@ -32,6 +31,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
 import { GetPrevPsrResponseV1 } from '../../models/PSR/get-previous-PSR-v1';
 import { ToastService } from '../../services/toast.service';
+import { ButtonState } from '../../enums/button-state';
 import { PSRTimeListComponent } from '../psrtime-list/psrtime-list.component';
 import { AngularSplitModule } from 'angular-split';
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';

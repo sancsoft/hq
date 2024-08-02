@@ -36,7 +36,12 @@ public class ProjectServiceV1
             try
             {
                 var validationResult = Result.Merge(
-                    Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required.")
+                    Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
+                    Result.FailIf(
+                        request.Type == ProjectType.Quote &&
+                        (!request.QuoteId.HasValue || !await _context.Quotes.AnyAsync(t => t.Id == request.QuoteId.Value)),
+                        "Invalid quote."
+                    )
                 );
 
                 if (validationResult.IsFailed)
@@ -61,35 +66,60 @@ public class ProjectServiceV1
                 project.BookingPeriod = request.BookingPeriod;
                 project.StartDate = request.StartDate;
                 project.EndDate = request.EndDate;
+                project.Type = request.Type;
+                project.Status = request.Status;
 
-                if (project.QuoteId == null)
+                if (project.ChargeCode == null)
                 {
-                    var latestProjectNumber = _context.Projects.Max(p => p.ProjectNumber);
-                    var newProjectNumber = latestProjectNumber + 1;
-                    var newCode = "P" + newProjectNumber;
-
-                    var newChargeCode = new ChargeCode
+                    switch (request.Type)
                     {
-                        Code = newCode,
-                        Billable = true,
-                        Active = true,
-                        ProjectId = project.Id
-                    };
+                        case ProjectType.General:
+                            project.ChargeCode = new();
+                            project.ChargeCode.Activity = ChargeCodeActivity.General;
 
-                    project.ProjectNumber = newProjectNumber;
-                    project.ChargeCode = newChargeCode;
-                    _context.ChargeCodes.Add(newChargeCode);
-                }
-                else
-                {
-                    var quote = await _context.Quotes
-                                              .Include(q => q.ChargeCode)
-                                              .FirstOrDefaultAsync(q => q.Id == project.QuoteId, ct);
-                    if (quote?.ChargeCode != null)
-                    {
-                        quote.ChargeCode.ProjectId = project.Id;
+                            var latestGeneralNumber = _context.ChargeCodes
+                                .Where(t => t.Code.StartsWith("S"))
+                                .Select(t => t.Code.Substring(1))
+                                .Select(Int32.Parse)
+                                .DefaultIfEmpty(1000)
+                                .Max();
+
+                            var newGeneralNumber = latestGeneralNumber = 1;
+                            project.ChargeCode.Code = "S" + newGeneralNumber;
+                            break;
+                        case ProjectType.Ongoing:
+                            project.ChargeCode = new();
+                            project.ChargeCode.Activity = ChargeCodeActivity.Project;
+
+                            var latestProjectNumber = _context.Projects.Max(p => p.ProjectNumber);
+                            var newProjectNumber = latestProjectNumber + 1;
+
+                            project.ChargeCode.Code = "P" + newProjectNumber;
+                            break;
+                        case ProjectType.Quote:
+                            var quote = await _context.Quotes.FindAsync(request.QuoteId!.Value, ct); ;
+                            project.ChargeCode = new();
+                            project.ChargeCode.Activity = ChargeCodeActivity.Quote;
+                            project.ChargeCode.QuoteId = quote!.Id;
+                            project.ChargeCode.Code = "Q" + quote.QuoteNumber;
+                            break;
+                        case ProjectType.Service:
+                            // project.ChargeCode = new();
+                            // project.ChargeCode.Activity = ChargeCodeActivity.Service;
+                            // TODO: Set to S number
+                            break;
                     }
                 }
+
+                if (project.ChargeCode == null)
+                {
+                    return Result.Fail("Invalid charge code.");
+                }
+
+                project.ChargeCode.ProjectId = project.Id;
+                project.ChargeCode.Billable = request.Billable;
+                project.ChargeCode.Active = request.Status == ProjectStatus.InProduction || request.Status == ProjectStatus.Ongoing;
+
                 await _context.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
 
@@ -128,6 +158,7 @@ public class ProjectServiceV1
     public async Task<Result<GetProjectsV1.Response>> GetProjectsV1(GetProjectsV1.Request request, CancellationToken ct = default)
     {
         var records = _context.Projects
+            .Where(t => t.ChargeCode != null)
             .Include(t => t.Client)
             .Include(t => t.ProjectManager)
             .Include(t => t.Quote)
@@ -189,7 +220,8 @@ public class ProjectServiceV1
             OfficialName = t.Client.OfficialName,
             Status = t.Quote != null ? (int)t.Quote.Status : 0,
             ProjectStatus = t.Status,
-
+            Type = t.Type,
+            Billable = t.ChargeCode!.Billable,
 
             BookingStartDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Min(x => x.Date),
             BookingEndDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Max(x => x.Date),
@@ -224,7 +256,8 @@ public class ProjectServiceV1
             OfficialName = t.OfficialName,
             Status = t.Status,
             ProjectStatus = t.ProjectStatus,
-
+            Type = t.Type,
+            Billable = t.Billable,
 
             BookingStartDate = t.BookingStartDate,
             BookingEndDate = t.BookingEndDate,
@@ -242,8 +275,7 @@ public class ProjectServiceV1
             SummaryHoursTotal = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingHours : t.TotalHours,
             SummaryHoursAvailable = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
             SummaryPercentComplete = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
-            SummaryPercentCompleteSort = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort
-
+            SummaryPercentCompleteSort = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
         });
 
         var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()

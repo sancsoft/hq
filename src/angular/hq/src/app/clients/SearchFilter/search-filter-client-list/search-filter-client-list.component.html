@@ -1,9 +1,0 @@
-<div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
-  @if (ClientListService.showSearch$ | async) {
-    <div class="w-full max-w-[350px]">
-      <hq-search-input
-        [formControl]="ClientListService.search"
-      ></hq-search-input>
-    </div>
-  }
-</div>

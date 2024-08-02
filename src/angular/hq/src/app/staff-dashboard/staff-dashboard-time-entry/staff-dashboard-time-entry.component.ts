@@ -39,8 +39,8 @@ import {
 } from 'rxjs';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
-import { TimeStatus } from '../../models/common/time-status';
 import { ModalService } from '../../services/modal.service';
+import { TimeStatus } from '../../enums/time-status';
 import { DateInputComponent } from '../../core/components/date-input/date-input.component';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 
