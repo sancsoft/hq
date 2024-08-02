@@ -18,6 +18,7 @@ import {
   firstValueFrom,
   map,
   merge,
+  of,
   shareReplay,
   skip,
   startWith,
@@ -212,6 +213,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     const chargeCodeRequest$ = combineLatest({
       clientId: clientId$,
+      active: of(true),
     });
 
     const chargeCodeResponse$ = chargeCodeRequest$.pipe(
