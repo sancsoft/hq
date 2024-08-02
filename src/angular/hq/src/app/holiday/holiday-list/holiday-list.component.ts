@@ -1,7 +1,4 @@
-import {
-  Jurisdiciton,
-  SortColumn,
-} from './../../models/holiday/get-holiday-v1';
+import { SortColumn } from './../../models/holiday/get-holiday-v1';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -16,7 +13,7 @@ import {
   BehaviorSubject,
 } from 'rxjs';
 import { Observable } from 'rxjs';
-import { ClientDetailsService } from '../../clients/client-details.service';
+import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
@@ -26,6 +23,7 @@ import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { GetHolidayV1Record } from '../../models/holiday/get-holiday-v1';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
+import { Jurisdiciton } from '../../enums/jurisdiciton';
 
 @Component({
   selector: 'hq-holiday-list',
@@ -62,7 +60,7 @@ export class HolidayListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    private clientDetailService: ClientDetailsServiceToReplace,
   ) {
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
       startWith(this.itemsPerPage.value),
@@ -116,7 +114,6 @@ export class HolidayListComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.hideProjectStatus();
-    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {

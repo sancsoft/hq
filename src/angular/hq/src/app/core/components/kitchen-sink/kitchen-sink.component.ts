@@ -1,4 +1,3 @@
-import { StatDisplayComponent } from './../stat-display/stat-display.component';
 import { Component } from '@angular/core';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { FormLabelComponent } from '../form-label/form-label.component';
@@ -10,21 +9,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ValidationErrorDirective } from '../../directives/validation-error.directive';
-import { TextInputComponent } from '../text-input/text-input.component';
-import { ButtonComponent } from '../button/button.component';
-import { DateInputComponent } from '../date-input/date-input.component';
-import { SelectInputComponent } from '../select-input/select-input.component';
-import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
-import { TextareaInputComponent } from '../textarea-input/textarea-input.component';
 import { localISODate } from '../../../common/functions/local-iso-date';
-import { ProjectStatus } from '../../../clients/client-details.service';
 import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
-import { Period } from '../../../models/times/get-time-v1';
-import { DualPanelComponent } from '../dual-panel/dual-panel.component';
-import { SelectInputOptionDirective } from '../../directives/select-input-option.directive';
-import { PanelComponent } from '../panel/panel.component';
-import { AngularSplitModule } from 'angular-split';
+import { ProjectStatus } from '../../../enums/project-status';
+import { Period } from '../../../enums/period';
+import { CoreModule } from '../../core.module';
 import { map, Observable, shareReplay } from 'rxjs';
 import { GetChargeCodeRecordV1 } from '../../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../../services/hq.service';
@@ -38,18 +27,7 @@ import { HQService } from '../../../services/hq.service';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ValidationErrorDirective,
-    TextInputComponent,
-    ButtonComponent,
-    DateInputComponent,
-    SelectInputComponent,
-    ProgressBarComponent,
-    TextareaInputComponent,
-    StatDisplayComponent,
-    PanelComponent,
-    DualPanelComponent,
-    SelectInputOptionDirective,
-    AngularSplitModule,
+    CoreModule,
   ],
   templateUrl: './kitchen-sink.component.html',
 })
@@ -93,6 +71,11 @@ export class KitchenSinkComponent {
   public text = new FormControl<string | null>(null, {
     validators: [Validators.required, Validators.minLength(3)],
   });
+
+  public file = new FormControl<File | null>(null, {
+    validators: [Validators.required],
+  });
+
   public ProjectStatus = ProjectStatus;
   Math = Math;
   public report: GetPSRRecordV1 = {
@@ -237,9 +220,11 @@ export class KitchenSinkComponent {
     if (this.search.disabled) {
       this.search.enable();
       this.text.enable();
+      this.file.enable();
     } else {
       this.search.disable();
       this.text.disable();
+      this.file.disable();
     }
   }
   getPeriodName(period: Period) {

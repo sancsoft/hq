@@ -82,6 +82,8 @@ Text: {{ text.value | json }}
 Date: {{ date.value | json }}
 Date using form group: {{ form.controls.date.value | json }}
 Select: {{ select.value | json }}
+File: {{ file.value?.name }}
+
 </pre>
 
 <div class="p-3 flex flex-row gap-2">
@@ -103,6 +105,14 @@ Select: {{ select.value | json }}
 
 <div class="p-3">
   <hq-button (click)="toggleDisabled()">Toggle Disabled</hq-button>
+</div>
+
+<div class="p-3">
+  <hq-file-input [formControl]="file" accept=".pdf" label="PDF Upload">
+    <ng-template hqValidationError="required">
+      The file field is required.
+    </ng-template>
+  </hq-file-input>
 </div>
 
 <div class="p-3">

@@ -14,4 +14,5 @@ public class Quote : Base
     public ProjectStatus Status { get; set; }
     // PDF link
     public ChargeCode? ChargeCode { get; set; }
+    public bool HasPDF { get; set; }
 }

@@ -18,7 +18,7 @@ import {
 } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
-import { ClientDetailsService } from '../../clients/client-details.service';
+import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortDirection } from '../../models/common/sort-direction';
 import { GetInvoicesRecordV1 } from '../../models/Invoices/get-invoices-v1';
@@ -60,7 +60,7 @@ export class InvoicesListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    private clientDetailService: ClientDetailsServiceToReplace,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ClientName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -115,7 +115,6 @@ export class InvoicesListComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.hideProjectStatus();
-    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {

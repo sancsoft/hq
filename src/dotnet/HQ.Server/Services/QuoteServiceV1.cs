@@ -60,19 +60,18 @@ public class QuoteServiceV1
                     _context.Quotes.Add(quote);
                 }
 
-                var latestQuoteNumber = await _context.Quotes.MaxAsync((q) => q.QuoteNumber, ct);
+                var latestQuoteNumber = await _context.Quotes.Where(t => t.Id != request.Id).MaxAsync((q) => q.QuoteNumber, ct);
                 var nextQuoteNumber = latestQuoteNumber + 1;
 
                 if (request.QuoteNumber.HasValue)
                 {
-                    var filteredRecords = records.Where(t => t.QuoteNumber == request.QuoteNumber && t.Id != request.Id);
-                    if (filteredRecords.Any())
+                    if (await records.AnyAsync(t => t.QuoteNumber == request.QuoteNumber && t.Id != request.Id, ct))
                     {
                         return Result.Fail(new Error("This quote number already exists."));
                     }
                     else
                     {
-                        quote.QuoteNumber = request.QuoteNumber ?? 0;
+                        quote.QuoteNumber = request.QuoteNumber.Value;
                     }
                 }
                 else
@@ -86,7 +85,6 @@ public class QuoteServiceV1
                 quote.Date = request.Date;
                 quote.Status = request.Status;
                 quote.Description = request.Description;
-
 
                 await _context.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
@@ -122,6 +120,7 @@ public class QuoteServiceV1
             records = records.Where(t =>
                 t.Name.ToLower().Contains(request.Search.ToLower()) ||
                 t.Client.Name.ToLower().Contains(request.Search.ToLower()) ||
+                t.QuoteNumber!.ToString().Contains(request.Search.ToLower()) ||
                 (t.ChargeCode != null ? t.ChargeCode.Code.ToLower().Contains(request.Search.ToLower()) : false)
             );
         }
@@ -129,6 +128,11 @@ public class QuoteServiceV1
         if (request.Id.HasValue)
         {
             records = records.Where(t => t.Id == request.Id.Value);
+        }
+
+        if (request.QuoteStatus.HasValue)
+        {
+            records = records.Where(t => t.Status == request.QuoteStatus.Value);
         }
 
         var mapped = records.Select(t => new GetQuotesV1.Record()
@@ -142,7 +146,8 @@ public class QuoteServiceV1
             QuoteNumber = t.QuoteNumber,
             Value = t.Value,
             Status = t.Status,
-            Date = t.Date
+            Date = t.Date,
+            HasPDF = t.HasPDF
         });
 
         var sortMap = new Dictionary<GetQuotesV1.SortColumn, string>()
@@ -199,11 +204,15 @@ public class QuoteServiceV1
         if (request.File == null)
         {
             await _storageService.DeleteAsync(path, ct);
+            quote.HasPDF = false;
         }
         else
         {
             await _storageService.WriteAsync(path, request.ContentType, request.File, ct);
+            quote.HasPDF = true;
         }
+
+        await _context.SaveChangesAsync(ct);
 
         return new UploadQuotePDFV1.Response();
     }

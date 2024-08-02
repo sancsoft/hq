@@ -6,7 +6,6 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Period } from '../models/times/get-time-v1';
 import {
   CdkDropList,
   CdkDrag,
@@ -42,13 +41,13 @@ import { ToastService } from '../services/toast.service';
 import { ModalService } from '../services/modal.service';
 import { StaffDashboardSearchFilterComponent } from './staff-dashboard-search-filter/staff-dashboard-search-filter.component';
 import { StaffDashboardDateRangeComponent } from './staff-dashboard-date-range/staff-dashboard-date-range.component';
-import { TimeStatus } from '../models/common/time-status';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TimeStatus } from '../enums/time-status';
+import { Period } from '../enums/period';
 import { StatDisplayComponent } from '../core/components/stat-display/stat-display.component';
 import { HQRole } from '../enums/hqrole';
 import { HQMarkdownComponent } from '../common/markdown/markdown.component';
-import { ButtonState } from '../enums/ButtonState';
 import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
 import { localISODate } from '../common/functions/local-iso-date';
 import { GetStatusResponseV1 } from '../models/status/get-status-v1';
@@ -56,15 +55,9 @@ import { GetStatusResponseV1 } from '../models/status/get-status-v1';
 import { ButtonComponent } from '../core/components/button/button.component';
 import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staff-dashboard-planning.component';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
+import { ButtonState } from '../enums/button-state';
 import { GetChargeCodeRecordV1 } from '../models/charge-codes/get-chargecodes-v1';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-  quantity: number;
-}
 export interface PointForm {
   id: FormControl<string | null>;
   chargeCodeId: FormControl<string | null>;

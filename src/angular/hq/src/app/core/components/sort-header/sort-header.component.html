@@ -1,0 +1,6 @@
+<ng-content></ng-content>
+<hq-sort-icon
+  [column]="sortColumn"
+  [activeColumn]="listService.sortOption$ | async"
+  [activeSortDirection]="listService.sortDirection$ | async"
+/>

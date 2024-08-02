@@ -29,380 +29,189 @@
             </div>
 
             <div class="flex flex-column justify-center items-center">
-              <button
-                (click)="onSubmit()"
-                class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
-              >
-                Save
-              </button>
+              <hq-button (click)="onSubmit()" type="submit">Save</hq-button>
             </div>
           </div>
         </div>
-        @if (this.apiErrors) {
-          @for (error of this.apiErrors; track $index) {
-            <div
-              class="text-red-700 text-xs leading-normal inline-block pl-5 pt-5 -mb-3"
-            >
-              {{ error }}
-            </div>
-          }
-        }
         <form [formGroup]="quoteFormGroup" (ngSubmit)="onSubmit()">
           <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
             <div class="p-5 pr-0">
               <div class="grid gap-[20px]">
+                @if (this.apiErrors) {
+                  @for (error of this.apiErrors; track $index) {
+                    <div
+                      class="text-red-700 text-xs leading-normal inline-block"
+                    >
+                      {{ error }}
+                    </div>
+                  }
+                }
+
                 <!-- row grid -->
                 <div
                   class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
                 >
                   <!-- column -->
                   <div>
-                    <!-- select dropdown -->
-                    <label
-                      for="client"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                      >Client</label
+                    <hq-select-input
+                      [autocomplete]="true"
+                      formControlName="clientId"
+                      label="Client"
+                      variant="secondary"
                     >
-                    <div class="grid relative w-full max-w-[395px]">
-                      <select
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
-                        (click)="openModal()"
-                        (mousedown)="$event.preventDefault()"
-                        id="client"
+                      <ng-template [hqSelectInputOption]="null"
+                        >Please Select a client</ng-template
                       >
-                        @if ((selectedClientName$ | async) === null) {
-                          <option value="">Select Client</option>
-                        }
-                        @if (selectedClientName$ | async; as clientId) {
-                          <option [value]="clientId">
-                            {{ clientId }}
-                          </option>
-                        }
-                      </select>
-                      <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
-                        <i class="bi bi-arrow-right-short text-[24px]"></i>
-                      </span>
-                    </div>
+                      <ng-template hqValidationError="required">
+                        Client is required.
+                      </ng-template>
+                      @for (client of clients$ | async; track client.id) {
+                        <ng-template
+                          [hqSelectInputOption]="client.id"
+                          [hqSelectInputOptionSearch]="client.name"
+                          >{{ client.name }}</ng-template
+                        >
+                      }
+                    </hq-select-input>
                   </div>
                 </div>
+
                 <!-- row grid -->
                 <div
                   class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
                 >
                   <!-- column -->
                   <div>
-                    <label
-                      for="fullname"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                      >Quote Name</label
+                    <hq-text-input
+                      type="number"
+                      formControlName="quoteNumber"
+                      label="Quote Number"
+                      variant="secondary"
+                      placeholder="Quote Number"
                     >
-                    <!-- text input -->
-                    <input
+                    </hq-text-input>
+                    <small class="text-gray-700">Leave blank to generate</small>
+                  </div>
+                </div>
+
+                <!-- row grid -->
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
+                >
+                  <!-- column -->
+                  <div>
+                    <hq-text-input
                       formControlName="name"
-                      type="text"
-                      name="fullname"
-                      id="fullname"
-                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+                      label="Quote Name"
+                      variant="secondary"
                       placeholder="Quote Name"
-                    />
-
-                    @if (
-                      quoteFormGroup.get("name")?.touched &&
-                      quoteFormGroup.get("name")?.errors
-                    ) {
-                      @if (quoteFormGroup.get("name")?.errors?.["required"]) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                        >
-                          Quote name is required.
-                        </span>
-                      }
-                      @if (quoteFormGroup.get("name")?.errors?.["minlength"]) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                        >
-                          Quote name must be at least
-                          {{
-                            quoteFormGroup.get("name")?.errors?.["minlength"]
-                              ?.requiredLength
-                          }}
-                          characters long.
-                        </span>
-                      }
-                      @if (quoteFormGroup.get("name")?.errors?.["maxlength"]) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                        >
-                          Quote name cannot be more than
-                          {{
-                            quoteFormGroup.get("name")?.errors?.["maxlength"]
-                              ?.requiredLength
-                          }}
-                          characters long.
-                        </span>
-                      }
-                    }
-                    <!-- </div> -->
-                  </div>
-
-                  <!-- column -->
-                  <div class="hidden">
-                    <!-- text input -->
-                    <input
-                      type="text"
-                      name="canatednated"
-                      id="canatednated"
-                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Project Name - Cancatenated"
-                    />
+                    >
+                      <ng-template hqValidationError="required">
+                        Quote name is required.
+                      </ng-template>
+                    </hq-text-input>
                   </div>
                 </div>
                 <!-- row grid -->
                 <div
-                  class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)] pr-5"
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
                 >
                   <!-- column -->
                   <div>
-                    <label
-                      for="quoteStatus"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                      >Quote Status</label
+                    <hq-select-input
+                      formControlName="status"
+                      label="Quote Status"
+                      variant="secondary"
                     >
-                    <!-- select dropdown -->
-                    <div class="grid relative w-full max-w-[220px]">
-                      <select
-                        formControlName="status"
-                        id="quoteStatus"
-                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
-                      >
-                        <option value="" selected disabled>
-                          Select Quote Status
-                        </option>
-                        <option [value]="quoteStatus.Draft">
-                          {{ quoteStatus[quoteStatus.Draft] }}
-                        </option>
-                        <option [value]="quoteStatus.Closed">
-                          {{ quoteStatus[quoteStatus.Closed] }}
-                        </option>
-                        <option [value]="quoteStatus.Completed">
-                          {{ quoteStatus[quoteStatus.Completed] }}
-                        </option>
-                        <option [value]="quoteStatus.InProduction">
-                          {{ quoteStatus[quoteStatus.InProduction] }}
-                        </option>
-                        <option [value]="quoteStatus.Lost">
-                          {{ quoteStatus[quoteStatus.Lost] }}
-                        </option>
-                        <option [value]="quoteStatus.WaitingForClient">
-                          {{ quoteStatus[quoteStatus.WaitingForClient] }}
-                        </option>
-                        <option [value]="quoteStatus.WaitingForSale">
-                          {{ quoteStatus[quoteStatus.WaitingForSale] }}
-                        </option>
-                        <option [value]="quoteStatus.WaitingForStaff">
-                          {{ quoteStatus[quoteStatus.WaitingForStaff] }}
-                        </option>
-                      </select>
-                      <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
-                        <i class="bi bi-arrow-down-short text-[24px]"></i>
-                      </span>
-                    </div>
-                  </div>
-                  <!-- column -->
-                  <div>
-                    <label
-                      for="value"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                      >Value</label
-                    >
-                    <div class="flex items-center">
-                      <!-- text input w/icon to left -->
-                      <div
-                        class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]"
-                      >
-                        <span
-                          class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block"
+                      <ng-template hqValidationError="required">
+                        Status is required.
+                      </ng-template>
+                      @for (
+                        status of projectStatusEnum$ | async;
+                        track status.id
+                      ) {
+                        <ng-template
+                          [hqSelectInputOption]="status.id"
+                          [hqSelectInputOptionSelectedDisplay]="status.name"
+                          [hqSelectInputOptionSearch]="status.name"
+                          >{{ status.name }}</ng-template
                         >
-                          <i class="bi bi-currency-dollar text-[14px]"></i>
-                        </span>
-                        <input
-                          formControlName="value"
-                          type="number"
-                          name=""
-                          id="value"
-                          class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded"
-                          placeholder="value"
-                        />
-                      </div>
-                    </div>
-                    @if (
-                      quoteFormGroup.get("value")?.touched &&
-                      quoteFormGroup.get("value")?.errors
-                    ) {
-                      @if (quoteFormGroup.get("value")?.errors?.["required"]) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                        >
-                          value is required.
-                        </span>
                       }
-                      @if (quoteFormGroup.get("value")?.errors?.["min"]) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                        >
-                          Minimum value is
-                          {{
-                            quoteFormGroup.get("value")?.errors?.["min"]?.min
-                          }}.
-                        </span>
-                      }
-                      @if (quoteFormGroup.get("value")?.errors?.["max"]) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                        >
-                          Maximum value is
-                          {{
-                            quoteFormGroup.get("value")?.errors?.["max"]?.max
-                          }}.
-                        </span>
-                      }
-                    }
-                  </div>
-                </div>
-                <div>
-                  <label
-                    for="quoteNumber"
-                    class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                    >Quote Number</label
-                  >
-                  <!-- text input -->
-                  <input
-                    formControlName="quoteNumber"
-                    type="number"
-                    name="quoteNumber"
-                    id="quoteNumber"
-                    class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                    placeholder="Quote Number"
-                  />
-                  <!-- </div> -->
-                </div>
-
-                <!-- row grid -->
-                <div class="grid gap-[20px] grid-flow-row pr-5">
-                  <label
-                    for=""
-                    class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"
-                    >Date</label
-                  >
-                  <div
-                    class="grid grid-flow-col grid-cols-[220px_5px_220px] gap-[15px]"
-                  >
-                    <!-- input date -->
-                    <div class="grid relative w-full max-w-[220px]">
-                      <input
-                        formControlName="date"
-                        type="date"
-                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
-                      />
-                      <span
-                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                      >
-                        <i
-                          class="bi bi-arrow-down-short text-[24px] bg-blue-900"
-                        ></i>
-                      </span>
-                    </div>
-
-                    @if (
-                      quoteFormGroup.get("date")?.touched &&
-                      quoteFormGroup.get("date")?.errors
-                    ) {
-                      @if (quoteFormGroup.get("date")?.errors?.["required"]) {}
-                      <span
-                        class="text-red-700 text-xs leading-normal inline-block"
-                      >
-                        date is required.
-                      </span>
-                    }
+                    </hq-select-input>
                   </div>
                 </div>
 
-                <!-- engagement tab form fields below: hidden for now incase we need these on another screen -->
-                <div class="hidden">
-                  <!-- row grid -->
-                  <div
-                    class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
-                  >
-                    <!-- column -->
-                    <div>
-                      <!-- select dropdown -->
-                      <div class="grid relative w-full max-w-[395px]">
-                        <select
-                          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer row-start-1 col-start-1 border border-black text-gray-100 bg-blue-900 rounded h-[36px]"
-                        >
-                          <option value="">Equipment Type</option>
-                          <option vallue="">Type 1</option>
-                          <option vallue="">Type 2</option>
-                          <option vallue="">Type 3</option>
-                        </select>
-                        <span
-                          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-                        >
-                          <i class="bi bi-arrow-down-short text-[24px]"></i>
-                        </span>
-                      </div>
-                    </div>
-                    <!-- column -->
-                    <div>
-                      <!-- div input -->
-                      <div
-                        class="flex items-center px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%] max-w-[395px]"
-                      >
-                        filename.ext
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- row grid -->
-                  <div class="grid gap-[20px] grid-flow-col pr-5">
-                    <!-- column -->
-                    <div>
-                      <!-- textarea -->
-                      <textarea
-                        class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded"
-                        placeholder="Optional Notes"
-                      ></textarea>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col pt-5">
-              <div class="grid gap-[20px]">
                 <!-- row grid -->
                 <div
-                  class="grid gap-[20px] grid-flow-col grid-cols-[395px_98px_auto] px-5 2xl:px-0"
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
                 >
                   <!-- column -->
+                  <div>
+                    <hq-text-input
+                      type="number"
+                      formControlName="value"
+                      label="Value"
+                      variant="secondary"
+                      placeholder="$ Value"
+                    >
+                      <ng-template hqValidationError="required">
+                        Value is required.
+                      </ng-template>
+                    </hq-text-input>
+                  </div>
+                </div>
 
+                <!-- row grid -->
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
+                >
                   <!-- column -->
-                  <div class="flex items-center">
-                    <div>Upload quote pdf</div>
-                    <a
-                      href=""
-                      class="block p-2 hover:text-gray-50"
-                      title="Download"
-                      ><i class="bi bi-cloud-upload-fill"></i
-                    ></a>
+                  <div>
+                    <hq-date-input
+                      formControlName="date"
+                      label="Date"
+                      variant="secondary"
+                    >
+                    </hq-date-input>
+                  </div>
+                </div>
+
+                <!-- row grid -->
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
+                >
+                  <!-- column -->
+                  <div>
+                    <hq-file-input
+                      formControlName="pdf"
+                      label="PDF"
+                      variant="secondary"
+                      accept=".pdf"
+                    >
+                    </hq-file-input>
+                    <small class="text-gray-700">Optional.</small>
+                  </div>
+                </div>
+
+                <!-- row grid -->
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
+                >
+                  <!-- column -->
+                  <div>
+                    <hq-textarea-input
+                      formControlName="description"
+                      label="Description"
+                      variant="secondary"
+                      placeholder="Description"
+                    >
+                      <ng-template hqValidationError="required">
+                        Value is required.
+                      </ng-template>
+                    </hq-textarea-input>
                   </div>
                 </div>
               </div>
-              <!-- flex flex-col flex-grow -->
-              <!-- <hq-pdf-viewer [pdfURL]="quotePdfURL"></hq-pdf-viewer> -->
             </div>
           </div>
         </form>
@@ -410,61 +219,3 @@
     </div>
   </div>
 </div>
-
-<!-- modal -->
-<div
-  class="modal px-[38px] py-[40px] fixed top-0 left-0 z-[1055] w-full h-full overflow-x-hidden overflow-y-hidden transition-opacity duration-[.15s] ease-linear"
-  [ngClass]="{
-    'opacity-100 visible': (modalOpen$ | async),
-    'opacity-0 invisible': (modalOpen$ | async) === false,
-  }"
->
-  <!-- modal dialog -->
-  <div class="modal-dialog max-w-full mr-auto ml-auto text-black">
-    <div
-      class="modal-content relative flex flex-col w-full h-full bg-white pointer-events-auto"
-    >
-      <!-- header -->
-      <div
-        class="modal-header flex flex-shrink-0 items-center px-5 py-[15px] bg-blue-900 text-gray-100"
-      >
-        <div class="font-bold">Select Client</div>
-      </div>
-
-      <!--Body-->
-      <hq-selectable-client-list
-        (selectedClient)="updateSelectedClient($event)"
-        [SelectClientEnabled]="true"
-        [showViewButtons]="false"
-        [showEditButtons]="false"
-      ></hq-selectable-client-list>
-
-      <!--Footer-->
-      <div
-        class="modal-footer flex flex-shrink flex-wrap items-center justify-end px-4 pb-4 pt-[13px] bg-gray-900"
-      >
-        <button
-          class="h-[36px] px-2 py-2 border border-transparent bg-transparent hover:bg-transparent hover:border-transparent text-white hover:text-gray-200 rounded w-full min-w-[100px] max-w-[100px] leading-[normal] mr-2"
-          (click)="modalCancelClicked()"
-        >
-          Cancel
-        </button>
-        <button
-          class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded w-full min-w-[100px] max-w-[120px] leading-[normal]"
-          (click)="modalOkClicked()"
-        >
-          Okay
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- modal backdrop/overlay -->
-<div
-  class="modal-backdrop fixed top-0 left-0 z-[150] w-dvw h-dvh bg-black transition-opacity duration-[.15s] ease-linear"
-  [ngClass]="{
-    'opacity-75 visible': (modalOpen$ | async),
-    'opacity-0 invisible': (modalOpen$ | async) === false,
-  }"
-></div>

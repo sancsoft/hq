@@ -1,11 +1,7 @@
+import { Jurisdiciton } from '../../enums/jurisdiciton';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
-
-export enum Jurisdiciton {
-  USA = 1,
-  Colombia = 2,
-}
 
 export enum SortColumn {
   Name = 1,

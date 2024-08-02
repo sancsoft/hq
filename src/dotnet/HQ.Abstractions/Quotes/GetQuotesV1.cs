@@ -15,6 +15,7 @@ namespace HQ.Abstractions.Quotes
             public Guid? clientId { get; set; }
             public SortColumn SortBy { get; set; } = SortColumn.QuoteName;
             public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+            public ProjectStatus? QuoteStatus { get; set; }
         }
         public enum SortColumn
         {
@@ -40,6 +41,7 @@ namespace HQ.Abstractions.Quotes
             public DateOnly Date { get; set; }
             public decimal Value { get; set; }
             public ProjectStatus Status { get; set; }
+            public bool HasPDF { get; set; }
         }
     }
 }
