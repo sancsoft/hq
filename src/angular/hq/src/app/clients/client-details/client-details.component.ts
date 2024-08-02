@@ -11,6 +11,7 @@ import { map, Subscription } from 'rxjs';
 import { ClientDetailsService } from './client-details.service';
 import { TabComponent } from '../../core/components/tab/tab.component';
 import { ClientQuoteListService } from './client-quote-list/client-quote-list.service';
+import { ClientProjectListService } from './client-project-list/client-project-list.service';
 
 @Component({
   selector: 'hq-client-details',
@@ -24,7 +25,11 @@ import { ClientQuoteListService } from './client-quote-list/client-quote-list.se
     TabComponent,
   ],
   templateUrl: './client-details.component.html',
-  providers: [ClientDetailsService, ClientQuoteListService],
+  providers: [
+    ClientDetailsService,
+    ClientQuoteListService,
+    ClientProjectListService,
+  ],
 })
 export class ClientDetailsComponent {
   private subscriptions: Subscription[] = [];
