@@ -67,22 +67,24 @@
         class="bg-blue-900 rounded-md max-h-48 overflow-y-scroll"
         [tabIndex]="-1"
       >
-        @for (option of options$ | async; track option.value) {
-          <button
-            type="button"
-            [tabIndex]="-1"
-            class="px-2 py-1 hover:bg-blue-800 w-full text-left"
-            [ngClass]="{
-              'bg-blue-800 selected':
-                option.value === (selectedOption$ | async)?.value,
-            }"
-            (mousedown)="selectOption(option)"
-            (touchstart)="selectOption(option)"
-          >
-            <ng-container
-              [ngTemplateOutlet]="option.templateRef"
-            ></ng-container>
-          </button>
+        @if (isOpen) {
+          @for (option of options$ | async; track option.value) {
+            <button
+              type="button"
+              [tabIndex]="-1"
+              class="px-2 py-1 hover:bg-blue-800 w-full text-left"
+              [ngClass]="{
+                'bg-blue-800 selected':
+                  option.value === (selectedOption$ | async)?.value,
+              }"
+              (mousedown)="selectOption(option)"
+              (touchstart)="selectOption(option)"
+            >
+              <ng-container
+                [ngTemplateOutlet]="option.templateRef"
+              ></ng-container>
+            </button>
+          }
         }
       </div>
     </div>
