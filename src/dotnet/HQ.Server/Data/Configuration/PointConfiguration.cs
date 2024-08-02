@@ -12,5 +12,11 @@ public class PointConfiguration : BaseConfiguration<Point>
         base.Configure(builder);
 
         builder.ToTable("points");
+        builder.HasIndex(p => new
+        {
+            p.StaffId,
+            p.Sequence,
+            p.Date
+        }).IsUnique();
     }
 }
