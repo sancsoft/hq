@@ -20,8 +20,8 @@ import {
   UpsertClientResponseV1,
 } from '../models/clients/upsert-client-v1';
 import {
-  GetProjectRecordsV1,
   GetProjectRequestV1,
+  GetProjectResponseV1,
 } from '../models/projects/get-project-v1';
 import {
   GetQuotesRecordsV1,
@@ -194,7 +194,7 @@ export class HQService {
   getProjectsV1(request: Partial<GetProjectRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<GetProjectRecordsV1>(
+        this.http.post<GetProjectResponseV1>(
           `${apiUrl}/v1/Projects/GetProjectsV1`,
           request,
         ),
