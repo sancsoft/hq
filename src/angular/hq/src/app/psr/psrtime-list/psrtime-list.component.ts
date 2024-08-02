@@ -1,3 +1,4 @@
+import { SelectInputOptionDirective } from './../../core/directives/select-input-option.directive';
 import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
@@ -41,6 +42,7 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 import { HQRole } from '../../enums/hqrole';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
+import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -57,6 +59,8 @@ export interface ChargeCodeViewModel {
     PsrSearchFilterComponent,
     FormsModule,
     InRolePipe,
+    SelectInputOptionDirective,
+    SelectInputComponent,
   ],
   templateUrl: './psrtime-list.component.html',
 })
