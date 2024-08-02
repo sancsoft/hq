@@ -176,8 +176,6 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       distinctUntilChanged(),
     );
 
-
-
     const hours$ = form$.pipe(
       map((t) => t.hours),
       distinctUntilChanged(),
