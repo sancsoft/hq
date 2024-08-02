@@ -113,397 +113,407 @@
   </div>
 </div>
 
-<hq-panel
-  [Direction]="'horizontal'"
-  GutterVariant="secondary"
-  [CSizes]="[74, 26]"
->
-  <div first>
-    <div class="px-5 py-2 bg-black-alt">
-      <div class="flex gap-[20px] justify-between items-center">
-        <hq-staff-dashboard-date-range />
-        <div>
-          @if (staffDashboardService.rejectedCount$ | async) {
+<div class="h-[calc(100dvh-260px)]">
+  <hq-panel
+    [Direction]="'horizontal'"
+    GutterVariant="secondary"
+    [CSizes]="[74, 26]"
+  >
+    <div first class="h-full">
+      <div class="px-5 py-2 bg-black-alt">
+        <div class="flex gap-[20px] justify-between items-center">
+          <hq-staff-dashboard-date-range />
+          <div>
+            @if (staffDashboardService.rejectedCount$ | async) {
+              <button
+                [title]="
+                  (staffDashboardService.showAllRejectedTimes$ | async)
+                    ? 'Dismiss all rejected time entries'
+                    : 'Show all rejected time entries'
+                "
+                [name]="
+                  (staffDashboardService.showAllRejectedTimes$ | async)
+                    ? 'Dismiss all rejected time entries'
+                    : 'Show all rejected time entries'
+                "
+                type="button"
+                (click)="handleRejectedTimes()"
+              >
+                <i
+                  [class.border]="
+                    staffDashboardService.showAllRejectedTimes$ | async
+                  "
+                  class="bi bi-exclamation-triangle-fill py-2 px-2 rounded-sm mr-3 text-white bg-red-700"
+                ></i>
+              </button>
+            }
             <button
               [title]="
-                (staffDashboardService.showAllRejectedTimes$ | async)
-                  ? 'Dismiss all rejected time entries'
-                  : 'Show all rejected time entries'
+                (staffDashboardService.canSubmit$ | async)
+                  ? 'Submit all time entries for the shown date period'
+                  : 'No time entries to be submitted '
               "
-              [name]="
-                (staffDashboardService.showAllRejectedTimes$ | async)
-                  ? 'Dismiss all rejected time entries'
-                  : 'Show all rejected time entries'
-              "
+              [disabled]="(staffDashboardService.canSubmit$ | async) === false"
+              [ngClass]="{
+                'text-gray-50 border-gray-500 bg-gray-500 ':
+                  (staffDashboardService.canSubmit$ | async) === false,
+                'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+                  staffDashboardService.canSubmit$ | async,
+              }"
+              class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
               type="button"
-              (click)="handleRejectedTimes()"
+              (click)="submitTimes()"
             >
-              <i
-                [class.border]="
-                  staffDashboardService.showAllRejectedTimes$ | async
-                "
-                class="bi bi-exclamation-triangle-fill py-2 px-2 rounded-sm mr-3 text-white bg-red-700"
-              ></i>
+              Submit
             </button>
-          }
+          </div>
+        </div>
+      </div>
+      @if (staffDashboardService.showAllRejectedTimes$ | async) {
+        <div
+          class="flex align-middle justify-between h-5 w-full bg-red-850 mb-10 pt-1 px-5"
+        >
+          <div class="uppercase">
+            currently editing {{ staffDashboardService.rejectedCount$ | async }}
+            {{
+              ((staffDashboardService.rejectedCount$ | async) ?? 0) > 1
+                ? "errors"
+                : "error"
+            }}
+          </div>
           <button
-            [title]="
-              (staffDashboardService.canSubmit$ | async)
-                ? 'Submit all time entries for the shown date period'
-                : 'No time entries to be submitted '
-            "
-            [disabled]="(staffDashboardService.canSubmit$ | async) === false"
-            [ngClass]="{
-              'text-gray-50 border-gray-500 bg-gray-500 ':
-                (staffDashboardService.canSubmit$ | async) === false,
-              'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                staffDashboardService.canSubmit$ | async,
-            }"
-            class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
-            type="button"
-            (click)="submitTimes()"
+            (click)="handleRejectedTimes()"
+            class="text-white"
+            title="Dismiss all rejected time entries"
           >
-            Submit
+            <i class="bi bi-x-lg font-bold"></i>
           </button>
         </div>
-      </div>
-    </div>
-    @if (staffDashboardService.showAllRejectedTimes$ | async) {
-      <div
-        class="flex align-middle justify-between h-5 w-full bg-red-850 mb-10 pt-1 px-5"
-      >
-        <div class="uppercase">
-          currently editing {{ staffDashboardService.rejectedCount$ | async }}
-          {{
-            ((staffDashboardService.rejectedCount$ | async) ?? 0) > 1
-              ? "errors"
-              : "error"
-          }}
-        </div>
-        <button
-          (click)="handleRejectedTimes()"
-          class="text-white"
-          title="Dismiss all rejected time entries"
-        >
-          <i class="bi bi-x-lg font-bold"></i>
-        </button>
-      </div>
-    }
+      }
 
-    <div class="w-full h-[calc(100dvh-316px)]">
-      <!-- @if (
+      <div class="w-full h-[calc(100dvh-345px)]">
+        <!-- @if (
     staffDashboardService.period.value === Period.Week ||
     (staffDashboardService.showAllRejectedTimes$ | async)
   ) { -->
-      <div
-        class="bg-black-alt"
-        [hidden]="
-          staffDashboardService.period.value === Period.Today &&
-          (staffDashboardService.showAllRejectedTimes$ | async) !== true
-        "
-      >
-        @if (staffDashboardService.time$ | async; as dashboard) {
-          @for (date of dashboard.dates; track date.date) {
-            @if (dashboard.dates.length > 1) {
-              <div
-                class="px-5 pb-1 pt-4 font-open-sans text-nav-disabled text-xs font-bold uppercase flex justify-between"
+        <div
+          class="bg-black-alt"
+          [hidden]="
+            staffDashboardService.period.value === Period.Today &&
+            (staffDashboardService.showAllRejectedTimes$ | async) !== true
+          "
+        >
+          @if (staffDashboardService.time$ | async; as dashboard) {
+            @for (date of dashboard.dates; track date.date) {
+              @if (dashboard.dates.length > 1) {
+                <div
+                  class="px-5 pb-1 pt-4 font-open-sans text-nav-disabled text-xs font-bold uppercase flex justify-between"
+                >
+                  <div>{{ date.date | date: "EEEE" }} | {{ date.date }}</div>
+                  <div>{{ date.totalHours | number: "1.2-2" }} hours</div>
+                </div>
+              }
+              <table
+                class="w-full border-spacing-0 border-separate table-fixed"
               >
-                <div>{{ date.date | date: "EEEE" }} | {{ date.date }}</div>
-                <div>{{ date.totalHours | number: "1.2-2" }} hours</div>
-              </div>
-            }
-            <table class="w-full border-spacing-0 border-separate table-fixed">
-              <thead>
-                <tr class="top-0 text-left">
-                  <th
-                    width="32px"
-                    scope="col"
-                    colspan="2"
-                    class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
-                  ></th>
-                  <th
-                    style="width: 120px"
-                    class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
-                  >
-                    Hrs
-                  </th>
-                  <th
-                    style="width: 160px"
-                    class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
-                  >
-                    Date
-                  </th>
-                  <th
-                    class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 text-nowrap"
-                  >
-                    Chrg Code
-                  </th>
-                  <th
-                    style="width: 160px"
-                    class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
-                  >
-                    Client
-                  </th>
-                  <th
-                    style="width: 160px"
-                    class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
-                  >
-                    Project
-                  </th>
-                  <th
-                    style="width: 160px"
-                    class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
-                  >
-                    Activity / Task
-                  </th>
-                  <th
-                    class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
-                  >
-                    Description
-                  </th>
-                  <th
-                    style="width: 40px"
-                    class="bg-blue-900 border-steel-blue-600 border-y"
-                  ></th>
-                </tr>
-              </thead>
-              <tbody>
-                @if (
-                  (staffDashboardService.showAllRejectedTimes$ | async) ===
-                    false && date.canCreateTime
-                ) {
-                  <tr
-                    hq-staff-dashboard-time-entry
-                    (hqTimeChange)="upsertTime($event)"
-                    [chargeCodes]="chargeCodes$ | async"
-                    [time]="{
-                      date: date.date,
-                      timeStatus: timeStatus.Unsubmitted,
-                    }"
-                  ></tr>
-                }
-                @for (time of date.times; track time.id) {
-                  @switch (time.timeStatus) {
-                    @case (timeStatus.Unsubmitted) {
-                      <tr
-                        hq-staff-dashboard-time-entry
-                        [chargeCodes]="chargeCodes$ | async"
-                        (hqTimeChange)="upsertTime($event)"
-                        (hqTimeDelete)="deleteTime($event)"
-                        (hqTimeDuplicate)="duplicateTime($event)"
-                        [time]="time"
-                      ></tr>
-                    }
-                    @case (timeStatus.Rejected) {
-                      <tr
-                        hq-staff-dashboard-time-entry
-                        [chargeCodes]="chargeCodes$ | async"
-                        (hqTimeChange)="upsertTime($event)"
-                        (hqTimeDelete)="deleteTime($event)"
-                        (hqTimeDuplicate)="duplicateTime($event)"
-                        [time]="time"
-                      ></tr>
-                    }
-                    @default {
-                      <tr
-                        hq-staff-dashboard-time-entry
-                        [chargeCodes]="chargeCodes$ | async"
-                        (hqTimeChange)="upsertTime($event)"
-                        (hqTimeDelete)="deleteTime($event)"
-                        (hqTimeDuplicate)="duplicateTime($event)"
-                        [time]="time"
-                        class="even:bg-gray-850 odd:bg-black-alt text-gray-450"
-                      ></tr>
+                <thead>
+                  <tr class="top-0 text-left">
+                    <th
+                      width="32px"
+                      scope="col"
+                      colspan="2"
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
+                    ></th>
+                    <th
+                      style="width: 120px"
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
+                    >
+                      Hrs
+                    </th>
+                    <th
+                      style="width: 160px"
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                    >
+                      Date
+                    </th>
+                    <th
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 text-nowrap"
+                    >
+                      Chrg Code
+                    </th>
+                    <th
+                      style="width: 160px"
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                    >
+                      Client
+                    </th>
+                    <th
+                      style="width: 160px"
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                    >
+                      Project
+                    </th>
+                    <th
+                      style="width: 160px"
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
+                    >
+                      Activity / Task
+                    </th>
+                    <th
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                    >
+                      Description
+                    </th>
+                    <th
+                      style="width: 40px"
+                      class="bg-blue-900 border-steel-blue-600 border-y"
+                    ></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @if (
+                    (staffDashboardService.showAllRejectedTimes$ | async) ===
+                      false && date.canCreateTime
+                  ) {
+                    <tr
+                      hq-staff-dashboard-time-entry
+                      (hqTimeChange)="upsertTime($event)"
+                      [chargeCodes]="chargeCodes$ | async"
+                      [time]="{
+                        date: date.date,
+                        timeStatus: timeStatus.Unsubmitted,
+                      }"
+                    ></tr>
+                  }
+                  @for (time of date.times; track time.id) {
+                    @switch (time.timeStatus) {
+                      @case (timeStatus.Unsubmitted) {
+                        <tr
+                          hq-staff-dashboard-time-entry
+                          [chargeCodes]="chargeCodes$ | async"
+                          (hqTimeChange)="upsertTime($event)"
+                          (hqTimeDelete)="deleteTime($event)"
+                          (hqTimeDuplicate)="duplicateTime($event)"
+                          [time]="time"
+                        ></tr>
+                      }
+                      @case (timeStatus.Rejected) {
+                        <tr
+                          hq-staff-dashboard-time-entry
+                          [chargeCodes]="chargeCodes$ | async"
+                          (hqTimeChange)="upsertTime($event)"
+                          (hqTimeDelete)="deleteTime($event)"
+                          (hqTimeDuplicate)="duplicateTime($event)"
+                          [time]="time"
+                        ></tr>
+                      }
+                      @default {
+                        <tr
+                          hq-staff-dashboard-time-entry
+                          [chargeCodes]="chargeCodes$ | async"
+                          (hqTimeChange)="upsertTime($event)"
+                          (hqTimeDelete)="deleteTime($event)"
+                          (hqTimeDuplicate)="duplicateTime($event)"
+                          [time]="time"
+                          class="even:bg-gray-850 odd:bg-black-alt text-gray-450"
+                        ></tr>
+                      }
                     }
                   }
-                }
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            }
           }
-        }
-      </div>
-      <!-- } @else { -->
-      <div
-        class="h-full"
-        [hidden]="
-          staffDashboardService.period.value === Period.Week ||
-          (staffDashboardService.showAllRejectedTimes$ | async)
-        "
-      >
-        <div class="bg-black-alt px-3">
-          <div
-            class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
-          >
+        </div>
+        <!-- } @else { -->
+        <div
+          class="h-full"
+          [hidden]="
+            staffDashboardService.period.value === Period.Week ||
+            (staffDashboardService.showAllRejectedTimes$ | async)
+          "
+        >
+          <div class="bg-black-alt px-3">
             <div
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+              class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
             >
-              {{ staffDashboardService.date.value | date: "EEEE MM/dd/yyyy" }}
-            </div>
-            <div class="flex ml-aut float-right gap-2">
-              <!-- <button>
+              <div
+                class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+              >
+                {{ staffDashboardService.date.value | date: "EEEE MM/dd/yyyy" }}
+              </div>
+              <div class="flex ml-aut float-right gap-2">
+                <!-- <button>
             <i
               title="Download report"
               class="bi bi-cloud-download-fill text-white"
             ></i>
           </button> -->
-              <button
-                title="Insert Previous Report"
-                [disabled]="prevPSRReportButtonState === ButtonState.Disabled"
-                [ngClass]="{
-                  'text-gray-50 cursor-not-allowed':
-                    prevPSRReportButtonState === ButtonState.Disabled,
-                }"
-                (click)="insertTextAtCursor()"
-              >
-                <i title="Insert" class="bi bi-textarea-t"></i>
-              </button>
+                <button
+                  title="Insert Previous Report"
+                  [disabled]="prevPSRReportButtonState === ButtonState.Disabled"
+                  [ngClass]="{
+                    'text-gray-50 cursor-not-allowed':
+                      prevPSRReportButtonState === ButtonState.Disabled,
+                  }"
+                  (click)="insertTextAtCursor()"
+                >
+                  <i title="Insert" class="bi bi-textarea-t"></i>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <hq-panel CollapseItem="first" Direction="vertical" [CSizes]="[30, 70]">
-          <hq-panel first Direction="horizontal" [CSizes]="[100, 0]">
-            <!-- <textarea first class="h-full" [formControl]="plan"></textarea> -->
-            <ngx-monaco-editor
-              first
-              [ngStyle]="{ height: '100%' }"
-              [options]="editorOptions$ | async"
-              [formControl]="plan"
-              (onInit)="onEditorInit($event)"
-            ></ngx-monaco-editor>
+          <hq-panel
+            CollapseItem="first"
+            Direction="vertical"
+            [CSizes]="[30, 70]"
+          >
+            <hq-panel first Direction="horizontal" [CSizes]="[100, 0]">
+              <!-- <textarea first class="h-full" [formControl]="plan"></textarea> -->
+              <ngx-monaco-editor
+                first
+                [ngStyle]="{ height: '100%' }"
+                [options]="editorOptions$ | async"
+                [formControl]="plan"
+                (onInit)="onEditorInit($event)"
+              ></ngx-monaco-editor>
 
-            <div class="bg-black-alt h-full" second>
-              <hq-markdown [data]="plan.value"></hq-markdown>
-            </div>
-          </hq-panel>
-          <div second>
-            @if (staffDashboardService.time$ | async; as dashboard) {
-              @for (date of dashboard.dates; track date.date) {
-                @if (dashboard.dates.length > 1) {
-                  <div
-                    class="px-5 pb-1 pt-4 font-open-sans text-nav-disabled text-xs font-bold uppercase flex justify-between"
-                  >
-                    <div>{{ date.date | date: "EEEE" }} | {{ date.date }}</div>
-                    <div>{{ date.totalHours | number: "1.2-2" }} hours</div>
-                  </div>
-                }
-                <table class="w-full border-spacing-0 border-separate">
-                  <thead>
-                    <tr class="top-0 text-left">
-                      <th
-                        scope="col"
-                        colspan="2"
-                        style="width: 28px"
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
-                      ></th>
-                      <th
-                        style="width: 120px"
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
-                      >
-                        Hrs
-                      </th>
-                      <th
-                        style="width: 160px"
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
-                      >
-                        Date
-                      </th>
-                      <th
-                        style="width: 160px"
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
-                      >
-                        Chrg Code
-                      </th>
-                      <th
-                        style="width: 160px"
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
-                      >
-                        Client
-                      </th>
-                      <th
-                        style="width: 160px"
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
-                      >
-                        Project
-                      </th>
-                      <th
-                        style="width: 160px"
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
-                      >
-                        Activity / Task
-                      </th>
-                      <th
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
-                      >
-                        Description
-                      </th>
-                      <th
-                        style="width: 40px"
-                        class="bg-blue-900 border-steel-blue-600 border-y"
-                      ></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @if (
-                      (staffDashboardService.showAllRejectedTimes$ | async) ===
-                        false && date.canCreateTime
-                    ) {
-                      <tr
-                        hq-staff-dashboard-time-entry
-                        [chargeCodes]="chargeCodes$ | async"
-                        (hqTimeChange)="upsertTime($event)"
-                        [time]="{
-                          date: date.date,
-                          timeStatus: timeStatus.Unsubmitted,
-                        }"
-                      ></tr>
-                    }
-                    @for (time of date.times; track time.id) {
-                      @switch (time.timeStatus) {
-                        @case (timeStatus.Unsubmitted) {
-                          <tr
-                            hq-staff-dashboard-time-entry
-                            [chargeCodes]="chargeCodes$ | async"
-                            (hqTimeChange)="upsertTime($event)"
-                            (hqTimeDelete)="deleteTime($event)"
-                            (hqTimeDuplicate)="duplicateTime($event)"
-                            [time]="time"
-                          ></tr>
-                        }
-                        @case (timeStatus.Rejected) {
-                          <tr
-                            hq-staff-dashboard-time-entry
-                            [chargeCodes]="chargeCodes$ | async"
-                            (hqTimeChange)="upsertTime($event)"
-                            (hqTimeDelete)="deleteTime($event)"
-                            (hqTimeDuplicate)="duplicateTime($event)"
-                            [time]="time"
-                          ></tr>
-                        }
-                        @default {
-                          <tr
-                            hq-staff-dashboard-time-entry
-                            [chargeCodes]="chargeCodes$ | async"
-                            (hqTimeChange)="upsertTime($event)"
-                            (hqTimeDelete)="deleteTime($event)"
-                            (hqTimeDuplicate)="duplicateTime($event)"
-                            [time]="time"
-                            class="even:bg-gray-850 odd:bg-black-alt text-gray-450"
-                          ></tr>
+              <div class="bg-black-alt h-full" second>
+                <hq-markdown [data]="plan.value"></hq-markdown>
+              </div>
+            </hq-panel>
+            <div second>
+              @if (staffDashboardService.time$ | async; as dashboard) {
+                @for (date of dashboard.dates; track date.date) {
+                  @if (dashboard.dates.length > 1) {
+                    <div
+                      class="px-5 pb-1 pt-4 font-open-sans text-nav-disabled text-xs font-bold uppercase flex justify-between"
+                    >
+                      <div>
+                        {{ date.date | date: "EEEE" }} | {{ date.date }}
+                      </div>
+                      <div>{{ date.totalHours | number: "1.2-2" }} hours</div>
+                    </div>
+                  }
+                  <table class="w-full border-spacing-0 border-separate">
+                    <thead>
+                      <tr class="top-0 text-left">
+                        <th
+                          scope="col"
+                          colspan="2"
+                          style="width: 28px"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
+                        ></th>
+                        <th
+                          style="width: 120px"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
+                        >
+                          Hrs
+                        </th>
+                        <th
+                          style="width: 160px"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                        >
+                          Date
+                        </th>
+                        <th
+                          style="width: 160px"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+                        >
+                          Chrg Code
+                        </th>
+                        <th
+                          style="width: 160px"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                        >
+                          Client
+                        </th>
+                        <th
+                          style="width: 160px"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                        >
+                          Project
+                        </th>
+                        <th
+                          style="width: 160px"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
+                        >
+                          Activity / Task
+                        </th>
+                        <th
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                        >
+                          Description
+                        </th>
+                        <th
+                          style="width: 40px"
+                          class="bg-blue-900 border-steel-blue-600 border-y"
+                        ></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @if (
+                        (staffDashboardService.showAllRejectedTimes$
+                          | async) === false && date.canCreateTime
+                      ) {
+                        <tr
+                          hq-staff-dashboard-time-entry
+                          [chargeCodes]="chargeCodes$ | async"
+                          (hqTimeChange)="upsertTime($event)"
+                          [time]="{
+                            date: date.date,
+                            timeStatus: timeStatus.Unsubmitted,
+                          }"
+                        ></tr>
+                      }
+                      @for (time of date.times; track time.id) {
+                        @switch (time.timeStatus) {
+                          @case (timeStatus.Unsubmitted) {
+                            <tr
+                              hq-staff-dashboard-time-entry
+                              [chargeCodes]="chargeCodes$ | async"
+                              (hqTimeChange)="upsertTime($event)"
+                              (hqTimeDelete)="deleteTime($event)"
+                              (hqTimeDuplicate)="duplicateTime($event)"
+                              [time]="time"
+                            ></tr>
+                          }
+                          @case (timeStatus.Rejected) {
+                            <tr
+                              hq-staff-dashboard-time-entry
+                              [chargeCodes]="chargeCodes$ | async"
+                              (hqTimeChange)="upsertTime($event)"
+                              (hqTimeDelete)="deleteTime($event)"
+                              (hqTimeDuplicate)="duplicateTime($event)"
+                              [time]="time"
+                            ></tr>
+                          }
+                          @default {
+                            <tr
+                              hq-staff-dashboard-time-entry
+                              [chargeCodes]="chargeCodes$ | async"
+                              (hqTimeChange)="upsertTime($event)"
+                              (hqTimeDelete)="deleteTime($event)"
+                              (hqTimeDuplicate)="duplicateTime($event)"
+                              [time]="time"
+                              class="even:bg-gray-850 odd:bg-black-alt text-gray-450"
+                            ></tr>
+                          }
                         }
                       }
-                    }
-                  </tbody>
-                </table>
+                    </tbody>
+                  </table>
+                }
               }
-            }
-          </div>
-        </hq-panel>
+            </div>
+          </hq-panel>
+        </div>
+        <!-- } -->
       </div>
-      <!-- } -->
     </div>
-  </div>
-  <div second class="border-b-black border-b-[1px] pb-2">
-    <hq-staff-dashboard-planning class="bg-blue-100">
-    </hq-staff-dashboard-planning>
-  </div>
-</hq-panel>
+    <div second class="border-b-black border-b-[1px] pb-2">
+      <hq-staff-dashboard-planning class="bg-blue-100">
+      </hq-staff-dashboard-planning>
+    </div>
+  </hq-panel>
+</div>

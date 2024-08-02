@@ -237,6 +237,8 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
     });
     this.staffDashboardService.date.valueChanges
       .pipe(
+        distinctUntilChanged(),
+        debounceTime(500),
         switchMap(() => {
           return request$.pipe(
             skip(1),
