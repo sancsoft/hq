@@ -7,6 +7,107 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2024-08-02
+
+### Changed
+- Updated default log level for Microsoft.AspnetCore source to Information
+- Voltron chargecode import sets project type based on charge code prefix
+- Creating a project now always creates a charge code
+  - The charge code type is based on the project type (General, Ongoing, Quote, Service)
+- "No matching records found" table element now uses darker background
+- Hide Invoices and Services from client details and main navigation until fully implemented
+
+### Added
+- ProjectType enumeration
+- CSV helper classmap to time export
+  - Reordered columns to more closely match legacy timesheet format
+- QuoteNumber can now be entered on quote create/edit forms
+  - If it exists already, it will error
+  - If it does not exist, it will be set
+  - If not defined, the quote number will be calculated as the next quote number based on the max quote number in the database
+- Reusable table component
+  - While waiting for response from API, the table will pulse to indicate it is loading
+  - Reusable footer, styling, loading indicator and sort handling
+- CoreModule that automatically imports/exports all the reusable components (inputs, tables, etc.)
+- File upload input component
+- PDF upload to quote create/edit
+- PDF download to quote list
+- `formControlChange` helper function for better reactive form handling
+- `enumToArray` helper function to generate list of enum values for populating dropdowns
+
+## [0.4.0] - 2024-08-02
+
+### Changed
+- Quote feedback
+  - New quote should default status to draft
+  - New quote should default date to today
+  - New quote form restricts value to number type
+  - Made Quote columns sortable
+  - Edit functionality
+  - Allow entering quote number (auto generates if blank)
+- Project feedback
+  - Disable quote selection until a client is selected
+  - Automatically set project name to quote name after selection
+  - Set rate to clients default rate
+  - Preserve selected PSR when switching tabs on project details
+- Client list uses new UI components
+- Client create/edit uses new UI components
+- Use accepted hours when calculating progress on projects and PSR lists
+  - If not accepted yet, uses entered hours
+- Allow PM to enter 0 hours on PSR time list
+- Updated PSR view to use a split view showing both report and time on the same screen
+- PSRs are now generated for the current week
+  - PSRs for the current week can not be submitted until the following week
+- PSR list updates
+  - Removed Hrs Total and Hrs Available
+  - Renamed Hrs This to Hrs
+  - Added period filter (Default to LastWeek)
+
+### Added
+- Consitent validation on forms when creating/editing entities
+- Toast notification when PSR report is updated
+- HQ Table styling to rendered Markdown
+- Staff name to rejected time entry email notification
+- Link styling to Markdown styles
+- Status filter to time list
+- Rejection notes icon on resubmitted time entries
+- Reject button to resubmitted times in PSR time list
+- Reusable UI components
+  - Button
+  - Search input
+  - Progress bar
+  - Date input
+  - Text/date/number input
+  - Panel
+  - Form label
+  - Tabs
+  - Select
+  - Textarea
+- Word wrapping on PSR PM report editor
+- Automatically generate holiday time entries based on defined holidays
+- "Show Current Only" filter to staff list, default to checked
+- Horizontal panel UI component
+- Plan markdown editor with preview to timesheet
+- Reminder email to staff with any rejected time entries that need resubmitted
+- Autocomplete UI component
+- Planning points UI to timesheet
+
+### Fixed
+- Missing `ProjectManagerId` on get PSR response
+- Reminder emails filter to only active staff
+- Bug when clearing data on PSR list
+- Table column widths for consistent size when paginating
+
+## [0.3.25] - 2024-07-09
+
+### Fixed
+- Missing `ProjectManagerId` on get PSR response
+
+## [0.3.24] - 2024-07-08
+
+### Fixed
+- PSR time accept status handling
+
 ## [0.3.23] - 2024-07-07
 
 ### Fixed
@@ -354,7 +455,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.3.23...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/sancsoft/hq/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/sancsoft/hq/releases/tag/v0.4.0
+[0.3.25]: https://github.com/sancsoft/hq/compare/v0.3.24...v0.3.25
+[0.3.24]: https://github.com/sancsoft/hq/compare/v0.3.23...v0.3.24
 [0.3.23]: https://github.com/sancsoft/hq/compare/v0.3.21...v0.3.23
 [0.3.21]: https://github.com/sancsoft/hq/compare/v0.3.20...v0.3.21
 [0.3.20]: https://github.com/sancsoft/hq/compare/v0.3.19...v0.3.20
