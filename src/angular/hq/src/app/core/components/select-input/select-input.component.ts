@@ -165,8 +165,12 @@ export class SelectInputComponent<T>
       'button.selected',
     ) as HTMLButtonElement;
 
-    const parent = selected.parentNode as HTMLDivElement;
-    parent.scrollTop = selected.offsetTop - parent.offsetTop;
+    if (selected) {
+      const parent = selected.parentNode as HTMLDivElement;
+      if (parent) {
+        parent.scrollTop = selected.offsetTop - parent.offsetTop;
+      }
+    }
   }
 
   async onSearchKeyDown(event: KeyboardEvent) {
