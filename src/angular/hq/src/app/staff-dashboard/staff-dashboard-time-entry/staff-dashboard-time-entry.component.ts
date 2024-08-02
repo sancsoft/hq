@@ -1,3 +1,6 @@
+/* eslint-disable rxjs-angular/prefer-async-pipe */
+import { SelectInputComponent } from './../../core/components/select-input/select-input.component';
+import { SelectInputOptionDirective } from './../../core/directives/select-input-option.directive';
 import {
   Component,
   ElementRef,
@@ -30,7 +33,6 @@ import {
   distinctUntilChanged,
   firstValueFrom,
   map,
-  pairwise,
   shareReplay,
   startWith,
   takeUntil,
@@ -40,6 +42,7 @@ import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 import { ModalService } from '../../services/modal.service';
 import { TimeStatus } from '../../enums/time-status';
 import { DateInputComponent } from '../../core/components/date-input/date-input.component';
+import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 
 export interface HQTimeChangeEvent {
   id?: string | null;
@@ -66,6 +69,8 @@ interface Form {
   task: FormControl<string | null>;
   chargeCode: FormControl<string | null>;
   chargeCodeId: FormControl<string | null>;
+  clientName: FormControl<string | null>;
+  projectName: FormControl<string | null>;
   clientId: FormControl<string | null>;
   projectId: FormControl<string | null>;
   activityId: FormControl<string | null>;
@@ -74,12 +79,20 @@ interface Form {
 @Component({
   selector: 'tr[hq-staff-dashboard-time-entry]',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DateInputComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    DateInputComponent,
+    SelectInputOptionDirective,
+    SelectInputComponent,
+  ],
   templateUrl: './staff-dashboard-time-entry.component.html',
 })
 export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
   @Input()
   time?: Partial<GetDashboardTimeV1TimeForDateTimes>;
+  @Input()
+  chargeCodes: GetChargeCodeRecordV1[] | null = [];
 
   @Output()
   hqTimeChange = new EventEmitter<HQTimeChangeEvent>();
@@ -112,7 +125,13 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     }),
     task: new FormControl<string | null>(null, { updateOn: 'blur' }),
     chargeCode: new FormControl<string | null>(null),
-    chargeCodeId: new FormControl<string | null>(null, [Validators.required]),
+    chargeCodeId: new FormControl<string | null>(null, {
+      updateOn: 'change',
+      validators: [Validators.required],
+    }),
+    clientName: new FormControl<string | null>(null),
+    projectName: new FormControl<string | null>(null),
+
     clientId: new FormControl<string | null>(null, {
       updateOn: 'change',
       validators: [Validators.required],
@@ -126,6 +145,8 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   projects$: Observable<GetDashboardTimeV1Project[]>;
   activities$: Observable<GetDashboardTimeV1ProjectActivity[]>;
+  projectName$: Observable<string | null | undefined>;
+  clientName$: Observable<string | null | undefined>;
 
   timeStatus = TimeStatus;
 
@@ -141,6 +162,14 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       map((t) => t.clientId),
       distinctUntilChanged(),
     );
+    this.projectName$ = form$.pipe(
+      map((t) => t.projectName),
+      distinctUntilChanged(),
+    );
+    this.clientName$ = form$.pipe(
+      map((t) => t.clientName),
+      distinctUntilChanged(),
+    );
 
     const projectId$ = form$.pipe(
       map((t) => t.projectId),
@@ -154,7 +183,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
     const client$ = combineLatest({
       clientId: clientId$,
-      clients: staffDashboardService.clients$,
+      clients: this.staffDashboardService.clients$,
     }).pipe(map((t) => t.clients.find((x) => x.id == t.clientId)));
 
     this.projects$ = client$.pipe(map((t) => t?.projects ?? []));
@@ -169,34 +198,73 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       startWith([]),
     );
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    clientId$.pipe(pairwise(), takeUntil(this.destroyed$)).subscribe({
-      next: ([previousClientId, currentClientId]) => {
-        if (currentClientId != previousClientId) {
-          this.form.patchValue({
-            chargeCodeId: null,
-            chargeCode: null,
-            projectId: null,
-          });
-        }
-      },
-      error: console.error,
-    });
+    this.form.controls.chargeCodeId.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (id) => {
+          const chargeCode = this.chargeCodes?.find((t) => t.id === id);
+          if (chargeCode) {
+            this.form.patchValue(
+              {
+                clientId: chargeCode.clientId,
+                projectId: chargeCode.projectId,
+                clientName: chargeCode.clientName,
+                projectName: chargeCode.projectName,
+              },
+              { emitEvent: false },
+            );
+          } else {
+            this.form.patchValue(
+              {
+                clientId: null,
+                projectId: null,
+                clientName: null,
+                projectName: null,
+              },
+              { emitEvent: false },
+            );
+          }
+        },
+        error: console.error,
+      });
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    project$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (project) => {
-        if (project) {
-          this.form.patchValue({
-            chargeCodeId: project.chargeCodeId,
-            chargeCode: project.chargeCode,
-          });
-        }
-      },
-      error: console.error,
-    });
+    // clientId$.pipe(takeUntil(this.destroyed$)).subscribe({
+    //   next: () => {
+    //     this.form.patchValue(
+    //       {
+    //         chargeCodeId: null,
+    //         projectId: null,
+    //         chargeCode: null,
+    //       },
+    //       { emitEvent: false },
+    //     );
+    //   },
+    //   error: console.error,
+    // });
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    // project$.pipe(takeUntil(this.destroyed$)).subscribe({
+    //   next: (project) => {
+    //     if (project) {
+    //       this.form.patchValue(
+    //         {
+    //           chargeCodeId: project.chargeCodeId,
+    //           chargeCode: project.chargeCode,
+    //         },
+    //         { emitEvent: false },
+    //       );
+    //     } else {
+    //       this.form.patchValue(
+    //         {
+    //           chargeCodeId: null,
+    //           chargeCode: null,
+    //         },
+    //         { emitEvent: false },
+    //       );
+    //     }
+    //   },
+    //   error: console.error,
+    // });
+
     hours$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (hours) => {
         if (hours != null) {
@@ -208,7 +276,6 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe({
         next: () => {
           if (!this.time?.id) {
@@ -239,7 +306,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['time'].currentValue) {
+    if (changes['time'] && changes['time'].currentValue) {
       this.form.patchValue(changes['time'].currentValue);
       if (this.form.value.id) {
         // Force validation to run and highlight invalid fields red

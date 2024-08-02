@@ -35,6 +35,9 @@ export class StaffDashboardService {
   date = new FormControl<string>(localISODate(), {
     nonNullable: true,
   });
+  planningPointdateForm = new FormControl(localISODate(), {
+    nonNullable: true,
+  });
 
   Period = Period;
   Status = TimeStatus;

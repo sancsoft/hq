@@ -6,8 +6,10 @@ import {
   Component,
   ContentChildren,
   ElementRef,
+  EventEmitter,
   Input,
   Optional,
+  Output,
   QueryList,
   Self,
   ViewChild,
@@ -29,6 +31,7 @@ import {
   combineLatest,
   concat,
   defer,
+  distinctUntilChanged,
   firstValueFrom,
   map,
   Observable,
@@ -67,7 +70,7 @@ export class SelectInputComponent<T>
   variant: 'primary' | 'secondary' | 'pill' = 'primary';
 
   @Input()
-  pillCode? = null;
+  pillCode?: string | null = null;
 
   chargeCodeToColor = chargeCodeToColor;
 
@@ -90,7 +93,12 @@ export class SelectInputComponent<T>
   inline = false;
 
   @Input()
+  readonly: boolean | null = false;
+
+  @Input()
   public disabled = false;
+  @Output()
+  hqBlur = new EventEmitter();
 
   @ContentChildren(SelectInputOptionDirective)
   options!: QueryList<SelectInputOptionDirective<T>>;
@@ -106,6 +114,8 @@ export class SelectInputComponent<T>
   protected isOpen = false;
   protected focused = false;
   protected uniqueId = generateUniqueInputId();
+
+  protected chargeCodeColor$: Observable<string | null>;
 
   private _value = new BehaviorSubject<T | string | null | undefined>(null);
 
@@ -140,6 +150,11 @@ export class SelectInputComponent<T>
     if (ngControl) {
       ngControl.valueAccessor = this;
     }
+
+    this.chargeCodeColor$ = this._value.pipe(
+      map((t) => chargeCodeToColor(t ? t.toString() : null)),
+      distinctUntilChanged(),
+    );
   }
 
   selectOption(option: SelectInputOptionDirective<T>) {
@@ -196,6 +211,7 @@ export class SelectInputComponent<T>
         event.preventDefault();
         this.isOpen = false;
         this.searchForm.reset(null);
+        this.hqBlur.emit();
         break;
     }
   }
@@ -263,6 +279,9 @@ export class SelectInputComponent<T>
   }
 
   onFocus() {
+    if (this.readonly) {
+      return;
+    }
     this.focused = true;
     this.isOpen = true;
     this.cdr.detectChanges();
@@ -275,6 +294,7 @@ export class SelectInputComponent<T>
     this.isOpen = false;
     this.focused = false;
     this.searchForm.reset(null);
+    this.hqBlur.emit();
 
     if (this.select?.nativeElement) {
       this.onTouched(this.select.nativeElement.value);

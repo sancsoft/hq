@@ -1,7 +1,11 @@
-<as-split [direction]="Direction" restrictMove="true" gutterSize="8">
+<as-split [direction]="Direction" restrictMove="true" gutterSize="16">
   <div
     *asSplitGutter="let isDragged = isDragged"
-    class="custom-gutter bg-black"
+    [ngClass]="{
+      'bg-black': GutterVariant === 'primary',
+      'bg-black-alt': GutterVariant === 'secondary',
+    }"
+    class="custom-gutter border-x-[1px] border-black"
     [class.dragged]="isDragged"
   >
     <div class="custom-gutter-icon">

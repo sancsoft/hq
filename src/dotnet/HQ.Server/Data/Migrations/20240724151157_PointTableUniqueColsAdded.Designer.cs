@@ -3,6 +3,7 @@ using System;
 using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    partial class HQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240724151157_PointTableUniqueColsAdded")]
+    partial class PointTableUniqueColsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -383,10 +386,6 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("staff_id");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("text")
-                        .HasColumnName("status");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -394,9 +393,8 @@ namespace HQ.Server.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_plans");
 
-                    b.HasIndex("StaffId", "Date")
-                        .IsUnique()
-                        .HasDatabaseName("ix_plans_staff_id_date");
+                    b.HasIndex("StaffId")
+                        .HasDatabaseName("ix_plans_staff_id");
 
                     b.ToTable("plans", (string)null);
                 });
@@ -508,10 +506,6 @@ namespace HQ.Server.Data.Migrations
                     b.Property<decimal?>("TotalHours")
                         .HasColumnType("numeric")
                         .HasColumnName("total_hours");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer")
-                        .HasColumnName("type");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -675,10 +669,6 @@ namespace HQ.Server.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
-
-                    b.Property<bool>("HasPDF")
-                        .HasColumnType("boolean")
-                        .HasColumnName("has_pdf");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -934,10 +924,6 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("date")
                         .HasColumnName("date");
 
-                    b.Property<Guid?>("HolidayId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("holiday_id");
-
                     b.Property<decimal>("Hours")
                         .HasColumnType("numeric")
                         .HasColumnName("hours");
@@ -993,9 +979,6 @@ namespace HQ.Server.Data.Migrations
 
                     b.HasIndex("ChargeCodeId")
                         .HasDatabaseName("ix_times_charge_code_id");
-
-                    b.HasIndex("HolidayId")
-                        .HasDatabaseName("ix_times_holiday_id");
 
                     b.HasIndex("InvoiceId")
                         .HasDatabaseName("ix_times_invoice_id");
@@ -1265,11 +1248,6 @@ namespace HQ.Server.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_times_charge_codes_charge_code_id");
 
-                    b.HasOne("HQ.Server.Data.Models.Holiday", "Holiday")
-                        .WithMany()
-                        .HasForeignKey("HolidayId")
-                        .HasConstraintName("fk_times_holidays_holiday_id");
-
                     b.HasOne("HQ.Server.Data.Models.Invoice", "Invoice")
                         .WithMany()
                         .HasForeignKey("InvoiceId")
@@ -1292,8 +1270,6 @@ namespace HQ.Server.Data.Migrations
                     b.Navigation("Activity");
 
                     b.Navigation("ChargeCode");
-
-                    b.Navigation("Holiday");
 
                     b.Navigation("Invoice");
 

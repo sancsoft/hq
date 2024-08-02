@@ -232,28 +232,30 @@ File: {{ file.value?.name }}
     ></hq-date-input>
   </form>
 </div>
-
 <div class="p-3">
-  <hq-select-input
-    [formControl]="select"
-    [autocomplete]="true"
-    variant="pill"
-    [inline]="true"
-  >
-    <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
-    @for (code of chargeCodes$ | async; track code.id) {
-      <ng-template
-        [hqSelectInputOption]="code.id"
-        [hqSelectInputOptionSelectedDisplay]="code.code"
-        [hqSelectInputOptionSearch]="
-          code.code + ': ' + code.clientName + ': ' + code.projectName
-        "
-        >{{
-          code.code + ": " + code.clientName + ": " + code.projectName
-        }}</ng-template
-      >
-    }
-  </hq-select-input>
+  <form [formGroup]="form">
+    <hq-select-input
+      [formControl]="select"
+      [autocomplete]="true"
+      variant="pill"
+      [inline]="true"
+    >
+      <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
+      @for (code of chargeCodes$ | async; track code.id) {
+        <ng-template
+          [hqSelectInputOption]="code.id"
+          [hqSelectInputOptionSelectedDisplay]="code.code"
+          [hqSelectInputOptionSearch]="
+            code.code + ': ' + code.clientName + ': ' + code.projectName
+          "
+          >{{
+            code.code + ": " + code.clientName + ": " + code.projectName
+          }}</ng-template
+        >
+      }
+    </hq-select-input>
+  </form>
+
   <hr class="my-3" />
   <hq-select-input
     [formControl]="select"

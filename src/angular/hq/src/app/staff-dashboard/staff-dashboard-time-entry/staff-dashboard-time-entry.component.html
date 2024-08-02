@@ -59,7 +59,31 @@
         </div>
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        @if (form.controls.chargeCode.value) {
+        <div class="px-3">
+          <hq-select-input
+            (hqBlur)="save()"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
+
+        <!-- @if (form.controls.chargeCode.value) {
           <span
             class="px-3 py-1 font-semibold rounded-full"
             [style.background-color]="
@@ -75,68 +99,13 @@
           >
             Chrge
           </span>
-        }
+        } -->
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full max-w-[220px]">
-          <select
-            aria-label="Select Client"
-            [ngClass]="{
-              'border-red-700 focus:border-red-700':
-                form.controls.clientId.errors && form.touched,
-              'border-black': !form.controls.clientId.errors || !form.touched,
-            }"
-            (blur)="save()"
-            (keydown.enter)="onEnter($event.target)"
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-            formControlName="clientId"
-          >
-            <option [ngValue]="null" class="text-gray-50">Client</option>
-            <!-- <option [ngValue]="form.controls.clientId.value">
-        {{ form.controls.clientId.value }}
-      </option> -->
-            @for (
-              client of staffDashboardService.clients$ | async;
-              track client.id
-            ) {
-              <option [ngValue]="client.id">{{ client.name }}</option>
-            }
-          </select>
-          <span
-            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-arrow-down-short text-[24px]"></i>
-          </span>
-        </div>
+        {{ clientName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full max-w-[220px]">
-          <select
-            aria-label="Select Project"
-            [ngClass]="{
-              'border-red-700 focus:border-red-700':
-                form.controls.projectId.errors && form.touched,
-              'border-black': !form.controls.projectId.errors || !form.touched,
-            }"
-            (blur)="save()"
-            (keydown.enter)="onEnter($event.target)"
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-            formControlName="projectId"
-          >
-            <option [ngValue]="null" class="text-gray-50">Project</option>
-            <!-- <option [ngValue]="form.controls.projectId.value">
-        {{ form.controls.projectId.value }}
-      </option> -->
-            @for (project of projects$ | async; track project.id) {
-              <option [ngValue]="project.id">{{ project.name }}</option>
-            }
-          </select>
-          <span
-            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-arrow-down-short text-[24px]"></i>
-          </span>
-        </div>
+        {{ projectName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         @if (activities$ | async; as activities) {
@@ -263,76 +232,37 @@
         </div>
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        @if (form.controls.chargeCode.value) {
-          <span
-            class="px-3 py-1 font-semibold rounded-full"
-            [style.background-color]="
-              chargeCodeToColor(form.controls.chargeCode.value)
-            "
+        <div class="px-3">
+          <hq-select-input
+            (hqBlur)="save()"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
           >
-            {{ form.controls.chargeCode.value }}
-          </span>
-        }
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full max-w-[220px]">
-          <select
-            [ngClass]="{
-              'border-red-700 focus:border-red-700':
-                form.controls.clientId.errors && form.touched,
-              'border-black': !form.controls.clientId.errors || !form.touched,
-            }"
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-            formControlName="clientId"
-            (blur)="save()"
-            (keydown.enter)="onEnter($event.target)"
-          >
-            <option [ngValue]="null" class="text-gray-50">Client</option>
-            <!-- <option [ngValue]="form.controls.clientId.value">
-        {{ form.controls.clientId.value }}
-      </option> -->
-            @for (
-              client of staffDashboardService.clients$ | async;
-              track client.id
-            ) {
-              <option [ngValue]="client.id">{{ client.name }}</option>
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
             }
-          </select>
-          <span
-            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-arrow-down-short text-[24px]"></i>
-          </span>
+          </hq-select-input>
         </div>
       </td>
       <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full max-w-[220px]">
-          <select
-            [ngClass]="{
-              'border-red-700 focus:border-red-700':
-                form.controls.projectId.errors && form.touched,
-              'border-black': !form.controls.projectId.errors || !form.touched,
-            }"
-            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-            formControlName="projectId"
-            (blur)="save()"
-            (keydown.enter)="onEnter($event.target)"
-          >
-            <option [ngValue]="null" class="text-gray-50">Project</option>
-            <!-- <option [ngValue]="form.controls.projectId.value">
-        {{ form.controls.projectId.value }}
-      </option> -->
-            @for (project of projects$ | async; track project.id) {
-              <option [ngValue]="project.id">{{ project.name }}</option>
-            }
-          </select>
-          <span
-            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-arrow-down-short text-[24px]"></i>
-          </span>
-        </div>
+        {{ clientName$ | async }}
       </td>
+      <td class="border-b border-black py-2 pl-2">
+        {{ projectName$ | async }}
+      </td>
+
       <td class="border-b border-black py-2 pl-2">
         @if (activities$ | async; as activities) {
           @if (activities.length > 0) {
@@ -423,18 +353,35 @@
         {{ time?.date | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        <span
-          class="px-3 py-1 font-semibold rounded-full"
-          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
-        >
-          {{ time?.chargeCode }}
-        </span>
+        <div class="px-3">
+          <hq-select-input
+            [readonly]="true"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.clientName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ clientName$ | async }}
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.projectName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ projectName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
@@ -465,18 +412,35 @@
         {{ time?.date | date: "shortDate" | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        <span
-          class="px-3 py-1 font-semibold rounded-full"
-          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
-        >
-          {{ time?.chargeCode }}
-        </span>
+        <div class="px-3">
+          <hq-select-input
+            [readonly]="true"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.clientName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ clientName$ | async }}
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.projectName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ projectName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}
@@ -507,18 +471,35 @@
         {{ time?.date | date: "shortDate" }}
       </td>
       <td class="border-b border-black py-2 pl-2 text-center">
-        <span
-          class="px-3 py-1 font-semibold rounded-full"
-          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
-        >
-          {{ time?.chargeCode }}
-        </span>
+        <div class="px-3">
+          <hq-select-input
+            [readonly]="true"
+            [formControlName]="'chargeCodeId'"
+            [autocomplete]="true"
+            variant="pill"
+            [inline]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+            @for (code of chargeCodes; track code.id) {
+              <ng-template
+                [hqSelectInputOption]="code.id"
+                [hqSelectInputOptionSelectedDisplay]="code.code"
+                [hqSelectInputOptionSearch]="
+                  code.code + ': ' + code.clientName + ': ' + code.projectName
+                "
+                >{{
+                  code.code + ": " + code.clientName + ": " + code.projectName
+                }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.clientName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ clientName$ | async }}
       </td>
-      <td class="border-b border-black py-2 pl-4">
-        {{ time?.projectName }}
+      <td class="border-b border-black py-2 pl-2">
+        {{ projectName$ | async }}
       </td>
       <td class="border-b border-black py-2 pl-2">
         {{ time?.activityName || time?.task }}

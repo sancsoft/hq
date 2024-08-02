@@ -1,0 +1,43 @@
+<ng-container [formGroup]="form">
+  @if (editMode) {
+    <td cdkDragHandle class="bg-black w-4 hover:cursor-move">
+      <i class="bi bi-pause flex justify-center"></i>
+    </td>
+  } @else {
+    <td
+      class="border-b border-black w-4"
+      [title]="point?.completed ? 'Completed' : 'Uncompleted'"
+      [ngClass]="{
+        'bg-green-600': point?.completed,
+        'bg-gray-600': !point?.completed,
+      }"
+    ></td>
+  }
+  <td class="border-b border-black py-2 pl-5">
+    <hq-select-input
+      [readonly]="!editMode"
+      [formControlName]="'chargeCodeId'"
+      [autocomplete]="true"
+      variant="pill"
+      [inline]="true"
+    >
+      <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+      @for (code of chargeCodes; track code.id) {
+        <ng-template
+          [hqSelectInputOption]="code.id"
+          [hqSelectInputOptionSelectedDisplay]="code.code"
+          [hqSelectInputOptionSearch]="
+            code.code + ': ' + code.clientName + ': ' + code.projectName
+          "
+          >{{
+            code.code + ": " + code.clientName + ": " + code.projectName
+          }}</ng-template
+        >
+      }
+    </hq-select-input>
+  </td>
+
+  <td class="border-b border-black py-2">
+    {{ point?.projectName }}
+  </td>
+</ng-container>
