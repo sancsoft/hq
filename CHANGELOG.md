@@ -7,9 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.2] - 2024-08-02
+
+### Fixed
+
+- Timesheet page height/scrolling
+
+### Changed
+
+- Insert previous icon on plan and PSR reports
+- Default markdown preview to collapsed on PSR detail
+- Integrated autocomplete on PSR time list
+- Set width on charge code column in point UI
+- Filter charge codes on PSR time to only active
+
 ## [0.4.1] - 2024-08-02
 
 ### Changed
+
 - Updated default log level for Microsoft.AspnetCore source to Information
 - Voltron chargecode import sets project type based on charge code prefix
 - Creating a project now always creates a charge code
@@ -18,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hide Invoices and Services from client details and main navigation until fully implemented
 
 ### Added
+
 - ProjectType enumeration
 - CSV helper classmap to time export
   - Reordered columns to more closely match legacy timesheet format
@@ -38,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.0] - 2024-08-02
 
 ### Changed
+
 - Quote feedback
   - New quote should default status to draft
   - New quote should default date to today
@@ -64,6 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added period filter (Default to LastWeek)
 
 ### Added
+
 - Consitent validation on forms when creating/editing entities
 - Toast notification when PSR report is updated
 - HQ Table styling to rendered Markdown
@@ -93,6 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Planning points UI to timesheet
 
 ### Fixed
+
 - Missing `ProjectManagerId` on get PSR response
 - Reminder emails filter to only active staff
 - Bug when clearing data on PSR list
@@ -101,11 +120,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.25] - 2024-07-09
 
 ### Fixed
+
 - Missing `ProjectManagerId` on get PSR response
 
 ## [0.3.24] - 2024-07-08
 
 ### Fixed
+
 - PSR time accept status handling
 
 ## [0.3.23] - 2024-07-07
@@ -455,7 +476,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.1...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.2...HEAD
+[0.4.2]: https://github.com/sancsoft/hq/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/sancsoft/hq/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/sancsoft/hq/releases/tag/v0.4.0
 [0.3.25]: https://github.com/sancsoft/hq/compare/v0.3.24...v0.3.25
