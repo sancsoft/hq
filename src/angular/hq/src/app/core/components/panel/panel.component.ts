@@ -34,8 +34,12 @@ export class PanelComponent implements OnInit {
   // This method is configured for two splitted views
   collapseCArea() {
     if (this.collapsed) {
-      // this.CSizes = [...this.originalCSizes];
-      this.CSizes = [50, 50];
+      if (this.originalCSizes.includes(100)) {
+        // it means it is initialized with full width
+        this.CSizes = [50, 50];
+      } else {
+        this.CSizes = [...this.originalCSizes];
+      }
 
       this.collapsed = false;
     } else {

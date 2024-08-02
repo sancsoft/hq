@@ -45,15 +45,15 @@
         }"
         (click)="insertTextAtCursor()"
       >
-        <i title="Insert" class="bi bi-textarea-t"></i>
+        <i title="Insert" class="bi bi-file-earmark-plus-fill"></i>
       </button>
     </div>
   </div>
 </div>
 
 <div class="h-[calc(100dvh-286px)] w-full bg-black-alt">
-  <hq-panel Direction="vertical" [CSizes]="[30, 70]">
-    <hq-panel first Direction="horizontal" [CSizes]="[50, 50]">
+  <hq-panel CollapseItem="first" Direction="vertical" [CSizes]="[30, 70]">
+    <hq-panel first Direction="horizontal" [CSizes]="[100, 0]">
       <ngx-monaco-editor
         first
         [ngStyle]="{ height: '100%' }"
