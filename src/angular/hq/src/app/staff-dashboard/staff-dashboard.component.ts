@@ -1,3 +1,4 @@
+/* eslint-disable rxjs-angular/prefer-async-pipe */
 import { StaffDashboardPlanningPointComponent } from './staff-dashboard-planning-point/staff-dashboard-planning-point.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { PanelComponent } from './../core/components/panel/panel.component';
@@ -164,8 +165,6 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
       staffId: staffId$,
     });
     const status$ = this.status.valueChanges;
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
-    this.status.valueChanges.subscribe((status) => console.log(status));
     const upsertStatusRequest$ = combineLatest({
       staffId: staffId$,
       status: status$,
@@ -177,9 +176,11 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.destroyed$),
     );
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
-    this.staffStatus$.subscribe((staffStatus) => {
-      this.status.setValue(staffStatus.status);
+    this.staffStatus$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (staffStatus) => {
+        this.status.setValue(staffStatus.status);
+      },
+      error: console.error,
     });
 
     upsertStatusRequest$
@@ -190,9 +191,11 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this.destroyed$),
       )
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
-      .subscribe(() => {
-        this.toastService.show('Success', 'Status successfully updated.');
+      .subscribe({
+        next: () => {
+          this.toastService.show('Success', 'Status successfully updated.');
+        },
+        error: console.error,
       });
 
     this.planResponse$ = getPlanRequest$.pipe(
@@ -201,21 +204,20 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.destroyed$),
     );
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
-    this.planResponse$.subscribe((planResponse) => {
-      this.plan.setValue(planResponse.body, {
-        onlySelf: true,
-        emitEvent: false,
-      });
+    this.planResponse$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (planResponse) => {
+        this.plan.setValue(planResponse.body, {
+          onlySelf: true,
+          emitEvent: false,
+        });
+      },
+      error: console.error,
     });
     const prevPlanRequest$ = combineLatest({
       date: date$,
       staffId: staffId$,
     }).pipe(distinctUntilChanged());
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
-    prevPlanRequest$.subscribe((t) => {
-      console.log(t);
-    });
+
     this.prevPlan$ = prevPlanRequest$.pipe(
       switchMap((request) => {
         return this.hqService.getPreviousPlanV1(request).pipe(
@@ -226,11 +228,15 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
         );
       }),
     );
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
-    this.prevPlan$.subscribe((prevPlan) => {
-      this.previousPlan = prevPlan?.body ?? '';
-      this.prevPSRReportButtonState =
-        prevPlan && prevPlan.body ? ButtonState.Enabled : ButtonState.Disabled;
+    this.prevPlan$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (prevPlan) => {
+        this.previousPlan = prevPlan?.body ?? '';
+        this.prevPSRReportButtonState =
+          prevPlan && prevPlan.body
+            ? ButtonState.Enabled
+            : ButtonState.Disabled;
+      },
+      error: console.error,
     });
     const request$ = combineLatest({
       staffId: staffId$.pipe(tap((t) => console.log('staffId', t))),
@@ -248,11 +254,11 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
                 date: this.staffDashboardService.date.value,
               }),
             ),
-            takeUntil(this.destroyed$),
           );
         }),
+        takeUntil(this.destroyed$),
       )
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs-angular/prefer-takeuntil
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe,
       .subscribe({
         next: () => {
           this.toastService.show('Success', 'Plan saved successfully');
@@ -274,6 +280,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
     // Editor options
     this.editorOptions$ = of({
       theme: 'vs-dark',
+      wordWrap: 'on',
       language: 'markdown',
       automaticLayout: true,
     });

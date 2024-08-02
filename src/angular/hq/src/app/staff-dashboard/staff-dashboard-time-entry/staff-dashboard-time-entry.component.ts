@@ -1,3 +1,4 @@
+/* eslint-disable rxjs-angular/prefer-async-pipe */
 import { SelectInputComponent } from './../../core/components/select-input/select-input.component';
 import { SelectInputOptionDirective } from './../../core/directives/select-input-option.directive';
 import {
@@ -29,11 +30,9 @@ import {
   Observable,
   Subject,
   combineLatest,
-  debounceTime,
   distinctUntilChanged,
   firstValueFrom,
   map,
-  pairwise,
   shareReplay,
   startWith,
   takeUntil,
@@ -177,10 +176,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       distinctUntilChanged(),
     );
 
-    const chargeCodeId$ = form$.pipe(
-      map((t) => t.chargeCodeId),
-      distinctUntilChanged(),
-    );
+
 
     const hours$ = form$.pipe(
       map((t) => t.hours),
@@ -271,7 +267,6 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
     //   error: console.error,
     // });
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
     hours$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (hours) => {
         if (hours != null) {
@@ -283,7 +278,6 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe({
         next: () => {
           if (!this.time?.id) {

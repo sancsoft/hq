@@ -39,11 +39,13 @@ public class PointServiceV1
 
         }
         var startDate = request.Date.GetPeriodStartDate(Period.Week);
+        var endDate = request.Date.GetPeriodEndDate(Period.Week);
+
 
         records = records
                 .Where(p => p.StaffId == request.StaffId && p.Date == startDate);
         var points = await records.ToListAsync(ct);
-        var times = _context.Times.AsNoTracking().AsQueryable().Where(t => t.StaffId == request.StaffId && t.Date >= startDate);
+        var times = _context.Times.AsNoTracking().AsQueryable().Where(t => t.StaffId == request.StaffId && t.Date >= startDate && t.Date <= endDate);
         var pointTime = 4m; // A point represents 4 hours of logged work
         var timesDictionary = await times
         .GroupBy(x => x.ChargeCodeId)

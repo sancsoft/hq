@@ -123,28 +123,31 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       map((t) => t.staff_id as string),
       distinctUntilChanged(),
     );
-    const date$ = staffDashboardService.date.valueChanges
-      .pipe(startWith(staffDashboardService.date.value))
-      .pipe(map((t) => t || localISODate()));
+    // const date$ = staffDashboardService.date.valueChanges
+    //   .pipe(startWith(staffDashboardService.date.value))
+    //   .pipe(map((t) => t || localISODate()));
     this.staffId$ = staffId$;
     this.planningPointDate$ =
       staffDashboardService.planningPointdateForm.valueChanges
         .pipe(startWith(staffDashboardService.planningPointdateForm.value))
         .pipe(map((t) => t || localISODate()));
 
-    const prevPlanRequest$ = combineLatest({
-      date: date$,
-      staffId: staffId$,
-    }).pipe(distinctUntilChanged());
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error, rxjs-angular/prefer-takeuntil
-    prevPlanRequest$.subscribe((t) => {
-      console.log(t);
-    });
+    // const prevPlanRequest$ = combineLatest({
+    //   date: date$,
+    //   staffId: staffId$,
+    // }).pipe(distinctUntilChanged());
+    // // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    // prevPlanRequest$.pipe(takeUntil(this.destroyed$)).subscribe((t) => {
+    //   console.log(t);
+    // });
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error
-      .subscribe(() => {
-        this.planningPointsRequestTrigger$.next();
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe,
+      .subscribe({
+        next: () => {
+          this.planningPointsRequestTrigger$.next();
+        },
+        error: console.error,
       });
     this.planningPointsRequest$ = combineLatest({
       date: this.planningPointDate$,
@@ -169,12 +172,17 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.planningPoints$.subscribe((response) => {
-      if (response) {
-        this.points = response.points;
-      }
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    this.planningPoints$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (response) => {
+        if (response) {
+          this.points = response.points;
+        }
+      },
+      error: console.error,
     });
 
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
     this.editPlanButton$.pipe(skip(1), takeUntil(this.destroyed$)).subscribe({
       next: (val) => {
         if (val == false) {

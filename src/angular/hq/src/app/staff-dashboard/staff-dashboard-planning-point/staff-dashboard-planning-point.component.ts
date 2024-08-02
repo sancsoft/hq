@@ -74,11 +74,14 @@ export class StaffDashboardPlanningPointComponent
   constructor(private hqService: HQService) {
     this.form.controls.chargeCodeId.valueChanges
       .pipe(skip(1), takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe, rxjs/no-ignored-error
-      .subscribe((t) => {
-        this.point!.projectName = this.chargeCodes?.find(
-          (c) => c.id === t,
-        )?.projectName;
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (t) => {
+          this.point!.projectName = this.chargeCodes?.find(
+            (c) => c.id === t,
+          )?.projectName;
+        },
+        error: console.error,
       });
   }
 
