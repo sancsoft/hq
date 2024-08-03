@@ -23,6 +23,8 @@ import { HQService } from '../../services/hq.service';
 })
 export class StaffListService {
   search = new FormControl<string | null>(null);
+  status = new FormControl<string | null>(null);
+
   itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
   sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Name);
@@ -51,6 +53,8 @@ export class StaffListService {
       tap(() => this.goToPage(1)),
       startWith(this.search.value),
     );
+    const status$ = this.status.valueChanges.pipe(startWith(this.status.value));
+    console.log(status$);
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 

@@ -22,6 +22,27 @@
       />
     </div>
   </div>
+  <!-- Select Status -->
+  <div class="inline-flex items-center -mb-4">
+    <hq-select-input
+      [formControl]="staffListService.status"
+      [autocomplete]="false"
+      variant="secondary"
+    >
+      <ng-template [hqSelectInputOption]="null">Select Status</ng-template>
+      <!-- @for (code of chargeCodes$ | async; track code.id) {
+      <ng-template
+        [hqSelectInputOption]="code.id"
+        [hqSelectInputOptionSearch]="
+          code.code + ': ' + code.clientName + ': ' + code.projectName
+        "
+        >{{
+          code.code + ": " + code.clientName + ": " + code.projectName
+        }}</ng-template
+      >
+    } -->
+    </hq-select-input>
+  </div>
   <!-- toggle switch -->
   <div class="inline-flex items-center -mb-4">
     <div class="text-[12px] mr-[10px] leading-none text-nowrap">

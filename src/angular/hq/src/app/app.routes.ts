@@ -411,15 +411,15 @@ export const routes: Routes = [
   },
 
   {
-    path: 'staff',
-    title: 'Staff',
+    path: 'timesheet',
+    title: 'Timesheets',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
       import('./users/users.component').then((m) => m.UsersComponent),
     children: [
       {
         path: '',
-        title: 'Staff List',
+        title: 'Timesheets',
         canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
           import('./staff/staff-list/staff-list.component').then(
