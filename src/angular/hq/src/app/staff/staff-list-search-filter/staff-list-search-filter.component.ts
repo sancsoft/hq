@@ -20,7 +20,6 @@ import { StaffStatus } from '../../enums/staff-status';
   templateUrl: './staff-list-search-filter.component.html',
 })
 export class StaffListSearchFilterComponent {
-  StaffStatus = StaffStatus;
-  enumToArray = enumToArray;
+  staffStatus = enumToArray(StaffStatus);
   constructor(public staffListService: StaffListService) {}
 }

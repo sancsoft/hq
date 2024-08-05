@@ -54,7 +54,6 @@ export class StaffListService {
       startWith(this.search.value),
     );
     const status$ = this.status.valueChanges.pipe(startWith(this.status.value));
-    console.log(status$);
 
     this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
 
@@ -65,6 +64,7 @@ export class StaffListService {
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
       currentOnly: currentOnly$,
+      status: status$,
     });
 
     const response$ = request$.pipe(

@@ -30,7 +30,7 @@
       variant="secondary"
     >
       <ng-template [hqSelectInputOption]="null">Select Status</ng-template>
-      @for (status of enumToArray(StaffStatus); track status) {
+      @for (status of staffStatus; track status.name) {
         <ng-template [hqSelectInputOption]="status.name.toLowerCase()">{{
           status.name
         }}</ng-template>

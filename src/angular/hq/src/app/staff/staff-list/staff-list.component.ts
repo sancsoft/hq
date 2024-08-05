@@ -1,4 +1,3 @@
-import { StaffStatus } from './../../enums/staff-status';
 import { SortColumn } from './../../models/staff-members/get-staff-member-v1';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -76,6 +75,10 @@ export class StaffListComponent {
       tap(() => this.goToPage(1)),
       startWith(staffListService.search.value),
     );
+    const status$ = staffListService.status.valueChanges.pipe(
+      tap(() => this.goToPage(1)),
+      startWith(staffListService.status.value),
+    );
     const currentOnly$ = staffListService.currentOnly.valueChanges.pipe(
       tap(() => this.goToPage(1)),
       startWith(staffListService.currentOnly.value),
@@ -89,6 +92,7 @@ export class StaffListComponent {
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
       currentOnly: currentOnly$,
+      status: status$,
     });
 
     const response$ = request$.pipe(
