@@ -362,7 +362,7 @@ public class ProjectStatusReportServiceV1
         var records = _context.ProjectStatusReports
             .AsNoTracking()
             .Where(t => t.Id == request.ProjectStatusReportId)
-            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate))
+            .SelectMany(t => t.Project.ChargeCode!.Times.Where(x => x.Date >= t.StartDate && x.Date <= t.EndDate && x.Status != TimeStatus.Unsubmitted))
             .AsQueryable();
 
         if (!string.IsNullOrEmpty(request.Search))
