@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.27] - 2024-08-05
+
+### Changed
+
+- Bump MimeKit version
+
+## [0.3.26] - 2024-08-05
+
+### Changed
+
+- Allow 0 hours when changing PSR time
+
 ## [0.4.2] - 2024-08-02
 
 ### Fixed
@@ -480,6 +492,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.4.2]: https://github.com/sancsoft/hq/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/sancsoft/hq/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/sancsoft/hq/releases/tag/v0.4.0
+[0.3.27]: https://github.com/sancsoft/hq/compare/v0.3.26...v0.3.27
+[0.3.26]: https://github.com/sancsoft/hq/compare/v0.3.25...v0.3.26
 [0.3.25]: https://github.com/sancsoft/hq/compare/v0.3.24...v0.3.25
 [0.3.24]: https://github.com/sancsoft/hq/compare/v0.3.23...v0.3.24
 [0.3.23]: https://github.com/sancsoft/hq/compare/v0.3.21...v0.3.23

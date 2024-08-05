@@ -14,16 +14,20 @@ import {
 import { FormGroup, FormsModule, NgControl } from '@angular/forms';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
 import { generateUniqueInputId } from '../../functions/generate-unique-input-id';
+import { FormLabelComponent } from '../form-label/form-label.component';
 
 @Component({
   selector: 'hq-date-input',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, FormLabelComponent],
   templateUrl: './date-input.component.html',
 })
 export class DateInputComponent {
   @ViewChild('input')
   input?: ElementRef<HTMLInputElement>;
+
+  @Input()
+  label: string | null = null;
 
   @Input()
   readonly: boolean = false;

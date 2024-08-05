@@ -87,7 +87,7 @@ export class SelectInputComponent<T>
   max: number | null = null;
 
   @Input()
-  autocomplete = false;
+  autocomplete = true;
 
   @Input()
   inline = false;

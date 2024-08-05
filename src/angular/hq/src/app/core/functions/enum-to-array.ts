@@ -5,15 +5,25 @@ export interface EnumRecord<T> {
   name: string;
 }
 
-export function enumToArray<T extends object>(enumeration: T): EnumRecord<T>[] {
+export function enumToArray<T extends object>(
+  enumeration: T,
+  options: unknown[] = [],
+): EnumRecord<T>[] {
   return Object.entries(enumeration)
-    .filter(([, value]) => isNaN(value) === false)
+    .filter(
+      ([, value]) =>
+        isNaN(value) === false &&
+        (options.length == 0 || options.includes(value)),
+    )
     .map(([key, value]) => ({
       id: value,
       name: key.replace(/([A-Z])/g, ' $1').trim(),
     }));
 }
 
-export function enumToArrayObservable<T extends object>(enumeration: T) {
-  return of(enumToArray(enumeration));
+export function enumToArrayObservable<T extends object>(
+  enumeration: T,
+  options: unknown[] = [],
+) {
+  return of(enumToArray(enumeration, options));
 }
