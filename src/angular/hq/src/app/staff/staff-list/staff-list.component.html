@@ -24,34 +24,68 @@
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        (click)="onSortClick(sortColumn.Hrs)"
       >
         Hrs YTD
+        <hq-sort-icon
+          [column]="sortColumn.Hrs"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        (click)="onSortClick(sortColumn.BillableHrs)"
       >
         Billable Hrs YTD
+        <hq-sort-icon
+          [column]="sortColumn.BillableHrs"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.VacationHours)"
       >
         Vacation
+        <hq-sort-icon
+          [column]="sortColumn.VacationHours"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.Jurisdiction)"
+      >
         Jurisdiction
-      </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Role
-      </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Status
+        <hq-sort-icon
+          [column]="sortColumn.Jurisdiction"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
       </th>
 
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        (click)="onSortClick(sortColumn.Status)"
+      >
+        Status
+        <hq-sort-icon
+          [column]="sortColumn.Status"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5 cursor-pointer"
         colspan="2"
       >
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
@@ -77,19 +111,20 @@
         <td class="border-b border-black py-2 pl-5">
           {{ member.name }}
         </td>
-        <td class="border-b border-black py-2 pl-5">####</td>
-        <td class="border-b border-black py-2 pl-5">####</td>
+        <td class="border-b border-black py-2 pl-5">{{ member.hrs }}</td>
+        <td class="border-b border-black py-2 pl-5">
+          {{ member.billableHrs }}
+        </td>
         <td class="border-b border-black py-2">
           {{ member.vacationHours }}
         </td>
-        <td class="border-b border-black py-2 pl-5">
+        <td class="border-b border-black py-2">
           <div [ngSwitch]="member.jurisdiciton">
             <div *ngSwitchCase="Jurisdiction.USA">USA</div>
             <div *ngSwitchCase="Jurisdiction.Colombia">Colombia</div>
           </div>
         </td>
-        <td class="border-b border-black py-2">[Role]</td>
-        <td class="border-b border-black py-2">[Today Status]</td>
+        <td class="border-b border-black py-2">{{ member.status ?? "-" }}</td>
 
         <td class="border-b border-black py-2 text-right pr-5">
           <div class="text-nowrap divide-x divide-teal-200">

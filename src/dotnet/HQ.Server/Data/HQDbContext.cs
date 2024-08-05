@@ -36,6 +36,7 @@ namespace HQ.Server.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Staff>().HasMany(t => t.Times).WithOne(s => s.Staff).HasForeignKey(t => t.StaffId);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }

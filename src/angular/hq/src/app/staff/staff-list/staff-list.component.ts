@@ -1,3 +1,4 @@
+import { StaffStatus } from './../../enums/staff-status';
 import { SortColumn } from './../../models/staff-members/get-staff-member-v1';
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';

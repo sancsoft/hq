@@ -1109,7 +1109,7 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.Plan", b =>
                 {
                     b.HasOne("HQ.Server.Data.Models.Staff", "Staff")
-                        .WithMany()
+                        .WithMany("Plans")
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1333,6 +1333,11 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.ServiceAgreement", b =>
                 {
                     b.Navigation("ChargeCode");
+                });
+
+            modelBuilder.Entity("HQ.Server.Data.Models.Staff", b =>
+                {
+                    b.Navigation("Plans");
                 });
 #pragma warning restore 612, 618
         }
