@@ -4,6 +4,7 @@
 @if (autocomplete) {
   <button
     #button
+    [disabled]="disabled"
     [tabIndex]="isOpen ? -1 : 0"
     type="button"
     class="flex items-center border justify-between bg-blue-900 rounded select-none overflow-hidden px-1"
@@ -12,7 +13,6 @@
       variant === 'pill' ? (chargeCodeColor$ | async) : null
     "
     [ngClass]="{
-      'border-gray-450 text-gray-450': disabled,
       'border-red-500 text-white': ngControl?.invalid && ngControl?.touched,
       'border-steel-blue-600 text-white':
         !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
@@ -25,6 +25,7 @@
       'text-left h-[36px]': variant !== 'pill',
       'rounded-br-none rounded-bl-none': isOpen && variant !== 'pill',
       'w-full': !inline,
+      'border-gray-450 text-gray-450': disabled,
     }"
   >
     <div class="w-full">
