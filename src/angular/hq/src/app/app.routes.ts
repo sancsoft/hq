@@ -427,6 +427,35 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'staffDetails/:staffId',
+        title: 'staff Details',
+        canActivate: [userRoleGuard(HQRole.Staff)],
+        loadComponent: () =>
+          import('./staff/staff-details/staff-details.component').then(
+            (m) => m.StaffDetailsComponent,
+          ),
+        children: [
+          {
+            path: 'view',
+            title: 'staff View',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './staff/staff-details/staff-view/staff-view.component'
+              ).then((m) => m.StaffViewComponent),
+          },
+          {
+            path: 'contacts',
+            title: 'staff Contacts',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './staff/staff-details//staff-contacts/staff-contacts.component'
+              ).then((m) => m.StaffContactsComponent),
+          },
+        ],
+      },
+      {
         path: 'create',
         title: 'Create Staff',
         canActivate: [userRoleGuard(HQRole.Administrator)],

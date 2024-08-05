@@ -135,7 +135,12 @@
         <td class="border-b border-black py-2 text-right pr-5">
           <div class="text-nowrap divide-x divide-teal-200">
             <a class="text-teal-200 hover:text-teal-300 pr-3">Timesheet</a>
-            <a class="text-teal-200 hover:text-teal-300 pl-3">View</a>
+
+            <a
+              [routerLink]="['staffDetails', member.id]"
+              class="text-teal-200 hover:text-teal-300 pl-3"
+              >View</a
+            >
           </div>
           <!-- @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
             <a

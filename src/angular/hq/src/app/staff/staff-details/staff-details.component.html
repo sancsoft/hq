@@ -1,0 +1,27 @@
+<div class="bg-black-alt overflow-y-auto h-[calc(100dvh-245px)]">
+  <main class="flex gap-4 mb-4">
+    <div>
+      <a
+        routerLink="view"
+        routerLinkActive
+        #rlaView="routerLinkActive"
+        [ngClass]="rlaView.isActive ? 'border-gray-100' : 'border-transparent'"
+        class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+        >View</a
+      >
+    </div>
+    <div>
+      <a
+        routerLink="contacts"
+        routerLinkActive
+        #rlaContacts="routerLinkActive"
+        [ngClass]="
+          rlaContacts.isActive ? 'border-gray-100' : 'border-transparent'
+        "
+        class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+        >Contact</a
+      >
+    </div>
+  </main>
+  <router-outlet></router-outlet>
+</div>
