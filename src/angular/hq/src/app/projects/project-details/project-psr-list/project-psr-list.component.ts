@@ -20,7 +20,7 @@ import { SortDirection } from '../../../models/common/sort-direction';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 
 @Component({
-  selector: 'hq-psr-work-week',
+  selector: 'hq-project-psr-list',
   standalone: true,
   imports: [
     CommonModule,
@@ -29,9 +29,9 @@ import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component
     RouterLinkActive,
     SortIconComponent,
   ],
-  templateUrl: './psr-work-week.component.html',
+  templateUrl: './project-psr-list.component.html',
 })
-export class PsrWorkWeekComponent {
+export class ProjectPsrListComponent {
   PSRWorkWeeks?: Observable<GetPSRRecordV1[]> | null;
   projectId$?: Observable<string>;
   sortOption$: BehaviorSubject<SortColumn>;

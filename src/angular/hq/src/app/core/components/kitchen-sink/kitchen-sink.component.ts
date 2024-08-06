@@ -17,6 +17,7 @@ import { CoreModule } from '../../core.module';
 import { map, Observable, shareReplay } from 'rxjs';
 import { GetChargeCodeRecordV1 } from '../../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../../services/hq.service';
+import { ProjectType } from '../../../enums/project-type';
 
 @Component({
   selector: 'hq-kitchen-sink',
@@ -112,6 +113,7 @@ export class KitchenSinkComponent {
     summaryHoursAvailable: null!,
     summaryPercentComplete: null!,
     isCurrentPsrPeriod: false,
+    projectType: ProjectType.Ongoing,
   };
   public second_report: GetPSRRecordV1 = {
     id: '9f8f375f-0b7d-4452-946c-b78b220d95d7',
@@ -142,6 +144,7 @@ export class KitchenSinkComponent {
     summaryHoursAvailable: 494.75,
     summaryPercentComplete: 0.25037878787878787,
     isCurrentPsrPeriod: true,
+    projectType: ProjectType.Ongoing,
   };
 
   third_report: GetPSRRecordV1 = {
@@ -179,6 +182,7 @@ export class KitchenSinkComponent {
     summaryHoursAvailable: -226.25,
     summaryPercentComplete: 4.770833333333333,
     isCurrentPsrPeriod: false,
+    projectType: ProjectType.Ongoing,
   };
   fourth_report: GetPSRRecordV1 = {
     id: '74d6274a-9c01-44b3-8f4e-b893b6fe4a4c',
@@ -214,6 +218,7 @@ export class KitchenSinkComponent {
     summaryHoursAvailable: -63.5,
     summaryPercentComplete: 1.79375,
     isCurrentPsrPeriod: true,
+    projectType: ProjectType.Ongoing,
   };
 
   toggleDisabled() {

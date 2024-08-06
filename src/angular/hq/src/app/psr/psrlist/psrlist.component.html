@@ -171,7 +171,7 @@
           {{ getProjectSatusString(report.status) }}
         </td>
         <td width="200" class="border-b border-black py-2 pe-2">
-          @if (report.status === ProjectStatus.Ongoing) {
+          @if (report.projectType === ProjectType.Ongoing) {
             @if (
               report.bookingPercentComplete && report.bookingPercentComplete > 1
             ) {
@@ -209,7 +209,7 @@
               <span>{{ report.bookingPercentComplete | percent }}</span>
             </div>
           }
-          @if (report.status === ProjectStatus.InProduction) {
+          @if (report.projectType === ProjectType.Quote) {
             @if (
               report.totalPercentComplete && report.totalPercentComplete > 1
             ) {

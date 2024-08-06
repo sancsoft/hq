@@ -53,7 +53,11 @@ public class QuoteServiceV1
                     return validationResult;
                 }
 
-                var quote = await _context.Quotes.FindAsync(request.Id);
+                var quote = await _context.Quotes
+                    .Include(t => t.ChargeCode)
+                    .ThenInclude(t => t!.Project)
+                    .SingleOrDefaultAsync(t => t.Id == request.Id);
+
                 if (quote == null)
                 {
                     quote = new Quote();
@@ -85,6 +89,17 @@ public class QuoteServiceV1
                 quote.Date = request.Date;
                 quote.Status = request.Status;
                 quote.Description = request.Description;
+
+                if (quote.ChargeCode != null)
+                {
+                    quote.ChargeCode.Code = "Q" + quote.QuoteNumber;
+                    quote.ChargeCode.Active = request.Status == ProjectStatus.InProduction || request.Status == ProjectStatus.Ongoing;
+
+                    if (quote.ChargeCode.Project != null)
+                    {
+                        quote.ChargeCode.Project.Status = request.Status;
+                    }
+                }
 
                 await _context.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
@@ -147,7 +162,8 @@ public class QuoteServiceV1
             Value = t.Value,
             Status = t.Status,
             Date = t.Date,
-            HasPDF = t.HasPDF
+            HasPDF = t.HasPDF,
+            HasProject = t.ChargeCode!.ProjectId != null
         });
 
         var sortMap = new Dictionary<GetQuotesV1.SortColumn, string>()

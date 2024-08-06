@@ -128,10 +128,7 @@
                       <ng-template hqValidationError="required">
                         Status is required.
                       </ng-template>
-                      @for (
-                        status of projectStatusEnum$ | async;
-                        track status.id
-                      ) {
+                      @for (status of projectStatusValues; track status.id) {
                         <ng-template
                           [hqSelectInputOption]="status.id"
                           [hqSelectInputOptionSelectedDisplay]="status.name"

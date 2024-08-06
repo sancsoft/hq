@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
-import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
-import { HQService } from '../../services/hq.service';
+import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
+import { HQMarkdownComponent } from '../../../common/markdown/markdown.component';
+import { HQService } from '../../../services/hq.service';
 import { filter, map, Observable, switchMap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';

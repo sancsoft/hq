@@ -1,5 +1,6 @@
 import { Period } from '../../enums/period';
 import { ProjectStatus } from '../../enums/project-status';
+import { ProjectType } from '../../enums/project-type';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
@@ -77,6 +78,7 @@ export interface GetPSRRecordV1 {
   summaryHoursAvailable: number;
   summaryPercentComplete: number;
   isCurrentPsrPeriod: boolean;
+  projectType: ProjectType;
 }
 
 export interface GetPSRRecordsV1 {

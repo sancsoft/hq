@@ -213,6 +213,7 @@ public class ProjectStatusReportServiceV1
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
                 Status = t.Row.Status,
                 IsLate = t.Row.SubmittedAt == null,
+                ProjectType = t.Row.Project.Type,
 
                 ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours),
                 ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Accepted && x.Status != TimeStatus.Rejected && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours),
@@ -250,6 +251,7 @@ public class ProjectStatusReportServiceV1
                 ProjectManagerName = t.ProjectManagerName,
                 Status = t.Status,
                 IsLate = t.IsLate,
+                ProjectType = t.ProjectType,
 
                 ThisHours = t.ThisHours,
                 ThisPendingHours = t.ThisPendingHours,
@@ -271,10 +273,10 @@ public class ProjectStatusReportServiceV1
                 TotalStartDate = t.TotalStartDate,
                 TotalEndDate = t.TotalEndDate,
 
-                SummaryHoursTotal = t.Status == ProjectStatus.Ongoing ? t.BookingHours : t.TotalHours,
-                SummaryHoursAvailable = t.Status == ProjectStatus.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
-                SummaryPercentComplete = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
-                SummaryPercentCompleteSort = t.Status == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
+                SummaryHoursTotal = t.ProjectType == ProjectType.Ongoing ? t.BookingHours : t.TotalHours,
+                SummaryHoursAvailable = t.ProjectType == ProjectType.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
+                SummaryPercentComplete = t.ProjectType == ProjectType.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
+                SummaryPercentCompleteSort = t.ProjectType == ProjectType.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
                 IsCurrentPsrPeriod = thisWeekStart == t.StartDate
             });
 

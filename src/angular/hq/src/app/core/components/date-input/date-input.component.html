@@ -8,6 +8,7 @@
         ngControl?.errors && ngControl?.touched,
       'focus:border-white placeholder:text-gray-100':
         !ngControl?.errors || !ngControl?.touched,
+      'border-gray-450 text-gray-450': disabled,
     }"
     #input
     [id]="uniqueId"

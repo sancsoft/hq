@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, map, switchMap } from 'rxjs';
+import { Observable, filter, map, switchMap } from 'rxjs';
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
@@ -22,6 +22,7 @@ export class ProjectPsrDetailsComponent {
     this.psrId$ = route.queryParams.pipe(map((t) => t['psrId']));
 
     this.psr$ = this.psrId$.pipe(
+      filter((id) => !!id),
       switchMap((id) => hqService.getPSRV1({ id: id })),
       map((t) => t.records[0]),
     );

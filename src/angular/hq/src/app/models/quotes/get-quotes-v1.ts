@@ -6,7 +6,7 @@ import { SortDirection } from '../common/sort-direction';
 export interface GetQuotesRequestV1 extends PagedRequestV1 {
   search?: string | null;
   id?: string;
-  clientId?: string;
+  clientId?: string | null;
   sortBy: SortColumn;
   sortDirection: SortDirection;
   quoteStatus: ProjectStatus | null;
@@ -24,7 +24,6 @@ export enum SortColumn {
 
 export interface GetQuotesRecordV1 {
   id: string;
-  QuoteNumber: number;
   clientId: string;
   clientName: string;
   name: string;
@@ -34,6 +33,7 @@ export interface GetQuotesRecordV1 {
   value: number | null;
   status: ProjectStatus;
   hasPDF: boolean;
+  hasProject: boolean;
 }
 
 export interface GetQuotesRecordsV1

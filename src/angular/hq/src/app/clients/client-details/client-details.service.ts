@@ -66,10 +66,9 @@ export class ClientDetailsService {
     this.showProjectStatusSubject.next(false);
   }
 
-  subscribeClientId(clientId$: Observable<string | null>) {
-    return clientId$.subscribe({
-      next: (clientId) => this.clientIdSubject.next(clientId),
-      error: console.error,
-    });
+  setClientId(clientId?: string | null) {
+    if (clientId) {
+      this.clientIdSubject.next(clientId);
+    }
   }
 }

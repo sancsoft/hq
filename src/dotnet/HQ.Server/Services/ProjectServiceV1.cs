@@ -20,13 +20,15 @@ namespace HQ.Server.Services;
 public class ProjectServiceV1
 {
     private readonly HQDbContext _context;
+    private readonly ILogger<ProjectServiceV1> _logger;
     private readonly ChargeCodeServiceV1 _chargeCodeServiceV1;
 
 
-    public ProjectServiceV1(ChargeCodeServiceV1 chargeCodeServiceV1, HQDbContext context)
+    public ProjectServiceV1(ChargeCodeServiceV1 chargeCodeServiceV1, HQDbContext context, ILogger<ProjectServiceV1> logger)
     {
         _chargeCodeServiceV1 = chargeCodeServiceV1;
         _context = context;
+        _logger = logger;
     }
 
     public async Task<Result<UpsertProjectV1.Response>> UpsertProjectV1(UpsertProjectV1.Request request, CancellationToken ct = default)
@@ -49,8 +51,11 @@ public class ProjectServiceV1
                     return validationResult;
                 }
 
-                var project = await _context.Projects.Include(p => p.Quote)
-                                        .ThenInclude(q => q!.ChargeCode).FirstOrDefaultAsync(p => p.Id == request.Id);
+                var project = await _context.Projects
+                    .Include(t => t.ChargeCode)
+                    .Include(p => p.Quote)
+                    .FirstOrDefaultAsync(p => p.Id == request.Id);
+
                 if (project == null)
                 {
                     project = new Project();
@@ -68,12 +73,13 @@ public class ProjectServiceV1
                 project.EndDate = request.EndDate;
                 project.Type = request.Type;
                 project.Status = request.Status;
+                project.TotalHours = request.TotalHours;
 
-                if (project.ChargeCode == null)
+                switch (request.Type)
                 {
-                    switch (request.Type)
-                    {
-                        case ProjectType.General:
+                    case ProjectType.General:
+                        if (project.ChargeCode == null)
+                        {
                             project.ChargeCode = new();
                             project.ChargeCode.Activity = ChargeCodeActivity.General;
 
@@ -84,31 +90,66 @@ public class ProjectServiceV1
                                 .DefaultIfEmpty(1000)
                                 .Max();
 
-                            var newGeneralNumber = latestGeneralNumber = 1;
+                            var newGeneralNumber = latestGeneralNumber + 1;
                             project.ChargeCode.Code = "S" + newGeneralNumber;
-                            break;
-                        case ProjectType.Ongoing:
+                        }
+                        break;
+                    case ProjectType.Ongoing:
+                        var latestProjectNumber = await _context.Projects.Where(t => t.Id != request.Id).MaxAsync((q) => q.ProjectNumber, ct);
+                        var nextProjectNumber = latestProjectNumber + 1;
+
+                        if (request.ProjectNumber.HasValue)
+                        {
+                            if (await _context.Projects.AnyAsync(t => t.ProjectNumber == request.ProjectNumber && t.Id != request.Id, ct))
+                            {
+                                return Result.Fail(new Error("This project number already exists."));
+                            }
+                            else
+                            {
+                                project.ProjectNumber = request.ProjectNumber.Value;
+                            }
+                        }
+                        else
+                        {
+                            project.ProjectNumber = nextProjectNumber;
+                        }
+
+                        if (project.ChargeCode == null)
+                        {
                             project.ChargeCode = new();
                             project.ChargeCode.Activity = ChargeCodeActivity.Project;
+                        }
 
-                            var latestProjectNumber = _context.Projects.Max(p => p.ProjectNumber);
-                            var newProjectNumber = latestProjectNumber + 1;
+                        project.ChargeCode.Code = "P" + project.ProjectNumber.Value;
 
-                            project.ChargeCode.Code = "P" + newProjectNumber;
-                            break;
-                        case ProjectType.Quote:
-                            var quote = await _context.Quotes.FindAsync(request.QuoteId!.Value, ct); ;
+                        break;
+                    case ProjectType.Quote:
+                        var quote = await _context.Quotes.FindAsync(request.QuoteId!.Value, ct);
+
+                        if (project.ChargeCode == null)
+                        {
                             project.ChargeCode = new();
-                            project.ChargeCode.Activity = ChargeCodeActivity.Quote;
                             project.ChargeCode.QuoteId = quote!.Id;
-                            project.ChargeCode.Code = "Q" + quote.QuoteNumber;
-                            break;
-                        case ProjectType.Service:
-                            // project.ChargeCode = new();
-                            // project.ChargeCode.Activity = ChargeCodeActivity.Service;
-                            // TODO: Set to S number
-                            break;
-                    }
+                            project.ChargeCode.Activity = ChargeCodeActivity.Quote;
+                            project.ChargeCode.Code = "Q" + quote!.QuoteNumber;
+                        }
+
+                        if (await _context.Projects.AnyAsync(t => t.QuoteId == request.QuoteId && t.Id != request.Id, ct))
+                        {
+                            return Result.Fail(new Error("A project for that quote already exists."));
+                        }
+
+                        if (project.Quote != null)
+                        {
+                            project.Quote.Status = project.Status;
+                        }
+
+                        break;
+                    case ProjectType.Service:
+                        // project.ChargeCode = new();
+                        // project.ChargeCode.Activity = ChargeCodeActivity.Service;
+                        // TODO: Set to S number
+                        break;
                 }
 
                 if (project.ChargeCode == null)
@@ -132,6 +173,7 @@ public class ProjectServiceV1
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while upserting the project");
                 await transaction.RollbackAsync(ct);
                 return Result.Fail(new Error("An error occurred while upserting the project.").CausedBy(ex));
             }
@@ -214,6 +256,7 @@ public class ProjectServiceV1
             QuoteNumber = t.Quote != null ? t.Quote.QuoteNumber : null,
             HourlyRate = t.HourlyRate,
             BookingPeriod = t.BookingPeriod,
+            ProjectBookingHours = t.BookingHours,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
             BillingEmail = t.Client.BillingEmail,
@@ -222,6 +265,7 @@ public class ProjectServiceV1
             ProjectStatus = t.Status,
             Type = t.Type,
             Billable = t.ChargeCode!.Billable,
+            ProjectTotalHours = t.TotalHours,
 
             BookingStartDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Min(x => x.Date),
             BookingEndDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Max(x => x.Date),
@@ -250,6 +294,7 @@ public class ProjectServiceV1
             QuoteNumber = t.QuoteNumber,
             HourlyRate = t.HourlyRate,
             BookingPeriod = t.BookingPeriod,
+            ProjectBookingHours = t.ProjectBookingHours,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
             BillingEmail = t.BillingEmail,
@@ -258,6 +303,7 @@ public class ProjectServiceV1
             ProjectStatus = t.ProjectStatus,
             Type = t.Type,
             Billable = t.Billable,
+            ProjectTotalHours = t.ProjectTotalHours,
 
             BookingStartDate = t.BookingStartDate,
             BookingEndDate = t.BookingEndDate,
@@ -272,10 +318,10 @@ public class ProjectServiceV1
             TotalStartDate = t.TotalStartDate,
             TotalEndDate = t.TotalEndDate,
 
-            SummaryHoursTotal = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingHours : t.TotalHours,
-            SummaryHoursAvailable = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
-            SummaryPercentComplete = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
-            SummaryPercentCompleteSort = t.ProjectStatus == ProjectStatus.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
+            SummaryHoursTotal = t.Type == ProjectType.Ongoing ? t.BookingHours : t.TotalHours,
+            SummaryHoursAvailable = t.Type == ProjectType.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
+            SummaryPercentComplete = t.Type == ProjectType.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
+            SummaryPercentCompleteSort = t.Type == ProjectType.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
         });
 
         var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()

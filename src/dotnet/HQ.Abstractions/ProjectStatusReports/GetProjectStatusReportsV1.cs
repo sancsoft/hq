@@ -116,5 +116,6 @@ public class GetProjectStatusReportsV1
         public decimal? SummaryPercentComplete { get; set; }
         public decimal? SummaryPercentCompleteSort { get; set; }
         public bool IsCurrentPsrPeriod { get; set; }
+        public ProjectType ProjectType { get; set; }
     }
 }

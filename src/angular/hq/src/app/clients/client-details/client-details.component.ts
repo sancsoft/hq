@@ -1,3 +1,5 @@
+/* eslint-disable rxjs-angular/prefer-takeuntil */
+/* eslint-disable rxjs-angular/prefer-async-pipe */
 import { ClientDetailsSearchFilterComponent } from './client-details-search-filter/client-details-search-filter.component';
 import { Component } from '@angular/core';
 import {
@@ -39,6 +41,10 @@ export class ClientDetailsComponent {
     private route: ActivatedRoute,
   ) {
     const clientId$ = route.paramMap.pipe(map((t) => t.get('clientId')));
-    this.clientDetailsService.subscribeClientId(clientId$);
+
+    clientId$.subscribe({
+      next: (clientId) => this.clientDetailsService.setClientId(clientId),
+      error: console.error,
+    });
   }
 }

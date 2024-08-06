@@ -224,7 +224,8 @@ table.hq-table {
     @apply animate-loading;
   }
 
-  tbody[hq-table-body] {
+  tbody[hq-table-body],
+  tbody.hq-table-body {
     tr {
       @apply even:bg-gray-850 odd:bg-black-alt;
 
@@ -235,7 +236,8 @@ table.hq-table {
   }
 
   thead,
-  tbody[hq-table-body] {
+  tbody[hq-table-body],
+  tbody.hq-table-body {
     tr th,
     tr td {
       @apply p-2;
