@@ -54,7 +54,6 @@ namespace HQ.Server.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpsertPointV1([FromBody] UpsertPointsV1.Request request, CancellationToken ct = default)
         {
-            request.StaffId = User.GetStaffId();
             if (!request.StaffId.HasValue)
             {
                 return Forbid();

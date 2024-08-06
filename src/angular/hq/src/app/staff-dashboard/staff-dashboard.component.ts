@@ -119,6 +119,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   prevPlan$: Observable<GetPrevPlanResponseV1 | null>;
   prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
+  canEdit$: Observable<boolean>;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
@@ -131,6 +132,23 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
       this.staffDashboardService.date.value,
     );
     const prevPlan = await firstValueFrom(this.prevPlan$);
+
+    this.staffDashboardService.canEdit$
+      .pipe(takeUntil(this.destroyed$))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (canEdit) => {
+          if (canEdit && prevPlan && prevPlan.body) {
+            this.prevPSRReportButtonState = ButtonState.Enabled;
+          } else {
+            this.prevPSRReportButtonState = ButtonState.Disabled;
+          }
+          canEdit ? this.status.enable() : this.status.disable();
+          // this.staffDashboardService.canSubmitSubject.next(canEdit); // Submit time button
+        },
+        error: console.error,
+      });
+
     this.prevPSRReportButtonState =
       prevPlan && prevPlan.body ? ButtonState.Enabled : ButtonState.Disabled;
   }
@@ -147,6 +165,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     private oidcSecurityService: OidcSecurityService,
     private cdr: ChangeDetectorRef,
   ) {
+    this.canEdit$ = this.staffDashboardService.canEdit$;
     const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({});
     this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),
@@ -278,14 +297,32 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
           );
         },
       });
-
     // Editor options
-    this.editorOptions$ = of({
-      theme: 'vs-dark',
-      wordWrap: 'on',
-      language: 'markdown',
-      automaticLayout: true,
-    });
+    this.editorOptions$ = this.staffDashboardService.canEdit$.pipe(
+      map((canEdit) => {
+        return {
+          theme: 'vs-dark',
+          language: 'markdown',
+          automaticLayout: true,
+          readOnly: !canEdit,
+          domReadOnly: !canEdit,
+          wordWrap: 'on',
+        };
+      }),
+      startWith({
+        theme: 'vs-dark',
+        language: 'markdown',
+        automaticLayout: true,
+        wordWrap: 'on',
+        domReadOnly: true,
+      }),
+    );
+    // this.editorOptions$ = of({
+    //   theme: 'vs-dark',
+    //   wordWrap: 'on',
+    //   language: 'markdown',
+    //   automaticLayout: true,
+    // });
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['staffId'] && this.staffId !== null) {
@@ -357,8 +394,10 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     if (!event.date) {
       return;
     }
+    const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
 
     const request: Partial<updateTimeRequestV1> = {
+      staffId: staffId,
       id: event.id,
       hours: event.hours,
       chargeCodeId: event.chargeCodeId,

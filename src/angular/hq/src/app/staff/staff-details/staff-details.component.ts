@@ -9,6 +9,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { map, ReplaySubject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { StatDisplayComponent } from '../../core/components/stat-display/stat-display.component';
+import { ButtonComponent } from '../../core/components/button/button.component';
 
 @Component({
   selector: 'hq-staff-details',
@@ -19,6 +20,7 @@ import { StatDisplayComponent } from '../../core/components/stat-display/stat-di
     RouterLinkActive,
     CommonModule,
     StatDisplayComponent,
+    ButtonComponent
   ],
   templateUrl: './staff-details.component.html',
 })

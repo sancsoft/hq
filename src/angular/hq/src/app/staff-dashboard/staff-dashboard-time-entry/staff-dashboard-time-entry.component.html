@@ -163,6 +163,7 @@
       <td class="border-b border-black py-2 pl-2 pr-5">
         @if (form.controls.id.value) {
           <button
+            [disabled]="(staffDashboardService.canEdit$ | async) === false"
             type="button"
             [title]="'Delete Time Entry'"
             (click)="deleteTime()"
@@ -172,6 +173,7 @@
           </button>
         } @else {
           <button
+            [disabled]="(staffDashboardService.canEdit$ | async) === false"
             type="button"
             [title]="'Reset Time Entry'"
             (click)="resetTime()"
@@ -186,6 +188,7 @@
       <td class="border-b border-black py-2 bg-red-600 w-3"></td>
       <td class="border-b border-black text-white">
         <button
+          [disabled]="(staffDashboardService.canEdit$ | async) === false"
           title="Duplicate time entry"
           class="ml-2"
           (click)="duplicateTime()"

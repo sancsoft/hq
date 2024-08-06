@@ -9,6 +9,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -88,7 +89,9 @@ interface Form {
   ],
   templateUrl: './staff-dashboard-time-entry.component.html',
 })
-export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
+export class StaffDashboardTimeEntryComponent
+  implements OnInit, OnChanges, OnDestroy
+{
   @Input()
   time?: Partial<GetDashboardTimeV1TimeForDateTimes>;
   @Input()
@@ -150,6 +153,15 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   timeStatus = TimeStatus;
 
+  ngOnInit(): void {
+    this.staffDashboardService.canEdit$
+      .pipe(takeUntil(this.destroyed$))
+      // eslint-disable-next-line rxjs/no-ignored-error
+      .subscribe((canEdit) => {
+        console.log(canEdit, 'Can edit');
+        canEdit ? this.form.enable() : this.form.disable();
+      });
+  }
   constructor(
     public staffDashboardService: StaffDashboardService,
     private modalService: ModalService,
