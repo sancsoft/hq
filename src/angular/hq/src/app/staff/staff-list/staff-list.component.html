@@ -134,7 +134,11 @@
 
         <td class="border-b border-black py-2 text-right pr-5">
           <div class="text-nowrap divide-x divide-teal-200 uppercase">
-            <a class="text-teal-200 hover:text-teal-300 pr-3">Timesheet</a>
+            <a
+              [routerLink]="[member.id, 'timesheet']"
+              class="text-teal-200 hover:text-teal-300 pr-3"
+              >Timesheet</a
+            >
 
             <a
               [routerLink]="[member.id]"

@@ -272,7 +272,9 @@
                 <tbody>
                   @if (
                     (staffDashboardService.showAllRejectedTimes$ | async) ===
-                      false && date.canCreateTime
+                      false &&
+                    (date.canCreateTime ||
+                      (staffDashboardService.isAdmin$ | async))
                   ) {
                     <tr
                       hq-staff-dashboard-time-entry
