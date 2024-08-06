@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { InRolePipe } from './pipes/in-role.pipe';
 import { HQRole } from './enums/hqrole';
+import {OverlayModule} from '@angular/cdk/overlay';
 
 @Component({
   selector: 'hq-layout',
@@ -18,6 +19,7 @@ import { HQRole } from './enums/hqrole';
     RouterLink,
     RouterLinkActive,
     InRolePipe,
+    OverlayModule,
   ],
   templateUrl: './layout.component.html',
 })
@@ -27,6 +29,7 @@ export class LayoutComponent {
   oidcSecurityService = inject(OidcSecurityService);
 
   dropdownOpen = false;
+  settingDropdownOpen = false;
 
   HQRole = HQRole;
 
