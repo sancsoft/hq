@@ -42,6 +42,7 @@ namespace HQ.Abstractions.Quotes
             public decimal Value { get; set; }
             public ProjectStatus Status { get; set; }
             public bool HasPDF { get; set; }
+            public bool HasProject { get; set; }
         }
     }
 }

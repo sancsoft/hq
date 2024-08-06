@@ -70,7 +70,7 @@
       >
         Value
       </th>
-      <th width="160" scope="col">
+      <th width="250" scope="col">
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
           <hq-button routerLink="/quotes/create">
             <i class="bi bi-plus"></i>
@@ -98,9 +98,24 @@
         <td class="text-right">
           <div class="text-nowrap divide-x divide-teal-200">
             @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+              @if (record.hasProject) {
+                <span class="text-nav-disabled pr-3"
+                  ><i class="bi bi-plus"></i> PROJECT</span
+                >
+              } @else {
+                <a
+                  [routerLink]="['/projects/create']"
+                  [queryParams]="{
+                    clientId: record.clientId,
+                    quoteId: record.id,
+                  }"
+                  class="text-teal-200 hover:text-teal-300 pr-3"
+                  ><i class="bi bi-plus"></i> PROJECT</a
+                >
+              }
               <a
                 [routerLink]="['edit', record.id]"
-                class="text-teal-200 hover:text-teal-300 pr-3"
+                class="text-teal-200 hover:text-teal-300 px-3"
                 >EDIT</a
               >
             }

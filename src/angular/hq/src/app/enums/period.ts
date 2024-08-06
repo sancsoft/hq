@@ -1,4 +1,5 @@
 export enum Period {
+  None = 0,
   Week = 1,
   Month = 2,
   Quarter = 3,

@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { concat, defer, Observable, of } from 'rxjs';
+import { concat, defer, Observable, of, shareReplay } from 'rxjs';
 
 /**
  * @param formControl
@@ -11,5 +11,5 @@ export function formControlChanges<T>(
   return concat(
     defer(() => of(formControl.value)),
     formControl.valueChanges,
-  );
+  ).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 }

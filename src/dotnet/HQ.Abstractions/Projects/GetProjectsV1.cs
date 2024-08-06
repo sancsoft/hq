@@ -111,5 +111,7 @@ public class GetProjectsV1
         public decimal? SummaryPercentCompleteSort { get; set; }
         public ProjectType Type { get; set; }
         public bool Billable { get; set; }
+        public decimal? ProjectBookingHours { get; set; }
+        public decimal? ProjectTotalHours { get; set; }
     }
 }

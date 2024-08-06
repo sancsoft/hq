@@ -1,44 +1,45 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 import {
   Observable,
   Subject,
-  combineLatest,
-  filter,
   firstValueFrom,
   map,
   shareReplay,
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
-import { HQService } from '../../services/hq.service';
+import { CoreModule } from '../../../core/core.module';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
   Validators,
+  AbstractControl,
+  ValidationErrors,
+  ReactiveFormsModule,
 } from '@angular/forms';
+import { enumToArray } from '../../../core/functions/enum-to-array';
+import { formControlChanges } from '../../../core/functions/form-control-changes';
+import { Period } from '../../../enums/period';
+import { ProjectStatus } from '../../../enums/project-status';
+import { ProjectType } from '../../../enums/project-type';
+import { APIError } from '../../../errors/apierror';
+import { GetClientRecordV1 } from '../../../models/clients/get-client-v1';
+import { SortDirection } from '../../../models/common/sort-direction';
 import {
   GetQuotesRecordV1,
   SortColumn as QuoteSortColumn,
-} from '../../models/quotes/get-quotes-v1';
-import { APIError } from '../../errors/apierror';
-import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
-import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
-import { Router, ActivatedRoute } from '@angular/router';
-import { localISODate } from '../../common/functions/local-iso-date';
-import { Period } from '../../enums/period';
-import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
-import { CoreModule } from '../../core/core.module';
-import { enumToArray } from '../../core/functions/enum-to-array';
-import { ProjectStatus } from '../../enums/project-status';
-import { ProjectType } from '../../enums/project-type';
-import { formControlChanges } from '../../core/functions/form-control-changes';
-import { SortDirection } from '../../models/common/sort-direction';
+} from '../../../models/quotes/get-quotes-v1';
+import { GetStaffV1Record } from '../../../models/staff-members/get-staff-member-v1';
+import { HQService } from '../../../services/hq.service';
+import { GetProjectRecordV1 } from '../../../models/projects/get-project-v1';
+import { ProjectDetailsService } from '../project-details.service';
 
 interface Form {
   clientId: FormControl<string | null>;
@@ -56,23 +57,25 @@ interface Form {
   totalHours: FormControl<number | null>;
   projectNumber: FormControl<number | null>;
 }
+
 @Component({
-  selector: 'hq-project-create',
+  selector: 'hq-project-edit',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SelectableClientListComponent,
-    PdfViewerComponent,
+    RouterLink,
+    RouterLinkActive,
     CoreModule,
+    ReactiveFormsModule,
   ],
-  templateUrl: './project-create.component.html',
+  templateUrl: './project-edit.component.html',
 })
-export class ProjectCreateComponent implements OnDestroy, OnInit {
+export class ProjectEditComponent implements OnInit, OnDestroy {
+  psrId$: Observable<string | null>;
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
   clients$: Observable<GetClientRecordV1[]>;
+  project$: Observable<GetProjectRecordV1>;
 
   public projectStatusValues = enumToArray(ProjectStatus);
   public projectTypeValues = enumToArray(ProjectType);
@@ -94,10 +97,10 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
       totalHours: new FormControl(null, [Validators.required]),
       bookingPeriod: new FormControl(Period.Month),
       quoteId: new FormControl(null, [Validators.required]),
-      startDate: new FormControl(localISODate(), Validators.required),
+      startDate: new FormControl(null),
       endDate: new FormControl(null),
-      type: new FormControl(ProjectType.Ongoing),
-      status: new FormControl(ProjectStatus.Draft),
+      type: new FormControl(null),
+      status: new FormControl(null),
       billable: new FormControl(true, { nonNullable: true }),
       bookingHours: new FormControl(null, [Validators.required]),
       projectNumber: new FormControl(null),
@@ -109,7 +112,17 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
+    public projectDetailsService: ProjectDetailsService,
   ) {
+    this.form.disable();
+
+    this.psrId$ = route.queryParams.pipe(map((t) => t['psrId']));
+    this.project$ = route.parent!.paramMap.pipe(
+      map((params) => params.get('projectId')),
+      switchMap((projectId) => this.hqService.getProjectsV1({ id: projectId })),
+      map((t) => t.records[0]),
+    );
+
     this.projectManagers$ = this.hqService.getStaffMembersV1({}).pipe(
       map((t) => t.records),
       shareReplay({ bufferSize: 1, refCount: false }),
@@ -121,7 +134,6 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
     );
 
     const clientId$ = formControlChanges(this.form.controls.clientId);
-    const quoteId$ = formControlChanges(this.form.controls.quoteId);
     const projectType$ = formControlChanges(this.form.controls.type);
 
     this.quotes$ = clientId$.pipe(
@@ -147,26 +159,12 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
               this.form.controls.totalHours.disable();
               this.form.controls.projectNumber.disable();
 
-              this.form.patchValue({
-                quoteId: null,
-                totalHours: null,
-                projectNumber: null,
-                billable: false,
-                status: ProjectStatus.Ongoing,
-              });
-
               this.form.controls.bookingPeriod.enable();
               this.form.controls.bookingHours.enable();
               break;
             case ProjectType.Ongoing:
               this.form.controls.quoteId.disable();
               this.form.controls.totalHours.disable();
-
-              this.form.patchValue({
-                quoteId: null,
-                totalHours: null,
-                billable: true,
-              });
 
               this.form.controls.projectNumber.enable();
               this.form.controls.bookingPeriod.enable();
@@ -177,63 +175,8 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
               this.form.controls.bookingPeriod.disable();
               this.form.controls.bookingHours.disable();
 
-              this.form.patchValue({
-                projectNumber: null,
-                bookingPeriod: null,
-                bookingHours: null,
-                billable: true,
-              });
-
-              this.form.controls.quoteId.enable();
               this.form.controls.totalHours.enable();
               break;
-          }
-        },
-        error: console.error,
-      });
-
-    const selectedClient$ = combineLatest({
-      clientId: clientId$,
-      clients: this.clients$,
-    }).pipe(map((t) => t.clients.find((x) => x.id == t.clientId)));
-
-    const selectedQuote$ = combineLatest({
-      quoteId: quoteId$,
-      quotes: this.quotes$,
-    }).pipe(map((t) => t.quotes.find((x) => x.id == t.quoteId)));
-
-    selectedQuote$
-      .pipe(
-        filter(() => this.form.value.type == ProjectType.Quote),
-        takeUntil(this.destroy),
-      )
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-      .subscribe({
-        next: (quote) => {
-          if (quote) {
-            this.form.patchValue({
-              name: quote.name,
-              status: quote.status,
-              clientId: quote.clientId,
-            });
-          }
-        },
-        error: console.error,
-      });
-
-    selectedClient$
-      .pipe(
-        filter(() => this.form.value.type == ProjectType.Quote),
-        takeUntil(this.destroy),
-      )
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-      .subscribe({
-        next: (client) => {
-          if (client) {
-            this.form.controls.hourlyRate.setValue(client.hourlyRate ?? null);
-            this.form.controls.quoteId.enable();
-          } else {
-            this.form.controls.quoteId.disable();
           }
         },
         error: console.error,
@@ -241,15 +184,28 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
   }
 
   async ngOnInit() {
-    const clientId = this.route.snapshot.queryParamMap.get('clientId');
-    if (clientId) {
-      this.form.patchValue({ clientId });
-    }
+    const project = await firstValueFrom(this.project$);
+    this.form.enable();
+    this.form.patchValue({
+      clientId: project.clientId,
+      name: project.name,
+      projectManagerId: project.projectManagerId,
+      hourlyRate: project.hourlyRate,
+      totalHours: project.projectTotalHours,
+      bookingPeriod: project.bookingPeriod,
+      quoteId: project.quoteId,
+      startDate: project.startDate,
+      endDate: project.endDate,
+      type: project.type,
+      status: project.projectStatus,
+      billable: project.billable,
+      bookingHours: project.projectBookingHours,
+      projectNumber: project.projectNumber,
+    });
 
-    const quoteId = this.route.snapshot.queryParamMap.get('quoteId');
-    if (quoteId) {
-      this.form.patchValue({ quoteId, type: ProjectType.Quote });
-    }
+    this.form.controls.clientId.disable();
+    this.form.controls.quoteId.disable();
+    this.form.controls.type.disable();
   }
 
   private destroy = new Subject<void>();
@@ -261,15 +217,18 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
 
   async onSubmit() {
     this.form.markAllAsTouched();
+    const project = await firstValueFrom(this.project$);
 
     try {
-      if (this.form.valid && this.form.touched && this.form.dirty) {
-        const request = this.form.value;
-        const response = await firstValueFrom(
-          this.hqService.upsertProjectV1(request),
+      if (this.form.valid) {
+        const request = this.form.getRawValue();
+        await firstValueFrom(
+          this.hqService.upsertProjectV1({ id: project.id, ...request }),
         );
 
-        await this.router.navigate(['../', response.id], {
+        this.projectDetailsService.refresh();
+
+        await this.router.navigate(['../'], {
           relativeTo: this.route,
         });
       } else {

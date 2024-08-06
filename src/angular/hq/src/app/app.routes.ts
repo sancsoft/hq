@@ -231,50 +231,63 @@ export const routes: Routes = [
         title: 'Project Details',
         canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
-          import('./projects/project-view/project-view.component').then(
-            (m) => m.ProjectViewComponent,
+          import('./projects/project-details/project-details.component').then(
+            (m) => m.ProjectDetailsComponent,
           ),
         children: [
           {
             path: '',
-            redirectTo: 'details',
-            pathMatch: 'full',
-          },
-          {
-            path: 'details',
             title: 'Project Details',
             canActivate: [userRoleGuard(HQRole.Staff)],
             loadComponent: () =>
               import(
-                './projects/project-details/project-details.component'
-              ).then((m) => m.ProjectDetailsComponent),
+                './projects/project-details/project-view/project-view.component'
+              ).then((m) => m.ProjectViewComponent),
           },
           {
             path: 'edit',
             title: 'Edit Project',
             canActivate: [userRoleGuard(HQRole.Administrator)],
             loadComponent: () =>
-              import('./projects/project-edit/project-edit.component').then(
-                (m) => m.ProjectEditComponent,
-              ),
+              import(
+                './projects/project-details/project-edit/project-edit.component'
+              ).then((m) => m.ProjectEditComponent),
+          },
+          {
+            path: 'activities',
+            title: 'Project Activities',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './projects/project-details/project-activity-list/project-activity-list.component'
+              ).then((m) => m.ProjectActivityListComponent),
+          },
+          {
+            path: 'roster',
+            title: 'Project Roster',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './projects/project-details/project-roster-list/project-roster-list.component'
+              ).then((m) => m.ProjectRosterListComponent),
           },
           {
             path: 'report',
             title: 'Project PSR Report',
             canActivate: [userRoleGuard(HQRole.Staff)],
             loadComponent: () =>
-              import('./projects/project-report/project-report.component').then(
-                (m) => m.ProjectReportComponent,
-              ),
+              import(
+                './projects/project-details/project-report/project-report.component'
+              ).then((m) => m.ProjectReportComponent),
           },
           {
             path: 'time',
             title: 'Project PSR Time',
             canActivate: [userRoleGuard(HQRole.Staff)],
             loadComponent: () =>
-              import('./projects/project-time/project-time.component').then(
-                (m) => m.ProjectTimeComponent,
-              ),
+              import(
+                './projects/project-details/project-time/project-time.component'
+              ).then((m) => m.ProjectTimeComponent),
           },
         ],
       },

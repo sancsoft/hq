@@ -24,6 +24,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { PsrListService } from './services/pstlistService';
 import { ProjectStatus } from '../../enums/project-status';
 import { Period } from '../../enums/period';
+import { ProjectType } from '../../enums/project-type';
 
 @Component({
   selector: 'hq-psrlist',
@@ -52,6 +53,7 @@ export class PSRListComponent implements OnInit {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   ProjectStatus = ProjectStatus;
+  ProjectType = ProjectType;
 
   async ngOnInit() {
     this.psrListService.showSearch();

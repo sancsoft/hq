@@ -1,12 +1,13 @@
 import { Period } from '../../enums/period';
 import { ProjectStatus } from '../../enums/project-status';
+import { ProjectType } from '../../enums/project-type';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
 
 export interface GetProjectRequestV1 extends PagedRequestV1 {
   search?: string | null;
-  id?: string;
+  id?: string | null;
   clientId?: string | null;
   sortBy: SortColumn;
   projectManagerId: string | null;
@@ -41,20 +42,20 @@ export enum SortColumn {
 
 export interface GetProjectRecordV1 {
   id: string;
-  projectNumber: string;
+  projectNumber: number | null;
   chargeCode: string | null;
   clientId: string;
   clientName: string;
-  projectManagerId: number;
+  projectManagerId: string | null;
   projectManagerName: string | null;
   name: string;
-  quoteId: number | null;
+  quoteId: string | null;
   quoteNumber: string | null;
   hourlyRate: number;
   bookingHours: number;
   bookingPeriod: Period;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   projectStatus: ProjectStatus;
   billingEmail: string;
   officialName: string;
@@ -68,6 +69,10 @@ export interface GetProjectRecordV1 {
   totalPercentComplete?: number;
   bookingPercentComplete?: number;
   totalHours: number;
+  type: ProjectType;
+  billable: boolean;
+  projectTotalHours: number | null;
+  projectBookingHours: number | null;
 }
 
 export interface GetProjectResponseV1
