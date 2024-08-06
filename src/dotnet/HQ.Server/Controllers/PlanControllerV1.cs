@@ -83,7 +83,6 @@ namespace HQ.Server.Controllers
                 {
                     return Forbid();
                 }
-                request.StaffId = staffId.Value;
 
                 var authorizationResult = await _authorizationService
                     .AuthorizeAsync(User, new Plan() { StaffId = request.StaffId, Date = request.Date, Body = request.Body }, PlanOperation.UpsertPlan);
