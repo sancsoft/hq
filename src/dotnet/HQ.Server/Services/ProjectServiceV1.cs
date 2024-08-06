@@ -490,4 +490,37 @@ public class ProjectServiceV1
             Id = activity.Id
         };
     }
+
+    public async Task<Result<AddProjectMemberV1.Response>> AddProjectMemberV1(AddProjectMemberV1.Request request, CancellationToken ct = default)
+    {
+        var projectMember = await _context.ProjectMembers.SingleOrDefaultAsync(t => t.ProjectId == request.ProjectId && t.StaffId == request.StaffId, ct);
+        if (projectMember == null)
+        {
+            projectMember = new ProjectMember()
+            {
+                ProjectId = request.ProjectId,
+                StaffId = request.StaffId
+            };
+
+            _context.ProjectMembers.Add(projectMember);
+            await _context.SaveChangesAsync(ct);
+        }
+
+        return new AddProjectMemberV1.Response()
+        {
+            Id = projectMember.Id
+        };
+    }
+
+    public async Task<Result<RemoveProjectMemberV1.Response>> RemoveProjectMemberV1(RemoveProjectMemberV1.Request request, CancellationToken ct = default)
+    {
+        var projectMember = await _context.ProjectMembers.SingleOrDefaultAsync(t => t.ProjectId == request.ProjectId && t.StaffId == request.StaffId, ct);
+        if (projectMember != null)
+        {
+            _context.ProjectMembers.Remove(projectMember);
+            await _context.SaveChangesAsync(ct);
+        }
+
+        return new RemoveProjectMemberV1.Response();
+    }
 }

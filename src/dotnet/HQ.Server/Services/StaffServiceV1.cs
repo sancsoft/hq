@@ -159,6 +159,11 @@ public class StaffServiceV1
             }
         }
 
+        if (request.ProjectId.HasValue)
+        {
+            records = records.Where(t => t.ProjectMembers.Any(x => x.ProjectId == request.ProjectId.Value));
+        }
+
         var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
         {
             { Abstractions.Staff.GetStaffV1.SortColumn.Name, "Name" },
