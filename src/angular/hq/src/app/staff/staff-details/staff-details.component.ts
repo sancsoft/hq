@@ -8,11 +8,18 @@ import {
 import { Component, OnDestroy } from '@angular/core';
 import { map, ReplaySubject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { StatDisplayComponent } from '../../core/components/stat-display/stat-display.component';
 
 @Component({
   selector: 'hq-staff-details',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    CommonModule,
+    StatDisplayComponent,
+  ],
   templateUrl: './staff-details.component.html',
 })
 export class StaffDetailsComponent implements OnDestroy {

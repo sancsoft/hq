@@ -126,6 +126,10 @@ public class StaffServiceV1
         var startYearDate = today.GetPeriodStartDate(Period.Year);
         var endYearDate = today.GetPeriodEndDate(Period.Year);
 
+        var startMonthDate = today.GetPeriodStartDate(Period.Month);
+        var endMonthDate = today.GetPeriodEndDate(Period.Month);
+
+
         if (!string.IsNullOrEmpty(request.Search))
         {
             records = records.Where(t =>
@@ -181,6 +185,7 @@ public class StaffServiceV1
             Status = t.Plans.Where(t => t.Date == today).Select(x => x.Status).SingleOrDefault(),
             Hrs = t.Times.Where(x => x.StaffId == t.Id && x.Date >= startYearDate && x.Date <= endYearDate).Sum(y => y.Hours),
             BillableHrs = t.Times.Where(x => x.StaffId == t.Id && x.Date >= startYearDate && x.Date <= endYearDate && x.ChargeCode.Billable == true).Sum(y => y.Hours),
+            HrsThisMonth = t.Times.Where(x => x.StaffId == t.Id && x.Date >= startMonthDate && x.Date <= endMonthDate).Sum(y => y.Hours),
             FirstName = t.FirstName,
             LastName = t.LastName,
             Email = t.Email

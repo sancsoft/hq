@@ -47,6 +47,8 @@ public class GetStaffV1
         public int VacationHours { get; set; }
         public Decimal Hrs { get; set; }
         public Decimal BillableHrs { get; set; }
+        public Decimal HrsThisMonth { get; set; }
+
         public string? Status { get; set; }
         public string? Role { get; set; }
         public Jurisdiciton Jurisdiciton { get; set; }

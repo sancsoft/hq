@@ -1,32 +1,73 @@
-<div class="bg-black-alt overflow-y-auto h-[calc(100dvh-245px)] px-5">
-  <main class="flex gap-4 my-4">
-    <div>
-      <a
-        routerLink="./"
-        [routerLinkActiveOptions]="{ exact: true }"
-        routerLinkActive="active"
-        #rlaDetails="routerLinkActive"
-        [ngClass]="
-          rlaDetails.isActive ? 'border-gray-100' : 'border-transparent'
-        "
-        class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
-      >
-        View
-      </a>
+<div>
+  <div class="flex justify-between items-center px-5 mb-2">
+    <div class="flex-col flex-wrap content-between space-y-12">
+      <div class="text-2xl text-white">Timesheets</div>
+      <div>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          class="w-[100%] max-w-[220px] block text-[14px] px-2 py-1 appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+          placeholder="Status"
+          formControlName="name"
+          [value]="(staffDetailsService.staff$ | async)?.status"
+          readonly
+        />
+      </div>
     </div>
-    <div>
-      <a
-        routerLink="contacts"
-        routerLinkActive="active"
-        #rlaContacts="routerLinkActive"
-        [ngClass]="
-          rlaContacts.isActive ? 'border-gray-100' : 'border-transparent'
-        "
-        class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
-      >
-        Contact
-      </a>
+    <div class="flex space-x-8">
+      <div class="text-center text-white">
+        <hq-stat-display [title]="'HRS YTD'" [large]="false">{{
+          (staffDetailsService.staff$ | async)?.hrs
+        }}</hq-stat-display>
+      </div>
+      <div class="text-center text-white">
+        <hq-stat-display [title]="'BILLABLE HRS YTD'" [large]="false">{{
+          (staffDetailsService.staff$ | async)?.billableHrs
+        }}</hq-stat-display>
+      </div>
+      <div class="text-center text-white">
+        <hq-stat-display [title]="'HRS THIS MONTH'" [large]="false">{{
+          (staffDetailsService.staff$ | async)?.hrsThisMonth
+        }}</hq-stat-display>
+      </div>
+      <div class="text-center text-white">
+        <hq-stat-display [title]="'VACATION'" [large]="false">{{
+          (staffDetailsService.staff$ | async)?.vacationHours
+        }}</hq-stat-display>
+      </div>
     </div>
-  </main>
-  <router-outlet></router-outlet>
+  </div>
+  <div class="bg-black-alt overflow-y-auto h-[calc(100dvh-245px)] px-5">
+    <main class="flex gap-4 my-4">
+      <div>
+        <a
+          routerLink="./"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="active"
+          #rlaDetails="routerLinkActive"
+          [ngClass]="
+            rlaDetails.isActive ? 'border-gray-100' : 'border-transparent'
+          "
+          class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+        >
+          View
+        </a>
+      </div>
+      <div class="hidden">
+        <a
+          routerLink="contacts"
+          routerLinkActive="active"
+          #rlaContacts="routerLinkActive"
+          [ngClass]="
+            rlaContacts.isActive ? 'border-gray-100' : 'border-transparent'
+          "
+          class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+        >
+          Contact
+        </a>
+      </div>
+    </main>
+    <router-outlet></router-outlet>
+  </div>
 </div>

@@ -42,6 +42,7 @@ export interface GetStaffV1Record {
   status?: string;
   hrs?: number;
   billableHrs?: number;
+  hrsThisMonth?: number;
 }
 
 export interface GetStaffV1Response extends PagedResponseV1<GetStaffV1Record> {}
