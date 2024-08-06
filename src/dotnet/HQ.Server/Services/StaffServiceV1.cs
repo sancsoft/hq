@@ -163,10 +163,10 @@ public class StaffServiceV1
         }
 
 
-        if (!request.Status.IsNullOrEmpty())
+        if (!String.IsNullOrEmpty(request.Status))
         {
 
-            records = records.Where(t => t.Plans.Any(x => x.Date == today && x.Status == request.Status));
+            records = records.Where(t => t.Plans.Any(x => x.Date == today && x.Status!.ToLower() == request.Status.ToLower()));
         }
 
         var mapped = records.Select(t => new GetStaffV1.Record()

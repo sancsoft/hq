@@ -424,7 +424,7 @@ export const routes: Routes = [
   },
 
   {
-    path: 'timesheet',
+    path: 'timesheets',
     title: 'Timesheets',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
@@ -439,8 +439,9 @@ export const routes: Routes = [
             (m) => m.StaffListComponent,
           ),
       },
+
       {
-        path: 'staffDetails/:staffId',
+        path: ':staffId',
         title: 'staff Details',
         canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
@@ -449,7 +450,7 @@ export const routes: Routes = [
           ),
         children: [
           {
-            path: 'view',
+            path: '',
             title: 'staff View',
             canActivate: [userRoleGuard(HQRole.Staff)],
             loadComponent: () =>
@@ -458,12 +459,21 @@ export const routes: Routes = [
               ).then((m) => m.StaffViewComponent),
           },
           {
+            path: 'edit',
+            title: 'Edit Staff',
+            canActivate: [userRoleGuard(HQRole.Administrator)],
+            loadComponent: () =>
+              import('./staff/staff-edit/staff-edit.component').then(
+                (m) => m.StaffEditComponent,
+              ),
+          },
+          {
             path: 'contacts',
             title: 'staff Contacts',
             canActivate: [userRoleGuard(HQRole.Staff)],
             loadComponent: () =>
               import(
-                './staff/staff-details//staff-contacts/staff-contacts.component'
+                './staff/staff-details/staff-contacts/staff-contacts.component'
               ).then((m) => m.StaffContactsComponent),
           },
         ],
@@ -475,15 +485,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./staff/staff-create/staff-create.component').then(
             (m) => m.StaffCreateComponent,
-          ),
-      },
-      {
-        path: 'edit/:staffId',
-        title: 'Edit Staff',
-        canActivate: [userRoleGuard(HQRole.Administrator)],
-        loadComponent: () =>
-          import('./staff/staff-edit/staff-edit.component').then(
-            (m) => m.StaffEditComponent,
           ),
       },
     ],

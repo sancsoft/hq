@@ -20,7 +20,7 @@ public class PlanServiceV1
     public async Task<Result<UpsertPlanV1.Response>> UpsertPlanV1(UpsertPlanV1.Request request, CancellationToken ct = default)
     {
         var plan = await _context.Plans
-            .Where(p => p.Date == request.Date || p.Id == request.Id)
+            .Where(p => p.Date == request.Date && p.StaffId == request.StaffId)
             .FirstOrDefaultAsync(ct);
 
         if (plan == null)

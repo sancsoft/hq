@@ -19,7 +19,7 @@ export class StaffDetailsComponent implements OnDestroy {
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   constructor(
-    private staffDetailsService: StaffDetailsService,
+    public staffDetailsService: StaffDetailsService,
     private route: ActivatedRoute,
   ) {
     const staffId$ = route.paramMap.pipe(map((t) => t.get('staffId')));

@@ -133,11 +133,11 @@
         <td class="border-b border-black py-2">{{ member.status ?? "-" }}</td>
 
         <td class="border-b border-black py-2 text-right pr-5">
-          <div class="text-nowrap divide-x divide-teal-200">
+          <div class="text-nowrap divide-x divide-teal-200 uppercase">
             <a class="text-teal-200 hover:text-teal-300 pr-3">Timesheet</a>
 
             <a
-              [routerLink]="['staffDetails', member.id]"
+              [routerLink]="[member.id]"
               class="text-teal-200 hover:text-teal-300 pl-3"
               >View</a
             >

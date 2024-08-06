@@ -1,47 +1,39 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
-    <div class="px-5">
-      <h1 class="font-rajdhani font-semibold text-3xl">Edit Staff Member</h1>
-
-      <div class="py-3">
-        <a routerLink="/staff" class="text-gray-50 underline">Staff List</a>
-      </div>
-    </div>
-
     <div class="overflow-hidden flex-auto">
       <div class="grid gap-0 relative">
         <main
           class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]"
         >
           <div
+            class="flex border-b justify-between items-center border-black px-5"
+          >
+            <div class="font-bold">Staff Information</div>
+            <div class="pb-2">
+              <hq-button type="submit">Save</hq-button>
+            </div>
+          </div>
+
+          <!-- <div
             class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
           >
             <div
               class="w-full flex flex-row border-b border-black justify-between pe-5"
             >
-              <div class="flex pt-[23px]">
-                <a
-                  href="#"
-                  routerLink="projects"
-                  routerLinkActive="border-gray-100"
-                  class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
-                  >Details</a
-                >
-              </div>
               <div class="flex flex-column justify-center items-center">
                 <button
+                  routerLink="edit"
                   type="submit"
                   class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
                 >
-                  Save
+                  Edit
                 </button>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="grid flex-1">
             <div class="p-5 pr-0">
               <div class="grid gap-[20px]">
-                <hq-error-display [errors]="apiErrors"></hq-error-display>
                 <!-- row grid -->
                 <div
                   class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"

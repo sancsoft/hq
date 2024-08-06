@@ -197,7 +197,6 @@
     (staffDashboardService.showAllRejectedTimes$ | async)
   ) { -->
         <div
-          class="bg-black-alt"
           [hidden]="
             staffDashboardService.period.value === Period.Today &&
             (staffDashboardService.showAllRejectedTimes$ | async) !== true
