@@ -2,7 +2,15 @@
 import { StaffDashboardPlanningPointComponent } from './staff-dashboard-planning-point/staff-dashboard-planning-point.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { PanelComponent } from './../core/components/panel/panel.component';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -91,7 +99,7 @@ export interface PointForm {
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
 })
-export class StaffDashboardComponent implements OnInit, OnDestroy {
+export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   Period = Period;
   HQRole = HQRole;
 
@@ -113,6 +121,9 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
+  @Input({ required: true })
+  staffId!: string | null;
 
   async ngOnInit() {
     // this is added to make sure that the upsert method works in value changes
@@ -141,11 +152,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
       map((chargeCode) => chargeCode.records),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
-    const staffId$ = oidcSecurityService.userData$.pipe(
-      map((t) => t.userData),
-      map((t) => t.staff_id as string),
-      distinctUntilChanged(),
-    );
+    const staffId$ = this.staffDashboardService.staffId$;
     const date$ = staffDashboardService.date.valueChanges
       .pipe(startWith(staffDashboardService.date.value))
       .pipe(map((t) => t || localISODate()));
@@ -280,6 +287,11 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
       automaticLayout: true,
     });
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['staffId'] && this.staffId !== null) {
+      this.staffDashboardService.setStaffId(this.staffId);
+    }
+  }
 
   insertTextAtCursor() {
     const selection = this.editorInstance.getSelection();
@@ -412,11 +424,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
           map((t) => t.dates.flatMap((d) => d.times.map((time) => time.id))),
         ),
       );
-      const staffId = await firstValueFrom(
-        this.oidcSecurityService.userData$.pipe(
-          map((t) => t.userData?.staff_id),
-        ),
-      );
+      const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
       if (staffId) {
         const submitTimesRequest = { ids: timesIds, staffId: staffId };
         await firstValueFrom(this.hqService.submitTimesV1(submitTimesRequest));

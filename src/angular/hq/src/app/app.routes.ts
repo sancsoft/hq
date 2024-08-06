@@ -422,7 +422,6 @@ export const routes: Routes = [
       },
     ],
   },
-
   {
     path: 'timesheets',
     title: 'Timesheets',
@@ -439,7 +438,14 @@ export const routes: Routes = [
             (m) => m.StaffListComponent,
           ),
       },
-
+      {
+        path: ':staffId/timesheet',
+        canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
+        loadComponent: () =>
+          import('./staff/staff-timesheet/staff-timesheet.component').then(
+            (m) => m.StaffTimesheetComponent,
+          ),
+      },
       {
         path: ':staffId',
         title: 'staff Details',
@@ -521,8 +527,8 @@ export const routes: Routes = [
     title: 'Dashboard',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
-      import('./staff-dashboard/staff-dashboard.component').then(
-        (m) => m.StaffDashboardComponent,
+      import('./dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent,
       ),
   },
 ];

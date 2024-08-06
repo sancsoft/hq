@@ -33,7 +33,6 @@ import {
   BehaviorSubject,
   catchError,
   combineLatest,
-  distinctUntilChanged,
   firstValueFrom,
   map,
   Observable,
@@ -118,15 +117,10 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
     private oidcSecurityService: OidcSecurityService,
     private cdr: ChangeDetectorRef,
   ) {
-    const staffId$ = oidcSecurityService.userData$.pipe(
-      map((t) => t.userData),
-      map((t) => t.staff_id as string),
-      distinctUntilChanged(),
-    );
     // const date$ = staffDashboardService.date.valueChanges
     //   .pipe(startWith(staffDashboardService.date.value))
     //   .pipe(map((t) => t || localISODate()));
-    this.staffId$ = staffId$;
+    this.staffId$ = this.staffDashboardService.staffId$;
     this.planningPointDate$ =
       staffDashboardService.planningPointdateForm.valueChanges
         .pipe(startWith(staffDashboardService.planningPointdateForm.value))
@@ -151,7 +145,7 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       });
     this.planningPointsRequest$ = combineLatest({
       date: this.planningPointDate$,
-      staffId: staffId$,
+      staffId: this.staffDashboardService.staffId$,
       trigger: this.planningPointsRequestTrigger$.pipe(startWith(0)),
     }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 

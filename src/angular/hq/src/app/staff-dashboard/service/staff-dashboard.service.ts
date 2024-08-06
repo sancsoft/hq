@@ -9,6 +9,7 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  filter,
   map,
   merge,
   shareReplay,
@@ -24,6 +25,7 @@ import {
 import { localISODate } from '../../common/functions/local-iso-date';
 import { TimeStatus } from '../../enums/time-status';
 import { Period } from '../../enums/period';
+import { HQRole } from '../../enums/hqrole';
 
 @Injectable({
   providedIn: 'root',
@@ -49,17 +51,48 @@ export class StaffDashboardService {
   showAllRejectedTimes$ = new BehaviorSubject<boolean>(false);
   rejectedCount$: Observable<number>;
 
+  staffId$: Observable<string>;
+  private staffIdSubject = new BehaviorSubject<string | null>(null);
+
   refresh$ = new Subject<void>();
+
+  canEdit$: Observable<boolean>;
+  isAdmin$: Observable<boolean>;
 
   constructor(
     private hqService: HQService,
     private oidcSecurityService: OidcSecurityService,
   ) {
-    const staffId$ = oidcSecurityService.userData$.pipe(
+    const staffId$ = this.staffIdSubject.asObservable().pipe(
+      filter((staffId) => staffId != null),
+      map((staffId) => staffId!),
+    );
+
+    const refreshStaffId$ = this.refresh$.pipe(switchMap(() => staffId$));
+
+    this.staffId$ = merge(staffId$, refreshStaffId$);
+
+    const currentUserStaffId$ = oidcSecurityService.userData$.pipe(
       map((t) => t.userData),
       map((t) => t.staff_id as string),
-      distinctUntilChanged(),
     );
+
+    this.isAdmin$ = oidcSecurityService.userData$.pipe(
+      map((t) => t.userData),
+      map(
+        (t) =>
+          t &&
+          t.roles &&
+          Array.isArray(t.roles) &&
+          [HQRole.Administrator].some((role) => t.roles.includes(role)),
+      ),
+    );
+
+    this.canEdit$ = combineLatest({
+      staffId: this.staffId$,
+      currentUserStaffId: currentUserStaffId$,
+      isAdmin: this.isAdmin$,
+    }).pipe(map((t) => t.isAdmin || t.staffId == t.currentUserStaffId));
 
     const search$ = this.search.valueChanges.pipe(startWith(this.search.value));
     const period$ = this.period.valueChanges.pipe(startWith(this.period.value));
@@ -100,7 +133,12 @@ export class StaffDashboardService {
     this.chargeCodes$ = this.time$.pipe(map((t) => t.chargeCodes));
     this.clients$ = this.time$.pipe(map((t) => t.clients));
   }
+
   refresh() {
     this.refresh$.next();
+  }
+
+  setStaffId(staffId: string) {
+    this.staffIdSubject.next(staffId);
   }
 }
