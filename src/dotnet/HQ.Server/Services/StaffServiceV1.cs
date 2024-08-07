@@ -170,6 +170,10 @@ public class StaffServiceV1
         {
             records = records.Where(t => t.ProjectMembers.Any(x => x.ProjectId == request.ProjectId.Value));
         }
+        if (request.ExcludeProjectId.HasValue)
+        {
+            records = records.Where(t => !t.ProjectMembers.Any(x => x.ProjectId == request.ExcludeProjectId.Value));
+        }
 
 
         if (!String.IsNullOrEmpty(request.Status))

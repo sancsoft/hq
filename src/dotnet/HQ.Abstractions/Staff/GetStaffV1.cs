@@ -22,6 +22,7 @@ public class GetStaffV1
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
         public bool? CurrentOnly { get; set; } = true;
         public Guid? ProjectId { get; set; }
+        public Guid? ExcludeProjectId { get; set; }
     }
 
     public enum SortColumn
