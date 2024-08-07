@@ -573,7 +573,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     await firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.refresh$.next();
-    // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.toastService.show('Updated', 'Project activity has been updated.');
   }
 
   async updateBillableHours(timeId: string, event: Event) {
