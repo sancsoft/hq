@@ -192,9 +192,20 @@ namespace HQ.Server.Services
             {
                 return Result.Fail("Time Id is required.");
             }
+
+            var chargeCodesWithActivities = await _context.ChargeCodes
+                .Where(t => t.Project!.Activities.Any())
+                .Select(t => t.Id)
+                .ToListAsync(ct);
+
             foreach (var time in timeEntries)
             {
                 if (time.Hours == 0 || String.IsNullOrEmpty(time.Notes))
+                {
+                    continue;
+                }
+
+                if (chargeCodesWithActivities.Contains(time.ChargeCodeId) && !time.ActivityId.HasValue)
                 {
                     continue;
                 }
