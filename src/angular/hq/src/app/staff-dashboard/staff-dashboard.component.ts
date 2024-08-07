@@ -168,7 +168,9 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     private cdr: ChangeDetectorRef,
   ) {
     this.canEdit$ = this.staffDashboardService.canEdit$;
-    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({});
+    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({
+      active: true,
+    });
     this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),
       shareReplay({ bufferSize: 1, refCount: false }),
