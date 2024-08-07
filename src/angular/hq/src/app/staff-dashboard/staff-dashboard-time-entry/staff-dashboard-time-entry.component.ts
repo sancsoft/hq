@@ -31,9 +31,12 @@ import {
   Observable,
   Subject,
   combineLatest,
+  concat,
+  defer,
   distinctUntilChanged,
   firstValueFrom,
   map,
+  of,
   shareReplay,
   startWith,
   takeUntil,
@@ -158,17 +161,19 @@ export class StaffDashboardTimeEntryComponent
       .pipe(takeUntil(this.destroyed$))
       // eslint-disable-next-line rxjs/no-ignored-error
       .subscribe((canEdit) => {
-        console.log(canEdit, 'Can edit');
-        canEdit ? this.form.enable() : this.form.disable();
+        canEdit
+          ? this.form.enable({ emitEvent: false })
+          : this.form.disable({ emitEvent: false });
       });
   }
   constructor(
     public staffDashboardService: StaffDashboardService,
     private modalService: ModalService,
   ) {
-    const form$ = this.form.valueChanges.pipe(
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
+    const form$ = concat(
+      defer(() => of(this.form.value)),
+      this.form.valueChanges,
+    ).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
     const clientId$ = form$.pipe(
       map((t) => t.clientId),
