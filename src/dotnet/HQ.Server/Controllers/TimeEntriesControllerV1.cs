@@ -69,7 +69,6 @@ namespace HQ.Server.Controllers
             }
             else
             {
-                request.StaffId = User.GetStaffId();
                 if (!request.StaffId.HasValue)
                 {
                     return Forbid();
@@ -105,7 +104,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            request.StaffId = staffId;
             return await _TimeEntryServiceV1.UpsertTimeDescriptionV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -127,7 +125,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            request.StaffId = staffId;
             return await _TimeEntryServiceV1.UpsertTimeChargecodeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -149,7 +146,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            request.StaffId = staffId;
             return await _TimeEntryServiceV1.UpsertTimeDateV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -170,7 +166,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            request.StaffId = staffId;
             return await _TimeEntryServiceV1.UpsertTimeTaskV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }

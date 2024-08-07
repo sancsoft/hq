@@ -121,7 +121,14 @@ public class StaffServiceV1
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
 
-        var total = await records.CountAsync(ct);
+
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        var startYearDate = today.GetPeriodStartDate(Period.Year);
+        var endYearDate = today.GetPeriodEndDate(Period.Year);
+
+        var startMonthDate = today.GetPeriodStartDate(Period.Month);
+        var endMonthDate = today.GetPeriodEndDate(Period.Month);
+
 
         if (!string.IsNullOrEmpty(request.Search))
         {
@@ -164,32 +171,11 @@ public class StaffServiceV1
             records = records.Where(t => t.ProjectMembers.Any(x => x.ProjectId == request.ProjectId.Value));
         }
 
-        var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
+
+        if (!String.IsNullOrEmpty(request.Status))
         {
-            { Abstractions.Staff.GetStaffV1.SortColumn.Name, "Name" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.FirstName, "FirstName" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.LastName, "LastName" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.StartDate, "StartDate" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.EndDate, "EndDate" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.VacationHours, "VacationHours" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.WorkHours, "WorkHours" },
 
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        records = request.SortDirection == SortDirection.Asc ?
-            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
-
-        if (request.Skip.HasValue)
-        {
-            records = records.Skip(request.Skip.Value);
-        }
-
-        if (request.Take.HasValue)
-        {
-            records = records.Take(request.Take.Value);
+            records = records.Where(t => t.Plans.Any(x => x.Date == today && x.Status!.ToLower() == request.Status.ToLower()));
         }
 
         var mapped = records.Select(t => new GetStaffV1.Record()
@@ -201,10 +187,48 @@ public class StaffServiceV1
             Jurisdiciton = t.Jurisdiciton,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
+            Status = t.Plans.Where(t => t.Date == today).Select(x => x.Status).SingleOrDefault(),
+            Hrs = t.Times.Where(x => x.StaffId == t.Id && x.Date >= startYearDate && x.Date <= endYearDate).Sum(y => y.Hours),
+            BillableHrs = t.Times.Where(x => x.StaffId == t.Id && x.Date >= startYearDate && x.Date <= endYearDate && x.ChargeCode.Billable == true).Sum(y => y.Hours),
+            HrsThisMonth = t.Times.Where(x => x.StaffId == t.Id && x.Date >= startMonthDate && x.Date <= endMonthDate).Sum(y => y.Hours),
             FirstName = t.FirstName,
             LastName = t.LastName,
             Email = t.Email
         });
+
+
+        var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
+        {
+            { Abstractions.Staff.GetStaffV1.SortColumn.Name, "Name" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.FirstName, "FirstName" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.Hrs, "Hrs" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.BillableHrs, "BillableHrs" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.Jurisdiciton, "Jurisdiciton" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.Status, "Status" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.LastName, "LastName" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.StartDate, "StartDate" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.EndDate, "EndDate" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.VacationHours, "VacationHours" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.WorkHours, "WorkHours" },
+
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+        mapped = request.SortDirection == SortDirection.Asc ?
+            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+        if (request.Skip.HasValue)
+        {
+            mapped = mapped.Skip(request.Skip.Value);
+        }
+
+        if (request.Take.HasValue)
+        {
+            mapped = mapped.Take(request.Take.Value);
+        }
+        var total = await records.CountAsync(ct);
 
         var response = new GetStaffV1.Response()
         {

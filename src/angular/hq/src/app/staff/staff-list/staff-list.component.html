@@ -1,5 +1,5 @@
 <div class="px-5">
-  <h1 class="font-rajdhani font-semibold text-3xl">Staff Members</h1>
+  <h1 class="font-rajdhani font-semibold text-3xl">Timesheets</h1>
 
   <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
@@ -13,6 +13,7 @@
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
         (click)="onSortClick(sortColumn.Name)"
+        width="220px"
       >
         Name
         <hq-sort-icon
@@ -24,11 +25,12 @@
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.FirstName)"
+        (click)="onSortClick(sortColumn.Hrs)"
+        width="220px"
       >
-        First Name
+        Hrs YTD
         <hq-sort-icon
-          [column]="sortColumn.FirstName"
+          [column]="sortColumn.Hrs"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
@@ -36,26 +38,12 @@
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.LastName)"
+        (click)="onSortClick(sortColumn.BillableHrs)"
+        width="220px"
       >
-        Last Name
+        Billable Hrs YTD
         <hq-sort-icon
-          [column]="sortColumn.LastName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
-        Jurisdiction
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.WorkHours)"
-      >
-        Working Hours
-        <hq-sort-icon
-          [column]="sortColumn.WorkHours"
+          [column]="sortColumn.BillableHrs"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
@@ -64,8 +52,9 @@
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
         (click)="onSortClick(sortColumn.VacationHours)"
+        width="220px"
       >
-        Vacation Hours
+        Vacation
         <hq-sort-icon
           [column]="sortColumn.VacationHours"
           [activeColumn]="sortOption$ | async"
@@ -75,36 +64,34 @@
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.StartDate)"
+        (click)="onSortClick(sortColumn.Jurisdiction)"
+        width="220px"
       >
-        Start Date
+        Jurisdiction
         <hq-sort-icon
-          [column]="sortColumn.StartDate"
+          [column]="sortColumn.Jurisdiction"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
       </th>
+
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.EndDate)"
+        (click)="onSortClick(sortColumn.Status)"
+        width="220px"
       >
-        End Date
+        Status
         <hq-sort-icon
-          [column]="sortColumn.EndDate"
+          [column]="sortColumn.Status"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
       </th>
+
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-      >
-        Email
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5 cursor-pointer"
         colspan="2"
       >
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
@@ -130,42 +117,42 @@
         <td class="border-b border-black py-2 pl-5">
           {{ member.name }}
         </td>
+        <td class="border-b border-black py-2 pl-5">{{ member.hrs }}</td>
         <td class="border-b border-black py-2 pl-5">
-          {{ member.firstName }}
-        </td>
-        <td class="border-b border-black py-2 pl-5">
-          {{ member.lastName }}
-        </td>
-        <td class="border-b border-black py-2 pl-5">
-          <div [ngSwitch]="member.jurisdiciton">
-            <div *ngSwitchCase="Jurisdiction.USA">USA</div>
-            <div *ngSwitchCase="Jurisdiction.Colombia">Colombia</div>
-          </div>
-        </td>
-        <td class="border-b border-black py-2">
-          {{ member.workHours }}
+          {{ member.billableHrs }}
         </td>
         <td class="border-b border-black py-2">
           {{ member.vacationHours }}
         </td>
         <td class="border-b border-black py-2">
-          {{ member.startDate }}
+          <div [ngSwitch]="member.jurisdiciton">
+            <div *ngSwitchCase="Jurisdiction.USA">USA</div>
+            <div *ngSwitchCase="Jurisdiction.Colombia">Colombia</div>
+          </div>
         </td>
-        <td class="border-b border-black py-2">
-          {{ member.endDate }}
-        </td>
-        <td class="border-b border-black py-2">
-          {{ member.email }}
-        </td>
+        <td class="border-b border-black py-2">{{ member.status ?? "-" }}</td>
 
         <td class="border-b border-black py-2 text-right pr-5">
-          @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+          <div class="text-nowrap divide-x divide-teal-200 uppercase">
+            <a
+              [routerLink]="[member.id, 'timesheet']"
+              class="text-teal-200 hover:text-teal-300 pr-3"
+              >Timesheet</a
+            >
+
+            <a
+              [routerLink]="[member.id]"
+              class="text-teal-200 hover:text-teal-300 pl-3"
+              >View</a
+            >
+          </div>
+          <!-- @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
             <a
               [routerLink]="['edit', member.id]"
               class="text-teal-200 hover:text-teal-300 cursor-pointer"
               >EDIT</a
             >
-          }
+          } -->
         </td>
       </tr>
     }

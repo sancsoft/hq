@@ -11,6 +11,10 @@ export enum SortColumn {
   EndDate = 5,
   WorkHours = 6,
   VacationHours = 7,
+  Hrs = 8,
+  BillableHrs = 9,
+  Status = 10,
+  Jurisdiction = 11,
 }
 
 export interface GetStaffV1Request extends PagedRequestV1 {
@@ -21,6 +25,7 @@ export interface GetStaffV1Request extends PagedRequestV1 {
   sortBy?: SortColumn;
   sortDirection?: SortDirection;
   currentOnly: boolean | null;
+  status?: string | null;
 }
 
 export interface GetStaffV1Record {
@@ -34,6 +39,10 @@ export interface GetStaffV1Record {
   jurisdiciton: Jurisdiciton;
   startDate?: Date;
   endDate?: Date;
+  status?: string;
+  hrs?: number;
+  billableHrs?: number;
+  hrsThisMonth?: number;
 }
 
 export interface GetStaffV1Response extends PagedResponseV1<GetStaffV1Record> {}

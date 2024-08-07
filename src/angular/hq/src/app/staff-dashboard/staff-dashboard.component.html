@@ -12,11 +12,11 @@
           class="bg-blue-900 border-steel-blue-600 hover:cursor-pointer w-full pl-2 pr-[43px] appearance-none focus:outline-none font-medium row-start-1 col-start-1 border text-gray-100 h-[26px] capitalize"
         >
           <option selected [ngValue]="null">Select Status</option>
-          <option [ngValue]="'In the office'">In the office</option>
-          <option [ngValue]="'Working from home'">Working from home</option>
-          <option [ngValue]="'Sick'">Sick</option>
-          <option [ngValue]="'Vacation'">Vacation</option>
-          <option [ngValue]="'Holiday'">Holiday</option>
+          <option [ngValue]="'in the office'">In the office</option>
+          <option [ngValue]="'working from home'">Working from home</option>
+          <option [ngValue]="'sick'">Sick</option>
+          <option [ngValue]="'vacation'">Vacation</option>
+          <option [ngValue]="'holiday'">Holiday</option>
 
           <!-- <option [ngValue]="staffDashboardService.Period.Month">Month</option> -->
         </select>
@@ -153,12 +153,17 @@
                   ? 'Submit all time entries for the shown date period'
                   : 'No time entries to be submitted '
               "
-              [disabled]="(staffDashboardService.canSubmit$ | async) === false"
+              [disabled]="
+                (staffDashboardService.canSubmit$ | async) === false ||
+                (canEdit$ | async) === false
+              "
               [ngClass]="{
                 'text-gray-50 border-gray-500 bg-gray-500 ':
-                  (staffDashboardService.canSubmit$ | async) === false,
+                  (staffDashboardService.canSubmit$ | async) === false ||
+                  (canEdit$ | async) === false,
                 'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                  staffDashboardService.canSubmit$ | async,
+                  (staffDashboardService.canSubmit$ | async) &&
+                  (canEdit$ | async) === true,
               }"
               class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
               type="button"
@@ -197,7 +202,6 @@
     (staffDashboardService.showAllRejectedTimes$ | async)
   ) { -->
         <div
-          class="bg-black-alt"
           [hidden]="
             staffDashboardService.period.value === Period.Today &&
             (staffDashboardService.showAllRejectedTimes$ | async) !== true
@@ -219,19 +223,22 @@
                 <thead>
                   <tr class="top-0 text-left">
                     <th
-                      width="32px"
                       scope="col"
-                      colspan="2"
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap w-3"
+                    ></th>
+                    <th
+                      width="28"
+                      scope="col"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
                     ></th>
                     <th
-                      style="width: 120px"
+                      width="80"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
                     >
                       Hrs
                     </th>
                     <th
-                      style="width: 160px"
+                      width="160"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                     >
                       Date
@@ -242,19 +249,19 @@
                       Chrg Code
                     </th>
                     <th
-                      style="width: 160px"
+                      width="160"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                     >
                       Client
                     </th>
                     <th
-                      style="width: 160px"
+                      width="160"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                     >
                       Project
                     </th>
                     <th
-                      style="width: 160px"
+                      width="160"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
                     >
                       Activity / Task
@@ -265,7 +272,7 @@
                       Description
                     </th>
                     <th
-                      style="width: 40px"
+                      width="40"
                       class="bg-blue-900 border-steel-blue-600 border-y"
                     ></th>
                   </tr>
@@ -273,7 +280,10 @@
                 <tbody>
                   @if (
                     (staffDashboardService.showAllRejectedTimes$ | async) ===
-                      false && date.canCreateTime
+                      false &&
+                    (staffDashboardService.canEdit$ | async) &&
+                    (date.canCreateTime ||
+                      (staffDashboardService.isAdmin$ | async))
                   ) {
                     <tr
                       hq-staff-dashboard-time-entry
@@ -369,7 +379,11 @@
             [CSizes]="[30, 70]"
           >
             <hq-panel first Direction="horizontal" [CSizes]="[100, 0]">
-              <!-- <textarea first class="h-full" [formControl]="plan"></textarea> -->
+              <!-- <textarea
+                first
+                class="w-full h-full bg-black-alt text-white p-3"
+                [formControl]="plan"
+              ></textarea> -->
               <ngx-monaco-editor
                 first
                 [ngStyle]="{ height: '100%' }"
@@ -400,42 +414,45 @@
                       <tr class="top-0 text-left">
                         <th
                           scope="col"
-                          colspan="2"
-                          style="width: 28px"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap w-3"
+                        ></th>
+                        <th
+                          width="28"
+                          scope="col"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
                         ></th>
                         <th
-                          style="width: 120px"
+                          width="80"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
                         >
                           Hrs
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                         >
                           Date
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
                         >
                           Chrg Code
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                         >
                           Client
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                         >
                           Project
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
                         >
                           Activity / Task
@@ -446,7 +463,7 @@
                           Description
                         </th>
                         <th
-                          style="width: 40px"
+                          width="40"
                           class="bg-blue-900 border-steel-blue-600 border-y"
                         ></th>
                       </tr>
@@ -454,7 +471,10 @@
                     <tbody>
                       @if (
                         (staffDashboardService.showAllRejectedTimes$
-                          | async) === false && date.canCreateTime
+                          | async) === false &&
+                        (staffDashboardService.canEdit$ | async) &&
+                        (date.canCreateTime ||
+                          (staffDashboardService.isAdmin$ | async))
                       ) {
                         <tr
                           hq-staff-dashboard-time-entry

@@ -15,7 +15,10 @@ export function enumToArray<T extends object>(
         isNaN(value) === false &&
         (options.length == 0 || options.includes(value)),
     )
-    .map(([key, value]) => ({ id: value, name: key }));
+    .map(([key, value]) => ({
+      id: value,
+      name: key.replace(/([A-Z])/g, ' $1').trim(),
+    }));
 }
 
 export function enumToArrayObservable<T extends object>(

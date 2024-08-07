@@ -1,6 +1,7 @@
 export interface updateTimeRequestV1 {
   id?: string | null;
   date: string;
+  staffId: string;
   activityId?: string | null;
   task?: string | null;
   notes?: string | null;

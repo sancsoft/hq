@@ -15,4 +15,6 @@ public class Staff : Base
     public DateOnly? EndDate { get; set; }
     public DateOnly? TimeEntryCutoffDate { get; set; }
     public ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
+    public ICollection<Plan> Plans { get; set; } = new List<Plan>();
+    public ICollection<Time> Times { get; set; } = new List<Time>();
 }

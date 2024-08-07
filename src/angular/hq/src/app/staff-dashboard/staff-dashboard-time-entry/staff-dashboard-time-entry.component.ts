@@ -9,6 +9,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -30,9 +31,12 @@ import {
   Observable,
   Subject,
   combineLatest,
+  concat,
+  defer,
   distinctUntilChanged,
   firstValueFrom,
   map,
+  of,
   shareReplay,
   startWith,
   takeUntil,
@@ -88,7 +92,9 @@ interface Form {
   ],
   templateUrl: './staff-dashboard-time-entry.component.html',
 })
-export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
+export class StaffDashboardTimeEntryComponent
+  implements OnInit, OnChanges, OnDestroy
+{
   @Input()
   time?: Partial<GetDashboardTimeV1TimeForDateTimes>;
   @Input()
@@ -150,13 +156,24 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   timeStatus = TimeStatus;
 
+  ngOnInit(): void {
+    this.staffDashboardService.canEdit$
+      .pipe(takeUntil(this.destroyed$))
+      // eslint-disable-next-line rxjs/no-ignored-error
+      .subscribe((canEdit) => {
+        canEdit
+          ? this.form.enable({ emitEvent: false })
+          : this.form.disable({ emitEvent: false });
+      });
+  }
   constructor(
     public staffDashboardService: StaffDashboardService,
     private modalService: ModalService,
   ) {
-    const form$ = this.form.valueChanges.pipe(
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
+    const form$ = concat(
+      defer(() => of(this.form.value)),
+      this.form.valueChanges,
+    ).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
     const clientId$ = form$.pipe(
       map((t) => t.clientId),

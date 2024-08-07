@@ -1,21 +1,19 @@
-import { StaffDetailsService } from './../staff-details/staff-details.service';
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
-  FormGroup,
   FormControl,
-  Validators,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ErrorDisplayComponent } from '../../../errors/error-display/error-display.component';
+import { Jurisdiciton } from '../../../enums/jurisdiciton';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { APIError } from '../../errors/apierror';
-import { HQService } from '../../services/hq.service';
-import { CommonModule } from '@angular/common';
-import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
-import { Jurisdiciton } from '../../enums/jurisdiciton';
-import { ButtonComponent } from '../../core/components/button/button.component';
-import { ToastService } from '../../services/toast.service';
+import { APIError } from '../../../errors/apierror';
+import { HQService } from '../../../services/hq.service';
+import { ButtonComponent } from '../../../core/components/button/button.component';
 
 interface Form {
   name: FormControl<string | null>;
@@ -30,7 +28,7 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-staff-edit',
+  selector: 'hq-staff-view',
   standalone: true,
   imports: [
     CommonModule,
@@ -40,9 +38,9 @@ interface Form {
     RouterLink,
     ButtonComponent,
   ],
-  templateUrl: './staff-edit.component.html',
+  templateUrl: './staff-view.component.html',
 })
-export class StaffEditComponent implements OnInit {
+export class StaffViewComponent implements OnInit {
   staffId?: string;
   apiErrors: string[] = [];
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
@@ -87,9 +85,9 @@ export class StaffEditComponent implements OnInit {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
-    private staffDetailsService: StaffDetailsService,
-    private toastService: ToastService,
-  ) {}
+  ) {
+    this.form.disable();
+  }
 
   async submit() {
     this.form.markAllAsTouched();
@@ -103,20 +101,13 @@ export class StaffEditComponent implements OnInit {
     console.log('Form is valid');
 
     try {
-      const staffId = await firstValueFrom(this.staffDetailsService.staffId$);
-      const request = { id: staffId, ...this.form.value };
+      const request = { id: this.staffId, ...this.form.value };
       await firstValueFrom(this.hqService.upsertStaffV1(request));
-      this.staffDetailsService.refresh();
-      this.toastService.show('Success', 'Staff member updated successfully');
-      await this.router.navigate(['..'], { relativeTo: this.route });
+      await this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
       } else {
-        this.toastService.show(
-          'Error',
-          'There was an error updating the staff member.',
-        );
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
@@ -124,8 +115,7 @@ export class StaffEditComponent implements OnInit {
 
   private async getStaff() {
     try {
-      const staffId = await firstValueFrom(this.staffDetailsService.staffId$);
-      const request = { id: staffId };
+      const request = { id: this.staffId };
       const response = await firstValueFrom(
         this.hqService.getStaffMembersV1(request),
       );
