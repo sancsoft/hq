@@ -47,6 +47,11 @@ namespace HQ.Server.Controllers
             await _pointService.GetPointsV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(GenerateHolidayPlanningPointsV1))]
+        public async Task GenerateHolidayPlanningPointsV1([FromBody] GenerateHolidayPointsV1.Request request, CancellationToken ct = default) =>
+           await _pointService.GenerateHolidayPlanningPointsV1(request, ct);
+
         [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(UpsertPointV1))]
         [ProducesResponseType<UpsertPointsV1.Response>(StatusCodes.Status201Created)]

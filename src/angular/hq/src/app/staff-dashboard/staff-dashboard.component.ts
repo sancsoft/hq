@@ -270,6 +270,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
         distinctUntilChanged(),
         switchMap(() => {
           return request$.pipe(
+            skip(1),
             debounceTime(1000),
             skip(1),
             filter((t) => t.canEdit),
@@ -285,7 +286,8 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
       )
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe,
       .subscribe({
-        next: () => {
+        next: (t) => {
+          console.log(t);
           this.toastService.show('Success', 'Plan saved successfully');
         },
         error: async () => {

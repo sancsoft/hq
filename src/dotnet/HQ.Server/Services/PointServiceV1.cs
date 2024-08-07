@@ -165,4 +165,73 @@ public class PointServiceV1
         }
     }
 
+    public async Task BackgroundAutoGenerateHolidayPlanningPointsV1(CancellationToken ct)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var generateHolidayPlanningPointsResponse = await GenerateHolidayPlanningPointsV1(new()
+        {
+            ForDate = today
+        }, ct);
+    }
+    public async Task<Result<GenerateHolidayPointsV1.Response>> GenerateHolidayPlanningPointsV1(GenerateHolidayPointsV1.Request request, CancellationToken ct = default)
+    {
+        var today = request.ForDate;
+        var startDate = today.GetPeriodStartDate(Period.Week);
+        var endDate = today.GetPeriodEndDate(Period.Week);
+
+        var holidays = _context.Holidays
+        .AsNoTracking()
+        .AsQueryable();
+        var jurisdicitons = Enum.GetValues(typeof(Jurisdiciton));
+        var holidayChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("holiday")).FirstOrDefaultAsync(ct);
+        if (holidayChargeCode == null)
+        {
+            return Result.Fail("Unable to find holiday chargecode");
+        }
+        foreach (Jurisdiciton jurisdiciton in jurisdicitons)
+        {
+            var upcomingHolidays = await holidays.Where(t => t.Date >= startDate && t.Date <= endDate && t.Jurisdiciton == jurisdiciton).ToListAsync(ct);
+            var staff = await _context.Staff.
+                AsNoTracking()
+                .AsQueryable().Where(t => t.EndDate == null && t.Jurisdiciton == jurisdiciton).ToListAsync(ct);
+
+            foreach (var staffMember in staff)
+            {
+                var getPointsRequest = new GetPointsV1.Request
+                {
+                    StaffId = staffMember.Id,
+                    Date = startDate
+                };
+
+                var staffPointsResponse = await GetPointsV1(getPointsRequest, ct);
+                var points = staffPointsResponse.Value.Points;
+
+                for (int i = points.Length - 1; i >= points.Length - (upcomingHolidays.Count * 2); i--)
+                {
+                    if (points[i].ChargeCodeId == null)
+                    {
+                        points[i].ChargeCodeId = holidayChargeCode.Id;
+                        points[i].Completed = true;
+
+                    }
+
+                }
+                var upsertPointsRequest = new UpsertPointsV1.Request
+                {
+                    StaffId = staffMember.Id,
+                    Date = startDate,
+                    Points = points
+                };
+
+                var upsertPointsResponse = await UpsertPointV1(upsertPointsRequest, ct);
+
+            }
+
+        }
+        return new GenerateHolidayPointsV1.Response()
+        {
+        };
+    }
+
 }
