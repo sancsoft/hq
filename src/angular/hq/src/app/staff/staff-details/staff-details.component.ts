@@ -20,7 +20,7 @@ import { ButtonComponent } from '../../core/components/button/button.component';
     RouterLinkActive,
     CommonModule,
     StatDisplayComponent,
-    ButtonComponent
+    ButtonComponent,
   ],
   templateUrl: './staff-details.component.html',
 })
