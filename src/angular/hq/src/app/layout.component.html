@@ -80,10 +80,9 @@
         cdkConnectedOverlay
         [cdkConnectedOverlayOrigin]="trigger"
         [cdkConnectedOverlayOpen]="settingDropdownOpen"
-        [cdkConnectedOverlayHasBackdrop]="true"
-        [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+        [cdkConnectedOverlayHasBackdrop]="false"
         (detach)="settingDropdownOpen = false"
-        (backdropClick)="settingDropdownOpen = false"
+        (overlayOutsideClick)="settingDropdownOpen = false"
       >
         <ul class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <!-- holidays -->
