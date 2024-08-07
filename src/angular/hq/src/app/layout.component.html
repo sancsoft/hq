@@ -2,8 +2,8 @@
 <header class="flex flex-wrap xl:flex-nowrap items-end py-4 pr-3 xl:pr-5">
   <div class="flex w-[100%] xl:hidden">
     <!-- pad logo -->
-    <div class="pb-4 px-5 w-[100%]">
-      <a routerLink="/"
+    <div class="pb-4 px-5 w-[100%] text-center">
+      <a routerLink="/" class="inline-block"
         ><img
           src="/assets/logo.svg"
           alt="Sanctuary Software Studio, Inc."
@@ -72,7 +72,7 @@
     </div>
     <div class="flex items-center ml-auto pr-[1.125rem] border-r border-r-white-500/100">
       <!-- settings/more dropdown button -->
-      <button (click)="settingDropdownOpen = !settingDropdownOpen" [ngClass]="settingDropdownOpen  ? 'text-orange-500 h-[30px]' : 'h-[30px]'" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+      <button (click)="settingDropdownOpen = !settingDropdownOpen" routerLinkActive="text-orange-500 active" [ngClass]="settingDropdownOpen ? 'text-orange-500 h-[30px]' : 'h-[30px]'" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
         <i class="bi bi-sliders text-[1rem]"></i>
       </button>
       <!-- settings/more dropdown button overlay content -->
@@ -82,7 +82,7 @@
         [cdkConnectedOverlayOpen]="settingDropdownOpen"
         [cdkConnectedOverlayHasBackdrop]="true"
         [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
-        [cdkConnectedOverlayDisposeOnNavigation]="true"
+        (detach)="settingDropdownOpen = false"
         (backdropClick)="settingDropdownOpen = false"
       >
         <ul class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
@@ -90,7 +90,7 @@
           <li *ngIf="HQRole.Staff | inRole | async">
             <a
               routerLink="/holidays"
-              routerLinkActive="text-orange-500"
+              routerLinkActive="text-orange-500 active"
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
               (click)="settingDropdownOpen = false"
               >Holidays</a
