@@ -72,7 +72,7 @@
     </div>
     <div class="flex items-center ml-auto pr-[1.125rem] border-r border-r-white-500/100">
       <!-- settings/more dropdown button -->
-      <button (click)="settingDropdownOpen = !settingDropdownOpen" routerLinkActive="text-orange-500 active" [routerLinkActiveOptions]="{exact: false}" [ngClass]="settingDropdownOpen ?'text-orange-500 h-[30px]' : 'h-[30px]'" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+      <button (click)="settingDropdownOpen = !settingDropdownOpen;" routerLinkActive="text-orange-500 active" [ngClass]="settingDropdownOpen ? 'text-orange-500 h-[30px]' : 'h-[30px]'" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
         <i class="bi bi-sliders text-[1rem]"></i>
       </button>
       <!-- settings/more dropdown button overlay content -->
@@ -142,35 +142,53 @@
   <!-- col three -->
   <div class="flex column justify-end items-center ml-auto pl-[1.125rem]">
     <!-- my account dropdown menu -->
-    <div class="inline-block pe-0 xl:pe-10 h-[30px]">
-      <div class="relative inline-block h-full">
-        <button
-          class="block font-semibold text-xs h-full"
-          (click)="dropdownOpen = !dropdownOpen"
-        >
+    <div class="pe-0 xl:pe-10">
+        <!-- user dropdown button -->
+        <button (click)="dropdownOpen = !dropdownOpen;" routerLinkActive="active" [ngClass]="dropdownOpen ? 'text-orange-500 h-[30px] text-xs' : 'h-[30px] text-xs'" type="button" cdkOverlayOrigin #triggerDropdown="cdkOverlayOrigin">
           {{ userName$ | async }}
           <span>
             <i class="bi bi-caret-down-fill text-[8px]"></i>
           </span>
         </button>
-        <div
-          [ngClass]="{
-            'opacity-100 z-20': dropdownOpen,
-            'opacity-0 -z-10': !dropdownOpen,
-          }"
-          class="absolute right-0 -z-10 mt-2 w-48 origin-top-right rounded-sm bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-          tabindex="-1"
+        <!-- settings/more dropdown button overlay content -->
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayOrigin]="triggerDropdown"
+          [cdkConnectedOverlayOpen]="dropdownOpen"
+          [cdkConnectedOverlayHasBackdrop]="false"
+          cdkConnectedOverlayPush="true"
+          [cdkConnectedOverlayPositions]="[
+              {
+                  originX: 'start',
+                  originY: 'bottom',
+                  overlayX: 'start',
+                  overlayY: 'top'
+              },
+              {
+                  originX: 'end',
+                  originY: 'bottom',
+                  overlayX: 'end',
+                  overlayY: 'top'
+              }
+          ]"
+          (detach)="dropdownOpen = false"
+          (overlayOutsideClick)="dropdownOpen = false"
         >
-          <button
-            (click)="logout()"
-            class="block px-4 py-2 text-gray-700"
-            role="menuitem"
-            tabindex="-1"
-            id="user-menu-item-1"
-          >
-            Sign out
-          </button>
-        </div>
+          <ul class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <!-- sign out -->
+            <li *ngIf="HQRole.Staff | inRole | async">
+              <button
+                (click)="logout()"
+                class="block px-4 py-2 text-gray-700"
+                role="menuitem"
+                tabindex="-1"
+                id="user-menu-item-1"
+              >
+                Sign out
+              </button>
+            </li>
+          </ul>
+        </ng-template>
       </div>
     </div>
     <!-- desktop logo -->
@@ -181,7 +199,6 @@
           alt="Sanctuary Software Studio, Inc."
           style="height: 30px"
       /></a>
-    </div>
   </div>
 </header>
 
