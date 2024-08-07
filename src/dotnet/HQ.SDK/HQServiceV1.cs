@@ -116,7 +116,8 @@ namespace HQ.SDK
 
         public Task<Result<DeleteProjectV1.Response?>> DeleteProjectV1(DeleteProjectV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<DeleteProjectV1.Response>("/v1/Projects/DeleteProjectV1", request, ct);
-
+        public Task<Result<DeleteProjectActivityV1.Response?>> DeleteProjectActivityV1(DeleteProjectActivityV1.Request request, CancellationToken ct = default)
+                    => ExecuteRequest<DeleteProjectActivityV1.Response>("/v1/Projects/DeleteProjectActivityV1", request, ct);
         public async Task<Result<ImportProjectsV1.Response?>> ImportProjectsV1(ImportProjectsV1.Request request, CancellationToken ct = default)
         {
             using var multipartContent = new MultipartFormDataContent();

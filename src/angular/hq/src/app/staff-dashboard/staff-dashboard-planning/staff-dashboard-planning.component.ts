@@ -148,7 +148,9 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       trigger: this.planningPointsRequestTrigger$.pipe(startWith(0)),
     }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({});
+    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({
+      active: true,
+    });
 
     this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),

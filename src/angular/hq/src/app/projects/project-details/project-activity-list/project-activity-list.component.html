@@ -11,17 +11,19 @@
       track activity.id
     ) {
       <tr>
-        <td>Item {{ activity.name }}</td>
+        <td>{{ activity.name }}</td>
         <td class="text-right divide-x divide-teal-200">
           <button
             type="button"
             class="text-teal-200 hover:text-teal-300 pr-3 uppercase"
+            (click)="renameActivity(activity.id)"
           >
             Rename
           </button>
           <button
             type="button"
             class="text-teal-200 hover:text-teal-300 pl-3 uppercase"
+            (click)="deleteActivity(activity.id)"
           >
             Delete
           </button>

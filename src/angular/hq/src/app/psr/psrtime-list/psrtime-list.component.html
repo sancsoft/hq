@@ -200,6 +200,7 @@
                       (change)="updateProjectActivity(time.id)"
                       class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
                     >
+                      <option [ngValue]="null">Select Activity</option>
                       @for (activity of projectActivities; track $index) {
                         <option [ngValue]="activity.id">
                           {{ activity.name }}
@@ -328,6 +329,7 @@
                       (change)="updateProjectActivity(time.id)"
                       class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
                     >
+                      <option [ngValue]="null">Select Activity</option>
                       @for (activity of projectActivities; track $index) {
                         <option [ngValue]="activity.id">
                           {{ activity.name }}
