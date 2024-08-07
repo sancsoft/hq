@@ -94,8 +94,6 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
   private planningPointsRequestTrigger$ = new Subject<void>();
   private editPlanButtonSubject = new BehaviorSubject<boolean>(false);
   editPlanButton$ = this.editPlanButtonSubject.asObservable();
-  private disablePlanButtonSubject = new BehaviorSubject<boolean>(false);
-  disablePlanButton$ = this.disablePlanButtonSubject.asObservable();
   private planningPointDate$: Observable<string>;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
@@ -104,15 +102,6 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
     this.staffDashboardService.date.setValue(
       this.staffDashboardService.date.value,
     );
-    this.staffDashboardService.canEdit$
-      .pipe(takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-      .subscribe({
-        next: (canEdit) => {
-          this.disablePlanButtonSubject.next(!canEdit);
-        },
-        error: console.error,
-      });
   }
   ngOnDestroy(): void {
     this.destroyed$.next(true);

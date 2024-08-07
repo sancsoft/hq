@@ -9,6 +9,7 @@ import {
   Subject,
   combineLatest,
   debounceTime,
+  distinctUntilChanged,
   filter,
   map,
   merge,
@@ -66,14 +67,12 @@ export class StaffDashboardService implements OnDestroy {
     private hqService: HQService,
     private oidcSecurityService: OidcSecurityService,
   ) {
-    const staffId$ = this.staffIdSubject.asObservable().pipe(
+    this.staffId$ = this.staffIdSubject.asObservable().pipe(
       filter((staffId) => staffId != null),
       map((staffId) => staffId!),
+      distinctUntilChanged(),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
-
-    const refreshStaffId$ = this.refresh$.pipe(switchMap(() => staffId$));
-
-    this.staffId$ = merge(staffId$, refreshStaffId$);
 
     const currentUserStaffId$ = oidcSecurityService.userData$.pipe(
       map((t) => t.userData),
@@ -95,7 +94,11 @@ export class StaffDashboardService implements OnDestroy {
       staffId: this.staffId$,
       currentUserStaffId: currentUserStaffId$,
       isAdmin: this.isAdmin$,
-    }).pipe(map((t) => t.isAdmin || t.staffId == t.currentUserStaffId));
+    }).pipe(
+      map((t) => t.isAdmin || t.staffId == t.currentUserStaffId),
+      distinctUntilChanged(),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     const search$ = this.search.valueChanges.pipe(startWith(this.search.value));
     const period$ = this.period.valueChanges.pipe(startWith(this.period.value));
@@ -108,7 +111,7 @@ export class StaffDashboardService implements OnDestroy {
       .pipe(map((t) => t || localISODate()));
 
     const request$ = combineLatest({
-      staffId: staffId$,
+      staffId: this.staffId$,
       period: period$,
       search: search$,
       date: date$,

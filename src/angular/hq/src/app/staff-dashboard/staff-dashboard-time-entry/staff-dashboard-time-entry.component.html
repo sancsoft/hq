@@ -14,6 +14,7 @@
           [ngClass]="{ invisible: !time?.id }"
           title="Duplicate time entry"
           name="Duplicate time entry"
+          [disabled]="(staffDashboardService.canEdit$ | async) === false"
           class="ml-2"
           (click)="duplicateTime()"
         >
@@ -343,6 +344,7 @@
       <td class="border-b border-black text-white">
         <button
           title="Duplicate time entry"
+          [disabled]="(staffDashboardService.canEdit$ | async) === false"
           class="ml-2"
           (click)="duplicateTime()"
         >
@@ -402,6 +404,7 @@
         <button
           title="Duplicate time entry"
           name="Duplicate time entry"
+          [disabled]="(staffDashboardService.canEdit$ | async) === false"
           class="ml-2"
           (click)="duplicateTime()"
         >
@@ -461,6 +464,7 @@
         <button
           title="Duplicate time entry"
           name="Duplicate time entry"
+          [disabled]="(staffDashboardService.canEdit$ | async) === false"
           class="ml-2"
           (click)="duplicateTime()"
         >

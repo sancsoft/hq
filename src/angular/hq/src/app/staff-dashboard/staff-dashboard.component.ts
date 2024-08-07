@@ -31,6 +31,7 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  filter,
   firstValueFrom,
   map,
   Observable,
@@ -143,7 +144,9 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
           } else {
             this.prevPSRReportButtonState = ButtonState.Disabled;
           }
-          canEdit ? this.status.enable() : this.status.disable();
+          canEdit
+            ? this.status.enable({ emitEvent: false })
+            : this.status.disable({ emitEvent: false });
           // this.staffDashboardService.canSubmitSubject.next(canEdit); // Submit time button
         },
         error: console.error,
@@ -197,14 +200,13 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     );
     this.staffStatus$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (staffStatus) => {
-        this.status.setValue(staffStatus.status);
+        this.status.setValue(staffStatus.status, { emitEvent: false });
       },
       error: console.error,
     });
 
     upsertStatusRequest$
       .pipe(
-        skip(1),
         switchMap((request) => {
           return this.hqService.upsertStatus(request);
         }),
@@ -258,17 +260,17 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
       error: console.error,
     });
     const request$ = combineLatest({
-      staffId: staffId$.pipe(tap((t) => console.log('staffId', t))),
-      body: this.plan$.pipe(tap((t) => console.log('plan', t))),
+      staffId: staffId$,
+      body: this.plan$,
+      canEdit: this.canEdit$,
     });
     this.staffDashboardService.date.valueChanges
       .pipe(
         distinctUntilChanged(),
-        debounceTime(500),
         switchMap(() => {
           return request$.pipe(
-            skip(1),
             debounceTime(1000),
+            filter((t) => t.canEdit),
             switchMap((request) =>
               this.hqService.upsertPlanV1({
                 ...request,
@@ -308,13 +310,6 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
           domReadOnly: !canEdit,
           wordWrap: 'on',
         };
-      }),
-      startWith({
-        theme: 'vs-dark',
-        language: 'markdown',
-        automaticLayout: true,
-        wordWrap: 'on',
-        domReadOnly: true,
       }),
     );
     // this.editorOptions$ = of({
