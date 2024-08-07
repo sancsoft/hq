@@ -46,7 +46,7 @@
         >Quotes</a
       >
     </div>
-    <!-- <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
+    <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
       <a
         routerLink="/services"
         routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
@@ -61,7 +61,7 @@
         class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
         >Invoices</a
       >
-    </div>-->
+    </div>
     <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
       <a
         routerLink="/psr"
@@ -72,7 +72,7 @@
     </div>
     <div class="flex items-center ml-auto pr-[1.125rem] border-r border-r-white-500/100">
       <!-- settings/more dropdown button -->
-      <button (click)="settingDropdownOpen = !settingDropdownOpen" class="h-[30px]" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+      <button (click)="settingDropdownOpen = !settingDropdownOpen" [ngClass]="settingDropdownOpen  ? 'text-orange-500 h-[30px]' : 'h-[30px]'" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
         <i class="bi bi-sliders text-[1rem]"></i>
       </button>
       <!-- settings/more dropdown button overlay content -->
@@ -80,6 +80,10 @@
         cdkConnectedOverlay
         [cdkConnectedOverlayOrigin]="trigger"
         [cdkConnectedOverlayOpen]="settingDropdownOpen"
+        [cdkConnectedOverlayHasBackdrop]="true"
+        [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+        [cdkConnectedOverlayDisposeOnNavigation]="true"
+        (backdropClick)="settingDropdownOpen = false"
       >
         <ul class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <!-- holidays -->
@@ -88,6 +92,7 @@
               routerLink="/holidays"
               routerLinkActive="text-orange-500"
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+              (click)="settingDropdownOpen = false"
               >Holidays</a
             >
           </li>
@@ -97,6 +102,7 @@
               routerLink="/staff"
               routerLinkActive="text-orange-500"
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+              (click)="settingDropdownOpen = false"
               >Staff</a
             >
           </li>
@@ -106,6 +112,7 @@
               routerLink="/chargecodes"
               routerLinkActive="text-orange-500"
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+              (click)="settingDropdownOpen = false"
               >Charge codes</a
             >
           </li>
@@ -115,6 +122,7 @@
               routerLink="/times"
               routerLinkActive="text-orange-500"
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+              (click)="settingDropdownOpen = false"
               >Time</a
             >
           </li>
@@ -124,6 +132,7 @@
               routerLink="/users"
               routerLinkActive="text-orange-500"
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+              (click)="settingDropdownOpen = false"
               >Users</a
             >
           </li>
