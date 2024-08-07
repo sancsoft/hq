@@ -12,7 +12,7 @@ import {
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { HQService } from '../../services/hq.service';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
-import { GetProjectActivityRecordV1 } from '../../models/PSR/get-project-activity-v1';
+import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
 
 @Injectable({
   providedIn: 'root',

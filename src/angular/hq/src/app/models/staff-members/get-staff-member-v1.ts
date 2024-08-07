@@ -26,6 +26,8 @@ export interface GetStaffV1Request extends PagedRequestV1 {
   sortDirection?: SortDirection;
   currentOnly: boolean | null;
   status?: string | null;
+  projectId: string | null;
+  excludeProjectId: string | null;
 }
 
 export interface GetStaffV1Record {

@@ -35,7 +35,7 @@ import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes
 import { FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
 import { ModalService } from '../../services/modal.service';
-import { GetProjectActivityRecordV1 } from '../../models/PSR/get-project-activity-v1';
+import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
 import { ToastService } from '../../services/toast.service';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { HQRole } from '../../enums/hqrole';

@@ -1,1 +1,48 @@
-<p>project-roster-list works!</p>
+<table class="hq-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th width="200"></th>
+    </tr>
+  </thead>
+  <tbody class="hq-table-body">
+    @for (staff of this.projectMembers$ | async; track staff.id) {
+      <tr>
+        <td>{{ staff.name }}</td>
+        <td class="text-right divide-x divide-teal-200">
+          <button
+            type="button"
+            class="text-teal-200 hover:text-teal-300 pl-3 uppercase"
+            (click)="removeProjectMember(staff.id)"
+          >
+            Remove
+          </button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-5">
+  <div class="border-b border-black pb-1 px-1 font-bold">Add Staff Member</div>
+  <div class="mb-3 w-56">
+    <label
+      for="staffMember"
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
+      >Select Staff</label
+    >
+    <div class="grid relative">
+      <select
+        formControlName="staffId"
+        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+      >
+        <option [ngValue]="null">Select Staff</option>
+        @for (staffMember of allStaff$ | async; track staffMember.id) {
+          <option [value]="staffMember.id">
+            {{ staffMember.name }}
+          </option>
+        }
+      </select>
+    </div>
+  </div>
+  <hq-button type="submit">Add</hq-button>
+</form>
