@@ -72,7 +72,7 @@
     </div>
     <div class="flex items-center ml-auto pr-[1.125rem] border-r border-r-white-500/100">
       <!-- settings/more dropdown button -->
-      <button (click)="settingDropdownOpen = !settingDropdownOpen" [ngClass]="settingDropdownOpen || route.url == '/holidays' || route.url == '/staff' || route.url == '/chargecodes' || route.url == '/times' || route.url == '/users' ?'text-orange-500 h-[30px]' : 'h-[30px]'" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+      <button (click)="settingDropdownOpen = !settingDropdownOpen" routerLinkActive="text-orange-500 active" [routerLinkActiveOptions]="{exact: false}" [ngClass]="settingDropdownOpen ?'text-orange-500 h-[30px]' : 'h-[30px]'" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
         <i class="bi bi-sliders text-[1rem]"></i>
       </button>
       <!-- settings/more dropdown button overlay content -->
