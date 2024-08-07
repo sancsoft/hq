@@ -170,17 +170,11 @@ public class PointServiceV1
     public async Task BackgroundAutoGenerateHolidayPlanningPointsV1(CancellationToken ct)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        // _logger.LogInformation("Generating weekly project status reports for week of {WeekOf}.", lastWeekStart);
-        // _logger.LogInformation("Generating weekly project status reports for week of {WeekOf}.", thisWeekStart);
 
         var generateHolidayPlanningPointsResponse = await GenerateHolidayPlanningPointsV1(new()
         {
             ForDate = today
         }, ct);
-        // _logger.LogInformation("Created {CreateCount} PSRs for last week, skipped {SkipCount}.", generatePsrResponse.Value.Created, generatePsrResponse.Value.Skipped);
-
-
-
     }
     public async Task<Result<GenerateHolidayPointsV1.Response>> GenerateHolidayPlanningPointsV1(GenerateHolidayPointsV1.Request request, CancellationToken ct = default)
     {
@@ -240,7 +234,6 @@ public class PointServiceV1
         return new GenerateHolidayPointsV1.Response()
         {
         };
-
     }
 
 }
