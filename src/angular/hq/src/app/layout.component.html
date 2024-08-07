@@ -81,6 +81,7 @@
         [cdkConnectedOverlayOrigin]="trigger"
         [cdkConnectedOverlayOpen]="settingDropdownOpen"
         [cdkConnectedOverlayHasBackdrop]="false"
+        [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'" 
         (detach)="settingDropdownOpen = false"
         (overlayOutsideClick)="settingDropdownOpen = false"
       >
@@ -156,7 +157,7 @@
           [cdkConnectedOverlayOrigin]="triggerDropdown"
           [cdkConnectedOverlayOpen]="dropdownOpen"
           [cdkConnectedOverlayHasBackdrop]="false"
-          cdkConnectedOverlayPush="true"
+          [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'" 
           [cdkConnectedOverlayPositions]="[
               {
                   originX: 'start',
