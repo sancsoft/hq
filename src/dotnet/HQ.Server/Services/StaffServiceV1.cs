@@ -166,6 +166,11 @@ public class StaffServiceV1
             }
         }
 
+        if (request.ProjectId.HasValue)
+        {
+            records = records.Where(t => t.ProjectMembers.Any(x => x.ProjectId == request.ProjectId.Value));
+        }
+
 
         if (!String.IsNullOrEmpty(request.Status))
         {

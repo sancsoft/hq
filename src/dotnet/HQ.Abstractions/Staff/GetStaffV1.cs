@@ -21,6 +21,7 @@ public class GetStaffV1
         public SortColumn SortBy { get; set; } = SortColumn.FirstName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
         public bool? CurrentOnly { get; set; } = true;
+        public Guid? ProjectId { get; set; }
     }
 
     public enum SortColumn

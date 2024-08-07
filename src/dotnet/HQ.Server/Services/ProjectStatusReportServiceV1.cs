@@ -529,7 +529,7 @@ public class ProjectStatusReportServiceV1
         //     return Result.Fail("Time entry is not accepted.");
         // }
 
-        time.Status = TimeStatus.Unsubmitted;
+        time.Status = TimeStatus.Submitted;
 
         await _context.SaveChangesAsync(ct);
 
