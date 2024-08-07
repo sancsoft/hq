@@ -472,7 +472,7 @@ export class HQService {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<DeleteProjectActivityV1Response>(
-          `${apiUrl}/v1/Projects/RemoveProjectMemberV1`,
+          `${apiUrl}/v1/Projects/DeleteProjectActivityV1`,
           request,
         ),
       ),
