@@ -223,19 +223,22 @@
                 <thead>
                   <tr class="top-0 text-left">
                     <th
-                      width="32px"
                       scope="col"
-                      colspan="2"
+                      class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap w-3"
+                    ></th>
+                    <th
+                      width="28"
+                      scope="col"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
                     ></th>
                     <th
-                      style="width: 120px"
+                      width="80"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
                     >
                       Hrs
                     </th>
                     <th
-                      style="width: 160px"
+                      width="160"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                     >
                       Date
@@ -246,19 +249,19 @@
                       Chrg Code
                     </th>
                     <th
-                      style="width: 160px"
+                      width="160"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                     >
                       Client
                     </th>
                     <th
-                      style="width: 160px"
+                      width="160"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                     >
                       Project
                     </th>
                     <th
-                      style="width: 160px"
+                      width="160"
                       class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
                     >
                       Activity / Task
@@ -269,7 +272,7 @@
                       Description
                     </th>
                     <th
-                      style="width: 40px"
+                      width="40"
                       class="bg-blue-900 border-steel-blue-600 border-y"
                     ></th>
                   </tr>
@@ -278,6 +281,7 @@
                   @if (
                     (staffDashboardService.showAllRejectedTimes$ | async) ===
                       false &&
+                    (staffDashboardService.canEdit$ | async) &&
                     (date.canCreateTime ||
                       (staffDashboardService.isAdmin$ | async))
                   ) {
@@ -406,42 +410,45 @@
                       <tr class="top-0 text-left">
                         <th
                           scope="col"
-                          colspan="2"
-                          style="width: 28px"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap w-3"
+                        ></th>
+                        <th
+                          width="28"
+                          scope="col"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
                         ></th>
                         <th
-                          style="width: 120px"
+                          width="80"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
                         >
                           Hrs
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                         >
                           Date
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
                         >
                           Chrg Code
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                         >
                           Client
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                         >
                           Project
                         </th>
                         <th
-                          style="width: 160px"
+                          width="160"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
                         >
                           Activity / Task
@@ -452,7 +459,7 @@
                           Description
                         </th>
                         <th
-                          style="width: 40px"
+                          width="40"
                           class="bg-blue-900 border-steel-blue-600 border-y"
                         ></th>
                       </tr>
@@ -460,7 +467,10 @@
                     <tbody>
                       @if (
                         (staffDashboardService.showAllRejectedTimes$
-                          | async) === false && date.canCreateTime
+                          | async) === false &&
+                        (staffDashboardService.canEdit$ | async) &&
+                        (date.canCreateTime ||
+                          (staffDashboardService.isAdmin$ | async))
                       ) {
                         <tr
                           hq-staff-dashboard-time-entry

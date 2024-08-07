@@ -1,522 +1,223 @@
 <ng-container [formGroup]="form">
-  @switch (time?.timeStatus) {
-    @case (timeStatus.Unsubmitted) {
-      <td
-        [title]="form.valid || !form.touched ? 'Pending' : 'Invalid Time Entry'"
+  <td
+    class="border-b border-black py-2 w-3"
+    [ngClass]="{
+      'bg-red-700':
+        form.invalid &&
+        form.touched &&
+        (staffDashboardService.canEdit$ | async) &&
+        (time?.timeStatus === timeStatus.Unsubmitted ||
+          time?.timeStatus === timeStatus.Rejected),
+      'bg-gray-300':
+        time?.timeStatus === timeStatus.Unsubmitted ||
+        time?.timeStatus === timeStatus.Submitted,
+      'bg-green-600': time?.timeStatus === timeStatus.Accepted,
+      'bg-yellow-550': time?.timeStatus === timeStatus.Resubmitted,
+      'bg-red-600': time?.timeStatus === timeStatus.Rejected,
+    }"
+  ></td>
+  <td class="border-b border-black text-white">
+    <button
+      [disabled]="(staffDashboardService.canEdit$ | async) === false"
+      title="Duplicate time entry"
+      class="ml-2"
+      (click)="duplicateTime()"
+    >
+      <i class="bi bi-copy"></i>
+    </button>
+  </td>
+  @if (
+    (staffDashboardService.canEdit$ | async) &&
+    (time?.timeStatus === timeStatus.Unsubmitted ||
+      time?.timeStatus === timeStatus.Rejected)
+  ) {
+    <td class="border-b border-black py-2 pl-3 pr-2">
+      <input
         [ngClass]="{
-          'bg-red-700 w-3': form.invalid && form.touched,
-          'bg-gray-300 w-3': form.valid || !form.touched,
+          'border-red-700 focus:border-red-700':
+            form.controls.hours.errors && form.touched,
+          'focus:border-white placeholder:text-gray-100':
+            !form.controls.hours.errors || !form.touched,
         }"
-        class="border-b border-black py-2"
-      ></td>
-      <td class="border-b border-black text-white">
+        class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
+        type="number"
+        min="0"
+        formControlName="hours"
+        aria-label="Hours"
+        #hoursInput
+        step="0.25"
+        (blur)="save()"
+        (keydown.enter)="onEnter($event.target)"
+      />
+    </td>
+    <td class="border-b border-black py-2 pl-2">
+      <div class="grid relative w-full">
+        <input
+          class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+          type="date"
+          formControlName="date"
+          readonly
+        />
         <button
-          [ngClass]="{ invisible: !time?.id }"
-          title="Duplicate time entry"
-          name="Duplicate time entry"
-          [disabled]="(staffDashboardService.canEdit$ | async) === false"
-          class="ml-2"
-          (click)="duplicateTime()"
+          [tabindex]="-1"
+          (click)="chooseDate()"
+          title="Change date"
+          [disabled]="!(form.value.id && form.valid)"
+          class="flex items-center justify-center h-full pointer-events-auto cursor-pointer z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
         >
-          <i class="bi bi-copy"></i>
+          <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
         </button>
-      </td>
-      <td class="border-b border-black py-2 pl-3 pr-2">
-        <input
-          [ngClass]="{
-            'border-red-700 focus:border-red-700':
-              form.controls.hours.errors && form.touched,
-            'focus:border-white placeholder:text-gray-100':
-              !form.controls.hours.errors || !form.touched,
-          }"
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
-          type="number"
-          formControlName="hours"
-          min="0"
-          #hoursInput
-          step="0.25"
-          aria-label="Hours"
-          (blur)="save()"
-          (keydown.enter)="onEnter($event.target)"
-        />
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full">
-          <input
-            class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-            type="date"
-            formControlName="date"
-            readonly
-          />
-          <button
-            [tabindex]="-1"
-            (click)="chooseDate()"
-            title="Change date"
-            [disabled]="!(form.value.id && form.valid)"
-            class="flex items-center justify-center h-full pointer-events-auto z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
-          </button>
-        </div>
-      </td>
-      <td class="border-b border-black py-2 pl-2 text-center">
-        <div class="px-3">
-          <hq-select-input
-            (hqBlur)="save()"
-            [formControlName]="'chargeCodeId'"
-            [autocomplete]="true"
-            variant="pill"
-            [inline]="true"
-          >
-            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
-            @for (code of chargeCodes; track code.id) {
-              <ng-template
-                [hqSelectInputOption]="code.id"
-                [hqSelectInputOptionSelectedDisplay]="code.code"
-                [hqSelectInputOptionSearch]="
-                  code.code + ': ' + code.clientName + ': ' + code.projectName
-                "
-                >{{
-                  code.code + ": " + code.clientName + ": " + code.projectName
-                }}</ng-template
-              >
-            }
-          </hq-select-input>
-        </div>
-
-        <!-- @if (form.controls.chargeCode.value) {
-          <span
-            class="px-3 py-1 font-semibold rounded-full"
-            [style.background-color]="
-              chargeCodeToColor(form.controls.chargeCode.value)
-            "
-          >
-            {{ form.controls.chargeCode.value }}
-          </span>
-        } @else {
-          <span
-            class="px-3 py-1 font-semibold rounded-full select-none"
-            [style.background-color]="chargeCodeToColor('P0000')"
-          >
-            Chrge
-          </span>
-        } -->
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ clientName$ | async }}
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ projectName$ | async }}
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        @if (activities$ | async; as activities) {
-          @if (activities.length > 0) {
-            <div class="grid relative w-full max-w-[220px]">
-              <select
-                [ngClass]="{
-                  'border-red-700 focus:border-red-700':
-                    form.controls.activityId.errors && form.touched,
-                  'border-black':
-                    !form.controls.activityId.errors || !form.touched,
-                }"
-                class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-                (blur)="save()"
-                (keydown.enter)="onEnter($event.target)"
-                formControlName="activityId"
-              >
-                <option [ngValue]="null" class="text-gray-50">Activity</option>
-                @for (activity of activities$ | async; track activity.id) {
-                  <option [ngValue]="activity.id">{{ activity.name }}</option>
-                }
-              </select>
-              <span
-                class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-              >
-                <i class="bi bi-arrow-down-short text-[24px]"></i>
-              </span>
-            </div>
-          } @else {
-            <input
-              class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-              type="text"
-              formControlName="task"
-              (blur)="save()"
-              (keydown.enter)="onEnter($event.target)"
-            />
-          }
-        }
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        <input
-          [ngClass]="{
-            'border-red-700 focus:border-red-700':
-              form.controls.notes.errors && form.touched,
-            'focus:border-white placeholder:text-gray-100':
-              !form.controls.notes.errors || !form.touched,
-          }"
-          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
-          type="text"
-          formControlName="notes"
-          (blur)="save()"
-          (keydown.enter)="onEnter($event.target)"
-        />
-      </td>
-      <td class="border-b border-black py-2 pl-2 pr-5">
-        @if (form.controls.id.value) {
-          <button
-            [disabled]="(staffDashboardService.canEdit$ | async) === false"
-            type="button"
-            [title]="'Delete Time Entry'"
-            (click)="deleteTime()"
-            class="h-[30px] px-2 py-2 rounded w-full"
-          >
-            <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
-          </button>
-        } @else {
-          <button
-            [disabled]="(staffDashboardService.canEdit$ | async) === false"
-            type="button"
-            [title]="'Reset Time Entry'"
-            (click)="resetTime()"
-            class="h-[30px] px-2 py-2 rounded w-full"
-          >
-            <i class="bi bi-x-lg text-gray-200 hover:text-gray-300"></i>
-          </button>
-        }
-      </td>
-    }
-    @case (timeStatus.Rejected) {
-      <td class="border-b border-black py-2 bg-red-600 w-3"></td>
-      <td class="border-b border-black text-white">
-        <button
-          [disabled]="(staffDashboardService.canEdit$ | async) === false"
-          title="Duplicate time entry"
-          class="ml-2"
-          (click)="duplicateTime()"
+      </div>
+    </td>
+    <td class="border-b border-black py-2 pl-2 text-center">
+      <div class="px-3">
+        <hq-select-input
+          (hqBlur)="save()"
+          [formControlName]="'chargeCodeId'"
+          [autocomplete]="true"
+          variant="pill"
+          [inline]="true"
         >
-          <i class="bi bi-copy"></i>
-        </button>
-      </td>
-      <td class="border-b border-black py-2 pl-3 pr-2">
-        <input
-          [ngClass]="{
-            'border-red-700 focus:border-red-700':
-              form.controls.hours.errors && form.touched,
-            'focus:border-white placeholder:text-gray-100':
-              !form.controls.hours.errors || !form.touched,
-          }"
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
-          type="number"
-          min="0"
-          formControlName="hours"
-          aria-label="Hours"
-          #hoursInput
-          step="0.25"
-          (blur)="save()"
-          (keydown.enter)="onEnter($event.target)"
-        />
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        <div class="grid relative w-full">
-          <input
-            class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-            type="date"
-            formControlName="date"
-            readonly
-          />
-          <button
-            [tabindex]="-1"
-            (click)="chooseDate()"
-            title="Change date"
-            [disabled]="!(form.value.id && form.valid)"
-            class="flex items-center justify-center h-full pointer-events-auto cursor-pointer z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-          >
-            <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
-          </button>
-        </div>
-      </td>
-      <td class="border-b border-black py-2 pl-2 text-center">
-        <div class="px-3">
-          <hq-select-input
-            (hqBlur)="save()"
-            [formControlName]="'chargeCodeId'"
-            [autocomplete]="true"
-            variant="pill"
-            [inline]="true"
-          >
-            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
-            @for (code of chargeCodes; track code.id) {
-              <ng-template
-                [hqSelectInputOption]="code.id"
-                [hqSelectInputOptionSelectedDisplay]="code.code"
-                [hqSelectInputOptionSearch]="
-                  code.code + ': ' + code.clientName + ': ' + code.projectName
-                "
-                >{{
-                  code.code + ": " + code.clientName + ": " + code.projectName
-                }}</ng-template
-              >
-            }
-          </hq-select-input>
-        </div>
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ clientName$ | async }}
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ projectName$ | async }}
-      </td>
-
-      <td class="border-b border-black py-2 pl-2">
-        @if (activities$ | async; as activities) {
-          @if (activities.length > 0) {
-            <div class="grid relative w-full max-w-[220px]">
-              <select
-                [ngClass]="{
-                  'border-red-700 focus:border-red-700':
-                    form.controls.activityId.errors && form.touched,
-                  'border-black':
-                    !form.controls.activityId.errors || !form.touched,
-                }"
-                class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
-                formControlName="activityId"
-                (blur)="save()"
-                (keydown.enter)="onEnter($event.target)"
-              >
-                <option [ngValue]="null" class="text-gray-50">Activity</option>
-                @for (activity of activities$ | async; track activity.id) {
-                  <option [ngValue]="activity.id">{{ activity.name }}</option>
-                }
-              </select>
-              <span
-                class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-              >
-                <i class="bi bi-arrow-down-short text-[24px]"></i>
-              </span>
-            </div>
-          } @else {
-            <input
-              class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-              type="text"
-              aria-label="Task"
-              formControlName="task"
-              (blur)="save()"
-              (keydown.enter)="onEnter($event.target)"
-            />
-          }
-        }
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        <input
-          [ngClass]="{
-            'border-red-700 focus:border-red-700':
-              form.controls.notes.errors && form.touched,
-            'focus:border-white placeholder:text-gray-100':
-              !form.controls.notes.errors || !form.touched,
-          }"
-          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
-          type="text"
-          aria-label="Time Entry Description"
-          formControlName="notes"
-          (blur)="save()"
-          (keydown.enter)="onEnter($event.target)"
-        />
-      </td>
-      <td class="border-b border-black py-2 pl-2 pr-5">
-        @if (time?.rejectionNotes) {
-          <div>
-            <button
-              type="button"
-              class="h-[30px] px-2 py-2 rounded w-full"
-              (click)="showRejectionNotes()"
+          <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+          @for (code of chargeCodes; track code.id) {
+            <ng-template
+              [hqSelectInputOption]="code.id"
+              [hqSelectInputOptionSelectedDisplay]="code.code"
+              [hqSelectInputOptionSearch]="
+                code.code + ': ' + code.clientName + ': ' + code.projectName
+              "
+              >{{
+                code.code + ": " + code.clientName + ": " + code.projectName
+              }}</ng-template
             >
-              <i
-                [title]="time?.rejectionNotes"
-                class="bi bi-exclamation-diamond-fill text-yellow-550"
-              ></i>
-            </button>
+          }
+        </hq-select-input>
+      </div>
+    </td>
+    <td class="border-b border-black py-2 pl-2">
+      {{ clientName$ | async }}
+    </td>
+    <td class="border-b border-black py-2 pl-2">
+      {{ projectName$ | async }}
+    </td>
+
+    <td class="border-b border-black py-2 pl-2">
+      @if (activities$ | async; as activities) {
+        @if (activities.length > 0) {
+          <div class="grid relative w-full max-w-[220px]">
+            <select
+              [ngClass]="{
+                'border-red-700 focus:border-red-700':
+                  form.controls.activityId.errors && form.touched,
+                'border-black':
+                  !form.controls.activityId.errors || !form.touched,
+              }"
+              class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+              formControlName="activityId"
+              (blur)="save()"
+              (keydown.enter)="onEnter($event.target)"
+            >
+              <option [ngValue]="null" class="text-gray-50">Activity</option>
+              @for (activity of activities$ | async; track activity.id) {
+                <option [ngValue]="activity.id">{{ activity.name }}</option>
+              }
+            </select>
+            <span
+              class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+            >
+              <i class="bi bi-arrow-down-short text-[24px]"></i>
+            </span>
           </div>
+        } @else {
+          <input
+            class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+            type="text"
+            aria-label="Task"
+            formControlName="task"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
+          />
         }
-      </td>
-    }
-    @case (timeStatus.Submitted) {
-      <td class="border-b border-black py-2 bg-gray-300 w-3"></td>
-      <td class="border-b border-black text-white">
-        <button
-          title="Duplicate time entry"
-          [disabled]="(staffDashboardService.canEdit$ | async) === false"
-          class="ml-2"
-          (click)="duplicateTime()"
-        >
-          <i class="bi bi-copy"></i>
-        </button>
-      </td>
-      <td class="border-b border-black py-2 pl-5 text-right px-3">
-        {{ time?.hours }}
-      </td>
-      <td class="border-b border-black py-2 px-4">
-        {{ time?.date | date: "shortDate" }}
-      </td>
-      <td class="border-b border-black py-2 pl-2 text-center">
-        <div class="px-3">
-          <hq-select-input
-            [readonly]="true"
-            [formControlName]="'chargeCodeId'"
-            [autocomplete]="true"
-            variant="pill"
-            [inline]="true"
+      }
+    </td>
+    <td class="border-b border-black py-2 pl-2">
+      <input
+        [ngClass]="{
+          'border-red-700 focus:border-red-700':
+            form.controls.notes.errors && form.touched,
+          'focus:border-white placeholder:text-gray-100':
+            !form.controls.notes.errors || !form.touched,
+        }"
+        class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
+        type="text"
+        aria-label="Time Entry Description"
+        formControlName="notes"
+        (blur)="save()"
+        (keydown.enter)="onEnter($event.target)"
+      />
+    </td>
+    <td class="border-b border-black py-2 pl-2 pr-5">
+      @if (time?.rejectionNotes) {
+        <div>
+          <button
+            type="button"
+            class="h-[30px] px-2 py-2 rounded w-full"
+            (click)="showRejectionNotes()"
           >
-            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
-            @for (code of chargeCodes; track code.id) {
-              <ng-template
-                [hqSelectInputOption]="code.id"
-                [hqSelectInputOptionSelectedDisplay]="code.code"
-                [hqSelectInputOptionSearch]="
-                  code.code + ': ' + code.clientName + ': ' + code.projectName
-                "
-                >{{
-                  code.code + ": " + code.clientName + ": " + code.projectName
-                }}</ng-template
-              >
-            }
-          </hq-select-input>
+            <i
+              [title]="time?.rejectionNotes"
+              class="bi bi-exclamation-diamond-fill text-yellow-550"
+            ></i>
+          </button>
         </div>
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ clientName$ | async }}
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ projectName$ | async }}
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ time?.activityName || time?.task }}
-      </td>
-      <td class="border-b border-black py-2 pl-3">
-        @if (time?.notes; as notes) {
-          {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
-        }
-      </td>
-      <td class="border-b border-black py-2 pl-2 pr-5"></td>
-    }
-    @case (timeStatus.Accepted) {
-      <td class="border-b border-black py-2 bg-green-600 w-3"></td>
-      <td class="border-b border-black text-white">
-        <button
-          title="Duplicate time entry"
-          name="Duplicate time entry"
-          [disabled]="(staffDashboardService.canEdit$ | async) === false"
-          class="ml-2"
-          (click)="duplicateTime()"
+      }
+    </td>
+  } @else {
+    <td class="border-b border-black py-2 pl-5 text-right px-3 text-gray-450">
+      {{ time?.hours }}
+    </td>
+    <td class="border-b border-black py-2 px-4 text-gray-450">
+      {{ time?.date }}
+    </td>
+    <td class="border-b border-black py-2 pl-2 text-center text-gray-450">
+      <div class="px-3">
+        <hq-select-input
+          [readonly]="true"
+          [formControlName]="'chargeCodeId'"
+          [autocomplete]="true"
+          variant="pill"
+          [inline]="true"
         >
-          <i class="bi bi-copy"></i>
-        </button>
-      </td>
-      <td class="border-b border-black py-2 pl-5 text-right px-3">
-        {{ time?.hours }}
-      </td>
-      <td class="border-b border-black py-2 px-4">
-        {{ time?.date | date: "shortDate" | date: "shortDate" }}
-      </td>
-      <td class="border-b border-black py-2 pl-2 text-center">
-        <div class="px-3">
-          <hq-select-input
-            [readonly]="true"
-            [formControlName]="'chargeCodeId'"
-            [autocomplete]="true"
-            variant="pill"
-            [inline]="true"
-          >
-            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
-            @for (code of chargeCodes; track code.id) {
-              <ng-template
-                [hqSelectInputOption]="code.id"
-                [hqSelectInputOptionSelectedDisplay]="code.code"
-                [hqSelectInputOptionSearch]="
-                  code.code + ': ' + code.clientName + ': ' + code.projectName
-                "
-                >{{
-                  code.code + ": " + code.clientName + ": " + code.projectName
-                }}</ng-template
-              >
-            }
-          </hq-select-input>
-        </div>
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ clientName$ | async }}
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ projectName$ | async }}
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ time?.activityName || time?.task }}
-      </td>
-      <td class="border-b border-black py-2 pl-3">
-        @if (time?.notes; as notes) {
-          {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
-        }
-      </td>
-      <td class="border-b border-black py-2 pl-2 pr-5"></td>
-    }
-    @case (timeStatus.Resubmitted) {
-      <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
-      <td class="border-b border-black text-white">
-        <button
-          title="Duplicate time entry"
-          name="Duplicate time entry"
-          [disabled]="(staffDashboardService.canEdit$ | async) === false"
-          class="ml-2"
-          (click)="duplicateTime()"
-        >
-          <i class="bi bi-copy"></i>
-        </button>
-      </td>
-      <td class="border-b border-black py-2 pl-5 text-right px-3">
-        {{ time?.hours }}
-      </td>
-      <td class="border-b border-black py-2 px-4">
-        {{ time?.date | date: "shortDate" }}
-      </td>
-      <td class="border-b border-black py-2 pl-2 text-center">
-        <div class="px-3">
-          <hq-select-input
-            [readonly]="true"
-            [formControlName]="'chargeCodeId'"
-            [autocomplete]="true"
-            variant="pill"
-            [inline]="true"
-          >
-            <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
-            @for (code of chargeCodes; track code.id) {
-              <ng-template
-                [hqSelectInputOption]="code.id"
-                [hqSelectInputOptionSelectedDisplay]="code.code"
-                [hqSelectInputOptionSearch]="
-                  code.code + ': ' + code.clientName + ': ' + code.projectName
-                "
-                >{{
-                  code.code + ": " + code.clientName + ": " + code.projectName
-                }}</ng-template
-              >
-            }
-          </hq-select-input>
-        </div>
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ clientName$ | async }}
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ projectName$ | async }}
-      </td>
-      <td class="border-b border-black py-2 pl-2">
-        {{ time?.activityName || time?.task }}
-      </td>
-      <td class="border-b border-black py-2 pl-3">
-        @if (time?.notes; as notes) {
-          {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
-        }
-      </td>
-      <td class="border-b border-black py-2 pl-2 pr-5"></td>
-    }
+          <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
+          @for (code of chargeCodes; track code.id) {
+            <ng-template
+              [hqSelectInputOption]="code.id"
+              [hqSelectInputOptionSelectedDisplay]="code.code"
+              [hqSelectInputOptionSearch]="
+                code.code + ': ' + code.clientName + ': ' + code.projectName
+              "
+              >{{
+                code.code + ": " + code.clientName + ": " + code.projectName
+              }}</ng-template
+            >
+          }
+        </hq-select-input>
+      </div>
+    </td>
+    <td class="border-b border-black py-2 pl-2 text-gray-450">
+      {{ clientName$ | async }}
+    </td>
+    <td class="border-b border-black py-2 pl-2 text-gray-450">
+      {{ projectName$ | async }}
+    </td>
+    <td class="border-b border-black py-2 pl-2 text-gray-450">
+      {{ time?.activityName || time?.task }}
+    </td>
+    <td class="border-b border-black py-2 pl-3 text-gray-450">
+      @if (time?.notes; as notes) {
+        {{ notes.length > 70 ? notes.substring(0, 70) + "..." : notes }}
+      }
+    </td>
+    <td class="border-b border-black py-2 pl-2 pr-5 text-gray-450"></td>
   }
 </ng-container>
