@@ -13,8 +13,6 @@ using HQ.Abstractions.Points;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services;
