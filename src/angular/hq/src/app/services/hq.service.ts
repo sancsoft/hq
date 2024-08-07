@@ -113,11 +113,11 @@ import {
 import {
   UpsertProjectActivityResponseV1,
   UpsertProjectActivityRequestV1,
-} from '../models/PSR/upsert-project-activity-v1';
+} from '../models/projects/upsert-project-activity-v1';
 import {
   DeleteProjectActivityV1Request,
   DeleteProjectActivityV1Response,
-} from '../models/PSR/delete-project-activity-v1';
+} from '../models/projects/delete-project-activity-v1';
 import {
   GetTimeRecordsV1,
   GetTimeRequestV1,
