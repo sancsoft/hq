@@ -299,4 +299,12 @@ recurringJobManager.AddOrUpdate<HolidayServiceV1>(
     Cron.Weekly(DayOfWeek.Monday, 12),
     recurringJobOptions);
 
+recurringJobManager.AddOrUpdate<PointServiceV1>(
+nameof(PointServiceV1.BackgroundAutoGenerateHolidayPlanningPointsV1),
+(t) => t.BackgroundAutoGenerateHolidayPlanningPointsV1(CancellationToken.None),
+Cron.Weekly(DayOfWeek.Friday, 0),
+recurringJobOptions);
+
+
+
 await app.RunAsync();

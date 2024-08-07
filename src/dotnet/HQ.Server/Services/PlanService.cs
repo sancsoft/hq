@@ -1,5 +1,7 @@
 using FluentResults;
 
+using HQ.Abstractions;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Plan;
 using HQ.Abstractions.Staff;
 

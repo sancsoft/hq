@@ -266,6 +266,7 @@ public class HolidayServiceV1
                         HolidayId = upcomingHoliday.Id
                     };
                     _context.Times.Add(timeEntry);
+                    
                 }
                 await _context.SaveChangesAsync(ct);
 

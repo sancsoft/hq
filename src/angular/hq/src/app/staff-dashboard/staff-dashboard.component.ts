@@ -42,7 +42,6 @@ import {
   startWith,
   switchMap,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { HQService } from '../services/hq.service';
 import { APIError } from '../errors/apierror';
@@ -269,6 +268,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
         distinctUntilChanged(),
         switchMap(() => {
           return request$.pipe(
+            skip(1),
             debounceTime(1000),
             filter((t) => t.canEdit),
             switchMap((request) =>
@@ -283,7 +283,8 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
       )
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe,
       .subscribe({
-        next: () => {
+        next: (t) => {
+          console.log(t);
           this.toastService.show('Success', 'Plan saved successfully');
         },
         error: async () => {
