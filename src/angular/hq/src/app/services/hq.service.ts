@@ -103,6 +103,14 @@ import {
   GetProjectActivityRequestV1,
 } from '../models/PSR/get-project-activity-v1';
 import {
+  UpsertProjectActivityResponseV1,
+  UpsertProjectActivityRequestV1,
+} from '../models/PSR/upsert-project-activity-v1';
+import {
+  DeleteProjectActivityV1Request,
+  DeleteProjectActivityV1Response,
+} from '../models/PSR/delete-project-activity-v1';
+import {
   GetTimeRecordsV1,
   GetTimeRequestV1,
 } from '../models/times/get-time-v1';
@@ -442,7 +450,27 @@ export class HQService {
       ),
     );
   }
-
+  upsertProjectActivityV1(request: Partial<UpsertProjectActivityRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertProjectActivityResponseV1>(
+          `${apiUrl}/v1/Projects/UpsertProjectActivityV1
+          `,
+          request,
+        ),
+      ),
+    );
+  }
+  deleteProjectActivityV1(request: Partial<DeleteProjectActivityV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<DeleteProjectActivityV1Response>(
+          `${apiUrl}/v1/Projects/DeleteProjectActivityV1`,
+          request,
+        ),
+      ),
+    );
+  }
   submitProjectStatusReportV1(request: Partial<SubmitPSRRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>

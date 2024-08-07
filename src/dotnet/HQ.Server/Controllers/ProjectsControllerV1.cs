@@ -64,6 +64,15 @@ namespace HQ.Server.Controllers
             _projectService.DeleteProjectV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+
+        [Authorize(HQAuthorizationPolicies.Manager)]
+        [HttpPost(nameof(DeleteProjectActivityV1))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public Task<ActionResult> DeleteProjectActivityV1([FromBody] DeleteProjectActivityV1.Request request, CancellationToken ct = default) =>
+            _projectService.DeleteProjectActivityV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(AddProjectMemberV1))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

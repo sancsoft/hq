@@ -442,6 +442,20 @@ public class ProjectServiceV1
         };
     }
 
+    public async Task<Result<DeleteProjectActivityV1.Response?>> DeleteProjectActivityV1(DeleteProjectActivityV1.Request request, CancellationToken ct = default)
+    {
+        if (await _context.Times.AnyAsync(t => t.ActivityId == request.Id))
+        {
+            return Result.Fail("Activity has time associated with it, unable to delete");
+        }
+        var projectActivity = await _context.ProjectActivities.FindAsync(request.Id, ct);
+        if (projectActivity != null)
+        {
+            _context.ProjectActivities.Remove(projectActivity);
+            await _context.SaveChangesAsync(ct);
+        }
+        return new DeleteProjectActivityV1.Response();
+    }
     public async Task<Result<GetProjectActivitiesV1.Response>> GetProjectActivitiesV1(GetProjectActivitiesV1.Request request, CancellationToken ct = default)
     {
         var records = _context.ProjectActivities.Where(t => t.ProjectId == request.ProjectId)
@@ -462,8 +476,6 @@ public class ProjectServiceV1
     {
         var validationResult = Result.Merge(
             Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
-            Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId != request.ProjectId && t.Sequence == request.Sequence, ct), "Sequence must be unique."),
-
             Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId == request.ProjectId && t.Name == request.Name, ct), "Name must be unique.")
         );
 
