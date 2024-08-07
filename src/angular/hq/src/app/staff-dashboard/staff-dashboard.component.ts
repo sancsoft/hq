@@ -270,6 +270,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
         switchMap(() => {
           return request$.pipe(
             debounceTime(1000),
+            skip(1),
             filter((t) => t.canEdit),
             switchMap((request) =>
               this.hqService.upsertPlanV1({
