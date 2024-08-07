@@ -32,6 +32,7 @@ import {
   Subject,
   combineLatest,
   concat,
+  debounceTime,
   defer,
   distinctUntilChanged,
   firstValueFrom,
@@ -215,6 +216,21 @@ export class StaffDashboardTimeEntryComponent
       startWith([]),
     );
 
+    this.activities$
+      .pipe(debounceTime(500), takeUntil(this.destroyed$))
+      .subscribe({
+        next: (activities) => {
+          if (activities.length > 0) {
+            this.form.controls.activityId.addValidators(Validators.required);
+          } else {
+            this.form.controls.activityId.removeValidators(Validators.required);
+          }
+
+          this.form.controls.activityId.updateValueAndValidity();
+        },
+        error: console.error,
+      });
+
     this.form.controls.chargeCodeId.valueChanges
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
@@ -227,6 +243,7 @@ export class StaffDashboardTimeEntryComponent
                 projectId: chargeCode.projectId,
                 clientName: chargeCode.clientName,
                 projectName: chargeCode.projectName,
+                activityId: null,
               },
               { emitEvent: false },
             );
@@ -237,6 +254,7 @@ export class StaffDashboardTimeEntryComponent
                 projectId: null,
                 clientName: null,
                 projectName: null,
+                activityId: null,
               },
               { emitEvent: false },
             );
