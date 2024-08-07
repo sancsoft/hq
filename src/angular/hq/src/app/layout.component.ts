@@ -4,7 +4,7 @@ import { Observable, filter, firstValueFrom, map } from 'rxjs';
 import { AppSettingsService } from './app-settings.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { InRolePipe } from './pipes/in-role.pipe';
 import { HQRole } from './enums/hqrole';
 import {OverlayModule} from '@angular/cdk/overlay';
@@ -35,7 +35,7 @@ export class LayoutComponent {
 
   userName$: Observable<string>;
 
-  constructor() {
+  constructor(public route: Router) {
     this.userName$ = this.oidcSecurityService.userData$.pipe(
       filter((t) => t.userData),
       map((t) => t.userData.email),
