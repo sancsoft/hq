@@ -163,7 +163,10 @@
       />
     </td>
     <td class="border-b border-black py-2 pl-2 pr-5">
-      @if (time?.timeStatus === timeStatus.Unsubmitted) {
+      @if (
+        time?.timeStatus === timeStatus.Unsubmitted ||
+        (staffDashboardService.isAdmin$ | async)
+      ) {
         @if (form.controls.id.value) {
           <button
             type="button"
