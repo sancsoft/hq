@@ -39,18 +39,15 @@
         }
       }
     </div>
-    <span
-      class="flex items-center justify-center pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
-      [ngClass]="{
-        'after:bg-gray-100': variant !== 'pill',
-      }"
-      ><i
+    @if (!readonly) {
+      <span
+        class="flex items-center justify-center pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
         [ngClass]="{
-          hiddden: readonly === true,
-          'bi bi-arrow-down-short text-[24px]': readonly === false,
+          'after:bg-gray-100': variant !== 'pill',
         }"
-      ></i
-    ></span>
+        ><i class="bi bi-arrow-down-short text-[24px]"></i
+      ></span>
+    }
   </button>
   <div class="relative">
     <div
