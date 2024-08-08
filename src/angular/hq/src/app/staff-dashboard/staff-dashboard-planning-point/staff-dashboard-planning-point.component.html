@@ -29,9 +29,9 @@
           [hqSelectInputOptionSearch]="
             code.code + ': ' + code.clientName + ': ' + code.projectName
           "
-          >{{
+          ><span [ngClass]="{ 'text-gray-400': !code.isProjectMember }">{{
             code.code + ": " + code.clientName + ": " + code.projectName
-          }}</ng-template
+          }}</span></ng-template
         >
       }
     </hq-select-input>

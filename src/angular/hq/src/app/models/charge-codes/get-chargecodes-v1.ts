@@ -13,6 +13,7 @@ export interface GetChargeCodesRequestV1 extends PagedRequestV1 {
   clientId?: string | null;
   billable?: boolean;
   active?: boolean;
+  staffId?: string | null;
 }
 
 // Enum for specifying the sortable columns in charge code requests
@@ -23,6 +24,7 @@ export enum SortColumn {
   ProjectName = 4,
   QuoteName = 5,
   ServiceAgreementName = 6,
+  IsProjectMember = 7,
 }
 
 // Interface representing a single charge code record
@@ -41,6 +43,7 @@ export interface GetChargeCodeRecordV1 {
   clientId?: string;
   clientName?: string;
   serviceAgreementId?: string;
+  isProjectMember: boolean | null;
 }
 
 // Interface for the response containing a list of charge code records

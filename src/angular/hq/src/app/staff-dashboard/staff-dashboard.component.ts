@@ -64,7 +64,10 @@ import { ButtonComponent } from '../core/components/button/button.component';
 import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staff-dashboard-planning.component';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 import { ButtonState } from '../enums/button-state';
-import { GetChargeCodeRecordV1 } from '../models/charge-codes/get-chargecodes-v1';
+import {
+  GetChargeCodeRecordV1,
+  SortColumn,
+} from '../models/charge-codes/get-chargecodes-v1';
 
 export interface PointForm {
   id: FormControl<string | null>;
@@ -168,9 +171,15 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     private cdr: ChangeDetectorRef,
   ) {
     this.canEdit$ = this.staffDashboardService.canEdit$;
-    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({
-      active: true,
-    });
+    const chargeCodeResponse$ = this.staffDashboardService.staffId$.pipe(
+      switchMap((staffId) =>
+        this.hqService.getChargeCodeseV1({
+          active: true,
+          staffId,
+          sortBy: SortColumn.IsProjectMember,
+        }),
+      ),
+    );
     this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),
       shareReplay({ bufferSize: 1, refCount: false }),

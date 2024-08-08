@@ -50,7 +50,10 @@ import {
   PlanningPoint,
 } from '../../models/Points/get-points-v1';
 import { PointForm } from '../staff-dashboard.component';
-import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
+import {
+  GetChargeCodeRecordV1,
+  SortColumn,
+} from '../../models/charge-codes/get-chargecodes-v1';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HQService } from '../../services/hq.service';
@@ -148,9 +151,15 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       trigger: this.planningPointsRequestTrigger$.pipe(startWith(0)),
     }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({
-      active: true,
-    });
+    const chargeCodeResponse$ = this.staffDashboardService.staffId$.pipe(
+      switchMap((staffId) =>
+        this.hqService.getChargeCodeseV1({
+          active: true,
+          staffId,
+          sortBy: SortColumn.IsProjectMember,
+        }),
+      ),
+    );
 
     this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),
