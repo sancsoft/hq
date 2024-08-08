@@ -157,19 +157,42 @@
       />
     </td>
     <td class="border-b border-black py-2 pl-2 pr-5">
-      @if (time?.rejectionNotes) {
-        <div>
+      @if (time?.timeStatus === timeStatus.Unsubmitted) {
+        @if (form.controls.id.value) {
           <button
             type="button"
+            [title]="'Delete Time Entry'"
+            (click)="deleteTime()"
             class="h-[30px] px-2 py-2 rounded w-full"
-            (click)="showRejectionNotes()"
           >
-            <i
-              [title]="time?.rejectionNotes"
-              class="bi bi-exclamation-diamond-fill text-yellow-550"
-            ></i>
+            <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
           </button>
-        </div>
+        } @else {
+          <button
+            type="button"
+            [title]="'Reset Time Entry'"
+            (click)="resetTime()"
+            class="h-[30px] px-2 py-2 rounded w-full"
+          >
+            <i class="bi bi-x-lg text-gray-200 hover:text-gray-300"></i>
+          </button>
+        }
+      }
+      @if (time?.timeStatus === timeStatus.Rejected) {
+        @if (time?.rejectionNotes) {
+          <div>
+            <button
+              type="button"
+              class="h-[30px] px-2 py-2 rounded w-full"
+              (click)="showRejectionNotes()"
+            >
+              <i
+                [title]="time?.rejectionNotes"
+                class="bi bi-exclamation-diamond-fill text-yellow-550"
+              ></i>
+            </button>
+          </div>
+        }
       }
     </td>
   } @else {
