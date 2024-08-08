@@ -1,6 +1,11 @@
 <ng-container [formGroup]="form">
   <td
     class="border-b border-black py-2 w-3"
+    [title]="
+      time && time.timeStatus
+        ? timeStatus[time.timeStatus || timeStatus.Unsubmitted]
+        : ''
+    "
     [ngClass]="{
       'bg-red-700':
         form.invalid &&
@@ -27,9 +32,10 @@
     </button>
   </td>
   @if (
-    (staffDashboardService.canEdit$ | async) &&
-    (time?.timeStatus === timeStatus.Unsubmitted ||
-      time?.timeStatus === timeStatus.Rejected)
+    ((staffDashboardService.canEdit$ | async) &&
+      (time?.timeStatus === timeStatus.Unsubmitted ||
+        time?.timeStatus === timeStatus.Rejected)) ||
+    (staffDashboardService.isAdmin$ | async)
   ) {
     <td class="border-b border-black py-2 pl-3 pr-2">
       <input

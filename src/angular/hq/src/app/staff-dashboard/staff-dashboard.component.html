@@ -296,39 +296,14 @@
                     ></tr>
                   }
                   @for (time of date.times; track time.id) {
-                    @switch (time.timeStatus) {
-                      @case (timeStatus.Unsubmitted) {
-                        <tr
-                          hq-staff-dashboard-time-entry
-                          [chargeCodes]="chargeCodes$ | async"
-                          (hqTimeChange)="upsertTime($event)"
-                          (hqTimeDelete)="deleteTime($event)"
-                          (hqTimeDuplicate)="duplicateTime($event)"
-                          [time]="time"
-                        ></tr>
-                      }
-                      @case (timeStatus.Rejected) {
-                        <tr
-                          hq-staff-dashboard-time-entry
-                          [chargeCodes]="chargeCodes$ | async"
-                          (hqTimeChange)="upsertTime($event)"
-                          (hqTimeDelete)="deleteTime($event)"
-                          (hqTimeDuplicate)="duplicateTime($event)"
-                          [time]="time"
-                        ></tr>
-                      }
-                      @default {
-                        <tr
-                          hq-staff-dashboard-time-entry
-                          [chargeCodes]="chargeCodes$ | async"
-                          (hqTimeChange)="upsertTime($event)"
-                          (hqTimeDelete)="deleteTime($event)"
-                          (hqTimeDuplicate)="duplicateTime($event)"
-                          [time]="time"
-                          class="even:bg-gray-850 odd:bg-black-alt text-gray-450"
-                        ></tr>
-                      }
-                    }
+                    <tr
+                      hq-staff-dashboard-time-entry
+                      [chargeCodes]="chargeCodes$ | async"
+                      (hqTimeChange)="upsertTime($event)"
+                      (hqTimeDelete)="deleteTime($event)"
+                      (hqTimeDuplicate)="duplicateTime($event)"
+                      [time]="time"
+                    ></tr>
                   }
                 </tbody>
               </table>
@@ -487,39 +462,14 @@
                         ></tr>
                       }
                       @for (time of date.times; track time.id) {
-                        @switch (time.timeStatus) {
-                          @case (timeStatus.Unsubmitted) {
-                            <tr
-                              hq-staff-dashboard-time-entry
-                              [chargeCodes]="chargeCodes$ | async"
-                              (hqTimeChange)="upsertTime($event)"
-                              (hqTimeDelete)="deleteTime($event)"
-                              (hqTimeDuplicate)="duplicateTime($event)"
-                              [time]="time"
-                            ></tr>
-                          }
-                          @case (timeStatus.Rejected) {
-                            <tr
-                              hq-staff-dashboard-time-entry
-                              [chargeCodes]="chargeCodes$ | async"
-                              (hqTimeChange)="upsertTime($event)"
-                              (hqTimeDelete)="deleteTime($event)"
-                              (hqTimeDuplicate)="duplicateTime($event)"
-                              [time]="time"
-                            ></tr>
-                          }
-                          @default {
-                            <tr
-                              hq-staff-dashboard-time-entry
-                              [chargeCodes]="chargeCodes$ | async"
-                              (hqTimeChange)="upsertTime($event)"
-                              (hqTimeDelete)="deleteTime($event)"
-                              (hqTimeDuplicate)="duplicateTime($event)"
-                              [time]="time"
-                              class="even:bg-gray-850 odd:bg-black-alt text-gray-450"
-                            ></tr>
-                          }
-                        }
+                        <tr
+                          hq-staff-dashboard-time-entry
+                          [chargeCodes]="chargeCodes$ | async"
+                          (hqTimeChange)="upsertTime($event)"
+                          (hqTimeDelete)="deleteTime($event)"
+                          (hqTimeDuplicate)="duplicateTime($event)"
+                          [time]="time"
+                        ></tr>
                       }
                     </tbody>
                   </table>
