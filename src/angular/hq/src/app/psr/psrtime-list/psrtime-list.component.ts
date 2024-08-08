@@ -494,7 +494,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     const time = await firstValueFrom(
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
     );
-    
+
     if (originalChargeCode === chargeCode) {
       return;
     }
