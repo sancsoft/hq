@@ -13,7 +13,7 @@ namespace HQ.Abstractions.Points
             public Guid? Id { get; set; }
             public Guid? StaffId { get; set; }
             public DateOnly Date { get; set; }
-            public GetPointsV1.Point[]? Points { get; set; } = null!;
+            public List<GetPointsV1.Point>? Points { get; set; } = new List<GetPointsV1.Point>();
         }
 
         public class Response
