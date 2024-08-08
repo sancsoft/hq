@@ -256,17 +256,17 @@ table.hq-table {
   tbody.hq-table-body-condensed {
     tr th,
     tr td {
-      @apply px-2 py-0;
+      @apply p-0;
     }
 
     tr th:first-child,
     tr td:first-child {
-      @apply pl-0;
+      @apply p-0;
     }
 
     tr th:last-child,
     tr td:last-child {
-      @apply pe-0;
+      @apply p-0;
     }
   }
 }
