@@ -96,7 +96,7 @@ public class PointServiceV1
         {
             StaffId = request.StaffId,
             Date = request.Date,
-            Points = _points.ToArray(),
+            Points = _points,
             DisplayDate = startDate.AddDays(2),
             PreviousDate = request.Date.AddPeriod(Period.Week, -1),
             NextDate = request.Date.AddPeriod(Period.Week, 1)
@@ -112,7 +112,7 @@ public class PointServiceV1
             try
             {
                 var validationResult = Result.Merge(
-                    Result.FailIf(request.Points?.Length != 10, "10 Points required."),
+                    Result.FailIf(request.Points?.Count != 10, "10 Points required."),
                     Result.FailIf(!request.StaffId.HasValue, "staff id is required")
                 );
 
@@ -134,13 +134,34 @@ public class PointServiceV1
                 {
                     return Result.Fail("Points can't be null");
                 }
-                for (int i = 0; i < request.Points.Length; i++)
+
+                request.Points = request.Points.OrderBy(t => t.Sequence).ToList();
+                var holidayChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("holiday")).FirstOrDefaultAsync(ct);
+                var vacationChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("vacation")).FirstOrDefaultAsync(ct);
+                var sickChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("sick")).FirstOrDefaultAsync(ct);
+                if (holidayChargeCode == null || vacationChargeCode == null || sickChargeCode == null)
+                {
+                    return Result.Fail("Can't find valid chargecodes for sick or vacation or holiday");
+                }
+
+                var pointsToMove = request.Points.Where(p => p.ChargeCodeId.HasValue && (p.ChargeCodeId.Value == holidayChargeCode.Id || p.ChargeCodeId.Value == sickChargeCode.Id || p.ChargeCodeId.Value == vacationChargeCode.Id)).ToList();
+                request.Points.RemoveAll(p => pointsToMove.Contains(p));
+                request.Points.AddRange(pointsToMove);
+                //  Update the sequence for each point after pushing sick, vacation, holiday to the end
+                for (int i = 0; i < request.Points.Count; i++)
+                {
+                    var point = request.Points[i];
+                    point.Sequence = i + 1;
+                }
+                var DB_points = new List<Point>([]);
+                for (int i = 0; i < request.Points.Count; i++)
                 {
                     var point = request.Points[i];
                     if (point == null || point.ChargeCodeId == null)
                         continue;
                     var _Point = new Data.Models.Point();
-                    _context.Points.Add(_Point);
+                    DB_points.Add(_Point);
+                    // _context.Points.Add(_Point);
 
                     pointIds.Add(_Point.Id);
                     _Point.ChargeCodeId = point.ChargeCodeId.Value;
@@ -149,6 +170,9 @@ public class PointServiceV1
                     _Point.Date = startDate;
                 }
 
+
+
+                await _context.AddRangeAsync(DB_points);
                 await _context.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
 
@@ -300,7 +324,7 @@ public class PointServiceV1
                 var staffPointsResponse = await GetPointsV1(getPointsRequest, ct);
                 var points = staffPointsResponse.Value.Points;
 
-                for (int i = points.Length - 1; i >= points.Length - (upcomingHolidays.Count * 2); i--)
+                for (int i = points.Count - 1; i >= points.Count - (upcomingHolidays.Count * 2); i--)
                 {
                     if (points[i].ChargeCodeId == null)
                     {
