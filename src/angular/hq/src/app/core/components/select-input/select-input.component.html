@@ -44,20 +44,25 @@
       [ngClass]="{
         'after:bg-gray-100': variant !== 'pill',
       }"
-      ><i class="bi bi-arrow-down-short text-[24px]"></i
+      ><i
+        [ngClass]="{
+          hiddden: readonly === true,
+          'bi bi-arrow-down-short text-[24px]': readonly === false,
+        }"
+      ></i
     ></span>
   </button>
   <div class="relative">
     <div
       [class.hidden]="!isOpen"
-      class="bg-blue-900 border border-gray-100 overflow-hidden rounded-md rounded-tr-none rounded-tl-none absolute left-0 top-0 z-50 min-w-96"
+      class="bg-blue-900 border border-black overflow-hidden rounded-md rounded-tr-none rounded-tl-none absolute left-0 top-0 z-50 min-w-96"
       [ngClass]="{
         'top-0 ': variant !== 'pill',
         'top-2': variant === 'pill',
       }"
       [style.width.px]="button.offsetWidth"
     >
-      <div class="border-b border-b-white">
+      <div class="border-b border-b-black">
         <hq-search-input
           variant="transparent"
           (hqBlur)="onBlur()"
@@ -117,7 +122,12 @@
     <span
       class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
     >
-      <i class="bi bi-arrow-down-short text-[24px]"></i>
+      <i
+        [ngClass]="{
+          hiddden: readonly === true,
+          'bi bi-arrow-down-short text-[24px]': readonly === false,
+        }"
+      ></i>
     </span>
   </div>
 }

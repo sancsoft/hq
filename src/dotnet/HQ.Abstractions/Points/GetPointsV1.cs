@@ -2,6 +2,16 @@ using HQ.Abstractions.Points;
 
 public class GetPointsV1
 {
+    public class Point
+    {
+        public Guid? Id { get; set; }
+        public Guid? ChargeCodeId { get; set; }
+        public String? ChargeCode { get; set; }
+        public String? ProjectName { get; set; }
+        public Guid? ProjectId { get; set; }
+        public int Sequence { get; set; }
+        public bool Completed { get; set; }
+    }
     public class Request
     {
         public Guid? Id { get; set; }
