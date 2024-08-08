@@ -1,0 +1,115 @@
+<h1 class="font-rajdhani font-semibold text-3xl px-5 mb-5">Planning Points</h1>
+<div class="px-5 w-60 mb-3">
+  <hq-search-input [formControl]="search"></hq-search-input>
+</div>
+@if (summary$ | async; as summary) {
+  <div class="flex flex-col items-start px-5 bg-black-alt">
+    <span
+      class="font-open-sans text-nav-disabled text-xs font-bold uppercase flex justify-between p-1"
+      >WEEK PLAN - WEEK OF</span
+    >
+
+    <div class="flex justify-center">
+      <div class="flex items-center space-x-4 py-1">
+        <button
+          title="Previous plan"
+          class="focus:outline-none"
+          (click)="date.next(summary.previousDate)"
+        >
+          <i class="bi bi-arrow-left-short text-[28px]"></i>
+        </button>
+
+        <span>
+          {{ summary.displayDate | date: "MM/dd/yyyy" }}
+        </span>
+        <button
+          title="Next plan"
+          class="focus:outline-none"
+          (click)="date.next(summary.nextDate)"
+        >
+          <i class="bi bi-arrow-right-short text-[28px]"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <table class="hq-table table-fixed" [class.loading]="loading | async">
+    <thead>
+      <tr>
+        <th colspan="2">Staff</th>
+        <th colspan="2" width="170" class="text-center">1</th>
+        <th colspan="2" width="170" class="text-center">2</th>
+        <th colspan="2" width="170" class="text-center">3</th>
+        <th colspan="2" width="170" class="text-center">4</th>
+        <th colspan="2" width="170" class="text-center">5</th>
+        <th colspan="2" width="170" class="text-center">6</th>
+        <th colspan="2" width="170" class="text-center">7</th>
+        <th colspan="2" width="170" class="text-center">8</th>
+        <th colspan="2" width="170" class="text-center">9</th>
+        <th colspan="2" width="170" class="text-center">10</th>
+      </tr>
+    </thead>
+    <tbody class="hq-table-body hq-table-body-condensed">
+      @for (staff of summary.staff; track staff.staffId) {
+        <tr>
+          <td
+            width="15"
+            [ngClass]="{
+              'bg-green-600': staff.completed,
+              'bg-gray-600': !staff.completed,
+            }"
+          ></td>
+          <td>
+            <a
+              [routerLink]="['/timesheets', staff.staffId, 'timesheet']"
+              class="hover:text-teal-300"
+              target="_blank"
+              >{{ staff.staffName }}</a
+            >
+          </td>
+          @for (point of staff.points; track point.sequence) {
+            <td
+              width="15"
+              [ngClass]="{
+                'bg-green-600': point.completed,
+                'bg-gray-600': !point.completed,
+              }"
+            ></td>
+            <td width="165">
+              <div class="h-28 w-full py-2 text-center">
+                @if (point.chargeCodeId) {
+                  <div
+                    class="px-3 py-1 font-semibold rounded-full select-none inline-block mb-2"
+                    [style.background-color]="
+                      chargeCodeToColor(point.chargeCodeId)
+                    "
+                  >
+                    {{ point.chargeCode }}
+                  </div>
+                  <div>
+                    <a
+                      [routerLink]="['/clients', point.clientId]"
+                      target="_blank"
+                      class="text-gray-450 hover:text-teal-300"
+                      >{{ point.clientName }}</a
+                    >
+                  </div>
+                  <div>
+                    <a
+                      [routerLink]="['/projects', point.projectId]"
+                      target="_blank"
+                      class="hover:text-teal-300"
+                      >{{ point.projectName }}</a
+                    >
+                  </div>
+                }
+              </div>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <div class="px-5">Loading...</div>
+}

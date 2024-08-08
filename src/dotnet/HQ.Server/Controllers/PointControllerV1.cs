@@ -47,6 +47,13 @@ namespace HQ.Server.Controllers
             await _pointService.GetPointsV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetPointSummaryV1))]
+        [ProducesResponseType<GetPointSummaryV1.Response>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetPointSummaryV1([FromBody] GetPointSummaryV1.Request request, CancellationToken ct = default) =>
+            await _pointService.GetPointSummaryV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
         [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(GenerateHolidayPlanningPointsV1))]
         public async Task GenerateHolidayPlanningPointsV1([FromBody] GenerateHolidayPointsV1.Request request, CancellationToken ct = default) =>

@@ -34,7 +34,7 @@
       >
         Official Name
       </th>
-      <th scope="col" width="160">
+      <th scope="col" width="160" class="text-right">
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
           <hq-button routerLink="/clients/create">
             <i class="bi bi-plus"></i>
@@ -63,7 +63,7 @@
         <td class="hidden xl:table-cell">
           {{ client.officialName ?? "-" }}
         </td>
-        <td>
+        <td class="text-right">
           <div class="text-nowrap divide-x divide-teal-200">
             @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
               <a

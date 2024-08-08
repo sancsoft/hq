@@ -531,4 +531,13 @@ export const routes: Routes = [
         (m) => m.DashboardComponent,
       ),
   },
+  {
+    path: 'planning/points',
+    title: 'Planning Points',
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
+    loadComponent: () =>
+      import('./planning/planning-points/planning-points.component').then(
+        (m) => m.PlanningPointsComponent,
+      ),
+  },
 ];

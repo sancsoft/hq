@@ -57,7 +57,7 @@
         Complete %
       </th>
 
-      <th scope="col" width="150">
+      <th scope="col" width="150" class="text-right">
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
           <hq-button
             routerLink="/projects/create"
@@ -167,7 +167,7 @@
             </div>
           }
         </td>
-        <td>
+        <td class="text-right">
           <a
             [routerLink]="['/projects', record.id]"
             class="text-teal-200 hover:text-teal-300"
