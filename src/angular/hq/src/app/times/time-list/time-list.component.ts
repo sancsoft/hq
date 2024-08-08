@@ -203,6 +203,6 @@ export class TimeListComponent {
       return;
     }
 
-    saveAs(result.file, result.fileName);
+    await saveAs(result.file, result.fileName);
   }
 }
