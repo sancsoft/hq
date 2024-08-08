@@ -5,7 +5,6 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
-  map,
   Observable,
   shareReplay,
   switchMap,
