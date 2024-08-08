@@ -51,7 +51,7 @@ public class PointServiceV1
         .GroupBy(x => x.ChargeCodeId)
         .ToDictionaryAsync(g => g.Key, g => g.Sum(x => x.Hours));
 
-        var _points = points.Select(t => new Abstractions.Points.Point
+        var _points = points.Select(t => new GetPointsV1.Point
         {
             ChargeCodeId = t.ChargeCodeId,
             Id = t.Id,
@@ -69,7 +69,7 @@ public class PointServiceV1
 
             if (point == null)
             {
-                var nullPoint = new Abstractions.Points.Point
+                var nullPoint = new GetPointsV1.Point
                 {
                     ChargeCodeId = null,
                     Id = null,
