@@ -174,6 +174,10 @@ import {
   upsertPointsRequestV1,
   upsertPointsResponseV1,
 } from '../models/Points/upsert-points-V1';
+import {
+  GetPointsSummaryRequestV1,
+  GetPointsSummaryResponseV1,
+} from '../models/Points/get-points-summary-v1';
 @Injectable({
   providedIn: 'root',
 })
@@ -709,6 +713,17 @@ export class HQService {
           .split('=')[1]
           .trim(),
       })),
+    );
+  }
+
+  getPointsSummaryV1(request: Partial<GetPointsSummaryRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPointsSummaryResponseV1>(
+          `${apiUrl}/v1/Point/GetPointSummaryV1`,
+          request,
+        ),
+      ),
     );
   }
 }

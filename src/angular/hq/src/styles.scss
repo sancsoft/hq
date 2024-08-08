@@ -249,7 +249,24 @@ table.hq-table {
 
     tr th:last-child,
     tr td:last-child {
-      @apply pe-5 text-right;
+      @apply pe-5;
+    }
+  }
+
+  tbody.hq-table-body-condensed {
+    tr th,
+    tr td {
+      @apply px-2 py-0;
+    }
+
+    tr th:first-child,
+    tr td:first-child {
+      @apply pl-0;
+    }
+
+    tr th:last-child,
+    tr td:last-child {
+      @apply pe-0;
     }
   }
 }

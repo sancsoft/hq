@@ -165,6 +165,98 @@ public class PointServiceV1
         }
     }
 
+    public async Task<Result<GetPointSummaryV1.Response>> GetPointSummaryV1(GetPointSummaryV1.Request request, CancellationToken ct = default)
+    {
+        var today = request.Date;
+        var startDate = today.GetPeriodStartDate(Period.Week);
+        var endDate = today.GetPeriodEndDate(Period.Week);
+
+        var response = new GetPointSummaryV1.Response()
+        {
+            Date = request.Date,
+            DisplayDate = startDate.AddDays(2),
+            PreviousDate = request.Date.AddPeriod(Period.Week, -1),
+            NextDate = request.Date.AddPeriod(Period.Week, 1),
+        };
+
+        var allStaffPoints = await _context.Points
+            .AsNoTracking()
+            .Include(t => t.ChargeCode)
+            .ThenInclude(t => t!.Project)
+            .ThenInclude(t => t!.Client)
+            .Where(t => t.Date == startDate)
+            .GroupBy(t => t.StaffId)
+            .ToDictionaryAsync(t => t.Key, t => t.ToDictionary(t => t.Sequence), ct);
+
+        var allStaff = await _context.Staff
+            .AsNoTracking()
+            .Where(t => t.EndDate == null)
+            .OrderBy(t => t.Name)
+            .ToListAsync(ct);
+
+        var allStaffTimeSummary = await _context.Times
+            .AsNoTracking()
+            .Where(t => t.Date >= startDate && t.Date <= endDate)
+            .GroupBy(t => t.StaffId)
+            .ToDictionaryAsync(t => t.Key, t => t.GroupBy(x => x.ChargeCodeId).ToDictionary(x => x.Key, x => x.Sum(y => y.Hours)));
+
+        foreach (var staff in allStaff)
+        {
+            var summary = new GetPointSummaryV1.StaffSummary()
+            {
+                StaffId = staff.Id,
+                StaffName = staff.Name
+            };
+
+            var staffPoints = allStaffPoints.ContainsKey(staff.Id) ? allStaffPoints[staff.Id] : new Dictionary<int, Data.Models.Point>();
+            var staffTimeSummary = allStaffTimeSummary.ContainsKey(staff.Id) ? allStaffTimeSummary[staff.Id] : new Dictionary<Guid, decimal>();
+            for (var i = 0; i < 10; i++)
+            {
+                var planningPoint = new GetPointSummaryV1.StaffSummary.PlanningPoint()
+                {
+                    Sequence = i + 1,
+                };
+
+                if (staffPoints.ContainsKey(i + 1))
+                {
+                    var point = staffPoints[i + 1];
+                    planningPoint.ChargeCodeId = point.ChargeCodeId;
+                    planningPoint.ChargeCode = point.ChargeCode.Code;
+                    planningPoint.ProjectId = point.ChargeCode.ProjectId;
+                    planningPoint.ProjectName = point.ChargeCode.Project?.Name;
+                    planningPoint.ClientId = point.ChargeCode.Project?.ClientId;
+                    planningPoint.ClientName = point.ChargeCode.Project?.Client?.Name;
+                    if (staffTimeSummary.ContainsKey(point.ChargeCodeId) && staffTimeSummary[point.ChargeCodeId] >= 4)
+                    {
+                        planningPoint.Completed = true;
+                        staffTimeSummary[point.ChargeCodeId] -= 4;
+                    }
+                }
+
+                summary.Points.Add(planningPoint);
+                summary.Completed = summary.Points.Where(t => t.ChargeCodeId.HasValue).Count() == 10;
+            }
+
+            response.Staff.Add(summary);
+        }
+
+        if (!String.IsNullOrEmpty(request.Search))
+        {
+            response.Staff = response.Staff
+                .Where(staff =>
+                    staff.StaffName.ToLower().Contains(request.Search.ToLower()) ||
+                    staff.Points.Any(point => point.ChargeCode?.ToLower()?.Contains(request.Search.ToLower()) ?? false) ||
+                    staff.Points.Any(point => point.ClientName?.ToLower()?.Contains(request.Search.ToLower()) ?? false) ||
+                    staff.Points.Any(point => point.ProjectName?.ToLower()?.Contains(request.Search.ToLower()) ?? false)
+                ).ToList();
+        }
+
+        response.TotalPoints = response.Staff.Sum(t => t.Points.Where(x => x.ChargeCodeId.HasValue).Count());
+        response.EmptyPoints = response.Staff.Count * 10 - response.TotalPoints;
+
+        return response;
+    }
+
     public async Task BackgroundAutoGenerateHolidayPlanningPointsV1(CancellationToken ct)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -174,6 +266,7 @@ public class PointServiceV1
             ForDate = today
         }, ct);
     }
+
     public async Task<Result<GenerateHolidayPointsV1.Response>> GenerateHolidayPlanningPointsV1(GenerateHolidayPointsV1.Request request, CancellationToken ct = default)
     {
         var today = request.ForDate;
