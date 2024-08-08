@@ -62,6 +62,7 @@
           <td>
             <a
               [routerLink]="['/timesheets', staff.staffId, 'timesheet']"
+              class="hover:text-teal-300"
               target="_blank"
               >{{ staff.staffName }}</a
             >
@@ -85,8 +86,22 @@
                   >
                     {{ point.chargeCode }}
                   </div>
-                  <div class="text-gray-450">{{ point.clientName }}</div>
-                  <div>{{ point.projectName }}</div>
+                  <div>
+                    <a
+                      [routerLink]="['/clients', point.clientId]"
+                      target="_blank"
+                      class="text-gray-450 hover:text-teal-300"
+                      >{{ point.clientName }}</a
+                    >
+                  </div>
+                  <div>
+                    <a
+                      [routerLink]="['/projects', point.projectId]"
+                      target="_blank"
+                      class="hover:text-teal-300"
+                      >{{ point.projectName }}</a
+                    >
+                  </div>
                 }
               </div>
             </td>
