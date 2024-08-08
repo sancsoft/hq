@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.6]
+
+### Fixed
+
+- Missing delete and clear icons in timesheet
+- Timezone handling when getting todays date when getting/updating status
+- PSR list no longer highlights current week PSRs red
+- PSR submit button is disabled for current week PSRs
+
+### Changed
+
+- Hide drodpown arrow on select list if readonly
+- Autocomplete border color from white to black
+- Order projects staff is a member of at the top of the charge code list, non-member projects are grey but still selectable
+- Condensed planning point summary page to fit more info, truncate long project names, switched to single line
+
 ## [0.4.5] - 2024-08-08
 
 ### Added
@@ -527,7 +543,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.5...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.6...HEAD
+[0.4.6]: https://github.com/sancsoft/hq/compare/v0.4.5...v0.4.6
 [0.4.5]: https://github.com/sancsoft/hq/compare/v0.4.4...v0.4.5
 [0.4.4]: https://github.com/sancsoft/hq/compare/v0.4.3...v0.4.4
 [0.4.3]: https://github.com/sancsoft/hq/compare/v0.4.2...v0.4.3
