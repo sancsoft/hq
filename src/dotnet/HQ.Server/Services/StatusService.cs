@@ -18,7 +18,9 @@ public class StatusServiceV1
 
     public async Task<Result<UpsertStatusV1.Response>> UpsertStatusV1(UpsertStatusV1.Request request, CancellationToken ct = default)
     {
-        var currentDay = DateOnly.FromDateTime(DateTime.Now);
+        var timezone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+        var currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+        var currentDay = DateOnly.FromDateTime(currentTime);
         var status = await _context.Plans.Where((t) => t.Date == currentDay && t.StaffId == request.StaffId).FirstOrDefaultAsync(ct);
         if (status == null)
         {
@@ -39,7 +41,9 @@ public class StatusServiceV1
     }
     public async Task<Result<GetStatusV1.Response>> GetStatusV1(GetStatusV1.Request request, CancellationToken ct = default)
     {
-        var currentDay = DateOnly.FromDateTime(DateTime.Now);
+        var timezone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+        var currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+        var currentDay = DateOnly.FromDateTime(currentTime);
         var records = _context.Plans
             .AsNoTracking()
             .OrderByDescending(t => t.Date)
