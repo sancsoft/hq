@@ -42,7 +42,7 @@ export class AppComponent implements OnDestroy {
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe
       .subscribe({
         next: () => {},
-        error: (error) => {
+        error: (error: unknown) => {
           console.error(error);
           window.location.href = '/';
         },
