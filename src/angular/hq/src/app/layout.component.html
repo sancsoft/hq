@@ -40,11 +40,11 @@
       class="min-w-[50px] xl:min-w-[100px]"
     >
       <a
-        routerLink="/timesheets"
+        routerLink="/staff"
         routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
         class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
         aria-disabled="true"
-        >Timesheets</a
+        >Staff</a
       >
     </div>
     <div
@@ -93,6 +93,15 @@
         >Quotes</a
       >
     </div>
+    <div *ngIf="HQRole.Staff | inRole | async">
+      <a
+        routerLink="/times"
+        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+        aria-disabled="true"
+        >Time</a
+      >
+    </div>
     <!--<div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
       <a
         routerLink="/services"
@@ -114,7 +123,7 @@
     >
       <!-- settings/more dropdown button -->
       <button
-        (click)="settingDropdownOpen = !settingDropdownOpen"
+        (click)="toggleSettingDropdown()"
         routerLinkActive="text-orange-500 active"
         [ngClass]="
           settingDropdownOpen ? 'text-orange-500 h-[30px]' : 'h-[30px]'
@@ -131,7 +140,7 @@
         cdkConnectedOverlay
         [cdkConnectedOverlayOrigin]="trigger"
         [cdkConnectedOverlayOpen]="settingDropdownOpen"
-        (overlayOutsideClick)="settingDropdownOpen = false"
+        (overlayOutsideClick)="toggleSettingDropdown()"
       >
         <ul
           class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
@@ -142,7 +151,7 @@
               routerLink="/holidays"
               routerLinkActive="text-orange-500 active"
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
-              (click)="settingDropdownOpen = false"
+              (click)="toggleSettingDropdown()"
               >Holidays</a
             >
           </li>
@@ -152,12 +161,12 @@
               routerLink="/chargecodes"
               routerLinkActive="text-orange-500"
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
-              (click)="settingDropdownOpen = false"
+              (click)="toggleSettingDropdown()"
               >Charge codes</a
             >
           </li>
           <!-- time -->
-          <li *ngIf="HQRole.Staff | inRole | async">
+          <!-- <li *ngIf="HQRole.Staff | inRole | async">
             <a
               routerLink="/times"
               routerLinkActive="text-orange-500"
@@ -165,14 +174,14 @@
               (click)="settingDropdownOpen = false"
               >Time</a
             >
-          </li>
+          </li> -->
           <!-- users -->
           <li *ngIf="HQRole.Administrator | inRole | async">
             <a
               routerLink="/users"
               routerLinkActive="text-orange-500"
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
-              (click)="settingDropdownOpen = false"
+              (click)="toggleSettingDropdown()"
               >Users</a
             >
           </li>
