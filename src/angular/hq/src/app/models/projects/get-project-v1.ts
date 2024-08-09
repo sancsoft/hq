@@ -52,6 +52,7 @@ export interface GetProjectRecordV1 {
   quoteId: string | null;
   quoteNumber: string | null;
   hourlyRate: number;
+  timeEntryMaxHours: number;
   bookingHours: number;
   bookingPeriod: Period;
   startDate: string;

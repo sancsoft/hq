@@ -59,7 +59,13 @@ namespace HQ.Server.Services
             }
 
 
-            var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.ChargeCode || t.Id == request.ChargeCodeId).FirstOrDefaultAsync();
+            var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.ChargeCode || t.Id == request.ChargeCodeId).Include(t => t.Project).FirstOrDefaultAsync(ct);
+            var maximumTimeEntryHours = chargeCode?.Project?.TimeEntryMaxHours;
+            if (request.Hours > maximumTimeEntryHours)
+            {
+                return Result.Fail($"Time entry hours ({request.Hours}) exceed the maximum allowed hours ({maximumTimeEntryHours})");
+
+            }
 
             if ((!string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue) || chargeCode == null)
             {
