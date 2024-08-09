@@ -49,52 +49,57 @@
       ></span>
     }
   </button>
-  <div class="relative">
-    <div
-      [class.hidden]="!isOpen"
-      class="bg-blue-900 border border-black overflow-hidden rounded-md rounded-tr-none rounded-tl-none absolute left-0 top-0 z-50 min-w-96"
-      [ngClass]="{
-        'top-0 ': variant !== 'pill',
-        'top-2': variant === 'pill',
-      }"
-      [style.width.px]="button.offsetWidth"
-    >
-      <div class="border-b border-b-black">
-        <hq-search-input
-          variant="transparent"
-          (hqBlur)="onBlur()"
-          (keydown)="onSearchKeyDown($event)"
-          [formControl]="searchForm"
-        >
-        </hq-search-input>
-      </div>
-
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="button"
+    [cdkConnectedOverlayOpen]="isOpen"
+    [cdkConnectedOverlayFlexibleDimensions]="true"
+  >
+    <div [ngClass]="{ 'py-2': variant === 'pill' }">
       <div
-        class="bg-blue-900 rounded-md max-h-48 overflow-y-scroll"
-        [tabIndex]="-1"
+        class="bg-blue-900 border border-black overflow-hidden rounded-md rounded-tr-none rounded-tl-none min-w-96"
+        [ngClass]="{
+          'top-0 ': variant !== 'pill',
+          'top-2': variant === 'pill',
+        }"
+        [style.width.px]="button.offsetWidth"
       >
-        @if (isOpen) {
-          @for (option of options$ | async; track option.value) {
-            <button
-              type="button"
-              [tabIndex]="-1"
-              class="px-2 py-1 hover:bg-blue-800 w-full text-left"
-              [ngClass]="{
-                'bg-blue-800 selected':
-                  option.value === (selectedOption$ | async)?.value,
-              }"
-              (mousedown)="selectOption(option)"
-              (touchstart)="selectOption(option)"
-            >
-              <ng-container
-                [ngTemplateOutlet]="option.templateRef"
-              ></ng-container>
-            </button>
+        <div class="border-b border-b-black">
+          <hq-search-input
+            variant="transparent"
+            (hqBlur)="onBlur()"
+            (keydown)="onSearchKeyDown($event)"
+            [formControl]="searchForm"
+          >
+          </hq-search-input>
+        </div>
+
+        <div
+          class="bg-blue-900 rounded-md max-h-48 overflow-y-scroll"
+          [tabIndex]="-1"
+        >
+          @if (isOpen) {
+            @for (option of options$ | async; track option.value) {
+              <button
+                type="button"
+                [tabIndex]="-1"
+                class="px-2 py-1 hover:bg-blue-800 w-full text-left"
+                [ngClass]="{
+                  'bg-blue-800 selected':
+                    option.value === (selectedOption$ | async)?.value,
+                }"
+                (mousedown)="selectOption(option, true)"
+                (touchstart)="selectOption(option, true)"
+              >
+                <ng-container
+                  [ngTemplateOutlet]="option.templateRef"
+                ></ng-container>
+              </button>
+            }
           }
-        }
-      </div>
-    </div>
-  </div>
+        </div>
+      </div></div
+  ></ng-template>
 } @else {
   <div class="grid relative w-full">
     <select
