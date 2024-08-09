@@ -73,7 +73,12 @@
   </table>
   <div class="flex justify-end mt-3 mr-3">
     <hq-button
-      [disabled]="(staffDashboardService.canEdit$ | async) === false"
+      [disabled]="
+        !(
+          (staffDashboardService.canEdit$ | async) ||
+          (staffDashboardService.isAdmin$ | async)
+        )
+      "
       (click)="toggleButtonValue()"
       [variant]="(editPlanButton$ | async) ? 'primary' : 'outline'"
     >
