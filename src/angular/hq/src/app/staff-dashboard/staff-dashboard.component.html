@@ -314,7 +314,7 @@
         <div
           class="h-full"
           [hidden]="
-            staffDashboardService.period.value === Period.Week ||
+            staffDashboardService.period.value !== Period.Today ||
             (staffDashboardService.showAllRejectedTimes$ | async)
           "
         >
