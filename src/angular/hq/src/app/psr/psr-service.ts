@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { HQService } from '../services/hq.service';
 import { GetPSRTimeRecordStaffV1 } from '../models/PSR/get-psr-time-v1';
-import { GetProjectActivityRecordV1 } from '../models/PSR/get-project-activity-v1';
+import { GetProjectActivityRecordV1 } from '../models/projects/get-project-activity-v1';
 import { ProjectStatus } from '../enums/project-status';
 
 @Injectable({

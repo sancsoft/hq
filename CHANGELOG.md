@@ -7,6 +7,73 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.8] - 2024-08-08
+
+### Fixed
+
+- Time export
+
+## [0.4.7] - 2024-08-08
+
+### Changed
+
+- Sick, Holiday and Vacation planning points are sorted at the end of points when saving to server
+- Split PSR auto submit for 0 booking hour projects into a separate process to run for the previous week Monday at noon
+- Mark quotes and projects associated with inactive charge code as "Completed"
+- Ignore unsubmitted time for current week PSRs when calculating metrics
+
+### Fixed
+
+- Adjusted `tabindex` on date input on timesheet to prevent Chrome from tabbing through date components when tabbing from hours input
+- Only show charge code change prompt on PSR if charge code actually changes
+- Setting and getting status date timezone handling
+- Prevent autocomplete from going off screen
+
+## [0.4.6] - 2024-08-08
+
+### Fixed
+
+- Missing delete and clear icons in timesheet
+- Timezone handling when getting todays date when getting/updating status
+- PSR list no longer highlights current week PSRs red
+- PSR submit button is disabled for current week PSRs
+
+### Changed
+
+- Hide drodpown arrow on select list if readonly
+- Autocomplete border color from white to black
+- Order projects staff is a member of at the top of the charge code list, non-member projects are grey but still selectable
+- Condensed planning point summary page to fit more info, truncate long project names, switched to single line
+
+## [0.4.5] - 2024-08-08
+
+### Added
+
+- Planning points summary page
+
+## [0.4.4] - 2024-08-07
+
+### Changed
+
+- Updated time export to split activity and task
+  - If activities are added to projects after the fact, the previously entered tasks are still in the database but inaccessible in the UI, this allows it to be available for export
+
+### Fixed
+
+- When unsubmitted a time entry from PSR, set status to back to Submitted
+- Filter points to active charge codes only
+- Conditionally make activity required on timesheet for projects that have them defined
+- Prevent submitting time without activities when it is required
+
+### Added
+
+- Activity management to projects
+- Roster management to projects
+- Timesheets section
+  - A readonly view of any staff's timesheet, plan markdown and points is available from timesheets page
+- Automatically create points based on defined holidays
+  - 2 points are added working up from the bottom, if a point is already assigned it does not overwrite it
+
 ## [0.4.3] - 2024-08-05
 
 ### Changed
@@ -498,7 +565,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.3...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.8...HEAD
+[0.4.8]: https://github.com/sancsoft/hq/compare/v0.4.7...v0.4.8
+[0.4.7]: https://github.com/sancsoft/hq/compare/v0.4.6...v0.4.7
+[0.4.6]: https://github.com/sancsoft/hq/compare/v0.4.5...v0.4.6
+[0.4.5]: https://github.com/sancsoft/hq/compare/v0.4.4...v0.4.5
+[0.4.4]: https://github.com/sancsoft/hq/compare/v0.4.3...v0.4.4
 [0.4.3]: https://github.com/sancsoft/hq/compare/v0.4.2...v0.4.3
 [0.4.2]: https://github.com/sancsoft/hq/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/sancsoft/hq/compare/v0.4.0...v0.4.1

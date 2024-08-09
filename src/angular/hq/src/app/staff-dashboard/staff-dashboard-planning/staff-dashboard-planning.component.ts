@@ -33,7 +33,6 @@ import {
   BehaviorSubject,
   catchError,
   combineLatest,
-  distinctUntilChanged,
   firstValueFrom,
   map,
   Observable,
@@ -51,7 +50,10 @@ import {
   PlanningPoint,
 } from '../../models/Points/get-points-v1';
 import { PointForm } from '../staff-dashboard.component';
-import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
+import {
+  GetChargeCodeRecordV1,
+  SortColumn,
+} from '../../models/charge-codes/get-chargecodes-v1';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HQService } from '../../services/hq.service';
@@ -95,7 +97,6 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
   private planningPointsRequestTrigger$ = new Subject<void>();
   private editPlanButtonSubject = new BehaviorSubject<boolean>(false);
   editPlanButton$ = this.editPlanButtonSubject.asObservable();
-
   private planningPointDate$: Observable<string>;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
@@ -118,15 +119,10 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
     private oidcSecurityService: OidcSecurityService,
     private cdr: ChangeDetectorRef,
   ) {
-    const staffId$ = oidcSecurityService.userData$.pipe(
-      map((t) => t.userData),
-      map((t) => t.staff_id as string),
-      distinctUntilChanged(),
-    );
     // const date$ = staffDashboardService.date.valueChanges
     //   .pipe(startWith(staffDashboardService.date.value))
     //   .pipe(map((t) => t || localISODate()));
-    this.staffId$ = staffId$;
+    this.staffId$ = this.staffDashboardService.staffId$;
     this.planningPointDate$ =
       staffDashboardService.planningPointdateForm.valueChanges
         .pipe(startWith(staffDashboardService.planningPointdateForm.value))
@@ -151,11 +147,19 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       });
     this.planningPointsRequest$ = combineLatest({
       date: this.planningPointDate$,
-      staffId: staffId$,
+      staffId: this.staffDashboardService.staffId$,
       trigger: this.planningPointsRequestTrigger$.pipe(startWith(0)),
     }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({});
+    const chargeCodeResponse$ = this.staffDashboardService.staffId$.pipe(
+      switchMap((staffId) =>
+        this.hqService.getChargeCodeseV1({
+          active: true,
+          staffId,
+          sortBy: SortColumn.IsProjectMember,
+        }),
+      ),
+    );
 
     this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),
@@ -230,7 +234,7 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
   async upsertPoints() {
     try {
       const date = this.staffDashboardService.planningPointdateForm.value;
-      const staffId = await firstValueFrom(this.staffId$);
+      const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
       // const points = this.getPlanningPointsFormValues();
       const points = this.planningPointsChildren.map(
         (t) => t.form.value as PlanningPoint,

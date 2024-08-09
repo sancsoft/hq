@@ -257,28 +257,25 @@ var recurringJobOptions = new RecurringJobOptions()
     MisfireHandling = MisfireHandlingMode.Ignorable
 };
 
+// Every morning
 recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
-    nameof(TimeEntryServiceV1.BackgroundCaptureUnsubmittedTimeV1),
-    (t) => t.BackgroundCaptureUnsubmittedTimeV1(CancellationToken.None),
-    Cron.Weekly(DayOfWeek.Monday, 12),
+    nameof(TimeEntryServiceV1.BackgroundSendRejectedTimeSubmissionReminderEmail),
+    (t) => t.BackgroundSendRejectedTimeSubmissionReminderEmail(Period.LastWeek, CancellationToken.None),
+    Cron.Daily(8),
     recurringJobOptions);
 
-recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
-    nameof(TimeEntryServiceV1.BackgroundSendTimeEntryReminderEmail),
-    (t) => t.BackgroundSendTimeEntryReminderEmail(Period.Week, CancellationToken.None),
-    Cron.Weekly(DayOfWeek.Friday, 8),
-    recurringJobOptions);
-
+// Monday morning
 recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     nameof(TimeEntryServiceV1.BackgroundSendTimeSubmissionReminderEmail),
     (t) => t.BackgroundSendTimeSubmissionReminderEmail(Period.LastWeek, CancellationToken.None),
     Cron.Weekly(DayOfWeek.Monday, 8),
     recurringJobOptions);
 
+// Monday afternoon
 recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
-    nameof(TimeEntryServiceV1.BackgroundSendRejectedTimeSubmissionReminderEmail),
-    (t) => t.BackgroundSendRejectedTimeSubmissionReminderEmail(Period.LastWeek, CancellationToken.None),
-    Cron.Daily(8),
+    nameof(TimeEntryServiceV1.BackgroundCaptureUnsubmittedTimeV1),
+    (t) => t.BackgroundCaptureUnsubmittedTimeV1(CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Monday, 12),
     recurringJobOptions);
 
 recurringJobManager.AddOrUpdate<StaffServiceV1>(
@@ -293,10 +290,29 @@ recurringJobManager.AddOrUpdate<ProjectStatusReportServiceV1>(
     Cron.Weekly(DayOfWeek.Monday, 12),
     recurringJobOptions);
 
+recurringJobManager.AddOrUpdate<ProjectStatusReportServiceV1>(
+    nameof(ProjectStatusReportServiceV1.BackgroundAutoSubmitWeeklyProjectStatusReportsV1),
+    (t) => t.BackgroundAutoSubmitWeeklyProjectStatusReportsV1(CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Monday, 12),
+    recurringJobOptions);
+
+// Friday morning
 recurringJobManager.AddOrUpdate<HolidayServiceV1>(
     nameof(HolidayServiceV1.BackgroundAutoGenerateHolidayTimeEntryV1),
     (t) => t.BackgroundAutoGenerateHolidayTimeEntryV1(CancellationToken.None),
-    Cron.Weekly(DayOfWeek.Monday, 12),
+    Cron.Weekly(DayOfWeek.Friday, 8),
+    recurringJobOptions);
+
+recurringJobManager.AddOrUpdate<PointServiceV1>(
+    nameof(PointServiceV1.BackgroundAutoGenerateHolidayPlanningPointsV1),
+    (t) => t.BackgroundAutoGenerateHolidayPlanningPointsV1(CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Friday, 8),
+    recurringJobOptions);
+
+recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
+    nameof(TimeEntryServiceV1.BackgroundSendTimeEntryReminderEmail),
+    (t) => t.BackgroundSendTimeEntryReminderEmail(Period.Week, CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Friday, 8),
     recurringJobOptions);
 
 await app.RunAsync();

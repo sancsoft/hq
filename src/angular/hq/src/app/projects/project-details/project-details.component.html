@@ -94,7 +94,7 @@
               class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
               >Details</a
             >
-            <!-- <a
+            <a
               routerLink="activities"
               [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
               routerLinkActive
@@ -106,8 +106,8 @@
               "
               class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
               >Activities</a
-            > -->
-            <!-- <a
+            >
+            <a
               routerLink="roster"
               [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
               routerLinkActive
@@ -117,7 +117,7 @@
               "
               class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
               >Roster</a
-            > -->
+            >
 
             @if (projectDetailService.psrId$ | async) {
               <a

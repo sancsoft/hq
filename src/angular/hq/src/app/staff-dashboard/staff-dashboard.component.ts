@@ -2,7 +2,15 @@
 import { StaffDashboardPlanningPointComponent } from './staff-dashboard-planning-point/staff-dashboard-planning-point.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { PanelComponent } from './../core/components/panel/panel.component';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -23,6 +31,7 @@ import {
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  filter,
   firstValueFrom,
   map,
   Observable,
@@ -33,7 +42,6 @@ import {
   startWith,
   switchMap,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { HQService } from '../services/hq.service';
 import { APIError } from '../errors/apierror';
@@ -56,7 +64,10 @@ import { ButtonComponent } from '../core/components/button/button.component';
 import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staff-dashboard-planning.component';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 import { ButtonState } from '../enums/button-state';
-import { GetChargeCodeRecordV1 } from '../models/charge-codes/get-chargecodes-v1';
+import {
+  GetChargeCodeRecordV1,
+  SortColumn,
+} from '../models/charge-codes/get-chargecodes-v1';
 
 export interface PointForm {
   id: FormControl<string | null>;
@@ -91,7 +102,7 @@ export interface PointForm {
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
 })
-export class StaffDashboardComponent implements OnInit, OnDestroy {
+export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   Period = Period;
   HQRole = HQRole;
 
@@ -111,8 +122,12 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
   prevPlan$: Observable<GetPrevPlanResponseV1 | null>;
   prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
+  canEdit$: Observable<boolean>;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
+  @Input({ required: true })
+  staffId!: string | null;
 
   async ngOnInit() {
     // this is added to make sure that the upsert method works in value changes
@@ -120,6 +135,25 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
       this.staffDashboardService.date.value,
     );
     const prevPlan = await firstValueFrom(this.prevPlan$);
+
+    this.staffDashboardService.canEdit$
+      .pipe(takeUntil(this.destroyed$))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (canEdit) => {
+          if (canEdit && prevPlan && prevPlan.body) {
+            this.prevPSRReportButtonState = ButtonState.Enabled;
+          } else {
+            this.prevPSRReportButtonState = ButtonState.Disabled;
+          }
+          canEdit
+            ? this.status.enable({ emitEvent: false })
+            : this.status.disable({ emitEvent: false });
+          // this.staffDashboardService.canSubmitSubject.next(canEdit); // Submit time button
+        },
+        error: console.error,
+      });
+
     this.prevPSRReportButtonState =
       prevPlan && prevPlan.body ? ButtonState.Enabled : ButtonState.Disabled;
   }
@@ -136,16 +170,21 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
     private oidcSecurityService: OidcSecurityService,
     private cdr: ChangeDetectorRef,
   ) {
-    const chargeCodeResponse$ = this.hqService.getChargeCodeseV1({});
+    this.canEdit$ = this.staffDashboardService.canEdit$;
+    const chargeCodeResponse$ = this.staffDashboardService.staffId$.pipe(
+      switchMap((staffId) =>
+        this.hqService.getChargeCodeseV1({
+          active: true,
+          staffId,
+          sortBy: SortColumn.IsProjectMember,
+        }),
+      ),
+    );
     this.chargeCodes$ = chargeCodeResponse$.pipe(
       map((chargeCode) => chargeCode.records),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
-    const staffId$ = oidcSecurityService.userData$.pipe(
-      map((t) => t.userData),
-      map((t) => t.staff_id as string),
-      distinctUntilChanged(),
-    );
+    const staffId$ = this.staffDashboardService.staffId$;
     const date$ = staffDashboardService.date.valueChanges
       .pipe(startWith(staffDashboardService.date.value))
       .pipe(map((t) => t || localISODate()));
@@ -171,14 +210,13 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
     );
     this.staffStatus$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (staffStatus) => {
-        this.status.setValue(staffStatus.status);
+        this.status.setValue(staffStatus.status, { emitEvent: false });
       },
       error: console.error,
     });
 
     upsertStatusRequest$
       .pipe(
-        skip(1),
         switchMap((request) => {
           return this.hqService.upsertStatus(request);
         }),
@@ -232,17 +270,18 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
       error: console.error,
     });
     const request$ = combineLatest({
-      staffId: staffId$.pipe(tap((t) => console.log('staffId', t))),
-      body: this.plan$.pipe(tap((t) => console.log('plan', t))),
+      staffId: staffId$,
+      body: this.plan$,
+      canEdit: this.canEdit$,
     });
     this.staffDashboardService.date.valueChanges
       .pipe(
         distinctUntilChanged(),
-        debounceTime(500),
         switchMap(() => {
           return request$.pipe(
-            skip(1),
             debounceTime(1000),
+            skip(1),
+            filter((t) => t.canEdit),
             switchMap((request) =>
               this.hqService.upsertPlanV1({
                 ...request,
@@ -271,14 +310,30 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
           );
         },
       });
-
     // Editor options
-    this.editorOptions$ = of({
-      theme: 'vs-dark',
-      wordWrap: 'on',
-      language: 'markdown',
-      automaticLayout: true,
-    });
+    this.editorOptions$ = this.staffDashboardService.canEdit$.pipe(
+      map((canEdit) => {
+        return {
+          theme: 'vs-dark',
+          language: 'markdown',
+          automaticLayout: true,
+          readOnly: !canEdit,
+          domReadOnly: !canEdit,
+          wordWrap: 'on',
+        };
+      }),
+    );
+    // this.editorOptions$ = of({
+    //   theme: 'vs-dark',
+    //   wordWrap: 'on',
+    //   language: 'markdown',
+    //   automaticLayout: true,
+    // });
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['staffId'] && this.staffId !== null) {
+      this.staffDashboardService.setStaffId(this.staffId);
+    }
   }
 
   insertTextAtCursor() {
@@ -345,8 +400,10 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
     if (!event.date) {
       return;
     }
+    const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
 
     const request: Partial<updateTimeRequestV1> = {
+      staffId: staffId,
       id: event.id,
       hours: event.hours,
       chargeCodeId: event.chargeCodeId,
@@ -412,11 +469,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy {
           map((t) => t.dates.flatMap((d) => d.times.map((time) => time.id))),
         ),
       );
-      const staffId = await firstValueFrom(
-        this.oidcSecurityService.userData$.pipe(
-          map((t) => t.userData?.staff_id),
-        ),
-      );
+      const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
       if (staffId) {
         const submitTimesRequest = { ids: timesIds, staffId: staffId };
         await firstValueFrom(this.hqService.submitTimesV1(submitTimesRequest));

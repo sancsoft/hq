@@ -574,6 +574,42 @@ namespace HQ.Server.Data.Migrations
                     b.ToTable("project_activities", (string)null);
                 });
 
+            modelBuilder.Entity("HQ.Server.Data.Models.ProjectMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("project_id");
+
+                    b.Property<Guid>("StaffId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("staff_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_project_members");
+
+                    b.HasIndex("StaffId")
+                        .HasDatabaseName("ix_project_members_staff_id");
+
+                    b.HasIndex("ProjectId", "StaffId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_project_members_project_id_staff_id");
+
+                    b.ToTable("project_members", (string)null);
+                });
+
             modelBuilder.Entity("HQ.Server.Data.Models.ProjectStatusReport", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1109,7 +1145,7 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.Plan", b =>
                 {
                     b.HasOne("HQ.Server.Data.Models.Staff", "Staff")
-                        .WithMany()
+                        .WithMany("Plans")
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1175,6 +1211,27 @@ namespace HQ.Server.Data.Migrations
                         .HasConstraintName("fk_project_activities_projects_project_id");
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("HQ.Server.Data.Models.ProjectMember", b =>
+                {
+                    b.HasOne("HQ.Server.Data.Models.Project", "Project")
+                        .WithMany("ProjectMembers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_members_projects_project_id");
+
+                    b.HasOne("HQ.Server.Data.Models.Staff", "Staff")
+                        .WithMany("ProjectMembers")
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_members_staff_staff_id");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("HQ.Server.Data.Models.ProjectStatusReport", b =>
@@ -1281,7 +1338,7 @@ namespace HQ.Server.Data.Migrations
                         .HasConstraintName("fk_times_staff_rejected_by_id");
 
                     b.HasOne("HQ.Server.Data.Models.Staff", "Staff")
-                        .WithMany()
+                        .WithMany("Times")
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1323,6 +1380,8 @@ namespace HQ.Server.Data.Migrations
                     b.Navigation("Activities");
 
                     b.Navigation("ChargeCode");
+
+                    b.Navigation("ProjectMembers");
                 });
 
             modelBuilder.Entity("HQ.Server.Data.Models.Quote", b =>
@@ -1333,6 +1392,15 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.ServiceAgreement", b =>
                 {
                     b.Navigation("ChargeCode");
+                });
+
+            modelBuilder.Entity("HQ.Server.Data.Models.Staff", b =>
+                {
+                    b.Navigation("Plans");
+
+                    b.Navigation("ProjectMembers");
+
+                    b.Navigation("Times");
                 });
 #pragma warning restore 612, 618
         }

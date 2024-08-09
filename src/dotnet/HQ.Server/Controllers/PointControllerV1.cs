@@ -48,13 +48,24 @@ namespace HQ.Server.Controllers
             .ToActionResult(new HQResultEndpointProfile());
 
         [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetPointSummaryV1))]
+        [ProducesResponseType<GetPointSummaryV1.Response>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetPointSummaryV1([FromBody] GetPointSummaryV1.Request request, CancellationToken ct = default) =>
+            await _pointService.GetPointSummaryV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(GenerateHolidayPlanningPointsV1))]
+        public async Task GenerateHolidayPlanningPointsV1([FromBody] GenerateHolidayPointsV1.Request request, CancellationToken ct = default) =>
+           await _pointService.GenerateHolidayPlanningPointsV1(request, ct);
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(UpsertPointV1))]
         [ProducesResponseType<UpsertPointsV1.Response>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpsertPointV1([FromBody] UpsertPointsV1.Request request, CancellationToken ct = default)
         {
-            request.StaffId = User.GetStaffId();
             if (!request.StaffId.HasValue)
             {
                 return Forbid();

@@ -39,60 +39,67 @@
         }
       }
     </div>
-    <span
-      class="flex items-center justify-center pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
-      [ngClass]="{
-        'after:bg-gray-100': variant !== 'pill',
-      }"
-      ><i class="bi bi-arrow-down-short text-[24px]"></i
-    ></span>
+    @if (!readonly) {
+      <span
+        class="flex items-center justify-center pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
+        [ngClass]="{
+          'after:bg-gray-100': variant !== 'pill',
+        }"
+        ><i class="bi bi-arrow-down-short text-[24px]"></i
+      ></span>
+    }
   </button>
-  <div class="relative">
-    <div
-      [class.hidden]="!isOpen"
-      class="bg-blue-900 border border-gray-100 overflow-hidden rounded-md rounded-tr-none rounded-tl-none absolute left-0 top-0 z-50 min-w-96"
-      [ngClass]="{
-        'top-0 ': variant !== 'pill',
-        'top-2': variant === 'pill',
-      }"
-      [style.width.px]="button.offsetWidth"
-    >
-      <div class="border-b border-b-white">
-        <hq-search-input
-          variant="transparent"
-          (hqBlur)="onBlur()"
-          (keydown)="onSearchKeyDown($event)"
-          [formControl]="searchForm"
-        >
-        </hq-search-input>
-      </div>
-
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="button"
+    [cdkConnectedOverlayOpen]="isOpen"
+    [cdkConnectedOverlayFlexibleDimensions]="true"
+  >
+    <div [ngClass]="{ 'py-2': variant === 'pill' }">
       <div
-        class="bg-blue-900 rounded-md max-h-48 overflow-y-scroll"
-        [tabIndex]="-1"
+        class="bg-blue-900 border border-black overflow-hidden rounded-md rounded-tr-none rounded-tl-none min-w-96"
+        [ngClass]="{
+          'top-0 ': variant !== 'pill',
+          'top-2': variant === 'pill',
+        }"
+        [style.width.px]="button.offsetWidth"
       >
-        @if (isOpen) {
-          @for (option of options$ | async; track option.value) {
-            <button
-              type="button"
-              [tabIndex]="-1"
-              class="px-2 py-1 hover:bg-blue-800 w-full text-left"
-              [ngClass]="{
-                'bg-blue-800 selected':
-                  option.value === (selectedOption$ | async)?.value,
-              }"
-              (mousedown)="selectOption(option)"
-              (touchstart)="selectOption(option)"
-            >
-              <ng-container
-                [ngTemplateOutlet]="option.templateRef"
-              ></ng-container>
-            </button>
+        <div class="border-b border-b-black">
+          <hq-search-input
+            variant="transparent"
+            (hqBlur)="onBlur()"
+            (keydown)="onSearchKeyDown($event)"
+            [formControl]="searchForm"
+          >
+          </hq-search-input>
+        </div>
+
+        <div
+          class="bg-blue-900 rounded-md max-h-48 overflow-y-scroll"
+          [tabIndex]="-1"
+        >
+          @if (isOpen) {
+            @for (option of options$ | async; track option.value) {
+              <button
+                type="button"
+                [tabIndex]="-1"
+                class="px-2 py-1 hover:bg-blue-800 w-full text-left"
+                [ngClass]="{
+                  'bg-blue-800 selected':
+                    option.value === (selectedOption$ | async)?.value,
+                }"
+                (mousedown)="selectOption(option, true)"
+                (touchstart)="selectOption(option, true)"
+              >
+                <ng-container
+                  [ngTemplateOutlet]="option.templateRef"
+                ></ng-container>
+              </button>
+            }
           }
-        }
-      </div>
-    </div>
-  </div>
+        </div>
+      </div></div
+  ></ng-template>
 } @else {
   <div class="grid relative w-full">
     <select
@@ -117,7 +124,12 @@
     <span
       class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
     >
-      <i class="bi bi-arrow-down-short text-[24px]"></i>
+      <i
+        [ngClass]="{
+          hiddden: readonly === true,
+          'bi bi-arrow-down-short text-[24px]': readonly === false,
+        }"
+      ></i>
     </span>
   </div>
 }

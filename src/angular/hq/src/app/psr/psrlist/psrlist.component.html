@@ -151,7 +151,8 @@
     @for ((report of projectStatusReports$ | async); track report.id) {
       <tr
         [class]="
-          !report.submittedAt || report.thisPendingHours > 0
+          (!report.submittedAt || report.thisPendingHours > 0) &&
+          !report.isCurrentPsrPeriod
             ? 'bg-red-850'
             : 'even:bg-gray-850 odd:bg-black-alt'
         "

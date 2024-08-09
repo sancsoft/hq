@@ -36,6 +36,7 @@ import { PSRTimeListComponent } from '../psrtime-list/psrtime-list.component';
 import { AngularSplitModule } from 'angular-split';
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import { PanelComponent } from '../../core/components/panel/panel.component';
+import { CoreModule } from '../../core/core.module';
 
 @Component({
   selector: 'hq-psrreport',
@@ -50,6 +51,7 @@ import { PanelComponent } from '../../core/components/panel/panel.component';
     AngularSplitModule,
     PsrSearchFilterComponent,
     PanelComponent,
+    CoreModule,
   ],
   templateUrl: './psrreport.component.html',
   encapsulation: ViewEncapsulation.None,
@@ -97,7 +99,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     }
 
     this.submitButtonState =
-      psr && psr.submittedAt && psr.isCurrentPsrPeriod
+      psr && (psr.submittedAt || psr.isCurrentPsrPeriod)
         ? ButtonState.Disabled
         : ButtonState.Enabled;
 

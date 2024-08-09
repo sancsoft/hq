@@ -24,4 +24,5 @@ public class Project : Base
     public DateOnly? EndDate { get; set; }
     public ChargeCode? ChargeCode { get; set; }
     public ICollection<ProjectActivity> Activities { get; set; } = new List<ProjectActivity>();
+    public ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
 }

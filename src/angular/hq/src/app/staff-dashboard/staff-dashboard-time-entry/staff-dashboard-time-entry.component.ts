@@ -9,6 +9,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -30,9 +31,13 @@ import {
   Observable,
   Subject,
   combineLatest,
+  concat,
+  debounceTime,
+  defer,
   distinctUntilChanged,
   firstValueFrom,
   map,
+  of,
   shareReplay,
   startWith,
   takeUntil,
@@ -88,7 +93,9 @@ interface Form {
   ],
   templateUrl: './staff-dashboard-time-entry.component.html',
 })
-export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
+export class StaffDashboardTimeEntryComponent
+  implements OnInit, OnChanges, OnDestroy
+{
   @Input()
   time?: Partial<GetDashboardTimeV1TimeForDateTimes>;
   @Input()
@@ -150,13 +157,24 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
 
   timeStatus = TimeStatus;
 
+  ngOnInit(): void {
+    this.staffDashboardService.canEdit$
+      .pipe(takeUntil(this.destroyed$))
+      // eslint-disable-next-line rxjs/no-ignored-error
+      .subscribe((canEdit) => {
+        canEdit
+          ? this.form.enable({ emitEvent: false })
+          : this.form.disable({ emitEvent: false });
+      });
+  }
   constructor(
     public staffDashboardService: StaffDashboardService,
     private modalService: ModalService,
   ) {
-    const form$ = this.form.valueChanges.pipe(
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
+    const form$ = concat(
+      defer(() => of(this.form.value)),
+      this.form.valueChanges,
+    ).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
     const clientId$ = form$.pipe(
       map((t) => t.clientId),
@@ -198,6 +216,21 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
       startWith([]),
     );
 
+    this.activities$
+      .pipe(debounceTime(500), takeUntil(this.destroyed$))
+      .subscribe({
+        next: (activities) => {
+          if (activities.length > 0) {
+            this.form.controls.activityId.addValidators(Validators.required);
+          } else {
+            this.form.controls.activityId.removeValidators(Validators.required);
+          }
+
+          this.form.controls.activityId.updateValueAndValidity();
+        },
+        error: console.error,
+      });
+
     this.form.controls.chargeCodeId.valueChanges
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
@@ -210,6 +243,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
                 projectId: chargeCode.projectId,
                 clientName: chargeCode.clientName,
                 projectName: chargeCode.projectName,
+                activityId: null,
               },
               { emitEvent: false },
             );
@@ -220,6 +254,7 @@ export class StaffDashboardTimeEntryComponent implements OnChanges, OnDestroy {
                 projectId: null,
                 clientName: null,
                 projectName: null,
+                activityId: null,
               },
               { emitEvent: false },
             );

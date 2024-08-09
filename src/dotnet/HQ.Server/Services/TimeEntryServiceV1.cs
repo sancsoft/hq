@@ -61,8 +61,6 @@ namespace HQ.Server.Services
 
             var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.ChargeCode || t.Id == request.ChargeCodeId).FirstOrDefaultAsync();
 
-
-            // These conditions are for the case where the request doesn't have a chargeCodeId but has ChargeCode for example P1041
             if ((!string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue) || chargeCode == null)
             {
                 if (chargeCode != null)
@@ -85,9 +83,8 @@ namespace HQ.Server.Services
             if (!string.IsNullOrEmpty(request.ActivityName) && !request.ActivityId.HasValue)
             {
                 var activity = await _context.ProjectActivities
-                .Where(t => t.ProjectId.Equals(chargeCode.ProjectId) && t.Name.ToLower() == request.ActivityName.ToLower())
-                .FirstOrDefaultAsync();
-
+                    .Where(t => t.ProjectId.Equals(chargeCode.ProjectId) && t.Name.ToLower() == request.ActivityName.ToLower())
+                    .FirstOrDefaultAsync();
 
                 if (activity != null)
                 {
@@ -98,19 +95,18 @@ namespace HQ.Server.Services
                     return Result.Fail($"The Activity Name: {request.ActivityName} not found");
                 }
             }
-
-
-            if (request.ActivityId.HasValue)
+            else
             {
-                timeEntry.ActivityId = request.ActivityId.Value;
+                timeEntry.ActivityId = request.ActivityId;
             }
-
 
             timeEntry.Date = request.Date;
             timeEntry.Notes = request.Notes;
             timeEntry.Hours = request.Hours ?? 0;
             timeEntry.Task = request.Task;
+
             await _context.SaveChangesAsync(ct);
+
             return Result.Ok(new UpsertTimeV1.Response() { Id = timeEntry.Id });
         }
 
@@ -196,9 +192,20 @@ namespace HQ.Server.Services
             {
                 return Result.Fail("Time Id is required.");
             }
+
+            var chargeCodesWithActivities = await _context.ChargeCodes
+                .Where(t => t.Project!.Activities.Any())
+                .Select(t => t.Id)
+                .ToListAsync(ct);
+
             foreach (var time in timeEntries)
             {
                 if (time.Hours == 0 || String.IsNullOrEmpty(time.Notes))
+                {
+                    continue;
+                }
+
+                if (chargeCodesWithActivities.Contains(time.ChargeCodeId) && !time.ActivityId.HasValue)
                 {
                     continue;
                 }
@@ -731,7 +738,8 @@ namespace HQ.Server.Services
                 Map(t => t.ProjectName).Name("Project");
                 Map(t => t.ChargeCode).Name("ChargeCode");
                 Map(t => t.Billable).Name("Billable").Convert(t => t.Value.Billable ? "Y" : "N");
-                Map(t => t.ActivityName).Name("Activity / Task").Convert(t => t.Value.ActivityName ?? t.Value.Task);
+                Map(t => t.ActivityName).Name("Activity");
+                Map(t => t.Task).Name("Task");
                 Map(t => t.Hours).Name("Hours");
                 Map(t => t.BillableHours).Name("AcceptedHours");
                 Map(t => t.HoursApprovedBy).Name("AcceptedBy");

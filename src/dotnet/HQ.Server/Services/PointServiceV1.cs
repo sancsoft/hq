@@ -51,7 +51,7 @@ public class PointServiceV1
         .GroupBy(x => x.ChargeCodeId)
         .ToDictionaryAsync(g => g.Key, g => g.Sum(x => x.Hours));
 
-        var _points = points.Select(t => new Abstractions.Points.Point
+        var _points = points.Select(t => new GetPointsV1.Point
         {
             ChargeCodeId = t.ChargeCodeId,
             Id = t.Id,
@@ -69,7 +69,7 @@ public class PointServiceV1
 
             if (point == null)
             {
-                var nullPoint = new Abstractions.Points.Point
+                var nullPoint = new GetPointsV1.Point
                 {
                     ChargeCodeId = null,
                     Id = null,
@@ -96,7 +96,7 @@ public class PointServiceV1
         {
             StaffId = request.StaffId,
             Date = request.Date,
-            Points = _points.ToArray(),
+            Points = _points,
             DisplayDate = startDate.AddDays(2),
             PreviousDate = request.Date.AddPeriod(Period.Week, -1),
             NextDate = request.Date.AddPeriod(Period.Week, 1)
@@ -112,7 +112,7 @@ public class PointServiceV1
             try
             {
                 var validationResult = Result.Merge(
-                    Result.FailIf(request.Points?.Length != 10, "10 Points required."),
+                    Result.FailIf(request.Points?.Count != 10, "10 Points required."),
                     Result.FailIf(!request.StaffId.HasValue, "staff id is required")
                 );
 
@@ -134,13 +134,34 @@ public class PointServiceV1
                 {
                     return Result.Fail("Points can't be null");
                 }
-                for (int i = 0; i < request.Points.Length; i++)
+
+                request.Points = request.Points.OrderBy(t => t.Sequence).ToList();
+                var holidayChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("holiday")).FirstOrDefaultAsync(ct);
+                var vacationChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("vacation")).FirstOrDefaultAsync(ct);
+                var sickChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("sick")).FirstOrDefaultAsync(ct);
+                if (holidayChargeCode == null || vacationChargeCode == null || sickChargeCode == null)
+                {
+                    return Result.Fail("Can't find valid chargecodes for sick or vacation or holiday");
+                }
+
+                var pointsToMove = request.Points.Where(p => p.ChargeCodeId.HasValue && (p.ChargeCodeId.Value == holidayChargeCode.Id || p.ChargeCodeId.Value == sickChargeCode.Id || p.ChargeCodeId.Value == vacationChargeCode.Id)).ToList();
+                request.Points.RemoveAll(p => pointsToMove.Contains(p));
+                request.Points.AddRange(pointsToMove);
+                //  Update the sequence for each point after pushing sick, vacation, holiday to the end
+                for (int i = 0; i < request.Points.Count; i++)
+                {
+                    var point = request.Points[i];
+                    point.Sequence = i + 1;
+                }
+                var DB_points = new List<Point>([]);
+                for (int i = 0; i < request.Points.Count; i++)
                 {
                     var point = request.Points[i];
                     if (point == null || point.ChargeCodeId == null)
                         continue;
                     var _Point = new Data.Models.Point();
-                    _context.Points.Add(_Point);
+                    DB_points.Add(_Point);
+                    // _context.Points.Add(_Point);
 
                     pointIds.Add(_Point.Id);
                     _Point.ChargeCodeId = point.ChargeCodeId.Value;
@@ -149,6 +170,9 @@ public class PointServiceV1
                     _Point.Date = startDate;
                 }
 
+
+
+                await _context.AddRangeAsync(DB_points);
                 await _context.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
 
@@ -163,6 +187,169 @@ public class PointServiceV1
                 return Result.Fail(new Error("An error occurred while upserting the Points. " + ex).CausedBy(ex));
             }
         }
+    }
+
+    public async Task<Result<GetPointSummaryV1.Response>> GetPointSummaryV1(GetPointSummaryV1.Request request, CancellationToken ct = default)
+    {
+        var today = request.Date;
+        var startDate = today.GetPeriodStartDate(Period.Week);
+        var endDate = today.GetPeriodEndDate(Period.Week);
+
+        var response = new GetPointSummaryV1.Response()
+        {
+            Date = request.Date,
+            DisplayDate = startDate.AddDays(2),
+            PreviousDate = request.Date.AddPeriod(Period.Week, -1),
+            NextDate = request.Date.AddPeriod(Period.Week, 1),
+        };
+
+        var allStaffPoints = await _context.Points
+            .AsNoTracking()
+            .Include(t => t.ChargeCode)
+            .ThenInclude(t => t!.Project)
+            .ThenInclude(t => t!.Client)
+            .Where(t => t.Date == startDate)
+            .GroupBy(t => t.StaffId)
+            .ToDictionaryAsync(t => t.Key, t => t.ToDictionary(t => t.Sequence), ct);
+
+        var allStaff = await _context.Staff
+            .AsNoTracking()
+            .Where(t => t.EndDate == null)
+            .OrderBy(t => t.Name)
+            .ToListAsync(ct);
+
+        var allStaffTimeSummary = await _context.Times
+            .AsNoTracking()
+            .Where(t => t.Date >= startDate && t.Date <= endDate)
+            .GroupBy(t => t.StaffId)
+            .ToDictionaryAsync(t => t.Key, t => t.GroupBy(x => x.ChargeCodeId).ToDictionary(x => x.Key, x => x.Sum(y => y.Hours)));
+
+        foreach (var staff in allStaff)
+        {
+            var summary = new GetPointSummaryV1.StaffSummary()
+            {
+                StaffId = staff.Id,
+                StaffName = staff.Name
+            };
+
+            var staffPoints = allStaffPoints.ContainsKey(staff.Id) ? allStaffPoints[staff.Id] : new Dictionary<int, Data.Models.Point>();
+            var staffTimeSummary = allStaffTimeSummary.ContainsKey(staff.Id) ? allStaffTimeSummary[staff.Id] : new Dictionary<Guid, decimal>();
+            for (var i = 0; i < 10; i++)
+            {
+                var planningPoint = new GetPointSummaryV1.StaffSummary.PlanningPoint()
+                {
+                    Sequence = i + 1,
+                };
+
+                if (staffPoints.ContainsKey(i + 1))
+                {
+                    var point = staffPoints[i + 1];
+                    planningPoint.ChargeCodeId = point.ChargeCodeId;
+                    planningPoint.ChargeCode = point.ChargeCode.Code;
+                    planningPoint.ProjectId = point.ChargeCode.ProjectId;
+                    planningPoint.ProjectName = point.ChargeCode.Project?.Name;
+                    planningPoint.ClientId = point.ChargeCode.Project?.ClientId;
+                    planningPoint.ClientName = point.ChargeCode.Project?.Client?.Name;
+                    if (staffTimeSummary.ContainsKey(point.ChargeCodeId) && staffTimeSummary[point.ChargeCodeId] >= 4)
+                    {
+                        planningPoint.Completed = true;
+                        staffTimeSummary[point.ChargeCodeId] -= 4;
+                    }
+                }
+
+                summary.Points.Add(planningPoint);
+                summary.Completed = summary.Points.Where(t => t.ChargeCodeId.HasValue).Count() == 10;
+            }
+
+            response.Staff.Add(summary);
+        }
+
+        if (!String.IsNullOrEmpty(request.Search))
+        {
+            response.Staff = response.Staff
+                .Where(staff =>
+                    staff.StaffName.ToLower().Contains(request.Search.ToLower()) ||
+                    staff.Points.Any(point => point.ChargeCode?.ToLower()?.Contains(request.Search.ToLower()) ?? false) ||
+                    staff.Points.Any(point => point.ClientName?.ToLower()?.Contains(request.Search.ToLower()) ?? false) ||
+                    staff.Points.Any(point => point.ProjectName?.ToLower()?.Contains(request.Search.ToLower()) ?? false)
+                ).ToList();
+        }
+
+        response.TotalPoints = response.Staff.Sum(t => t.Points.Where(x => x.ChargeCodeId.HasValue).Count());
+        response.EmptyPoints = response.Staff.Count * 10 - response.TotalPoints;
+
+        return response;
+    }
+
+    public async Task BackgroundAutoGenerateHolidayPlanningPointsV1(CancellationToken ct)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var nextWeekStartDate = today.GetPeriodStartDate(Period.Week).AddPeriod(Period.Week, 1);
+
+        var generateHolidayPlanningPointsResponse = await GenerateHolidayPlanningPointsV1(new()
+        {
+            ForDate = nextWeekStartDate
+        }, ct);
+    }
+
+    public async Task<Result<GenerateHolidayPointsV1.Response>> GenerateHolidayPlanningPointsV1(GenerateHolidayPointsV1.Request request, CancellationToken ct = default)
+    {
+        var today = request.ForDate;
+        var startDate = today.GetPeriodStartDate(Period.Week);
+        var endDate = today.GetPeriodEndDate(Period.Week);
+
+        var holidays = _context.Holidays
+        .AsNoTracking()
+        .AsQueryable();
+        var jurisdicitons = Enum.GetValues(typeof(Jurisdiciton));
+        var holidayChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("holiday")).FirstOrDefaultAsync(ct);
+        if (holidayChargeCode == null)
+        {
+            return Result.Fail("Unable to find holiday chargecode");
+        }
+        foreach (Jurisdiciton jurisdiciton in jurisdicitons)
+        {
+            var upcomingHolidays = await holidays.Where(t => t.Date >= startDate && t.Date <= endDate && t.Jurisdiciton == jurisdiciton).ToListAsync(ct);
+            var staff = await _context.Staff.
+                AsNoTracking()
+                .AsQueryable().Where(t => t.EndDate == null && t.Jurisdiciton == jurisdiciton).ToListAsync(ct);
+
+            foreach (var staffMember in staff)
+            {
+                var getPointsRequest = new GetPointsV1.Request
+                {
+                    StaffId = staffMember.Id,
+                    Date = startDate
+                };
+
+                var staffPointsResponse = await GetPointsV1(getPointsRequest, ct);
+                var points = staffPointsResponse.Value.Points;
+
+                for (int i = points.Count - 1; i >= points.Count - (upcomingHolidays.Count * 2); i--)
+                {
+                    if (points[i].ChargeCodeId == null)
+                    {
+                        points[i].ChargeCodeId = holidayChargeCode.Id;
+                        points[i].Completed = true;
+
+                    }
+
+                }
+                var upsertPointsRequest = new UpsertPointsV1.Request
+                {
+                    StaffId = staffMember.Id,
+                    Date = startDate,
+                    Points = points
+                };
+
+                var upsertPointsResponse = await UpsertPointV1(upsertPointsRequest, ct);
+
+            }
+
+        }
+        return new GenerateHolidayPointsV1.Response()
+        {
+        };
     }
 
 }

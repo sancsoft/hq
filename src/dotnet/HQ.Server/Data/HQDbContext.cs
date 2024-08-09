@@ -27,6 +27,7 @@ namespace HQ.Server.Data
         public DbSet<Staff> Staff { get; set; } = null!;
         public DbSet<Time> Times { get; set; } = null!;
         public DbSet<Blob> Blobs { get; set; } = null!;
+        public DbSet<ProjectMember> ProjectMembers { get; set; } = null!;
 
         public HQDbContext(DbContextOptions<HQDbContext> options)
             : base(options)
@@ -36,6 +37,7 @@ namespace HQ.Server.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Staff>().HasMany(t => t.Times).WithOne(s => s.Staff).HasForeignKey(t => t.StaffId);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }

@@ -442,6 +442,20 @@ public class ProjectServiceV1
         };
     }
 
+    public async Task<Result<DeleteProjectActivityV1.Response?>> DeleteProjectActivityV1(DeleteProjectActivityV1.Request request, CancellationToken ct = default)
+    {
+        if (await _context.Times.AnyAsync(t => t.ActivityId == request.Id))
+        {
+            return Result.Fail("Activity has time associated with it, unable to delete");
+        }
+        var projectActivity = await _context.ProjectActivities.FindAsync(request.Id, ct);
+        if (projectActivity != null)
+        {
+            _context.ProjectActivities.Remove(projectActivity);
+            await _context.SaveChangesAsync(ct);
+        }
+        return new DeleteProjectActivityV1.Response();
+    }
     public async Task<Result<GetProjectActivitiesV1.Response>> GetProjectActivitiesV1(GetProjectActivitiesV1.Request request, CancellationToken ct = default)
     {
         var records = _context.ProjectActivities.Where(t => t.ProjectId == request.ProjectId)
@@ -462,8 +476,6 @@ public class ProjectServiceV1
     {
         var validationResult = Result.Merge(
             Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
-            Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId != request.ProjectId && t.Sequence == request.Sequence, ct), "Sequence must be unique."),
-
             Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId == request.ProjectId && t.Name == request.Name, ct), "Name must be unique.")
         );
 
@@ -489,5 +501,38 @@ public class ProjectServiceV1
         {
             Id = activity.Id
         };
+    }
+
+    public async Task<Result<AddProjectMemberV1.Response>> AddProjectMemberV1(AddProjectMemberV1.Request request, CancellationToken ct = default)
+    {
+        var projectMember = await _context.ProjectMembers.SingleOrDefaultAsync(t => t.ProjectId == request.ProjectId && t.StaffId == request.StaffId, ct);
+        if (projectMember == null)
+        {
+            projectMember = new ProjectMember()
+            {
+                ProjectId = request.ProjectId,
+                StaffId = request.StaffId
+            };
+
+            _context.ProjectMembers.Add(projectMember);
+            await _context.SaveChangesAsync(ct);
+        }
+
+        return new AddProjectMemberV1.Response()
+        {
+            Id = projectMember.Id
+        };
+    }
+
+    public async Task<Result<RemoveProjectMemberV1.Response>> RemoveProjectMemberV1(RemoveProjectMemberV1.Request request, CancellationToken ct = default)
+    {
+        var projectMember = await _context.ProjectMembers.SingleOrDefaultAsync(t => t.ProjectId == request.ProjectId && t.StaffId == request.StaffId, ct);
+        if (projectMember != null)
+        {
+            _context.ProjectMembers.Remove(projectMember);
+            await _context.SaveChangesAsync(ct);
+        }
+
+        return new RemoveProjectMemberV1.Response();
     }
 }

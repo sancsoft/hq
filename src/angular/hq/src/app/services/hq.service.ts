@@ -101,7 +101,23 @@ import {
 import {
   GetProjectActivitiesResponseV1,
   GetProjectActivityRequestV1,
-} from '../models/PSR/get-project-activity-v1';
+} from '../models/projects/get-project-activity-v1';
+import {
+  AddProjectMemberRequestV1,
+  AddProjectMemberResponseV1,
+} from '../models/projects/add-project-member-v1';
+import {
+  RemoveProjectMemberRequestV1,
+  RemoveProjectMemberResponseV1,
+} from '../models/projects/remove-project-member-v1';
+import {
+  UpsertProjectActivityResponseV1,
+  UpsertProjectActivityRequestV1,
+} from '../models/projects/upsert-project-activity-v1';
+import {
+  DeleteProjectActivityV1Request,
+  DeleteProjectActivityV1Response,
+} from '../models/projects/delete-project-activity-v1';
 import {
   GetTimeRecordsV1,
   GetTimeRequestV1,
@@ -158,7 +174,10 @@ import {
   upsertPointsRequestV1,
   upsertPointsResponseV1,
 } from '../models/Points/upsert-points-V1';
-
+import {
+  GetPointsSummaryRequestV1,
+  GetPointsSummaryResponseV1,
+} from '../models/Points/get-points-summary-v1';
 @Injectable({
   providedIn: 'root',
 })
@@ -442,7 +461,49 @@ export class HQService {
       ),
     );
   }
+  upsertProjectActivityV1(request: Partial<UpsertProjectActivityRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertProjectActivityResponseV1>(
+          `${apiUrl}/v1/Projects/UpsertProjectActivityV1
+          `,
+          request,
+        ),
+      ),
+    );
+  }
+  deleteProjectActivityV1(request: Partial<DeleteProjectActivityV1Request>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<DeleteProjectActivityV1Response>(
+          `${apiUrl}/v1/Projects/DeleteProjectActivityV1`,
+          request,
+        ),
+      ),
+    );
+  }
 
+  addProjectMemberV1(request: Partial<AddProjectMemberRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<AddProjectMemberResponseV1>(
+          `${apiUrl}/v1/Projects/AddProjectMemberV1
+          `,
+          request,
+        ),
+      ),
+    );
+  }
+  removeProjectMemberV1(request: Partial<RemoveProjectMemberRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<RemoveProjectMemberResponseV1>(
+          `${apiUrl}/v1/Projects/RemoveProjectMemberV1`,
+          request,
+        ),
+      ),
+    );
+  }
   submitProjectStatusReportV1(request: Partial<SubmitPSRRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
@@ -652,6 +713,17 @@ export class HQService {
           .split('=')[1]
           .trim(),
       })),
+    );
+  }
+
+  getPointsSummaryV1(request: Partial<GetPointsSummaryRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPointsSummaryResponseV1>(
+          `${apiUrl}/v1/Point/GetPointSummaryV1`,
+          request,
+        ),
+      ),
     );
   }
 }

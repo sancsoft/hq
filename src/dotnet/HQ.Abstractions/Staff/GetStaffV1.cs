@@ -15,11 +15,14 @@ public class GetStaffV1
     {
         public string? Search { get; set; }
         public Guid? Id { get; set; }
+        public string? Status { get; set; }
         public Jurisdiciton? Jurisdiciton { get; set; }
         public bool? IsAssignedProjectManager { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.FirstName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
         public bool? CurrentOnly { get; set; } = true;
+        public Guid? ProjectId { get; set; }
+        public Guid? ExcludeProjectId { get; set; }
     }
 
     public enum SortColumn
@@ -30,7 +33,11 @@ public class GetStaffV1
         StartDate = 4,
         EndDate = 5,
         WorkHours = 6,
-        VacationHours = 7
+        VacationHours = 7,
+        Hrs = 8,
+        BillableHrs = 9,
+        Status = 10,
+        Jurisdiciton = 11
     }
 
     public class Response : PagedResponseV1<Record>;
@@ -40,6 +47,12 @@ public class GetStaffV1
         public string Name { get; set; } = null!;
         public int WorkHours { get; set; }
         public int VacationHours { get; set; }
+        public Decimal Hrs { get; set; }
+        public Decimal BillableHrs { get; set; }
+        public Decimal HrsThisMonth { get; set; }
+
+        public string? Status { get; set; }
+        public string? Role { get; set; }
         public Jurisdiciton Jurisdiciton { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }

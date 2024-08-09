@@ -60,6 +60,9 @@ export class SelectInputComponent<T>
   @ViewChild('select')
   select?: ElementRef<HTMLInputElement>;
 
+  @ViewChild('button')
+  button?: ElementRef<HTMLButtonElement>;
+
   @Input()
   placeholder: string = '';
 
@@ -157,7 +160,7 @@ export class SelectInputComponent<T>
     );
   }
 
-  selectOption(option: SelectInputOptionDirective<T>) {
+  selectOption(option: SelectInputOptionDirective<T>, click = false) {
     this.value = option.value;
     this.cdr.detectChanges();
 
@@ -170,6 +173,11 @@ export class SelectInputComponent<T>
       if (parent) {
         parent.scrollTop = selected.offsetTop - parent.offsetTop;
       }
+    }
+
+    if (click) {
+      this.ignoreFocus = true;
+      this.button?.nativeElement?.focus();
     }
   }
 
@@ -216,7 +224,12 @@ export class SelectInputComponent<T>
         this.isOpen = false;
         this.searchForm.reset(null);
         this.hqBlur.emit();
+        this.ignoreFocus = true;
+        this.button?.nativeElement?.focus();
         break;
+      case 'Tab':
+        this.ignoreFocus = true;
+        this.button?.nativeElement?.focus();
     }
   }
 
@@ -282,10 +295,18 @@ export class SelectInputComponent<T>
     this.disabled = isDisabled;
   }
 
+  ignoreFocus = false;
+
   onFocus() {
     if (this.readonly) {
       return;
     }
+
+    if (this.ignoreFocus) {
+      this.ignoreFocus = false;
+      return;
+    }
+
     this.focused = true;
     this.isOpen = true;
     this.cdr.detectChanges();

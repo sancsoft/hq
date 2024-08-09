@@ -1,3 +1,4 @@
+import { StaffDetailsService } from './../staff-details/staff-details.service';
 import { Component, OnInit } from '@angular/core';
 import {
   FormGroup,
@@ -13,6 +14,8 @@ import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
 import { Jurisdiciton } from '../../enums/jurisdiciton';
+import { ButtonComponent } from '../../core/components/button/button.component';
+import { ToastService } from '../../services/toast.service';
 
 interface Form {
   name: FormControl<string | null>;
@@ -35,6 +38,7 @@ interface Form {
     ReactiveFormsModule,
     ErrorDisplayComponent,
     RouterLink,
+    ButtonComponent,
   ],
   templateUrl: './staff-edit.component.html',
 })
@@ -83,6 +87,8 @@ export class StaffEditComponent implements OnInit {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
+    private staffDetailsService: StaffDetailsService,
+    private toastService: ToastService,
   ) {}
 
   async submit() {
@@ -97,13 +103,20 @@ export class StaffEditComponent implements OnInit {
     console.log('Form is valid');
 
     try {
-      const request = { id: this.staffId, ...this.form.value };
+      const staffId = await firstValueFrom(this.staffDetailsService.staffId$);
+      const request = { id: staffId, ...this.form.value };
       await firstValueFrom(this.hqService.upsertStaffV1(request));
-      await this.router.navigate(['../../'], { relativeTo: this.route });
+      this.staffDetailsService.refresh();
+      this.toastService.show('Success', 'Staff member updated successfully');
+      await this.router.navigate(['..'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
       } else {
+        this.toastService.show(
+          'Error',
+          'There was an error updating the staff member.',
+        );
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
@@ -111,7 +124,8 @@ export class StaffEditComponent implements OnInit {
 
   private async getStaff() {
     try {
-      const request = { id: this.staffId };
+      const staffId = await firstValueFrom(this.staffDetailsService.staffId$);
+      const request = { id: staffId };
       const response = await firstValueFrom(
         this.hqService.getStaffMembersV1(request),
       );

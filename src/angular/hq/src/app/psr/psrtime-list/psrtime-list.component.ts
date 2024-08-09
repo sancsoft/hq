@@ -23,6 +23,7 @@ import {
   skip,
   startWith,
   switchMap,
+  take,
   takeUntil,
   tap,
 } from 'rxjs';
@@ -35,7 +36,7 @@ import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes
 import { FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
 import { ModalService } from '../../services/modal.service';
-import { GetProjectActivityRecordV1 } from '../../models/PSR/get-project-activity-v1';
+import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
 import { ToastService } from '../../services/toast.service';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { HQRole } from '../../enums/hqrole';
@@ -73,6 +74,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
   psrId$: Observable<string>;
   time$: Observable<GetPSRTimeRecordV1[]>;
+  private originalTimes: GetPSRTimeRecordV1[] = [];
+
   projectId$ = new BehaviorSubject<string | null>(null);
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   projectActivities$ = new BehaviorSubject<GetProjectActivityRecordV1[]>([]);
@@ -254,6 +257,13 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
         }
       }),
     );
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    this.time$.pipe(take(1), takeUntil(this.destroy)).subscribe({
+      next: (t) => {
+        this.originalTimes = JSON.parse(JSON.stringify(t));
+      },
+      error: console.error,
+    });
     this.timeIds$ = this.time$.pipe(
       map((response) => {
         return response.map((t) => t.id);
@@ -476,10 +486,18 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
         map((times) => times.find((x) => x.id == timeId)?.chargeCode),
       ),
     ); // this is to get the charge code of the time
+
+    const originalChargeCode = this.originalTimes.find(
+      (x) => x.id == timeId,
+    )?.chargeCode;
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
     );
+
+    if (originalChargeCode === chargeCode) {
+      return;
+    }
 
     if (!time || !chargeCode || chargeCode.length != 5) {
       // this condition is to check if the charge code is valid
@@ -573,7 +591,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     await firstValueFrom(this.hqService.updatePSRTimeV1(request));
     this.refresh$.next();
-    // this.hqSnackBarService.showMessage('Test Title', 'Test Description...');
+    this.toastService.show('Updated', 'Project activity has been updated.');
   }
 
   async updateBillableHours(timeId: string, event: Event) {

@@ -29,6 +29,41 @@
       class="min-w-[50px] xl:min-w-[100px]"
     >
       <a
+        routerLink="/psr"
+        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+        >PSR</a
+      >
+    </div>
+    <div
+      *ngIf="HQRole.Staff | inRole | async"
+      class="min-w-[50px] xl:min-w-[100px]"
+    >
+      <a
+        routerLink="/timesheets"
+        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+        aria-disabled="true"
+        >Timesheets</a
+      >
+    </div>
+    <div
+      *ngIf="HQRole.Staff | inRole | async"
+      class="min-w-[50px] xl:min-w-[100px]"
+    >
+      <a
+        routerLink="/planning/points"
+        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+        aria-disabled="true"
+        >Points</a
+      >
+    </div>
+    <div
+      *ngIf="HQRole.Staff | inRole | async"
+      class="min-w-[50px] xl:min-w-[100px]"
+    >
+      <a
         routerLink="/clients"
         routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
         class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
@@ -75,17 +110,6 @@
       >
     </div>-->
     <div
-      *ngIf="HQRole.Staff | inRole | async"
-      class="min-w-[50px] xl:min-w-[100px]"
-    >
-      <a
-        routerLink="/psr"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        >PSR</a
-      >
-    </div>
-    <div
       class="flex items-center ml-auto pr-[1.125rem] border-r border-r-black-alt"
     >
       <!-- settings/more dropdown button -->
@@ -120,16 +144,6 @@
               class="block px-4 py-2 text-gray-700 hover:text-gray-500"
               (click)="settingDropdownOpen = false"
               >Holidays</a
-            >
-          </li>
-          <!-- staff -->
-          <li *ngIf="HQRole.Staff | inRole | async">
-            <a
-              routerLink="/staff"
-              routerLinkActive="text-orange-500"
-              class="block px-4 py-2 text-gray-700 hover:text-gray-500"
-              (click)="settingDropdownOpen = false"
-              >Staff</a
             >
           </li>
           <!-- charge codes -->

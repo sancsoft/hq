@@ -2,7 +2,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th width="150"></th>
+      <th width="200"></th>
     </tr>
   </thead>
   <tbody class="hq-table-body">
@@ -11,21 +11,21 @@
       track activity.id
     ) {
       <tr>
-        <td>Item {{ activity.name }}</td>
-        <td class="text-right">
+        <td>{{ activity.name }}</td>
+        <td class="text-right divide-x divide-teal-200">
           <button
             type="button"
-            [title]="'Delete Activity'"
-            class="h-[30px] p-2"
+            class="text-teal-200 hover:text-teal-300 pr-3 uppercase"
+            (click)="renameActivity(activity.id)"
           >
-            <i class="bi bi-pencil text-white hover:text-gray-200"></i>
+            Rename
           </button>
           <button
             type="button"
-            [title]="'Delete Activity'"
-            class="h-[30px] p-2"
+            class="text-teal-200 hover:text-teal-300 pl-3 uppercase"
+            (click)="deleteActivity(activity.id)"
           >
-            <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
+            Delete
           </button>
         </td>
       </tr>

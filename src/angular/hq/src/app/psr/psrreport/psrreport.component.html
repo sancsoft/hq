@@ -9,19 +9,12 @@
       @if (
         [HQRole.Manager, HQRole.Partner, HQRole.Administrator] | inRole | async
       ) {
-        <button
+        <hq-button
           [disabled]="submitButtonState === ButtonState.Disabled"
-          [ngClass]="{
-            'text-gray-50 border-gray-500 bg-gray-500 ':
-              submitButtonState === ButtonState.Disabled,
-            'text-white border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600':
-              submitButtonState === ButtonState.Enabled,
-          }"
-          class="px-2 py-2 border rounded min-w-[120px] font-normal"
           (click)="onReportSubmit()"
         >
           Submit
-        </button>
+        </hq-button>
       }
     </div>
   </div>
