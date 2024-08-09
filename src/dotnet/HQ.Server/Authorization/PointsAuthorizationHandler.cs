@@ -24,8 +24,10 @@ public class PointsAuthorizationHandler : AuthorizationHandler<OperationAuthoriz
         var isStaff = context.User.IsInRole("staff");
         var isExecutive = context.User.IsInRole("executive");
         var isAdmin = context.User.IsInRole("administrator");
+        var isManager = context.User.IsInRole("manager");
+        var isPartner = context.User.IsInRole("partner");
 
-        if (isExecutive || isAdmin)
+        if (isExecutive || isAdmin || isPartner || isManager)
         {
             context.Succeed(requirement);
             return;
