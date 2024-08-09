@@ -284,10 +284,11 @@ public class PointServiceV1
     public async Task BackgroundAutoGenerateHolidayPlanningPointsV1(CancellationToken ct)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var nextWeekStartDate = today.GetPeriodStartDate(Period.Week).AddPeriod(Period.Week, 1);
 
         var generateHolidayPlanningPointsResponse = await GenerateHolidayPlanningPointsV1(new()
         {
-            ForDate = today
+            ForDate = nextWeekStartDate
         }, ct);
     }
 

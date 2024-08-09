@@ -213,8 +213,8 @@ public class HolidayServiceV1
     public async Task BackgroundAutoGenerateHolidayTimeEntryV1(CancellationToken ct)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        var startDate = today.GetPeriodStartDate(Period.Week);
-        var endDate = today.GetPeriodEndDate(Period.Week);
+        var startDate = today.GetPeriodStartDate(Period.Week).AddPeriod(Period.Week, 1);
+        var endDate = today.GetPeriodEndDate(Period.Week).AddPeriod(Period.Week, 1);
 
         var holidays = _context.Holidays
         .AsNoTracking()
@@ -230,11 +230,6 @@ public class HolidayServiceV1
             var upcomingHolidays = await holidays.Where(t => t.Date >= startDate && t.Date <= endDate && t.Jurisdiciton == jurisdiciton).ToListAsync(ct);
             foreach (var upcomingHoliday in upcomingHolidays)
             {
-
-                if (upcomingHoliday == null)
-                {
-                    return;
-                }
                 var staff = _context.Staff.
                 AsNoTracking()
                 .AsQueryable();

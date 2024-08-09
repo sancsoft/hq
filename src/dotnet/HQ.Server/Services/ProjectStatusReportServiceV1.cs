@@ -56,6 +56,55 @@ public class ProjectStatusReportServiceV1
         _logger.LogInformation("Created {CreateCount} PSRs for this week, skipped {SkipCount}.", generatePsrResponseThisWeek.Value.Created, generatePsrResponseThisWeek.Value.Skipped);
     }
 
+    public async Task BackgroundAutoSubmitWeeklyProjectStatusReportsV1(CancellationToken ct)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var lastWeekStart = today.GetPeriodStartDate(Period.LastWeek);
+
+        _logger.LogInformation("Automatically submitting weekly project status reports for week of {WeekOf}.", lastWeekStart);
+        var submitPsrResponse = await AutoSubmitWeeklyProjectStatusReportsV1(new()
+        {
+            ForDate = lastWeekStart
+        }, ct);
+        _logger.LogInformation("Submitted {SubmittedCount} PSRs for last week.", submitPsrResponse.Value.Submitted);
+    }
+
+    public async Task<Result<AutoSubmitWeeklyProjectStatusReportsV1.Response>> AutoSubmitWeeklyProjectStatusReportsV1(AutoSubmitWeeklyProjectStatusReportsV1.Request request, CancellationToken ct = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+        int submittedCount = 0;
+
+        DateOnly startDate = request.ForDate.GetPeriodStartDate(Period.Week);
+
+        var projectStatusReports = await _context.ProjectStatusReports
+            .Include(t => t.Project)
+            .Where(t =>
+                t.StartDate == startDate &&
+                t.Project.BookingHours == 0 &&
+                (t.Project.Type == ProjectType.Ongoing || t.Project.Type == ProjectType.General || t.Project.Type == ProjectType.Service) &&
+                !t.Project.ChargeCode!.Times.Any() &&
+                !t.SubmittedAt.HasValue
+            )
+            .ToListAsync(ct);
+
+        foreach (var psr in projectStatusReports)
+        {
+            psr.SubmittedAt = DateTime.UtcNow;
+            psr.Report = @"No planned activities.";
+
+            submittedCount++;
+        }
+
+        await _context.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+
+        return new AutoSubmitWeeklyProjectStatusReportsV1.Response()
+        {
+            Submitted = submittedCount
+        };
+    }
+
     public async Task<Result<GenerateWeeklyProjectStatusReportsV1.Response>> GenerateWeeklyProjectStatusReportsV1(GenerateWeeklyProjectStatusReportsV1.Request request, CancellationToken ct = default)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(ct);
@@ -63,7 +112,8 @@ public class ProjectStatusReportServiceV1
         int createdCount = 0;
         int skippedCount = 0;
 
-        var projects = await _context.Projects.Where(t => t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing))
+        var projects = await _context.Projects
+            .Where(t => t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing))
             .ToListAsync(ct);
 
         DateOnly startDate = request.ForDate.GetPeriodStartDate(Period.Week);
@@ -105,16 +155,6 @@ public class ProjectStatusReportServiceV1
                     psr.BookingStartDate = psr.StartDate;
                     psr.BookingEndDate = psr.EndDate;
                     break;
-            }
-
-            var totalTime = await _context.Times
-                .Where(t => t.Date >= psr.StartDate && t.Date <= psr.EndDate && t.ChargeCode!.ProjectId == psr.ProjectId)
-                .SumAsync(t => t.Hours, ct);
-
-            if (totalTime == 0 && project.BookingHours == 0)
-            {
-                psr.SubmittedAt = DateTime.UtcNow;
-                psr.Report = @"No planned activities.";
             }
 
             _context.ProjectStatusReports.Add(psr);
