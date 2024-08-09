@@ -7,13 +7,16 @@
         ><img
           src="/assets/logo.svg"
           alt="Sanctuary Software Studio, Inc."
-          style="height: 30px; margin:0 auto;"
+          style="height: 30px; margin: 0 auto"
       /></a>
     </div>
   </div>
   <!-- col two -->
   <nav class="nav flex flex-1 h-[30px]">
-    <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
+    <div
+      *ngIf="HQRole.Staff | inRole | async"
+      class="min-w-[50px] xl:min-w-[100px]"
+    >
       <a
         routerLink="/dashboard"
         routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
@@ -21,7 +24,10 @@
         >Home</a
       >
     </div>
-    <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
+    <div
+      *ngIf="HQRole.Staff | inRole | async"
+      class="min-w-[50px] xl:min-w-[100px]"
+    >
       <a
         routerLink="/clients"
         routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
@@ -29,7 +35,10 @@
         >Clients</a
       >
     </div>
-    <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
+    <div
+      *ngIf="HQRole.Staff | inRole | async"
+      class="min-w-[50px] xl:min-w-[100px]"
+    >
       <a
         routerLink="/projects"
         routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
@@ -37,7 +46,10 @@
         >Projects</a
       >
     </div>
-    <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
+    <div
+      *ngIf="HQRole.Staff | inRole | async"
+      class="min-w-[50px] xl:min-w-[100px]"
+    >
       <a
         routerLink="/quotes"
         routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
@@ -62,7 +74,10 @@
         >Invoices</a
       >
     </div>-->
-    <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
+    <div
+      *ngIf="HQRole.Staff | inRole | async"
+      class="min-w-[50px] xl:min-w-[100px]"
+    >
       <a
         routerLink="/psr"
         routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
@@ -70,9 +85,21 @@
         >PSR</a
       >
     </div>
-    <div class="flex items-center ml-auto pr-[1.125rem] border-r border-r-black-alt">
+    <div
+      class="flex items-center ml-auto pr-[1.125rem] border-r border-r-black-alt"
+    >
       <!-- settings/more dropdown button -->
-      <button (click)="settingDropdownOpen = !settingDropdownOpen;" routerLinkActive="text-orange-500 active" [ngClass]="settingDropdownOpen ? 'text-orange-500 h-[30px]' : 'h-[30px]'" type="button" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+      <button
+        (click)="settingDropdownOpen = !settingDropdownOpen"
+        routerLinkActive="text-orange-500 active"
+        [ngClass]="
+          settingDropdownOpen ? 'text-orange-500 h-[30px]' : 'h-[30px]'
+        "
+        type="button"
+        cdkOverlayOrigin
+        #settingsButton
+        #trigger="cdkOverlayOrigin"
+      >
         <i class="bi bi-sliders text-[1rem]"></i>
       </button>
       <!-- settings/more dropdown button overlay content -->
@@ -80,12 +107,11 @@
         cdkConnectedOverlay
         [cdkConnectedOverlayOrigin]="trigger"
         [cdkConnectedOverlayOpen]="settingDropdownOpen"
-        [cdkConnectedOverlayHasBackdrop]="false"
-        [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'" 
-        (detach)="settingDropdownOpen = false"
         (overlayOutsideClick)="settingDropdownOpen = false"
       >
-        <ul class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <ul
+          class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        >
           <!-- holidays -->
           <li *ngIf="HQRole.Staff | inRole | async">
             <a
@@ -144,62 +170,70 @@
   <div class="flex column justify-end items-center ml-auto pl-[1.125rem]">
     <!-- my account dropdown menu -->
     <div class="pe-0 xl:pe-10">
-        <!-- user dropdown button -->
-        <button (click)="dropdownOpen = !dropdownOpen;" routerLinkActive="active" [ngClass]="dropdownOpen ? 'text-orange-500 h-[30px] text-xs' : 'h-[30px] text-xs'" type="button" cdkOverlayOrigin #triggerDropdown="cdkOverlayOrigin">
-          {{ userName$ | async }}
-          <span>
-            <i class="bi bi-caret-down-fill text-[8px]"></i>
-          </span>
-        </button>
-        <!-- settings/more dropdown button overlay content -->
-        <ng-template
-          cdkConnectedOverlay
-          [cdkConnectedOverlayOrigin]="triggerDropdown"
-          [cdkConnectedOverlayOpen]="dropdownOpen"
-          [cdkConnectedOverlayHasBackdrop]="false"
-          [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'" 
-          [cdkConnectedOverlayPositions]="[
-              {
-                  originX: 'start',
-                  originY: 'bottom',
-                  overlayX: 'start',
-                  overlayY: 'top'
-              },
-              {
-                  originX: 'end',
-                  originY: 'bottom',
-                  overlayX: 'end',
-                  overlayY: 'top'
-              }
-          ]"
-          (detach)="dropdownOpen = false"
-          (overlayOutsideClick)="dropdownOpen = false"
+      <!-- user dropdown button -->
+      <button
+        (click)="dropdownOpen = !dropdownOpen"
+        routerLinkActive="active"
+        [ngClass]="
+          dropdownOpen ? 'text-orange-500 h-[30px] text-xs' : 'h-[30px] text-xs'
+        "
+        type="button"
+        cdkOverlayOrigin
+        #triggerDropdown="cdkOverlayOrigin"
+      >
+        {{ userName$ | async }}
+        <span>
+          <i class="bi bi-caret-down-fill text-[8px]"></i>
+        </span>
+      </button>
+      <!-- settings/more dropdown button overlay content -->
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="triggerDropdown"
+        [cdkConnectedOverlayOpen]="dropdownOpen"
+        [cdkConnectedOverlayPositions]="[
+          {
+            originX: 'start',
+            originY: 'bottom',
+            overlayX: 'start',
+            overlayY: 'top',
+          },
+          {
+            originX: 'end',
+            originY: 'bottom',
+            overlayX: 'end',
+            overlayY: 'top',
+          },
+        ]"
+        (overlayOutsideClick)="dropdownOpen = false"
+      >
+        <ul
+          class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
-          <ul class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <!-- sign out -->
-            <li *ngIf="HQRole.Staff | inRole | async">
-              <button
-                (click)="logout()"
-                class="block px-4 py-2 text-gray-700"
-                role="menuitem"
-                tabindex="-1"
-                id="user-menu-item-1"
-              >
-                Sign out
-              </button>
-            </li>
-          </ul>
-        </ng-template>
-      </div>
+          <!-- sign out -->
+          <li *ngIf="HQRole.Staff | inRole | async">
+            <button
+              (click)="logout()"
+              class="block px-4 py-2 text-gray-700"
+              role="menuitem"
+              tabindex="-1"
+              id="user-menu-item-1"
+            >
+              Sign out
+            </button>
+          </li>
+        </ul>
+      </ng-template>
     </div>
-    <!-- desktop logo -->
-    <div class="hidden xl:inline-block">
-      <a routerLink="/"
-        ><img
-          src="/assets/logo.svg"
-          alt="Sanctuary Software Studio, Inc."
-          style="height: 30px"
-      /></a>
+  </div>
+  <!-- desktop logo -->
+  <div class="hidden xl:inline-block">
+    <a routerLink="/"
+      ><img
+        src="/assets/logo.svg"
+        alt="Sanctuary Software Studio, Inc."
+        style="height: 30px"
+    /></a>
   </div>
 </header>
 
