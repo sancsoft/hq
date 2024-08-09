@@ -25,7 +25,7 @@ import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { TimeService } from '../services/TimeService';
 import { TimeSearchFilterComponent } from '../search-filter/time-search-filter/time-search-filter.component';
-import { saveAs } from 'file-saver';
+import saveAs from 'file-saver';
 import { ToastService } from '../../services/toast.service';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { HQRole } from '../../enums/hqrole';
@@ -203,6 +203,6 @@ export class TimeListComponent {
       return;
     }
 
-    await saveAs(result.file, result.fileName);
+    saveAs(result.file, result.fileName);
   }
 }
