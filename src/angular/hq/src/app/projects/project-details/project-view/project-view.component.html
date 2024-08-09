@@ -1,11 +1,13 @@
-<div class="absolute top-[8px] right-0 px-4 flex justify-end z-50">
-  <hq-button
-    [routerLink]="['./edit']"
-    [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
-    type="submit"
-    >Edit</hq-button
-  >
-</div>
+@if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+  <div class="absolute top-[8px] right-0 px-4 flex justify-end z-50">
+    <hq-button
+      [routerLink]="['./edit']"
+      [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
+      type="submit"
+      >Edit</hq-button
+    >
+  </div>
+}
 <div class="overflow-hidden flex-auto">
   <div class="grid gap-0 relative">
     <main

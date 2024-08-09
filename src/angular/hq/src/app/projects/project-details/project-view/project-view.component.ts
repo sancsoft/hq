@@ -36,6 +36,8 @@ import {
 import { GetStaffV1Record } from '../../../models/staff-members/get-staff-member-v1';
 import { CoreModule } from '../../../core/core.module';
 import { ProjectDetailsService } from '../project-details.service';
+import { HQRole } from '../../../enums/hqrole';
+import { InRolePipe } from '../../../pipes/in-role.pipe';
 
 interface Form {
   clientId: FormControl<string | null>;
@@ -64,6 +66,7 @@ interface Form {
     PdfViewerComponent,
     CoreModule,
     ReactiveFormsModule,
+    InRolePipe,
   ],
   templateUrl: './project-view.component.html',
 })
@@ -71,6 +74,8 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
   clients$: Observable<GetClientRecordV1[]>;
+
+  HQRole = HQRole;
 
   public projectStatusValues = enumToArray(ProjectStatus);
   public projectTypeValues = enumToArray(ProjectType);

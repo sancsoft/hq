@@ -20,6 +20,8 @@ import {
   GetStaffV1Record,
   //GetStaffV1Request,
 } from '../../../models/staff-members/get-staff-member-v1';
+import { HQRole } from '../../../enums/hqrole';
+import { InRolePipe } from '../../../pipes/in-role.pipe';
 
 interface Form {
   staffId: FormControl<string>;
@@ -28,12 +30,20 @@ interface Form {
 @Component({
   selector: 'hq-project-roster-list',
   standalone: true,
-  imports: [CoreModule, ReactiveFormsModule, FormsModule, CommonModule],
+  imports: [
+    CoreModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    InRolePipe,
+  ],
   templateUrl: './project-roster-list.component.html',
 })
 export class ProjectRosterListComponent {
   projectMembers$: Observable<GetStaffV1Record[]>;
   allStaff$: Observable<GetStaffV1Record[]>;
+
+  HQRole = HQRole;
 
   form = new FormGroup<Form>({
     staffId: new FormControl('', {

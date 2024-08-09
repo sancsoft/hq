@@ -16,6 +16,8 @@ import { map, firstValueFrom } from 'rxjs';
 import { APIError } from '../../../errors/apierror';
 import { ActivatedRoute } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
+import { HQRole } from '../../../enums/hqrole';
+import { InRolePipe } from '../../../pipes/in-role.pipe';
 
 interface Form {
   name: FormControl<string>;
@@ -24,7 +26,13 @@ interface Form {
 @Component({
   selector: 'hq-project-activity-list',
   standalone: true,
-  imports: [CoreModule, ReactiveFormsModule, FormsModule, CommonModule],
+  imports: [
+    CoreModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    InRolePipe,
+  ],
   templateUrl: './project-activity-list.component.html',
 })
 export class ProjectActivityListComponent {
@@ -35,6 +43,8 @@ export class ProjectActivityListComponent {
     }),
   });
   apiErrors: string[] = [];
+
+  HQRole = HQRole;
 
   constructor(
     private toastService: ToastService,
