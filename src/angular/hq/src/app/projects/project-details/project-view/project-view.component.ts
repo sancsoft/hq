@@ -45,6 +45,7 @@ interface Form {
   hourlyRate: FormControl<number | null>;
   bookingHours: FormControl<number | null>;
   bookingPeriod: FormControl<Period | null>;
+  timeEntryMaxHours: FormControl<number | null>;
   startDate: FormControl<string | null>;
   endDate: FormControl<string | null>;
   type: FormControl<ProjectType | null>;
@@ -89,6 +90,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     projectManagerId: new FormControl(null, [Validators.required]),
     hourlyRate: new FormControl(null, [Validators.required]),
     totalHours: new FormControl(null, [Validators.required]),
+    timeEntryMaxHours: new FormControl(null, [Validators.required]),
     bookingPeriod: new FormControl(Period.Month),
     quoteId: new FormControl(null, [Validators.required]),
     startDate: new FormControl(null, Validators.required),
@@ -142,6 +144,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
       hourlyRate: project.hourlyRate,
       totalHours: project.projectTotalHours,
       bookingPeriod: project.bookingPeriod,
+      timeEntryMaxHours: project.timeEntryMaxHours,
       quoteId: project.quoteId,
       startDate: project.startDate,
       endDate: project.endDate,

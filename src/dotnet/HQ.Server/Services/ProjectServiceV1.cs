@@ -74,6 +74,7 @@ public class ProjectServiceV1
                 project.Type = request.Type;
                 project.Status = request.Status;
                 project.TotalHours = request.TotalHours;
+                project.TimeEntryMaxHours = request.TimeEntryMaxHours ?? 4; // default to 4 hours
 
                 switch (request.Type)
                 {
@@ -240,7 +241,7 @@ public class ProjectServiceV1
         var bookingEndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(Period.Month);
 
 
-
+        var listRecord = records.ToList();
 
         var mapped = records.Select(t => new GetProjectsV1.Record()
         {
@@ -257,6 +258,7 @@ public class ProjectServiceV1
             HourlyRate = t.HourlyRate,
             BookingPeriod = t.BookingPeriod,
             ProjectBookingHours = t.BookingHours,
+            TimeEntryMaxHours = t.TimeEntryMaxHours,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
             BillingEmail = t.Client.BillingEmail,
@@ -295,6 +297,7 @@ public class ProjectServiceV1
             HourlyRate = t.HourlyRate,
             BookingPeriod = t.BookingPeriod,
             ProjectBookingHours = t.ProjectBookingHours,
+            TimeEntryMaxHours = t.TimeEntryMaxHours,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
             BillingEmail = t.BillingEmail,

@@ -278,6 +278,21 @@
                     </ng-template>
                   </hq-text-input>
                 </div>
+                <!-- column -->
+                <div>
+                  <hq-text-input
+                    variant="secondary"
+                    type="number"
+                    label="time entry max hours"
+                    placeholder="Max Hours"
+                    formControlName="timeEntryMaxHours"
+                    [min]="0"
+                  >
+                    <ng-template hqValidationError="min">
+                      Hourly rate must be positive.
+                    </ng-template>
+                  </hq-text-input>
+                </div>
               </div>
             </div>
           </div>

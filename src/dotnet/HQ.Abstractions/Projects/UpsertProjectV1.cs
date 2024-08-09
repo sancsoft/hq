@@ -27,6 +27,7 @@ public class UpsertProjectV1
         public ProjectType Type { get; set; }
         public bool Billable { get; set; }
         public ProjectStatus Status { get; set; }
+        public Decimal? TimeEntryMaxHours { get; set; }
         public decimal? TotalHours { get; set; }
         public int? ProjectNumber { get; set; }
     }
