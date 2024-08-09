@@ -122,7 +122,9 @@ public class StaffServiceV1
             .AsQueryable();
 
 
-        var today = DateOnly.FromDateTime(DateTime.Now);
+        var timezone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+        var currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
+        var today = DateOnly.FromDateTime(currentTime);
         var startYearDate = today.GetPeriodStartDate(Period.Year);
         var endYearDate = today.GetPeriodEndDate(Period.Year);
 
