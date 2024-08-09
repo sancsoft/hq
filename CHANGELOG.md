@@ -7,7 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.4.6]
+## [0.4.8] - 2024-08-08
+
+### Fixed
+
+- Time export
+
+## [0.4.7] - 2024-08-08
+
+### Changed
+
+- Sick, Holiday and Vacation planning points are sorted at the end of points when saving to server
+- Split PSR auto submit for 0 booking hour projects into a separate process to run for the previous week Monday at noon
+- Mark quotes and projects associated with inactive charge code as "Completed"
+- Ignore unsubmitted time for current week PSRs when calculating metrics
+
+### Fixed
+
+- Adjusted `tabindex` on date input on timesheet to prevent Chrome from tabbing through date components when tabbing from hours input
+- Only show charge code change prompt on PSR if charge code actually changes
+- Setting and getting status date timezone handling
+- Prevent autocomplete from going off screen
+
+## [0.4.6] - 2024-08-08
 
 ### Fixed
 
@@ -543,7 +565,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.6...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.8...HEAD
+[0.4.8]: https://github.com/sancsoft/hq/compare/v0.4.7...v0.4.8
+[0.4.7]: https://github.com/sancsoft/hq/compare/v0.4.6...v0.4.7
 [0.4.6]: https://github.com/sancsoft/hq/compare/v0.4.5...v0.4.6
 [0.4.5]: https://github.com/sancsoft/hq/compare/v0.4.4...v0.4.5
 [0.4.4]: https://github.com/sancsoft/hq/compare/v0.4.3...v0.4.4
