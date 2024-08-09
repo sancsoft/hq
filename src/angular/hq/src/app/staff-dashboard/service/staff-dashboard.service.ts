@@ -95,7 +95,7 @@ export class StaffDashboardService implements OnDestroy {
       currentUserStaffId: currentUserStaffId$,
       isAdmin: this.isAdmin$,
     }).pipe(
-      map((t) => t.isAdmin || t.staffId == t.currentUserStaffId),
+      map((t) => t.staffId == t.currentUserStaffId),
       distinctUntilChanged(),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
