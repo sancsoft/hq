@@ -1,5 +1,5 @@
 <div class="px-5">
-  <h1 class="font-rajdhani font-semibold text-3xl">Timesheets</h1>
+  <h1 class="font-rajdhani font-semibold text-3xl">Staff Members</h1>
 
   <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
@@ -130,21 +130,23 @@
             <div *ngSwitchCase="Jurisdiction.Colombia">Colombia</div>
           </div>
         </td>
-        <td class="border-b border-black py-2">{{ member.status ?? "-" }}</td>
+        <td class="border-b border-black py-2 capitalize">
+          {{ member.status ?? "-" }}
+        </td>
 
         <td class="border-b border-black py-2 text-right pr-5">
           <div class="text-nowrap divide-x divide-teal-200 uppercase">
             <a
               [routerLink]="[member.id, 'timesheet']"
               class="text-teal-200 hover:text-teal-300 pr-3"
-              >Timesheet</a
+              >View</a
             >
 
-            <a
+            <!-- <a
               [routerLink]="[member.id]"
               class="text-teal-200 hover:text-teal-300 pl-3"
               >View</a
-            >
+            > -->
           </div>
           <!-- @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
             <a
