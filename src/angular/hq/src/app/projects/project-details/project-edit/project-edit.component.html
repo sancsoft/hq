@@ -288,8 +288,8 @@
                     formControlName="timeEntryMaxHours"
                     [min]="0"
                   >
-                    <ng-template hqValidationError="min">
-                      Hourly rate must be positive.
+                    <ng-template hqValidationError="required">
+                      Max Hours is required.
                     </ng-template>
                   </hq-text-input>
                 </div>
