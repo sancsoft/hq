@@ -282,8 +282,7 @@
                     (staffDashboardService.showAllRejectedTimes$ | async) ===
                       false &&
                     (staffDashboardService.canEdit$ | async) &&
-                    (date.canCreateTime ||
-                      (staffDashboardService.isAdmin$ | async))
+                    date.canCreateTime
                   ) {
                     <tr
                       hq-staff-dashboard-time-entry
@@ -448,8 +447,7 @@
                         (staffDashboardService.showAllRejectedTimes$
                           | async) === false &&
                         (staffDashboardService.canEdit$ | async) &&
-                        (date.canCreateTime ||
-                          (staffDashboardService.isAdmin$ | async))
+                        date.canCreateTime
                       ) {
                         <tr
                           hq-staff-dashboard-time-entry

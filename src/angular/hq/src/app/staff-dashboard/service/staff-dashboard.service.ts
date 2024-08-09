@@ -61,7 +61,7 @@ export class StaffDashboardService implements OnDestroy {
   refresh$ = new Subject<void>();
 
   canEdit$: Observable<boolean>;
-  isAdmin$: Observable<boolean>;
+  canEditPoints$: Observable<boolean>;
 
   constructor(
     private hqService: HQService,
@@ -79,23 +79,39 @@ export class StaffDashboardService implements OnDestroy {
       map((t) => t.staff_id as string),
     );
 
-    this.isAdmin$ = oidcSecurityService.userData$.pipe(
+    const isProjectManagerOrAbove$ = oidcSecurityService.userData$.pipe(
       map((t) => t.userData),
       map(
         (t) =>
           t &&
           t.roles &&
           Array.isArray(t.roles) &&
-          [HQRole.Administrator].some((role) => t.roles.includes(role)),
+          [
+            HQRole.Administrator,
+            HQRole.Executive,
+            HQRole.Partner,
+            HQRole.Manager,
+          ].some((role) => t.roles.includes(role)),
       ),
     );
 
     this.canEdit$ = combineLatest({
       staffId: this.staffId$,
       currentUserStaffId: currentUserStaffId$,
-      isAdmin: this.isAdmin$,
     }).pipe(
       map((t) => t.staffId == t.currentUserStaffId),
+      distinctUntilChanged(),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
+
+    this.canEditPoints$ = combineLatest({
+      staffId: this.staffId$,
+      currentUserStaffId: currentUserStaffId$,
+      isProjectManagerOrAbove: isProjectManagerOrAbove$,
+    }).pipe(
+      map(
+        (t) => t.isProjectManagerOrAbove || t.staffId == t.currentUserStaffId,
+      ),
       distinctUntilChanged(),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
