@@ -1,5 +1,5 @@
 <div
-  class="h-[calc(100dvh-(var(--h-footer)+var(--h-header)))] fixed top-[--h-header] left-0 w-full flex flex-col"
+  class="h-[calc(100dvh-(var(--mh-footer)+var(--mh-header)))] xl:h-[calc(100dvh-(var(--h-footer)+var(--h-header)))] fixed top-[--mh-header] xl:top-[--h-header] left-0 w-full flex flex-col"
 >
   @if (projectDetailService.project$ | async; as project) {
     <div class="px-5">
@@ -68,7 +68,7 @@
   <hq-panel [CSizes]="[20, 80]" GutterVariant="primary" CollapseItem="first">
     <div first>
       <aside
-        class="sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))]"
+        class="sticky top-0 overflow-y-auto h-[calc(100dvh-318px)] xl:h-[calc(100dvh-260px)]"
       >
         <hq-project-psr-list></hq-project-psr-list>
       </aside>
