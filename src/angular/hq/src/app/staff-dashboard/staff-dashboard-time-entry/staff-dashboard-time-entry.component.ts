@@ -158,6 +158,7 @@ export class StaffDashboardTimeEntryComponent
   timeStatus = TimeStatus;
 
   ngOnInit(): void {
+    this.setMaximumHours();
     this.staffDashboardService.canEdit$
       .pipe(takeUntil(this.destroyed$))
       // eslint-disable-next-line rxjs/no-ignored-error
@@ -391,6 +392,18 @@ export class StaffDashboardTimeEntryComponent
   async showRejectionNotes() {
     if (this.time?.rejectionNotes) {
       await this.modalService.alert('Rejection', this.time.rejectionNotes);
+    }
+  }
+
+  private setMaximumHours(): void {
+    const maxTimeEntry = this.time?.maximumTimeEntryHours;
+    if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
+      this.form.controls.hours.setValidators([
+        Validators.required,
+        Validators.min(0.25),
+        Validators.max(maxTimeEntry),
+      ]);
+      this.form.controls.hours.updateValueAndValidity();
     }
   }
 }
