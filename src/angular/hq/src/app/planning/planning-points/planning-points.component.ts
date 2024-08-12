@@ -13,10 +13,15 @@ import {
 import { localISODate } from '../../common/functions/local-iso-date';
 import { HQService } from '../../services/hq.service';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
-import { GetPointsSummaryResponseV1 } from '../../models/Points/get-points-summary-v1';
+import {
+  GetPointsSummaryResponseV1,
+  GetPointSummaryV1StaffSummary,
+} from '../../models/Points/get-points-summary-v1';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { formControlChanges } from '../../core/functions/form-control-changes';
+import { PlanningPointsModalComponent } from '../planning-points-modal/planning-points-modal.component';
+import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'hq-planning-points',
@@ -41,7 +46,10 @@ export class PlanningPointsComponent {
 
   summary$: Observable<GetPointsSummaryResponseV1>;
 
-  constructor(public hqService: HQService) {
+  constructor(
+    public hqService: HQService,
+    public dialog: Dialog,
+  ) {
     this.summary$ = combineLatest({
       date: this.date,
       search: this.search$,
@@ -58,4 +66,18 @@ export class PlanningPointsComponent {
       shareReplay({ bufferSize: 1, refCount: false }),
     );
   }
+  editStaffPlanningPoint(staff: GetPointSummaryV1StaffSummary) {
+    const dialogRef = this.dialog.open<string>(PlanningPointsModalComponent, {
+      width: '600px',
+      data: {
+        staffId: staff.staffId,
+        date: this.date.value,
+      },
+    });
+
+    dialogRef.closed.subscribe((result) => {
+      console.log('The dialog was closed');
+    });
+  }
+
 }
