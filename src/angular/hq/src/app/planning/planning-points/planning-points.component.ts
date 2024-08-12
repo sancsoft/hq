@@ -13,10 +13,14 @@ import {
 import { localISODate } from '../../common/functions/local-iso-date';
 import { HQService } from '../../services/hq.service';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
-import { GetPointsSummaryResponseV1 } from '../../models/Points/get-points-summary-v1';
+import {
+  GetPointsSummaryPlanningPoint,
+  GetPointsSummaryResponseV1,
+} from '../../models/Points/get-points-summary-v1';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { formControlChanges } from '../../core/functions/form-control-changes';
+import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
 
 @Component({
   selector: 'hq-planning-points',
@@ -27,14 +31,20 @@ import { formControlChanges } from '../../core/functions/form-control-changes';
     RouterLink,
     FormsModule,
     ReactiveFormsModule,
+    SelectInputComponent,
   ],
   templateUrl: './planning-points.component.html',
 })
 export class PlanningPointsComponent {
   search = new FormControl<string | null>(null);
+  isCompleted = new FormControl<boolean | null>(null);
+
   search$ = formControlChanges(this.search);
+  isCompleted$ = formControlChanges(this.isCompleted);
 
   date = new BehaviorSubject<string>(localISODate());
+  opacity = new BehaviorSubject<number>(0.25);
+
   loading = new BehaviorSubject<boolean>(true);
 
   chargeCodeToColor = chargeCodeToColor;
@@ -45,6 +55,7 @@ export class PlanningPointsComponent {
     this.summary$ = combineLatest({
       date: this.date,
       search: this.search$,
+      isCompleted: this.isCompleted$,
     }).pipe(
       debounceTime(500),
       tap(() => this.loading.next(true)),
@@ -52,10 +63,30 @@ export class PlanningPointsComponent {
         this.hqService.getPointsSummaryV1({
           date: t.date,
           search: t.search,
+          isCompleted: t.isCompleted,
         }),
       ),
       tap(() => this.loading.next(false)),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
+  }
+  configureChargeCodeColorOpacity(point: GetPointsSummaryPlanningPoint) {
+    const chargeCodeId = point.chargeCodeId;
+    const defaultOpacity = 0.25;
+    const searchValue = this.search.value?.toLowerCase();
+
+    if (!searchValue) {
+      return chargeCodeToColor(chargeCodeId, defaultOpacity);
+    }
+
+    if (
+      searchValue.includes(point.clientName?.toLowerCase() || '') ||
+      searchValue.includes(point.projectName?.toLowerCase() || '') ||
+      searchValue.includes(point.chargeCode?.toLowerCase() || '')
+    ) {
+      return chargeCodeToColor(chargeCodeId, defaultOpacity);
+    }
+
+    return chargeCodeToColor(chargeCodeId, 0.1);
   }
 }

@@ -274,6 +274,10 @@ public class PointServiceV1
                     staff.Points.Any(point => point.ProjectName?.ToLower()?.Contains(request.Search.ToLower()) ?? false)
                 ).ToList();
         }
+        if (request.IsCompleted.HasValue)
+        {
+            response.Staff = response.Staff.Where(t => t.Completed == request.IsCompleted.Value).ToList();
+        }
 
         response.TotalPoints = response.Staff.Sum(t => t.Points.Where(x => x.ChargeCodeId.HasValue).Count());
         response.EmptyPoints = response.Staff.Count * 10 - response.TotalPoints;

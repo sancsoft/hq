@@ -1,6 +1,18 @@
 <h1 class="font-rajdhani font-semibold text-3xl px-5 mb-5">Planning Points</h1>
-<div class="px-5 w-60 mb-3">
+<div class="flex w-full flex-1 items-center gap-[20px] px-5 mb-3">
   <hq-search-input [formControl]="search"></hq-search-input>
+  <div class="pb-3 w-40">
+    <hq-select-input
+      [autocomplete]="false"
+      [formControl]="isCompleted"
+      label="Completed"
+      variant="secondary"
+    >
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      <ng-template [hqSelectInputOption]="true">Yes</ng-template>
+      <ng-template [hqSelectInputOption]="false">No</ng-template>
+    </hq-select-input>
+  </div>
 </div>
 @if (summary$ | async; as summary) {
   <div class="flex flex-col items-start px-5 bg-black-alt">
@@ -85,7 +97,7 @@
                     "
                     target="_blank"
                     [style.background-color]="
-                      chargeCodeToColor(point.chargeCodeId)
+                      configureChargeCodeColorOpacity(point)
                     "
                   >
                     {{ point.chargeCode }}:

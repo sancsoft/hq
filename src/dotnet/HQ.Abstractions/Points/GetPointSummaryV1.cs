@@ -1,3 +1,4 @@
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Points;
 
 public class GetPointSummaryV1
@@ -6,6 +7,8 @@ public class GetPointSummaryV1
     {
         public DateOnly Date { get; set; }
         public string? Search { get; set; }
+        public bool? IsCompleted { get; set; }
+
     }
 
     public class StaffSummary

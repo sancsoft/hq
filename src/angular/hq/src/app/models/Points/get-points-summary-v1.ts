@@ -1,6 +1,7 @@
 export interface GetPointsSummaryRequestV1 {
   date: string;
   search?: string | null;
+  isCompleted?: boolean | null;
 }
 
 export interface GetPointsSummaryPlanningPoint {
