@@ -82,15 +82,9 @@ export class PlanningPointsComponent {
       return chargeCodeToColor(chargeCodeId, defaultOpacity);
     }
 
-    if (
-      searchValue.includes(point.clientName?.toLowerCase() || '') ||
-      searchValue.includes(point.projectName?.toLowerCase() || '') ||
-      searchValue.includes(point.chargeCode?.toLowerCase() || '')
-    ) {
-      return chargeCodeToColor(chargeCodeId, matchingOpacity);
-    }
-
-    return chargeCodeToColor(chargeCodeId, nonMatchingOpacity);
+    return this.isNonMatched(point)
+      ? chargeCodeToColor(chargeCodeId, nonMatchingOpacity)
+      : chargeCodeToColor(chargeCodeId, matchingOpacity);
   }
 
   isNonMatched(point: GetPointsSummaryPlanningPoint) {
@@ -101,9 +95,9 @@ export class PlanningPointsComponent {
     }
 
     if (
-      searchValue.includes(point.clientName?.toLowerCase() || '') ||
-      searchValue.includes(point.projectName?.toLowerCase() || '') ||
-      searchValue.includes(point.chargeCode?.toLowerCase() || '')
+      point.clientName?.toLowerCase()?.includes(searchValue) ||
+      point.projectName?.toLowerCase()?.includes(searchValue) ||
+      point.chargeCode?.toLowerCase()?.includes(searchValue)
     ) {
       return false;
     }
