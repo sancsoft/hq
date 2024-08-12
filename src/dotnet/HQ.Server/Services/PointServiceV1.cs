@@ -245,6 +245,7 @@ public class PointServiceV1
                 {
                     var point = staffPoints[i + 1];
                     planningPoint.ChargeCodeId = point.ChargeCodeId;
+                    planningPoint.Id = point.Id;
                     planningPoint.ChargeCode = point.ChargeCode.Code;
                     planningPoint.ProjectId = point.ChargeCode.ProjectId;
                     planningPoint.ProjectName = point.ChargeCode.Project?.Name;

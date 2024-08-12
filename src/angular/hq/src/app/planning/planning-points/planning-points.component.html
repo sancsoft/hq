@@ -79,7 +79,7 @@
               >{{ staff.staffName }}</a
             >
           </td>
-          @for (point of staff.points; track point.sequence) {
+          @for (point of staff.points; track point.id) {
             <td width="165" class="border-l border-black">
               <div
                 class="w-full text-left flex items-center h-8 p-1 overflow-hidden"

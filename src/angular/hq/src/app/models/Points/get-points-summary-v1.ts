@@ -5,6 +5,7 @@ export interface GetPointsSummaryRequestV1 {
 }
 
 export interface GetPointsSummaryPlanningPoint {
+  id: string;
   sequence: number;
   chargeCodeId: string | null;
   chargeCode: string | null;

@@ -20,6 +20,7 @@ public class GetPointSummaryV1
 
         public class PlanningPoint
         {
+            public Guid Id { get; set; }
             public int Sequence { get; set; }
             public Guid? ChargeCodeId { get; set; }
             public string? ChargeCode { get; set; }
