@@ -158,7 +158,6 @@ export class StaffDashboardTimeEntryComponent
   timeStatus = TimeStatus;
 
   ngOnInit(): void {
-    this.setMaximumHours();
     this.staffDashboardService.canEdit$
       .pipe(takeUntil(this.destroyed$))
       // eslint-disable-next-line rxjs/no-ignored-error
@@ -166,6 +165,41 @@ export class StaffDashboardTimeEntryComponent
         canEdit
           ? this.form.enable({ emitEvent: false })
           : this.form.disable({ emitEvent: false });
+      });
+
+    this.form.controls.chargeCodeId.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (id) => {
+          const chargeCode = this.chargeCodes?.find((t) => t.id === id);
+          const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 0;
+          console.log(chargeCode, this.chargeCodes, id);
+          this.setMaximumHours(maxTimeEntryHours);
+          if (chargeCode) {
+            this.form.patchValue(
+              {
+                clientId: chargeCode.clientId,
+                projectId: chargeCode.projectId,
+                clientName: chargeCode.clientName,
+                projectName: chargeCode.projectName,
+                activityId: null,
+              },
+              { emitEvent: false },
+            );
+          } else {
+            this.form.patchValue(
+              {
+                clientId: null,
+                projectId: null,
+                clientName: null,
+                projectName: null,
+                activityId: null,
+              },
+              { emitEvent: false },
+            );
+          }
+        },
+        error: console.error,
       });
   }
   constructor(
@@ -228,38 +262,6 @@ export class StaffDashboardTimeEntryComponent
           }
 
           this.form.controls.activityId.updateValueAndValidity();
-        },
-        error: console.error,
-      });
-
-    this.form.controls.chargeCodeId.valueChanges
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: (id) => {
-          const chargeCode = this.chargeCodes?.find((t) => t.id === id);
-          if (chargeCode) {
-            this.form.patchValue(
-              {
-                clientId: chargeCode.clientId,
-                projectId: chargeCode.projectId,
-                clientName: chargeCode.clientName,
-                projectName: chargeCode.projectName,
-                activityId: null,
-              },
-              { emitEvent: false },
-            );
-          } else {
-            this.form.patchValue(
-              {
-                clientId: null,
-                projectId: null,
-                clientName: null,
-                projectName: null,
-                activityId: null,
-              },
-              { emitEvent: false },
-            );
-          }
         },
         error: console.error,
       });
@@ -395,8 +397,9 @@ export class StaffDashboardTimeEntryComponent
     }
   }
 
-  private setMaximumHours(): void {
-    const maxTimeEntry = this.time?.maximumTimeEntryHours;
+  private setMaximumHours(maxTime?: number): void {
+    const maxTimeEntry = maxTime ?? this.time?.maximumTimeEntryHours;
+    console.log('maxTimeEntry ', maxTimeEntry, maxTime);
     if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
       this.form.controls.hours.setValidators([
         Validators.required,
