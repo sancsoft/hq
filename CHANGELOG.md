@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.10] - 2024-08-11
+
+### Changed
+
+- Renamed `Timesheets` back to `Staff`
+- Renamed `Timesheet` on `Staff` list to `View`
+- Added `Time` back to main nav
+- Removed admin ability to manage other staff members time
+- Allow PMs to modify points for other staff members
+
 ## [0.4.9] - 2024-08-09
 
 ### Fixed
@@ -578,7 +588,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.9...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.10...HEAD
+[0.4.10]: https://github.com/sancsoft/hq/compare/v0.4.9...v0.4.10
 [0.4.9]: https://github.com/sancsoft/hq/compare/v0.4.8...v0.4.9
 [0.4.8]: https://github.com/sancsoft/hq/compare/v0.4.7...v0.4.8
 [0.4.7]: https://github.com/sancsoft/hq/compare/v0.4.6...v0.4.7
