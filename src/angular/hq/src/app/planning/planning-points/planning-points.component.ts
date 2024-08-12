@@ -75,7 +75,7 @@ export class PlanningPointsComponent {
     const defaultOpacity = 0.25;
     const searchValue = this.search.value?.toLowerCase();
 
-    if (!searchValue) {
+    if (!searchValue?.trim().length) {
       return chargeCodeToColor(chargeCodeId, defaultOpacity);
     }
 
