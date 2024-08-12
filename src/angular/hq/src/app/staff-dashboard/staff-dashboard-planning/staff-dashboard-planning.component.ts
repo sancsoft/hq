@@ -208,9 +208,13 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
   }
 
   updateSequence(): void {
-    this.points.forEach((point, idx) => {
-      // form.controls['sequence'].setValue(idx + 1);
-      this.points[idx].sequence = idx + 1;
+    const updatedPoints = this.points.map((point, idx) => ({
+      ...point,
+      sequence: idx + 1,
+    }));
+    this.points = updatedPoints;
+    this.planningPointsChildren.forEach((child, idx) => {
+      child.form.controls.sequence.setValue(idx + 1);
     });
   }
 
