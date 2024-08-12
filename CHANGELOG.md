@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.11] - 2024-08-11
+
+### Fixed
+- Planning point sorting due to regression from auto-sorting holiday/vacation/sick time at the end
+
 ## [0.4.10] - 2024-08-11
 
 ### Changed
@@ -588,7 +593,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.10...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.11...HEAD
+[0.4.11]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.11
 [0.4.10]: https://github.com/sancsoft/hq/compare/v0.4.9...v0.4.10
 [0.4.9]: https://github.com/sancsoft/hq/compare/v0.4.8...v0.4.9
 [0.4.8]: https://github.com/sancsoft/hq/compare/v0.4.7...v0.4.8
