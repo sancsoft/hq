@@ -1,3 +1,4 @@
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Points;
 
 public class GetPointSummaryV1
@@ -6,6 +7,8 @@ public class GetPointSummaryV1
     {
         public DateOnly Date { get; set; }
         public string? Search { get; set; }
+        public bool? IsCompleted { get; set; }
+
     }
 
     public class StaffSummary
@@ -17,6 +20,7 @@ public class GetPointSummaryV1
 
         public class PlanningPoint
         {
+            public Guid Id { get; set; }
             public int Sequence { get; set; }
             public Guid? ChargeCodeId { get; set; }
             public string? ChargeCode { get; set; }
