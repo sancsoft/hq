@@ -92,4 +92,27 @@ export class PlanningPointsComponent {
 
     return chargeCodeToColor(chargeCodeId, nonMatchingOpacity);
   }
+
+  isNonMatched(point: GetPointsSummaryPlanningPoint) {
+    const chargeCodeId = point.chargeCodeId;
+    const defaultOpacity = 0.25;
+    const matchingOpacity = 0.5;
+    const nonMatchingOpacity = 0.05;
+
+    const searchValue = this.search.value?.toLowerCase();
+
+    if (!searchValue?.trim().length) {
+      return false;
+    }
+
+    if (
+      searchValue.includes(point.clientName?.toLowerCase() || '') ||
+      searchValue.includes(point.projectName?.toLowerCase() || '') ||
+      searchValue.includes(point.chargeCode?.toLowerCase() || '')
+    ) {
+      return false;
+    }
+
+    return true;
+  }
 }
