@@ -245,6 +245,7 @@ public class PointServiceV1
                 {
                     var point = staffPoints[i + 1];
                     planningPoint.ChargeCodeId = point.ChargeCodeId;
+                    planningPoint.Id = point.Id;
                     planningPoint.ChargeCode = point.ChargeCode.Code;
                     planningPoint.ProjectId = point.ChargeCode.ProjectId;
                     planningPoint.ProjectName = point.ChargeCode.Project?.Name;
@@ -273,6 +274,10 @@ public class PointServiceV1
                     staff.Points.Any(point => point.ClientName?.ToLower()?.Contains(request.Search.ToLower()) ?? false) ||
                     staff.Points.Any(point => point.ProjectName?.ToLower()?.Contains(request.Search.ToLower()) ?? false)
                 ).ToList();
+        }
+        if (request.IsCompleted.HasValue)
+        {
+            response.Staff = response.Staff.Where(t => t.Completed == request.IsCompleted.Value).ToList();
         }
 
         response.TotalPoints = response.Staff.Sum(t => t.Points.Where(x => x.ChargeCodeId.HasValue).Count());
