@@ -166,6 +166,41 @@ export class StaffDashboardTimeEntryComponent
           ? this.form.enable({ emitEvent: false })
           : this.form.disable({ emitEvent: false });
       });
+
+    this.form.controls.chargeCodeId.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (id) => {
+          const chargeCode = this.chargeCodes?.find((t) => t.id === id);
+          const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 0;
+          console.log(chargeCode, this.chargeCodes, id);
+          this.setMaximumHours(maxTimeEntryHours);
+          if (chargeCode) {
+            this.form.patchValue(
+              {
+                clientId: chargeCode.clientId,
+                projectId: chargeCode.projectId,
+                clientName: chargeCode.clientName,
+                projectName: chargeCode.projectName,
+                activityId: null,
+              },
+              { emitEvent: false },
+            );
+          } else {
+            this.form.patchValue(
+              {
+                clientId: null,
+                projectId: null,
+                clientName: null,
+                projectName: null,
+                activityId: null,
+              },
+              { emitEvent: false },
+            );
+          }
+        },
+        error: console.error,
+      });
   }
   constructor(
     public staffDashboardService: StaffDashboardService,
@@ -227,38 +262,6 @@ export class StaffDashboardTimeEntryComponent
           }
 
           this.form.controls.activityId.updateValueAndValidity();
-        },
-        error: console.error,
-      });
-
-    this.form.controls.chargeCodeId.valueChanges
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: (id) => {
-          const chargeCode = this.chargeCodes?.find((t) => t.id === id);
-          if (chargeCode) {
-            this.form.patchValue(
-              {
-                clientId: chargeCode.clientId,
-                projectId: chargeCode.projectId,
-                clientName: chargeCode.clientName,
-                projectName: chargeCode.projectName,
-                activityId: null,
-              },
-              { emitEvent: false },
-            );
-          } else {
-            this.form.patchValue(
-              {
-                clientId: null,
-                projectId: null,
-                clientName: null,
-                projectName: null,
-                activityId: null,
-              },
-              { emitEvent: false },
-            );
-          }
         },
         error: console.error,
       });
@@ -391,6 +394,19 @@ export class StaffDashboardTimeEntryComponent
   async showRejectionNotes() {
     if (this.time?.rejectionNotes) {
       await this.modalService.alert('Rejection', this.time.rejectionNotes);
+    }
+  }
+
+  private setMaximumHours(maxTime?: number): void {
+    const maxTimeEntry = maxTime ?? this.time?.maximumTimeEntryHours;
+    console.log('maxTimeEntry ', maxTimeEntry, maxTime);
+    if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
+      this.form.controls.hours.setValidators([
+        Validators.required,
+        Validators.min(0.25),
+        Validators.max(maxTimeEntry),
+      ]);
+      this.form.controls.hours.updateValueAndValidity();
     }
   }
 }

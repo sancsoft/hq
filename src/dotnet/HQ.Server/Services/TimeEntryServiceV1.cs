@@ -577,6 +577,7 @@ namespace HQ.Server.Services
                     ChargeCodeId = t.ChargeCodeId,
                     ChargeCode = t.ChargeCode.Code,
                     ActivityId = t.ActivityId,
+                    MaximumTimeEntryHours = t.ChargeCode.Project != null ? t.ChargeCode.Project.TimeEntryMaxHours : 0,
                     Hours = t.Hours,
                     Notes = t.Notes,
                     Task = t.Task,

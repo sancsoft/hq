@@ -42,6 +42,7 @@ export interface GetChargeCodeRecordV1 {
   projectId?: string;
   clientId?: string;
   clientName?: string;
+  maximumTimeEntryHours: number;
   serviceAgreementId?: string;
   isProjectMember: boolean | null;
 }
