@@ -94,11 +94,6 @@ export class PlanningPointsComponent {
   }
 
   isNonMatched(point: GetPointsSummaryPlanningPoint) {
-    const chargeCodeId = point.chargeCodeId;
-    const defaultOpacity = 0.25;
-    const matchingOpacity = 0.5;
-    const nonMatchingOpacity = 0.05;
-
     const searchValue = this.search.value?.toLowerCase();
 
     if (!searchValue?.trim().length) {
