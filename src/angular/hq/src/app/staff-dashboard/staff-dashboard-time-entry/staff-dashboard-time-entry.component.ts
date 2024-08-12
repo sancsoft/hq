@@ -166,14 +166,15 @@ export class StaffDashboardTimeEntryComponent
           ? this.form.enable({ emitEvent: false })
           : this.form.disable({ emitEvent: false });
       });
-
+    if (this.time?.maximumTimeEntryHours) {
+      this.setMaximumHours(this.time?.maximumTimeEntryHours);
+    }
     this.form.controls.chargeCodeId.valueChanges
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (id) => {
           const chargeCode = this.chargeCodes?.find((t) => t.id === id);
           const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 0;
-          console.log(chargeCode, this.chargeCodes, id);
           this.setMaximumHours(maxTimeEntryHours);
           if (chargeCode) {
             this.form.patchValue(
@@ -397,9 +398,7 @@ export class StaffDashboardTimeEntryComponent
     }
   }
 
-  private setMaximumHours(maxTime?: number): void {
-    const maxTimeEntry = maxTime ?? this.time?.maximumTimeEntryHours;
-    console.log('maxTimeEntry ', maxTimeEntry, maxTime);
+  private setMaximumHours(maxTimeEntry: number): void {
     if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
       this.form.controls.hours.setValidators([
         Validators.required,
