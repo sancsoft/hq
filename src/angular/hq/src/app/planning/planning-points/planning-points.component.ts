@@ -73,6 +73,8 @@ export class PlanningPointsComponent {
   configureChargeCodeColorOpacity(point: GetPointsSummaryPlanningPoint) {
     const chargeCodeId = point.chargeCodeId;
     const defaultOpacity = 0.25;
+    const nonMatchingOpacity = 0.1;
+
     const searchValue = this.search.value?.toLowerCase();
 
     if (!searchValue?.trim().length) {
@@ -87,6 +89,6 @@ export class PlanningPointsComponent {
       return chargeCodeToColor(chargeCodeId, defaultOpacity);
     }
 
-    return chargeCodeToColor(chargeCodeId, 0.1);
+    return chargeCodeToColor(chargeCodeId, nonMatchingOpacity);
   }
 }
