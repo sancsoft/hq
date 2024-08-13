@@ -7,7 +7,7 @@ import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { TimeService } from '../services/TimeService';
+import { TimeService } from './time-list.service';
 import { TimeSearchFilterComponent } from '../search-filter/time-search-filter/time-search-filter.component';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { HQRole } from '../../enums/hqrole';
@@ -15,7 +15,9 @@ import { TableComponent } from '../../core/components/table/table.component';
 import { SortHeaderComponent } from '../../core/components/sort-header/sort-header.component';
 import { CoreModule } from '../../core/core.module';
 import { BaseListService } from '../../core/services/base-list.service';
-
+import { firstValueFrom, switchMap } from 'rxjs';
+import saveAs from 'file-saver';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'hq-time-list',
@@ -49,6 +51,7 @@ export class TimeListComponent {
   constructor(
     public hqService: HQService,
     public timeService: TimeService,
+    private toastService: ToastService,
   ) {}
 
   goToPage(page: number) {
@@ -71,16 +74,18 @@ export class TimeListComponent {
   }
 
   async exportTime() {
-    //   const result = await firstValueFrom(
-    //     this.timeRequest$.pipe(
-    //       switchMap((request) => this.hqService.exportTimesV1(request)),
-    //     ),
-    //   );
-    //   if (result.file === null) {
-    //     this.toastService.show('Error', 'Unable to download export.');
-    //     return;
-    //   }
-    //   saveAs(result.file, result.fileName);
-    // }
+    const result = await firstValueFrom(
+      this.timeService.request$.pipe(
+        switchMap((request) => {
+          console.log(request);
+          return this.hqService.exportTimesV1(request);
+        }),
+      ),
+    );
+    if (result.file === null) {
+      this.toastService.show('Error', 'Unable to download export.');
+      return;
+    }
+    saveAs(result.file, result.fileName);
   }
 }

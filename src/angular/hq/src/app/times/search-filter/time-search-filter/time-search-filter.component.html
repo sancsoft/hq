@@ -1,4 +1,4 @@
-<div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+<div class="w-full flex items-center gap-[20px] mb-[8px] xl:mb-0">
   @if (timeService.showSearch$ | async) {
     <div class="flex w-full">
       <hq-search-input
@@ -93,7 +93,7 @@
   <div class="w-full">
     <hq-select-input
       label="Invoiced"
-      [autocomplete]="false"
+      [autocomplete]="true"
       [formControl]="timeService.invoiced"
       variant="secondary"
     >
@@ -101,11 +101,36 @@
 
       <ng-template
         [hqSelectInputOption]="true"
+        [hqSelectInputOptionSearch]="'Yes'"
         [hqSelectInputOptionSelectedDisplay]="'Yes'"
         >{{ "Yes" }}</ng-template
       >
       <ng-template
         [hqSelectInputOption]="false"
+        [hqSelectInputOptionSearch]="'No'"
+        [hqSelectInputOptionSelectedDisplay]="'No'"
+        >{{ "No" }}</ng-template
+      >
+    </hq-select-input>
+  </div>
+  <div class="w-full">
+    <hq-select-input
+      label="Billable"
+      [autocomplete]="true"
+      [formControl]="timeService.billable"
+      variant="secondary"
+    >
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+
+      <ng-template
+        [hqSelectInputOption]="true"
+        [hqSelectInputOptionSearch]="'Yes'"
+        [hqSelectInputOptionSelectedDisplay]="'Yes'"
+        >{{ "Yes" }}</ng-template
+      >
+      <ng-template
+        [hqSelectInputOption]="false"
+        [hqSelectInputOptionSearch]="'No'"
         [hqSelectInputOptionSelectedDisplay]="'No'"
         >{{ "No" }}</ng-template
       >
@@ -114,20 +139,75 @@
   <div class="w-full">
     <hq-select-input
       label="Period"
+      [inline]="true"
       [autocomplete]="true"
       (hqBlur)="showHideDates()"
       [formControl]="timeService.selectedPeriod"
       variant="secondary"
     >
       <ng-template [hqSelectInputOption]="null">All</ng-template>
-      @for (period of timeService.PeriodList; track period.id) {
-        <ng-template
-          [hqSelectInputOption]="period.id"
-          [hqSelectInputOptionSearch]="period.name"
-          [hqSelectInputOptionSelectedDisplay]="period.name"
-          >{{ period.name }}</ng-template
-        >
-      }
+      <ng-template
+        [hqSelectInputOption]="timeService.Period.None"
+        [hqSelectInputOptionSearch]="'None'"
+        [hqSelectInputOptionSelectedDisplay]="'None'"
+        >{{ "None" }}</ng-template
+      >
+
+      <ng-template
+        [hqSelectInputOption]="timeService.Period.Week"
+        [hqSelectInputOptionSearch]="'This Week'"
+        [hqSelectInputOptionSelectedDisplay]="'This Week'"
+        >{{ "This Week" }}</ng-template
+      >
+
+      <ng-template
+        [hqSelectInputOption]="timeService.Period.Month"
+        [hqSelectInputOptionSearch]="'This Month'"
+        [hqSelectInputOptionSelectedDisplay]="'This Month'"
+        >{{ "This Month" }}</ng-template
+      >
+
+      <ng-template
+        [hqSelectInputOption]="timeService.Period.Quarter"
+        [hqSelectInputOptionSearch]="'This Quarter'"
+        [hqSelectInputOptionSelectedDisplay]="'This Quarter'"
+        >{{ "This Quarter" }}</ng-template
+      >
+
+      <ng-template
+        [hqSelectInputOption]="timeService.Period.Year"
+        [hqSelectInputOptionSearch]="'This Year'"
+        [hqSelectInputOptionSelectedDisplay]="'This Year'"
+        >{{ "This Year" }}</ng-template
+      >
+
+      <ng-template
+        [hqSelectInputOption]="timeService.Period.Today"
+        [hqSelectInputOptionSearch]="'Today'"
+        [hqSelectInputOptionSelectedDisplay]="'Today'"
+        >{{ "Today" }}</ng-template
+      >
+
+      <ng-template
+        [hqSelectInputOption]="timeService.Period.LastWeek"
+        [hqSelectInputOptionSearch]="'Last Week'"
+        [hqSelectInputOptionSelectedDisplay]="'Last Week'"
+        >{{ "Last Week" }}</ng-template
+      >
+
+      <ng-template
+        [hqSelectInputOption]="timeService.Period.LastMonth"
+        [hqSelectInputOptionSearch]="'Last Month'"
+        [hqSelectInputOptionSelectedDisplay]="'Last Month'"
+        >{{ "Last Month" }}</ng-template
+      >
+
+      <ng-template
+        [hqSelectInputOption]="timeService.Period.Custom"
+        [hqSelectInputOptionSearch]="'Custom'"
+        [hqSelectInputOptionSelectedDisplay]="'Custom'"
+        >{{ "Custom" }}</ng-template
+      >
     </hq-select-input>
   </div>
 

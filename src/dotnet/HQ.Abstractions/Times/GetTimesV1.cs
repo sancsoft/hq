@@ -29,6 +29,7 @@ namespace HQ.Abstractions.Times
             public bool? TimeAccepted { get; set; }
             public TimeStatus? TimeStatus { get; set; }
             public bool? Invoiced { get; set; }
+            public bool? Billable { get; set; }
             public SortColumn SortBy { get; set; } = SortColumn.Date;
             public SortDirection SortDirection { get; set; } = SortDirection.Asc;
         }

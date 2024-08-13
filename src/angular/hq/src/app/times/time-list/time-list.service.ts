@@ -6,6 +6,7 @@ import {
   combineLatest,
   debounceTime,
   map,
+  shareReplay,
   startWith,
   switchMap,
   tap,
@@ -16,6 +17,7 @@ import {
   GetTimeRecordStaffV1,
   GetTimeRecordsV1,
   GetTimeRecordV1,
+  GetTimeRequestV1,
   SortColumn,
 } from '../../models/times/get-time-v1';
 import { HQService } from '../../services/hq.service';
@@ -38,6 +40,7 @@ export class TimeService extends BaseListService<
   staffMembers$: Observable<GetTimeRecordStaffV1[]>;
   clients$: Observable<GetTimeRecordClientsV1[]>;
   projects$: Observable<GetTimeRecordProjectsV1[]>;
+  request$: Observable<GetTimeRequestV1>;
 
   roaster = new FormControl<string | null>('');
 
@@ -48,6 +51,8 @@ export class TimeService extends BaseListService<
 
   projectActivity = new FormControl<string | null>(null);
   isSubmitted = new FormControl<boolean | null>(null);
+  billable = new FormControl<boolean | null>(null);
+
   invoiced = new FormControl<boolean | null>(null);
   timeStatus = new FormControl<TimeStatus | null>(null);
 
@@ -96,69 +101,7 @@ export class TimeService extends BaseListService<
       ),
       map((clients) => clients.records),
     );
-  }
 
-  resetFilter() {
-    this.search.setValue('');
-    this.staffMember.setValue(null);
-    this.roaster.setValue('');
-    this.isSubmitted.setValue(null);
-    this.startDate.setValue(null);
-    this.endDate.setValue(null);
-    this.projectActivity.setValue(null);
-  }
-  showProjectStatus() {
-    this.showProjectStatus$.next(true);
-  }
-  showSearch() {
-    this.showSearch$.next(true);
-  }
-
-  hideSearch() {
-    this.showSearch$.next(false);
-  }
-  showStaffMembers() {
-    this.showStaffMembers$.next(true);
-  }
-  hideStaffMembers() {
-    this.showStaffMembers$.next(false);
-  }
-  hideProjectStatus() {
-    this.showProjectStatus$.next(false);
-  }
-  showRoaster() {
-    this.showRoaster$.next(true);
-  }
-  hideRoaster() {
-    this.showRoaster$.next(false);
-  }
-  showIsSubmitted() {
-    this.showIsSubmitted$.next(true);
-  }
-  hideIsSubmitted() {
-    this.showIsSubmitted$.next(false);
-  }
-
-  showStartDate() {
-    this.showStartDate$.next(true);
-  }
-  hideStartDate() {
-    this.showStartDate$.next(false);
-  }
-  showEndDate() {
-    this.showEndDate$.next(true);
-  }
-  hideEndDate() {
-    this.showEndDate$.next(false);
-  }
-  showProjectActvities() {
-    this.showProjectActivities$.next(true);
-  }
-  hideProjectActvities() {
-    this.showProjectActivities$.next(false);
-  }
-
-  protected override getResponse(): Observable<GetTimeRecordsV1> {
     const staffMemberId$ = this.staffMember.valueChanges.pipe(
       startWith(this.staffMember.value),
     );
@@ -188,10 +131,13 @@ export class TimeService extends BaseListService<
     const invoiced$ = this.invoiced.valueChanges.pipe(
       startWith(this.invoiced.value),
     );
+    const billable$ = this.billable.valueChanges.pipe(
+      startWith(this.billable.value),
+    );
     const timeStatus$ = this.timeStatus.valueChanges.pipe(
       startWith(this.timeStatus.value),
     );
-    return combineLatest({
+    this.request$ = combineLatest({
       search: this.search$,
       skip: this.skip$,
       clientId: this.clientId$,
@@ -203,9 +149,27 @@ export class TimeService extends BaseListService<
       endDate: endDate$,
       period: period$,
       invoiced: invoiced$,
+      billable: billable$,
       timeStatus: timeStatus$,
       sortDirection: this.sortDirection$,
-    }).pipe(
+    }).pipe(shareReplay({ bufferSize: 1, refCount: false }));
+  }
+
+  showStartDate() {
+    this.showStartDate$.next(true);
+  }
+  hideStartDate() {
+    this.showStartDate$.next(false);
+  }
+  showEndDate() {
+    this.showEndDate$.next(true);
+  }
+  hideEndDate() {
+    this.showEndDate$.next(false);
+  }
+
+  protected override getResponse(): Observable<GetTimeRecordsV1> {
+    return this.request$.pipe(
       debounceTime(500),
       tap(() => this.loadingSubject.next(true)),
       switchMap((request) => this.hqService.getTimesV1(request)),

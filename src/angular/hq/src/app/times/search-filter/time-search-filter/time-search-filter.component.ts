@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TimeService } from '../../services/TimeService';
+import { TimeService } from '../../time-list/time-list.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Period } from '../../../enums/period';
