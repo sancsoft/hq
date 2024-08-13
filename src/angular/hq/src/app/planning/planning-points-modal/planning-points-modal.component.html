@@ -33,20 +33,12 @@
       }
     </tbody>
   </table>
-  <div class="text-right">
-    <button
-      type="button"
-      (click)="dialogRef.close()"
-      class="inline-block text-center px-10 py-2 mr-3 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+  <div class="text-right mt-3">
+    <hq-button class="mr-3" (click)="savePointsAction()" [variant]="'primary'">
+      Save Plan</hq-button
     >
-      Confirm
-    </button>
-    <button
-      type="button"
-      (click)="dialogRef.close()"
-      class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+    <hq-button (click)="dialogRef.close()" [variant]="'outline'">
+      Cancel</hq-button
     >
-      Cancel
-    </button>
   </div>
 </div>

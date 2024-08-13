@@ -1,23 +1,17 @@
+/* eslint-disable rxjs-angular/prefer-async-pipe */
 import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Input,
   OnDestroy,
   OnInit,
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import {
-  Dialog,
-  DialogRef,
-  DIALOG_DATA,
-  DialogModule,
-} from '@angular/cdk/dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   FormControl,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -44,23 +38,18 @@ import { StaffDashboardSearchFilterComponent } from '../../staff-dashboard/staff
 import { StaffDashboardTimeEntryComponent } from '../../staff-dashboard/staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import {
   BehaviorSubject,
-  catchError,
   firstValueFrom,
   map,
-  Observable,
   ReplaySubject,
   shareReplay,
   Subject,
+  takeUntil,
 } from 'rxjs';
-import {
-  getPointsResponseV1,
-  PlanningPoint,
-} from '../../models/Points/get-points-v1';
+import { PlanningPoint } from '../../models/Points/get-points-v1';
 import {
   GetChargeCodeRecordV1,
   SortColumn,
 } from '../../models/charge-codes/get-chargecodes-v1';
-import { GetPlanRequestV1 } from '../../models/Plan/get-plan-v1';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HQService } from '../../services/hq.service';
 import { ModalService } from '../../services/modal.service';
@@ -103,7 +92,6 @@ export class PlanningPointsModalComponent implements OnInit, OnDestroy {
   private editPlanButtonSubject = new BehaviorSubject<boolean>(false);
   editPlanButton$ = this.editPlanButtonSubject.asObservable();
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-  planningPointsRequest$: any;
 
   async ngOnInit() {
     this.getChargeCodes();
@@ -115,21 +103,24 @@ export class PlanningPointsModalComponent implements OnInit, OnDestroy {
     const date = this.data.date;
     const staffId = this.data.staffId;
     this.hqService;
-    this.hqService.getPlanningPointsV1({ date, staffId }).subscribe({
-      next: (response) => {
-        if (response) {
-          this.points = response.points;
-        }
-      },
-      error: console.error,
-    });
+    this.hqService
+      .getPlanningPointsV1({ date, staffId })
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.points = response.points;
+          }
+        },
+        error: console.error,
+      });
   }
   ngOnDestroy(): void {
     this.destroyed$.next(true);
     this.destroyed$.complete();
   }
   constructor(
-    public dialogRef: DialogRef<string>,
+    public dialogRef: DialogRef<boolean>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private hqService: HQService,
     private toastService: ToastService,
@@ -145,9 +136,13 @@ export class PlanningPointsModalComponent implements OnInit, OnDestroy {
   }
 
   updateSequence(): void {
-    this.points.forEach((point, idx) => {
-      // form.controls['sequence'].setValue(idx + 1);
-      this.points[idx].sequence = idx + 1;
+    const updatedPoints = this.points.map((point, idx) => ({
+      ...point,
+      sequence: idx + 1,
+    }));
+    this.points = updatedPoints;
+    this.planningPointsChildren.forEach((child, idx) => {
+      child.form.controls.sequence.setValue(idx + 1);
     });
   }
 
@@ -205,6 +200,7 @@ export class PlanningPointsModalComponent implements OnInit, OnDestroy {
       .pipe(
         map((chargeCode) => chargeCode.records),
         shareReplay({ bufferSize: 1, refCount: false }),
+        takeUntil(this.destroyed$),
       )
       .subscribe({
         next: (records) => {
@@ -212,18 +208,8 @@ export class PlanningPointsModalComponent implements OnInit, OnDestroy {
         },
       });
   }
-}
-function switchMap(
-  arg0: ({ date, staffId }: { date: any; staffId: any }) => Observable<unknown>,
-): any {
-  throw new Error('Function not implemented.');
-}
-
-function of(arg0: null) {
-  throw new Error('Function not implemented.');
-}
-function takeUntil(
-  destroyed$: ReplaySubject<boolean>,
-): import('rxjs').OperatorFunction<getPointsResponseV1, unknown> {
-  throw new Error('Function not implemented.');
+  async savePointsAction() {
+    await this.upsertPoints();
+    this.dialogRef.close(true);
+  }
 }

@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CoreModule } from '../../core/core.module';
 import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
   Observable,
+  ReplaySubject,
   shareReplay,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs';
 import { localISODate } from '../../common/functions/local-iso-date';
@@ -35,14 +37,16 @@ import { Dialog } from '@angular/cdk/dialog';
   ],
   templateUrl: './planning-points.component.html',
 })
-export class PlanningPointsComponent {
+export class PlanningPointsComponent implements OnDestroy {
   search = new FormControl<string | null>(null);
   search$ = formControlChanges(this.search);
 
   date = new BehaviorSubject<string>(localISODate());
   loading = new BehaviorSubject<boolean>(true);
+  refresh$ = new BehaviorSubject<boolean>(false);
 
   chargeCodeToColor = chargeCodeToColor;
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   summary$: Observable<GetPointsSummaryResponseV1>;
 
@@ -53,6 +57,7 @@ export class PlanningPointsComponent {
     this.summary$ = combineLatest({
       date: this.date,
       search: this.search$,
+      refresh: this.refresh$,
     }).pipe(
       debounceTime(500),
       tap(() => this.loading.next(true)),
@@ -66,8 +71,12 @@ export class PlanningPointsComponent {
       shareReplay({ bufferSize: 1, refCount: false }),
     );
   }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
   editStaffPlanningPoint(staff: GetPointSummaryV1StaffSummary) {
-    const dialogRef = this.dialog.open<string>(PlanningPointsModalComponent, {
+    const dialogRef = this.dialog.open<boolean>(PlanningPointsModalComponent, {
       width: '600px',
       data: {
         staffId: staff.staffId,
@@ -75,9 +84,15 @@ export class PlanningPointsComponent {
       },
     });
 
-    dialogRef.closed.subscribe((result) => {
-      console.log('The dialog was closed');
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    dialogRef.closed.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (result) => {
+        console.log('The dialog was closed', result);
+        if (result) {
+          this.refresh$.next(true);
+        }
+      },
+      error: console.error,
     });
   }
-
 }

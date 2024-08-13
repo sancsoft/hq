@@ -80,6 +80,7 @@ export class StaffDashboardPlanningPointComponent
           this.point!.projectName = this.chargeCodes?.find(
             (c) => c.id === t,
           )?.projectName;
+          this.point!.chargeCodeId = t;
         },
         error: console.error,
       });
