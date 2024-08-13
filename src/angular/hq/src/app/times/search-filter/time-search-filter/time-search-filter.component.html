@@ -1,190 +1,136 @@
 <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
   @if (timeService.showSearch$ | async) {
-    <!-- search bar -->
-    <div class="relative flex flex-col items-stretch w-full max-w-[395px]">
-      <label
-        for="search"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-        >Search</label
-      >
-      <div
-        class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-      >
-        <span
-          class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100"
-        >
-          <i class="bi bi-search text-[14px]"></i>
-        </span>
-        <input
-          type="text"
-          [formControl]="timeService.search"
-          class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
-          name=""
-        />
-      </div>
+    <div class="flex w-full">
+      <hq-search-input
+        label="Search"
+        [formControl]="timeService.search"
+      ></hq-search-input>
     </div>
   }
   @if (
     (timeService.staffMembers$ | async) && timeService.showStaffMembers$ | async
   ) {
-    <div class="relative flex flex-col w-full max-w-[220px]">
-      <label
-        for="staffMember"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-        >Select Staff</label
+    <div class="w-full">
+      <hq-select-input
+        label="Select Staff"
+        [formControl]="timeService.staffMember"
+        [autocomplete]="true"
+        variant="secondary"
       >
-      <div class="grid relative">
-        <select
-          [formControl]="timeService.staffMember"
-          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-        >
-          <option [ngValue]="null">Select Staff</option>
-          @for (
-            staffMember of timeService.staffMembers$ | async;
-            track $index
-          ) {
-            <option [value]="staffMember.id">
-              {{ staffMember.name }}
-            </option>
-          }
-        </select>
-        <span
-          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-        >
-          <i class="bi bi-arrow-down-short text-[24px]"></i>
-        </span>
-      </div>
+        <ng-template [hqSelectInputOption]="null">All</ng-template>
+        @for (
+          staffMember of timeService.staffMembers$ | async;
+          track staffMember.id
+        ) {
+          <ng-template
+            [hqSelectInputOption]="staffMember.id"
+            [hqSelectInputOptionSelectedDisplay]="staffMember.name"
+            [hqSelectInputOptionSearch]="staffMember.name"
+            >{{ staffMember.name }}</ng-template
+          >
+        }
+      </hq-select-input>
     </div>
   }
   @if (timeService.clients$ | async) {
-    <div class="relative flex flex-col w-full max-w-[220px]">
-      <label
-        for="client"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-        >Select Client</label
+    <div class="w-full">
+      <hq-select-input
+        label="Select Client"
+        [formControl]="timeService.client"
+        [autocomplete]="true"
+        variant="secondary"
       >
-      <div class="grid relative">
-        <select
-          [formControl]="timeService.client"
-          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-        >
-          <option [ngValue]="null">Select Client</option>
-          @for (client of timeService.clients$ | async; track $index) {
-            <option [value]="client.id">
-              {{ client.name }}
-            </option>
-          }
-        </select>
-        <span
-          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-        >
-          <i class="bi bi-arrow-down-short text-[24px]"></i>
-        </span>
-      </div>
+        <ng-template [hqSelectInputOption]="null">All</ng-template>
+        @for (client of timeService.clients$ | async; track client.id) {
+          <ng-template
+            [hqSelectInputOption]="client.id"
+            [hqSelectInputOptionSelectedDisplay]="client.name"
+            [hqSelectInputOptionSearch]="client.name"
+            >{{ client.name }}</ng-template
+          >
+        }
+      </hq-select-input>
     </div>
   }
   @if (timeService.projects$ | async) {
-    <div class="relative flex flex-col w-full max-w-[220px]">
-      <label
-        for="project"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-        >Select Project</label
+    <div class="w-full">
+      <hq-select-input
+        label="Select Project"
+        [formControl]="timeService.project"
+        [autocomplete]="true"
+        variant="secondary"
       >
-      <div class="grid relative">
-        <select
-          [formControl]="timeService.project"
-          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-        >
-          <option [ngValue]="null">Select Project</option>
-          @for (project of timeService.projects$ | async; track $index) {
-            <option [value]="project.id">
-              {{ project.name }} ({{ project.chargeCode }})
-            </option>
-          }
-        </select>
-        <span
-          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-        >
-          <i class="bi bi-arrow-down-short text-[24px]"></i>
-        </span>
-      </div>
+        <ng-template [hqSelectInputOption]="null">All</ng-template>
+        @for (project of timeService.projects$ | async; track project.id) {
+          <ng-template
+            [hqSelectInputOption]="project.id"
+            [hqSelectInputOptionSelectedDisplay]="project.name"
+            [hqSelectInputOptionSearch]="project.name"
+            >{{ project.name }}</ng-template
+          >
+        }
+      </hq-select-input>
     </div>
   }
-  <div class="relative flex flex-col w-full max-w-[220px]">
-    <label
-      for="timeStatus"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-      >Time Status</label
+  <div class="w-full">
+    <hq-select-input
+      label="Time Status"
+      [autocomplete]="true"
+      [formControl]="timeService.timeStatus"
+      variant="secondary"
     >
-    <div class="grid relative">
-      <select
-        [formControl]="timeService.timeStatus"
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-      >
-        <option [ngValue]="null" selected>All</option>
-        <option [ngValue]="timeService.Status.Unsubmitted">Unsubmitted</option>
-        <option [ngValue]="timeService.Status.Submitted">Submitted</option>
-        <option [ngValue]="timeService.Status.Accepted">Accepted</option>
-        <option [ngValue]="timeService.Status.Rejected">Rejected</option>
-        <option [ngValue]="timeService.Status.Resubmitted">Resubmitted</option>
-      </select>
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-      >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div>
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      @for (status of timeService.statusList; track status.id) {
+        <ng-template
+          [hqSelectInputOption]="status.id"
+          [hqSelectInputOptionSearch]="status.name"
+          [hqSelectInputOptionSelectedDisplay]="status.name"
+          >{{ status.name }}</ng-template
+        >
+      }
+    </hq-select-input>
   </div>
-  <div class="relative flex flex-col w-full max-w-[220px]">
-    <label
-      for="invoiced"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-      >Invoiced</label
+  <div class="w-full">
+    <hq-select-input
+      label="Invoiced"
+      [autocomplete]="false"
+      [formControl]="timeService.invoiced"
+      variant="secondary"
     >
-    <div class="grid relative">
-      <select
-        [formControl]="timeService.invoiced"
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+
+      <ng-template
+        [hqSelectInputOption]="true"
+        [hqSelectInputOptionSelectedDisplay]="'Yes'"
+        >{{ "Yes" }}</ng-template
       >
-        <option [ngValue]="null">All</option>
-        <option [ngValue]="true">Yes</option>
-        <option [ngValue]="false">No</option>
-      </select>
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+      <ng-template
+        [hqSelectInputOption]="false"
+        [hqSelectInputOptionSelectedDisplay]="'No'"
+        >{{ "No" }}</ng-template
       >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div>
+    </hq-select-input>
   </div>
-  <div class="relative flex flex-col w-full max-w-[220px]">
-    <label
-      for="selectedPeriod"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-      >Period</label
+  <div class="w-full">
+    <hq-select-input
+      label="Period"
+      [autocomplete]="true"
+      (hqBlur)="showHideDates()"
+      [formControl]="timeService.selectedPeriod"
+      variant="secondary"
     >
-    <div class="grid relative">
-      <select
-        [formControl]="timeService.selectedPeriod"
-        (change)="showHideDates()"
-        class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-      >
-        <option [ngValue]="null">All</option>
-        <option [ngValue]="timeService.Period.Today">Today</option>
-        <option [ngValue]="timeService.Period.Week">This Week</option>
-        <option [ngValue]="timeService.Period.Month">This Month</option>
-        <option [ngValue]="timeService.Period.LastWeek">Last Week</option>
-        <option [ngValue]="timeService.Period.LastMonth">Last Month</option>
-        <option [ngValue]="timeService.Period.Year">This Year</option>
-        <option [ngValue]="timeService.Period.Custom">Custom</option>
-      </select>
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-      >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div>
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      @for (period of timeService.PeriodList; track period.id) {
+        <ng-template
+          [hqSelectInputOption]="period.id"
+          [hqSelectInputOptionSearch]="period.name"
+          [hqSelectInputOptionSelectedDisplay]="period.name"
+          >{{ period.name }}</ng-template
+        >
+      }
+    </hq-select-input>
   </div>
+
   @if (timeService.showStartDate$ | async) {
     <div class="relative flex flex-col w-full max-w-[220px]">
       <label

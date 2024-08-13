@@ -3,11 +3,12 @@ import { TimeService } from '../../services/TimeService';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Period } from '../../../enums/period';
+import { CoreModule } from '../../../core/core.module';
 
 @Component({
   selector: 'hq-time-search-filter',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, CoreModule],
   templateUrl: './time-search-filter.component.html',
 })
 export class TimeSearchFilterComponent {

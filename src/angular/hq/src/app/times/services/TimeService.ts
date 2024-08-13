@@ -4,33 +4,43 @@ import {
   BehaviorSubject,
   Observable,
   combineLatest,
+  debounceTime,
   map,
   startWith,
   switchMap,
+  tap,
 } from 'rxjs';
 import {
   GetTimeRecordClientsV1,
   GetTimeRecordProjectsV1,
   GetTimeRecordStaffV1,
+  GetTimeRecordsV1,
+  GetTimeRecordV1,
+  SortColumn,
 } from '../../models/times/get-time-v1';
 import { HQService } from '../../services/hq.service';
-import { SortColumn } from '../../models/staff-members/get-staff-member-v1';
+
 import { Period } from '../../enums/period';
 import { TimeStatus } from '../../enums/time-status';
+import { BaseListService } from '../../core/services/base-list.service';
+import { SortDirection } from '../../models/common/sort-direction';
+import { SortColumn as StaffSortColumn } from '../../models/staff-members/get-staff-member-v1';
+import { enumToArray } from '../../core/functions/enum-to-array';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TimeService {
+export class TimeService extends BaseListService<
+  GetTimeRecordsV1,
+  GetTimeRecordV1,
+  SortColumn
+> {
   staffMembers$: Observable<GetTimeRecordStaffV1[]>;
   clients$: Observable<GetTimeRecordClientsV1[]>;
   projects$: Observable<GetTimeRecordProjectsV1[]>;
 
-  search = new FormControl<string | null>('');
   roaster = new FormControl<string | null>('');
 
-  itemsPerPage = new FormControl(20, { nonNullable: true });
-  page = new FormControl<number>(1, { nonNullable: true });
   staffMember = new FormControl<string | null>(null);
   client = new FormControl<string | null>(null);
   project = new FormControl<string | null>(null);
@@ -45,6 +55,7 @@ export class TimeService {
   endDate = new FormControl<Date | null>(null);
 
   Period = Period;
+  PeriodList = enumToArray(Period);
 
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
   showSearch$ = new BehaviorSubject<boolean>(true);
@@ -56,14 +67,18 @@ export class TimeService {
   showEndDate$ = new BehaviorSubject<boolean>(false);
 
   showRoaster$ = new BehaviorSubject<boolean>(true);
+  date$ = new BehaviorSubject<Date | null>(null);
 
   clientId$ = this.client.valueChanges.pipe(startWith(this.client.value));
   Status = TimeStatus;
+  statusList = enumToArray(this.Status);
 
   constructor(private hqService: HQService) {
+    super(SortColumn.Date, SortDirection.Asc);
+
     this.staffMembers$ = this.hqService
       .getStaffMembersV1({
-        sortBy: SortColumn.Name,
+        sortBy: StaffSortColumn.Name,
       })
       .pipe(map((members) => members.records));
 
@@ -141,5 +156,60 @@ export class TimeService {
   }
   hideProjectActvities() {
     this.showProjectActivities$.next(false);
+  }
+
+  protected override getResponse(): Observable<GetTimeRecordsV1> {
+    const staffMemberId$ = this.staffMember.valueChanges.pipe(
+      startWith(this.staffMember.value),
+    );
+
+    const projectId$ = this.project.valueChanges.pipe(
+      startWith(this.project.value),
+    );
+    const startDate$ = this.startDate.valueChanges.pipe(
+      startWith(this.startDate.value),
+      tap(() => {
+        this.date$.next(null);
+      }),
+    );
+    const endDate$ = this.endDate.valueChanges.pipe(
+      startWith(this.endDate.value),
+      tap(() => {
+        this.date$.next(null);
+      }),
+    );
+    const period$ = this.selectedPeriod.valueChanges.pipe(
+      startWith(this.selectedPeriod.value),
+      tap(() => {
+        //
+        this.date$.next(new Date());
+      }),
+    );
+    const invoiced$ = this.invoiced.valueChanges.pipe(
+      startWith(this.invoiced.value),
+    );
+    const timeStatus$ = this.timeStatus.valueChanges.pipe(
+      startWith(this.timeStatus.value),
+    );
+    return combineLatest({
+      search: this.search$,
+      skip: this.skip$,
+      clientId: this.clientId$,
+      projectId: projectId$,
+      staffId: staffMemberId$,
+      take: this.itemsPerPage$,
+      sortBy: this.sortOption$,
+      startDate: startDate$,
+      endDate: endDate$,
+      period: period$,
+      invoiced: invoiced$,
+      timeStatus: timeStatus$,
+      sortDirection: this.sortDirection$,
+    }).pipe(
+      debounceTime(500),
+      tap(() => this.loadingSubject.next(true)),
+      switchMap((request) => this.hqService.getTimesV1(request)),
+      tap(() => this.loadingSubject.next(false)),
+    );
   }
 }

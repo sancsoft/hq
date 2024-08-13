@@ -69,7 +69,7 @@ export interface BaseRecordV1 {
 export interface GetTimeRecordsV1 {
   records: [GetTimeRecordV1];
   staff: [GetTimeRecordStaffV1];
-  total: number | null;
+  total: number ;
   totalHours: number;
   billableHours: number;
   acceptedHours: number;
