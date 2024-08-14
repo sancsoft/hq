@@ -21,7 +21,7 @@ export class UserListService extends BaseListService<
 > {
   projectStatus = new FormControl<ProjectStatus | null>(null);
   ProjectStatus = ProjectStatus;
-  
+
   protected override getResponse(): Observable<GetUsersResponseV1> {
     return combineLatest({
       search: this.search$,
