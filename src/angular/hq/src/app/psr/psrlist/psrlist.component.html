@@ -1,124 +1,238 @@
 <div class="px-5">
   <h1 class="font-rajdhani font-semibold text-3xl">PSR</h1>
-
-  <!-- <div class="grid gap-[2] grid-flow-row lg:grid-flow-col lg:gap-[30px] auto-cols-max pt-3">
-        <div class="text-gray-50">$105.00</div>
-        <div class="text-gray-50">billingEmail&#64;clientDomain.com</div>
-        <div class="text-gray-50">Official Name - Probably longer than the name</div>
-    </div> -->
 </div>
 
 <div class="px-5 pt-4 mb-[8px]">
   <div class="flex flex-col lg:flex-row justify-between items-start">
     <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-      <hq-psr-list-search-filter></hq-psr-list-search-filter>
+      <div class="flex w-full">
+        <hq-search-input
+          label="Search"
+          [formControl]="listService.search"
+        ></hq-search-input>
+      </div>
+      <div class="w-full">
+        <hq-select-input
+          label="Select Staff"
+          [formControl]="listService.staffMember"
+          [autocomplete]="true"
+          variant="secondary"
+        >
+          <ng-template [hqSelectInputOption]="null">All</ng-template>
+          @for (
+            staffMember of listService.staffMembers$ | async;
+            track staffMember.id
+          ) {
+            <ng-template
+              [hqSelectInputOption]="staffMember.id"
+              [hqSelectInputOptionSelectedDisplay]="staffMember.name"
+              [hqSelectInputOptionSearch]="staffMember.name"
+              >{{ staffMember.name }}</ng-template
+            >
+          }
+        </hq-select-input>
+      </div>
+      <div class="w-full">
+        <hq-select-input
+          label="isSubmitted"
+          [autocomplete]="true"
+          [formControl]="listService.isSubmitted"
+          variant="secondary"
+        >
+          <ng-template [hqSelectInputOption]="null">All</ng-template>
 
-      <!-- select dropdown -->
-      <!-- <div class="grid relative w-[220px]">
-                <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1  border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
-                    <option>First Name, Last Name</option>
-                    <option>First Name, Last Name</option>
-                </select>
-                <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-                    <i class="bi bi-arrow-down-short text-[24px]"></i>
-                </span>
-            </div> -->
+          <ng-template
+            [hqSelectInputOption]="true"
+            [hqSelectInputOptionSearch]="'Yes'"
+            [hqSelectInputOptionSelectedDisplay]="'Yes'"
+            >{{ "Yes" }}</ng-template
+          >
+          <ng-template
+            [hqSelectInputOption]="false"
+            [hqSelectInputOptionSearch]="'No'"
+            [hqSelectInputOptionSelectedDisplay]="'No'"
+            >{{ "No" }}</ng-template
+          >
+        </hq-select-input>
+      </div>
+      <div class="w-full">
+        <hq-select-input
+          label="Period"
+          [inline]="true"
+          [autocomplete]="true"
+          (hqBlur)="showHideDates()"
+          [formControl]="listService.selectedPeriod"
+          variant="secondary"
+        >
+          <ng-template [hqSelectInputOption]="null">All</ng-template>
+          <ng-template
+            [hqSelectInputOption]="listService.Period.None"
+            [hqSelectInputOptionSearch]="'None'"
+            [hqSelectInputOptionSelectedDisplay]="'None'"
+            >{{ "None" }}</ng-template
+          >
+
+          <ng-template
+            [hqSelectInputOption]="listService.Period.Week"
+            [hqSelectInputOptionSearch]="'This Week'"
+            [hqSelectInputOptionSelectedDisplay]="'This Week'"
+            >{{ "This Week" }}</ng-template
+          >
+
+          <ng-template
+            [hqSelectInputOption]="listService.Period.Month"
+            [hqSelectInputOptionSearch]="'This Month'"
+            [hqSelectInputOptionSelectedDisplay]="'This Month'"
+            >{{ "This Month" }}</ng-template
+          >
+
+          <ng-template
+            [hqSelectInputOption]="listService.Period.Quarter"
+            [hqSelectInputOptionSearch]="'This Quarter'"
+            [hqSelectInputOptionSelectedDisplay]="'This Quarter'"
+            >{{ "This Quarter" }}</ng-template
+          >
+
+          <ng-template
+            [hqSelectInputOption]="listService.Period.Year"
+            [hqSelectInputOptionSearch]="'This Year'"
+            [hqSelectInputOptionSelectedDisplay]="'This Year'"
+            >{{ "This Year" }}</ng-template
+          >
+
+          <ng-template
+            [hqSelectInputOption]="listService.Period.Today"
+            [hqSelectInputOptionSearch]="'Today'"
+            [hqSelectInputOptionSelectedDisplay]="'Today'"
+            >{{ "Today" }}</ng-template
+          >
+
+          <ng-template
+            [hqSelectInputOption]="listService.Period.LastWeek"
+            [hqSelectInputOptionSearch]="'Last Week'"
+            [hqSelectInputOptionSelectedDisplay]="'Last Week'"
+            >{{ "Last Week" }}</ng-template
+          >
+
+          <ng-template
+            [hqSelectInputOption]="listService.Period.LastMonth"
+            [hqSelectInputOptionSearch]="'Last Month'"
+            [hqSelectInputOptionSelectedDisplay]="'Last Month'"
+            >{{ "Last Month" }}</ng-template
+          >
+
+          <ng-template
+            [hqSelectInputOption]="listService.Period.Custom"
+            [hqSelectInputOptionSearch]="'Custom'"
+            [hqSelectInputOptionSelectedDisplay]="'Custom'"
+            >{{ "Custom" }}</ng-template
+          >
+        </hq-select-input>
+      </div>
+
+      @if (listService.showStartDate$ | async) {
+        <div class="relative flex flex-col w-full max-w-[220px]">
+          <label
+            for="startDate"
+            class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
+            >Start Date</label
+          >
+          <div class="grid relative">
+            <input
+              [formControl]="listService.startDate"
+              type="date"
+              class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+            />
+            <span
+              class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+            >
+              <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+            </span>
+          </div>
+        </div>
+      }
+      @if (listService.showEndDate$ | async) {
+        <div class="relative flex flex-col w-full max-w-[220px]">
+          <label
+            for="endDate"
+            class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
+            >End Date</label
+          >
+          <div class="grid relative">
+            <input
+              [formControl]="listService.endDate"
+              type="date"
+              class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+            />
+            <span
+              class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+            >
+              <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+            </span>
+          </div>
+        </div>
+      }
     </div>
   </div>
 </div>
 
-<table class="min-w-full border-spacing-0 border-separate table-fixed">
+<hq-table>
   <thead>
     <tr class="sticky top-0 text-left select-none">
       <th
         width="100"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.ChargeCode)"
+        [hq-sort-header]="sortColumn.ChargeCode"
       >
         Code
-        <hq-sort-icon
-          [column]="sortColumn.ChargeCode"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="90"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.StartDate)"
+        [hq-sort-header]="sortColumn.StartDate"
       >
         Start
-        <hq-sort-icon
-          [column]="sortColumn.StartDate"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="90"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.EndDate)"
+        [hq-sort-header]="sortColumn.EndDate"
       >
         End
-        <hq-sort-icon
-          [column]="sortColumn.EndDate"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="150"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ClientName)"
+        [hq-sort-header]="sortColumn.ClientName"
       >
         Client Name
-        <hq-sort-icon
-          [column]="sortColumn.ClientName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ProjectName)"
+        [hq-sort-header]="sortColumn.ProjectName"
       >
         Project Name
-        <hq-sort-icon
-          [column]="sortColumn.ProjectName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="100"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ProjectManagerName)"
+        [hq-sort-header]="sortColumn.ProjectManagerName"
       >
         PM
-        <hq-sort-icon
-          [column]="sortColumn.ProjectManagerName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="170"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right"
-        (click)="onSortClick(sortColumn.ThisHours)"
+        [hq-sort-header]="sortColumn.ThisHours"
       >
         Hrs
-        <hq-sort-icon
-          [column]="sortColumn.ThisHours"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="150"
@@ -131,24 +245,19 @@
         colspan="2"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.SummaryPercentComplete)"
+        [hq-sort-header]="sortColumn.SummaryPercentComplete"
       >
         Complete %
-        <hq-sort-icon
-          [column]="sortColumn.SummaryPercentComplete"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
     </tr>
   </thead>
-  <tbody>
-    @if ((projectStatusReports$ | async)?.length === 0) {
+  <tbody hq-table-body>
+    @if ((listService.records$ | async)?.length === 0) {
       <td colspan="13" class="bg-black-alt">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
     }
-    @for ((report of projectStatusReports$ | async); track report.id) {
+    @for ((report of listService.records$| async); track report.id) {
       <tr
         [class]="
           (!report.submittedAt || report.thisPendingHours > 0) &&
@@ -263,31 +372,4 @@
       </tr>
     }
   </tbody>
-</table>
-<div
-  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
->
-  <div>
-    <select
-      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="psrListService.itemsPerPage"
-    >
-      <option [ngValue]="10">10</option>
-      <option [ngValue]="20">20</option>
-      <option [ngValue]="50">50</option>
-      <option [ngValue]="100">100</option>
-      <!-- Add more options as needed -->
-    </select>
-    <span>items per page</span>
-  </div>
-  <hq-paginator
-    [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="psrListService.itemsPerPage.value"
-    [currentPage]="psrListService.page.value"
-    (page)="goToPage($event)"
-  ></hq-paginator>
-  <div class="flex justify-end text-xs">
-    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
-    {{ totalRecords$ | async }} items
-  </div>
-</div>
+</hq-table>

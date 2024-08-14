@@ -1,30 +1,23 @@
-import { PsrListSearchFilterComponent } from './../psr-list-search-filter/psr-list-search-filter.component';
 import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import {
-  Observable,
-  BehaviorSubject,
-  startWith,
-  combineLatest,
-  map,
-  tap,
-  debounceTime,
-  switchMap,
-  shareReplay,
-  firstValueFrom,
-} from 'rxjs';
-import { GetPSRRecordV1, SortColumn } from '../../models/PSR/get-PSR-v1';
+import { map, firstValueFrom } from 'rxjs';
+import { SortColumn } from '../../models/PSR/get-PSR-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { PsrListService } from './services/pstlistService';
+import { PsrListService } from './psr-list.service';
 import { ProjectStatus } from '../../enums/project-status';
 import { Period } from '../../enums/period';
 import { ProjectType } from '../../enums/project-type';
+import { SortHeaderComponent } from '../../core/components/sort-header/sort-header.component';
+import { TableComponent } from '../../core/components/table/table.component';
+import { InRolePipe } from '../../pipes/in-role.pipe';
+import { BaseListService } from '../../core/services/base-list.service';
+import { CoreModule } from '../../core/core.module';
 
 @Component({
   selector: 'hq-psrlist',
@@ -35,20 +28,22 @@ import { ProjectType } from '../../enums/project-type';
     ReactiveFormsModule,
     PaginatorComponent,
     SortIconComponent,
-    PsrListSearchFilterComponent,
+    InRolePipe,
+    TableComponent,
+    SortHeaderComponent,
+    ReactiveFormsModule,
+    FormsModule,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: PsrListService,
+    },
   ],
   templateUrl: './psrlist.component.html',
 })
 export class PSRListComponent implements OnInit {
-  apiErrors: string[] = [];
-
-  skipDisplay$: Observable<number>;
-  takeToDisplay$: Observable<number>;
-  totalRecords$: Observable<number>;
-  projectStatusReports$: Observable<GetPSRRecordV1[]>;
-  sortOption$: BehaviorSubject<SortColumn>;
-  sortDirection$: BehaviorSubject<SortDirection>;
-
   Math = Math;
   sortColumn = SortColumn;
   sortDirection = SortDirection;
@@ -56,15 +51,15 @@ export class PSRListComponent implements OnInit {
   ProjectType = ProjectType;
 
   async ngOnInit() {
-    this.psrListService.showSearch();
-    this.psrListService.showStaffMembers();
-    this.psrListService.showIsSubmitted();
+    // this.psrListService.showSearch();
+    // this.psrListService.showStaffMembers();
+    // this.psrListService.showIsSubmitted();
 
     const staffId = await firstValueFrom(
       this.oidcSecurityService.userData$.pipe(map((t) => t.userData?.staff_id)),
     );
     if (staffId) {
-      this.psrListService.staffMember.setValue(staffId);
+      this.listService.staffMember.setValue(staffId);
     } else {
       console.log('ERROR: Could not find staff');
     }
@@ -73,105 +68,27 @@ export class PSRListComponent implements OnInit {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    public psrListService: PsrListService,
+    public listService: PsrListService,
     private oidcSecurityService: OidcSecurityService,
-  ) {
-    this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ChargeCode);
-    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
-
-    const itemsPerPage$ = psrListService.itemsPerPage.valueChanges.pipe(
-      startWith(psrListService.itemsPerPage.value),
-    );
-    const page$ = psrListService.page.valueChanges.pipe(
-      startWith(psrListService.page.value),
-    );
-
-    const skip$ = combineLatest([itemsPerPage$, page$]).pipe(
-      map(([itemsPerPage, page]) => (page - 1) * itemsPerPage),
-      startWith(0),
-    );
-    const search$ = psrListService.search.valueChanges.pipe(
-      tap(() => this.goToPage(1)),
-      startWith(psrListService.search.value),
-    );
-
-    this.skipDisplay$ = skip$.pipe(map((skip) => skip + 1));
-
-    const staffMemberId$ = psrListService.staffMember.valueChanges.pipe(
-      startWith(psrListService.staffMember.value),
-    );
-
-    const period$ = this.psrListService.selectedPeriod.valueChanges.pipe(
-      startWith(this.psrListService.selectedPeriod.value),
-      tap((date) => date || new Date()),
-    );
-
-    const isSubmitted$ = psrListService.isSubmitted.valueChanges.pipe(
-      startWith(psrListService.isSubmitted.value),
-    );
-    const startDate$ = psrListService.startDate.valueChanges.pipe(
-      startWith(psrListService.startDate.value),
-      map((date) => date || null),
-    );
-    const endDate$ = psrListService.endDate.valueChanges.pipe(
-      startWith(psrListService.endDate.value),
-      map((date) => date || null),
-    );
-
-    const request$ = combineLatest({
-      search: search$,
-      skip: skip$,
-      take: itemsPerPage$,
-      sortBy: this.sortOption$,
-      projectManagerId: staffMemberId$,
-      sortDirection: this.sortDirection$,
-      isSubmitted: isSubmitted$,
-      startDate: startDate$ ?? null,
-      endDate: endDate$ ?? null,
-      period: period$ ?? null,
-    });
-
-    const response$ = request$.pipe(
-      debounceTime(500),
-      switchMap((request) => this.hqService.getPSRV1(request)),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
-
-    this.projectStatusReports$ = response$.pipe(
-      map((response) => {
-        return response.records;
-      }),
-    );
-
-    this.totalRecords$ = response$.pipe(map((t) => t.total!));
-
-    this.takeToDisplay$ = combineLatest([
-      skip$,
-      itemsPerPage$,
-      this.totalRecords$,
-    ]).pipe(
-      map(([skip, itemsPerPage, totalRecords]) =>
-        Math.min(skip + itemsPerPage, totalRecords),
-      ),
-    );
-  }
+  ) {}
 
   goToPage(page: number) {
-    this.psrListService.page.setValue(page);
+    this.listService.page.setValue(page);
   }
 
   onSortClick(sortColumn: SortColumn) {
-    if (this.sortOption$.value == sortColumn) {
-      this.sortDirection$.next(
-        this.sortDirection$.value == SortDirection.Asc
+    if (this.listService.sortOption$.value == sortColumn) {
+      this.listService.sortDirection$.next(
+        this.listService.sortDirection$.value == SortDirection.Asc
           ? SortDirection.Desc
           : SortDirection.Asc,
       );
     } else {
-      this.sortOption$.next(sortColumn);
-      this.sortDirection$.next(SortDirection.Asc);
+      this.listService.sortOption$.next(sortColumn);
+      this.listService.sortDirection$.next(SortDirection.Asc);
     }
-    this.psrListService.page.setValue(1);
+
+    this.listService.page.setValue(1);
   }
   getProjectSatusString(status: ProjectStatus): string {
     return ProjectStatus[status];
@@ -179,5 +96,16 @@ export class PSRListComponent implements OnInit {
 
   getPeriodName(period: Period) {
     return Period[period];
+  }
+  showHideDates() {
+    if (this.listService.selectedPeriod.value == Period.Custom) {
+      this.listService.showStartDate();
+      this.listService.showEndDate();
+    } else {
+      this.listService.hideStartDate();
+      this.listService.hideEndDate();
+      this.listService.startDate.reset();
+      this.listService.endDate.reset();
+    }
   }
 }
