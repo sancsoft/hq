@@ -117,14 +117,12 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
     private oidcSecurityService: OidcSecurityService,
     private cdr: ChangeDetectorRef,
   ) {
-
     this.staffId$ = this.staffDashboardService.staffId$;
     this.planningPointDate$ =
       staffDashboardService.planningPointdateForm.valueChanges
         .pipe(startWith(staffDashboardService.planningPointdateForm.value))
         .pipe(map((t) => t || localISODate()));
 
-  
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe,
