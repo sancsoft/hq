@@ -49,6 +49,8 @@
     <thead>
       <tr>
         <th colspan="2">Staff</th>
+        <th class="text-center"></th>
+
         <th width="170" class="text-center">1</th>
         <th width="170" class="text-center">2</th>
         <th width="170" class="text-center">3</th>
@@ -78,6 +80,11 @@
               target="_blank"
               >{{ staff.staffName }}</a
             >
+          </td>
+          <td>
+            <button (click)="editStaffPlanningPoint(staff)" title="Edit points">
+              <i class="bi bi-pencil-fill text-gray-450"></i>
+            </button>
           </td>
           @for (point of staff.points; track point.id) {
             <td width="165" class="border-l border-black">

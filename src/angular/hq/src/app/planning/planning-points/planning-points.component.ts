@@ -1,25 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CoreModule } from '../../core/core.module';
 import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
   Observable,
+  ReplaySubject,
   shareReplay,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { HQService } from '../../services/hq.service';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 import {
-  GetPointsSummaryPlanningPoint,
   GetPointsSummaryResponseV1,
+  GetPointsSummaryPlanningPoint,
+  GetPointSummaryV1StaffSummary,
 } from '../../models/Points/get-points-summary-v1';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { formControlChanges } from '../../core/functions/form-control-changes';
+import { PlanningPointsModalComponent } from '../planning-points-modal/planning-points-modal.component';
+import { Dialog } from '@angular/cdk/dialog';
 import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
 
 @Component({
@@ -35,7 +40,7 @@ import { SelectInputComponent } from '../../core/components/select-input/select-
   ],
   templateUrl: './planning-points.component.html',
 })
-export class PlanningPointsComponent {
+export class PlanningPointsComponent implements OnDestroy {
   search = new FormControl<string | null>(null);
   isCompleted = new FormControl<boolean | null>(null);
 
@@ -46,15 +51,21 @@ export class PlanningPointsComponent {
   opacity = new BehaviorSubject<number>(0.25);
 
   loading = new BehaviorSubject<boolean>(true);
+  refresh$ = new BehaviorSubject<boolean>(false);
 
   chargeCodeToColor = chargeCodeToColor;
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
   summary$: Observable<GetPointsSummaryResponseV1>;
 
-  constructor(public hqService: HQService) {
+  constructor(
+    public hqService: HQService,
+    public dialog: Dialog,
+  ) {
     this.summary$ = combineLatest({
       date: this.date,
       search: this.search$,
+      refresh: this.refresh$,
       isCompleted: this.isCompleted$,
     }).pipe(
       debounceTime(500),
@@ -69,6 +80,30 @@ export class PlanningPointsComponent {
       tap(() => this.loading.next(false)),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
+  editStaffPlanningPoint(staff: GetPointSummaryV1StaffSummary) {
+    const dialogRef = this.dialog.open<boolean>(PlanningPointsModalComponent, {
+      width: '600px',
+      data: {
+        staffId: staff.staffId,
+        date: this.date.value,
+      },
+    });
+
+    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    dialogRef.closed.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (result) => {
+        console.log('The dialog was closed', result);
+        if (result) {
+          this.refresh$.next(true);
+        }
+      },
+      error: console.error,
+    });
   }
   configureChargeCodeColorOpacity(point: GetPointsSummaryPlanningPoint) {
     const chargeCodeId = point.chargeCodeId;

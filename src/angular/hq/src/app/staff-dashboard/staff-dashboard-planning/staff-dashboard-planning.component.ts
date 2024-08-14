@@ -85,8 +85,6 @@ import { GetPlanRequestV1 } from '../../models/Plan/get-plan-v1';
   templateUrl: './staff-dashboard-planning.component.html',
 })
 export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
-  // Planning Points
-  // planningPointsforms: FormGroup<PointForm>[] = [];
   @ViewChildren(StaffDashboardPlanningPointComponent)
   planningPointsChildren!: QueryList<StaffDashboardPlanningPointComponent>;
   planningPoints$: Observable<getPointsResponseV1 | null>;
@@ -119,23 +117,12 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
     private oidcSecurityService: OidcSecurityService,
     private cdr: ChangeDetectorRef,
   ) {
-    // const date$ = staffDashboardService.date.valueChanges
-    //   .pipe(startWith(staffDashboardService.date.value))
-    //   .pipe(map((t) => t || localISODate()));
     this.staffId$ = this.staffDashboardService.staffId$;
     this.planningPointDate$ =
       staffDashboardService.planningPointdateForm.valueChanges
         .pipe(startWith(staffDashboardService.planningPointdateForm.value))
         .pipe(map((t) => t || localISODate()));
 
-    // const prevPlanRequest$ = combineLatest({
-    //   date: date$,
-    //   staffId: staffId$,
-    // }).pipe(distinctUntilChanged());
-    // // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    // prevPlanRequest$.pipe(takeUntil(this.destroyed$)).subscribe((t) => {
-    //   console.log(t);
-    // });
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe,

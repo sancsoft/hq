@@ -1,0 +1,44 @@
+<div class="bg-blue-900 p-4 font-bold">
+  {{ data.title }}
+</div>
+<div class="bg-gray-800 alt p-4">
+  <table class="w-full border-spacing-0 border-separate">
+    <thead>
+      <tr class="top-0 text-left">
+        <th
+          class="bg-blue-900 border-steel-blue-600 border-y py-3 text-nowrap"
+          width="4px"
+        ></th>
+        <th
+          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 text-nowrap"
+          width="240px"
+        >
+          Charge Code
+        </th>
+        <th class="bg-blue-900 border-steel-blue-600 border-y py-3 text-nowrap">
+          Project Name
+        </th>
+      </tr>
+    </thead>
+    <tbody cdkDropList (cdkDropListDropped)="onDrop($event)">
+      @for (point of points; track point.sequence) {
+        <tr
+          hq-staff-dashboard-planning-point
+          [editMode]="true"
+          [point]="point"
+          [chargeCodes]="chargeCodes ?? []"
+          class="even:bg-gray-850 odd:bg-black-alt"
+          cdkDrag
+        ></tr>
+      }
+    </tbody>
+  </table>
+  <div class="text-right mt-3">
+    <hq-button class="mr-3" (click)="savePointsAction()" [variant]="'primary'">
+      Save Plan</hq-button
+    >
+    <hq-button (click)="dialogRef.close()" [variant]="'outline'">
+      Cancel</hq-button
+    >
+  </div>
+</div>
