@@ -256,16 +256,13 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       try {
         await firstValueFrom(apiResponse$);
 
-        await firstValueFrom(
-          this.modalService.alert('Success', 'Report submitted successfully'),
-        );
+        this.toastService.show('Success', 'Report submitted successfully');
+
         await this.router.navigate(['/psr']);
         this.submitButtonState = ButtonState.Disabled;
       } catch (err) {
         if (err instanceof APIError) {
-          await firstValueFrom(
-            this.modalService.alert('Error', err.errors.join('\n')),
-          );
+          this.toastService.show('Error', err.errors.join('\n'));
         }
       }
     }
