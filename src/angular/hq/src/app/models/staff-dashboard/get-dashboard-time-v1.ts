@@ -15,6 +15,7 @@ export interface GetDashboardTimeV1Response {
   hoursThisWeek: number;
   hoursThisMonth: number;
   hoursLastWeek: number;
+  maximumTimeEntryHours: number;
   staffName: string;
   vacation: number;
   startDate: string;
@@ -42,6 +43,7 @@ export interface GetDashboardTimeV1TimeForDateTimes {
   notes: string | null;
   task: string | null;
   chargeCodeId: string | null;
+  maximumTimeEntryHours: number;
   chargeCode: string;
   clientId: string | null;
   projectId: string | null;

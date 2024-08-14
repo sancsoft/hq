@@ -17,6 +17,7 @@ import { HQService } from '../../services/hq.service';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 import {
   GetPointsSummaryResponseV1,
+  GetPointsSummaryPlanningPoint,
   GetPointSummaryV1StaffSummary,
 } from '../../models/Points/get-points-summary-v1';
 import { RouterLink } from '@angular/router';
@@ -24,6 +25,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { formControlChanges } from '../../core/functions/form-control-changes';
 import { PlanningPointsModalComponent } from '../planning-points-modal/planning-points-modal.component';
 import { Dialog } from '@angular/cdk/dialog';
+import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
 
 @Component({
   selector: 'hq-planning-points',
@@ -34,14 +36,20 @@ import { Dialog } from '@angular/cdk/dialog';
     RouterLink,
     FormsModule,
     ReactiveFormsModule,
+    SelectInputComponent,
   ],
   templateUrl: './planning-points.component.html',
 })
 export class PlanningPointsComponent implements OnDestroy {
   search = new FormControl<string | null>(null);
+  isCompleted = new FormControl<boolean | null>(null);
+
   search$ = formControlChanges(this.search);
+  isCompleted$ = formControlChanges(this.isCompleted);
 
   date = new BehaviorSubject<string>(localISODate());
+  opacity = new BehaviorSubject<number>(0.25);
+
   loading = new BehaviorSubject<boolean>(true);
   refresh$ = new BehaviorSubject<boolean>(false);
 
@@ -58,6 +66,7 @@ export class PlanningPointsComponent implements OnDestroy {
       date: this.date,
       search: this.search$,
       refresh: this.refresh$,
+      isCompleted: this.isCompleted$,
     }).pipe(
       debounceTime(500),
       tap(() => this.loading.next(true)),
@@ -65,6 +74,7 @@ export class PlanningPointsComponent implements OnDestroy {
         this.hqService.getPointsSummaryV1({
           date: t.date,
           search: t.search,
+          isCompleted: t.isCompleted,
         }),
       ),
       tap(() => this.loading.next(false)),
@@ -94,5 +104,39 @@ export class PlanningPointsComponent implements OnDestroy {
       },
       error: console.error,
     });
+  }
+  configureChargeCodeColorOpacity(point: GetPointsSummaryPlanningPoint) {
+    const chargeCodeId = point.chargeCodeId;
+    const defaultOpacity = 0.25;
+    const matchingOpacity = 0.5;
+    const nonMatchingOpacity = 0.05;
+
+    const searchValue = this.search.value?.toLowerCase();
+
+    if (!searchValue?.trim().length) {
+      return chargeCodeToColor(chargeCodeId, defaultOpacity);
+    }
+
+    return this.isNonMatched(point)
+      ? chargeCodeToColor(chargeCodeId, nonMatchingOpacity)
+      : chargeCodeToColor(chargeCodeId, matchingOpacity);
+  }
+
+  isNonMatched(point: GetPointsSummaryPlanningPoint) {
+    const searchValue = this.search.value?.toLowerCase();
+
+    if (!searchValue?.trim().length) {
+      return false;
+    }
+
+    if (
+      point.clientName?.toLowerCase()?.includes(searchValue) ||
+      point.projectName?.toLowerCase()?.includes(searchValue) ||
+      point.chargeCode?.toLowerCase()?.includes(searchValue)
+    ) {
+      return false;
+    }
+
+    return true;
   }
 }

@@ -1,6 +1,18 @@
 <h1 class="font-rajdhani font-semibold text-3xl px-5 mb-5">Planning Points</h1>
-<div class="px-5 w-60 mb-3">
+<div class="flex w-full flex-1 items-center gap-[20px] px-5 mb-3">
   <hq-search-input [formControl]="search"></hq-search-input>
+  <div class="pb-3 w-40">
+    <hq-select-input
+      [autocomplete]="false"
+      [formControl]="isCompleted"
+      label="Completed"
+      variant="secondary"
+    >
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      <ng-template [hqSelectInputOption]="true">Yes</ng-template>
+      <ng-template [hqSelectInputOption]="false">No</ng-template>
+    </hq-select-input>
+  </div>
 </div>
 @if (summary$ | async; as summary) {
   <div class="flex flex-col items-start px-5 bg-black-alt">
@@ -74,9 +86,10 @@
               <i class="bi bi-pencil-fill text-gray-450"></i>
             </button>
           </td>
-          @for (point of staff.points; track point.sequence) {
+          @for (point of staff.points; track point.id) {
             <td width="165" class="border-l border-black">
               <div
+                [ngClass]="{ 'text-gray-450 ': isNonMatched(point) }"
                 class="w-full text-left flex items-center h-8 p-1 overflow-hidden"
               >
                 @if (point.chargeCodeId) {
@@ -92,13 +105,13 @@
                     "
                     target="_blank"
                     [style.background-color]="
-                      chargeCodeToColor(point.chargeCodeId)
+                      configureChargeCodeColorOpacity(point)
                     "
                   >
                     {{ point.chargeCode }}:
                     {{
-                      point.projectName!.length > 12
-                        ? (point.projectName | slice: 0 : 10) + ".."
+                      point.projectName!.length > 10
+                        ? (point.projectName | slice: 0 : 8) + ".."
                         : point.projectName
                     }}
                   </a>
