@@ -35,6 +35,8 @@ namespace HQ.Server.Services
 
         public async Task<Result> SendEmail<T>(EmailMessage emailMessage, T model, string to, string subject, MailPriority priority = MailPriority.Normal, IEnumerable<Attachment>? attachments = null, CancellationToken ct = default) where T : BaseEmail
         {
+            model.WebUrl = _options.CurrentValue.WebUrl;
+
             var request = new GetEmailTemplateV1.Request<T>()
             {
                 EmailMessage = emailMessage,
