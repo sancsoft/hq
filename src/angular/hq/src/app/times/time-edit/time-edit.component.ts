@@ -25,6 +25,7 @@ import {
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { ChargeCodeActivity } from '../../enums/charge-code-activity';
+import { CoreModule } from '../../core/core.module';
 
 interface Form {
   ProjectId: FormControl<string | null>;
@@ -47,6 +48,7 @@ interface Form {
     ErrorDisplayComponent,
     RouterLink,
     RouterLinkActive,
+    CoreModule,
   ],
 
   templateUrl: './time-edit.component.html',
