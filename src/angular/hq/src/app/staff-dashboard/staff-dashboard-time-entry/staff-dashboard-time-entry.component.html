@@ -87,6 +87,7 @@
           <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
           @for (code of chargeCodes; track code.id) {
             <ng-template
+              [hqSelectInputOptionDisabled]="code.active === false"
               [hqSelectInputOption]="code.id"
               [hqSelectInputOptionSelectedDisplay]="code.code"
               [hqSelectInputOptionSearch]="
@@ -220,6 +221,7 @@
           <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
           @for (code of chargeCodes; track code.id) {
             <ng-template
+              [hqSelectInputOptionDisabled]="code.active === false"
               [hqSelectInputOption]="code.id"
               [hqSelectInputOptionSelectedDisplay]="code.code"
               [hqSelectInputOptionSearch]="

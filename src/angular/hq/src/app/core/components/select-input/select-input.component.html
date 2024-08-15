@@ -81,12 +81,15 @@
           @if (isOpen) {
             @for (option of options$ | async; track option.value) {
               <button
+                [disabled]="option.disabled"
                 type="button"
                 [tabIndex]="-1"
-                class="px-2 py-1 hover:bg-blue-800 w-full text-left"
+                class="px-2 py-1 w-full text-left"
                 [ngClass]="{
                   'bg-blue-800 selected':
                     option.value === (selectedOption$ | async)?.value,
+                  'hover:bg-blue-800': option.disabled === false,
+                  'cursor-not-allowed': option.disabled,
                 }"
                 (mousedown)="selectOption(option, true)"
                 (touchstart)="selectOption(option, true)"
@@ -98,8 +101,9 @@
             }
           }
         </div>
-      </div></div
-  ></ng-template>
+      </div>
+    </div>
+  </ng-template>
 } @else {
   <div class="grid relative w-full">
     <select
