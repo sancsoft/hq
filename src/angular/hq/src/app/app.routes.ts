@@ -512,6 +512,15 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'create',
+        title: 'Time Create',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./times/time-create/time-create.component').then(
+            (m) => m.TimeCreateComponent,
+          ),
+      },
+      {
         path: 'edit/:timeId',
         title: 'Time Edit',
         canActivate: [userRoleGuard(HQRole.Administrator)],

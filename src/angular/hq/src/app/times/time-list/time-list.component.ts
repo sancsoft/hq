@@ -1,3 +1,4 @@
+import { ModalService } from './../../services/modal.service';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -29,6 +30,8 @@ import saveAs from 'file-saver';
 import { ToastService } from '../../services/toast.service';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { HQRole } from '../../enums/hqrole';
+import { HttpErrorResponse } from '@angular/common/http';
+import { APIError } from '../../errors/apierror';
 
 @Component({
   selector: 'hq-time-list',
@@ -58,6 +61,7 @@ export class TimeListComponent {
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
   date$ = new BehaviorSubject<Date | null>(null);
+  refresh$ = new BehaviorSubject<boolean>(false);
 
   HQRole = HQRole;
   sortColumn = SortColumn;
@@ -69,6 +73,7 @@ export class TimeListComponent {
     private route: ActivatedRoute,
     public timeListService: TimeService,
     private toastService: ToastService,
+    private modalService: ModalService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(
@@ -141,6 +146,7 @@ export class TimeListComponent {
       invoiced: invoiced$,
       timeStatus: timeStatus$,
       sortDirection: this.sortDirection$,
+      refresh: this.refresh$,
     }).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
     const response$ = this.timeRequest$.pipe(
@@ -171,6 +177,41 @@ export class TimeListComponent {
         Math.min(skip + itemsPerPage, totalRecords),
       ),
     );
+  }
+
+  async deleteTime(timeId: string) {
+    const request = {
+      id: timeId,
+    };
+
+    const confirm = await firstValueFrom(
+      this.modalService.confirm(
+        'Delete',
+        'Are you sure you want to delete this time entry?',
+      ),
+    );
+
+    if (!confirm) {
+      return;
+    }
+
+    try {
+      await firstValueFrom(this.hqService.deleteTimeV1(request));
+      this.toastService.show('Success', 'Time entry successfully deleted.');
+      this.refresh$.next(true);
+      // this.staffDashboardService.refresh();
+    } catch (err) {
+      if (err instanceof APIError) {
+        this.toastService.show('Error', err.errors.join('\n'));
+      } else if (err instanceof HttpErrorResponse && err.status == 403) {
+        this.toastService.show(
+          'Unauthorized',
+          'You are not authorized to delete for this date.',
+        );
+      } else {
+        this.toastService.show('Error', 'An unexpected error has occurred.');
+      }
+    }
   }
 
   goToPage(page: number) {
