@@ -11,7 +11,10 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
+import {
+  GetStaffV1Record,
+  SortColumn,
+} from '../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../services/hq.service';
 import {
   AbstractControl,
@@ -110,10 +113,12 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
     private router: Router,
     private route: ActivatedRoute,
   ) {
-    this.projectManagers$ = this.hqService.getStaffMembersV1({}).pipe(
-      map((t) => t.records),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
+    this.projectManagers$ = this.hqService
+      .getStaffMembersV1({ sortBy: SortColumn.Name })
+      .pipe(
+        map((t) => t.records),
+        shareReplay({ bufferSize: 1, refCount: false }),
+      );
 
     this.clients$ = this.hqService.getClientsV1({}).pipe(
       map((t) => t.records),
