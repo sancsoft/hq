@@ -1,4 +1,3 @@
-import { StaffDetailsService } from './../staff-details/staff-details.service';
 import { Component, OnInit } from '@angular/core';
 import {
   FormGroup,
@@ -16,6 +15,7 @@ import { ErrorDisplayComponent } from '../../errors/error-display/error-display.
 import { Jurisdiciton } from '../../enums/jurisdiciton';
 import { ButtonComponent } from '../../core/components/button/button.component';
 import { ToastService } from '../../services/toast.service';
+import { StaffDetailsService } from '../../staff/staff-details/staff-details.service';
 
 interface Form {
   name: FormControl<string | null>;

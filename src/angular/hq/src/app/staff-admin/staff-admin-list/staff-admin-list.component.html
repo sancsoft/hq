@@ -93,7 +93,17 @@
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5 cursor-pointer"
         colspan="2"
-      ></th>
+      >
+        @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+          <button
+            routerLink="/staffAdmin/create"
+            class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+          >
+            <i class="bi bi-plus"></i>
+            Staff
+          </button>
+        }
+      </th>
     </tr>
   </thead>
   <tbody>
@@ -137,14 +147,13 @@
               class="text-teal-200 hover:text-teal-300 pl-3"
               >View</a
             > -->
-          </div>
-          <!-- @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+
             <a
-              [routerLink]="['edit', member.id]"
-              class="text-teal-200 hover:text-teal-300 cursor-pointer"
+              [routerLink]="[member.id, 'edit']"
+              class="text-teal-200 hover:text-teal-300 cursor-pointer pl-3"
               >EDIT</a
             >
-          } -->
+          </div>
         </td>
       </tr>
     }
