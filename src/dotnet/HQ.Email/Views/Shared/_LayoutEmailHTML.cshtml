@@ -1,4 +1,7 @@
 @model HQ.Abstractions.Emails.BaseEmail
+@{
+    var Url = new Uri(Model.WebUrl, "assets/logo.png");
+}
 <mjml>
     <mj-head>
         <mj-title>HQ</mj-title>
@@ -27,8 +30,7 @@
         <!-- Company Header -->
         <mj-section>
             <mj-column>
-                <mj-image align="center" padding="10px 25px" src="https://www.sancsoft.com/Images/logo.png"
-                    width="145px"></mj-image>
+                <mj-image align="center" padding="10px 25px" src="@Url" width="145px"></mj-image>
             </mj-column>
         </mj-section>
         <!-- Title -->
