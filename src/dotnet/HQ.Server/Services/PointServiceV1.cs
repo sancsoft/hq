@@ -1,19 +1,14 @@
 using System.Formats.Asn1;
 using System.Globalization;
-
+using Hangfire;
 using CsvHelper;
 using CsvHelper.Configuration;
-
 using FluentResults;
-
 using HQ.Abstractions;
-using Hangfire;
-
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Points;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services;
