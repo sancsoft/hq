@@ -46,7 +46,9 @@ export class UsersListComponent {
   constructor(
     public hqService: HQService,
     public listService: UserListService,
-  ) {}
+  ) {
+    this.listService.refresh();
+  }
 
   goToPage(page: number) {
     this.listService.page.setValue(page);
