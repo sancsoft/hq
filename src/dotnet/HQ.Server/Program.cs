@@ -264,6 +264,13 @@ recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     Cron.Daily(8),
     recurringJobOptions);
 
+
+recurringJobManager.AddOrUpdate<PlanServiceV1>(
+    nameof(PlanServiceV1.BackgroundSendPlanSubmissionReminderEmail),
+    (t) => t.BackgroundSendPlanSubmissionReminderEmail(Period.Today, CancellationToken.None),
+    Cron.Daily(10),
+    recurringJobOptions);
+
 // Monday morning
 recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     nameof(TimeEntryServiceV1.BackgroundSendTimeSubmissionReminderEmail),

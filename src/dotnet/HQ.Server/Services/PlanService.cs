@@ -1,20 +1,26 @@
 using FluentResults;
 
+using Hangfire;
+
+using HQ.Abstractions;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Plan;
 using HQ.Abstractions.Staff;
-
 using HQ.Server.Data;
 
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.IdentityModel.Tokens;
 namespace HQ.Server.Services;
 public class PlanServiceV1
 {
     private readonly HQDbContext _context;
+    private readonly IBackgroundJobClient _backgroundJobClient;
 
-    public PlanServiceV1(HQDbContext context)
+    public PlanServiceV1(HQDbContext context, IBackgroundJobClient backgroundJobClient)
     {
         _context = context;
+        _backgroundJobClient = backgroundJobClient;
+
     }
 
     public async Task<Result<UpsertPlanV1.Response>> UpsertPlanV1(UpsertPlanV1.Request request, CancellationToken ct = default)
@@ -90,5 +96,21 @@ public class PlanServiceV1
             body = previousPlan.Body,
             StaffId = previousPlan.StaffId
         };
+    }
+    public async Task BackgroundSendPlanSubmissionReminderEmail(Period period, CancellationToken ct)
+    {
+        var date = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
+        var plans = _context.Plans.Where(t => t.Date == date);
+        var unsubmittedPlansStatus = plans.Where(t => t.Body == null || t.Status == null);
+
+        var staffToNotify = await _context.Staff
+            .AsNoTracking()
+            .Where(t => t.EndDate == null && plans.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedPlansStatus.Where(x => x.StaffId == t.Id).Count() > 0)
+            .ToListAsync(ct);
+
+        foreach (var staff in staffToNotify)
+        {
+            _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendPlanSubmissionReminderEmail(staff.Id, date, CancellationToken.None));
+        }
     }
 }
