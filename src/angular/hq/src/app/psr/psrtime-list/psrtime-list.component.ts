@@ -212,10 +212,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       shareReplay({ bufferSize: 1, refCount: false }),
     );
 
-    const clientId$ = psr$.pipe(map((t) => t.clientId));
-
     const chargeCodeRequest$ = combineLatest({
-      clientId: clientId$,
       active: of(true),
     });
 
