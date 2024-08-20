@@ -193,8 +193,8 @@ namespace HQ.Server.Services
 
             var model = new NotificationEmail()
             {
-                Heading = "Plan Submission Reminder",
-                Message = $"Message: Please remember to fill out your plan and update your status in HQ.",
+                Heading = "Plan Reminder",
+                Message = $"Please remember to fill out your plan and update your status in HQ.",
                 ButtonLabel = "Open HQ",
                 ButtonUrl = _options.CurrentValue.WebUrl
             };
