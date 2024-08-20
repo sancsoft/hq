@@ -108,18 +108,7 @@
                       configureChargeCodeColorOpacity(point)
                     "
                   >
-                    {{ point.chargeCode | slice: 0 : 1 }}:
-                    {{ point.clientName }}:
-                    @if (
-                      point.clientName!.length + point.projectName!.length < 14
-                    ) {
-                      {{ point.projectName }}
-                    } @else {
-                      {{
-                        point.projectName
-                          | slice: 0 : 14 - point.clientName!.length
-                      }}..
-                    }
+                    {{ getDisplayName(point) }}
                   </a>
                 }
               </div>
