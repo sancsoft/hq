@@ -215,8 +215,8 @@ namespace HQ.Server.Services
 
             var model = new NotificationEmail()
             {
-                Heading = "Planning Point Submission Reminder",
-                Message = $"You have unsubmitted planning points in HQ for this week. Please remember to submit for review by 12PM EST.",
+                Heading = "Points Reminder",
+                Message = $"Please remember to fill out your planning points in HQ.",
                 ButtonLabel = "Open HQ",
                 ButtonUrl = _options.CurrentValue.WebUrl
             };

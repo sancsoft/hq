@@ -365,11 +365,10 @@ public class PointServiceV1
         var startDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
         var endDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodEndDate(period);
         var points = _context.Points.Where(t => t.Date >= startDate && t.Date <= endDate);
-        var unsubmittedPoints = points.Where(t => !t.Completed);
 
         var staffToNotify = await _context.Staff
             .AsNoTracking()
-            .Where(t => t.EndDate == null && points.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedPoints.Where(x => x.StaffId == t.Id).Count() > 0)
+            .Where(t => t.EndDate == null && points.Where(x => x.StaffId == t.Id).Count() == 0)
             .ToListAsync(ct);
 
         foreach (var staff in staffToNotify)
