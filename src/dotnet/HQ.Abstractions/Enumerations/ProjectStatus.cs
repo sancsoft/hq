@@ -12,4 +12,5 @@ public enum ProjectStatus
     Completed = 7,
     Closed = 8,
     Lost = 9,
+    CurrentOnly = 10
 }

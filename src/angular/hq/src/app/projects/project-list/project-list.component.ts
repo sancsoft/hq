@@ -11,6 +11,8 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 import { CoreModule } from '../../core/core.module';
 import { ProjectListService } from './project-list.service';
 import { BaseListService } from '../../core/services/base-list.service';
+import { ProjectStatus } from '../../enums/project-status';
+import { enumToArray } from '../../core/functions/enum-to-array';
 
 @Component({
   selector: 'hq-project-list',
@@ -36,6 +38,7 @@ import { BaseListService } from '../../core/services/base-list.service';
 export class ProjectListComponent {
   HQRole = HQRole;
   Math = Math;
+  projectStatus = enumToArray(ProjectStatus);
 
   constructor(
     private hqService: HQService,
@@ -43,5 +46,12 @@ export class ProjectListComponent {
     public listService: ProjectListService,
   ) {
     this.listService.refresh();
+  }
+
+  onToggleChange(event: Event) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    const newStatus = isChecked ? 10 : null;
+    this.listService.projectStatus.setValue(newStatus);
+    this.listService.toggleStatus.setValue(isChecked);
   }
 }

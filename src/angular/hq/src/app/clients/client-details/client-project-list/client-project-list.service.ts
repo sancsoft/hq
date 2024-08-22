@@ -28,6 +28,12 @@ export class ClientProjectListService extends BaseListService<
   GetProjectRecordV1,
   SortColumn
 > {
+  public projectStatus$ = formControlChanges(
+    this.clientDetailsService.projectStatus,
+  ).pipe(
+    tap(() => this.goToPage(1)),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
   // Enums
   public ProjectStatus = ProjectStatus;
   public Period = Period;
