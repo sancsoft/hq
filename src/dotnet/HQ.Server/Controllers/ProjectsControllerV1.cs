@@ -10,6 +10,9 @@ using HQ.Server.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HQ.Server.Data;
+using Microsoft.EntityFrameworkCore;
+using HQ.Server.Data.Models;
 
 namespace HQ.Server.Controllers
 {
@@ -22,10 +25,15 @@ namespace HQ.Server.Controllers
     public class ProjectsControllerV1 : ControllerBase
     {
         private readonly ProjectServiceV1 _projectService;
+        private readonly HQDbContext _context;
+        private readonly IAuthorizationService _authorizationService;
 
-        public ProjectsControllerV1(ProjectServiceV1 projectService)
+        public ProjectsControllerV1(ProjectServiceV1 projectService, HQDbContext context, IAuthorizationService authorizationService)
         {
             _projectService = projectService;
+            _context = context;
+            _authorizationService = authorizationService;
+
         }
 
         [Authorize(HQAuthorizationPolicies.Staff)]
@@ -51,15 +59,38 @@ namespace HQ.Server.Controllers
 
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(UpsertProjectActivityV1))]
-        [ProducesResponseType<UpsertProjectActivityV1.Response>(StatusCodes.Status201Created)]
-        public Task<ActionResult> UpsertProjectActivityV1([FromBody] UpsertProjectActivityV1.Request request, CancellationToken ct = default) =>
-            _projectService.UpsertProjectActivityV1(request, ct)
+        [ProducesResponseType<AddProjectMemberV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> UpsertProjectActivityV1([FromBody] UpsertProjectActivityV1.Request request, CancellationToken ct = default)
+        {
+
+            var project = await _context.Projects
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == request.Id);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(User, project, ProjectsOperation.UpsertProjectActivity);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            return await _projectService.UpsertProjectActivityV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+
+        }
 
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(DeleteProjectV1))]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public Task<ActionResult> DeleteProjectV1([FromBody] DeleteProjectV1.Request request, CancellationToken ct = default) =>
             _projectService.DeleteProjectV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
@@ -67,27 +98,93 @@ namespace HQ.Server.Controllers
 
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(DeleteProjectActivityV1))]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType<DeleteProjectActivityV1.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<ActionResult> DeleteProjectActivityV1([FromBody] DeleteProjectActivityV1.Request request, CancellationToken ct = default) =>
-            _projectService.DeleteProjectActivityV1(request, ct)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> DeleteProjectActivityV1([FromBody] DeleteProjectActivityV1.Request request, CancellationToken ct = default)
+        {
+
+            var project = await _context.Projects
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == request.Id);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(User, project, ProjectsOperation.DeleteProjectActivity);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            return await _projectService.DeleteProjectActivityV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
-        [Authorize(HQAuthorizationPolicies.Manager)]
+        }
+        [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(AddProjectMemberV1))]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType<AddProjectMemberV1.Response>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<ActionResult> AddProjectMemberV1([FromBody] AddProjectMemberV1.Request request, CancellationToken ct = default) =>
-            _projectService.AddProjectMemberV1(request, ct)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+
+        public async Task<ActionResult> AddProjectMemberV1([FromBody] AddProjectMemberV1.Request request, CancellationToken ct = default)
+        {
+
+            var project = await _context.Projects
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == request.ProjectId);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(User, project, ProjectsOperation.AddProjectMember);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            return await _projectService.AddProjectMemberV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+
+        }
+
+
 
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(RemoveProjectMemberV1))]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType<RemoveProjectMemberV1.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public Task<ActionResult> RemoveProjectMemberV1([FromBody] RemoveProjectMemberV1.Request request, CancellationToken ct = default) =>
-            _projectService.RemoveProjectMemberV1(request, ct)
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> RemoveProjectMemberV1([FromBody] RemoveProjectMemberV1.Request request, CancellationToken ct = default)
+        {
+            var project = await _context.Projects
+               .AsNoTracking()
+               .SingleOrDefaultAsync(t => t.Id == request.ProjectId);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                .AuthorizeAsync(User, project, ProjectsOperation.RemoveProjectMember);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            return await _projectService.RemoveProjectMemberV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+        }
 
         [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(ImportProjectsV1))]
