@@ -87,6 +87,9 @@ export class ProjectActivityListComponent {
   }
 
   async deleteActivity(activityId: string) {
+    const projectId = await firstValueFrom(
+      this.projectDetailsService.projectId$,
+    );
     const confirmation = await firstValueFrom(
       this.modalService.confirm(
         'Confirmation',
@@ -96,7 +99,10 @@ export class ProjectActivityListComponent {
     if (confirmation) {
       try {
         await firstValueFrom(
-          this.hqService.deleteProjectActivityV1({ id: activityId }),
+          this.hqService.deleteProjectActivityV1({
+            projectId,
+            id: activityId,
+          }),
         );
         this.projectDetailsService.refresh();
         this.toastService.show('Success', 'Activity successfully deleted');

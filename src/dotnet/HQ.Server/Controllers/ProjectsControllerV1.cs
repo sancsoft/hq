@@ -59,7 +59,7 @@ namespace HQ.Server.Controllers
 
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(UpsertProjectActivityV1))]
-        [ProducesResponseType<AddProjectMemberV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType<AddProjectMemberV1.Response>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpsertProjectActivityV1([FromBody] UpsertProjectActivityV1.Request request, CancellationToken ct = default)
@@ -67,7 +67,7 @@ namespace HQ.Server.Controllers
 
             var project = await _context.Projects
                 .AsNoTracking()
-                .SingleOrDefaultAsync(t => t.Id == request.Id);
+                .SingleOrDefaultAsync(t => t.Id == request.ProjectId);
 
             if (project == null)
             {
@@ -98,15 +98,14 @@ namespace HQ.Server.Controllers
 
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(DeleteProjectActivityV1))]
-        [ProducesResponseType<DeleteProjectActivityV1.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> DeleteProjectActivityV1([FromBody] DeleteProjectActivityV1.Request request, CancellationToken ct = default)
         {
 
             var project = await _context.Projects
-                .AsNoTracking()
-                .SingleOrDefaultAsync(t => t.Id == request.Id);
+               .AsNoTracking()
+               .SingleOrDefaultAsync(t => t.Id == request.ProjectId);
 
             if (project == null)
             {
@@ -125,7 +124,7 @@ namespace HQ.Server.Controllers
             .ToActionResult(new HQResultEndpointProfile());
 
         }
-        [Authorize(HQAuthorizationPolicies.Staff)]
+        [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(AddProjectMemberV1))]
         [ProducesResponseType<AddProjectMemberV1.Response>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -160,7 +159,6 @@ namespace HQ.Server.Controllers
 
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(RemoveProjectMemberV1))]
-        [ProducesResponseType<RemoveProjectMemberV1.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> RemoveProjectMemberV1([FromBody] RemoveProjectMemberV1.Request request, CancellationToken ct = default)

@@ -71,14 +71,18 @@ public class ProjectsAuthorizationHandler : AuthorizationHandler<OperationAuthor
 
                 break;
             case nameof(ProjectsOperation.UpsertProjectActivity):
+                if (staffId.Value == resource.ProjectManagerId)
                 {
                     context.Succeed(requirement);
                 }
+
                 break;
             case nameof(ProjectsOperation.RemoveProjectMember):
+                if (staffId.Value == resource.ProjectManagerId)
                 {
                     context.Succeed(requirement);
                 }
+
                 break;
         }
 

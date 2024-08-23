@@ -12,6 +12,7 @@ public class DeleteProjectActivityV1
 {
     public class Request
     {
+        public Guid ProjectId { get; set; }
         public Guid Id { get; set; }
     }
 
