@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TimeService } from '../../services/TimeService';
+import { TimeListService } from '../../time-list/TimeList.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Period } from '../../../enums/period';
@@ -11,7 +11,7 @@ import { Period } from '../../../enums/period';
   templateUrl: './time-search-filter.component.html',
 })
 export class TimeSearchFilterComponent {
-  constructor(public timeService: TimeService) {}
+  constructor(public timeService: TimeListService) {}
 
   showHideDates() {
     if (this.timeService.selectedPeriod.value == Period.Custom) {
