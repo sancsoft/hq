@@ -299,7 +299,7 @@ recurringJobManager.AddOrUpdate<ProjectStatusReportServiceV1>(
 recurringJobManager.AddOrUpdate<EmailMessageService>(
     nameof(EmailMessageService.SendEmployeeHoursEmail),
     (t) => t.SendEmployeeHoursEmail(CancellationToken.None),
-    Cron.Weekly(DayOfWeek.Monday, 12),
+    "15 12 * * 1",
     recurringJobOptions);
 
 // Friday morning

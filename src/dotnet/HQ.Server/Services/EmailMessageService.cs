@@ -318,17 +318,17 @@ namespace HQ.Server.Services
                     StaffName = t.Name,
                     WorkHours = t.WorkHours
                 })
-                .OrderByDescending(t => t.HoursLastWeek)
+                .OrderBy(t => t.HoursLastWeek)
                 .ToListAsync(ct);
             foreach (var employee in staff)
             {
-                employee.MissingHours = employee.HoursLastWeek == 0 || employee.HoursLastMonth == 0 || employee.HoursLastMonth == 0;
+                employee.MissingHours = employee.HoursLastWeek == 0;
                 employee.LessThanExpectedHours = employee.HoursLastWeek < employee.WorkHours;
             }
 
             var managersToNotify = await _context.Projects
                 .AsNoTracking()
-                .Where(t => t.EndDate == null)
+                .Where(t => t.EndDate == null && t.ProjectManager!.Email != null)
                 .Select(t => t.ProjectManager!.Email)
                 .Distinct()
                 .ToListAsync(ct);
@@ -344,15 +344,7 @@ namespace HQ.Server.Services
             };
             foreach (var manager in managersToNotify)
             {
-                if (manager != null)
-                {
-
-                    await SendEmail(EmailMessage.EmployeeHours, model, manager, "[HQ] Staff Hours", MailPriority.High, null, ct);
-                }
-                else
-                {
-                    return;
-                }
+                await SendEmail(EmailMessage.EmployeeHours, model, manager!, "[HQ] Staff Hours", MailPriority.High, null, ct);
             }
         }
     }

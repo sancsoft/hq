@@ -7,16 +7,16 @@
 </mj-text>
 <mj-table>
     <tr style="white;padding:15px 0;color:white;text-align:center;padding:15px 5px;">
-        <td style="padding: 0 15px 0 0;font-weight:bold;border-bottom:1px solid white;">StaffName</td>
-        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Hours Last Week</td>
-        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Hours This Month</td>
-        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Hours Last Month</td>
+        <td style="padding: 0 15px 0 0;font-weight:bold;border-bottom:1px solid white;">Staff</td>
+        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Last Week</td>
+        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">This Month</td>
+        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Last Month</td>
     </tr>
     @foreach (var staff in Model.Staff)
     {
         @if (staff.LessThanExpectedHours || staff.MissingHours)
         {
-            <tr style="color:white;background-color:red; text-align:center;">
+            <tr style="color:red; text-align:center;">
                 <td style="padding: 0 15px 0 0;">@staff.StaffName</td>
                 <td style="padding: 0 15px;">@staff.HoursLastWeek</td>
                 <td style="padding: 0 15px;">@staff.HoursThisMonth</td>
