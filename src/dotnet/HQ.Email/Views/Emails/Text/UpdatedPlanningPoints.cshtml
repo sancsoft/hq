@@ -17,11 +17,20 @@ Staff: @Model.StaffName
 Date: @Model.Date
 Updated By: @Model.UpdatedBy
 
-@foreach (var modelPoint in @Model.Points)
-{
-    <text>Charge Code: @modelPoint.ChargeCode</text>
-    <text>Project Name: @modelPoint.ProjectName</text>
-}
+<table>
+    <tr style="white;padding:15px 0;color:white;text-align:center;padding:15px 5px;">
+        <td style="padding: 0 15px 0 0;font-weight:bold;border-bottom:1px solid white;">Charge Code</td>
+        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Project
+        </td>
+    </tr>
+    @foreach (var modelPoint in Model.Points)
+    {
+        <tr style="color:white; text-align:center;">
+            <td style="padding: 0 15px 0 0;">@modelPoint.ChargeCode</td>
+            <td style="padding: 0 15px;">@modelPoint.ProjectName</td>
+        </tr>
+    }
+</table>
 
 @if (!String.IsNullOrEmpty(Model.ButtonLabel) && Model.ButtonUrl != null)
 {
