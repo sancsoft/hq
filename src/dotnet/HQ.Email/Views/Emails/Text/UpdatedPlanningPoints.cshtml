@@ -1,0 +1,38 @@
+@model HQ.Abstractions.Emails.UpdatedPlanningPointsEmail
+@if (!String.IsNullOrEmpty(Model.Heading))
+{
+    <text>@Model.Heading</text>
+    <text>---</text>
+    <text></text>
+}
+
+@if (!String.IsNullOrEmpty(Model.Message))
+{
+    <text>@Model.Message</text>
+    <text></text>
+}
+
+Details:
+Staff: @Model.StaffName
+Date: @Model.Date
+Updated By: @Model.UpdatedBy
+
+<table>
+    <tr style="white;padding:15px 0;color:white;text-align:center;padding:15px 5px;">
+        <td style="padding: 0 15px 0 0;font-weight:bold;border-bottom:1px solid white;">Charge Code</td>
+        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Project
+        </td>
+    </tr>
+    @foreach (var modelPoint in Model.Points)
+    {
+        <tr style="color:white; text-align:center;">
+            <td style="padding: 0 15px 0 0;">@modelPoint.ChargeCode</td>
+            <td style="padding: 0 15px;">@modelPoint.ProjectName</td>
+        </tr>
+    }
+</table>
+
+@if (!String.IsNullOrEmpty(Model.ButtonLabel) && Model.ButtonUrl != null)
+{
+    <text>@Model.ButtonLabel: @Model.ButtonUrl</text>
+}
