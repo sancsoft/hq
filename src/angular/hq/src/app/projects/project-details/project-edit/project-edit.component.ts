@@ -211,7 +211,6 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       projectNumber: project.projectNumber,
     });
 
-    this.form.controls.clientId.disable();
     this.form.controls.quoteId.disable();
     this.form.controls.type.disable();
   }
