@@ -150,12 +150,15 @@
     }
     @for ((report of projectStatusReports$ | async); track report.id) {
       <tr
-        [class]="
-          (!report.submittedAt || report.thisPendingHours > 0) &&
-          !report.isCurrentPsrPeriod
-            ? 'bg-red-850'
-            : 'even:bg-gray-850 odd:bg-black-alt'
-        "
+        [ngClass]="{
+          'bg-red-850':
+            (!report.submittedAt || report.thisPendingHours > 0) &&
+            !report.isCurrentPsrPeriod,
+          'even:bg-gray-850 odd:bg-black-alt':
+            (!report.submittedAt && report.thisPendingHours <= 0) ||
+            report.isCurrentPsrPeriod,
+          'text-gray-50': report.isCurrentPsrPeriod,
+        }"
       >
         <td class="border-b border-black py-2 pl-5">{{ report.chargeCode }}</td>
         <td class="border-b border-black py-2">{{ report.startDate }}</td>
@@ -256,7 +259,10 @@
         <td width="80" class="border-b border-black py-2 text-right pr-5">
           <a
             [routerLink]="[report.id]"
-            class="truncate text-teal-200 hover:text-teal-300"
+            class="truncate hover:text-teal-300"
+            [class]="
+              report.isCurrentPsrPeriod ? ' text-gray-50' : ' text-teal-200'
+            "
             >VIEW</a
           >
         </td>
