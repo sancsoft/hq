@@ -41,31 +41,34 @@ builder.Configuration.AddEnvironmentVariables("HQ_");
 
 var serverOptions = builder.Configuration.GetSection(HQServerOptions.Server).Get<HQServerOptions>() ?? throw new Exception("Error parsing configuration section 'Server'.");
 
-var serviceName = "hq-server";
-var serviceVersion = VersionNumber.GetVersionNumber();
-
-builder.Logging.AddOpenTelemetry(logging =>
+if (serverOptions.OpenTelemetry)
 {
-    logging.IncludeFormattedMessage = true;
-    logging.IncludeScopes = true;
-});
+    var serviceName = "hq-server";
+    var serviceVersion = VersionNumber.GetVersionNumber();
 
-builder.Services.AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService(serviceName: serviceName, serviceVersion: serviceVersion))
-    .WithTracing(tracing => tracing
-        .AddAspNetCoreInstrumentation()
-        .AddNpgsql()
-        .AddHttpClientInstrumentation()
-        .AddHangfireInstrumentation()
-        .AddOtlpExporter())
-    .WithMetrics(metrics => metrics
-        .AddAspNetCoreInstrumentation()
-        .AddProcessInstrumentation()
-        .AddHttpClientInstrumentation()
-        .SetExemplarFilter(ExemplarFilterType.TraceBased)
-        .AddOtlpExporter())
-    .WithLogging(logging => logging
-        .AddOtlpExporter());
+    builder.Logging.AddOpenTelemetry(logging =>
+    {
+        logging.IncludeFormattedMessage = true;
+        logging.IncludeScopes = true;
+    });
+
+    builder.Services.AddOpenTelemetry()
+        .ConfigureResource(resource => resource.AddService(serviceName: serviceName, serviceVersion: serviceVersion))
+        .WithTracing(tracing => tracing
+            .AddAspNetCoreInstrumentation()
+            .AddNpgsql()
+            .AddHttpClientInstrumentation()
+            .AddHangfireInstrumentation()
+            .AddOtlpExporter())
+        .WithMetrics(metrics => metrics
+            .AddAspNetCoreInstrumentation()
+            .AddProcessInstrumentation()
+            .AddHttpClientInstrumentation()
+            .SetExemplarFilter(ExemplarFilterType.TraceBased)
+            .AddOtlpExporter())
+        .WithLogging(logging => logging
+            .AddOtlpExporter());
+}
 
 // Add services to the container.
 builder.Services.AddHealthChecks();
