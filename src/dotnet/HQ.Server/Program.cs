@@ -276,14 +276,14 @@ app.Use(async (context, next) =>
     var activity = Activity.Current;
     activity?.AddTag("user.id", userId);
     activity?.AddTag("user.roles", userRoles);
-    activity?.AddTag("app.hq.staff_id", staffId);
+    activity?.AddTag("hq.staff_id", staffId);
 
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
     var logScope = new Dictionary<string, object?>()
     {
         { "user.id", userId },
         { "user.roles", userRoles },
-        { "app.hq.staff_id", staffId },
+        { "hq.staff_id", staffId },
     }.ToList();
 
     using (logger.BeginScope(logScope))
