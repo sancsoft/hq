@@ -79,6 +79,50 @@ namespace HQ.Server.Controllers
             _emailService.SendEmail(EmailMessage.RejectTimeEntry, RejectTimeEntryEmail.Sample, to, "Reject Time Entry Test", System.Net.Mail.MailPriority.Low, null, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+
+
+
+        [HttpGet(nameof(UpdatedPlanningPointsText))]
+        [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/plain")]
+        public Task<ActionResult> UpdatedPlanningPointsText(CancellationToken ct = default) =>
+                    GetEmailTemplate(EmailMessageOutput.Text, EmailMessage.UpdatedPlanningPoints, UpdatedPlanningPointsEmail.Sample, ct);
+
+        [HttpGet(nameof(UpdatedPlanningPointsMJML))]
+        [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/plain")]
+        public Task<ActionResult> UpdatedPlanningPointsMJML(CancellationToken ct = default) =>
+            GetEmailTemplate(EmailMessageOutput.MJML, EmailMessage.UpdatedPlanningPoints, UpdatedPlanningPointsEmail.Sample, ct);
+
+        [HttpGet(nameof(UpdatedPlanningPointsHTML))]
+        [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/html")]
+        public Task<ActionResult> UpdatedPlanningPointsHTML(CancellationToken ct = default) =>
+            GetEmailTemplate(EmailMessageOutput.HTML, EmailMessage.UpdatedPlanningPoints, UpdatedPlanningPointsEmail.Sample, ct);
+
+        [HttpPost(nameof(UpdatedPlanningPointsSendEmail))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public Task<ActionResult> UpdatedPlanningPointsSendEmail([FromForm] string to, CancellationToken ct = default) =>
+            _emailService.SendEmail(EmailMessage.UpdatedPlanningPoints, UpdatedPlanningPointsEmail.Sample, to, "Updated Points Test", System.Net.Mail.MailPriority.Low, null, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
+        [HttpGet(nameof(StaffHoursText))]
+        [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/plain")]
+        public Task<ActionResult> StaffHoursText(CancellationToken ct = default) =>
+                    GetEmailTemplate(EmailMessageOutput.Text, EmailMessage.EmployeeHours, EmployeeHoursEmail.Sample, ct);
+
+        [HttpGet(nameof(StaffHoursMJML))]
+        [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/plain")]
+        public Task<ActionResult> StaffHoursMJML(CancellationToken ct = default) =>
+            GetEmailTemplate(EmailMessageOutput.MJML, EmailMessage.EmployeeHours, EmployeeHoursEmail.Sample, ct);
+
+        [HttpGet(nameof(StaffHoursHTML))]
+        [ProducesResponseType<ContentResult>(StatusCodes.Status200OK, "text/html")]
+        public Task<ActionResult> StaffHoursHTML(CancellationToken ct = default) =>
+            GetEmailTemplate(EmailMessageOutput.HTML, EmailMessage.EmployeeHours, EmployeeHoursEmail.Sample, ct);
+
+        [HttpPost(nameof(StaffHoursSendEmail))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public Task<ActionResult> StaffHoursSendEmail([FromForm] string to, CancellationToken ct = default) =>
+            _emailService.SendEmail(EmailMessage.EmployeeHours, EmployeeHoursEmail.Sample, to, "Staff Hours Test", System.Net.Mail.MailPriority.Low, null, ct)
+            .ToActionResult(new HQResultEndpointProfile());
         private async Task<ActionResult> GetEmailTemplate<T>(EmailMessageOutput output, EmailMessage emailMessage, T model, CancellationToken ct = default) where T : BaseEmail
         {
             var request = new GetEmailTemplateV1.Request<T>()

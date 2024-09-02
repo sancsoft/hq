@@ -360,6 +360,12 @@ recurringJobManager.AddOrUpdate<ProjectStatusReportServiceV1>(
     Cron.Weekly(DayOfWeek.Monday, 12),
     recurringJobOptions);
 
+recurringJobManager.AddOrUpdate<EmailMessageService>(
+    nameof(EmailMessageService.SendEmployeeHoursEmail),
+    (t) => t.SendEmployeeHoursEmail(CancellationToken.None),
+    "15 12 * * 1",
+    recurringJobOptions);
+
 // Friday morning
 recurringJobManager.AddOrUpdate<HolidayServiceV1>(
     nameof(HolidayServiceV1.BackgroundAutoGenerateHolidayTimeEntryV1),

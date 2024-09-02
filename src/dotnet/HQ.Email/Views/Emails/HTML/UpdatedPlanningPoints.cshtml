@@ -1,0 +1,24 @@
+@model HQ.Abstractions.Emails.UpdatedPlanningPointsEmail
+@{
+    Layout = "_LayoutEmailNotificationHTML";
+}
+<mj-text>
+    <div><strong>Staff:</strong> @Model.StaffName</div>
+    <div><strong>Updated By :</strong> @Model.UpdatedBy</div>
+    <div><strong>Date:</strong> @Model.Date</div>
+</mj-text>
+<mj-table>
+    <tr style="white;padding:15px 0;color:white;text-align:center;padding:15px 5px;">
+        <td style="padding: 0 15px 0 0;font-weight:bold;border-bottom:1px solid white;">Charge Code</td>
+        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Project
+        </td>
+    </tr>
+    @foreach (var modelPoint in Model.Points)
+    {
+        <tr style="color:white; text-align:center;">
+            <td style="padding: 0 15px 0 0;">@modelPoint.ChargeCode</td>
+            <td style="padding: 0 15px;">@modelPoint.ProjectName</td>
+        </tr>
+    }
+</mj-table>
+<mj-text></mj-text>
