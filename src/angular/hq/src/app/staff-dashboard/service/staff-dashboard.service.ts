@@ -48,6 +48,7 @@ export class StaffDashboardService implements OnDestroy {
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   canSubmitSubject = new BehaviorSubject<boolean>(false);
   canSubmit$: Observable<boolean> = this.canSubmitSubject.asObservable();
+  timeEntryCutoffDate$: Observable<string>;
 
   time$: Observable<GetDashboardTimeV1Response>;
   chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
@@ -152,6 +153,10 @@ export class StaffDashboardService implements OnDestroy {
       next: (t) => this.canSubmitSubject.next(t.canSubmit),
       error: console.error,
     });
+    this.timeEntryCutoffDate$ = this.time$.pipe(
+      map((t) => t.timeEntryCutoffDate),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     this.rejectedCount$ = this.time$.pipe(map((t) => t.rejectedCount));
 
@@ -165,6 +170,12 @@ export class StaffDashboardService implements OnDestroy {
 
   setStaffId(staffId: string) {
     this.staffIdSubject.next(staffId);
+  }
+
+  resetFilters() {
+    this.period.setValue(Period.Today);
+    this.search.setValue('');
+    this.date.setValue(localISODate());
   }
 
   ngOnDestroy(): void {

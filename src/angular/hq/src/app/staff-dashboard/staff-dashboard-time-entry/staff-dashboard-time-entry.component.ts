@@ -364,10 +364,33 @@ export class StaffDashboardTimeEntryComponent
       this.hqTimeDelete.emit({ id });
     }
   }
-  duplicateTime() {
-    const time = { ...this.form.value };
-    time.id = null; // to create a new time
-    this.hqTimeDuplicate.emit(time);
+  async duplicateTime() {
+    const newDate = await firstValueFrom(
+      this.modalService.chooseDate(
+        'Duplicate Time Entry',
+        'Choose the date where you would like to duplicate this time entry to',
+        this.form.controls.date.value ?? '',
+      ),
+    );
+    if (newDate) {
+      const cutoffDate = await firstValueFrom(
+        this.staffDashboardService.timeEntryCutoffDate$,
+      );
+      if (newDate >= cutoffDate) {
+        const time = { ...this.form.value };
+        time.date = newDate;
+        time.id = null; // to create a new time
+        this.hqTimeDuplicate.emit(time);
+        this.staffDashboardService.date.setValue(time.date);
+      } else {
+        await firstValueFrom(
+          this.modalService.alert(
+            'Error',
+            'Cannot copy outside of current week period',
+          ),
+        );
+      }
+    }
   }
   resetTime() {
     this.form.reset({ date: this.form.controls.date.value });

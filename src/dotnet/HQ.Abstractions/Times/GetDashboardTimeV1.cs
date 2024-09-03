@@ -32,6 +32,7 @@ public class GetDashboardTimeV1
         public int RejectedCount { get; set; }
         public bool CanSubmit { get; set; }
 
+        public DateOnly? TimeEntryCutoffDate { get; set; }
     }
 
     public class ChargeCode

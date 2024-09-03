@@ -645,6 +645,7 @@ namespace HQ.Server.Services
             response.PreviousDate = previousDate;
             response.StaffName = staff.Name;
             response.RejectedCount = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Status == TimeStatus.Rejected).CountAsync(ct);
+            response.TimeEntryCutoffDate = staff.TimeEntryCutoffDate;
 
             if (request.Status.HasValue)
             {
