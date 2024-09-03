@@ -98,42 +98,46 @@
       </span>
     </div>
   </div>
-  <div class="relative flex flex-col w-full max-w-[220px]">
-    <label
-      for="startDate"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-      >Start Date</label
-    >
-    <div class="grid relative">
-      <input
-        [formControl]="psrListService.startDate"
-        type="date"
-        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
-      />
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+  @if (psrListService.showStartDate$ | async) {
+    <div class="relative flex flex-col w-full max-w-[220px]">
+      <label
+        for="startDate"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
+        >Start Date</label
       >
-        <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
-      </span>
+      <div class="grid relative">
+        <input
+          [formControl]="psrListService.startDate"
+          type="date"
+          class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+        />
+        <span
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+        >
+          <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+        </span>
+      </div>
     </div>
-  </div>
-  <div class="relative flex flex-col w-full max-w-[220px]">
-    <label
-      for="endDate"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-      >End Date</label
-    >
-    <div class="grid relative">
-      <input
-        [formControl]="psrListService.endDate"
-        type="date"
-        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
-      />
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+  }
+  @if (psrListService.showEndDate$ | async) {
+    <div class="relative flex flex-col w-full max-w-[220px]">
+      <label
+        for="endDate"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
+        >End Date</label
       >
-        <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
-      </span>
+      <div class="grid relative">
+        <input
+          [formControl]="psrListService.endDate"
+          type="date"
+          class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+        />
+        <span
+          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+        >
+          <i class="bi bi-arrow-down-short text-[24px] bg-blue-900"></i>
+        </span>
+      </div>
     </div>
-  </div>
+  }
 </div>

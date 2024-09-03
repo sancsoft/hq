@@ -2,11 +2,16 @@ import { FormControl } from '@angular/forms';
 import {
   BehaviorSubject,
   Observable,
+  ReplaySubject,
+  catchError,
   combineLatest,
   debounceTime,
+  finalize,
   map,
+  of,
   startWith,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs';
 import { GetPSRTimeRecordStaffV1 } from '../../models/PSR/get-psr-time-v1';
@@ -21,6 +26,7 @@ import {
 } from '../../models/PSR/get-PSR-v1';
 import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
+import { APIError } from '../../errors/apierror';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +53,8 @@ export class PsrListService extends BaseListService<
   showStartDate$ = new BehaviorSubject<boolean>(false);
   showEndDate$ = new BehaviorSubject<boolean>(false);
 
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
   constructor(private hqService: HQService) {
     super(SortColumn.ChargeCode, SortDirection.Asc);
     this.staffMembers$ = this.hqService
@@ -61,6 +69,24 @@ export class PsrListService extends BaseListService<
           })),
         ),
       );
+    this.showStartDate$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (showStart) => {
+        if (!showStart) {
+          this.startDate.setValue(null);
+        }
+      },
+      error: console.error,
+    });
+
+    this.showEndDate$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (showEnd) => {
+        console.log(showEnd);
+        if (!showEnd) {
+          this.endDate.setValue(null);
+        }
+      },
+      error: console.error,
+    });
   }
 
   showStartDate() {
@@ -91,11 +117,11 @@ export class PsrListService extends BaseListService<
     );
     const startDate$ = this.startDate.valueChanges.pipe(
       startWith(this.startDate.value),
-      map((date) => date || null),
+      map((date) => date ?? null),
     );
     const endDate$ = this.endDate.valueChanges.pipe(
       startWith(this.endDate.value),
-      map((date) => date || null),
+      map((date) => date ?? null),
     );
     return combineLatest({
       search: this.search$,
@@ -111,8 +137,18 @@ export class PsrListService extends BaseListService<
     }).pipe(
       debounceTime(500),
       tap(() => this.loadingSubject.next(true)),
-      switchMap((request) => this.hqService.getPSRV1(request)),
+      switchMap((request) =>
+        this.hqService.getPSRV1(request).pipe(
+          catchError((error) => {
+            console.log(error);
+            this.loadingSubject.next(false);
+            console.error('Error fetching PSR records:', error);
+            return of(error);
+          }),
+        ),
+      ),
       tap(() => this.loadingSubject.next(false)),
+      finalize(() => this.loadingSubject.next(false)),
     );
   }
 }
