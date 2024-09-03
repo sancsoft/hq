@@ -271,7 +271,7 @@ export class HQService {
           .pipe(
             catchError((error) => {
               console.error('Error in getPSRV1:', error);
-              return throwError(() => error); 
+              return throwError(() => error);
             }),
           ),
       ),
