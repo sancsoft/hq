@@ -461,12 +461,13 @@ public class ProjectServiceV1
     }
     public async Task<Result<GetProjectActivitiesV1.Response>> GetProjectActivitiesV1(GetProjectActivitiesV1.Request request, CancellationToken ct = default)
     {
-        var records = _context.ProjectActivities.Where(t => t.ProjectId == request.ProjectId)
+        var records = _context.ProjectActivities.Where(t => request.ProjectId == null || t.ProjectId == request.ProjectId)
             .Select(t => new GetProjectActivitiesV1.Record()
             {
                 Id = t.Id,
                 Name = t.Name,
-                Sequence = t.Sequence
+                Sequence = t.Sequence,
+                ProjectId = t.ProjectId
             })
             .OrderBy(t => t.Name);
         return new GetProjectActivitiesV1.Response()
