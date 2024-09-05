@@ -6,87 +6,57 @@
 <div class="px-5 pt-4 pb-2">
   <hq-staff-list-search-filter />
 </div>
-<table class="min-w-full border-spacing-0 border-separate">
+<hq-table class="min-w-full border-spacing-0 border-separate">
   <thead>
     <tr class="sticky top-0 text-left">
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.Name)"
+        [hq-sort-header]="sortColumn.Name"
         width="220px"
       >
         Name
-        <hq-sort-icon
-          [column]="sortColumn.Name"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.Hrs)"
+        [hq-sort-header]="sortColumn.Hrs"
         width="220px"
       >
         Hrs YTD
-        <hq-sort-icon
-          [column]="sortColumn.Hrs"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.BillableHrs)"
+        [hq-sort-header]="sortColumn.BillableHrs"
         width="220px"
       >
         Billable Hrs YTD
-        <hq-sort-icon
-          [column]="sortColumn.BillableHrs"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.VacationHours)"
+        [hq-sort-header]="sortColumn.VacationHours"
         width="220px"
       >
         Vacation
-        <hq-sort-icon
-          [column]="sortColumn.VacationHours"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.Jurisdiction)"
+        [hq-sort-header]="sortColumn.Jurisdiction"
         width="220px"
       >
         Jurisdiction
-        <hq-sort-icon
-          [column]="sortColumn.Jurisdiction"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
 
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.Status)"
+        [hq-sort-header]="sortColumn.Status"
         width="220px"
       >
         Status
-        <hq-sort-icon
-          [column]="sortColumn.Status"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
 
       <th
@@ -106,13 +76,13 @@
       </th>
     </tr>
   </thead>
-  <tbody>
-    @if ((staffMembers$ | async)?.length === 0) {
+  <tbody hq-table-body>
+    @if ((listService.records$ | async)?.length === 0) {
       <td colspan="10" class="bg-black-alt">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
     }
-    @for (member of staffMembers$ | async; track $index) {
+    @for (member of listService.records$ | async; track $index) {
       <tr class="even:bg-gray-850 odd:bg-black-alt">
         <td class="border-b border-black py-2 pl-5">
           {{ member.name }}
@@ -159,31 +129,4 @@
       </tr>
     }
   </tbody>
-</table>
-<div
-  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
->
-  <div>
-    <select
-      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="itemsPerPage"
-    >
-      <option [ngValue]="20">20</option>
-      <option [ngValue]="25">25</option>
-      <option [ngValue]="50">50</option>
-      <option [ngValue]="100">100</option>
-      <!-- Add more options as needed -->
-    </select>
-    <span>items per page</span>
-  </div>
-  <hq-paginator
-    [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="itemsPerPage.value"
-    [currentPage]="page.value"
-    (page)="goToPage($event)"
-  ></hq-paginator>
-  <div class="flex justify-end text-xs">
-    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
-    {{ totalRecords$ | async }} items
-  </div>
-</div>
+</hq-table>
