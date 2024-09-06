@@ -182,7 +182,27 @@ namespace HQ.Server.Services
 
             await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Time Submission Reminder", MailPriority.High, null, ct);
         }
+        public async Task SendPlanSubmissionReminderEmail(Guid staffId, DateOnly date, CancellationToken ct)
+        {
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId, ct);
 
+            if (staff == null || String.IsNullOrEmpty(staff.Email))
+            {
+                return;
+            }
+
+            var model = new NotificationEmail()
+            {
+                Heading = "Plan Reminder",
+                Message = $"Please remember to fill out your plan and update your status in HQ.",
+                ButtonLabel = "Open HQ",
+                ButtonUrl = _options.CurrentValue.WebUrl
+            };
+
+            await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Plan Submission Reminder", MailPriority.High, null, ct);
+        }
         public async Task SendRejectedTimeSubmissionReminderEmail(Guid staffId, DateOnly from, DateOnly to, CancellationToken ct)
         {
             var staff = await _context.Staff
