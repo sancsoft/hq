@@ -299,6 +299,16 @@ public class PointServiceV1
             ForDate = nextWeekStartDate
         }, ct);
     }
+    public async Task BackgroundAutoGenerateVacationPlanningPointsV1(CancellationToken ct)
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var nextWeekStartDate = today.GetPeriodStartDate(Period.Week).AddPeriod(Period.Week, 1);
+
+        var generateVacationPlanningPointsResponse = await GenerateVacationPlanningPointsV1(new()
+        {
+            ForDate = nextWeekStartDate
+        }, ct);
+    }
 
     public async Task<Result<GenerateHolidayPointsV1.Response>> GenerateHolidayPlanningPointsV1(GenerateHolidayPointsV1.Request request, CancellationToken ct = default)
     {
@@ -356,6 +366,60 @@ public class PointServiceV1
 
         }
         return new GenerateHolidayPointsV1.Response()
+        {
+        };
+    }
+    public async Task<Result<GenerateVacationPointsV1.Response>> GenerateVacationPlanningPointsV1(GenerateVacationPointsV1.Request request, CancellationToken ct = default)
+    {
+        var today = request.ForDate;
+        var startDate = today.GetPeriodStartDate(Period.Week);
+        var endDate = today.GetPeriodEndDate(Period.Week);
+
+        var vacationChargeCode = await _context.ChargeCodes.AsNoTracking().AsQueryable().Where(t => t.Project!.Name.ToLower().Contains("vacation")).FirstOrDefaultAsync(ct);
+
+        if (vacationChargeCode == null)
+        {
+            return Result.Fail("Unable to find vacation chargecode");
+        }
+
+        var staff = await _context.Staff.
+            AsNoTracking()
+            .AsQueryable().Where(t => t.EndDate == null).ToListAsync(ct);
+
+        foreach (var staffMember in staff)
+        {
+            var upcomingVacations = await _context.Times.AsNoTracking().AsQueryable().Where(t => t.Date >= startDate && t.Date <= endDate && t.ChargeCode == vacationChargeCode).ToListAsync(ct);
+            var getPointsRequest = new GetPointsV1.Request
+            {
+                StaffId = staffMember.Id,
+                Date = startDate
+            };
+
+            var staffPointsResponse = await GetPointsV1(getPointsRequest, ct);
+            var points = staffPointsResponse.Value.Points;
+            var pointsToUpdate = upcomingVacations.Count * 2;
+            var updatedCount = 0;
+            for (int i = 0; i < points.Count && updatedCount < pointsToUpdate; i++)
+            {
+                if (points[i].ChargeCodeId == null)
+                {
+                    points[i].ChargeCodeId = vacationChargeCode.Id;
+                    points[i].Completed = true;
+                    updatedCount++;
+                }
+            }
+            var upsertPointsRequest = new UpsertPointsV1.Request
+            {
+                StaffId = staffMember.Id,
+                Date = startDate,
+                Points = points
+            };
+
+            var upsertPointsResponse = await UpsertPointV1(upsertPointsRequest, ct);
+
+        }
+
+        return new GenerateVacationPointsV1.Response()
         {
         };
     }
