@@ -95,13 +95,13 @@
         colspan="2"
       >
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-          <button
-            routerLink="/staffAdmin/create"
+          <a
+            routerLink="/staff-admin/create"
             class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
           >
             <i class="bi bi-plus"></i>
             Staff
-          </button>
+          </a>
         }
       </th>
     </tr>
@@ -136,17 +136,17 @@
 
         <td class="border-b border-black py-2 text-right pr-5">
           <div class="text-nowrap divide-x divide-teal-200 uppercase">
-            <a
+            <!-- <a
               [routerLink]="[member.id, 'timesheet']"
               class="text-teal-200 hover:text-teal-300 pr-3"
               >View</a
-            >
-
-            <!-- <a
-              [routerLink]="[member.id]"
-              class="text-teal-200 hover:text-teal-300 pl-3"
-              >View</a
             > -->
+
+            <a
+              [routerLink]="[member.id]"
+              class="text-teal-200 hover:text-teal-300 pr-3"
+              >View</a
+            >
 
             <a
               [routerLink]="[member.id, 'edit']"
