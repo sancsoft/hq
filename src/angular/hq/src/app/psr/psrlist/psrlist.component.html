@@ -161,7 +161,14 @@
         <td class="border-b border-black py-2">{{ report.startDate }}</td>
         <td class="border-b border-black py-2">{{ report.endDate }}</td>
         <td class="border-b border-black py-2">{{ report.clientName }}</td>
-        <td class="border-b border-black py-2">{{ report.projectName }}</td>
+        <td class="border-b border-black py-2">
+          <a
+            class="text-teal-200 hover:text-teal-300"
+            [routerLink]="['/projects', report.projectId]"
+            target="_blank"
+            >{{ report.projectName }}</a
+          >
+        </td>
         <td class="border-b border-black py-2">
           {{ report.projectManagerName }}
         </td>

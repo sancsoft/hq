@@ -9,14 +9,14 @@ import {
   switchMap,
 } from 'rxjs';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
 import { Period } from '../../enums/period';
 
 @Component({
   selector: 'hq-psr-details-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './psr-details-header.component.html',
 })
 export class PsrDetailsHeaderComponent {
