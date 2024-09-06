@@ -1,9 +1,10 @@
-export enum StaffStatus {
-  InTheOffice = 1,
-  WorkingFromHome = 2,
-  WorkingFromHomeMorning = 3,
-  WorkingFromHomeAfternoon = 4,
-  Sick = 5,
-  Vacation = 6,
-  Holiday = 7,
-}
+export const StaffStatus = [
+  'In The Office',
+  'At Customer',
+  'WFH',
+  'WFH AM',
+  'WFH PM',
+  'Vacation',
+  'Sick',
+  'Holiday',
+];
