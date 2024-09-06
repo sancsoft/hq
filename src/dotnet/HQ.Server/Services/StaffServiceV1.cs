@@ -134,9 +134,15 @@ public class StaffServiceV1
 
         if (!string.IsNullOrEmpty(request.Search))
         {
-            records = records.Where(t =>
-                t.Name.ToLower().Contains(request.Search.ToLower())
-            );
+            if (Enum.TryParse<Jurisdiciton>(request.Search.Trim().ToLower(), true, out Jurisdiciton parsedJurisdiction))
+            {
+                records = records.Where(t => t.Jurisdiciton.Equals(parsedJurisdiction));
+            }
+            else
+            {
+                records = records.Where(t =>
+                  t.Name.ToLower().Contains(request.Search.ToLower()));
+            }
         }
 
         if (request.Id.HasValue)
