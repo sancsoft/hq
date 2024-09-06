@@ -360,6 +360,12 @@ recurringJobManager.AddOrUpdate<ProjectStatusReportServiceV1>(
     Cron.Weekly(DayOfWeek.Monday, 12),
     recurringJobOptions);
 
+recurringJobManager.AddOrUpdate<PointServiceV1>(
+    nameof(PointServiceV1.BackgroundSendPointSubmissionReminderEmail),
+    (t) => t.BackgroundSendPointSubmissionReminderEmail(Period.Week, CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Monday, 12),
+    recurringJobOptions);
+
 // Friday morning
 recurringJobManager.AddOrUpdate<HolidayServiceV1>(
     nameof(HolidayServiceV1.BackgroundAutoGenerateHolidayTimeEntryV1),

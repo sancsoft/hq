@@ -6,8 +6,9 @@ using CsvHelper.Configuration;
 
 using FluentResults;
 
-using HQ.Abstractions;
+using Hangfire;
 
+using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Points;
 using HQ.Server.Data;
@@ -20,10 +21,12 @@ namespace HQ.Server.Services;
 public class PointServiceV1
 {
     private readonly HQDbContext _context;
+    private readonly IBackgroundJobClient _backgroundJobClient;
 
-    public PointServiceV1(HQDbContext context)
+    public PointServiceV1(HQDbContext context, IBackgroundJobClient backgroundJobClient)
     {
         _context = context;
+        _backgroundJobClient = backgroundJobClient;
     }
     public async Task<Result<GetPointsV1.Response>> GetPointsV1(GetPointsV1.Request request, CancellationToken ct = default)
     {
@@ -357,4 +360,20 @@ public class PointServiceV1
         };
     }
 
+    public async Task BackgroundSendPointSubmissionReminderEmail(Period period, CancellationToken ct)
+    {
+        var startDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
+        var endDate = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodEndDate(period);
+        var points = _context.Points.Where(t => t.Date >= startDate && t.Date <= endDate);
+
+        var staffToNotify = await _context.Staff
+            .AsNoTracking()
+            .Where(t => t.EndDate == null && points.Where(x => x.StaffId == t.Id).Count() == 0)
+            .ToListAsync(ct);
+
+        foreach (var staff in staffToNotify)
+        {
+            _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendPointSubmissionReminderEmail(staff.Id, startDate, endDate, CancellationToken.None));
+        }
+    }
 }
