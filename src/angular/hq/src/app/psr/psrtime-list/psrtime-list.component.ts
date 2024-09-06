@@ -1,3 +1,4 @@
+import { PsrRefreshService } from './../Services/psr-refresh.service';
 import { SelectInputOptionDirective } from './../../core/directives/select-input-option.directive';
 import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
@@ -124,6 +125,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
     private toastService: ToastService,
     private oidcSecurityService: OidcSecurityService,
+    private psrRefreshService: PsrRefreshService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -228,7 +230,10 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
     const refresh$ = this.refresh$.pipe(
       switchMap(() => apiResponse$),
-      tap(() => this.deselectAll()),
+      tap(() => {
+        this.deselectAll();
+        this.psrRefreshService.triggerRefresh();
+      }),
     );
 
     const response$ = merge(apiResponse$, refresh$).pipe(
