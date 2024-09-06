@@ -11,10 +11,9 @@ import { HQRole } from '../../../enums/hqrole';
 import { CoreModule } from '../../../core/core.module';
 import { firstValueFrom } from 'rxjs';
 import { HQService } from '../../../services/hq.service';
-import saveAs from 'file-saver';
 import { BaseListService } from '../../../core/services/base-list.service';
 import { ClientDetailsService } from '../client-details.service';
-
+import FileSaver from 'file-saver';
 @Component({
   selector: 'hq-client-quote-list',
   standalone: true,
@@ -56,6 +55,6 @@ export class ClientQuoteListComponent {
       return;
     }
 
-    saveAs(result.file, result.fileName);
+    FileSaver.saveAs(result.file, result.fileName);
   }
 }
