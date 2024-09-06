@@ -126,7 +126,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, PointsAuthorizationHandler>();
-
+builder.Services.AddScoped<IAuthorizationHandler, ProjectsAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TimeEntryAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, PlanAuthorizationHandler>();
 
@@ -328,6 +328,13 @@ recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     Cron.Daily(8),
     recurringJobOptions);
 
+
+recurringJobManager.AddOrUpdate<PlanServiceV1>(
+    nameof(PlanServiceV1.BackgroundSendPlanSubmissionReminderEmail),
+    (t) => t.BackgroundSendPlanSubmissionReminderEmail(Period.Today, CancellationToken.None),
+    Cron.Daily(10),
+    recurringJobOptions);
+
 // Monday morning
 recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     nameof(TimeEntryServiceV1.BackgroundSendTimeSubmissionReminderEmail),
@@ -360,6 +367,12 @@ recurringJobManager.AddOrUpdate<ProjectStatusReportServiceV1>(
     Cron.Weekly(DayOfWeek.Monday, 12),
     recurringJobOptions);
 
+recurringJobManager.AddOrUpdate<PointServiceV1>(
+    nameof(PointServiceV1.BackgroundSendPointSubmissionReminderEmail),
+    (t) => t.BackgroundSendPointSubmissionReminderEmail(Period.Week, CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Monday, 12),
+    recurringJobOptions);
+
 // Friday morning
 recurringJobManager.AddOrUpdate<HolidayServiceV1>(
     nameof(HolidayServiceV1.BackgroundAutoGenerateHolidayTimeEntryV1),
@@ -372,6 +385,12 @@ recurringJobManager.AddOrUpdate<PointServiceV1>(
     (t) => t.BackgroundAutoGenerateHolidayPlanningPointsV1(CancellationToken.None),
     Cron.Weekly(DayOfWeek.Friday, 8),
     recurringJobOptions);
+
+recurringJobManager.AddOrUpdate<PointServiceV1>(
+nameof(PointServiceV1.BackgroundAutoGenerateVacationPlanningPointsV1),
+(t) => t.BackgroundAutoGenerateVacationPlanningPointsV1(CancellationToken.None),
+Cron.Weekly(DayOfWeek.Friday, 8),
+recurringJobOptions);
 
 recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     nameof(TimeEntryServiceV1.BackgroundSendTimeEntryReminderEmail),
