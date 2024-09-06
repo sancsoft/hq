@@ -189,7 +189,7 @@ export class SelectInputComponent<T>
     const options = await firstValueFrom(this.options$);
     const optionValues = options.map((t) => t.value);
     const value = this.value;
-    const valueIndex = optionValues.indexOf(value);
+    let valueIndex = optionValues.indexOf(value);
 
     if (options.length === 0) {
       return;
@@ -202,6 +202,12 @@ export class SelectInputComponent<T>
         if (valueIndex == -1) {
           this.selectOption(options[0]);
         } else {
+          while (
+            valueIndex < options.length - 1 &&
+            options[valueIndex + 1].disabled
+          ) {
+            valueIndex += 1;
+          }
           this.selectOption(
             options[(options.length + valueIndex + 1) % options.length],
           );
@@ -213,6 +219,9 @@ export class SelectInputComponent<T>
         if (valueIndex == -1) {
           this.selectOption(options[0]);
         } else {
+          while (valueIndex >= 1 && options[valueIndex - 1].disabled) {
+            valueIndex -= 1;
+          }
           this.selectOption(
             options[(options.length + valueIndex - 1) % options.length],
           );
@@ -220,6 +229,9 @@ export class SelectInputComponent<T>
         break;
       case 'Enter':
       case 'Escape':
+        if (options[valueIndex].disabled) {
+          return;
+        }
         event.preventDefault();
         this.isOpen = false;
         this.searchForm.reset(null);
@@ -315,11 +327,20 @@ export class SelectInputComponent<T>
     }
   }
 
-  onBlur() {
+  async onBlur() {
     this.isOpen = false;
     this.focused = false;
     this.searchForm.reset(null);
-    this.hqBlur.emit();
+    if (!this.options$) {
+      return;
+    }
+    const options = await firstValueFrom(this.options$);
+    const optionValues = options.map((t) => t.value);
+    const value = this.value;
+    const valueIndex = optionValues.indexOf(value);
+    if (options[valueIndex].disabled === false) {
+      this.hqBlur.emit();
+    }
 
     if (this.select?.nativeElement) {
       this.onTouched(this.select.nativeElement.value);

@@ -174,7 +174,6 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     const chargeCodeResponse$ = this.staffDashboardService.staffId$.pipe(
       switchMap((staffId) =>
         this.hqService.getChargeCodeseV1({
-          active: true,
           staffId,
           sortBy: SortColumn.IsProjectMember,
         }),
