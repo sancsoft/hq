@@ -108,7 +108,7 @@
     </td>
 
     <td class="border-b border-black py-2 pl-2">
-      @if (activities$ | async; as activities) {
+      @if (filteredActivities$ | async; as activities) {
         @if (activities.length > 0) {
           <div class="grid relative w-full max-w-[220px]">
             <select
@@ -124,7 +124,10 @@
               (keydown.enter)="onEnter($event.target)"
             >
               <option [ngValue]="null" class="text-gray-50">Activity</option>
-              @for (activity of activities$ | async; track activity.id) {
+              @for (
+                activity of filteredActivities$ | async;
+                track activity.id
+              ) {
                 <option [ngValue]="activity.id">{{ activity.name }}</option>
               }
             </select>

@@ -37,7 +37,6 @@ import {
   Observable,
   of,
   ReplaySubject,
-  shareReplay,
   skip,
   startWith,
   switchMap,
@@ -64,10 +63,6 @@ import { ButtonComponent } from '../core/components/button/button.component';
 import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staff-dashboard-planning.component';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 import { ButtonState } from '../enums/button-state';
-import {
-  GetChargeCodeRecordV1,
-  SortColumn,
-} from '../models/charge-codes/get-chargecodes-v1';
 
 export interface PointForm {
   id: FormControl<string | null>;
@@ -121,7 +116,6 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   staffStatus$: Observable<GetStatusResponseV1>;
   prevPlan$: Observable<GetPrevPlanResponseV1 | null>;
   prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
-  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   canEdit$: Observable<boolean>;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -171,19 +165,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     private cdr: ChangeDetectorRef,
   ) {
     this.canEdit$ = this.staffDashboardService.canEdit$;
-    const chargeCodeResponse$ = this.staffDashboardService.staffId$.pipe(
-      switchMap((staffId) =>
-        this.hqService.getChargeCodeseV1({
-          active: true,
-          staffId,
-          sortBy: SortColumn.IsProjectMember,
-        }),
-      ),
-    );
-    this.chargeCodes$ = chargeCodeResponse$.pipe(
-      map((chargeCode) => chargeCode.records),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
+
     const staffId$ = this.staffDashboardService.staffId$;
     const date$ = staffDashboardService.date.valueChanges
       .pipe(startWith(staffDashboardService.date.value))

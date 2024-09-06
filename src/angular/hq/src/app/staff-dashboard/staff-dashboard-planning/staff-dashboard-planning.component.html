@@ -54,7 +54,7 @@
             hq-staff-dashboard-planning-point
             [editMode]="editPlanButton$ | async"
             [point]="point"
-            [chargeCodes]="chargeCodes$ | async"
+            [chargeCodes]="staffDashboardService.chargeCodes$ | async"
             class="even:bg-gray-850 odd:bg-black-alt"
             cdkDrag
           ></tr>
@@ -63,7 +63,7 @@
             hq-staff-dashboard-planning-point
             [point]="point"
             [editMode]="editPlanButton$ | async"
-            [chargeCodes]="chargeCodes$ | async"
+            [chargeCodes]="staffDashboardService.chargeCodes$ | async"
             class="even:bg-gray-850 odd:bg-black-alt"
           ></tr>
         }
