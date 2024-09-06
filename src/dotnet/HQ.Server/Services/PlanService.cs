@@ -100,12 +100,26 @@ public class PlanServiceV1
     public async Task BackgroundSendPlanSubmissionReminderEmail(Period period, CancellationToken ct)
     {
         var date = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
+        if (date.DayOfWeek == DayOfWeek.Sunday || date.DayOfWeek == DayOfWeek.Saturday)
+        {
+            return;
+        }
+
         var plans = _context.Plans.Where(t => t.Date == date);
         var unsubmittedPlansStatus = plans.Where(t => t.Body == null || t.Status == null);
+        var holidayChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("holiday")).FirstOrDefaultAsync(ct);
+        var vacationChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("vacation")).FirstOrDefaultAsync(ct);
+        if (holidayChargeCode == null || vacationChargeCode == null)
+        {
+            return;
+        }
+
+        var times = _context.Times.Where(t => t.Date == date);
+        var holidayVacationTimes = times.Where(t => t.ChargeCodeId == holidayChargeCode.Id || t.ChargeCodeId == vacationChargeCode.Id);
 
         var staffToNotify = await _context.Staff
             .AsNoTracking()
-            .Where(t => t.EndDate == null && plans.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedPlansStatus.Where(x => x.StaffId == t.Id).Count() > 0)
+            .Where(t => t.EndDate == null && holidayVacationTimes.Where(x => x.StaffId == t.Id).Count() == 0 && (plans.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedPlansStatus.Where(x => x.StaffId == t.Id).Count() > 0))
             .ToListAsync(ct);
 
         foreach (var staff in staffToNotify)
