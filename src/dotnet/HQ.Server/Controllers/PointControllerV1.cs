@@ -59,6 +59,11 @@ namespace HQ.Server.Controllers
         public async Task GenerateHolidayPlanningPointsV1([FromBody] GenerateHolidayPointsV1.Request request, CancellationToken ct = default) =>
            await _pointService.GenerateHolidayPlanningPointsV1(request, ct);
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(GenerateVacationPlanningPointsV1))]
+        public async Task GenerateVacationPlanningPointsV1([FromBody] GenerateVacationPointsV1.Request request, CancellationToken ct = default) =>
+        await _pointService.GenerateVacationPlanningPointsV1(request, ct);
+
         [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(UpsertPointV1))]
         [ProducesResponseType<UpsertPointsV1.Response>(StatusCodes.Status201Created)]
