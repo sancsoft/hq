@@ -28,86 +28,68 @@
     (timeService.staffMembers$ | async) && timeService.showStaffMembers$ | async
   ) {
     <div class="relative flex flex-col w-full max-w-[220px]">
-      <label
-        for="staffMember"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-        >Select Staff</label
+      <hq-select-input
+        [autocomplete]="true"
+        [formControl]="timeService.staffMember"
+        label="Staff Member"
+        variant="secondary"
       >
-      <div class="grid relative">
-        <select
-          [formControl]="timeService.staffMember"
-          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-        >
-          <option [ngValue]="null">Select Staff</option>
-          @for (
-            staffMember of timeService.staffMembers$ | async;
-            track $index
-          ) {
-            <option [value]="staffMember.id">
-              {{ staffMember.name }}
-            </option>
-          }
-        </select>
-        <span
-          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-        >
-          <i class="bi bi-arrow-down-short text-[24px]"></i>
-        </span>
-      </div>
+        <ng-template [hqSelectInputOption]="null">Select a staff</ng-template>
+        <ng-template hqValidationError="required">
+          Staff is required.
+        </ng-template>
+        @for (staff of timeService.staffMembers$ | async; track staff.id) {
+          <ng-template
+            [hqSelectInputOption]="staff.id"
+            [hqSelectInputOptionSearch]="staff.name"
+            >{{ staff.name }}</ng-template
+          >
+        }
+      </hq-select-input>
     </div>
   }
   @if (timeService.clients$ | async) {
     <div class="relative flex flex-col w-full max-w-[220px]">
-      <label
-        for="client"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-        >Select Client</label
+      <hq-select-input
+        [autocomplete]="true"
+        [formControl]="timeService.client"
+        label="Client"
+        variant="secondary"
       >
-      <div class="grid relative">
-        <select
-          [formControl]="timeService.client"
-          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-        >
-          <option [ngValue]="null">Select Client</option>
-          @for (client of timeService.clients$ | async; track $index) {
-            <option [value]="client.id">
-              {{ client.name }}
-            </option>
-          }
-        </select>
-        <span
-          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-        >
-          <i class="bi bi-arrow-down-short text-[24px]"></i>
-        </span>
-      </div>
+        <ng-template [hqSelectInputOption]="null">Select a client</ng-template>
+        <ng-template hqValidationError="required">
+          Client is required.
+        </ng-template>
+        @for (client of timeService.clients$ | async; track client.id) {
+          <ng-template
+            [hqSelectInputOption]="client.id"
+            [hqSelectInputOptionSearch]="client.name"
+            >{{ client.name }}</ng-template
+          >
+        }
+      </hq-select-input>
     </div>
   }
   @if (timeService.projects$ | async) {
     <div class="relative flex flex-col w-full max-w-[220px]">
-      <label
-        for="project"
-        class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-        >Select Project</label
+      <hq-select-input
+        [autocomplete]="true"
+        [formControl]="timeService.project"
+        label="Project"
+        variant="secondary"
       >
-      <div class="grid relative">
-        <select
-          [formControl]="timeService.project"
-          class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-        >
-          <option [ngValue]="null">Select Project</option>
-          @for (project of timeService.projects$ | async; track $index) {
-            <option [value]="project.id">
-              {{ project.name }} ({{ project.chargeCode }})
-            </option>
-          }
-        </select>
-        <span
-          class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-        >
-          <i class="bi bi-arrow-down-short text-[24px]"></i>
-        </span>
-      </div>
+        <ng-template [hqSelectInputOption]="null">Select a project</ng-template>
+        <ng-template hqValidationError="required">
+          Project is required.
+        </ng-template>
+        @for (project of timeService.projects$ | async; track project.id) {
+          <ng-template
+            [hqSelectInputOption]="project.id"
+            [hqSelectInputOptionSearch]="project.name"
+            >{{ project.name }}</ng-template
+          >
+        }
+      </hq-select-input>
     </div>
   }
   <div class="relative flex flex-col w-full max-w-[220px]">

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+/* eslint-disable rxjs-angular/prefer-async-pipe */
+import { Component, OnDestroy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -18,6 +19,9 @@ import {
   map,
   firstValueFrom,
   shareReplay,
+  Subject,
+  takeUntil,
+  combineLatest,
 } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
@@ -34,6 +38,7 @@ import { ChargeCodeActivity } from '../../enums/charge-code-activity';
 import { CoreModule } from '../../core/core.module';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 import { ToastService } from '../../services/toast.service';
+import { localISODate } from '../../common/functions/local-iso-date';
 
 interface Form {
   ProjectId: FormControl<string | null>;
@@ -41,7 +46,7 @@ interface Form {
   Hours: FormControl<number | null>;
   ActivityId: FormControl<string | null>;
   ChargeCode: FormControl<string | null>;
-  Date: FormControl<Date | null>;
+  Date: FormControl<string | null>;
   Task: FormControl<string | null>;
   Notes: FormControl<string | null>;
   StaffId: FormControl<string | null>;
@@ -62,7 +67,7 @@ interface Form {
 
   templateUrl: './time-create.component.html',
 })
-export class TimeCreateComponent {
+export class TimeCreateComponent implements OnDestroy {
   apiErrors: string[] = [];
   ChargeCodeActivity = ChargeCodeActivity;
 
@@ -76,6 +81,7 @@ export class TimeCreateComponent {
   showProjects$ = new BehaviorSubject<boolean | null>(null);
   showQuotes$ = new BehaviorSubject<boolean | null>(null);
   showServices$ = new BehaviorSubject<boolean | null>(null);
+  private destroyed$ = new Subject<void>();
 
   form = new FormGroup<Form>({
     ProjectId: new FormControl<string | null>(null, {
@@ -90,9 +96,9 @@ export class TimeCreateComponent {
     }),
 
     Hours: new FormControl<number | null>(null, {
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.min(0.25)],
     }),
-    Date: new FormControl<Date | null>(null, {
+    Date: new FormControl<string | null>(localISODate(), {
       validators: [Validators.required],
     }),
 
@@ -141,6 +147,28 @@ export class TimeCreateComponent {
         return response.records;
       }),
     );
+
+    combineLatest([
+      this.chargeCodes$,
+      this.form.controls.ChargeCode.valueChanges,
+    ])
+      .pipe(
+        map(([chargeCodes, code]) => {
+          const chargeCode = chargeCodes.find((t) => t.code === code);
+          return chargeCode?.maximumTimeEntryHours ?? 0;
+        }),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe({
+        next: (maxTimeEntryHours) => {
+          this.setMaximumHours(maxTimeEntryHours);
+        },
+        error: console.error,
+      });
+  }
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   async submit() {
@@ -172,6 +200,19 @@ export class TimeCreateComponent {
     const hours = (event.target as HTMLInputElement).value;
     const roundedHours = roundToNextQuarter(hours);
     this.form.get('Hours')?.setValue(roundedHours);
+  }
+
+  private setMaximumHours(maxTime?: number): void {
+    const maxTimeEntry = maxTime;
+    console.log('maxTimeEntry ', maxTimeEntry, maxTime);
+    if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
+      this.form.controls.Hours.setValidators([
+        Validators.required,
+        Validators.min(0.25),
+        Validators.max(maxTimeEntry),
+      ]);
+      this.form.controls.Hours.updateValueAndValidity();
+    }
   }
   // private async getTime() {
   //   try {

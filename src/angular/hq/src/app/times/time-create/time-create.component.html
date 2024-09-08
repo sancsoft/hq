@@ -59,11 +59,7 @@
                       <ng-template
                         [hqSelectInputOption]="code.code"
                         [hqSelectInputOptionSelectedDisplay]="
-                          code.code +
-                          ': ' +
-                          code.clientName +
-                          ': ' +
-                          code.projectName
+                          code.code + ': ' + code.projectName
                         "
                         [hqSelectInputOptionSearch]="
                           code.code +
@@ -105,6 +101,12 @@
                       >Hours</label
                     >
                     <input
+                      [ngClass]="{
+                        'border-red-700 focus:border-red-700':
+                          form.controls.Hours.errors && form.touched,
+                        'focus:border-white placeholder:text-gray-100':
+                          !form.controls.Hours.errors || !form.touched,
+                      }"
                       formControlName="Hours"
                       type="number"
                       name=""
@@ -114,6 +116,15 @@
                       class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                       placeholder="Hours"
                     />
+                    @if (
+                      form.get("Hours")?.touched &&
+                      form.get("Hours")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >Hours are required.</span
+                      >
+                    }
                   </div>
                   <div>
                     <!-- text input -->
@@ -125,7 +136,7 @@
                     <input
                       [class.border-red-700]="
                         form.get('Notes')?.touched &&
-                        form.get('DescriNotesption')?.errors?.['required']
+                        form.get('Notes')?.errors?.['required']
                       "
                       type="text"
                       name="Notes"
@@ -168,6 +179,7 @@
                     </hq-select-input>
                   </div>
                 </div>
+                <div></div>
               </div>
             </div>
           </div>
