@@ -8,7 +8,13 @@ import { CoreModule } from '../../../core/core.module';
 @Component({
   selector: 'hq-time-search-filter',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, CommonModule, CoreModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    CoreModule,
+  ],
   templateUrl: './time-search-filter.component.html',
 })
 export class TimeSearchFilterComponent {
