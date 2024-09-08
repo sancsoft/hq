@@ -24,7 +24,10 @@ import {
   combineLatest,
 } from 'rxjs';
 import { APIError } from '../../errors/apierror';
-import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
+import {
+  Activity,
+  GetChargeCodeRecordV1,
+} from '../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
@@ -74,6 +77,7 @@ export class TimeCreateComponent implements OnDestroy {
   projects$: Observable<GetTimeRecordProjectsV1[]>;
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   staffMembers$: Observable<GetStaffV1Record[]>;
+  activities$: Observable<Activity[] | null>;
 
   clients$: Observable<GetTimeRecordClientsV1[]>;
   timeId?: string;
@@ -147,6 +151,23 @@ export class TimeCreateComponent implements OnDestroy {
         return response.records;
       }),
     );
+    this.activities$ = combineLatest([
+      this.chargeCodes$,
+      this.form.controls.ChargeCode.valueChanges,
+    ]).pipe(
+      map(([chargeCodes, code]) => {
+        const chargeCode = chargeCodes.find((t) => t.code === code);
+        return chargeCode?.activities ?? [];
+      }),
+      takeUntil(this.destroyed$),
+    );
+    this.activities$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: () => {
+        this.form.controls.ActivityId.reset();
+        this.form.controls.Task.reset();
+      },
+      error: console.error,
+    });
 
     combineLatest([
       this.chargeCodes$,

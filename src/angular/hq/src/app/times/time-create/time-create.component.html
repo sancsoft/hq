@@ -48,36 +48,29 @@
                 <div
                   class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"
                 >
-                  <hq-select-input
-                    label="Charge Code"
-                    formControlName="ChargeCode"
-                    [autocomplete]="true"
-                    variant="secondary"
-                  >
-                    <ng-template [hqSelectInputOption]="null">Chrg</ng-template>
-                    @for (code of chargeCodes$ | async; track code.code) {
-                      <ng-template
-                        [hqSelectInputOption]="code.code"
-                        [hqSelectInputOptionSelectedDisplay]="
-                          code.code + ': ' + code.projectName
-                        "
-                        [hqSelectInputOptionSearch]="
-                          code.code +
-                          ': ' +
-                          code.clientName +
-                          ': ' +
-                          code.projectName
-                        "
-                        >{{
-                          code.code +
-                            ": " +
-                            code.clientName +
-                            ": " +
-                            code.projectName
-                        }}</ng-template
+                  <div>
+                    <hq-select-input
+                      [autocomplete]="true"
+                      formControlName="StaffId"
+                      label="Staff Member"
+                      variant="secondary"
+                      [inline]="true"
+                    >
+                      <ng-template [hqSelectInputOption]="null"
+                        >Please Select a staff member</ng-template
                       >
-                    }
-                  </hq-select-input>
+                      <ng-template hqValidationError="required">
+                        Project manager is required.
+                      </ng-template>
+                      @for (staff of staffMembers$ | async; track staff.id) {
+                        <ng-template
+                          [hqSelectInputOption]="staff.id"
+                          [hqSelectInputOptionSearch]="staff.name"
+                          >{{ staff.name }}</ng-template
+                        >
+                      }
+                    </hq-select-input>
+                  </div>
                   <div>
                     <hq-date-input
                       formControlName="Date"
@@ -88,6 +81,78 @@
                   </div>
 
                   <!-- column -->
+                </div>
+                <!-- Row grid -->
+
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"
+                >
+                  <div>
+                    <hq-select-input
+                      label="Charge Code"
+                      formControlName="ChargeCode"
+                      [autocomplete]="true"
+                      variant="secondary"
+                    >
+                      <ng-template [hqSelectInputOption]="null"
+                        >Chrg</ng-template
+                      >
+                      @for (code of chargeCodes$ | async; track code.code) {
+                        <ng-template
+                          [hqSelectInputOption]="code.code"
+                          [hqSelectInputOptionSelectedDisplay]="
+                            code.code + ': ' + code.projectName
+                          "
+                          [hqSelectInputOptionSearch]="
+                            code.code +
+                            ': ' +
+                            code.clientName +
+                            ': ' +
+                            code.projectName
+                          "
+                          >{{
+                            code.code +
+                              ": " +
+                              code.clientName +
+                              ": " +
+                              code.projectName
+                          }}</ng-template
+                        >
+                      }
+                    </hq-select-input>
+                  </div>
+                  <div>
+                    @if (activities$ | async; as activities) {
+                      @if (activities && activities.length > 0) {
+                        <hq-select-input
+                          label="Select Activity"
+                          formControlName="ActivityId"
+                          [autocomplete]="false"
+                          variant="secondary"
+                        >
+                          <ng-template [hqSelectInputOption]="null"
+                            >Activity</ng-template
+                          >
+                          @for (
+                            activity of activities$ | async;
+                            track activity.id
+                          ) {
+                            <ng-template [hqSelectInputOption]="activity.id">
+                              {{ activity.name }}
+                            </ng-template>
+                          }
+                        </hq-select-input>
+                      } @else {
+                        <hq-form-label>Task</hq-form-label>
+                        <input
+                          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+                          type="text"
+                          aria-label="Task"
+                          formControlName="Task"
+                        />
+                      }
+                    }
+                  </div>
                 </div>
                 <!-- row grid -->
                 <div
@@ -126,6 +191,7 @@
                       >
                     }
                   </div>
+
                   <div>
                     <!-- text input -->
                     <label
@@ -154,29 +220,6 @@
                         >Description is required.</span
                       >
                     }
-                  </div>
-                  <div>
-                    <hq-select-input
-                      [autocomplete]="true"
-                      formControlName="StaffId"
-                      label="Staff Member"
-                      variant="secondary"
-                      [inline]="true"
-                    >
-                      <ng-template [hqSelectInputOption]="null"
-                        >Please Select a staff member</ng-template
-                      >
-                      <ng-template hqValidationError="required">
-                        Project manager is required.
-                      </ng-template>
-                      @for (staff of staffMembers$ | async; track staff.id) {
-                        <ng-template
-                          [hqSelectInputOption]="staff.id"
-                          [hqSelectInputOptionSearch]="staff.name"
-                          >{{ staff.name }}</ng-template
-                        >
-                      }
-                    </hq-select-input>
                   </div>
                 </div>
                 <div></div>

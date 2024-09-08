@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { skip } from 'rxjs';
+/* eslint-disable rxjs-angular/prefer-async-pipe */
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -12,9 +14,20 @@ import {
   RouterLink,
   RouterLinkActive,
 } from '@angular/router';
-import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
+import {
+  Observable,
+  BehaviorSubject,
+  map,
+  firstValueFrom,
+  Subject,
+  combineLatest,
+  takeUntil,
+} from 'rxjs';
 import { APIError } from '../../errors/apierror';
-import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
+import {
+  Activity,
+  GetChargeCodeRecordV1,
+} from '../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
@@ -53,7 +66,7 @@ interface Form {
 
   templateUrl: './time-edit.component.html',
 })
-export class TimeEditComponent implements OnInit {
+export class TimeEditComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];
   ChargeCodeActivity = ChargeCodeActivity;
 
@@ -66,6 +79,8 @@ export class TimeEditComponent implements OnInit {
   showProjects$ = new BehaviorSubject<boolean | null>(null);
   showQuotes$ = new BehaviorSubject<boolean | null>(null);
   showServices$ = new BehaviorSubject<boolean | null>(null);
+  activities$: Observable<Activity[] | null>;
+  private destroyed$ = new Subject<void>();
 
   form = new FormGroup<Form>({
     ProjectId: new FormControl<string | null>(null, {
@@ -103,6 +118,10 @@ export class TimeEditComponent implements OnInit {
       ).get('timeId')) ?? undefined;
     await this.getTime();
   }
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
 
   constructor(
     private hqService: HQService,
@@ -130,6 +149,23 @@ export class TimeEditComponent implements OnInit {
         return response.records;
       }),
     );
+    this.activities$ = combineLatest([
+      this.chargeCodes$,
+      this.form.controls.ChargeCode.valueChanges,
+    ]).pipe(
+      map(([chargeCodes, code]) => {
+        const chargeCode = chargeCodes.find((t) => t.code === code);
+        return chargeCode?.activities ?? [];
+      }),
+      takeUntil(this.destroyed$),
+    );
+    this.activities$.pipe(skip(1), takeUntil(this.destroyed$)).subscribe({
+      next: () => {
+        this.form.controls.ActivityId.reset();
+        this.form.controls.Task.reset();
+      },
+      error: console.error,
+    });
   }
 
   async submit() {
