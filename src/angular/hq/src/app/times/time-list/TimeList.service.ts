@@ -68,7 +68,7 @@ export class TimeListService extends BaseListService<
   Status = TimeStatus;
 
   constructor(private hqService: HQService) {
-    super(SortColumn.Date, SortDirection.Asc);
+    super(SortColumn.Date, SortDirection.Desc);
 
     this.staffMembers$ = this.hqService
       .getStaffMembersV1({
