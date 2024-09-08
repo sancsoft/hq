@@ -47,6 +47,7 @@ export class TimeListService extends BaseListService<
   isSubmitted = new FormControl<boolean | null>(null);
   invoiced = new FormControl<boolean | null>(null);
   timeStatus = new FormControl<TimeStatus | null>(null);
+  billable = new FormControl<boolean | null>(null);
 
   startDate = new FormControl<Date | null>(null);
   endDate = new FormControl<Date | null>(null);
@@ -127,6 +128,9 @@ export class TimeListService extends BaseListService<
     const timeStatus$ = this.timeStatus.valueChanges.pipe(
       startWith(this.timeStatus.value),
     );
+    const billable$ = this.billable.valueChanges.pipe(
+      startWith(this.billable.value),
+    );
     const combinedParams = {
       search: this.search$,
       skip: this.skip$,
@@ -141,6 +145,7 @@ export class TimeListService extends BaseListService<
       invoiced: invoiced$,
       timeStatus: timeStatus$,
       sortDirection: this.sortDirection$,
+      billable: billable$,
     };
 
     return combineLatest(combinedParams).pipe(

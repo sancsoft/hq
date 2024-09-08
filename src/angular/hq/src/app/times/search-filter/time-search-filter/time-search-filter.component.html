@@ -27,7 +27,7 @@
   @if (
     (timeService.staffMembers$ | async) && timeService.showStaffMembers$ | async
   ) {
-    <div class="relative flex flex-col w-full max-w-[220px]">
+    <div class="w-full">
       <hq-select-input
         [autocomplete]="true"
         [formControl]="timeService.staffMember"
@@ -49,7 +49,7 @@
     </div>
   }
   @if (timeService.clients$ | async) {
-    <div class="relative flex flex-col w-full max-w-[220px]">
+    <div class="w-full">
       <hq-select-input
         [autocomplete]="true"
         [formControl]="timeService.client"
@@ -71,7 +71,7 @@
     </div>
   }
   @if (timeService.projects$ | async) {
-    <div class="relative flex flex-col w-full max-w-[220px]">
+    <div class="w-full">
       <hq-select-input
         [autocomplete]="true"
         [formControl]="timeService.project"
@@ -92,80 +92,85 @@
       </hq-select-input>
     </div>
   }
-  <div class="relative flex flex-col w-full max-w-[220px]">
-    <label
-      for="timeStatus"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-      >Time Status</label
+  <div class="w-full">
+    <hq-select-input
+      [autocomplete]="false"
+      [formControl]="timeService.timeStatus"
+      label="Time States"
+      variant="secondary"
     >
-    <div class="grid relative">
-      <select
-        [formControl]="timeService.timeStatus"
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      <ng-template [hqSelectInputOption]="timeService.Status.Unsubmitted"
+        >Unsubmitted</ng-template
       >
-        <option [ngValue]="null" selected>All</option>
-        <option [ngValue]="timeService.Status.Unsubmitted">Unsubmitted</option>
-        <option [ngValue]="timeService.Status.Submitted">Submitted</option>
-        <option [ngValue]="timeService.Status.Accepted">Accepted</option>
-        <option [ngValue]="timeService.Status.Rejected">Rejected</option>
-        <option [ngValue]="timeService.Status.Resubmitted">Resubmitted</option>
-      </select>
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+      <ng-template [hqSelectInputOption]="timeService.Status.Submitted"
+        >Submitted</ng-template
       >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div>
+      <ng-template [hqSelectInputOption]="timeService.Status.Accepted"
+        >Accepted</ng-template
+      >
+      <ng-template [hqSelectInputOption]="timeService.Status.Rejected"
+        >Rejected</ng-template
+      >
+      <ng-template [hqSelectInputOption]="timeService.Status.Resubmitted"
+        >Resubmitted</ng-template
+      >
+    </hq-select-input>
   </div>
-  <div class="relative flex flex-col w-full max-w-[220px]">
-    <label
-      for="invoiced"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-      >Invoiced</label
+  <div class="w-full">
+    <hq-select-input
+      [autocomplete]="false"
+      [formControl]="timeService.invoiced"
+      label="Invoiced"
+      variant="secondary"
     >
-    <div class="grid relative">
-      <select
-        [formControl]="timeService.invoiced"
-        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
-      >
-        <option [ngValue]="null">All</option>
-        <option [ngValue]="true">Yes</option>
-        <option [ngValue]="false">No</option>
-      </select>
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
-      >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div>
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      <ng-template [hqSelectInputOption]="true">Yes</ng-template>
+      <ng-template [hqSelectInputOption]="false">No</ng-template>
+    </hq-select-input>
   </div>
-  <div class="relative flex flex-col w-full max-w-[220px]">
-    <label
-      for="selectedPeriod"
-      class="font-open-sans text-nav-disabled text-xs font-bold uppercase whitespace-nowrap"
-      >Period</label
+  <div class="w-full">
+    <hq-select-input
+      [autocomplete]="false"
+      [formControl]="timeService.billable"
+      label="Billable"
+      variant="secondary"
     >
-    <div class="grid relative">
-      <select
-        [formControl]="timeService.selectedPeriod"
-        (change)="showHideDates()"
-        class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]"
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      <ng-template [hqSelectInputOption]="true">Yes</ng-template>
+      <ng-template [hqSelectInputOption]="false">No</ng-template>
+    </hq-select-input>
+  </div>
+  <div class="w-full">
+    <hq-select-input
+      [autocomplete]="false"
+      [formControl]="timeService.selectedPeriod"
+      label="Period"
+      variant="secondary"
+    >
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      <ng-template [hqSelectInputOption]="timeService.Period.Today"
+        >Today</ng-template
       >
-        <option [ngValue]="null">All</option>
-        <option [ngValue]="timeService.Period.Today">Today</option>
-        <option [ngValue]="timeService.Period.Week">This Week</option>
-        <option [ngValue]="timeService.Period.Month">This Month</option>
-        <option [ngValue]="timeService.Period.LastWeek">Last Week</option>
-        <option [ngValue]="timeService.Period.LastMonth">Last Month</option>
-        <option [ngValue]="timeService.Period.Year">This Year</option>
-        <option [ngValue]="timeService.Period.Custom">Custom</option>
-      </select>
-      <span
-        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+      <ng-template [hqSelectInputOption]="timeService.Period.Week"
+        >This Week</ng-template
       >
-        <i class="bi bi-arrow-down-short text-[24px]"></i>
-      </span>
-    </div>
+      <ng-template [hqSelectInputOption]="timeService.Period.Month"
+        >This Month</ng-template
+      >
+      <ng-template [hqSelectInputOption]="timeService.Period.LastWeek"
+        >Last Week</ng-template
+      >
+      <ng-template [hqSelectInputOption]="timeService.Period.LastMonth"
+        >Last Month</ng-template
+      >
+      <ng-template [hqSelectInputOption]="timeService.Period.Year"
+        >This Year</ng-template
+      >
+      <ng-template [hqSelectInputOption]="timeService.Period.Custom"
+        >Custom</ng-template
+      >
+    </hq-select-input>
   </div>
   @if (timeService.showStartDate$ | async) {
     <div class="relative flex flex-col w-full max-w-[220px]">
