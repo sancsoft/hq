@@ -34,7 +34,7 @@
         label="Staff Member"
         variant="secondary"
       >
-        <ng-template [hqSelectInputOption]="null">Select a staff</ng-template>
+        <ng-template [hqSelectInputOption]="null">All</ng-template>
         <ng-template hqValidationError="required">
           Staff is required.
         </ng-template>
@@ -56,7 +56,7 @@
         label="Client"
         variant="secondary"
       >
-        <ng-template [hqSelectInputOption]="null">Select a client</ng-template>
+        <ng-template [hqSelectInputOption]="null">All</ng-template>
         <ng-template hqValidationError="required">
           Client is required.
         </ng-template>
@@ -78,7 +78,7 @@
         label="Project"
         variant="secondary"
       >
-        <ng-template [hqSelectInputOption]="null">Select a project</ng-template>
+        <ng-template [hqSelectInputOption]="null">All</ng-template>
         <ng-template hqValidationError="required">
           Project is required.
         </ng-template>
@@ -143,6 +143,7 @@
   </div>
   <div class="w-full">
     <hq-select-input
+      (change)="showHideDates()"
       [autocomplete]="false"
       [formControl]="timeService.selectedPeriod"
       label="Period"

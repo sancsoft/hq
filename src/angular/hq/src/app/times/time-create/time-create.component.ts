@@ -1,4 +1,3 @@
-/* eslint-disable rxjs-angular/prefer-async-pipe */
 import { Component, OnDestroy } from '@angular/core';
 import {
   FormGroup,
@@ -162,7 +161,7 @@ export class TimeCreateComponent implements OnDestroy {
       takeUntil(this.destroyed$),
     );
     this.activities$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: () => {
+      next: (v) => {
         this.form.controls.ActivityId.reset();
         this.form.controls.Task.reset();
       },

@@ -133,10 +133,7 @@
                           <ng-template [hqSelectInputOption]="null"
                             >Activity</ng-template
                           >
-                          @for (
-                            activity of activities$ | async;
-                            track activity.id
-                          ) {
+                          @for (activity of activities; track activity.id) {
                             <ng-template [hqSelectInputOption]="activity.id">
                               {{ activity.name }}
                             </ng-template>
