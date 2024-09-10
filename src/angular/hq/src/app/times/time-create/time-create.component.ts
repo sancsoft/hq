@@ -1,6 +1,5 @@
-import { skip } from 'rxjs';
 /* eslint-disable rxjs-angular/prefer-async-pipe */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -19,9 +18,10 @@ import {
   BehaviorSubject,
   map,
   firstValueFrom,
+  shareReplay,
   Subject,
-  combineLatest,
   takeUntil,
+  combineLatest,
 } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import {
@@ -39,6 +39,9 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { ChargeCodeActivity } from '../../enums/charge-code-activity';
 import { CoreModule } from '../../core/core.module';
+import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
+import { ToastService } from '../../services/toast.service';
+import { localISODate } from '../../common/functions/local-iso-date';
 
 interface Form {
   ProjectId: FormControl<string | null>;
@@ -46,13 +49,14 @@ interface Form {
   Hours: FormControl<number | null>;
   ActivityId: FormControl<string | null>;
   ChargeCode: FormControl<string | null>;
-  Date: FormControl<Date | null>;
+  Date: FormControl<string | null>;
   Task: FormControl<string | null>;
   Notes: FormControl<string | null>;
+  StaffId: FormControl<string | null>;
 }
 
 @Component({
-  selector: 'hq-time-edit',
+  selector: 'hq-time-create',
   standalone: true,
   imports: [
     CommonModule,
@@ -64,14 +68,16 @@ interface Form {
     CoreModule,
   ],
 
-  templateUrl: './time-edit.component.html',
+  templateUrl: './time-create.component.html',
 })
-export class TimeEditComponent implements OnInit, OnDestroy {
+export class TimeCreateComponent implements OnDestroy {
   apiErrors: string[] = [];
   ChargeCodeActivity = ChargeCodeActivity;
 
   projects$: Observable<GetTimeRecordProjectsV1[]>;
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
+  staffMembers$: Observable<GetStaffV1Record[]>;
+  activities$: Observable<Activity[] | null>;
 
   clients$: Observable<GetTimeRecordClientsV1[]>;
   timeId?: string;
@@ -79,7 +85,6 @@ export class TimeEditComponent implements OnInit, OnDestroy {
   showProjects$ = new BehaviorSubject<boolean | null>(null);
   showQuotes$ = new BehaviorSubject<boolean | null>(null);
   showServices$ = new BehaviorSubject<boolean | null>(null);
-  activities$: Observable<Activity[] | null>;
   private destroyed$ = new Subject<void>();
 
   form = new FormGroup<Form>({
@@ -91,14 +96,14 @@ export class TimeEditComponent implements OnInit, OnDestroy {
     }),
 
     ChargeCode: new FormControl<string | null>(null, {
-      validators: [],
+      validators: [Validators.required],
     }),
 
     Hours: new FormControl<number | null>(null, {
-      validators: [],
+      validators: [Validators.required, Validators.min(0.25)],
     }),
-    Date: new FormControl<Date | null>(null, {
-      validators: [],
+    Date: new FormControl<string | null>(localISODate(), {
+      validators: [Validators.required],
     }),
 
     Task: new FormControl<string | null>(null, {
@@ -110,23 +115,16 @@ export class TimeEditComponent implements OnInit, OnDestroy {
     Notes: new FormControl<string | null>(null, {
       validators: [Validators.required],
     }),
+    StaffId: new FormControl<string | null>(null, {
+      validators: [Validators.required],
+    }),
   });
-  async ngOnInit() {
-    this.timeId =
-      (await (
-        await firstValueFrom(this.route.paramMap.pipe())
-      ).get('timeId')) ?? undefined;
-    await this.getTime();
-  }
-  ngOnDestroy() {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
 
   constructor(
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
+    private toastService: ToastService,
     private oidcSecurityService: OidcSecurityService,
   ) {
     const projectsResponse$ = this.hqService.getProjectsV1({});
@@ -134,6 +132,10 @@ export class TimeEditComponent implements OnInit, OnDestroy {
       map((response) => {
         return response.records;
       }),
+    );
+    this.staffMembers$ = this.hqService.getStaffMembersV1({}).pipe(
+      map((t) => t.records),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     const clientsResponse$ = this.hqService.getClientsV1({});
@@ -159,13 +161,35 @@ export class TimeEditComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.destroyed$),
     );
-    this.activities$.pipe(skip(1), takeUntil(this.destroyed$)).subscribe({
+    this.activities$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: () => {
         this.form.controls.ActivityId.reset();
         this.form.controls.Task.reset();
       },
       error: console.error,
     });
+
+    combineLatest([
+      this.chargeCodes$,
+      this.form.controls.ChargeCode.valueChanges,
+    ])
+      .pipe(
+        map(([chargeCodes, code]) => {
+          const chargeCode = chargeCodes.find((t) => t.code === code);
+          return chargeCode?.maximumTimeEntryHours ?? 0;
+        }),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe({
+        next: (maxTimeEntryHours) => {
+          this.setMaximumHours(maxTimeEntryHours);
+        },
+        error: console.error,
+      });
+  }
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   async submit() {
@@ -181,12 +205,13 @@ export class TimeEditComponent implements OnInit, OnDestroy {
     try {
       const request = this.form.value;
       await firstValueFrom(
-        this.hqService.upsertTimeV1({ ...request, id: this.timeId }),
+        this.hqService.upsertTimeV1({ ...request, id: null }),
       );
-      await this.router.navigate(['../../'], { relativeTo: this.route });
+      await this.router.navigate(['../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
+        this.toastService.show('Error', err.errors.join('\n'));
       } else {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
@@ -197,27 +222,40 @@ export class TimeEditComponent implements OnInit, OnDestroy {
     const roundedHours = roundToNextQuarter(hours);
     this.form.get('Hours')?.setValue(roundedHours);
   }
-  private async getTime() {
-    try {
-      const request = { Id: this.timeId };
-      const response = await firstValueFrom(this.hqService.getTimesV1(request));
-      const time = response.records[0];
-      this.form.setValue({
-        ProjectId: time.projectId ?? null,
-        ClientId: time.clientId ?? null,
-        Notes: time.description ?? null,
-        Hours: time.hours,
-        Date: time.date,
-        Task: time.task,
-        ActivityId: time.activityId,
-        ChargeCode: time.chargeCode,
-      });
-    } catch (err) {
-      if (err instanceof APIError) {
-        this.apiErrors = err.errors;
-      } else {
-        this.apiErrors = ['An unexpected error has occurred.'];
-      }
+
+  private setMaximumHours(maxTime?: number): void {
+    const maxTimeEntry = maxTime;
+    console.log('maxTimeEntry ', maxTimeEntry, maxTime);
+    if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
+      this.form.controls.Hours.setValidators([
+        Validators.required,
+        Validators.min(0.25),
+        Validators.max(maxTimeEntry),
+      ]);
+      this.form.controls.Hours.updateValueAndValidity();
     }
   }
+  // private async getTime() {
+  //   try {
+  //     const request = { Id: this.timeId };
+  //     const response = await firstValueFrom(this.hqService.getTimesV1(request));
+  //     const time = response.records[0];
+  //     this.form.setValue({
+  //       ProjectId: time.projectId ?? null,
+  //       ClientId: time.clientId ?? null,
+  //       Notes: time.description ?? null,
+  //       Hours: time.hours,
+  //       Date: time.date,
+  //       Task: time.task,
+  //       ActivityId: time.activityId,
+  //       ChargeCode: time.chargeCode,
+  //     });
+  //   } catch (err) {
+  //     if (err instanceof APIError) {
+  //       this.apiErrors = err.errors;
+  //     } else {
+  //       this.apiErrors = ['An unexpected error has occurred.'];
+  //     }
+  //   }
+  // }
 }

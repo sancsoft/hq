@@ -1,7 +1,7 @@
 <form [formGroup]="form">
   <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
     <div class="px-5">
-      <h1 class="font-rajdhani font-semibold text-3xl">Edit Time</h1>
+      <h1 class="font-rajdhani font-semibold text-3xl">Create Time</h1>
 
       <div class="py-3">
         <a routerLink="/times" class="text-gray-50 underline">Time List</a>
@@ -48,6 +48,29 @@
                 <div
                   class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"
                 >
+                  <div>
+                    <hq-select-input
+                      [autocomplete]="true"
+                      formControlName="StaffId"
+                      label="Staff Member"
+                      variant="secondary"
+                      [inline]="true"
+                    >
+                      <ng-template [hqSelectInputOption]="null"
+                        >Please Select a staff member</ng-template
+                      >
+                      <ng-template hqValidationError="required">
+                        Project manager is required.
+                      </ng-template>
+                      @for (staff of staffMembers$ | async; track staff.id) {
+                        <ng-template
+                          [hqSelectInputOption]="staff.id"
+                          [hqSelectInputOptionSearch]="staff.name"
+                          >{{ staff.name }}</ng-template
+                        >
+                      }
+                    </hq-select-input>
+                  </div>
                   <div>
                     <hq-date-input
                       formControlName="Date"
@@ -111,12 +134,7 @@
                             >Activity</ng-template
                           >
                           @for (activity of activities; track activity.id) {
-                            <ng-template
-                              [hqSelectInputOptionSelectedDisplay]="
-                                activity.name
-                              "
-                              [hqSelectInputOption]="activity.id"
-                            >
+                            <ng-template [hqSelectInputOption]="activity.id">
                               {{ activity.name }}
                             </ng-template>
                           }

@@ -363,6 +363,11 @@ namespace HQ.Server.Services
                 records = records.Where(t => isInvoiceRequired ? t.InvoiceId != null : t.InvoiceId == null);
             }
 
+            if (request.Billable.HasValue)
+            {
+                var isBillable = request.Billable.Value;
+                records = records.Where(t => t.ChargeCode.Billable == isBillable);
+            }
 
             if (request.TimeAccepted.HasValue)
             {

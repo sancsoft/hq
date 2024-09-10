@@ -399,7 +399,6 @@ export class StaffDashboardTimeEntryComponent
 
   private setMaximumHours(maxTime?: number): void {
     const maxTimeEntry = maxTime ?? this.time?.maximumTimeEntryHours;
-    console.log('maxTimeEntry ', maxTimeEntry, maxTime);
     if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
       this.form.controls.hours.setValidators([
         Validators.required,
