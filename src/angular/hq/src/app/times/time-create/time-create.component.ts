@@ -1,3 +1,4 @@
+/* eslint-disable rxjs-angular/prefer-async-pipe */
 import { Component, OnDestroy } from '@angular/core';
 import {
   FormGroup,
