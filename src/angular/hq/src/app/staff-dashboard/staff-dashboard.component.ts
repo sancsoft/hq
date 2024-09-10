@@ -68,6 +68,7 @@ import {
   GetChargeCodeRecordV1,
   SortColumn,
 } from '../models/charge-codes/get-chargecodes-v1';
+import { StaffStatus } from '../enums/staff-status';
 
 export interface PointForm {
   id: FormControl<string | null>;
@@ -105,6 +106,8 @@ export interface PointForm {
 export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   Period = Period;
   HQRole = HQRole;
+
+  staffStatus = StaffStatus;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;

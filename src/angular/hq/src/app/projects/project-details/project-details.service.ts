@@ -9,11 +9,14 @@ import {
   Subject,
   switchMap,
   tap,
+  combineLatest,
 } from 'rxjs';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { HQService } from '../../services/hq.service';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { HQRole } from '../../enums/hqrole';
 
 @Injectable({
   providedIn: 'root',
@@ -25,12 +28,16 @@ export class ProjectDetailsService {
   client$: Observable<GetClientRecordV1>;
   project$: Observable<GetProjectRecordV1>;
   activities$: Observable<GetProjectActivityRecordV1[]>;
-
+  HQRole = HQRole;
   private projectIdSubject = new BehaviorSubject<string | null>(null);
   private psrIdSubject = new BehaviorSubject<string | null | undefined>(null);
   private refreshSubject = new Subject<void>();
+  canManageProjectStatusReport$: Observable<boolean>;
 
-  constructor(private hqService: HQService) {
+  constructor(
+    private hqService: HQService,
+    private oidcSecurityService: OidcSecurityService,
+  ) {
     const projectId$ = this.projectIdSubject.asObservable().pipe(
       filter((projectId) => projectId != null),
       map((projectId) => projectId!),
@@ -65,6 +72,23 @@ export class ProjectDetailsService {
       map((t) => t.records[0]),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
+    this.canManageProjectStatusReport$ = combineLatest({
+      userData: oidcSecurityService.userData$.pipe(map((t) => t.userData)),
+      project: this.project$,
+    }).pipe(
+      map(
+        (t) =>
+          t.userData.roles &&
+          Array.isArray(t.userData.roles) &&
+          (t.userData.roles.includes(HQRole.Administrator) ||
+            t.userData.roles.includes(HQRole.Executive) ||
+            t.userData.roles.includes(HQRole.Partner) ||
+            (t.userData.roles.includes(HQRole.Manager) &&
+              t.project.projectManagerId == t.userData.staff_id)),
+      ),
+      map((t) => !!t),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
   }
 
   setProjectId(projectId?: string | null) {
@@ -76,7 +100,6 @@ export class ProjectDetailsService {
   setPsrId(psrId?: string | null) {
     this.psrIdSubject.next(psrId);
   }
-
   refresh() {
     this.refreshSubject.next();
   }
