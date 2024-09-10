@@ -1,17 +1,11 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterLink,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   switchMap,
   firstValueFrom,
   startWith,
   combineLatest,
-  takeUntil,
   ReplaySubject,
 } from 'rxjs';
 import { SortColumn } from '../../models/times/get-time-v1';
@@ -69,15 +63,7 @@ export class TimeListComponent implements OnDestroy {
     private toastService: ToastService,
     private modalService: ModalService,
   ) {
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (event) => {
-        if (event instanceof NavigationEnd) {
-          this.listService.refresh();
-        }
-      },
-      error: console.error,
-    });
+    this.listService.refresh();
   }
   ngOnDestroy(): void {
     this.destroyed$.next(true);
