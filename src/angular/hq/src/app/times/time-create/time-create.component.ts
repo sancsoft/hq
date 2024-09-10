@@ -162,7 +162,7 @@ export class TimeCreateComponent implements OnDestroy {
       takeUntil(this.destroyed$),
     );
     this.activities$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (v) => {
+      next: () => {
         this.form.controls.ActivityId.reset();
         this.form.controls.Task.reset();
       },
