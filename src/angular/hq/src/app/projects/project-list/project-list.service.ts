@@ -40,12 +40,11 @@ export class ProjectListService extends BaseListService<
   public projectStatusEnum$ = enumToArrayObservable(ProjectStatus);
 
   // Filters
-  public projectStatus = new FormControl<ProjectStatus | null>(10);
+  public projectStatus = new FormControl<ProjectStatus | null>(null);
   public projectStatus$ = formControlChanges(this.projectStatus).pipe(
     tap(() => this.goToPage(1)),
     shareReplay({ bufferSize: 1, refCount: false }),
   );
-  public toggleStatus = new FormControl<boolean | null>(true);
 
   public projectManagerId = new FormControl<string | null>(null);
   public projectManagerId$ = formControlChanges(this.projectManagerId).pipe(

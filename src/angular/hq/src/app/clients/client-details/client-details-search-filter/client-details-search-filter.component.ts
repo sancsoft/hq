@@ -7,9 +7,7 @@ import { SelectInputComponent } from '../../../core/components/select-input/sele
 import { SelectInputOptionDirective } from '../../../core/directives/select-input-option.directive';
 import { enumToArrayObservable } from '../../../core/functions/enum-to-array';
 import { ProjectStatus } from '../../../enums/project-status';
-import { enumToArray } from '../../../core/functions/enum-to-array';
 
-import { ClientProjectListService } from '../client-project-list/client-project-list.service';
 @Component({
   selector: 'hq-client-details-search-filter',
   standalone: true,
@@ -24,18 +22,6 @@ import { ClientProjectListService } from '../client-project-list/client-project-
   templateUrl: './client-details-search-filter.component.html',
 })
 export class ClientDetailsSearchFilterComponent {
-  projectStatus = enumToArray(ProjectStatus);
-
   public projectStatusEnum$ = enumToArrayObservable(ProjectStatus);
-  constructor(
-    public clientDetailService: ClientDetailsService,
-    public clientProjectListService: ClientProjectListService,
-  ) {}
-
-  onToggleChange(event: Event) {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    const newStatus = isChecked ? 10 : null;
-    this.clientDetailService.projectStatus.setValue(newStatus);
-    this.clientDetailService.toggleStatus.setValue(isChecked);
-  }
+  constructor(public clientDetailService: ClientDetailsService) {}
 }

@@ -235,15 +235,7 @@ public class ProjectServiceV1
 
         if (request.ProjectStatus.HasValue && request.ProjectStatus != null)
         {
-            if (request.ProjectStatus.Value == ProjectStatus.CurrentOnly)
-            {
-                records = records.Where(t => t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing);
-            }
-            else
-            {
-                records = records.Where(t => t.Status == request.ProjectStatus);
-            }
-
+            records = records.Where(t => t.Status == request.ProjectStatus);
         }
         var bookingStartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Month);
         var bookingEndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(Period.Month);

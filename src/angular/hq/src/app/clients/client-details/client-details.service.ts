@@ -20,8 +20,7 @@ export class ClientDetailsService {
   ProjectStatus = ProjectStatus;
 
   search = new FormControl<string | null>(null);
-  public projectStatus = new FormControl<ProjectStatus | null>(10);
-  public toggleStatus = new FormControl<boolean | null>(true);
+  projectStatus = new FormControl<ProjectStatus | null>(null);
 
   showProjectStatus$: Observable<boolean>;
 
@@ -56,7 +55,7 @@ export class ClientDetailsService {
 
   resetFilters() {
     this.search.reset();
-    this.projectStatus.reset(10);
+    this.projectStatus.reset();
   }
 
   showProjectStatus() {
