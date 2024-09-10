@@ -99,6 +99,7 @@ export class PlanningPointsComponent implements OnDestroy {
     const dialogRef = this.dialog.open<boolean>(PlanningPointsModalComponent, {
       width: '600px',
       data: {
+        title: staff.staffName,
         staffId: staff.staffId,
         date: this.date.value,
       },
