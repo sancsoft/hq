@@ -237,6 +237,13 @@ public class ProjectServiceV1
         {
             records = records.Where(t => t.Status == request.ProjectStatus);
         }
+        if (request.CurrentOnly.HasValue)
+        {
+            if (request.CurrentOnly.Value)
+            {
+                records = records.Where(t => t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing);
+            }
+        }
         var bookingStartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Month);
         var bookingEndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(Period.Month);
 
