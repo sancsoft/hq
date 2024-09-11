@@ -37,7 +37,7 @@ export class ClientDetailsComponent {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private clientDetailsService: ClientDetailsService,
+    public clientDetailsService: ClientDetailsService,
     private route: ActivatedRoute,
   ) {
     const clientId$ = route.paramMap.pipe(map((t) => t.get('clientId')));
