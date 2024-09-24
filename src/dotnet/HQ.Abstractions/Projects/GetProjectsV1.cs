@@ -66,6 +66,7 @@ public class GetProjectsV1
         // Letter of engagement
         public decimal HourlyRate { get; set; }
         public decimal BookingHours { get; set; }
+        public decimal TimeEntryMaxHours { get; set; }
         public Period BookingPeriod { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }

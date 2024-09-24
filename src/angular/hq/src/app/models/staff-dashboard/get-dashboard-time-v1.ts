@@ -15,6 +15,7 @@ export interface GetDashboardTimeV1Response {
   hoursThisWeek: number;
   hoursThisMonth: number;
   hoursLastWeek: number;
+  maximumTimeEntryHours: number;
   staffName: string;
   vacation: number;
   startDate: string;
@@ -22,10 +23,9 @@ export interface GetDashboardTimeV1Response {
   previousDate: string;
   nextDate: string;
   dates: GetDashboardTimeV1TimeForDate[];
-  chargeCodes: GetDashboardTimeV1ChargeCode[];
-  clients: GetDashboardTimeV1Client[];
   rejectedCount: number;
   canSubmit: boolean;
+  timeEntryCutoffDate: string;
 }
 
 export interface GetDashboardTimeV1TimeForDate {
@@ -42,6 +42,7 @@ export interface GetDashboardTimeV1TimeForDateTimes {
   notes: string | null;
   task: string | null;
   chargeCodeId: string | null;
+  maximumTimeEntryHours: number;
   chargeCode: string;
   clientId: string | null;
   projectId: string | null;
@@ -51,30 +52,4 @@ export interface GetDashboardTimeV1TimeForDateTimes {
   activityId: string | null;
   timeStatus: TimeStatus | null;
   rejectionNotes: string | null;
-}
-
-export interface GetDashboardTimeV1ChargeCode {
-  id: string;
-  clientId: string;
-  projectId: string;
-  code: string;
-}
-
-export interface GetDashboardTimeV1Client {
-  id: string;
-  name: string;
-  projects: GetDashboardTimeV1Project[];
-}
-
-export interface GetDashboardTimeV1Project {
-  id: string;
-  chargeCodeId: string | null;
-  chargeCode: string | null;
-  name: string;
-  activities: GetDashboardTimeV1ProjectActivity[];
-}
-
-export interface GetDashboardTimeV1ProjectActivity {
-  id: string;
-  name: string;
 }

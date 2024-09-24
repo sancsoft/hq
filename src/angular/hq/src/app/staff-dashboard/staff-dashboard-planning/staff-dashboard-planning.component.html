@@ -54,7 +54,7 @@
             hq-staff-dashboard-planning-point
             [editMode]="editPlanButton$ | async"
             [point]="point"
-            [chargeCodes]="chargeCodes$ | async"
+            [chargeCodes]="staffDashboardService.chargeCodes$ | async"
             class="even:bg-gray-850 odd:bg-black-alt"
             cdkDrag
           ></tr>
@@ -63,30 +63,20 @@
             hq-staff-dashboard-planning-point
             [point]="point"
             [editMode]="editPlanButton$ | async"
-            [chargeCodes]="chargeCodes$ | async"
+            [chargeCodes]="staffDashboardService.chargeCodes$ | async"
             class="even:bg-gray-850 odd:bg-black-alt"
           ></tr>
         }
       }
-      <!-- } -->
     </tbody>
   </table>
   <div class="flex justify-end mt-3 mr-3">
     <hq-button
-      [disabled]="(staffDashboardService.canEdit$ | async) === false"
+      [disabled]="(staffDashboardService.canEditPoints$ | async) === false"
       (click)="toggleButtonValue()"
       [variant]="(editPlanButton$ | async) ? 'primary' : 'outline'"
     >
       {{ (editPlanButton$ | async) ? "Save Plan" : "Edit Plan" }}</hq-button
     >
-    <!-- <button
-      [ngClass]="{
-        ' bg-orange-500  ': (editPlanButton$ | async) === true,
-      }"
-
-      class="px-2 py-2 bg-transparent border rounded min-w-[120px] font-normal text-white border-orange-500 hover:border-orange-600 hover:bg-orange-600"
-    >
-
-    </button> -->
   </div>
 </div>

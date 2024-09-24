@@ -59,7 +59,13 @@ namespace HQ.Server.Services
             }
 
 
-            var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.ChargeCode || t.Id == request.ChargeCodeId).FirstOrDefaultAsync();
+            var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.ChargeCode || t.Id == request.ChargeCodeId).Include(t => t.Project).FirstOrDefaultAsync(ct);
+            var maximumTimeEntryHours = chargeCode?.Project?.TimeEntryMaxHours;
+            if (request.Hours > maximumTimeEntryHours)
+            {
+                return Result.Fail($"Time entry hours ({request.Hours}) exceed the maximum allowed hours ({maximumTimeEntryHours})");
+
+            }
 
             if ((!string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue) || chargeCode == null)
             {
@@ -571,6 +577,7 @@ namespace HQ.Server.Services
                     ChargeCodeId = t.ChargeCodeId,
                     ChargeCode = t.ChargeCode.Code,
                     ActivityId = t.ActivityId,
+                    MaximumTimeEntryHours = t.ChargeCode.Project != null ? t.ChargeCode.Project.TimeEntryMaxHours : 0,
                     Hours = t.Hours,
                     Notes = t.Notes,
                     Task = t.Task,
@@ -585,47 +592,7 @@ namespace HQ.Server.Services
                 .GroupBy(t => t.Date)
                 .ToDictionaryAsync(t => t.Key, t => t.OrderByDescending(x => x.CreatedAt).ToList());
 
-            var chargeCodes = await _context.ChargeCodes
-                .Where(t => t.Active == true)
-                .AsNoTracking()
-                .OrderBy(t => t.Code)
-                .Select(t => new GetDashboardTimeV1.ChargeCode()
-                {
-                    Id = t.Id,
-                    Code = t.Code,
-                    ClientId = t.Project != null ? t.Project.ClientId : null,
-                    ProjectId = t.ProjectId
-                })
-                .ToListAsync(ct);
-
-            var clients = await _context.Clients
-                .AsNoTracking()
-                .Where(t => !t.Projects.All(x => x.ChargeCode!.Active == false))
-                .OrderBy(t => t.Name)
-                .Include(t => t.Projects)
-                .ThenInclude(t => t.Activities)
-                .Select(t => new GetDashboardTimeV1.Client()
-                {
-                    Id = t.Id,
-                    Name = t.Name,
-                    Projects = t.Projects.Where(x => x.ChargeCode!.Active == true).OrderBy(x => x.Name).Select(x => new Abstractions.Times.GetDashboardTimeV1.Project()
-                    {
-                        Id = x.Id,
-                        ChargeCodeId = x.ChargeCode != null ? x.ChargeCode.Id : null,
-                        ChargeCode = x.ChargeCode != null ? x.ChargeCode.Code : null,
-                        Name = x.Name,
-                        Activities = x.Activities.Select(y => new Abstractions.Times.GetDashboardTimeV1.Activities()
-                        {
-                            Id = y.Id,
-                            Name = y.Name
-                        }).ToList()
-                    }).ToList()
-                })
-                .ToListAsync(ct);
-
             var response = new GetDashboardTimeV1.Response();
-            response.ChargeCodes = chargeCodes;
-            response.Clients = clients;
             response.StartDate = startDate;
             response.EndDate = endDate;
             response.TotalHours = await timesQuery.SumAsync(t => t.Hours, ct);
@@ -638,7 +605,7 @@ namespace HQ.Server.Services
             response.PreviousDate = previousDate;
             response.StaffName = staff.Name;
             response.RejectedCount = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Status == TimeStatus.Rejected).CountAsync(ct);
-
+            response.TimeEntryCutoffDate = staff.TimeEntryCutoffDate;
             if (request.Status.HasValue)
             {
                 foreach (var date in times)

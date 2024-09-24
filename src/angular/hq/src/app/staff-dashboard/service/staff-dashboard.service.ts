@@ -19,15 +19,16 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import {
-  GetDashboardTimeV1ChargeCode,
-  GetDashboardTimeV1Client,
-  GetDashboardTimeV1Response,
-} from '../../models/staff-dashboard/get-dashboard-time-v1';
+import { GetDashboardTimeV1Response } from '../../models/staff-dashboard/get-dashboard-time-v1';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { TimeStatus } from '../../enums/time-status';
 import { Period } from '../../enums/period';
 import { HQRole } from '../../enums/hqrole';
+import {
+  GetChargeCodeRecordV1,
+  SortColumn,
+} from '../../models/charge-codes/get-chargecodes-v1';
+import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
 
 @Injectable({
   providedIn: 'root',
@@ -48,20 +49,17 @@ export class StaffDashboardService implements OnDestroy {
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   canSubmitSubject = new BehaviorSubject<boolean>(false);
   canSubmit$: Observable<boolean> = this.canSubmitSubject.asObservable();
-
+  timeEntryCutoffDate$: Observable<string>;
   time$: Observable<GetDashboardTimeV1Response>;
-  chargeCodes$: Observable<GetDashboardTimeV1ChargeCode[]>;
-  clients$: Observable<GetDashboardTimeV1Client[]>;
+  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   showAllRejectedTimes$ = new BehaviorSubject<boolean>(false);
   rejectedCount$: Observable<number>;
-
   staffId$: Observable<string>;
+  activities$: Observable<GetProjectActivityRecordV1[]>;
   private staffIdSubject = new BehaviorSubject<string | null>(null);
-
   refresh$ = new Subject<void>();
-
   canEdit$: Observable<boolean>;
-  isAdmin$: Observable<boolean>;
+  canEditPoints$: Observable<boolean>;
 
   constructor(
     private hqService: HQService,
@@ -79,23 +77,52 @@ export class StaffDashboardService implements OnDestroy {
       map((t) => t.staff_id as string),
     );
 
-    this.isAdmin$ = oidcSecurityService.userData$.pipe(
+    const isProjectManagerOrAbove$ = oidcSecurityService.userData$.pipe(
       map((t) => t.userData),
       map(
         (t) =>
           t &&
           t.roles &&
           Array.isArray(t.roles) &&
-          [HQRole.Administrator].some((role) => t.roles.includes(role)),
+          [
+            HQRole.Administrator,
+            HQRole.Executive,
+            HQRole.Partner,
+            HQRole.Manager,
+          ].some((role) => t.roles.includes(role)),
       ),
+    );
+    const chargeCodeResponse$ = this.staffId$.pipe(
+      switchMap((staffId) =>
+        this.hqService.getChargeCodeseV1({
+          active: true,
+          staffId,
+          sortBy: SortColumn.IsProjectMember,
+        }),
+      ),
+    );
+    this.chargeCodes$ = chargeCodeResponse$.pipe(
+      map((chargeCode) => chargeCode.records),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.canEdit$ = combineLatest({
       staffId: this.staffId$,
       currentUserStaffId: currentUserStaffId$,
-      isAdmin: this.isAdmin$,
     }).pipe(
-      map((t) => t.isAdmin || t.staffId == t.currentUserStaffId),
+      map((t) => t.staffId == t.currentUserStaffId),
+      distinctUntilChanged(),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
+
+    this.canEditPoints$ = combineLatest({
+      staffId: this.staffId$,
+      currentUserStaffId: currentUserStaffId$,
+      isProjectManagerOrAbove: isProjectManagerOrAbove$,
+    }).pipe(
+      map(
+        (t) => t.isProjectManagerOrAbove || t.staffId == t.currentUserStaffId,
+      ),
       distinctUntilChanged(),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
@@ -125,6 +152,12 @@ export class StaffDashboardService implements OnDestroy {
         this.date.setValue(response.startDate, { emitEvent: false }),
       ),
     );
+    this.activities$ = this.hqService
+      .getprojectActivitiesV1({ projectId: null })
+      .pipe(
+        map((t) => t.records),
+        shareReplay({ bufferSize: 1, refCount: false }),
+      );
 
     const refreshTime$ = this.refresh$.pipe(switchMap(() => time$));
 
@@ -136,11 +169,12 @@ export class StaffDashboardService implements OnDestroy {
       next: (t) => this.canSubmitSubject.next(t.canSubmit),
       error: console.error,
     });
+    this.timeEntryCutoffDate$ = this.time$.pipe(
+      map((t) => t.timeEntryCutoffDate),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     this.rejectedCount$ = this.time$.pipe(map((t) => t.rejectedCount));
-
-    this.chargeCodes$ = this.time$.pipe(map((t) => t.chargeCodes));
-    this.clients$ = this.time$.pipe(map((t) => t.clients));
   }
 
   refresh() {
@@ -149,6 +183,11 @@ export class StaffDashboardService implements OnDestroy {
 
   setStaffId(staffId: string) {
     this.staffIdSubject.next(staffId);
+  }
+  resetFilters() {
+    this.period.setValue(Period.Today);
+    this.search.setValue('');
+    this.date.setValue(localISODate());
   }
 
   ngOnDestroy(): void {

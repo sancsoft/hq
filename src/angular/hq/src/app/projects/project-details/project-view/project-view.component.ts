@@ -1,6 +1,6 @@
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   ActivatedRoute,
   Router,
@@ -10,10 +10,10 @@ import {
 import {
   Observable,
   Subject,
-  firstValueFrom,
   map,
   shareReplay,
   switchMap,
+  takeUntil,
 } from 'rxjs';
 import { PdfViewerComponent } from '../../../core/components/pdf-viewer/pdf-viewer.component';
 import { Period } from '../../../enums/period';
@@ -47,6 +47,7 @@ interface Form {
   hourlyRate: FormControl<number | null>;
   bookingHours: FormControl<number | null>;
   bookingPeriod: FormControl<Period | null>;
+  timeEntryMaxHours: FormControl<number | null>;
   startDate: FormControl<string | null>;
   endDate: FormControl<string | null>;
   type: FormControl<ProjectType | null>;
@@ -70,10 +71,11 @@ interface Form {
   ],
   templateUrl: './project-view.component.html',
 })
-export class ProjectViewComponent implements OnInit, OnDestroy {
+export class ProjectViewComponent implements OnDestroy {
   projectManagers$: Observable<GetStaffV1Record[]>;
   quotes$: Observable<GetQuotesRecordV1[]>;
   clients$: Observable<GetClientRecordV1[]>;
+  private destroy$ = new Subject<void>();
 
   HQRole = HQRole;
 
@@ -94,6 +96,7 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
     projectManagerId: new FormControl(null, [Validators.required]),
     hourlyRate: new FormControl(null, [Validators.required]),
     totalHours: new FormControl(null, [Validators.required]),
+    timeEntryMaxHours: new FormControl(null, [Validators.required]),
     bookingPeriod: new FormControl(Period.Month),
     quoteId: new FormControl(null, [Validators.required]),
     startDate: new FormControl(null, Validators.required),
@@ -134,34 +137,37 @@ export class ProjectViewComponent implements OnInit, OnDestroy {
       map((t) => t.records),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
+    this.projectDetailService.project$
+      .pipe(takeUntil(this.destroy$))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (project) => {
+          this.form.patchValue({
+            clientId: project.clientId,
+            name: project.name,
+            projectManagerId: project.projectManagerId,
+            hourlyRate: project.hourlyRate,
+            totalHours: project.projectTotalHours,
+            bookingPeriod: project.bookingPeriod,
+            timeEntryMaxHours: project.timeEntryMaxHours,
+            quoteId: project.quoteId,
+            startDate: project.startDate,
+            endDate: project.endDate,
+            type: project.type,
+            status: project.projectStatus,
+            billable: project.billable,
+            bookingHours: project.projectBookingHours,
+            projectNumber: project.projectNumber,
+          });
+        },
+        error: console.error,
+      });
 
     this.form.disable();
   }
 
-  async ngOnInit() {
-    const project = await firstValueFrom(this.projectDetailService.project$);
-    this.form.patchValue({
-      clientId: project.clientId,
-      name: project.name,
-      projectManagerId: project.projectManagerId,
-      hourlyRate: project.hourlyRate,
-      totalHours: project.projectTotalHours,
-      bookingPeriod: project.bookingPeriod,
-      quoteId: project.quoteId,
-      startDate: project.startDate,
-      endDate: project.endDate,
-      type: project.type,
-      status: project.projectStatus,
-      billable: project.billable,
-      bookingHours: project.projectBookingHours,
-      projectNumber: project.projectNumber,
-    });
-  }
-
-  private destroy = new Subject<void>();
-
   ngOnDestroy() {
-    this.destroy.next();
-    this.destroy.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

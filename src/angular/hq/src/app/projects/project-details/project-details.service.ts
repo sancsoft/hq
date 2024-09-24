@@ -8,6 +8,7 @@ import {
   shareReplay,
   Subject,
   switchMap,
+  tap,
 } from 'rxjs';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { HQService } from '../../services/hq.service';
@@ -53,6 +54,7 @@ export class ProjectDetailsService {
     this.project$ = this.projectId$.pipe(
       switchMap((projectId) => this.hqService.getProjectsV1({ id: projectId })),
       map((t) => t.records[0]),
+      tap((t) => console.log(t)),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
 

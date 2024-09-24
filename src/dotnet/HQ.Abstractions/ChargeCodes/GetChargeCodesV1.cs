@@ -46,6 +46,7 @@ namespace HQ.Abstractions.ChargeCodes
             public bool Active { get; set; }
             public string? ProjectName { get; set; }
             public string? QuoteName { get; set; }
+            public decimal MaximumTimeEntryHours { get; set; }
             public string? ServiceAgreementName { get; set; }
             public Guid? ProjectId { get; set; }
             public Guid? QuoteId { get; set; }

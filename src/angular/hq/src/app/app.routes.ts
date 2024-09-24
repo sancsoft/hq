@@ -423,15 +423,15 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'timesheets',
-    title: 'Timesheets',
+    path: 'staff',
+    title: 'Staff',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
       import('./users/users.component').then((m) => m.UsersComponent),
     children: [
       {
         path: '',
-        title: 'Timesheets',
+        title: 'Staff',
         canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
           import('./staff/staff-list/staff-list.component').then(

@@ -50,10 +50,6 @@ import {
   PlanningPoint,
 } from '../../models/Points/get-points-v1';
 import { PointForm } from '../staff-dashboard.component';
-import {
-  GetChargeCodeRecordV1,
-  SortColumn,
-} from '../../models/charge-codes/get-chargecodes-v1';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HQService } from '../../services/hq.service';
@@ -85,13 +81,10 @@ import { GetPlanRequestV1 } from '../../models/Plan/get-plan-v1';
   templateUrl: './staff-dashboard-planning.component.html',
 })
 export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
-  // Planning Points
-  // planningPointsforms: FormGroup<PointForm>[] = [];
   @ViewChildren(StaffDashboardPlanningPointComponent)
   planningPointsChildren!: QueryList<StaffDashboardPlanningPointComponent>;
   planningPoints$: Observable<getPointsResponseV1 | null>;
   points: PlanningPoint[] = [];
-  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   private staffId$: Observable<string>;
   private planningPointsRequest$: Observable<GetPlanRequestV1>;
   private planningPointsRequestTrigger$ = new Subject<void>();
@@ -119,23 +112,12 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
     private oidcSecurityService: OidcSecurityService,
     private cdr: ChangeDetectorRef,
   ) {
-    // const date$ = staffDashboardService.date.valueChanges
-    //   .pipe(startWith(staffDashboardService.date.value))
-    //   .pipe(map((t) => t || localISODate()));
     this.staffId$ = this.staffDashboardService.staffId$;
     this.planningPointDate$ =
       staffDashboardService.planningPointdateForm.valueChanges
         .pipe(startWith(staffDashboardService.planningPointdateForm.value))
         .pipe(map((t) => t || localISODate()));
 
-    // const prevPlanRequest$ = combineLatest({
-    //   date: date$,
-    //   staffId: staffId$,
-    // }).pipe(distinctUntilChanged());
-    // // eslint-disable-next-line rxjs-angular/prefer-async-pipe
-    // prevPlanRequest$.pipe(takeUntil(this.destroyed$)).subscribe((t) => {
-    //   console.log(t);
-    // });
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
       // eslint-disable-next-line rxjs-angular/prefer-async-pipe,
@@ -151,20 +133,6 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       trigger: this.planningPointsRequestTrigger$.pipe(startWith(0)),
     }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-    const chargeCodeResponse$ = this.staffDashboardService.staffId$.pipe(
-      switchMap((staffId) =>
-        this.hqService.getChargeCodeseV1({
-          active: true,
-          staffId,
-          sortBy: SortColumn.IsProjectMember,
-        }),
-      ),
-    );
-
-    this.chargeCodes$ = chargeCodeResponse$.pipe(
-      map((chargeCode) => chargeCode.records),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
     this.planningPoints$ = this.planningPointsRequest$.pipe(
       switchMap(({ date, staffId }) => {
         return this.hqService.getPlanningPointsV1({ date, staffId }).pipe(
@@ -208,9 +176,13 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
   }
 
   updateSequence(): void {
-    this.points.forEach((point, idx) => {
-      // form.controls['sequence'].setValue(idx + 1);
-      this.points[idx].sequence = idx + 1;
+    const updatedPoints = this.points.map((point, idx) => ({
+      ...point,
+      sequence: idx + 1,
+    }));
+    this.points = updatedPoints;
+    this.planningPointsChildren.forEach((child, idx) => {
+      child.form.controls.sequence.setValue(idx + 1);
     });
   }
 

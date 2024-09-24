@@ -74,6 +74,7 @@ public class ProjectServiceV1
                 project.Type = request.Type;
                 project.Status = request.Status;
                 project.TotalHours = request.TotalHours;
+                project.TimeEntryMaxHours = request.TimeEntryMaxHours ?? 4; // default to 4 hours
 
                 switch (request.Type)
                 {
@@ -240,7 +241,7 @@ public class ProjectServiceV1
         var bookingEndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(Period.Month);
 
 
-
+        var listRecord = records.ToList();
 
         var mapped = records.Select(t => new GetProjectsV1.Record()
         {
@@ -257,6 +258,7 @@ public class ProjectServiceV1
             HourlyRate = t.HourlyRate,
             BookingPeriod = t.BookingPeriod,
             ProjectBookingHours = t.BookingHours,
+            TimeEntryMaxHours = t.TimeEntryMaxHours,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
             BillingEmail = t.Client.BillingEmail,
@@ -295,6 +297,7 @@ public class ProjectServiceV1
             HourlyRate = t.HourlyRate,
             BookingPeriod = t.BookingPeriod,
             ProjectBookingHours = t.ProjectBookingHours,
+            TimeEntryMaxHours = t.TimeEntryMaxHours,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
             BillingEmail = t.BillingEmail,
@@ -458,12 +461,13 @@ public class ProjectServiceV1
     }
     public async Task<Result<GetProjectActivitiesV1.Response>> GetProjectActivitiesV1(GetProjectActivitiesV1.Request request, CancellationToken ct = default)
     {
-        var records = _context.ProjectActivities.Where(t => t.ProjectId == request.ProjectId)
+        var records = _context.ProjectActivities.Where(t => request.ProjectId == null || t.ProjectId == request.ProjectId)
             .Select(t => new GetProjectActivitiesV1.Record()
             {
                 Id = t.Id,
                 Name = t.Name,
-                Sequence = t.Sequence
+                Sequence = t.Sequence,
+                ProjectId = t.ProjectId
             })
             .OrderBy(t => t.Name);
         return new GetProjectActivitiesV1.Response()

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Observable, filter, firstValueFrom, map } from 'rxjs';
 import { AppSettingsService } from './app-settings.service';
@@ -30,16 +30,25 @@ export class LayoutComponent {
 
   dropdownOpen = false;
   settingDropdownOpen = false;
+  isTogglingSettingDropdown = false;
 
   HQRole = HQRole;
 
   userName$: Observable<string>;
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     this.userName$ = this.oidcSecurityService.userData$.pipe(
       filter((t) => t.userData),
       map((t) => t.userData.email),
     );
+  }
+  toggleSettingDropdown() {
+    if (this.isTogglingSettingDropdown) return;
+    this.isTogglingSettingDropdown = true;
+    this.settingDropdownOpen = !this.settingDropdownOpen;
+    setTimeout(() => {
+      this.isTogglingSettingDropdown = false;
+    }, 100);
   }
 
   public async logout() {

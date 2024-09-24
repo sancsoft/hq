@@ -76,6 +76,8 @@ public class ProjectStatusReportServiceV1
         int submittedCount = 0;
 
         DateOnly startDate = request.ForDate.GetPeriodStartDate(Period.Week);
+        DateOnly endDate = request.ForDate.GetPeriodEndDate(Period.Week);
+
 
         var projectStatusReports = await _context.ProjectStatusReports
             .Include(t => t.Project)
@@ -83,7 +85,7 @@ public class ProjectStatusReportServiceV1
                 t.StartDate == startDate &&
                 t.Project.BookingHours == 0 &&
                 (t.Project.Type == ProjectType.Ongoing || t.Project.Type == ProjectType.General || t.Project.Type == ProjectType.Service) &&
-                !t.Project.ChargeCode!.Times.Any() &&
+                !t.Project.ChargeCode!.Times.Where(t => t.Date >= startDate && t.Date <= endDate).Any() &&
                 !t.SubmittedAt.HasValue
             )
             .ToListAsync(ct);
