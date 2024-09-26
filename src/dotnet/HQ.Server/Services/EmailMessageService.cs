@@ -344,7 +344,10 @@ namespace HQ.Server.Services
             };
             foreach (var manager in managersToNotify)
             {
-                await SendEmail(EmailMessage.EmployeeHours, model, manager!, "[HQ] Staff Hours", MailPriority.High, null, ct);
+                if (manager != null)
+                {
+                    await SendEmail(EmailMessage.EmployeeHours, model, manager, "[HQ] Staff Hours", MailPriority.High, null, ct);
+                }
             }
         }
     }
