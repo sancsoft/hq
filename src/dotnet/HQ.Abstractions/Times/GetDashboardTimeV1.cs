@@ -2,6 +2,8 @@
 
 using HQ.Abstractions.Enumerations;
 
+using static HQ.Abstractions.Times.GetTimesV1;
+
 namespace HQ.Abstractions.Times;
 
 public class GetDashboardTimeV1
@@ -11,6 +13,9 @@ public class GetDashboardTimeV1
         public Guid StaffId { get; set; }
         public DateOnly Date { get; set; }
         public Period Period { get; set; }
+        public SortColumn SortBy { get; set; } = SortColumn.Date;
+        public SortDirection SortDirection {get; set;} = SortDirection.Desc;
+
         public string? Search { get; set; }
         public TimeStatus? Status { get; set; }
     }
@@ -39,6 +44,10 @@ public class GetDashboardTimeV1
     {
         public bool CanCreateTime { get; set; }
         public DateOnly Date { get; set; }
+        public DateOnly StartDate { get; set; }
+
+        public DateOnly EndDate { get; set; }
+
         public List<TimeEntry> Times { get; set; } = new List<TimeEntry>();
         public decimal TotalHours { get; set; }
     }

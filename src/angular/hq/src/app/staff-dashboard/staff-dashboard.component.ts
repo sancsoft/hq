@@ -63,6 +63,7 @@ import { ButtonComponent } from '../core/components/button/button.component';
 import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staff-dashboard-planning.component';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 import { ButtonState } from '../enums/button-state';
+import { StaffDashboardMonthViewComponent } from './staff-dashboard-month-view/staff-dashboard-month-view.component';
 
 export interface PointForm {
   id: FormControl<string | null>;
@@ -93,6 +94,7 @@ export interface PointForm {
     StaffDashboardPlanningPointComponent,
     ButtonComponent,
     StaffDashboardPlanningComponent,
+    StaffDashboardMonthViewComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',

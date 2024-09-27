@@ -530,6 +530,8 @@ namespace HQ.Server.Services
                 .Where(t => t.StaffId == request.StaffId && (request.Status == null ? (t.Date >= startDate && t.Date <= endDate) : (t.Status == request.Status)))
                 .AsQueryable();
 
+
+
             var hrsThisWeekQuery = _context.Times
                 .AsNoTracking()
                 .Where(t => t.StaffId == request.StaffId && t.Date >= request.Date.GetPeriodStartDate(Period.Week) && t.Date <= request.Date.GetPeriodEndDate(Period.Week))
@@ -568,7 +570,7 @@ namespace HQ.Server.Services
                 );
             }
 
-            var times = await timesQuery
+            var times = timesQuery
                 .Select(t => new GetDashboardTimeV1.TimeEntry()
                 {
                     Id = t.Id,
@@ -588,45 +590,71 @@ namespace HQ.Server.Services
                     RejectionNotes = t.RejectionNotes,
                     ProjectId = t.ChargeCode.ProjectId,
                     ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null
-                })
-                .GroupBy(t => t.Date)
-                .ToDictionaryAsync(t => t.Key, t => t.OrderByDescending(x => x.CreatedAt).ToList());
+                });
 
-            var response = new GetDashboardTimeV1.Response();
-            response.StartDate = startDate;
-            response.EndDate = endDate;
-            response.TotalHours = await timesQuery.SumAsync(t => t.Hours, ct);
-            response.BillableHours = await timesQuery.Where(t => t.ChargeCode.Billable).SumAsync(t => t.Hours, ct);
-            response.HoursThisWeek = await hrsThisWeekQuery.SumAsync(t => t.Hours, ct);
-            response.HoursLastWeek = await hrsLastWeekQuery.SumAsync(t => t.Hours, ct);
-            response.HoursThisMonth = await hrsThisMonthQuery.SumAsync(t => t.Hours, ct);
-            response.Vacation = vacationHours;
-            response.NextDate = nextDate;
-            response.PreviousDate = previousDate;
-            response.StaffName = staff.Name;
-            response.RejectedCount = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Status == TimeStatus.Rejected).CountAsync(ct);
-            response.TimeEntryCutoffDate = staff.TimeEntryCutoffDate;
-            if (request.Status.HasValue)
+
+            var sortMap = new Dictionary<Abstractions.Times.GetTimesV1.SortColumn, string>()
+    {
+        { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
+        { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
+        { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
+        { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "ClientName" },
+        { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
+    };
+
+
+            if (sortMap.ContainsKey(request.SortBy))
             {
-                foreach (var date in times)
-                {
-                    var timeForDate = new GetDashboardTimeV1.TimeForDate();
-                    timeForDate.Date = date.Key;
-                    timeForDate.Times = date.Value;
-                    timeForDate.TotalHours = timeForDate.Times.Sum(t => t.Hours);
-                    response.Dates.Add(timeForDate);
-                }
+                var sortProperty = sortMap[request.SortBy];
+
+                times = request.SortDirection == SortDirection.Asc
+                    ? times.OrderBy(t => EF.Property<object>(t, sortProperty))
+                    : times.OrderByDescending(t => EF.Property<object>(t, sortProperty));
             }
-            else
+
+            var timeEntriesList = await times.ToListAsync(ct);
+
+            var groupedTimes = request.Period switch
+            {
+                Period.Today => timeEntriesList.GroupBy(t => t.Date).ToDictionary(g => g.Key, g => g.ToList()),
+                Period.Week => timeEntriesList.GroupBy(t => t.Date).ToDictionary(g => g.Key, g => g.ToList()),
+                Period.Month => timeEntriesList.GroupBy(t => t.Date.GetPeriodStartDate(Period.Month)).ToDictionary(g => g.Key, g => g.ToList()),
+                _ => new Dictionary<DateOnly, List<GetDashboardTimeV1.TimeEntry>>()
+            };
+
+
+            var response = new GetDashboardTimeV1.Response
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                TotalHours = await timesQuery.SumAsync(t => t.Hours, ct),
+                BillableHours = await timesQuery.Where(t => t.ChargeCode.Billable).SumAsync(t => t.Hours, ct),
+                HoursThisWeek = await hrsThisWeekQuery.SumAsync(t => t.Hours, ct),
+                HoursLastWeek = await hrsLastWeekQuery.SumAsync(t => t.Hours, ct),
+                HoursThisMonth = await hrsThisMonthQuery.SumAsync(t => t.Hours, ct),
+                Vacation = vacationHours,
+                NextDate = nextDate,
+                PreviousDate = previousDate,
+                StaffName = staff.Name,
+                RejectedCount = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Status == TimeStatus.Rejected).CountAsync(ct),
+                TimeEntryCutoffDate = staff.TimeEntryCutoffDate
+            };
+
+            if (request.Period == Period.Today || request.Period == Period.Week)
             {
                 DateOnly date = endDate;
                 do
                 {
-                    var timeForDate = new GetDashboardTimeV1.TimeForDate();
-                    timeForDate.Date = date;
-                    if (times.ContainsKey(date))
+                    var timeForDate = new GetDashboardTimeV1.TimeForDate
                     {
-                        timeForDate.Times = times[date];
+                        Date = date,
+                        StartDate = startDate,
+                        EndDate = endDate
+                    };
+
+                    if (groupedTimes.ContainsKey(date))
+                    {
+                        timeForDate.Times = groupedTimes[date];
                         timeForDate.TotalHours = timeForDate.Times.Sum(t => t.Hours);
                     }
 
@@ -637,8 +665,22 @@ namespace HQ.Server.Services
                 }
                 while (date >= startDate);
             }
+            else if (request.Period == Period.Month)
+            {
+                var timeForMonth = new GetDashboardTimeV1.TimeForDate
+                {
+                    Date = startDate,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    Times = groupedTimes.Values.SelectMany(v => v).ToList(),
+                    TotalHours = timeEntriesList.Sum(t => t.Hours),
+                    CanCreateTime = !staff.TimeEntryCutoffDate.HasValue || endDate >= staff.TimeEntryCutoffDate.Value
+                };
 
-            response.CanSubmit = times.Count > 0 && !times.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && times.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Unsubmitted || x.TimeStatus == TimeStatus.Rejected));
+                response.Dates.Add(timeForMonth);
+            }
+            response.CanSubmit = groupedTimes.Count > 0 && !groupedTimes.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && groupedTimes.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Unsubmitted || x.TimeStatus == TimeStatus.Rejected));
+
 
             return response;
         }
