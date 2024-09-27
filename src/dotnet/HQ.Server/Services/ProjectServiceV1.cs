@@ -451,7 +451,7 @@ public class ProjectServiceV1
         {
             return Result.Fail("Activity has time associated with it, unable to delete");
         }
-        var projectActivity = await _context.ProjectActivities.FindAsync(request.Id, ct);
+        var projectActivity = await _context.ProjectActivities.SingleOrDefaultAsync(t => t.ProjectId == request.ProjectId && t.Id == request.Id, ct);
         if (projectActivity != null)
         {
             _context.ProjectActivities.Remove(projectActivity);

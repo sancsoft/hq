@@ -36,7 +36,10 @@ import {
   GetQuotesRecordV1,
   SortColumn as QuoteSortColumn,
 } from '../../../models/quotes/get-quotes-v1';
-import { GetStaffV1Record } from '../../../models/staff-members/get-staff-member-v1';
+import {
+  GetStaffV1Record,
+  SortColumn,
+} from '../../../models/staff-members/get-staff-member-v1';
 import { HQService } from '../../../services/hq.service';
 import { GetProjectRecordV1 } from '../../../models/projects/get-project-v1';
 import { ProjectDetailsService } from '../project-details.service';
@@ -125,10 +128,12 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       map((t) => t.records[0]),
     );
 
-    this.projectManagers$ = this.hqService.getStaffMembersV1({}).pipe(
-      map((t) => t.records),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
+    this.projectManagers$ = this.hqService
+      .getStaffMembersV1({ sortBy: SortColumn.Name })
+      .pipe(
+        map((t) => t.records),
+        shareReplay({ bufferSize: 1, refCount: false }),
+      );
 
     this.clients$ = this.hqService.getClientsV1({}).pipe(
       map((t) => t.records),
@@ -206,7 +211,6 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       projectNumber: project.projectNumber,
     });
 
-    this.form.controls.clientId.disable();
     this.form.controls.quoteId.disable();
     this.form.controls.type.disable();
   }

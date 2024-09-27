@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SelectInputOptionDirective } from '../../core/directives/select-input-option.directive';
 import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
-import { enumToArray } from '../../core/functions/enum-to-array';
 import { StaffStatus } from '../../enums/staff-status';
 
 @Component({
@@ -20,6 +19,6 @@ import { StaffStatus } from '../../enums/staff-status';
   templateUrl: './staff-list-search-filter.component.html',
 })
 export class StaffListSearchFilterComponent {
-  staffStatus = enumToArray(StaffStatus);
+  staffStatus = StaffStatus;
   constructor(public staffListService: StaffListService) {}
 }

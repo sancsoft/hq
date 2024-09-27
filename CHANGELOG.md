@@ -7,9 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.15] - 2024-08-19
+
+### Added
+
+- Ability to edit planning points from points UI
+- Additional statuses
+  - Working from home morning
+  - Working from home afternoon
+
+### Fixed
+
+- Email logo issue
+- Client name on project detail
+
+### Changed
+
+- Show toast notification after submitting PSR instead of second confirm
+- Show all chage codes on PSR time entries
+- Planning points display
+  - Charge code prefix: Client Name: Project Name
+
+## [0.4.14] - 2024-08-19
+
+### Fixed
+
+- PSR auto submit not working
+
+## [0.4.13] - 2024-08-12
+
+### Fixed
+
+- Planning points usability updates
+
+## [0.4.12] - 2024-08-11
+
+### Fixed
+
+- Link to staff details on planning points UI
+
 ## [0.4.11] - 2024-08-11
 
 ### Fixed
+
 - Planning point sorting due to regression from auto-sorting holiday/vacation/sick time at the end
 
 ## [0.4.10] - 2024-08-11

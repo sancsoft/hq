@@ -30,10 +30,8 @@
       variant="secondary"
     >
       <ng-template [hqSelectInputOption]="null">Select Status</ng-template>
-      @for (status of staffStatus; track status.name) {
-        <ng-template [hqSelectInputOption]="status.name.toLowerCase()">{{
-          status.name
-        }}</ng-template>
+      @for (status of staffStatus; track $index) {
+        <ng-template [hqSelectInputOption]="status">{{ status }}</ng-template>
       }
     </hq-select-input>
   </div>

@@ -64,6 +64,7 @@ import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staf
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 import { ButtonState } from '../enums/button-state';
 import { StaffDashboardMonthViewComponent } from './staff-dashboard-month-view/staff-dashboard-month-view.component';
+import { StaffStatus } from '../enums/staff-status';
 
 export interface PointForm {
   id: FormControl<string | null>;
@@ -102,6 +103,8 @@ export interface PointForm {
 export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   Period = Period;
   HQRole = HQRole;
+
+  staffStatus = StaffStatus;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;

@@ -12,13 +12,9 @@
           class="bg-blue-900 border-steel-blue-600 hover:cursor-pointer w-full pl-2 pr-[43px] appearance-none focus:outline-none font-medium row-start-1 col-start-1 border text-gray-100 h-[26px] capitalize"
         >
           <option selected [ngValue]="null">Select Status</option>
-          <option [ngValue]="'in the office'">In the office</option>
-          <option [ngValue]="'working from home'">Working from home</option>
-          <option [ngValue]="'sick'">Sick</option>
-          <option [ngValue]="'vacation'">Vacation</option>
-          <option [ngValue]="'holiday'">Holiday</option>
-
-          <!-- <option [ngValue]="staffDashboardService.Period.Month">Month</option> -->
+          @for (status of staffStatus; track $index) {
+            <option [ngValue]="status">{{ status }}</option>
+          }
         </select>
         <span
           [ngClass]="{

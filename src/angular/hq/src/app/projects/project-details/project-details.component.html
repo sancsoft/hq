@@ -16,12 +16,14 @@
             Email: {{ project.billingEmail || "None" }}
           </div>
           <div class="text-gray-50">
-            Official Name:
-            <a
-              [routerLink]="['/clients', project.clientId]"
-              class="underline"
-              >{{ project.officialName || project.name }}</a
-            >
+            Client Name:
+            @if (projectDetailService.client$ | async; as client) {
+              <a
+                [routerLink]="['/clients', project.clientId]"
+                class="underline"
+                >{{ client.name }}</a
+              >
+            }
           </div>
         </div>
 

@@ -85,10 +85,21 @@ export class PlanningPointsComponent implements OnDestroy {
     this.destroyed$.next(true);
     this.destroyed$.complete();
   }
+
+  getDisplayName(point: GetPointsSummaryPlanningPoint) {
+    let displayName = `${point.chargeCode![0]}: ${point.clientName}: ${point.projectName}`;
+    if (displayName.length > 20) {
+      displayName = displayName.slice(0, 18) + '..';
+    }
+
+    return displayName;
+  }
+
   editStaffPlanningPoint(staff: GetPointSummaryV1StaffSummary) {
     const dialogRef = this.dialog.open<boolean>(PlanningPointsModalComponent, {
       width: '600px',
       data: {
+        title: staff.staffName,
         staffId: staff.staffId,
         date: this.date.value,
       },

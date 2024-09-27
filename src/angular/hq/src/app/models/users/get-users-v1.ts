@@ -22,7 +22,7 @@ export interface GetUsersRecordV1 {
 
 export interface GetUsersRecordsV1 {
   records: [GetUsersRecordV1];
-  total: number | null;
+  total: number;
 }
 
 export interface GetUsersResponseV1 extends PagedResponseV1<GetUsersRecordV1> {}
