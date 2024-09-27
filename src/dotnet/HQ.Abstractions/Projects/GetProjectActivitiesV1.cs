@@ -14,7 +14,7 @@ public class GetProjectActivitiesV1
 {
     public class Request
     {
-        public Guid ProjectId { get; set; }
+        public Guid? ProjectId { get; set; }
     }
 
     public class Response
@@ -27,5 +27,7 @@ public class GetProjectActivitiesV1
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public int Sequence { get; set; }
+        public Guid ProjectId { get; set; }
+
     }
 }

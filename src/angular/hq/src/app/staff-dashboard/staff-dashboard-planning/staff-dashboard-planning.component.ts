@@ -50,10 +50,6 @@ import {
   PlanningPoint,
 } from '../../models/Points/get-points-v1';
 import { PointForm } from '../staff-dashboard.component';
-import {
-  GetChargeCodeRecordV1,
-  SortColumn,
-} from '../../models/charge-codes/get-chargecodes-v1';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HQService } from '../../services/hq.service';
@@ -89,7 +85,6 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
   planningPointsChildren!: QueryList<StaffDashboardPlanningPointComponent>;
   planningPoints$: Observable<getPointsResponseV1 | null>;
   points: PlanningPoint[] = [];
-  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   private staffId$: Observable<string>;
   private planningPointsRequest$: Observable<GetPlanRequestV1>;
   private planningPointsRequestTrigger$ = new Subject<void>();
@@ -138,20 +133,6 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       trigger: this.planningPointsRequestTrigger$.pipe(startWith(0)),
     }).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-    const chargeCodeResponse$ = this.staffDashboardService.staffId$.pipe(
-      switchMap((staffId) =>
-        this.hqService.getChargeCodeseV1({
-          active: true,
-          staffId,
-          sortBy: SortColumn.IsProjectMember,
-        }),
-      ),
-    );
-
-    this.chargeCodes$ = chargeCodeResponse$.pipe(
-      map((chargeCode) => chargeCode.records),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
     this.planningPoints$ = this.planningPointsRequest$.pipe(
       switchMap(({ date, staffId }) => {
         return this.hqService.getPlanningPointsV1({ date, staffId }).pipe(

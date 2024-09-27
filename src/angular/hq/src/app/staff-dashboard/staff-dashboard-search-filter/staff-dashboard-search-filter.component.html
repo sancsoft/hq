@@ -44,7 +44,7 @@
       >
         <option [ngValue]="staffDashboardService.Period.Today">Day</option>
         <option [ngValue]="staffDashboardService.Period.Week">Week</option>
-        <!-- <option [ngValue]="staffDashboardService.Period.Month">Month</option> -->
+        <option [ngValue]="staffDashboardService.Period.Month">Month</option>
       </select>
       <span
         [ngClass]="{
@@ -57,6 +57,13 @@
       >
         <i class="bi bi-arrow-down-short text-[24px]"></i>
       </span>
+    </div>
+  </div>
+  <div class="w-full">
+    <div class="mt-4">
+      <hq-button (click)="staffDashboardService.resetFilters()"
+        >Reset</hq-button
+      >
     </div>
   </div>
 </div>
