@@ -1,6 +1,4 @@
 import { StaffDashboardService } from './../service/staff-dashboard.service';
-/* eslint-disable rxjs/no-ignored-error */
-/* eslint-disable rxjs-angular/prefer-async-pipe */
 import { CommonModule } from '@angular/common';
 import {
   Component,
