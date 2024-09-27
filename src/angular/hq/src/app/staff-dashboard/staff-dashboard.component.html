@@ -208,7 +208,9 @@
               <hq-staff-dashboard-month-view
                 [dashboard]="dashboard"
                 [chargeCodes]="staffDashboardService.chargeCodes$ | async"
-                [showAllRejectedTimes]="staffDashboardService.showAllRejectedTimes$ | async"
+                [showAllRejectedTimes]="
+                  staffDashboardService.showAllRejectedTimes$ | async
+                "
                 [canEdit]="staffDashboardService.canEdit$ | async"
                 (timeChange)="upsertTime($event)"
                 (timeDelete)="deleteTime($event)"
