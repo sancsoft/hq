@@ -3,6 +3,7 @@ using System;
 using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    partial class HQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241004152507_ReplaceProjectStatusReportIndex")]
+    partial class ReplaceProjectStatusReportIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1031,6 +1034,9 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("ActivityId")
                         .HasDatabaseName("ix_times_activity_id");
 
+                    b.HasIndex("ChargeCodeId")
+                        .HasDatabaseName("ix_times_charge_code_id");
+
                     b.HasIndex("Date")
                         .HasDatabaseName("idx_time_date");
 
@@ -1045,9 +1051,6 @@ namespace HQ.Server.Data.Migrations
 
                     b.HasIndex("StaffId")
                         .HasDatabaseName("ix_times_staff_id");
-
-                    b.HasIndex("ChargeCodeId", "Hours", "HoursApproved")
-                        .HasDatabaseName("idx_time_chargecodeid_hours_hoursapproved");
 
                     b.ToTable("times", (string)null);
                 });

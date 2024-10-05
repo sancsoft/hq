@@ -36,9 +36,12 @@ namespace HQ.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Staff>().HasMany(t => t.Times).WithOne(s => s.Staff).HasForeignKey(t => t.StaffId);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.Entity<Time>().HasIndex(t => t.Date).HasDatabaseName("idx_time_date");
+            modelBuilder.Entity<Time>().HasIndex(t => new { t.ChargeCodeId, t.Hours, t.HoursApproved }).HasDatabaseName("idx_time_chargecodeid_hours_hoursapproved");
+            modelBuilder.Entity<ProjectStatusReport>().HasIndex(p => new { p.ProjectId, p.StartDate, p.EndDate }).HasDatabaseName("idx_psr_projectid_startdate_enddate");
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
