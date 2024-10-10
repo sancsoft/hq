@@ -8,10 +8,16 @@
   } @else {
     <ng-content></ng-content>
   }
-} @else {
+} @else if (listService.loading$ | async) {
   <tr>
     <td [colSpan]="999" class="bg-black-alt">
       <h1 class="text-center py-4 font-bold">Loading...</h1>
+    </td>
+  </tr>
+} @else {
+  <tr>
+    <td [colSpan]="999" class="bg-black-alt">
+      <h1 class="text-center py-4 font-bold">Error fetching records</h1>
     </td>
   </tr>
 }

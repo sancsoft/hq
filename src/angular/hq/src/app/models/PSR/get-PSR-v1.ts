@@ -83,7 +83,7 @@ export interface GetPSRRecordV1 {
 
 export interface GetPSRRecordsV1 {
   records: [GetPSRRecordV1];
-  total: number | null;
+  total: number | undefined;
 }
 
 export interface GetPSRV1 extends PagedResponseV1<GetPSRRecordV1> {}
