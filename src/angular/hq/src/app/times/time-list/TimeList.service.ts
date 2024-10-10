@@ -4,11 +4,15 @@ import { FormControl } from '@angular/forms';
 import {
   BehaviorSubject,
   Observable,
+  ReplaySubject,
+  catchError,
   combineLatest,
   debounceTime,
   map,
+  of,
   startWith,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs';
 import {
@@ -23,6 +27,7 @@ import { Period } from '../../enums/period';
 import { TimeStatus } from '../../enums/time-status';
 import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
+import { APIError } from '../../errors/apierror';
 
 @Injectable({
   providedIn: 'root',
@@ -67,6 +72,8 @@ export class TimeListService extends BaseListService<
   clientId$ = this.client.valueChanges.pipe(startWith(this.client.value));
   Status = TimeStatus;
 
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
   constructor(private hqService: HQService) {
     super(SortColumn.Date, SortDirection.Asc);
 
@@ -90,6 +97,22 @@ export class TimeListService extends BaseListService<
       ),
       map((clients) => clients.records),
     );
+    this.showStartDate$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (showStart) => {
+        if (!showStart) {
+          this.startDate.setValue(null);
+        }
+      },
+      error: console.error,
+    });
+    this.showEndDate$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (showEnd) => {
+        if (!showEnd) {
+          this.endDate.setValue(null);
+        }
+      },
+      error: console.error,
+    });
   }
 
   showStartDate() {
@@ -146,7 +169,15 @@ export class TimeListService extends BaseListService<
     return combineLatest(combinedParams).pipe(
       debounceTime(500),
       tap(() => this.loadingSubject.next(true)),
-      switchMap((request) => this.hqService.getTimesV1(request)),
+      switchMap((request) =>
+        this.hqService.getTimesV1(request).pipe(
+          catchError((error) => {
+            this.loadingSubject.next(false);
+            console.error('Error fetching Time records:', error);
+            return of(error);
+          }),
+        ),
+      ),
       tap(() => this.loadingSubject.next(false)),
     );
   }
