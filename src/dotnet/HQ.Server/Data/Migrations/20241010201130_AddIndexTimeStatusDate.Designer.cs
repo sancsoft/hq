@@ -3,6 +3,7 @@ using System;
 using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    partial class HQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241010201130_AddIndexTimeStatusDate")]
+    partial class AddIndexTimeStatusDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1031,6 +1034,9 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("ActivityId")
                         .HasDatabaseName("ix_times_activity_id");
 
+                    b.HasIndex("ChargeCodeId")
+                        .HasDatabaseName("ix_times_charge_code_id");
+
                     b.HasIndex("Date")
                         .HasDatabaseName("idx_time_date");
 
@@ -1046,8 +1052,8 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("StaffId")
                         .HasDatabaseName("ix_times_staff_id");
 
-                    b.HasIndex("ChargeCodeId", "Status", "Date")
-                        .HasDatabaseName("idx_time_chargecodeid_status_date");
+                    b.HasIndex("Status", "Date")
+                        .HasDatabaseName("idx_time_status_date");
 
                     b.ToTable("times", (string)null);
                 });
