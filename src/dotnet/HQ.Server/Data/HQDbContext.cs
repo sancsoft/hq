@@ -40,6 +40,8 @@ namespace HQ.Server.Data
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             modelBuilder.Entity<Time>().HasIndex(t => t.Date).HasDatabaseName("idx_time_date");
             modelBuilder.Entity<Time>().HasIndex(t => new { t.ChargeCodeId, t.Status, t.Date }).HasDatabaseName("idx_time_chargecodeid_status_date");
+            modelBuilder.Entity<Time>().HasIndex(t => new { t.ChargeCodeId, t.Date }).IncludeProperties(t => new { t.Hours, t.HoursApproved }).HasDatabaseName("idx_time_chargecodeid__date");
+
             modelBuilder.Entity<ProjectStatusReport>().HasIndex(p => new { p.ProjectId, p.StartDate, p.EndDate }).HasDatabaseName("idx_psr_projectid_startdate_enddate");
             modelBuilder.Entity<Project>().HasIndex(p => new { p.ClientId, p.ProjectManagerId }).HasDatabaseName("idx_project_clientid_projectmanagerid");
 
