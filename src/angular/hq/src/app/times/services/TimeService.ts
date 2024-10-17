@@ -4,9 +4,11 @@ import {
   BehaviorSubject,
   Observable,
   combineLatest,
+  distinctUntilChanged,
   map,
   startWith,
   switchMap,
+  tap,
 } from 'rxjs';
 import {
   GetTimeRecordClientsV1,
@@ -73,9 +75,12 @@ export class TimeService {
 
     const projectRequest$ = combineLatest({
       clientId: this.clientId$,
-    });
+    }).pipe(distinctUntilChanged());
 
     this.projects$ = projectRequest$.pipe(
+      tap((r) => {
+        console.log(r);
+      }),
       switchMap((projectRequest) =>
         this.hqService.getProjectsV1(projectRequest),
       ),

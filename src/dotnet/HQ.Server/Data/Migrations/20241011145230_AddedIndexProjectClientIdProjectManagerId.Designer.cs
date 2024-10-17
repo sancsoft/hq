@@ -3,6 +3,7 @@ using System;
 using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    partial class HQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241011145230_AddedIndexProjectClientIdProjectManagerId")]
+    partial class AddedIndexProjectClientIdProjectManagerId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1046,13 +1049,8 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("StaffId")
                         .HasDatabaseName("ix_times_staff_id");
 
-                    b.HasIndex("ChargeCodeId", "Date")
-                        .HasDatabaseName("idx_time_chargecodeid__date");
-
-                    NpgsqlIndexBuilderExtensions.IncludeProperties(b.HasIndex("ChargeCodeId", "Date"), new[] { "Hours", "HoursApproved" });
-
-                    b.HasIndex("ChargeCodeId", "Status", "Date")
-                        .HasDatabaseName("idx_time_chargecodeid_status_date");
+                    b.HasIndex("ChargeCodeId", "Hours", "HoursApproved")
+                        .HasDatabaseName("idx_time_chargecodeid_hours_hoursapproved");
 
                     b.ToTable("times", (string)null);
                 });
