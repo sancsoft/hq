@@ -85,8 +85,21 @@
         @for (project of timeService.projects$ | async; track project.id) {
           <ng-template
             [hqSelectInputOption]="project.id"
-            [hqSelectInputOptionSearch]="project.name"
-            >{{ project.name }}</ng-template
+            [hqSelectInputOptionSelectedDisplay]="project.name"
+            [hqSelectInputOptionSearch]="
+              project.chargeCode +
+              ': ' +
+              project.clientName +
+              ': ' +
+              project.name
+            "
+            >{{
+              project.chargeCode +
+                ": " +
+                project.clientName +
+                ": " +
+                project.name
+            }}</ng-template
           >
         }
       </hq-select-input>

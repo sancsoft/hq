@@ -13,7 +13,6 @@ import {
 } from 'rxjs';
 import {
   GetTimeRecordClientsV1,
-  GetTimeRecordProjectsV1,
   GetTimeRecordStaffV1,
   GetTimeRecordV1,
 } from '../../models/times/get-time-v1';
@@ -23,6 +22,8 @@ import { Period } from '../../enums/period';
 import { TimeStatus } from '../../enums/time-status';
 import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
+import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
+import { formControlChanges } from '../../core/functions/form-control-changes';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,7 @@ export class TimeListService extends BaseListService<
 > {
   staffMembers$: Observable<GetTimeRecordStaffV1[]>;
   clients$: Observable<GetTimeRecordClientsV1[]>;
-  projects$: Observable<GetTimeRecordProjectsV1[]>;
+  projects$: Observable<GetProjectRecordV1[]>;
 
   roaster = new FormControl<string | null>('');
 
@@ -65,7 +66,7 @@ export class TimeListService extends BaseListService<
 
   showRoaster$ = new BehaviorSubject<boolean>(true);
 
-  clientId$ = this.client.valueChanges.pipe(startWith(this.client.value));
+  clientId$ = formControlChanges(this.client);
   Status = TimeStatus;
 
   constructor(private hqService: HQService) {
