@@ -6,20 +6,13 @@ import {
   SortColumn,
 } from '../../models/clients/get-client-v1';
 import { SortDirection } from '../../models/common/sort-direction';
-import {
-  FormControl,
-  FormControlDirective,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
   Observable,
-  Subject,
   combineLatest,
   debounceTime,
   map,
-  of,
   shareReplay,
   startWith,
   switchMap,
@@ -71,12 +64,12 @@ export class SelectableClientListComponent {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Name);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
     const search$ = this.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(this.search.value),
     );
 
     const itemsPerPage$ = this.itemsPerPage.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(this.itemsPerPage.value),
     );
 
@@ -97,7 +90,7 @@ export class SelectableClientListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => hqService.getClientsV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.records$ = response$.pipe(map((t) => t.records));

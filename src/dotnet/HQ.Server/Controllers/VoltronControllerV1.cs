@@ -3,6 +3,7 @@
 using FluentResults.Extensions.AspNetCore;
 
 using HQ.Abstractions.Common;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Staff;
 using HQ.Abstractions.Voltron;
 using HQ.API;
@@ -48,13 +49,14 @@ namespace HQ.Server.Controllers
         [HttpPost(nameof(ImportVoltronTimeSheetsV1))]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public Task<ActionResult> ImportVoltronTimeSheetsV1([FromForm] DateOnly from, [FromForm] DateOnly to, [FromForm] List<IFormFile> files, [FromForm] bool replace, CancellationToken ct = default)
+        public Task<ActionResult> ImportVoltronTimeSheetsV1([FromForm] DateOnly from, [FromForm] DateOnly to, [FromForm] List<IFormFile> files, [FromForm] bool replace, [FromForm] TimeStatus status, CancellationToken ct = default)
         {
             var request = new ImportVoltronTimeSheetsV1.Request();
 
             request.From = from;
             request.To = to;
             request.Replace = replace;
+            request.Status = status;
 
             foreach (var file in files)
             {

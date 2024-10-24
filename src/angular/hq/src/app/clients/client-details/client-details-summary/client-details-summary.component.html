@@ -1,4 +1,4 @@
-@if (client$ | async; as client) {
+@if (clientDetailsService.client$ | async; as client) {
   <h1 class="font-rajdhani font-semibold text-3xl">{{ client.name }}</h1>
   <div class="flex justify-between">
     <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
@@ -11,7 +11,9 @@
         @if (client.billingEmail === null || client.billingEmail === "") {
           None
         } @else {
-          {{ client.billingEmail }}
+          <a [href]="'mailto:' + client.billingEmail">{{
+            client.billingEmail
+          }}</a>
         }
       </div>
       <div class="text-gray-50">
@@ -23,35 +25,40 @@
         }
       </div>
     </div>
-    <div class="float-right">
-      <a [routerLink]="['/clients/edit', client.id]" class="text-gray-50 pt-3"
-        >Edit client details</a
-      >
-    </div>
-  </div>
-  <hq-error-display [errors]="apiErrors"></hq-error-display>
-}
-<div>
-  @if (clientInvoiceSummary$ | async; as clientInvoiceSummary) {
-    <div class="flex justify-between">
-      <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-        <div class="text-gray-50">
-          Month to Date:
-          {{ (clientInvoiceSummary.lastMonthToDate | currency) ?? "None" }}
+    @if (
+      clientDetailsService.clientInvoiceSummary$ | async;
+      as clientInvoiceSummary
+    ) {
+      <div class="grid grid-flow-col gap-[30px] auto-cols-max">
+        <div>
+          <hq-stat-display title="Month to Date" [large]="false">
+            {{ (clientInvoiceSummary.monthToDate | currency) ?? "None" }}
+          </hq-stat-display>
         </div>
-        <div class="text-gray-50">
-          Last Month to Date:
-          {{ (clientInvoiceSummary.monthToDate | currency) ?? "None" }}
+        <div>
+          <hq-stat-display title="Last Month to Date" [large]="false">
+            {{ (clientInvoiceSummary.lastMonthToDate | currency) ?? "None" }}
+          </hq-stat-display>
         </div>
-        <div class="text-gray-50">
-          Year to Date:
-          {{ (clientInvoiceSummary.yearToDate | currency) ?? "None" }}
+        <div>
+          <hq-stat-display title="Year to Date" [large]="false">
+            {{ (clientInvoiceSummary.yearToDate | currency) ?? "None" }}
+          </hq-stat-display>
         </div>
-        <div class="text-gray-50">
-          All Time to Date:
-          {{ (clientInvoiceSummary.allTimeToDate | currency) ?? "None" }}
+        <div>
+          <hq-stat-display title="All Time to Date" [large]="false">
+            {{ (clientInvoiceSummary.allTimeToDate | currency) ?? "None" }}
+          </hq-stat-display>
         </div>
       </div>
-    </div>
-  }
-</div>
+    }
+  </div>
+  <div class="flex flex-row justify-between pt-3">
+    <a routerLink="/clients" class="text-gray-50 underline">Client List</a>
+    <a
+      [routerLink]="['/clients/edit', client.id]"
+      class="text-gray-50 underline"
+      >Edit client details</a
+    >
+  </div>
+}

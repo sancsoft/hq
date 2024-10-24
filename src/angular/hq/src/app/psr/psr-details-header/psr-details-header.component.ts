@@ -1,23 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { GetPSRRequestV1 } from './../../models/PSR/get-PSR-v1';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   Observable,
   combineLatest,
   debounceTime,
   map,
+  merge,
   shareReplay,
   switchMap,
 } from 'rxjs';
 import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
-import { Period } from '../../projects/project-create/project-create.component';
+import { Period } from '../../enums/period';
+import { PsrRefreshService } from '../Services/psr-refresh.service';
 
 @Component({
   selector: 'hq-psr-details-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './psr-details-header.component.html',
 })
 export class PsrDetailsHeaderComponent {
@@ -27,6 +28,7 @@ export class PsrDetailsHeaderComponent {
   constructor(
     private activatedRoute: ActivatedRoute,
     private hqService: HQService,
+    private psrRefreshService: PsrRefreshService,
   ) {
     this.projectReportId$ = activatedRoute.paramMap.pipe(
       map((params) => params.get('psrId')),
@@ -34,10 +36,18 @@ export class PsrDetailsHeaderComponent {
     const request$ = combineLatest({
       id: this.projectReportId$,
     });
-    const response$ = request$.pipe(
+
+    const requestTrigger$ = merge(
+      request$,
+      this.psrRefreshService
+        .getRefreshObservable()
+        .pipe(switchMap(() => request$)),
+    );
+
+    const response$ = requestTrigger$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getPSRV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.projectReportStatus$ = response$.pipe(
@@ -46,7 +56,6 @@ export class PsrDetailsHeaderComponent {
       }),
     );
   }
-
   getPeriodName(period: Period) {
     return Period[period];
   }

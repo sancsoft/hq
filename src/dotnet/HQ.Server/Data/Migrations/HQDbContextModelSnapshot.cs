@@ -22,6 +22,55 @@ namespace HQ.Server.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("HQ.Server.Data.Models.Blob", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("data");
+
+                    b.Property<string>("ETag")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("etag");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("key");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint")
+                        .HasColumnName("size");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_blobs");
+
+                    b.HasIndex("Key")
+                        .IsUnique()
+                        .HasDatabaseName("ix_blobs_key");
+
+                    b.ToTable("blobs", (string)null);
+                });
+
             modelBuilder.Entity("HQ.Server.Data.Models.Book", b =>
                 {
                     b.Property<Guid>("Id")
@@ -255,6 +304,10 @@ namespace HQ.Server.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_holidays");
 
+                    b.HasIndex("Jurisdiciton", "Date")
+                        .IsUnique()
+                        .HasDatabaseName("ix_holidays_jurisdiciton_date");
+
                     b.ToTable("holidays", (string)null);
                 });
 
@@ -330,6 +383,10 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("staff_id");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("text")
+                        .HasColumnName("status");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -337,8 +394,9 @@ namespace HQ.Server.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_plans");
 
-                    b.HasIndex("StaffId")
-                        .HasDatabaseName("ix_plans_staff_id");
+                    b.HasIndex("StaffId", "Date")
+                        .IsUnique()
+                        .HasDatabaseName("ix_plans_staff_id_date");
 
                     b.ToTable("plans", (string)null);
                 });
@@ -384,8 +442,9 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("ChargeCodeId")
                         .HasDatabaseName("ix_points_charge_code_id");
 
-                    b.HasIndex("StaffId")
-                        .HasDatabaseName("ix_points_staff_id");
+                    b.HasIndex("StaffId", "Sequence", "Date")
+                        .IsUnique()
+                        .HasDatabaseName("ix_points_staff_id_sequence_date");
 
                     b.ToTable("points", (string)null);
                 });
@@ -446,9 +505,17 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
+                    b.Property<decimal>("TimeEntryMaxHours")
+                        .HasColumnType("numeric")
+                        .HasColumnName("time_entry_max_hours");
+
                     b.Property<decimal?>("TotalHours")
                         .HasColumnType("numeric")
                         .HasColumnName("total_hours");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -509,6 +576,42 @@ namespace HQ.Server.Data.Migrations
                         .HasDatabaseName("ix_project_activities_project_id_name");
 
                     b.ToTable("project_activities", (string)null);
+                });
+
+            modelBuilder.Entity("HQ.Server.Data.Models.ProjectMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("project_id");
+
+                    b.Property<Guid>("StaffId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("staff_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_project_members");
+
+                    b.HasIndex("StaffId")
+                        .HasDatabaseName("ix_project_members_staff_id");
+
+                    b.HasIndex("ProjectId", "StaffId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_project_members_project_id_staff_id");
+
+                    b.ToTable("project_members", (string)null);
                 });
 
             modelBuilder.Entity("HQ.Server.Data.Models.ProjectStatusReport", b =>
@@ -608,6 +711,14 @@ namespace HQ.Server.Data.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date")
                         .HasColumnName("date");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("HasPDF")
+                        .HasColumnType("boolean")
+                        .HasColumnName("has_pdf");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -802,6 +913,10 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("date")
                         .HasColumnName("start_date");
 
+                    b.Property<DateOnly?>("TimeEntryCutoffDate")
+                        .HasColumnType("date")
+                        .HasColumnName("time_entry_cutoff_date");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -843,6 +958,10 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("activity_id");
 
+                    b.Property<DateTime?>("CapturedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("captured_at");
+
                     b.Property<Guid>("ChargeCodeId")
                         .HasColumnType("uuid")
                         .HasColumnName("charge_code_id");
@@ -854,6 +973,10 @@ namespace HQ.Server.Data.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date")
                         .HasColumnName("date");
+
+                    b.Property<Guid?>("HolidayId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("holiday_id");
 
                     b.Property<decimal>("Hours")
                         .HasColumnType("numeric")
@@ -911,6 +1034,9 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("ChargeCodeId")
                         .HasDatabaseName("ix_times_charge_code_id");
 
+                    b.HasIndex("HolidayId")
+                        .HasDatabaseName("ix_times_holiday_id");
+
                     b.HasIndex("InvoiceId")
                         .HasDatabaseName("ix_times_invoice_id");
 
@@ -921,6 +1047,29 @@ namespace HQ.Server.Data.Migrations
                         .HasDatabaseName("ix_times_staff_id");
 
                     b.ToTable("times", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FriendlyName")
+                        .HasColumnType("text")
+                        .HasColumnName("friendly_name");
+
+                    b.Property<string>("Xml")
+                        .HasColumnType("text")
+                        .HasColumnName("xml");
+
+                    b.HasKey("Id")
+                        .HasName("pk_data_protection_keys");
+
+                    b.ToTable("data_protection_keys", (string)null);
                 });
 
             modelBuilder.Entity("HQ.Server.Data.Models.Book", b =>
@@ -1000,7 +1149,7 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.Plan", b =>
                 {
                     b.HasOne("HQ.Server.Data.Models.Staff", "Staff")
-                        .WithMany()
+                        .WithMany("Plans")
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1066,6 +1215,27 @@ namespace HQ.Server.Data.Migrations
                         .HasConstraintName("fk_project_activities_projects_project_id");
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("HQ.Server.Data.Models.ProjectMember", b =>
+                {
+                    b.HasOne("HQ.Server.Data.Models.Project", "Project")
+                        .WithMany("ProjectMembers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_members_projects_project_id");
+
+                    b.HasOne("HQ.Server.Data.Models.Staff", "Staff")
+                        .WithMany("ProjectMembers")
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_members_staff_staff_id");
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("HQ.Server.Data.Models.ProjectStatusReport", b =>
@@ -1156,6 +1326,11 @@ namespace HQ.Server.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_times_charge_codes_charge_code_id");
 
+                    b.HasOne("HQ.Server.Data.Models.Holiday", "Holiday")
+                        .WithMany()
+                        .HasForeignKey("HolidayId")
+                        .HasConstraintName("fk_times_holidays_holiday_id");
+
                     b.HasOne("HQ.Server.Data.Models.Invoice", "Invoice")
                         .WithMany()
                         .HasForeignKey("InvoiceId")
@@ -1167,7 +1342,7 @@ namespace HQ.Server.Data.Migrations
                         .HasConstraintName("fk_times_staff_rejected_by_id");
 
                     b.HasOne("HQ.Server.Data.Models.Staff", "Staff")
-                        .WithMany()
+                        .WithMany("Times")
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1178,6 +1353,8 @@ namespace HQ.Server.Data.Migrations
                     b.Navigation("Activity");
 
                     b.Navigation("ChargeCode");
+
+                    b.Navigation("Holiday");
 
                     b.Navigation("Invoice");
 
@@ -1207,6 +1384,8 @@ namespace HQ.Server.Data.Migrations
                     b.Navigation("Activities");
 
                     b.Navigation("ChargeCode");
+
+                    b.Navigation("ProjectMembers");
                 });
 
             modelBuilder.Entity("HQ.Server.Data.Models.Quote", b =>
@@ -1217,6 +1396,15 @@ namespace HQ.Server.Data.Migrations
             modelBuilder.Entity("HQ.Server.Data.Models.ServiceAgreement", b =>
                 {
                     b.Navigation("ChargeCode");
+                });
+
+            modelBuilder.Entity("HQ.Server.Data.Models.Staff", b =>
+                {
+                    b.Navigation("Plans");
+
+                    b.Navigation("ProjectMembers");
+
+                    b.Navigation("Times");
                 });
 #pragma warning restore 612, 618
         }

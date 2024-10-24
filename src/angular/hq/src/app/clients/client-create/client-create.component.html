@@ -29,18 +29,13 @@
                 >
               </div>
               <div class="flex flex-column justify-center items-center">
-                <button
-                  type="submit"
-                  class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
-                >
-                  Save
-                </button>
+                <hq-button type="submit">Save</hq-button>
               </div>
             </div>
           </div>
           <div class="grid flex-1">
             <div class="p-5 pr-0">
-              <form class="grid gap-[20px]">
+              <div class="grid gap-[20px]">
                 @if (this.apiErrors) {
                   @for (error of this.apiErrors; track $index) {
                     <div
@@ -55,127 +50,51 @@
                 <div
                   class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"
                 >
-                  <!-- column -->
-                  <div>
-                    <label
-                      for="name"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                      >Client Name</label
-                    >
-                    <!-- text input -->
-                    <input
-                      [class.border-red-700]="
-                        form.controls.name.errors && form.touched
-                      "
-                      type="text"
-                      id="name"
-                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Client Name"
-                      formControlName="name"
-                    />
-                    @if (form.controls.name.errors && form.touched) {
-                      @if (form.controls.name.errors["required"]) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                          >Name is required.</span
-                        >
-                      }
-                    }
-                  </div>
-                  <!-- column -->
-                  <div>
-                    <label
-                      for="officialName"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                      >Official Name</label
-                    >
-                    <!-- text input -->
-                    <input
-                      [class.border-red-700]="
-                        form.controls.officialName.errors && form.touched
-                      "
-                      type="text"
-                      id="officialName"
-                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Official Name"
-                      formControlName="officialName"
-                    />
-                  </div>
+                  <hq-text-input
+                    variant="secondary"
+                    label="Client Name"
+                    placeholder="Client Name"
+                    formControlName="name"
+                  >
+                    <ng-template hqValidationError="required">
+                      Name is required.
+                    </ng-template>
+                  </hq-text-input>
+                  <hq-text-input
+                    variant="secondary"
+                    label="Official Name"
+                    placeholder="Official Name"
+                    formControlName="officialName"
+                  ></hq-text-input>
                 </div>
                 <!-- row grid -->
                 <div
                   class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5"
                 >
-                  <!-- column -->
-                  <div>
-                    <label
-                      for="billingEmail"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                      >Billing Email</label
-                    >
-                    <!-- email input -->
-                    <input
-                      [class.border-red-700]="
-                        form.controls.billingEmail.errors && form.touched
-                      "
-                      type="email"
-                      id="billingEmail"
-                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
-                      placeholder="Billing Email"
-                      formControlName="billingEmail"
-                    />
-                    @if (form.controls.billingEmail.errors && form.touched) {
-                      @if (form.controls.billingEmail.errors["email"]) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                          >Email address is invalid.</span
-                        >
-                      }
-                    }
-                  </div>
-                  <!-- column -->
-                  <div>
-                    <label
-                      for="hourlyRate"
-                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                      >Rate</label
-                    >
-                    <div class="flex items-center">
-                      <!-- text input w/icon to left -->
-                      <div
-                        class="flex items-stretch border border-black text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[98px]"
-                      >
-                        <span
-                          class="flex items-center justify-center text-center whitespace-nowrap w-[42px] after:block"
-                        >
-                          <i class="bi bi-currency-dollar text-[14px]"></i>
-                        </span>
-                        <input
-                          [class.border-red-700]="
-                            form.controls.hourlyRate.errors && form.touched
-                          "
-                          type="number"
-                          id="hourlyRate"
-                          step="1"
-                          min="0"
-                          class="text-right w-[100%] max-w-[98px] block text-[14px] px-2 py-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none placeholder:text-gray-100 bg-inherit rounded"
-                          placeholder="00"
-                          formControlName="hourlyRate"
-                        />
-                      </div>
-                      <span class="ml-[8px] font-semibold">p / hr</span>
-                    </div>
-                    @if (form.controls.hourlyRate.errors && form.touched) {
-                      @if (form.controls.hourlyRate.errors["min"]) {
-                        <span
-                          class="text-red-700 text-xs leading-normal inline-block"
-                          >Hourly rate must be positive.</span
-                        >
-                      }
-                    }
-                  </div>
+                  <hq-text-input
+                    variant="secondary"
+                    label="Billing Email"
+                    placeholder="Billing Email"
+                    formControlName="billingEmail"
+                  >
+                    <ng-template hqValidationError="email">
+                      Email address is invalid.
+                    </ng-template>
+                  </hq-text-input>
+                  <hq-text-input
+                    variant="secondary"
+                    type="number"
+                    label="Hourly Rate"
+                    placeholder="Hourly Rate"
+                    formControlName="hourlyRate"
+                    [min]="0"
+                  >
+                    <ng-template hqValidationError="min">
+                      Hourly rate must be positive.
+                    </ng-template>
+                  </hq-text-input>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </main>

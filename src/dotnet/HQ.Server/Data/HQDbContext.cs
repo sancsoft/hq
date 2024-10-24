@@ -2,14 +2,16 @@
 
 using HQ.Server.Data.Models;
 
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Data
 {
-    public class HQDbContext : DbContext
+    public class HQDbContext : DbContext, IDataProtectionKeyContext
     {
         public DbSet<Book> Books { get; set; } = null!;
         public DbSet<ChargeCode> ChargeCodes { get; set; } = null!;
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
         public DbSet<Client> Clients { get; set; } = null!;
         public DbSet<Expense> Expenses { get; set; } = null!;
         public DbSet<Holiday> Holidays { get; set; } = null!;
@@ -24,6 +26,8 @@ namespace HQ.Server.Data
         public DbSet<ServiceAgreement> ServiceAgreements { get; set; } = null!;
         public DbSet<Staff> Staff { get; set; } = null!;
         public DbSet<Time> Times { get; set; } = null!;
+        public DbSet<Blob> Blobs { get; set; } = null!;
+        public DbSet<ProjectMember> ProjectMembers { get; set; } = null!;
 
         public HQDbContext(DbContextOptions<HQDbContext> options)
             : base(options)
@@ -33,6 +37,7 @@ namespace HQ.Server.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Staff>().HasMany(t => t.Times).WithOne(s => s.Staff).HasForeignKey(t => t.StaffId);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }

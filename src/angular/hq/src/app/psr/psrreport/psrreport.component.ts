@@ -1,78 +1,110 @@
 import { HQService } from './../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, NgModel } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
 
 import {
-  BehaviorSubject,
   Observable,
   ReplaySubject,
-  Subject,
   combineLatest,
   debounceTime,
   map,
-  tap,
   skip,
   startWith,
   switchMap,
   take,
   takeUntil,
   firstValueFrom,
+  filter,
+  catchError,
+  of,
 } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APIError } from '../../errors/apierror';
-import { MarkdownModule } from 'ngx-markdown';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
-import { ButtonState } from '../../enums/ButtonState';
 import { ModalService } from '../../services/modal.service';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
+import { GetPrevPsrResponseV1 } from '../../models/PSR/get-previous-PSR-v1';
+import { ToastService } from '../../services/toast.service';
+import { ButtonState } from '../../enums/button-state';
+import { PSRTimeListComponent } from '../psrtime-list/psrtime-list.component';
+import { AngularSplitModule } from 'angular-split';
+import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
+import { PanelComponent } from '../../core/components/panel/panel.component';
+import { CoreModule } from '../../core/core.module';
 
 @Component({
   selector: 'hq-psrreport',
   standalone: true,
   imports: [
-    FormsModule,
+    ReactiveFormsModule,
     CommonModule,
     MonacoEditorModule,
     HQMarkdownComponent,
     InRolePipe,
+    PSRTimeListComponent,
+    AngularSplitModule,
+    PsrSearchFilterComponent,
+    PanelComponent,
+    CoreModule,
   ],
   templateUrl: './psrreport.component.html',
   encapsulation: ViewEncapsulation.None,
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<object>;
-  report: string | null = null;
+  report = new FormControl<string | null>(null);
+  previousReport: string | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editorInstance: any;
   sideBarCollapsed = false;
   leftWidth: number = 100;
+
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
-  report$ = new Subject<string | null>();
+  report$ = this.report.valueChanges;
   psrId$: Observable<string>;
+  psr$: Observable<GetPSRRecordV1>;
+
   savedStatus?: string;
 
   submitButtonState: ButtonState = ButtonState.Enabled;
+  prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
+
+  prevPsr$: Observable<GetPrevPsrResponseV1 | null>;
   ButtonState = ButtonState;
   HQRole = HQRole;
+  currentDate = new Date();
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.psrService.resetFilter();
     this.psrService.hideSearch();
     this.psrService.hideStartDate();
     this.psrService.hideEndDate();
     this.psrService.hideStaffMembers();
     this.psrService.hideIsSubmitted();
+
+    const psr = await firstValueFrom(this.psr$);
+    const prevPsr = await firstValueFrom(this.prevPsr$);
+    if (psr && psr.report) {
+      this.report.setValue(psr.report);
+    }
+    if (prevPsr && prevPsr.report) {
+      this.previousReport = prevPsr.report;
+    }
+
+    this.submitButtonState =
+      psr && (psr.submittedAt || psr.isCurrentPsrPeriod)
+        ? ButtonState.Disabled
+        : ButtonState.Enabled;
+
+    this.prevPSRReportButtonState =
+      prevPsr && prevPsr.report ? ButtonState.Enabled : ButtonState.Disabled;
   }
 
   ngOnDestroy(): void {
@@ -88,24 +120,28 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     private psrService: PsrService,
     private modalService: ModalService,
     private oidcSecurityService: OidcSecurityService,
+    private toastService: ToastService,
   ) {
-    const psrId$ = this.route.parent!.params.pipe(
+    this.psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId']),
     );
-    this.psrId$ = psrId$;
-    const request$ = combineLatest({
-      projectStatusReportId: psrId$,
-      report: this.report$,
-    });
-
-    const psr$ = psrId$.pipe(
+    this.psr$ = this.psrId$.pipe(
       switchMap((psrId) => this.hqService.getPSRV1({ id: psrId })),
       map((t) => t.records[0]),
     );
-
+    this.prevPsr$ = this.psrId$.pipe(
+      switchMap((psrId) =>
+        this.hqService.getPrevPSRV1({ projectStatusReportId: psrId }).pipe(
+          catchError((error: unknown) => {
+            console.error('Error fetching previous PSR:', error);
+            return of(null);
+          }),
+        ),
+      ),
+    );
     const canManageProjectStatusReport$ = combineLatest({
       userData: oidcSecurityService.userData$.pipe(map((t) => t.userData)),
-      psr: psr$,
+      psr: this.psr$,
     }).pipe(
       map(
         (t) =>
@@ -129,6 +165,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
           automaticLayout: true,
           readOnly: !canManageProjectStatusReport,
           domReadOnly: !canManageProjectStatusReport,
+          wordWrap: 'on',
         };
       }),
       startWith({
@@ -139,50 +176,63 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       }),
     );
 
-    psr$.subscribe((psrResponse) => {
-      if (psrResponse.report) {
-        this.report = psrResponse.report;
-      }
-      console.log(psrResponse.submittedAt, 'Submitted At');
-      this.submitButtonState = psrResponse.submittedAt
-        ? ButtonState.Disabled
-        : ButtonState.Enabled; // If submittedAt is not null, this means that the report has been submitted
-      console.log(this.submitButtonState.toLocaleString()); // console
-    });
-
-    const apiResponse$ = request$.pipe(
-      skip(1),
-      tap(() => {
-        this.submitButtonState = ButtonState.Enabled;
-      }),
-      debounceTime(1000),
-      takeUntil(this.destroyed$),
-      tap(() => {
-        this.savedStatus = 'loading';
-      }),
-      switchMap((request) =>
-        this.hqService.updateProjectStatusReportMarkdownV1(request),
+    const request$ = canManageProjectStatusReport$.pipe(
+      filter((canManageProjectStatusReport) => canManageProjectStatusReport),
+      switchMap(() =>
+        combineLatest({
+          projectStatusReportId: this.psrId$,
+          report: this.report$.pipe(skip(1)),
+        }),
       ),
     );
-    apiResponse$.subscribe({
-      next: (response) => {
-        this.savedStatus = 'success';
-        console.log('API Response:', response);
-      },
-      error: (err) => {
-        this.savedStatus = 'fail';
-        console.error('Error:', err);
-        this.modalService.alert(
-          'Error',
-          'There was an error saving the PM report.',
-        );
-        this.savedStatus = 'fail';
-      },
-    });
+
+    request$
+      .pipe(
+        skip(1),
+        debounceTime(1000),
+        // tap(() => (this.savedStatus = 'loading')),
+        switchMap((request) =>
+          this.hqService.updateProjectStatusReportMarkdownV1(request),
+        ),
+        takeUntil(this.destroyed$),
+      )
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: () => {
+          // this.savedStatus = 'success';
+          this.toastService.show('Success', 'PSR Report Saved Successfully');
+        },
+        error: async () => {
+          // this.savedStatus = 'fail';
+          this.toastService.show(
+            'Error',
+            'There was an error saving the PM report.',
+          );
+          await firstValueFrom(
+            this.modalService.alert(
+              'Error',
+              'There was an error saving the PM report.',
+            ),
+          );
+        },
+      });
   }
 
-  updateReport(value: string) {
-    this.report$.next(value);
+  insertTextAtCursor() {
+    const selection = this.editorInstance.getSelection();
+    const id = { major: 1, minor: 1 };
+    const op = {
+      identifier: id,
+      range: selection,
+      text: this.previousReport,
+      forceMoveMarkers: false,
+    };
+    this.editorInstance.executeEdits('my-source', [op]);
+    this.editorInstance.focus();
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onEditorInit(editor: any) {
+    this.editorInstance = editor;
   }
 
   async onReportSubmit() {
@@ -202,18 +252,19 @@ export class PSRReportComponent implements OnInit, OnDestroy {
           this.hqService.submitProjectStatusReportV1(request),
         ),
       );
-      apiResponse$.subscribe({
-        next: () => {
-          this.modalService.alert('Success', 'Report submitted successfully');
-          this.router.navigate(['/psr']);
-          this.submitButtonState = ButtonState.Disabled;
-        },
-        error: (err) => {
-          if (err instanceof APIError) {
-            this.modalService.alert('Error', err.errors.join('\n'));
-          }
-        },
-      });
+
+      try {
+        await firstValueFrom(apiResponse$);
+
+        this.toastService.show('Success', 'Report submitted successfully');
+
+        await this.router.navigate(['/psr']);
+        this.submitButtonState = ButtonState.Disabled;
+      } catch (err) {
+        if (err instanceof APIError) {
+          this.toastService.show('Error', err.errors.join('\n'));
+        }
+      }
     }
   }
 }

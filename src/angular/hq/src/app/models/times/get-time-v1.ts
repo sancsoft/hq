@@ -1,6 +1,7 @@
+import { Period } from '../../enums/period';
+import { TimeStatus } from '../../enums/time-status';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
-import { TimeStatus } from '../common/time-status';
 
 export interface GetTimeRequestV1 {
   Id?: string | null;
@@ -15,7 +16,7 @@ export interface GetTimeRequestV1 {
   projectId?: string | null;
   clientId?: string | null;
   invoiced?: boolean | null;
-  TimeAccepted?: boolean | null;
+  TimeStatus?: TimeStatus | null;
   activityId: string | null;
 }
 
@@ -69,17 +70,10 @@ export interface GetTimeRecordsV1 {
   records: [GetTimeRecordV1];
   staff: [GetTimeRecordStaffV1];
   total: number | null;
-}
-
-export enum Period {
-  Week = 1,
-  Month = 2,
-  Quarter = 3,
-  Year = 4,
-  Today = 5,
-  LastWeek = 6,
-  LastMonth = 7,
-  Custom = 8,
+  totalHours: number;
+  billableHours: number;
+  acceptedHours: number;
+  acceptedBillableHours: number;
 }
 
 export interface GetTimeV1 extends PagedResponseV1<GetTimeRecordV1> {}

@@ -94,6 +94,7 @@
       >
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
           <button
+            disabled
             routerLink="/projects/create"
             class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
           >
@@ -106,7 +107,7 @@
   </thead>
   <tbody>
     @if ((services$ | async)?.length === 0) {
-      <td colspan="8">
+      <td colspan="8" class="bg-black-alt">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
     }
@@ -127,7 +128,7 @@
           {{ service.endDate ?? "0.0" }}
         </td>
         <td class="border-b border-black py-2">
-          {{ getQuoteStatusString(service.quoteStatus) }}
+          {{ getProjectStatusString(service.quoteStatus) }}
         </td>
         <td class="border-b border-black py-2 text-right pr-5">
           <a class="text-teal-200 hover:text-teal-300">VIEW</a>

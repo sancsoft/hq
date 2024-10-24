@@ -76,6 +76,7 @@
       >
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
           <button
+            disabled
             routerLink="/invoices/create"
             class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
           >
@@ -88,7 +89,7 @@
   </thead>
   <tbody>
     @if ((invoices$ | async)?.length === 0) {
-      <td colspan="6">
+      <td colspan="6" class="bg-black-alt">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
     }

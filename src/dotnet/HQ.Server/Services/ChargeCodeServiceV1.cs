@@ -151,12 +151,14 @@ public class ChargeCodeServiceV1
             ProjectId = t.Project != null ? t.Project.Id : null,
             ClientName = t.Project != null ? t.Project.Client.Name : null,
             ClientId = t.Project != null ? t.Project.Client.Id : null,
-
+            MaximumTimeEntryHours = t.Project != null ? t.Project.TimeEntryMaxHours : 0,
             QuoteName = t.Quote != null ? t.Quote.Name : null,
             ServiceAgreementName = t.ServiceAgreement != null ? t.ServiceAgreement.Name : null,
             QuoteId = t.QuoteId != null ? t.QuoteId : null,
             ServiceAgreementId = t.ServiceAgreementId != null ? t.ServiceAgreementId : null,
-            Description = t.Description
+            Description = t.Description,
+            IsProjectMember = !request.StaffId.HasValue ? null : t.Project!.ProjectMembers.Any(x => x.StaffId == request.StaffId.Value),
+            IsProjectMemberSort = !request.StaffId.HasValue ? 1 : (t.Project!.ProjectMembers.Any(x => x.StaffId == request.StaffId.Value)) ? 0 : 1
         });
 
         var sortMap = new Dictionary<GetChargeCodesV1.SortColumn, string>()
@@ -167,13 +169,14 @@ public class ChargeCodeServiceV1
             { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName, "ProjectName" },
             { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName, "QuoteName" },
             { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName, "ServiceAgreementName" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.IsProjectMember, "IsProjectMemberSort" },
         };
 
         var sortProperty = sortMap[request.SortBy];
 
         mapped = request.SortDirection == SortDirection.Asc ?
-            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)).ThenBy(t => t.Code) :
+            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty)).ThenByDescending(t => t.Code);
 
         if (request.Skip.HasValue)
         {

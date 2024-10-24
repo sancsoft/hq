@@ -13,6 +13,7 @@ using HQ.Abstractions.Times;
 using HQ.API;
 using HQ.Server.Authorization;
 using HQ.Server.Data;
+using HQ.Server.Data.Models;
 using HQ.Server.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -57,7 +58,7 @@ namespace HQ.Server.Controllers
                 {
                     return NotFound();
                 }
-
+                time.Date = request.Date;
                 var authorizationResult = await _authorizationService
                     .AuthorizeAsync(User, time, TimeEntryOperation.UpsertTime);
 
@@ -68,7 +69,18 @@ namespace HQ.Server.Controllers
             }
             else
             {
-                request.StaffId = User.GetStaffId();
+                if (!request.StaffId.HasValue)
+                {
+                    return Forbid();
+                }
+
+                var authorizationResult = await _authorizationService
+                    .AuthorizeAsync(User, new Time() { StaffId = request.StaffId.Value, Date = request.Date }, TimeEntryOperation.UpsertTime);
+
+                if (!authorizationResult.Succeeded)
+                {
+                    return Forbid();
+                }
             }
 
             return await _TimeEntryServiceV1.UpsertTimeV1(request, ct)
@@ -92,7 +104,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            request.StaffId = staffId;
             return await _TimeEntryServiceV1.UpsertTimeDescriptionV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -114,7 +125,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            request.StaffId = staffId;
             return await _TimeEntryServiceV1.UpsertTimeChargecodeV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -136,7 +146,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            request.StaffId = staffId;
             return await _TimeEntryServiceV1.UpsertTimeDateV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -157,7 +166,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            request.StaffId = staffId;
             return await _TimeEntryServiceV1.UpsertTimeTaskV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -175,6 +183,15 @@ namespace HQ.Server.Controllers
         }
 
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(CaptureUnsubmittedTimeV1))]
+        [ProducesResponseType<CaptureUnsubmittedTimeV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> CaptureUnsubmittedTimeV1([FromBody] CaptureUnsubmittedTimeV1.Request request, CancellationToken ct = default)
+        {
+            return await _TimeEntryServiceV1.CaptureUnsubmittedTimeV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
 
         [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(DeleteTimeV1))]
@@ -213,6 +230,30 @@ namespace HQ.Server.Controllers
         public async Task<ActionResult> GetDashboardTimeV1([FromBody] GetDashboardTimeV1.Request request, CancellationToken ct = default)
         {
             return await _TimeEntryServiceV1.GetDashboardTimeV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(SubmitTimesV1))]
+        [ProducesResponseType<GetDashboardTimeV1.Response>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> SubmitTimesV1([FromBody] SubmitTimesV1.Request request, CancellationToken ct = default)
+        {
+            var times = _context.Times.Where(t => request.Ids.Contains(t.Id));
+            if (times == null)
+            {
+                return NotFound();
+            }
+
+            var authorizationResult = await _authorizationService
+                    .AuthorizeAsync(User, times.FirstOrDefault(), TimeEntryOperation.SubmitTimes);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+            return await _TimeEntryServiceV1.SubmitTimesV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
 

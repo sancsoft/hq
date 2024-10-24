@@ -6,6 +6,7 @@ using HQ.CLI.Commands.ChargeCode;
 using HQ.CLI.Commands.ChargeCodes;
 using HQ.CLI.Commands.Clients;
 using HQ.CLI.Commands.Projects;
+using HQ.CLI.Commands.Quotes;
 using HQ.CLI.Commands.Staff;
 using HQ.CLI.Commands.TimeEntries;
 using HQ.SDK;
@@ -115,10 +116,12 @@ app.Configure(config =>
         branch.AddCommand<EditTimeEntryHoursCommand>("update-hours");
         branch.AddCommand<EditTimeEntryDateCommand>("update-date");
         branch.AddCommand<EditTimeEntryTaskCommand>("update-task");
+    });
 
-
-
-
+    config.AddBranch("quote", branch =>
+    {
+        branch.AddCommand<GetQuotesCommand>("list").WithAlias("ls");
+        branch.AddCommand<ImportQuotePDF>("import-pdf");
     });
 
 });

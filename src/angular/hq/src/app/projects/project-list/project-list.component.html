@@ -1,159 +1,231 @@
 <div class="px-5">
   <h1 class="font-rajdhani font-semibold text-3xl">Projects</h1>
+  <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
 
 <div class="px-5 pt-4 mb-[8px]">
   <div class="flex flex-col lg:flex-row justify-between items-start">
     <div class="flex items-center order-2 lg:order-1 gap-[20px]">
-      <hq-project-list-search-filter />
+      <div class="flex w-full flex-1 items-end gap-[20px] mb-[8px] xl:mb-0">
+        <div class="w-full">
+          <hq-search-input [formControl]="listService.search"></hq-search-input>
+        </div>
+
+        <div class="w-full">
+          <hq-select-input
+            label="Project Manager"
+            [formControl]="listService.projectManagerId"
+            [autocomplete]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">All</ng-template>
+            @for (
+              projectManager of listService.projectManagers$ | async;
+              track projectManager.id
+            ) {
+              <ng-template
+                [hqSelectInputOption]="projectManager.id"
+                [hqSelectInputOptionSelectedDisplay]="projectManager.name"
+                [hqSelectInputOptionSearch]="projectManager.name"
+                >{{ projectManager.name }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
+
+        <div class="w-full">
+          <hq-select-input
+            label="Project Status"
+            [formControl]="listService.projectStatus"
+            [autocomplete]="true"
+          >
+            <ng-template [hqSelectInputOption]="null">All</ng-template>
+            @for (
+              status of listService.projectStatusEnum$ | async;
+              track status.id
+            ) {
+              <ng-template
+                [hqSelectInputOption]="status.id"
+                [hqSelectInputOptionSelectedDisplay]="status.name"
+                [hqSelectInputOptionSearch]="status.name"
+                >{{ status.name }}</ng-template
+              >
+            }
+          </hq-select-input>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<table class="min-w-full border-spacing-0 border-separate">
+<hq-table>
   <thead>
     <tr class="sticky top-0 text-left">
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.ChargeCode)"
+        width="140"
+        [hq-sort-header]="listService.SortColumn.ChargeCode"
       >
-        Charge Code
-        <hq-sort-icon
-          [column]="sortColumn.ChargeCode"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
+        Chrg Code
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ProjectName)"
+        width="250"
+        [hq-sort-header]="listService.SortColumn.ClientName"
       >
-        Project Full Name
-        <!-- sorted by client name -->
-        <hq-sort-icon
-          [column]="sortColumn.ProjectName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
+        Client
+      </th>
+      <th scope="col" [hq-sort-header]="listService.SortColumn.ProjectName">
+        Project
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ClientName)"
-      >
-        Client Name
-        <hq-sort-icon
-          [column]="sortColumn.ProjectManagerName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
-      </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ProjectManagerName)"
+        width="150"
+        [hq-sort-header]="listService.SortColumn.ProjectManagerName"
       >
         PM
-        <hq-sort-icon
-          [column]="sortColumn.ProjectManagerName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.StartDate)"
+        width="150"
+        [hq-sort-header]="listService.SortColumn.StartDate"
+        class="hidden xl:table-cell"
       >
         Start Date
-        <hq-sort-icon
-          [column]="sortColumn.StartDate"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.EndDate)"
+        width="150"
+        [hq-sort-header]="listService.SortColumn.EndDate"
+        class="hidden xl:table-cell"
       >
         End Date
-        <hq-sort-icon
-          [column]="sortColumn.EndDate"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.Status)"
+        width="150"
+        [hq-sort-header]="listService.SortColumn.ProjectStatus"
       >
         Status
-        <hq-sort-icon
-          [column]="sortColumn.Status"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 w-[350px] cursor-pointer"
-        colspan="2"
+        width="250"
+        [hq-sort-header]="listService.SortColumn.SummaryPercentComplete"
+        class="hidden xl:table-cell"
       >
-        Complete
+        Complete %
       </th>
-      <th
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
-        colspan="2"
-      >
+
+      <th scope="col" width="150" class="text-right">
         @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-          <button
-            routerLink="/projects/create"
-            class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
-          >
+          <hq-button routerLink="/projects/create">
             <i class="bi bi-plus"></i>
             Project
-          </button>
+          </hq-button>
         }
       </th>
     </tr>
   </thead>
-  <tbody>
-    @if ((projects$ | async)?.length === 0) {
-      <td colspan="10">
-        <h1 class="text-center py-4 font-bold">No matching records found</h1>
-      </td>
-    }
-    @for ((project of projects$ | async); track $index) {
-      <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black py-2 pl-5">
-          {{ project.chargeCode }}
+  <tbody hq-table-body>
+    @for ((record of listService.records$ | async); track $index) {
+      <tr>
+        <td>
+          {{ record.chargeCode }}
         </td>
-        <td class="border-b border-black py-2">{{ project.name }}</td>
-        <td class="border-b border-black py-2">{{ project.clientName }}</td>
-
-        <td class="border-b border-black py-2">
-          {{ project.projectManagerName }}
+        <td>{{ record.clientName }}</td>
+        <td>{{ record.name }}</td>
+        <td>
+          {{ record.projectManagerName }}
         </td>
-        <td class="border-b border-black py-2">{{ project.startDate }}</td>
-        <td class="border-b border-black py-2">{{ project.endDate }}</td>
-        <td class="border-b border-black py-2">
-          {{ getProjectSatusString(project.status) }}
+        <td class="hidden xl:table-cell">{{ record.startDate }}</td>
+        <td class="hidden xl:table-cell">{{ record.endDate }}</td>
+        <td>
+          {{ listService.ProjectStatus[record.projectStatus] }}
         </td>
-        <td class="border-b border-black py-2">
-          <div class="w-[350px] bg-gray-500 border border-white h-[10px]">
-            <!-- Todo: add percentage -->
-            <div class="bg-white h-[8px]" [style.width.%]="0 * 100"></div>
-          </div>
+        <td class="hidden xl:table-cell">
+          @if (record.projectStatus === listService.ProjectStatus.Ongoing) {
+            @if (
+              record.bookingPercentComplete && record.bookingPercentComplete > 1
+            ) {
+              <div
+                class="w-full bg-gray-450 border border-red-950 h-[10px]"
+                title="{{ record.bookingStartDate }} - {{
+                  record.bookingEndDate
+                }}"
+              >
+                <div
+                  class="bg-red-950 h-[8px]"
+                  [style.width.%]="
+                    Math.min(record.bookingPercentComplete - 1, 1) * 100
+                  "
+                ></div>
+              </div>
+            } @else {
+              <div
+                class="w-full bg-gray-500 border border-white h-[10px]"
+                title="{{ record.bookingStartDate }} - {{
+                  record.bookingEndDate
+                }}"
+              >
+                <div
+                  class="bg-white h-[8px]"
+                  [style.width.%]="(record.bookingPercentComplete ?? 0) * 100"
+                ></div>
+              </div>
+            }
+            <div class="flex justify-between gap-2 text-xs text-gray-300">
+              <span class="lowercase"
+                >{{ record.bookingHours | number: "0.2-2" }} hrs
+                {{ listService.Period[record.bookingPeriod] }} to date</span
+              >
+              <span>{{ record.bookingPercentComplete | percent }}</span>
+            </div>
+          }
+          @if (
+            record.projectStatus === listService.ProjectStatus.InProduction
+          ) {
+            @if (
+              record.totalPercentComplete && record.totalPercentComplete > 1
+            ) {
+              <div
+                class="w-full bg-gray-450 border border-red-950 h-[10px]"
+                title="{{ record.totalStartDate ?? '-' }} - {{
+                  record.totalEndDate ?? '-'
+                }}"
+              >
+                <div
+                  class="bg-red-950 h-[8px]"
+                  [style.width.%]="
+                    Math.min(record.totalPercentComplete - 1, 1) * 100
+                  "
+                ></div>
+              </div>
+            } @else {
+              <div
+                class="w-full bg-gray-500 border border-white h-[10px]"
+                title="{{ record.totalStartDate ?? '-' }} - {{
+                  record.totalEndDate ?? '-'
+                }}"
+              >
+                <div
+                  class="bg-white h-[8px]"
+                  [style.width.%]="(record.totalPercentComplete ?? 0) * 100"
+                ></div>
+              </div>
+            }
+            <div class="flex justify-between gap-2 text-xs text-gray-300">
+              <span>{{ record.totalHours | number: "0.2-2" }} hrs total</span>
+              <span>{{
+                record.totalPercentComplete !== null
+                  ? (record.totalPercentComplete | percent)
+                  : "-"
+              }}</span>
+            </div>
+          }
         </td>
-        <td></td>
-        <td class="border-b border-black py-2 text-right pr-5">
+        <td class="text-right">
           <a
-            [routerLink]="[project.id]"
+            [routerLink]="[record.id]"
             class="text-teal-200 hover:text-teal-300"
             >VIEW</a
           >
@@ -161,31 +233,4 @@
       </tr>
     }
   </tbody>
-</table>
-<div
-  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
->
-  <div>
-    <select
-      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="projectSearchFilterService.itemsPerPage"
-    >
-      <option [ngValue]="10">10</option>
-      <option [ngValue]="20">20</option>
-      <option [ngValue]="50">50</option>
-      <option [ngValue]="100">100</option>
-      <!-- Add more options as needed -->
-    </select>
-    <span>items per page</span>
-  </div>
-  <hq-paginator
-    [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="projectSearchFilterService.itemsPerPage.value"
-    [currentPage]="projectSearchFilterService.page.value"
-    (page)="goToPage($event)"
-  ></hq-paginator>
-  <div class="flex justify-end text-xs">
-    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
-    {{ totalRecords$ | async }} items
-  </div>
-</div>
+</hq-table>

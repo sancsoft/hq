@@ -22,6 +22,7 @@ namespace HQ.Abstractions.ChargeCodes
             public SortDirection SortDirection { get; set; } = SortDirection.Asc;
             public bool? Billable { get; set; }
             public bool? Active { get; set; }
+            public Guid? StaffId { get; set; }
         }
 
         public enum SortColumn
@@ -31,7 +32,8 @@ namespace HQ.Abstractions.ChargeCodes
             Active = 3,
             ProjectName = 4,
             QuoteName = 5,
-            ServiceAgreementName = 6
+            ServiceAgreementName = 6,
+            IsProjectMember = 7
         }
 
         public class Response : PagedResponseV1<Record>;
@@ -44,6 +46,7 @@ namespace HQ.Abstractions.ChargeCodes
             public bool Active { get; set; }
             public string? ProjectName { get; set; }
             public string? QuoteName { get; set; }
+            public decimal MaximumTimeEntryHours { get; set; }
             public string? ServiceAgreementName { get; set; }
             public Guid? ProjectId { get; set; }
             public Guid? QuoteId { get; set; }
@@ -52,6 +55,8 @@ namespace HQ.Abstractions.ChargeCodes
             public Guid? ClientId { get; set; }
 
             public string? Description { get; set; }
+            public bool? IsProjectMember { get; set; }
+            public int IsProjectMemberSort { get; set; }
         }
     }
 }

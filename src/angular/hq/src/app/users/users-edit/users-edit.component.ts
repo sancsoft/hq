@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -6,11 +6,19 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, Observable, firstValueFrom, map } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  firstValueFrom,
+  map,
+  takeUntil,
+} from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
+import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 
 interface Form {
   firstName: FormControl<string | null>;
@@ -30,15 +38,18 @@ interface Form {
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './users-edit.component.html',
 })
-export class UsersEditComponent implements OnInit {
+export class UsersEditComponent implements OnInit, OnDestroy {
   userId?: string;
   staffMembers$: Observable<GetStaffV1Record[]>;
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
+
+  private destroy = new Subject<void>();
 
   constructor(
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
+    private clientDetailService: ClientDetailsServiceToReplace,
   ) {
     const response$ = this.hqService.getStaffMembersV1({});
     this.staffMembers$ = response$.pipe(
@@ -47,16 +58,27 @@ export class UsersEditComponent implements OnInit {
       }),
     );
 
-    this.form.controls.isStaff.valueChanges.subscribe((value) => {
-      this.showStaffMembers$.next(value);
-      if (value) {
-        this.form.controls.staffId.setValidators([Validators.required]);
-        this.form.controls.staffId.updateValueAndValidity();
-      } else {
-        this.form.controls.staffId.clearValidators();
-        this.form.controls.staffId.updateValueAndValidity();
-      }
-    });
+    this.form.controls.isStaff.valueChanges
+      .pipe(takeUntil(this.destroy))
+      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      .subscribe({
+        next: (value) => {
+          this.showStaffMembers$.next(value);
+          if (value) {
+            this.form.controls.staffId.setValidators([Validators.required]);
+            this.form.controls.staffId.updateValueAndValidity();
+          } else {
+            this.form.controls.staffId.clearValidators();
+            this.form.controls.staffId.updateValueAndValidity();
+          }
+        },
+        error: console.error,
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
   }
 
   async ngOnInit() {
@@ -64,7 +86,7 @@ export class UsersEditComponent implements OnInit {
       (await (
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('userId')) ?? undefined;
-    this.getUser();
+    await this.getUser();
   }
   apiErrors?: string[];
 
@@ -132,17 +154,16 @@ export class UsersEditComponent implements OnInit {
   }
 
   async submit() {
-    this.form.markAsTouched();
+    this.form.markAllAsTouched();
     if (this.form.invalid) {
       return;
     }
 
     try {
       const request = { id: this.userId, ...this.form.value };
-      const response = await firstValueFrom(
-        this.hqService.upsertUsersV1(request),
-      );
-      this.router.navigate(['../../'], { relativeTo: this.route });
+      await firstValueFrom(this.hqService.upsertUsersV1(request));
+      this.clientDetailService.resetFilters();
+      await this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       console.log(err);
       if (err instanceof APIError) {

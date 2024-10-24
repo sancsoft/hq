@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -12,6 +11,9 @@ import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { ToastService } from '../../services/toast.service';
+import { ButtonComponent } from '../../core/components/button/button.component';
+import { TextInputComponent } from '../../core/components/text-input/text-input.component';
+import { ValidationErrorDirective } from '../../core/directives/validation-error.directive';
 
 interface Form {
   name: FormControl<string>;
@@ -23,7 +25,14 @@ interface Form {
 @Component({
   selector: 'hq-client-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonComponent,
+    TextInputComponent,
+    ValidationErrorDirective,
+  ],
   templateUrl: './client-edit.component.html',
 })
 export class ClientEditComponent implements OnInit {
@@ -41,7 +50,7 @@ export class ClientEditComponent implements OnInit {
       (await (
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('clientId')) ?? undefined;
-    this.getClient();
+    await this.getClient();
   }
   apiErrors?: string[];
 
@@ -82,7 +91,7 @@ export class ClientEditComponent implements OnInit {
   }
 
   async submit() {
-    this.form.markAsTouched();
+    this.form.markAllAsTouched();
     if (this.form.invalid) {
       return;
     }
@@ -93,7 +102,7 @@ export class ClientEditComponent implements OnInit {
         this.hqService.upsertClientV1(request),
       );
       console.log(response);
-      this.router.navigate(['clients', response.id]);
+      await this.router.navigate(['clients', response.id]);
       this.toastService.show('Updated', 'Client has been updated');
     } catch (err) {
       console.log(err);

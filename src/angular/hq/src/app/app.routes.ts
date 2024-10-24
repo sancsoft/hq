@@ -1,4 +1,3 @@
-import { UsersEditComponent } from './users/users-edit/users-edit.component';
 import { Routes } from '@angular/router';
 import { AutoLoginPartialRoutesGuard } from 'angular-auth-oidc-client';
 import { userRoleGuard } from './guards/user-role.guard';
@@ -7,7 +6,7 @@ import { HQRole } from './enums/hqrole';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'psr',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
   {
@@ -15,6 +14,15 @@ export const routes: Routes = [
     title: 'Login...',
     loadComponent: () =>
       import('./callback.component').then((m) => m.CallbackComponent),
+  },
+  {
+    path: 'kitchen-sink',
+    title: 'Kitchen Sink',
+    canActivate: [AutoLoginPartialRoutesGuard],
+    loadComponent: () =>
+      import('./core/components/kitchen-sink/kitchen-sink.component').then(
+        (m) => m.KitchenSinkComponent,
+      ),
   },
   {
     path: 'chargecodes',
@@ -169,7 +177,7 @@ export const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
-            redirectTo: 'time',
+            redirectTo: 'report',
           },
           {
             path: 'time',
@@ -223,50 +231,63 @@ export const routes: Routes = [
         title: 'Project Details',
         canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
-          import('./projects/project-view/project-view.component').then(
-            (m) => m.ProjectViewComponent,
+          import('./projects/project-details/project-details.component').then(
+            (m) => m.ProjectDetailsComponent,
           ),
         children: [
           {
             path: '',
-            redirectTo: 'details',
-            pathMatch: 'full',
-          },
-          {
-            path: 'details',
             title: 'Project Details',
             canActivate: [userRoleGuard(HQRole.Staff)],
             loadComponent: () =>
               import(
-                './projects/project-details/project-details.component'
-              ).then((m) => m.ProjectDetailsComponent),
+                './projects/project-details/project-view/project-view.component'
+              ).then((m) => m.ProjectViewComponent),
           },
           {
             path: 'edit',
             title: 'Edit Project',
             canActivate: [userRoleGuard(HQRole.Administrator)],
             loadComponent: () =>
-              import('./projects/project-edit/project-edit.component').then(
-                (m) => m.ProjectEditComponent,
-              ),
+              import(
+                './projects/project-details/project-edit/project-edit.component'
+              ).then((m) => m.ProjectEditComponent),
+          },
+          {
+            path: 'activities',
+            title: 'Project Activities',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './projects/project-details/project-activity-list/project-activity-list.component'
+              ).then((m) => m.ProjectActivityListComponent),
+          },
+          {
+            path: 'roster',
+            title: 'Project Roster',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './projects/project-details/project-roster-list/project-roster-list.component'
+              ).then((m) => m.ProjectRosterListComponent),
           },
           {
             path: 'report',
             title: 'Project PSR Report',
             canActivate: [userRoleGuard(HQRole.Staff)],
             loadComponent: () =>
-              import('./projects/project-report/project-report.component').then(
-                (m) => m.ProjectReportComponent,
-              ),
+              import(
+                './projects/project-details/project-report/project-report.component'
+              ).then((m) => m.ProjectReportComponent),
           },
           {
             path: 'time',
             title: 'Project PSR Time',
             canActivate: [userRoleGuard(HQRole.Staff)],
             loadComponent: () =>
-              import('./projects/project-time/project-time.component').then(
-                (m) => m.ProjectTimeComponent,
-              ),
+              import(
+                './projects/project-details/project-time/project-time.component'
+              ).then((m) => m.ProjectTimeComponent),
           },
         ],
       },
@@ -295,6 +316,15 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./quotes/quotes-create/quotes-create.component').then(
             (m) => m.QuotesCreateComponent,
+          ),
+      },
+      {
+        path: 'edit/:quoteId',
+        title: 'Edit Quote',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./quotes/quotes-edit/quotes-edit.component').then(
+            (m) => m.QuotesEditComponent,
           ),
       },
     ],
@@ -357,6 +387,42 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'holidays',
+    title: 'Holiday',
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
+    loadComponent: () =>
+      import('./holiday/holiday.component').then((m) => m.HolidayComponent),
+    children: [
+      {
+        path: '',
+        title: 'Holiday List',
+        canActivate: [userRoleGuard(HQRole.Staff)],
+        loadComponent: () =>
+          import('./holiday/holiday-list/holiday-list.component').then(
+            (m) => m.HolidayListComponent,
+          ),
+      },
+      {
+        path: 'create',
+        title: 'Create Holiday',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./holiday/holiday-create/holiday-create.component').then(
+            (m) => m.HolidayCreateComponent,
+          ),
+      },
+      {
+        path: 'edit/:holidayId',
+        title: 'Edit Holiday',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./holiday/holiday-edit/holiday-edit.component').then(
+            (m) => m.HolidayEditComponent,
+          ),
+      },
+    ],
+  },
+  {
     path: 'staff',
     title: 'Staff',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
@@ -365,7 +431,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        title: 'Staff List',
+        title: 'Staff',
         canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
           import('./staff/staff-list/staff-list.component').then(
@@ -373,39 +439,130 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'create',
-        title: 'Create Staff',
-        canActivate: [userRoleGuard(HQRole.Administrator)],
+        path: ':staffId/timesheet',
+        canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
-          import('./staff/staff-create/staff-create.component').then(
-            (m) => m.StaffCreateComponent,
+          import('./staff/staff-timesheet/staff-timesheet.component').then(
+            (m) => m.StaffTimesheetComponent,
           ),
       },
       {
-        path: 'edit/:staffId',
-        title: 'Edit Staff',
-        canActivate: [userRoleGuard(HQRole.Administrator)],
+        path: ':staffId',
+        title: 'staff Details',
+        canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
-          import('./staff/staff-edit/staff-edit.component').then(
-            (m) => m.StaffEditComponent,
+          import('./staff/staff-details/staff-details.component').then(
+            (m) => m.StaffDetailsComponent,
           ),
+        children: [
+          {
+            path: '',
+            title: 'staff View',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './staff/staff-details/staff-view/staff-view.component'
+              ).then((m) => m.StaffViewComponent),
+          },
+
+          {
+            path: 'contacts',
+            title: 'staff Contacts',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './staff/staff-details/staff-contacts/staff-contacts.component'
+              ).then((m) => m.StaffContactsComponent),
+          },
+        ],
       },
     ],
   },
   {
+    path: 'staff-admin',
+    title: 'Staff Admin',
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
+    loadComponent: () =>
+      import('./users/users.component').then((m) => m.UsersComponent),
+    children: [
+      {
+        path: '',
+        title: 'Staff',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import(
+            './staff-admin/staff-admin-list/staff-admin-list.component'
+          ).then((m) => m.StaffAdminListComponent),
+      },
+      {
+        path: 'create',
+        title: 'Create Staff',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./staff-admin/staff-create/staff-create.component').then(
+            (m) => m.StaffCreateComponent,
+          ),
+      },
+      {
+        path: ':staffId/timesheet',
+        canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
+        loadComponent: () =>
+          import('./staff/staff-timesheet/staff-timesheet.component').then(
+            (m) => m.StaffTimesheetComponent,
+          ),
+      },
+      {
+        path: ':staffId',
+        title: 'staff Details',
+        canActivate: [userRoleGuard(HQRole.Staff)],
+        loadComponent: () =>
+          import('./staff/staff-details/staff-details.component').then(
+            (m) => m.StaffDetailsComponent,
+          ),
+        children: [
+          {
+            path: '',
+            title: 'staff View',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './staff/staff-details/staff-view/staff-view.component'
+              ).then((m) => m.StaffViewComponent),
+          },
+          {
+            path: 'edit',
+            title: 'Edit Staff',
+            canActivate: [userRoleGuard(HQRole.Administrator)],
+            loadComponent: () =>
+              import('./staff-admin/staff-edit/staff-edit.component').then(
+                (m) => m.StaffEditComponent,
+              ),
+          },
+          {
+            path: 'contacts',
+            title: 'staff Contacts',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './staff/staff-details/staff-contacts/staff-contacts.component'
+              ).then((m) => m.StaffContactsComponent),
+          },
+        ],
+      },
+    ],
+  },
+
+  {
     path: 'times',
     title: 'Times',
-    canActivate: [
-      AutoLoginPartialRoutesGuard,
-      userRoleGuard(HQRole.Administrator),
-    ],
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
       import('./times/times.component').then((m) => m.TimesComponent),
     children: [
       {
         path: '',
         title: 'Time List',
-        canActivate: [userRoleGuard(HQRole.Administrator)],
+        canActivate: [userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
           import('./times/time-list/time-list.component').then(
             (m) => m.TimeListComponent,
@@ -424,10 +581,20 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [userRoleGuard(HQRole.Staff)],
+    title: 'Dashboard',
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
-      import('./staff-dashboard/staff-dashboard.component').then(
-        (m) => m.StaffDashboardComponent,
+      import('./dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent,
+      ),
+  },
+  {
+    path: 'planning/points',
+    title: 'Planning Points',
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
+    loadComponent: () =>
+      import('./planning/planning-points/planning-points.component').then(
+        (m) => m.PlanningPointsComponent,
       ),
   },
 ];

@@ -50,6 +50,14 @@ namespace HQ.Server.Controllers
             _staffervice.DeleteStaffV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Executive)]
+        [HttpPost(nameof(BulkSetTimeEntryCutoffV1))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public Task<ActionResult> BulkSetTimeEntryCutoffV1([FromBody] BulkSetTimeEntryCutoffV1.Request request, CancellationToken ct = default) =>
+            _staffervice.BulkSetTimeEntryCutoffV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
         [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(ImportStaffV1))]
         [Consumes("multipart/form-data")]

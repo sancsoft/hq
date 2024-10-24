@@ -1,5 +1,6 @@
-import { ProjectStatus } from '../../clients/client-details.service';
-import { Period } from '../../projects/project-create/project-create.component';
+import { Period } from '../../enums/period';
+import { ProjectStatus } from '../../enums/project-status';
+import { ProjectType } from '../../enums/project-type';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
@@ -15,6 +16,7 @@ export interface GetPSRRequestV1 extends PagedRequestV1 {
   isSubmitted?: boolean | null;
   startDate?: Date | null;
   endDate?: Date | null;
+  period?: Period | null;
 }
 
 export enum SortColumn {
@@ -75,6 +77,8 @@ export interface GetPSRRecordV1 {
   summaryHoursTotal: number;
   summaryHoursAvailable: number;
   summaryPercentComplete: number;
+  isCurrentPsrPeriod: boolean;
+  projectType: ProjectType;
 }
 
 export interface GetPSRRecordsV1 {

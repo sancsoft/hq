@@ -4,6 +4,10 @@ namespace HQ.Server.Data.Models;
 
 public class ChargeCode : Base
 {
+    public ChargeCode()
+    {
+
+    }
     public ChargeCodeActivity Activity { get; set; }
     public string Code { get; set; } = null!;
     public bool Billable { get; set; }

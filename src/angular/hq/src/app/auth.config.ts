@@ -1,12 +1,10 @@
 import {
-  AuthInterceptor,
   PassedInitialConfig,
   StsConfigHttpLoader,
   StsConfigLoader,
 } from 'angular-auth-oidc-client';
 import { AppSettingsService } from './app-settings.service';
-import { map, tap } from 'rxjs';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { map } from 'rxjs';
 
 export const authConfig: PassedInitialConfig = {
   loader: {
@@ -23,7 +21,10 @@ export const authConfig: PassedInitialConfig = {
             responseType: 'code',
             silentRenew: true,
             useRefreshToken: true,
-            renewTimeBeforeTokenExpiresInSeconds: 30,
+            // Randomly renew the access token between 30-120 seconds
+            // See https://github.com/damienbod/angular-auth-oidc-client/issues/1662
+            renewTimeBeforeTokenExpiresInSeconds:
+              Math.floor(Math.random() * 90) + 30,
             ignoreNonceAfterRefresh: true,
             renewUserInfoAfterTokenRenew: true,
             secureRoutes: [appSettings.apiUrl],

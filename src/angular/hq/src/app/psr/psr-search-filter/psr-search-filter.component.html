@@ -1,6 +1,11 @@
 <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
-  <div class="w-full pt-4 mt-1">
+  <div class="w-full">
     @if (psrService.showSearch$ | async) {
+      <label
+        for="Search"
+        class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+        >Search</label
+      >
       <!-- search bar -->
       <div
         class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-full max-w-[395px]"
@@ -22,7 +27,7 @@
   @if (psrService.staffMembers$ && psrService.showStaffMembers$ | async) {
     <div class="w-full">
       <label
-        for=""
+        for="Select staff member"
         class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
         >Staff Member</label
       >
@@ -117,10 +122,7 @@
     </div>
   }
 
-  @if (
-    ((psrService.projectActivities$ | async)?.length ?? 0 > 0) &&
-    (psrService.showActivityName$ | async)
-  ) {
+  @if ((psrService.projectActivities$ | async)?.length ?? 0 > 0) {
     <div class="w-full">
       <label
         for=""
@@ -154,18 +156,6 @@
   @if (psrService.showRoaster$ | async) {
     <!-- <div class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[205px]">
         <input type="text" class="w-[100%] block text-[14px] text-center px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded" name="" value="Roster" />
-    </div> -->
-  }
-  @if (psrService.showActivityName$ | async) {
-    <!-- <div class="grid relative w-[290px]">
-        <select class="w-[100%] pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px]">
-      <option [value]="psrService.ActivityName.Development">Development</option>
-      <option [value]="psrService.ActivityName.Todo">Todo</option>
-      <option [value]="psrService.ActivityName.Support">Support</option>
-    </select>
-        <span class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100">
-      <i class="bi bi-arrow-down-short text-[24px]"></i>
-    </span>
     </div> -->
   }
 </div>

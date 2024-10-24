@@ -1,6 +1,6 @@
 <table class="min-w-full border-spacing-0 border-separate select-none">
   <thead>
-    <tr class="sticky top-0 text-left">
+    <tr class="sticky top-0 z-50 text-left">
       <th
         scope="col"
         colspan="2"
@@ -88,12 +88,17 @@
                 Accept All
               </button>
               <button
-                [disabled]="acceptButtonState === ButtonState.Disabled"
+                [disabled]="
+                  acceptButtonState === ButtonState.Disabled ||
+                  (selectedTimes$ | async)?.length === 0
+                "
                 [ngClass]="{
                   'text-gray-50 border-gray-500 bg-gray-500 ':
-                    acceptButtonState === ButtonState.Disabled,
+                    acceptButtonState === ButtonState.Disabled ||
+                    (selectedTimes$ | async)?.length === 0,
                   'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                    acceptButtonState === ButtonState.Enabled,
+                    acceptButtonState === ButtonState.Enabled &&
+                    ((selectedTimes$ | async)?.length ?? 0 > 0),
                 }"
                 class="px-2 py-2 border rounded min-w-[120px] font-normal"
                 (click)="acceptSelected()"
@@ -110,7 +115,7 @@
     @for (time of time$ | async; track time.id) {
       @if (canManageProjectStatusReport$ | async) {
         @switch (time.status) {
-          @case (timeStatus.Pending) {
+          @case (timeStatus.Unsubmitted) {
             <tr
               [ngClass]="{
                 'bg-blue-950': isSelected(time.id) | async,
@@ -140,17 +145,39 @@
               <td class="border-b border-black py-2 px-2 whitespace-nowrap">
                 {{ time.date }}
               </td>
-              <td class="border-b border-black py-2 px-2 text-black">
+              <td class="border-b border-black py-2 px-2">
                 @if (chargeCodes$ | async; as chargeCodes) {
-                  <select
+                  <hq-select-input
+                    (hqBlur)="updateChargeCode(time.id)"
+                    [autocomplete]="true"
+                    variant="pill"
+                    [inline]="true"
                     [(ngModel)]="time.chargeCode"
-                    (change)="updateChargeCode(time.id, $event)"
-                    class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
                   >
-                    <option *ngFor="let c of chargeCodes" [ngValue]="c.code">
-                      {{ c.code }}: {{ c.projectName }}
-                    </option>
-                  </select>
+                    <ng-template [hqSelectInputOption]="null"
+                      >Chrge</ng-template
+                    >
+                    @for (code of chargeCodes; track code.id) {
+                      <ng-template
+                        [hqSelectInputOption]="code.code"
+                        [hqSelectInputOptionSelectedDisplay]="code.code"
+                        [hqSelectInputOptionSearch]="
+                          code.code +
+                          ': ' +
+                          code.clientName +
+                          ': ' +
+                          code.projectName
+                        "
+                        >{{
+                          code.code +
+                            ": " +
+                            code.clientName +
+                            ": " +
+                            code.projectName
+                        }}</ng-template
+                      >
+                    }
+                  </hq-select-input>
                 }
               </td>
               <td class="border-b border-black py-2 px-2">
@@ -161,9 +188,139 @@
                   @if (projectActivities.length > 0) {
                     <select
                       [(ngModel)]="time.activityId"
-                      (change)="updateProjectActivity(time.id, $event)"
+                      (change)="updateProjectActivity(time.id)"
                       class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
                     >
+                      <option [ngValue]="null">Select Activity</option>
+                      @for (activity of projectActivities; track $index) {
+                        <option [ngValue]="activity.id">
+                          {{ activity.name }}
+                        </option>
+                      }
+                    </select>
+                  } @else {
+                    <input
+                      class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+                      [value]="time.task"
+                      (change)="updateTask(time.id, $event)"
+                    />
+                  }
+                } @else {
+                  <input
+                    class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+                    [value]="time.task"
+                    (change)="updateTask(time.id, $event)"
+                  />
+                }
+              </td>
+              <td class="border-b border-black py-2 px-2 w-full">
+                <input
+                  class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+                  [value]="time.description"
+                  (change)="updateDescription(time.id, $event)"
+                />
+              </td>
+              <td class="border-b border-black py-2 text-right pr-5">
+                <div
+                  class="flex justify-between flex-nowrap space-x-2 items-center"
+                >
+                  <!-- warning icon -->
+                  <div>&nbsp;</div>
+                  <div class="text-nowrap divide-x divide-teal-200">
+                    <button
+                      class="text-teal-200 hover:text-teal-300 uppercase pr-3"
+                      (click)="reject(time.id)"
+                    >
+                      reject
+                    </button>
+                    <button
+                      class="text-teal-200 hover:text-teal-300 uppercase pl-3"
+                      (click)="acceptTime(time.id)"
+                    >
+                      accept
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          }
+          @case (timeStatus.Submitted) {
+            <tr
+              [ngClass]="{
+                'bg-blue-950': isSelected(time.id) | async,
+                'even:bg-gray-850 odd:bg-black-alt':
+                  (isSelected(time.id) | async) === false,
+              }"
+            >
+              <td
+                (click)="toggleTime(time.id)"
+                class="border-b border-black py-2 bg-gray-450 w-3 cursor-pointer"
+              ></td>
+              <td class="border-b border-black py-2 pl-3 pr-2">
+                <input
+                  class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
+                  [value]="
+                    (time.billableHours | number: '1.2-2')?.replace(',', '')
+                  "
+                  (change)="updateBillableHours(time.id, $event)"
+                  type="number"
+                  step="0.25"
+                  min="0"
+                />
+              </td>
+              <td class="border-b border-black py-2 px-2 text-right">
+                {{ time.hours | number: "1.2-2" }}
+              </td>
+              <td class="border-b border-black py-2 px-2 whitespace-nowrap">
+                {{ time.date }}
+              </td>
+              <td class="border-b border-black py-2 px-2">
+                @if (chargeCodes$ | async; as chargeCodes) {
+                  <hq-select-input
+                    (hqBlur)="updateChargeCode(time.id)"
+                    [autocomplete]="true"
+                    variant="pill"
+                    [inline]="true"
+                    [(ngModel)]="time.chargeCode"
+                  >
+                    <ng-template [hqSelectInputOption]="null"
+                      >Chrge</ng-template
+                    >
+                    @for (code of chargeCodes; track code.id) {
+                      <ng-template
+                        [hqSelectInputOption]="code.code"
+                        [hqSelectInputOptionSelectedDisplay]="code.code"
+                        [hqSelectInputOptionSearch]="
+                          code.code +
+                          ': ' +
+                          code.clientName +
+                          ': ' +
+                          code.projectName
+                        "
+                        >{{
+                          code.code +
+                            ": " +
+                            code.clientName +
+                            ": " +
+                            code.projectName
+                        }}</ng-template
+                      >
+                    }
+                  </hq-select-input>
+                }
+              </td>
+              <td class="border-b border-black py-2 px-2">
+                {{ time.staffName }}
+              </td>
+              <td class="border-b border-black py-2 px-2">
+                @if (projectActivities$ | async; as projectActivities) {
+                  @if (projectActivities.length > 0) {
+                    <select
+                      [(ngModel)]="time.activityId"
+                      (change)="updateProjectActivity(time.id)"
+                      class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+                    >
+                      <option [ngValue]="null">Select Activity</option>
                       @for (activity of projectActivities; track $index) {
                         <option [ngValue]="activity.id">
                           {{ activity.name }}
@@ -327,7 +484,7 @@
               </td>
             </tr>
           }
-          @case (timeStatus.RejectedPendingReview) {
+          @case (timeStatus.Resubmitted) {
             <tr
               [ngClass]="{
                 'bg-blue-950': isSelected(time.id) | async,
@@ -337,7 +494,7 @@
             >
               <td
                 (click)="toggleTime(time.id)"
-                class="border-b border-black py-2 bg-yellow-450 w-3 cursor-pointer"
+                class="border-b border-black py-2 bg-yellow-550 w-3 cursor-pointer"
               ></td>
               <td class="border-b border-black py-2 pl-3 pr-2">
                 <input
@@ -355,13 +512,72 @@
                 {{ time.date }}
               </td>
               <td class="border-b border-black py-2 px-2">
-                {{ time.chargeCode }}
+                @if (chargeCodes$ | async; as chargeCodes) {
+                  <hq-select-input
+                    (hqBlur)="updateChargeCode(time.id)"
+                    [autocomplete]="true"
+                    variant="pill"
+                    [inline]="true"
+                    [(ngModel)]="time.chargeCode"
+                  >
+                    <ng-template [hqSelectInputOption]="null"
+                      >Chrge</ng-template
+                    >
+                    @for (code of chargeCodes; track code.id) {
+                      <ng-template
+                        [hqSelectInputOption]="code.code"
+                        [hqSelectInputOptionSelectedDisplay]="code.code"
+                        [hqSelectInputOptionSearch]="
+                          code.code +
+                          ': ' +
+                          code.clientName +
+                          ': ' +
+                          code.projectName
+                        "
+                        >{{
+                          code.code +
+                            ": " +
+                            code.clientName +
+                            ": " +
+                            code.projectName
+                        }}</ng-template
+                      >
+                    }
+                  </hq-select-input>
+                }
               </td>
               <td class="border-b border-black py-2 px-2">
                 {{ time.staffName }}
               </td>
               <td class="border-b border-black py-2 px-2">
-                {{ time.activityName || time.task || "None" }}
+                @if (projectActivities$ | async; as projectActivities) {
+                  @if (projectActivities.length > 0) {
+                    <select
+                      [(ngModel)]="time.activityId"
+                      (change)="updateProjectActivity(time.id)"
+                      class="w-[100%] px-2 focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[30px]"
+                    >
+                      <option [ngValue]="null">Select Activity</option>
+                      @for (activity of projectActivities; track $index) {
+                        <option [ngValue]="activity.id">
+                          {{ activity.name }}
+                        </option>
+                      }
+                    </select>
+                  } @else {
+                    <input
+                      class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+                      [value]="time.task"
+                      (change)="updateTask(time.id, $event)"
+                    />
+                  }
+                } @else {
+                  <input
+                    class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+                    [value]="time.task"
+                    (change)="updateTask(time.id, $event)"
+                  />
+                }
               </td>
               <td class="border-b border-black py-2 px-2 w-full">
                 <input
@@ -374,9 +590,23 @@
                 <div
                   class="flex justify-between flex-nowrap space-x-2 items-center"
                 >
+                  <div>
+                    <button type="button" (click)="showRejectionNotes(time.id)">
+                      <i
+                        [title]="time.rejectionNotes"
+                        class="bi bi-exclamation-diamond-fill text-yellow-550"
+                      ></i>
+                    </button>
+                  </div>
                   <!-- warning icon -->
                   <div>&nbsp;</div>
                   <div class="text-nowrap divide-x divide-teal-200">
+                    <button
+                      class="text-teal-200 hover:text-teal-300 uppercase pr-3"
+                      (click)="reject(time.id)"
+                    >
+                      reject
+                    </button>
                     <button
                       class="text-teal-200 hover:text-teal-300 uppercase pl-3"
                       (click)="acceptTime(time.id)"
@@ -392,7 +622,10 @@
       } @else {
         <tr class="even:bg-gray-850 odd:bg-black-alt text-gray-450">
           @switch (time.status) {
-            @case (timeStatus.Pending) {
+            @case (timeStatus.Unsubmitted) {
+              <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
+            }
+            @case (timeStatus.Submitted) {
               <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
             }
             @case (timeStatus.Accepted) {
@@ -401,8 +634,8 @@
             @case (timeStatus.Rejected) {
               <td class="border-b border-black py-2 bg-red-600 w-3"></td>
             }
-            @case (timeStatus.RejectedPendingReview) {
-              <td class="border-b border-black py-2 bg-yellow-450 w-3"></td>
+            @case (timeStatus.Resubmitted) {
+              <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
             }
           }
           <td class="border-b border-black py-2 pl-3 pr-2">
@@ -430,115 +663,16 @@
               disabled
             />
           </td>
-          <td class="border-b border-black py-2 pr-5">
+          <td class="border-b border-black py-2 text-right pr-5">
             <div
-              class="flex flex-nowrap justify-between space-x-2 items-center"
+              class="flex justify-between flex-nowrap space-x-2 items-center"
             >
-              <div></div>
+              <div>&nbsp;</div>
+              <div class="text-nowrap divide-x divide-teal-200"></div>
             </div>
           </td>
         </tr>
       }
     }
-  </tbody>
-  <tbody class="hidden">
-    <!-- Needs Attention -->
-    <tr class="even:bg-gray-850 odd:bg-black-alt">
-      <td class="border-b border-black py-2 bg-yellow-550 w-3"></td>
-      <td class="border-b border-black py-2 pl-3 pr-2">
-        <input
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2"
-          value="5"
-        />
-      </td>
-      <td class="border-b border-black py-2 px-2">5.5</td>
-      <td class="border-b border-black py-2 px-2">12/23/2024</td>
-      <td class="border-b border-black py-2 px-2">P1006</td>
-      <td class="border-b border-black py-2 px-2">rlennox</td>
-      <td class="border-b border-black py-2 px-2">Support</td>
-      <td class="border-b border-black py-2 px-2 w-full">
-        <input
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-          value="Testing bug fixes for mqtt site controller, updated environments."
-        />
-      </td>
-      <td class="border-b border-black py-2 text-right pr-5">
-        <div class="flex justify-between flex-nowrap space-x-2 items-center">
-          <!-- warning icon -->
-          <div>
-            <i class="bi bi-exclamation-diamond-fill text-yellow-550"></i>
-          </div>
-          <a href="#" class="text-teal-200 hover:text-teal-300 uppercase"
-            >accept</a
-          >
-        </div>
-      </td>
-    </tr>
-    <!-- Default -->
-    <tr class="even:bg-gray-850 odd:bg-black-alt">
-      <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-      <td class="border-b border-black py-2 pl-3 pr-2">
-        <input
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-          value="6.5"
-        />
-      </td>
-      <td class="border-b border-black py-2 px-2">8</td>
-      <td class="border-b border-black py-2 px-2">8/23/2024</td>
-      <td class="border-b border-black py-2 px-2">Q1234</td>
-      <td class="border-b border-black py-2 px-2">rlennox</td>
-      <td class="border-b border-black py-2 px-2">Support</td>
-      <td class="border-b border-black py-2 px-2 w-full">
-        <input
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-          value="PAX design review"
-        />
-      </td>
-      <td class="border-b border-black py-2 text-right pr-5">
-        <div class="flex justify-between flex-nowrap space-x-2 items-center">
-          <!-- warning icon -->
-          <div>&nbsp;</div>
-          <div class="text-nowrap divide-x divide-teal-200">
-            <button class="text-teal-200 hover:text-teal-300 uppercase pr-3">
-              reject
-            </button>
-            <button class="text-teal-200 hover:text-teal-300 uppercase pl-3">
-              accept
-            </button>
-          </div>
-        </div>
-      </td>
-    </tr>
-    <!-- Error -->
-    <tr class="even:bg-gray-850 odd:bg-black-alt">
-      <td class="border-b border-black py-2 bg-red-850 w-3"></td>
-      <td class="border-b border-black py-2 pl-3 pr-2">
-        <input
-          class="w-full bg-blue-900 border border-black rounded py-1 px-2"
-          value="3"
-        />
-      </td>
-      <td class="border-b border-black py-2 px-2">3.75</td>
-      <td class="border-b border-black py-2 px-2">3/23/2024</td>
-      <td class="border-b border-black py-2 px-2">P1006</td>
-      <td class="border-b border-black py-2 px-2">rlennox</td>
-      <td class="border-b border-black py-2 px-2">Support</td>
-      <td class="border-b border-black py-2 px-2 w-full">
-        <input
-          class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2"
-          value="Assisting Jack with debugging NV200 issues, sealevel questions."
-          disabled
-        />
-      </td>
-      <td class="border-b border-black py-2 text-right pr-5">
-        <div class="flex justify-between flex-nowrap space-x-2 items-center">
-          <!-- warning icon -->
-          <div>
-            <i class="bi bi-exclamation-diamond-fill text-yellow-550"></i>
-          </div>
-          <button disabled class="text-gray-450 uppercase">accept</button>
-        </div>
-      </td>
-    </tr>
   </tbody>
 </table>

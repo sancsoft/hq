@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -12,6 +11,9 @@ import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { APIError } from '../../errors/apierror';
 import { ToastService } from '../../services/toast.service';
+import { ButtonComponent } from '../../core/components/button/button.component';
+import { TextInputComponent } from '../../core/components/text-input/text-input.component';
+import { ValidationErrorDirective } from '../../core/directives/validation-error.directive';
 
 interface Form {
   name: FormControl<string>;
@@ -23,11 +25,18 @@ interface Form {
 @Component({
   selector: 'hq-client-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonComponent,
+    TextInputComponent,
+    ValidationErrorDirective,
+  ],
   templateUrl: './client-create.component.html',
 })
 export class ClientCreateComponent {
-  apiErrors?: string[];
+  apiErrors: string[] = [];
 
   form = new FormGroup<Form>({
     name: new FormControl('', {
@@ -51,8 +60,13 @@ export class ClientCreateComponent {
   ) {}
 
   async submit() {
-    this.form.markAsTouched();
+    this.form.markAllAsTouched();
+
     if (this.form.invalid) {
+      this.apiErrors.length = 0;
+      this.apiErrors.push(
+        'Please correct the errors in the form before submitting.',
+      );
       return;
     }
 
@@ -61,7 +75,9 @@ export class ClientCreateComponent {
       const response = await firstValueFrom(
         this.hqService.upsertClientV1(request),
       );
-      this.router.navigate(['../', response.id], { relativeTo: this.route });
+      await this.router.navigate(['../', response.id], {
+        relativeTo: this.route,
+      });
       this.toastService.show('Accepted', 'Client has been created.');
     } catch (err) {
       if (err instanceof APIError) {

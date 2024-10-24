@@ -1,0 +1,149 @@
+@if (label) {
+  <hq-form-label [for]="uniqueId">{{ label }}</hq-form-label>
+}
+@if (autocomplete) {
+  <button
+    #button
+    [disabled]="disabled"
+    [tabIndex]="isOpen ? -1 : 0"
+    type="button"
+    class="flex items-center border justify-between bg-blue-900 rounded select-none overflow-hidden px-1"
+    (focus)="onFocus()"
+    [style.background-color]="
+      variant === 'pill' ? (chargeCodeColor$ | async) : null
+    "
+    [ngClass]="{
+      'border-red-500 text-white': ngControl?.invalid && ngControl?.touched,
+      'border-steel-blue-600 text-white':
+        !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
+      'border-black text-white':
+        !(ngControl?.invalid && ngControl?.touched) && variant === 'secondary',
+      'border-transparent':
+        !(ngControl?.invalid && ngControl?.touched) && variant === 'pill',
+      'border-white text-white': focused && variant !== 'pill',
+      'text-center font-semibold rounded-full px-3 py-1': variant === 'pill',
+      'text-left h-[36px]': variant !== 'pill',
+      'rounded-br-none rounded-bl-none': isOpen && variant !== 'pill',
+      'w-full': !inline,
+      'border-gray-450 text-gray-450': disabled,
+    }"
+  >
+    <div class="w-full">
+      @if (selectedOption$ | async; as selectedOption) {
+        @if (selectedOption.selectedDisplay) {
+          {{ selectedOption.selectedDisplay }}
+        } @else {
+          <ng-container
+            [ngTemplateOutlet]="selectedOption.templateRef"
+          ></ng-container>
+        }
+      }
+    </div>
+    @if (!readonly) {
+      <span
+        class="flex items-center justify-center pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px]"
+        [ngClass]="{
+          'after:bg-gray-100': variant !== 'pill',
+        }"
+        ><i class="bi bi-arrow-down-short text-[24px]"></i
+      ></span>
+    }
+  </button>
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="button"
+    [cdkConnectedOverlayOpen]="isOpen"
+    [cdkConnectedOverlayFlexibleDimensions]="true"
+  >
+    <div [ngClass]="{ 'py-2': variant === 'pill' }">
+      <div
+        class="bg-blue-900 border border-black overflow-hidden rounded-md rounded-tr-none rounded-tl-none min-w-96"
+        [ngClass]="{
+          'top-0 ': variant !== 'pill',
+          'top-2': variant === 'pill',
+        }"
+        [style.width.px]="button.offsetWidth"
+      >
+        <div class="border-b border-b-black">
+          <hq-search-input
+            variant="transparent"
+            (hqBlur)="onBlur()"
+            (keydown)="onSearchKeyDown($event)"
+            [formControl]="searchForm"
+          >
+          </hq-search-input>
+        </div>
+
+        <div
+          class="bg-blue-900 rounded-md max-h-48 overflow-y-scroll"
+          [tabIndex]="-1"
+        >
+          @if (isOpen) {
+            @for (option of options$ | async; track option.value) {
+              <button
+                type="button"
+                [tabIndex]="-1"
+                class="px-2 py-1 hover:bg-blue-800 w-full text-left"
+                [ngClass]="{
+                  'bg-blue-800 selected':
+                    option.value === (selectedOption$ | async)?.value,
+                }"
+                (mousedown)="selectOption(option, true)"
+                (touchstart)="selectOption(option, true)"
+              >
+                <ng-container
+                  [ngTemplateOutlet]="option.templateRef"
+                ></ng-container>
+              </button>
+            }
+          }
+        </div>
+      </div></div
+  ></ng-template>
+} @else {
+  <div class="grid relative w-full">
+    <select
+      #select
+      [id]="uniqueId"
+      [(ngModel)]="value"
+      [ngClass]="{
+        'border-red-700 focus:border-red-700':
+          ngControl?.invalid && ngControl?.touched,
+        'border-black': !(ngControl?.invalid && ngControl?.touched),
+      }"
+      (blur)="onBlur()"
+      (keydown.enter)="onEnter($event.target)"
+      class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-white bg-blue-900 rounded h-[30px]"
+    >
+      @for (option of options; track option.value) {
+        <option [ngValue]="option.value">
+          <ng-container [ngTemplateOutlet]="option.templateRef"></ng-container>
+        </option>
+      }
+    </select>
+    <span
+      class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+    >
+      <i
+        [ngClass]="{
+          hiddden: readonly === true,
+          'bi bi-arrow-down-short text-[24px]': readonly === false,
+        }"
+      ></i>
+    </span>
+  </div>
+}
+
+@for (error of validationErrors; track error.hqValidationError) {
+  @if (
+    ngControl &&
+    ngControl.errors &&
+    ngControl.touched &&
+    error.hqValidationError &&
+    ngControl.errors[error.hqValidationError]
+  ) {
+    <div class="text-red-700 text-xs leading-normal">
+      <ng-container [ngTemplateOutlet]="error.templateRef"></ng-container>
+    </div>
+  }
+}

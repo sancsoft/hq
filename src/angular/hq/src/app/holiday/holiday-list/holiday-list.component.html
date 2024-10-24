@@ -1,0 +1,85 @@
+<div class="px-5">
+  <h1 class="font-rajdhani font-semibold text-3xl">Holidays</h1>
+
+  <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
+</div>
+<div class="px-5 pt-4 pb-2">
+  <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
+    <hq-search-input [formControl]="listService.search"></hq-search-input>
+  </div>
+</div>
+<hq-table class="min-w-full border-spacing-0 border-separate">
+  <thead>
+    <tr class="sticky top-0 text-left">
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        [hq-sort-header]="sortColumn.Name"
+      >
+        Name
+      </th>
+
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        [hq-sort-header]="sortColumn.Date"
+      >
+        Date
+      </th>
+
+      <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
+        Jurisdiction
+      </th>
+
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 text-right pr-5"
+        colspan="2"
+      >
+        @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+          <button
+            routerLink="/holidays/create"
+            class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+          >
+            <i class="bi bi-plus"></i>
+            Holiday
+          </button>
+        }
+      </th>
+    </tr>
+  </thead>
+  <tbody hq-table-body>
+    @if ((listService.records$ | async)?.length === 0) {
+      <td colspan="10" class="bg-black-alt">
+        <h1 class="text-center py-4 font-bold">No matching records found</h1>
+      </td>
+    }
+    @for (member of listService.records$ | async; track $index) {
+      <tr class="even:bg-gray-850 odd:bg-black-alt">
+        <td class="border-b border-black py-2 pl-5">
+          {{ member.name }}
+        </td>
+        <td class="border-b border-black py-2">
+          {{ member.date }}
+        </td>
+
+        <td class="border-b border-black py-2 pl-5">
+          <div [ngSwitch]="member.jurisdiciton">
+            <div *ngSwitchCase="Jurisdiction.USA">USA</div>
+            <div *ngSwitchCase="Jurisdiction.Colombia">Colombia</div>
+          </div>
+        </td>
+
+        <td class="border-b border-black py-2 text-right pr-5">
+          @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+            <a
+              [routerLink]="['edit', member.id]"
+              class="text-teal-200 hover:text-teal-300 cursor-pointer"
+              >EDIT</a
+            >
+          }
+        </td>
+      </tr>
+    }
+  </tbody>
+</hq-table>

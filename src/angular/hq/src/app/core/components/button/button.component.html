@@ -1,0 +1,37 @@
+<ng-template #content><ng-content></ng-content></ng-template>
+@if (routerLink) {
+  <a
+    [routerLink]="disabled ? null : routerLink"
+    [queryParams]="queryParams"
+    [target]="target"
+    class="px-4 py-2 border rounded font-normal select-none transition-colors duration-300"
+    [ngClass]="{
+      'block w-full': fullWidth,
+      'inline-block': !fullWidth,
+      'border-orange-500 hover:bg-orange-600 hover:border-orange-600 ':
+        !disabled,
+      'bg-orange-500 text-white': !disabled && variant === 'primary',
+      'bg-black-alt text-white': !disabled && variant === 'outline',
+      'bg-gray-500 border-gray-500 text-gray-50 cursor-not-allowed': disabled,
+    }"
+  >
+    <ng-container *ngTemplateOutlet="content"></ng-container
+  ></a>
+} @else {
+  <button
+    [type]="type"
+    [disabled]="disabled"
+    class="px-4 py-2 border text-white rounded font-normal transition-colors duration-300"
+    [ngClass]="{
+      'block w-full': fullWidth,
+      'inline-block': !fullWidth,
+      'border-orange-500 hover:bg-orange-600 hover:border-orange-600 ':
+        !disabled,
+      'bg-orange-500 text-white': !disabled && variant === 'primary',
+      'bg-black-alt text-white': !disabled && variant === 'outline',
+      'bg-gray-500 border-gray-500 text-gray-50 cursor-not-allowed': disabled,
+    }"
+  >
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </button>
+}

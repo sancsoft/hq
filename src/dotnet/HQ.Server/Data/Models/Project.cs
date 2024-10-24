@@ -5,6 +5,7 @@ namespace HQ.Server.Data.Models;
 public class Project : Base
 {
     public int? ProjectNumber { get; set; }
+    public ProjectType Type { get; set; }
     public Guid ClientId { get; set; }
     public Client Client { get; set; } = null!;
     public Guid? ProjectManagerId { get; set; }
@@ -22,5 +23,7 @@ public class Project : Base
 
     public DateOnly? EndDate { get; set; }
     public ChargeCode? ChargeCode { get; set; }
+    public Decimal TimeEntryMaxHours { get; set; } = 4;
     public ICollection<ProjectActivity> Activities { get; set; } = new List<ProjectActivity>();
+    public ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
 }

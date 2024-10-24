@@ -1,0 +1,21 @@
+@model HQ.Abstractions.Emails.RejectTimeEntryEmail
+@{
+    Layout = "_LayoutEmailNotificationHTML";
+}
+<mj-text>
+    <div><strong>Staff:</strong> @Model.StaffName</div>
+    <div><strong>Date:</strong> @Model.Date</div>
+    <div><strong>Hours:</strong> @Model.Hours.ToString("0.00")</div>
+    <div><strong>Charge Code:</strong> @Model.ChargeCode</div>
+    <div><strong>Client:</strong> @Model.Client</div>
+    <div><strong>Project:</strong> @Model.Project</div>
+    <div><strong>Activity/Task:</strong> @Model.ActivityTask</div>
+    <div><strong>Description:</strong> @Model.Description</div>
+</mj-text>
+<mj-text>
+    @if (!String.IsNullOrEmpty(Model.ReasonForRejection))
+    {
+        <div><strong>Reason for Rejection:</strong> @Model.ReasonForRejection</div>
+    }
+    <div><strong>Rejected By :</strong> @Model.RejectedBy</div>
+</mj-text>

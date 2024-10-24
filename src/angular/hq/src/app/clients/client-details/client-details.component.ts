@@ -1,30 +1,19 @@
+/* eslint-disable rxjs-angular/prefer-takeuntil */
+/* eslint-disable rxjs-angular/prefer-async-pipe */
 import { ClientDetailsSearchFilterComponent } from './client-details-search-filter/client-details-search-filter.component';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   ActivatedRoute,
-  Router,
   RouterLink,
   RouterLinkActive,
-  RouterModule,
   RouterOutlet,
 } from '@angular/router';
-import {
-  firstValueFrom,
-  switchMap,
-  of,
-  Observable,
-  catchError,
-  map,
-} from 'rxjs';
-import { HQService } from '../../services/hq.service';
-import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
-import { APIError } from '../../errors/apierror';
 import { ClientDetailsSummaryComponent } from './client-details-summary/client-details-summary.component';
-import {
-  GetProjectRecordV1,
-  GetProjectRecordsV1,
-} from '../../models/projects/get-project-v1';
-import { ClientDetailsService } from '../client-details.service';
+import { map, Subscription } from 'rxjs';
+import { ClientDetailsService } from './client-details.service';
+import { TabComponent } from '../../core/components/tab/tab.component';
+import { ClientQuoteListService } from './client-quote-list/client-quote-list.service';
+import { ClientProjectListService } from './client-project-list/client-project-list.service';
 
 @Component({
   selector: 'hq-client-details',
@@ -35,8 +24,27 @@ import { ClientDetailsService } from '../client-details.service';
     RouterLinkActive,
     ClientDetailsSummaryComponent,
     ClientDetailsSearchFilterComponent,
+    TabComponent,
   ],
   templateUrl: './client-details.component.html',
-  // providers: [ClientDetailsService]
+  providers: [
+    ClientDetailsService,
+    ClientQuoteListService,
+    ClientProjectListService,
+  ],
 })
-export class ClientDetailsComponent {}
+export class ClientDetailsComponent {
+  private subscriptions: Subscription[] = [];
+
+  constructor(
+    private clientDetailsService: ClientDetailsService,
+    private route: ActivatedRoute,
+  ) {
+    const clientId$ = route.paramMap.pipe(map((t) => t.get('clientId')));
+
+    clientId$.subscribe({
+      next: (clientId) => this.clientDetailsService.setClientId(clientId),
+      error: console.error,
+    });
+  }
+}

@@ -67,20 +67,21 @@
         colspan="2"
       >
         @if([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-        <button
+        <hq-button
+          [disabled]="true"
           routerLink="/invoices/create"
-          class="inline-block text-center px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px] font-normal"
+          [queryParams]="{ clientId: clientDetailService.clientId$ | async }"
         >
           <i class="bi bi-plus"></i>
-          Invoices
-        </button>
+          Invoice
+        </hq-button>
         }
       </th>
     </tr>
   </thead>
   <tbody>
     @if((invoices$ | async)?.length === 0) {
-    <td colspan="6">
+    <td colspan="6" class="bg-black-alt">
       <h1 class="text-center py-4 font-bold">No matching records found</h1>
     </td>
     } @for (invoice of invoices$ | async; track $index) {

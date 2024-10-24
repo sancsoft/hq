@@ -7,8 +7,9 @@ export interface UpsertProjectRequestV1 {
   hourlyRate: number | null;
   bookingHours: number | null;
   bookingPeriod: number | null; // Period as number
-  startDate: Date | null;
-  endDate: Date | null;
+  startDate: string | null;
+  endDate: string | null;
+  timeEntryMaxHours: number | null;
 }
 
 export interface UpsertProjectResponsetV1 {

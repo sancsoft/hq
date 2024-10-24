@@ -1,0 +1,303 @@
+<div class="absolute top-[8px] right-0 px-4 flex justify-end z-50">
+  <hq-button (click)="onSubmit()" type="submit">Save</hq-button>
+</div>
+<div class="overflow-hidden flex-auto">
+  <div class="grid gap-0 relative">
+    <main
+      class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(306px))]"
+    >
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
+          <div class="p-5 pr-0">
+            <div class="grid gap-[20px]">
+              @if (this.apiErrors) {
+                @for (error of this.apiErrors; track $index) {
+                  <div class="text-red-700 text-xs leading-normal inline-block">
+                    {{ error }}
+                  </div>
+                }
+              }
+
+              <div class="border-b border-black pb-1 px-1 font-bold">
+                Project Information
+              </div>
+
+              <!-- row grid -->
+              <div class="grid gap-[20px] grid-cols-3">
+                <!-- column -->
+                <div>
+                  <hq-select-input
+                    [autocomplete]="true"
+                    formControlName="clientId"
+                    label="Client"
+                    variant="secondary"
+                  >
+                    <ng-template [hqSelectInputOption]="null"
+                      >Please Select a client</ng-template
+                    >
+                    <ng-template hqValidationError="required">
+                      Client is required.
+                    </ng-template>
+                    @for (client of clients$ | async; track client.id) {
+                      <ng-template
+                        [hqSelectInputOption]="client.id"
+                        [hqSelectInputOptionSearch]="client.name"
+                        >{{ client.name }}</ng-template
+                      >
+                    }
+                  </hq-select-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-text-input
+                    formControlName="name"
+                    label="Project Name"
+                    variant="secondary"
+                    placeholder="Project Name"
+                  >
+                    <ng-template hqValidationError="required">
+                      Project name is required.
+                    </ng-template>
+                  </hq-text-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-select-input
+                    formControlName="type"
+                    label="Project Type"
+                    variant="secondary"
+                  >
+                    <ng-template hqValidationError="required">
+                      Project type is required.
+                    </ng-template>
+                    @for (type of projectTypeValues; track type.id) {
+                      <ng-template
+                        [hqSelectInputOption]="type.id"
+                        [hqSelectInputOptionSelectedDisplay]="type.name"
+                        [hqSelectInputOptionSearch]="type.name"
+                        >{{ type.name }}</ng-template
+                      >
+                    }
+                  </hq-select-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-select-input
+                    [autocomplete]="true"
+                    formControlName="quoteId"
+                    label="Quote"
+                    variant="secondary"
+                  >
+                    <ng-template [hqSelectInputOption]="null"
+                      >Please Select a quote</ng-template
+                    >
+                    <ng-template hqValidationError="required">
+                      Quote is required.
+                    </ng-template>
+                    @for (quote of quotes$ | async; track quote.id) {
+                      <ng-template
+                        [hqSelectInputOption]="quote.id"
+                        [hqSelectInputOptionSearch]="
+                          quote.quoteNumber + ': ' + quote.name
+                        "
+                        >{{
+                          quote.quoteNumber + ": " + quote.name
+                        }}</ng-template
+                      >
+                    }
+                  </hq-select-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-select-input
+                    formControlName="status"
+                    label="Project Status"
+                    variant="secondary"
+                  >
+                    <ng-template hqValidationError="required">
+                      Status is required.
+                    </ng-template>
+                    @for (status of projectStatusValues; track status.id) {
+                      <ng-template
+                        [hqSelectInputOption]="status.id"
+                        [hqSelectInputOptionSelectedDisplay]="status.name"
+                        [hqSelectInputOptionSearch]="status.name"
+                        >{{ status.name }}</ng-template
+                      >
+                    }
+                  </hq-select-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-select-input
+                    [autocomplete]="true"
+                    formControlName="projectManagerId"
+                    label="Project Manager"
+                    variant="secondary"
+                  >
+                    <ng-template [hqSelectInputOption]="null"
+                      >Please Select a project manager</ng-template
+                    >
+                    <ng-template hqValidationError="required">
+                      Project manager is required.
+                    </ng-template>
+                    @for (staff of projectManagers$ | async; track staff.id) {
+                      <ng-template
+                        [hqSelectInputOption]="staff.id"
+                        [hqSelectInputOptionSearch]="staff.name"
+                        >{{ staff.name }}</ng-template
+                      >
+                    }
+                  </hq-select-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-text-input
+                    type="number"
+                    formControlName="projectNumber"
+                    label="Project Number"
+                    variant="secondary"
+                    placeholder="Project Number"
+                  >
+                  </hq-text-input>
+                  <small class="text-gray-700">Leave blank to generate</small>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-date-input
+                    formControlName="startDate"
+                    label="Start Date"
+                    variant="secondary"
+                  >
+                  </hq-date-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-date-input
+                    formControlName="endDate"
+                    label="End Date"
+                    variant="secondary"
+                  >
+                  </hq-date-input>
+                </div>
+              </div>
+
+              <div class="border-b border-black pb-1 px-1 font-bold">
+                Booking
+              </div>
+
+              <!-- row grid -->
+              <div class="grid gap-[20px] grid-cols-3">
+                <!-- column -->
+                <div>
+                  <hq-select-input
+                    formControlName="bookingPeriod"
+                    label="Booking Period"
+                    variant="secondary"
+                  >
+                    <ng-template [hqSelectInputOption]="null"
+                      >Please Select a booking period</ng-template
+                    >
+                    <ng-template hqValidationError="required">
+                      Booking period is required.
+                    </ng-template>
+                    @for (period of bookingPeriodValues; track period.id) {
+                      <ng-template
+                        [hqSelectInputOption]="period.id"
+                        [hqSelectInputOptionSelectedDisplay]="period.name"
+                        [hqSelectInputOptionSearch]="period.name"
+                        >{{ period.name }}</ng-template
+                      >
+                    }
+                  </hq-select-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-text-input
+                    type="number"
+                    formControlName="bookingHours"
+                    label="Booking Hours"
+                    variant="secondary"
+                    placeholder="Booking Hours"
+                  >
+                    <ng-template hqValidationError="required">
+                      Booking Hours is required.
+                    </ng-template>
+                  </hq-text-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-text-input
+                    type="number"
+                    formControlName="totalHours"
+                    label="Total Hours"
+                    variant="secondary"
+                    placeholder="Total Hours"
+                  >
+                    <ng-template hqValidationError="required">
+                      Total Hours is required.
+                    </ng-template>
+                  </hq-text-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-select-input
+                    [autocomplete]="true"
+                    formControlName="billable"
+                    label="Billable"
+                    variant="secondary"
+                  >
+                    <ng-template [hqSelectInputOption]="false">No</ng-template>
+                    <ng-template [hqSelectInputOption]="true">Yes</ng-template>
+                  </hq-select-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-text-input
+                    variant="secondary"
+                    type="number"
+                    label="Hourly Rate"
+                    placeholder="Hourly Rate"
+                    formControlName="hourlyRate"
+                    [min]="0"
+                  >
+                    <ng-template hqValidationError="min">
+                      Hourly rate must be positive.
+                    </ng-template>
+                  </hq-text-input>
+                </div>
+                <!-- column -->
+                <div>
+                  <hq-text-input
+                    variant="secondary"
+                    type="number"
+                    label="time entry max hours"
+                    placeholder="Max Hours"
+                    formControlName="timeEntryMaxHours"
+                    [min]="0"
+                  >
+                    <ng-template hqValidationError="required">
+                      Max Hours is required.
+                    </ng-template>
+                  </hq-text-input>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>

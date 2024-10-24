@@ -1,32 +1,34 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
-import { GetPSRTimeRecordStaffV1 } from '../../models/PSR/get-psr-time-v1';
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  map,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import {
   GetTimeRecordClientsV1,
   GetTimeRecordProjectsV1,
   GetTimeRecordStaffV1,
-  Period,
 } from '../../models/times/get-time-v1';
-
-export enum ActivityName {
-  Support = 0,
-  Development = 1,
-  Todo = 2,
-}
+import { HQService } from '../../services/hq.service';
+import { SortColumn } from '../../models/staff-members/get-staff-member-v1';
+import { Period } from '../../enums/period';
+import { TimeStatus } from '../../enums/time-status';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimeService {
-  staffMembers$ = new BehaviorSubject<GetTimeRecordStaffV1[]>([]);
-  clients$ = new BehaviorSubject<GetTimeRecordClientsV1[]>([]);
-  projects$ = new BehaviorSubject<GetTimeRecordProjectsV1[]>([]);
+  staffMembers$: Observable<GetTimeRecordStaffV1[]>;
+  clients$: Observable<GetTimeRecordClientsV1[]>;
+  projects$: Observable<GetTimeRecordProjectsV1[]>;
 
   search = new FormControl<string | null>('');
   roaster = new FormControl<string | null>('');
 
-  activityName = new FormControl<ActivityName>(ActivityName.Development);
   itemsPerPage = new FormControl(20, { nonNullable: true });
   page = new FormControl<number>(1, { nonNullable: true });
   staffMember = new FormControl<string | null>(null);
@@ -37,12 +39,11 @@ export class TimeService {
   projectActivity = new FormControl<string | null>(null);
   isSubmitted = new FormControl<boolean | null>(null);
   invoiced = new FormControl<boolean | null>(null);
-  timeAccepted = new FormControl<boolean | null>(null);
+  timeStatus = new FormControl<TimeStatus | null>(null);
 
   startDate = new FormControl<Date | null>(null);
   endDate = new FormControl<Date | null>(null);
 
-  ActivityName = ActivityName;
   Period = Period;
 
   showProjectStatus$ = new BehaviorSubject<boolean>(true);
@@ -54,14 +55,36 @@ export class TimeService {
   showStartDate$ = new BehaviorSubject<boolean>(false);
   showEndDate$ = new BehaviorSubject<boolean>(false);
 
-  showActivityName$ = new BehaviorSubject<boolean>(true);
   showRoaster$ = new BehaviorSubject<boolean>(true);
 
-  constructor() {}
+  clientId$ = this.client.valueChanges.pipe(startWith(this.client.value));
+  Status = TimeStatus;
+
+  constructor(private hqService: HQService) {
+    this.staffMembers$ = this.hqService
+      .getStaffMembersV1({
+        sortBy: SortColumn.Name,
+      })
+      .pipe(map((members) => members.records));
+
+    this.clients$ = this.hqService
+      .getClientsV1({})
+      .pipe(map((clients) => clients.records));
+
+    const projectRequest$ = combineLatest({
+      clientId: this.clientId$,
+    });
+
+    this.projects$ = projectRequest$.pipe(
+      switchMap((projectRequest) =>
+        this.hqService.getProjectsV1(projectRequest),
+      ),
+      map((clients) => clients.records),
+    );
+  }
 
   resetFilter() {
     this.search.setValue('');
-    this.activityName.setValue(ActivityName.Development);
     this.staffMember.setValue(null);
     this.roaster.setValue('');
     this.isSubmitted.setValue(null);
@@ -87,13 +110,6 @@ export class TimeService {
   }
   hideProjectStatus() {
     this.showProjectStatus$.next(false);
-  }
-
-  showActivityName() {
-    this.showActivityName$.next(true);
-  }
-  hideActivityName() {
-    this.showActivityName$.next(false);
   }
   showRoaster() {
     this.showRoaster$.next(true);

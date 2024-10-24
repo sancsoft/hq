@@ -47,6 +47,11 @@ public class VoltronServiceV1
             var staffName = staffNameRegex.Replace(Path.GetFileNameWithoutExtension(file.FileName), String.Empty);
             if (!staffLookup.ContainsKey(staffName))
             {
+                response.SkippedMissingStaff++;
+                if (!response.UnknownStaff.Contains(staffName))
+                {
+                    response.UnknownStaff.Add(staffName);
+                }
                 continue;
             }
 
@@ -70,15 +75,27 @@ public class VoltronServiceV1
             {
                 if (!chargeCodes.ContainsKey(timeRecord.ChargeCode))
                 {
+                    response.SkippedMissingChargeCode++;
+                    if (!response.UnknownChargeCodes.Contains(timeRecord.ChargeCode))
+                    {
+                        response.UnknownChargeCodes.Add(timeRecord.ChargeCode);
+                    }
+
                     continue;
                 }
 
                 var time = new Time();
+                time.Status = request.Status;
                 time.Staff = staff;
                 time.ChargeCode = chargeCodes[timeRecord.ChargeCode];
                 time.Date = timeRecord.Date;
                 time.Hours = timeRecord.Hours;
                 time.Notes = timeRecord.Notes;
+
+                if (request.Status == TimeStatus.Accepted)
+                {
+                    time.HoursApproved = time.Hours;
+                }
 
                 if (String.IsNullOrEmpty(time.Notes))
                 {
@@ -143,20 +160,6 @@ public class VoltronServiceV1
                 chargeCode.Active = projectRow.Active;
                 chargeCode.Billable = projectRow.Billable;
 
-                var chargeCodePrefix = chargeCode.Code.ToUpper()[0];
-                switch (chargeCodePrefix)
-                {
-                    case 'S':
-                        chargeCode.Activity = ChargeCodeActivity.General;
-                        break;
-                    case 'P':
-                        chargeCode.Activity = ChargeCodeActivity.Project;
-                        break;
-                    case 'Q':
-                        chargeCode.Activity = ChargeCodeActivity.Quote;
-                        break;
-                }
-
                 var project = await _context.Projects.SingleOrDefaultAsync(t => t.ChargeCode != null && t.ChargeCode.Code == projectRow.Code);
                 if (project == null)
                 {
@@ -168,6 +171,23 @@ public class VoltronServiceV1
                 else
                 {
                     response.ProjectsUpdated++;
+                }
+
+                var chargeCodePrefix = chargeCode.Code.ToUpper()[0];
+                switch (chargeCodePrefix)
+                {
+                    case 'S':
+                        chargeCode.Activity = ChargeCodeActivity.General;
+                        project.Type = ProjectType.General;
+                        break;
+                    case 'P':
+                        chargeCode.Activity = ChargeCodeActivity.Project;
+                        project.Type = ProjectType.Ongoing;
+                        break;
+                    case 'Q':
+                        chargeCode.Activity = ChargeCodeActivity.Quote;
+                        project.Type = ProjectType.Quote;
+                        break;
                 }
 
                 if (!String.IsNullOrEmpty(projectRow.ProjectManager))
@@ -201,6 +221,16 @@ public class VoltronServiceV1
                 project.BookingPeriod = Period.Month;
                 project.ClientId = client.Id;
                 project.Name = projectRow.Project;
+
+                switch (chargeCode.Activity)
+                {
+                    case ChargeCodeActivity.Project:
+                        project.Status = ProjectStatus.Ongoing;
+                        break;
+                    case ChargeCodeActivity.Quote:
+                        project.Status = ProjectStatus.InProduction;
+                        break;
+                }
 
                 if (chargeCode.Activity == ChargeCodeActivity.Project && Int32.TryParse(chargeCode.Code.Substring(1), out int projectNumber))
                 {

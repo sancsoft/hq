@@ -13,7 +13,7 @@ import {
   switchMap,
   shareReplay,
 } from 'rxjs';
-import { ClientDetailsService } from '../../clients/client-details.service';
+import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
 import { SortColumn } from '../../models/Services/get-services-v1';
 import { SortDirection } from '../../models/common/sort-direction';
@@ -21,9 +21,9 @@ import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { QuoteStatus } from '../../models/common/quote-status';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
+import { ProjectStatus } from '../../enums/project-status';
 
 @Component({
   selector: 'hq-services-list',
@@ -60,7 +60,7 @@ export class ServicesListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    private clientDetailService: ClientDetailsServiceToReplace,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.chargeCode);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -74,7 +74,7 @@ export class ServicesListComponent {
       startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(clientDetailService.search.value),
     );
 
@@ -91,7 +91,7 @@ export class ServicesListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getServicesV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.services$ = response$.pipe(
@@ -114,15 +114,14 @@ export class ServicesListComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.hideProjectStatus();
-    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {
     this.page.setValue(page);
   }
 
-  getQuoteStatusString(status: QuoteStatus): string {
-    return QuoteStatus[status];
+  getProjectStatusString(status: ProjectStatus): string {
+    return ProjectStatus[status];
   }
 
   onSortClick(sortColumn: SortColumn) {

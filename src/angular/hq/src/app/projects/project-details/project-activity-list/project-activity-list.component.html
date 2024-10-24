@@ -1,0 +1,59 @@
+<table class="hq-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th width="200"></th>
+    </tr>
+  </thead>
+  <tbody class="hq-table-body">
+    @for (
+      activity of projectDetailsService.activities$ | async;
+      track activity.id
+    ) {
+      <tr>
+        <td>{{ activity.name }}</td>
+        <td class="text-right divide-x divide-teal-200">
+          @if (
+            ([HQRole.Executive, HQRole.Administrator] | inRole | async) ||
+            (projectDetailsService.canManageProjectStatusReport$ | async)
+          ) {
+            <button
+              type="button"
+              class="text-teal-200 hover:text-teal-300 pr-3 uppercase"
+              (click)="renameActivity(activity.id)"
+            >
+              Rename
+            </button>
+            <button
+              type="button"
+              class="text-teal-200 hover:text-teal-300 pl-3 uppercase"
+              (click)="deleteActivity(activity.id)"
+            >
+              Delete
+            </button>
+          }
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+@if (
+  ([HQRole.Executive, HQRole.Administrator] | inRole | async) ||
+  (projectDetailsService.canManageProjectStatusReport$ | async)
+) {
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-5">
+    <div class="border-b border-black pb-1 px-1 font-bold">Add Activity</div>
+    <div class="mb-3 w-56">
+      <hq-text-input
+        formControlName="name"
+        label="Activity Name"
+        variant="secondary"
+      >
+        <ng-template hqValidationError="required">
+          Name is required.
+        </ng-template>
+      </hq-text-input>
+    </div>
+    <hq-button type="submit">Add</hq-button>
+  </form>
+}

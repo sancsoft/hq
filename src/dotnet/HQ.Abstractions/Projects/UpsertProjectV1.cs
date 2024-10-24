@@ -24,6 +24,12 @@ public class UpsertProjectV1
         public Period BookingPeriod { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
+        public ProjectType Type { get; set; }
+        public bool Billable { get; set; }
+        public ProjectStatus Status { get; set; }
+        public Decimal? TimeEntryMaxHours { get; set; }
+        public decimal? TotalHours { get; set; }
+        public int? ProjectNumber { get; set; }
     }
 
     public class Response

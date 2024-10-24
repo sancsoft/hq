@@ -1,237 +1,154 @@
-<!-- Details content -->
-<!-- remove/add class hidden to hide/view -->
-<div class="pb-[27px] pt-[8px] relative">
-  <div class="absolute top-[8px] right-0 px-4">
-    <!-- edit/save button -->
-    <button
-      routerLink="../edit"
-      [queryParams]="{ projectId: projectId$ | async }"
-      class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
-    >
-      Edit
-    </button>
-  </div>
-  @if (project$ | async; as project) {
-    <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
-      <!-- left side -->
-      <div class="grid gap-[20px] pt-[12px] px-[27px]">
-        <!-- details view without form fields -->
-        <div
-          class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]"
-        >
-          <div class="">
-            <div
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-            >
-              Official Client name
-            </div>
-            <div class="">{{ project.clientName }}</div>
-          </div>
-        </div>
-        <div
-          class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)]"
-        >
-          <div class="">
-            <div
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-            >
-              Project Full Name
-            </div>
-            <div class="">{{ project.name }}</div>
-          </div>
-          <div class="hidden">
-            <div
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-            >
-              Project Name - Concatenated
-            </div>
-            <div class="">Project Name - Concatenated</div>
-          </div>
-        </div>
-        <div
-          class="grid gap-[20px] grid-flow-col grid-cols-[220px_minmax(77px,395px)]"
-        >
-          <div class="">
-            <div
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-            >
-              PM
-            </div>
-            <div class="">{{ project.projectManagerName ?? "None" }}</div>
-          </div>
-          <div class="">
-            <div
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-            >
-              Rate
-            </div>
-            <div class="">
-              <div class="">
-                <span class="w-[42px]">
-                  <i class="bi bi-currency-dollar text-[14px]"></i>
-                </span>
-                {{ project.hourlyRate || "None" }}
-                <span class="ml-[8px] font-semibold">p / h</span>
-              </div>
-            </div>
-          </div>
-        </div>
+<div
+  class="h-[calc(100dvh-(var(--mh-footer)+var(--mh-header)))] xl:h-[calc(100dvh-(var(--h-footer)+var(--h-header)))] fixed top-[--mh-header] xl:top-[--h-header] left-0 w-full flex flex-col"
+>
+  @if (projectDetailService.project$ | async; as project) {
+    <div class="px-5">
+      <h1 class="font-rajdhani font-semibold text-3xl">
+        {{ project.chargeCode }}: {{ project.name }}
+      </h1>
 
-        <!-- section heading -->
-        <div class="border-b border-black mt-10">
-          <div class="font-bold mb-[3px] px-2">Booking</div>
-        </div>
-        <div
-          class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)]"
-        >
-          <div class="">
-            <div
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-            >
-              HRS
-            </div>
-            <div class="">{{ project.bookingHours }}</div>
+      <div class="flex flex-col xl:flex-row xl:justify-between xl:items-center">
+        <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
+          <div class="text-gray-50">
+            Hourly Rate: {{ (project.hourlyRate | currency) || "None" }}
           </div>
-          <div class="">
-            <div
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-            >
-              Period
-            </div>
-            <div class="">
-              @switch (project.bookingPeriod) {
-                @case (BookingPeriod.Week) {
-                  <div>Week</div>
-                }
-                @case (BookingPeriod.Month) {
-                  <div>Month</div>
-                }
-                @case (BookingPeriod.Quarter) {
-                  <div>Quarter</div>
-                }
-                @case (BookingPeriod.Year) {
-                  <div>Year</div>
-                }
-              }
-            </div>
+          <div class="text-gray-50">
+            Email: {{ project.billingEmail || "None" }}
           </div>
-        </div>
-        <div class="grid gap-[20px] grid-flow-row pr-5">
-          <div
-            class="grid grid-flow-col grid-cols-[102px_35px_102px] gap-[15px]"
-          >
-            <div class="w-full max-w-[102px]">
-              <div
-                class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+          <div class="text-gray-50">
+            Client Name:
+            @if (projectDetailService.client$ | async; as client) {
+              <a
+                [routerLink]="['/clients', project.clientId]"
+                class="underline"
+                >{{ client.name }}</a
               >
-                Start Date
-              </div>
-              <div class="">{{ project.startDate || "None" }}</div>
-            </div>
-            <div class="flex align-middle justify-center items-center pt-4">
-              -
-            </div>
-            <div class="w-full max-w-[102px]">
-              <div
-                class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-              >
-                End Date
-              </div>
-              <div class="">{{ project.endDate || "None" }}</div>
-            </div>
+            }
           </div>
         </div>
-        <div
-          class="grid gap-[20px] grid-flow-col grid-cols-[121px_minmax(77px,395px)]"
-        >
-          <div class="hidden">
-            <div
-              class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
-            >
-              Value
-            </div>
-            <div class="">Value</div>
-          </div>
-        </div>
-        <!-- end: details view without form fields -->
 
-        <!-- edit form / engagement form -->
-        <form class="grid gap-[20px]">
-          <!-- engagement section  -->
-          <!-- section heading -->
-          <div class="border-b border-black mt-10">
-            <div class="font-bold mb-[3px] px-2">Engagement</div>
-          </div>
-
-          <div class="grid gap-[20px] grid-flow-row pr-5">
-            <div
-              class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,100%)] max-w-[810px]"
-            >
-              <div>
-                <div
-                  class="flex items-center justify-between px-2 py-1 border border-[#313131] text-gray-100 bg-[#313131] rounded h-[36px] w-[100%]"
-                >
-                  <div>filename.ext</div>
-                  <div>
-                    <a href="" class="px-2 text-red-850" title="Remove"
-                      ><i class="bi bi-trash3-fill text-[18px]"></i
-                    ></a>
-                  </div>
-                </div>
-              </div>
-              <div class="flex justify-end">
-                <a
-                  href="#"
-                  class="inline-block p-2 hover:text-gray-50"
-                  title="Download"
-                  ><i class="bi bi-cloud-download-fill"></i
-                ></a>
-              </div>
-            </div>
-
-            <!-- row grid -->
-            <div class="grid gap-[20px] grid-flow-col">
-              <!-- column -->
-              <div>
-                <!-- remove/add hidden class for edit/details page -->
-                <div
-                  class="hidden font-open-sans text-nav-disabled text-xs font-bold uppercase"
-                >
-                  Optional Notes
-                </div>
-                <!-- textarea -->
-                <textarea
-                  class="w-full max-w-[810px] min-h-[255px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded"
-                  placeholder="Optional Notes"
-                ></textarea>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-      <!-- right side -->
-      <div>
-        <!-- flex flex-col flex-grow -->
-        <div
-          class="bg-black px-[15px] mx-5 2xl:mx-0 w-fit 2xl:w-full mt-[80px]"
-        >
-          <hq-pdf-viewer
-            pdfURL="https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf"
-          ></hq-pdf-viewer>
-          <!-- flex flex-grow -->
-          <!-- <div class=" bg-white">
-                    <img src="https://fakeimg.pl/560x730/cccccc/909090?text=Quote" class="h-auto max-w-full mx-auto" />
-                </div>
-                <div class="grid grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] h-[30px] items-center">
-                    <div>&nbsp;</div>
-                    <div>
-                        <a href="" class="px-2 text-gray-50"><i class="bi bi-arrow-left-short text-[20px]"></i></a>
-                        <a href="" class="px-2 text-gray-100"><i class="bi bi-arrow-right-short text-[20px]"></i></a>
-                    </div>
-                    <div class="ml-auto text-gray-50 text-xs">1 / 2</div>
-                </div> -->
-        </div>
+        <hq-project-psr-details></hq-project-psr-details>
       </div>
     </div>
   }
+
+  <div class="px-5 mb-[8px]">
+    <div class="flex flex-col lg:flex-row justify-between items-start">
+      <div class="flex items-end order-2 lg:order-1 gap-[20px]">
+        <!-- search bar -->
+        <div
+          class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[395px]"
+        >
+          <span
+            class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100"
+          >
+            <i class="bi bi-search text-[14px]"></i>
+          </span>
+          <input
+            type="text"
+            class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
+            name=""
+          />
+        </div>
+
+        <div class="pl-[5vw]">
+          <div>
+            <div
+              class="text-xs text-right uppercase font-bold tracking-[.06em]"
+            >
+              Total Billed
+            </div>
+            <div class="text-right font-rajdhani font-semibold text-3xl">
+              00000.00
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hq-panel [CSizes]="[20, 80]" GutterVariant="primary" CollapseItem="first">
+    <div first>
+      <aside
+        class="sticky top-0 overflow-y-auto h-[calc(100dvh-318px)] xl:h-[calc(100dvh-260px)]"
+      >
+        <hq-project-psr-list></hq-project-psr-list>
+      </aside>
+    </div>
+    <div second>
+      <main
+        class="bg-black-alt overflow-y-auto h-[calc(100dvh-245px)] relative"
+      >
+        <!-- project details tabs -->
+        <div
+          class="bg-black-alt border-steel-blue-600 border-t pt-[23px] sticky top-0 z-50"
+        >
+          <div class="flex border-b border-black">
+            <a
+              routerLink="./"
+              [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive
+              #rlaDetails="routerLinkActive"
+              [ngClass]="
+                rlaDetails.isActive ? 'border-gray-100' : 'border-transparent'
+              "
+              class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+              >Details</a
+            >
+            <a
+              routerLink="activities"
+              [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
+              routerLinkActive
+              #rlaActivities="routerLinkActive"
+              [ngClass]="
+                rlaActivities.isActive
+                  ? 'border-gray-100'
+                  : 'border-transparent'
+              "
+              class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+              >Activities</a
+            >
+            <a
+              routerLink="roster"
+              [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
+              routerLinkActive
+              #rlaRoster="routerLinkActive"
+              [ngClass]="
+                rlaRoster.isActive ? 'border-gray-100' : 'border-transparent'
+              "
+              class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+              >Roster</a
+            >
+
+            @if (projectDetailService.psrId$ | async) {
+              <a
+                routerLink="report"
+                [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
+                routerLinkActive
+                #rlaReport="routerLinkActive"
+                [ngClass]="
+                  rlaReport.isActive ? 'border-gray-100' : 'border-transparent'
+                "
+                class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+                >PM Report</a
+              >
+              <a
+                routerLink="time"
+                [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
+                routerLinkActive
+                #rlaTime="routerLinkActive"
+                [ngClass]="
+                  rlaTime.isActive ? 'border-gray-100' : 'border-transparent'
+                "
+                class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+                >PSR</a
+              >
+            }
+          </div>
+        </div>
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </hq-panel>
 </div>

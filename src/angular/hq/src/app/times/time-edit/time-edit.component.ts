@@ -14,13 +14,7 @@ import {
 } from '@angular/router';
 import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
-import {
-  ChargeCodeActivity,
-  GetChargeCodeRecordV1,
-} from '../../models/charge-codes/get-chargecodes-v1';
-import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
-import { GetQuotesRecordV1 } from '../../models/quotes/get-quotes-v1';
-import { GetServicesRecordV1 } from '../../models/Services/get-services-v1';
+import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
@@ -29,6 +23,8 @@ import {
   GetTimeRecordProjectsV1,
 } from '../../models/times/get-time-v1';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
+import { ChargeCodeActivity } from '../../enums/charge-code-activity';
 
 interface Form {
   ProjectId: FormControl<string | null>;
@@ -103,7 +99,7 @@ export class TimeEditComponent implements OnInit {
       (await (
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('timeId')) ?? undefined;
-    this.getTime();
+    await this.getTime();
   }
 
   constructor(
@@ -135,7 +131,7 @@ export class TimeEditComponent implements OnInit {
   }
 
   async submit() {
-    this.form.markAsTouched();
+    this.form.markAllAsTouched();
     console.log(this.form.value);
     if (this.form.invalid) {
       this.apiErrors = [];
@@ -146,10 +142,10 @@ export class TimeEditComponent implements OnInit {
 
     try {
       const request = this.form.value;
-      const response = await firstValueFrom(
+      await firstValueFrom(
         this.hqService.upsertTimeV1({ ...request, id: this.timeId }),
       );
-      this.router.navigate(['../../'], { relativeTo: this.route });
+      await this.router.navigate(['../../'], { relativeTo: this.route });
     } catch (err) {
       if (err instanceof APIError) {
         this.apiErrors = err.errors;
@@ -160,7 +156,7 @@ export class TimeEditComponent implements OnInit {
   }
   updateHours(event: Event) {
     const hours = (event.target as HTMLInputElement).value;
-    const roundedHours = this.roundToNextQuarter(hours);
+    const roundedHours = roundToNextQuarter(hours);
     this.form.get('Hours')?.setValue(roundedHours);
   }
   private async getTime() {
@@ -185,8 +181,5 @@ export class TimeEditComponent implements OnInit {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
-  }
-  roundToNextQuarter(num: string | number) {
-    return Math.ceil(Number(num) * 4) / 4;
   }
 }

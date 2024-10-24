@@ -1,23 +1,35 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
-import { PdfViewerComponent } from '../../common/pdf-viewer/pdf-viewer.component';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, BehaviorSubject, map, firstValueFrom } from 'rxjs';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { Observable, firstValueFrom, map } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { HQService } from '../../services/hq.service';
-import { QuoteStatus } from '../../models/common/quote-status';
+import { ToastService } from '../../services/toast.service';
+import { localISODate } from '../../common/functions/local-iso-date';
+import { ProjectStatus } from '../../enums/project-status';
+import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
+import { CoreModule } from '../../core/core.module';
+import { enumToArray } from '../../core/functions/enum-to-array';
 
+interface quoteFormGroup {
+  clientId: FormControl<string | null>;
+  name: FormControl<string>;
+  value: FormControl<number | null>;
+  status: FormControl<number | null>;
+  date: FormControl<string | null>;
+  description: FormControl<string | null>;
+  quoteNumber: FormControl<number | null>;
+  pdf: FormControl<File | null>;
+}
 @Component({
   selector: 'hq-quotes-create',
   standalone: true,
@@ -27,37 +39,60 @@ import { QuoteStatus } from '../../models/common/quote-status';
     ReactiveFormsModule,
     SelectableClientListComponent,
     PdfViewerComponent,
+    RouterLink,
+    CoreModule,
   ],
   templateUrl: './quotes-create.component.html',
 })
-export class QuotesCreateComponent {
-  modalOpen$ = new BehaviorSubject<boolean>(false);
-  selectedQuote$ = new Observable<string>();
-  quoteStatus = QuoteStatus;
-  quotePdfURL = 'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
-
+export class QuotesCreateComponent implements OnInit {
+  quoteStatus = ProjectStatus;
   apiErrors: string[] = [];
-  selectedClientName$ = new BehaviorSubject<string | null>(null);
 
-  quoteFormGroup = new FormGroup({
-    clientId: new FormControl('', Validators.required),
-    name: new FormControl('', [Validators.required, Validators.minLength(1)]),
-    value: new FormControl(null, [Validators.required, Validators.min(0)]),
-    status: new FormControl(0, [Validators.required]),
-    date: new FormControl(new Date(), Validators.required),
+  public projectStatusValues = enumToArray(ProjectStatus);
+
+  quoteFormGroup = new FormGroup<quoteFormGroup>({
+    clientId: new FormControl(null, {
+      validators: [Validators.required],
+    }),
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    value: new FormControl(null, {
+      validators: [Validators.required, Validators.min(0)],
+    }),
+    status: new FormControl(1, {
+      validators: [Validators.required],
+    }),
+    date: new FormControl(localISODate(), {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    quoteNumber: new FormControl(null, {}),
+    description: new FormControl(null, {}),
+    pdf: new FormControl(null, {}),
   });
+
+  clients$: Observable<GetClientRecordV1[]>;
 
   constructor(
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
-  updateSelectedClient(client: GetClientRecordV1) {
-    console.log(client);
-    this.quoteFormGroup.get('clientId')?.setValue(client.id);
-    this.selectedClientName$.next(client.name);
+    private toastService: ToastService,
+  ) {
+    this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
   }
+
+  async ngOnInit() {
+    const clientId = this.route.snapshot.queryParamMap.get('clientId');
+    if (clientId) {
+      this.quoteFormGroup.patchValue({ clientId });
+    }
+  }
+
   async onSubmitProject() {
+    this.quoteFormGroup.markAllAsTouched();
     console.log(this.quoteFormGroup);
     try {
       if (
@@ -65,15 +100,29 @@ export class QuotesCreateComponent {
         this.quoteFormGroup.touched &&
         this.quoteFormGroup.dirty
       ) {
-        const request = this.quoteFormGroup.value;
-        request.status = Number(request.status);
+        const request = {
+          ...this.quoteFormGroup.value,
+          quoteNumber: this.quoteFormGroup.value.quoteNumber || null,
+        };
         console.log('Sending Request:', request);
         const response = await firstValueFrom(
           this.hqService.upsertQuoteV1(request),
         );
         console.log(response.id);
-        this.router.navigate(['../', response.id], { relativeTo: this.route });
+
+        if (this.quoteFormGroup.value.pdf) {
+          await firstValueFrom(
+            this.hqService.uploadQuotePDFV1(
+              response.id,
+              this.quoteFormGroup.value.pdf,
+            ),
+          );
+        }
+
+        await this.router.navigate(['../'], { relativeTo: this.route });
+        this.toastService.show('Accepted', 'Quote has been created.');
       } else {
+        this.apiErrors.length = 0;
         this.apiErrors.push(
           'Please correct the errors in the form before submitting.',
         );
@@ -87,18 +136,5 @@ export class QuotesCreateComponent {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
-  }
-  openModal() {
-    this.modalOpen$.next(true);
-  }
-  closeModal() {
-    this.modalOpen$.next(false);
-  }
-  modalOkClicked() {
-    this.closeModal();
-  }
-  modalCancelClicked() {
-    this.selectedClientName$.next(null);
-    this.closeModal();
   }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text;
@@ -14,6 +15,7 @@ using HQ.Abstractions.ChargeCodes;
 using HQ.Abstractions.Clients;
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Projects;
+using HQ.Abstractions.Quotes;
 using HQ.Abstractions.Staff;
 using HQ.Abstractions.Times;
 using HQ.Abstractions.Voltron;
@@ -114,7 +116,8 @@ namespace HQ.SDK
 
         public Task<Result<DeleteProjectV1.Response?>> DeleteProjectV1(DeleteProjectV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<DeleteProjectV1.Response>("/v1/Projects/DeleteProjectV1", request, ct);
-
+        public Task<Result<DeleteProjectActivityV1.Response?>> DeleteProjectActivityV1(DeleteProjectActivityV1.Request request, CancellationToken ct = default)
+                    => ExecuteRequest<DeleteProjectActivityV1.Response>("/v1/Projects/DeleteProjectActivityV1", request, ct);
         public async Task<Result<ImportProjectsV1.Response?>> ImportProjectsV1(ImportProjectsV1.Request request, CancellationToken ct = default)
         {
             using var multipartContent = new MultipartFormDataContent();
@@ -136,14 +139,43 @@ namespace HQ.SDK
             multipartContent.Add(new StringContent(request.From.ToString("o"), Encoding.UTF8), nameof(request.From));
             multipartContent.Add(new StringContent(request.To.ToString("o"), Encoding.UTF8), nameof(request.To));
             multipartContent.Add(new StringContent(request.Replace.ToString(), Encoding.UTF8), nameof(request.Replace));
+            multipartContent.Add(new StringContent(request.Status.ToString(), Encoding.UTF8), nameof(request.Status));
 
             var response = await _httpClient.PostAsync("/v1/Voltron/ImportVoltronTimeSheetsV1", multipartContent, ct);
 
             return await HandleResponse<ImportVoltronTimeSheetsV1.Response>(response, ct);
         }
 
+        public async Task<Result<UploadQuotePDFV1.Response?>> UploadQuotePDFV1(UploadQuotePDFV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+
+            var fileContent = new StreamContent(request.File!);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+
+            multipartContent.Add(fileContent, "file", "quote.pdf");
+            multipartContent.Add(new StringContent(request.Id.ToString(), Encoding.UTF8), nameof(request.Id));
+
+            var response = await _httpClient.PostAsync("/v1/Quotes/UploadQuotePDFV1", multipartContent, ct);
+
+            return await HandleResponse<UploadQuotePDFV1.Response>(response, ct);
+        }
+
+        public async Task<Result<ImportQuotesV1.Response?>> ImportQuotesV1(ImportQuotesV1.Request request, CancellationToken ct = default)
+        {
+            using var multipartContent = new MultipartFormDataContent();
+            multipartContent.Add(new StreamContent(request.File), "file", "clients.csv");
+
+            var response = await _httpClient.PostAsync("/v1/Quotes/ImportQuotesV1", multipartContent, ct);
+
+            return await HandleResponse<ImportQuotesV1.Response>(response, ct);
+        }
+
         public Task<Result<GetChargeCodesV1.Response?>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<GetChargeCodesV1.Response>("/v1/ChargeCodes/GetChargeCodesV1", request, ct);
+
+        public Task<Result<GetQuotesV1.Response?>> GetQuotesV1(GetQuotesV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<GetQuotesV1.Response>("/v1/Quotes/GetQuotesV1", request, ct);
 
         // Time Entries
         public Task<Result<GetTimesV1.Response?>> GetTimeEntriesV1(GetTimesV1.Request request, CancellationToken ct = default)

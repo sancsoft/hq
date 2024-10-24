@@ -6,6 +6,7 @@ using CsvHelper.Configuration;
 
 using FluentResults;
 
+using HQ.Abstractions;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Projects;
 using HQ.Abstractions.Staff;
@@ -19,13 +20,15 @@ namespace HQ.Server.Services;
 public class ProjectServiceV1
 {
     private readonly HQDbContext _context;
+    private readonly ILogger<ProjectServiceV1> _logger;
     private readonly ChargeCodeServiceV1 _chargeCodeServiceV1;
 
 
-    public ProjectServiceV1(ChargeCodeServiceV1 chargeCodeServiceV1, HQDbContext context)
+    public ProjectServiceV1(ChargeCodeServiceV1 chargeCodeServiceV1, HQDbContext context, ILogger<ProjectServiceV1> logger)
     {
         _chargeCodeServiceV1 = chargeCodeServiceV1;
         _context = context;
+        _logger = logger;
     }
 
     public async Task<Result<UpsertProjectV1.Response>> UpsertProjectV1(UpsertProjectV1.Request request, CancellationToken ct = default)
@@ -35,7 +38,12 @@ public class ProjectServiceV1
             try
             {
                 var validationResult = Result.Merge(
-                    Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required.")
+                    Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
+                    Result.FailIf(
+                        request.Type == ProjectType.Quote &&
+                        (!request.QuoteId.HasValue || !await _context.Quotes.AnyAsync(t => t.Id == request.QuoteId.Value)),
+                        "Invalid quote."
+                    )
                 );
 
                 if (validationResult.IsFailed)
@@ -43,7 +51,11 @@ public class ProjectServiceV1
                     return validationResult;
                 }
 
-                var project = await _context.Projects.FindAsync(request.Id);
+                var project = await _context.Projects
+                    .Include(t => t.ChargeCode)
+                    .Include(p => p.Quote)
+                    .FirstOrDefaultAsync(p => p.Id == request.Id);
+
                 if (project == null)
                 {
                     project = new Project();
@@ -59,40 +71,116 @@ public class ProjectServiceV1
                 project.BookingPeriod = request.BookingPeriod;
                 project.StartDate = request.StartDate;
                 project.EndDate = request.EndDate;
+                project.Type = request.Type;
+                project.Status = request.Status;
+                project.TotalHours = request.TotalHours;
+                project.TimeEntryMaxHours = request.TimeEntryMaxHours ?? 4; // default to 4 hours
 
-                var latestProjectNumber = _context.Projects.Max((p) => p.ProjectNumber);
-                var newProjectNumber = latestProjectNumber + 1;
-                var newCode = "P" + newProjectNumber;
-                var newChargeCode = new ChargeCode
+                switch (request.Type)
                 {
-                    Code = newCode,
-                    Billable = true,
-                    Active = true,
-                    ProjectId = project.Id
-                };
-                if (project.QuoteId == null)
-                {
-                    project.ProjectNumber = newProjectNumber;
-                    project.ChargeCode = newChargeCode;
-                    _context.ChargeCodes.Add(newChargeCode);
+                    case ProjectType.General:
+                        if (project.ChargeCode == null)
+                        {
+                            project.ChargeCode = new();
+                            project.ChargeCode.Activity = ChargeCodeActivity.General;
+
+                            var latestGeneralNumber = _context.ChargeCodes
+                                .Where(t => t.Code.StartsWith("S"))
+                                .Select(t => t.Code.Substring(1))
+                                .Select(Int32.Parse)
+                                .DefaultIfEmpty(1000)
+                                .Max();
+
+                            var newGeneralNumber = latestGeneralNumber + 1;
+                            project.ChargeCode.Code = "S" + newGeneralNumber;
+                        }
+                        break;
+                    case ProjectType.Ongoing:
+                        var latestProjectNumber = await _context.Projects.Where(t => t.Id != request.Id).MaxAsync((q) => q.ProjectNumber, ct);
+                        var nextProjectNumber = latestProjectNumber + 1;
+
+                        if (request.ProjectNumber.HasValue)
+                        {
+                            if (await _context.Projects.AnyAsync(t => t.ProjectNumber == request.ProjectNumber && t.Id != request.Id, ct))
+                            {
+                                return Result.Fail(new Error("This project number already exists."));
+                            }
+                            else
+                            {
+                                project.ProjectNumber = request.ProjectNumber.Value;
+                            }
+                        }
+                        else
+                        {
+                            project.ProjectNumber = nextProjectNumber;
+                        }
+
+                        if (project.ChargeCode == null)
+                        {
+                            project.ChargeCode = new();
+                            project.ChargeCode.Activity = ChargeCodeActivity.Project;
+                        }
+
+                        project.ChargeCode.Code = "P" + project.ProjectNumber.Value;
+
+                        break;
+                    case ProjectType.Quote:
+                        var quote = await _context.Quotes.FindAsync(request.QuoteId!.Value, ct);
+
+                        if (project.ChargeCode == null)
+                        {
+                            project.ChargeCode = new();
+                            project.ChargeCode.QuoteId = quote!.Id;
+                            project.ChargeCode.Activity = ChargeCodeActivity.Quote;
+                            project.ChargeCode.Code = "Q" + quote!.QuoteNumber;
+                        }
+
+                        if (await _context.Projects.AnyAsync(t => t.QuoteId == request.QuoteId && t.Id != request.Id, ct))
+                        {
+                            return Result.Fail(new Error("A project for that quote already exists."));
+                        }
+
+                        if (project.Quote != null)
+                        {
+                            project.Quote.Status = project.Status;
+                        }
+
+                        break;
+                    case ProjectType.Service:
+                        // project.ChargeCode = new();
+                        // project.ChargeCode.Activity = ChargeCodeActivity.Service;
+                        // TODO: Set to S number
+                        break;
                 }
-                await _context.SaveChangesAsync(ct);
 
+                if (project.ChargeCode == null)
+                {
+                    return Result.Fail("Invalid charge code.");
+                }
+
+                project.ChargeCode.ProjectId = project.Id;
+                project.ChargeCode.Billable = request.Billable;
+                project.ChargeCode.Active = request.Status == ProjectStatus.InProduction || request.Status == ProjectStatus.Ongoing;
+
+                await _context.SaveChangesAsync(ct);
                 await transaction.CommitAsync(ct);
 
-                var response = new UpsertProjectV1.Response()
+                var response = new UpsertProjectV1.Response
                 {
                     Id = project.Id,
                 };
+
                 return Result.Ok(response);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while upserting the project");
                 await transaction.RollbackAsync(ct);
                 return Result.Fail(new Error("An error occurred while upserting the project.").CausedBy(ex));
             }
         }
     }
+
 
 
     public async Task<Result<DeleteProjectV1.Response?>> DeleteProjectV1(DeleteProjectV1.Request request, CancellationToken ct = default)
@@ -113,6 +201,7 @@ public class ProjectServiceV1
     public async Task<Result<GetProjectsV1.Response>> GetProjectsV1(GetProjectsV1.Request request, CancellationToken ct = default)
     {
         var records = _context.Projects
+            .Where(t => t.ChargeCode != null)
             .Include(t => t.Client)
             .Include(t => t.ProjectManager)
             .Include(t => t.Quote)
@@ -146,8 +235,13 @@ public class ProjectServiceV1
 
         if (request.ProjectStatus.HasValue && request.ProjectStatus != null)
         {
-            records = records.Where(t => t.Quote!.Status == request.ProjectStatus);
+            records = records.Where(t => t.Status == request.ProjectStatus);
         }
+        var bookingStartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Month);
+        var bookingEndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(Period.Month);
+
+
+        var listRecord = records.ToList();
 
         var mapped = records.Select(t => new GetProjectsV1.Record()
         {
@@ -162,13 +256,75 @@ public class ProjectServiceV1
             QuoteId = t.QuoteId,
             QuoteNumber = t.Quote != null ? t.Quote.QuoteNumber : null,
             HourlyRate = t.HourlyRate,
-            BookingHours = t.BookingHours,
             BookingPeriod = t.BookingPeriod,
+            ProjectBookingHours = t.BookingHours,
+            TimeEntryMaxHours = t.TimeEntryMaxHours,
             StartDate = t.StartDate,
             EndDate = t.EndDate,
             BillingEmail = t.Client.BillingEmail,
             OfficialName = t.Client.OfficialName,
-            Status = t.Quote != null ? (int)t.Quote.Status : 0
+            Status = t.Quote != null ? (int)t.Quote.Status : 0,
+            ProjectStatus = t.Status,
+            Type = t.Type,
+            Billable = t.ChargeCode!.Billable,
+            ProjectTotalHours = t.TotalHours,
+
+            BookingStartDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Min(x => x.Date),
+            BookingEndDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Max(x => x.Date),
+            BookingHours = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Sum(x => x.HoursApproved ?? x.Hours),
+            BookingAvailableHours = t.BookingHours - t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Sum(x => x.HoursApproved ?? x.Hours),
+            BookingPercentComplete = t.BookingHours == 0 ? 0 : t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Sum(x => x.HoursApproved ?? x.Hours) / t.BookingHours,
+
+            TotalHours = t.ChargeCode!.Times.Sum(x => x.HoursApproved ?? x.Hours),
+            TotalAvailableHours = t.TotalHours != null ? t.TotalHours.Value - t.ChargeCode!.Times.Sum(x => x.HoursApproved ?? x.Hours) : null,
+            TotalPercentComplete = !t.TotalHours.HasValue || t.TotalHours == 0 ? null : t.ChargeCode!.Times.Sum(x => x.HoursApproved ?? x.Hours) / t.TotalHours.Value,
+            TotalPercentCompleteSort = !t.TotalHours.HasValue || t.TotalHours == 0 ? -1 : t.ChargeCode!.Times.Sum(x => x.HoursApproved ?? x.Hours) / t.TotalHours.Value,
+            TotalStartDate = t.ChargeCode.Times.Min(t => t.Date),
+            TotalEndDate = t.ChargeCode.Times.Max(t => t.Date),
+        })
+        .Select(t => new GetProjectsV1.Record()
+        {
+            Id = t.Id,
+            ProjectNumber = t.ProjectNumber,
+            ChargeCode = t.ChargeCode,
+            ClientId = t.ClientId,
+            ClientName = t.ClientName,
+            ProjectManagerId = t.ProjectManagerId,
+            ProjectManagerName = t.ProjectManagerName,
+            Name = t.Name,
+            QuoteId = t.QuoteId,
+            QuoteNumber = t.QuoteNumber,
+            HourlyRate = t.HourlyRate,
+            BookingPeriod = t.BookingPeriod,
+            ProjectBookingHours = t.ProjectBookingHours,
+            TimeEntryMaxHours = t.TimeEntryMaxHours,
+            StartDate = t.StartDate,
+            EndDate = t.EndDate,
+            BillingEmail = t.BillingEmail,
+            OfficialName = t.OfficialName,
+            Status = t.Status,
+            ProjectStatus = t.ProjectStatus,
+            Type = t.Type,
+            Billable = t.Billable,
+            ProjectTotalHours = t.ProjectTotalHours,
+
+            BookingStartDate = t.BookingStartDate,
+            BookingEndDate = t.BookingEndDate,
+            BookingHours = t.BookingHours,
+            BookingAvailableHours = t.BookingAvailableHours,
+            BookingPercentComplete = t.BookingPercentComplete,
+
+            TotalHours = t.TotalHours,
+            TotalAvailableHours = t.TotalAvailableHours,
+            TotalPercentComplete = t.TotalPercentComplete,
+            TotalPercentCompleteSort = t.TotalPercentCompleteSort,
+            TotalStartDate = t.TotalStartDate,
+            TotalEndDate = t.TotalEndDate,
+
+            SummaryHoursTotal = t.Type == ProjectType.Ongoing ? t.BookingHours : t.TotalHours,
+            SummaryHoursAvailable = t.Type == ProjectType.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
+            SummaryPercentComplete = t.Type == ProjectType.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
+            SummaryPercentCompleteSort = t.Type == ProjectType.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
         });
 
         var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
@@ -179,7 +335,22 @@ public class ProjectServiceV1
             { Abstractions.Projects.GetProjectsV1.SortColumn.EndDate, "EndDate" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.ClientName, "ClientName" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.Status, "Status" }
+            { Abstractions.Projects.GetProjectsV1.SortColumn.Status, "ProjectStatus" },
+             { Abstractions.Projects.GetProjectsV1.SortColumn.BookingPeriod, "BookingPeriod" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingStartDate, "BookingStartDate" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingEndDate, "BookingEndDate" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.TotalHours, "TotalHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.TotalAvailableHours, "TotalAvailableHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ThisHours, "ThisHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ThisPendingHours, "ThisPendingHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.LastHours, "LastHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingHours, "BookingHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingAvailableHours, "BookingAvailableHours" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.TotalPercentComplete, "TotalPercentCompleteSort" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingPercentComplete, "BookingPercentComplete" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursTotal, "SummaryHoursTotal" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursAvailable, "SummaryHoursAvailable" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.SummaryPercentComplete, "SummaryPercentCompleteSort" },
         };
 
         var sortProperty = sortMap[request.SortBy];
@@ -274,6 +445,20 @@ public class ProjectServiceV1
         };
     }
 
+    public async Task<Result<DeleteProjectActivityV1.Response?>> DeleteProjectActivityV1(DeleteProjectActivityV1.Request request, CancellationToken ct = default)
+    {
+        if (await _context.Times.AnyAsync(t => t.ActivityId == request.Id))
+        {
+            return Result.Fail("Activity has time associated with it, unable to delete");
+        }
+        var projectActivity = await _context.ProjectActivities.SingleOrDefaultAsync(t => t.ProjectId == request.ProjectId && t.Id == request.Id, ct);
+        if (projectActivity != null)
+        {
+            _context.ProjectActivities.Remove(projectActivity);
+            await _context.SaveChangesAsync(ct);
+        }
+        return new DeleteProjectActivityV1.Response();
+    }
     public async Task<Result<GetProjectActivitiesV1.Response>> GetProjectActivitiesV1(GetProjectActivitiesV1.Request request, CancellationToken ct = default)
     {
         var records = _context.ProjectActivities.Where(t => t.ProjectId == request.ProjectId)
@@ -294,8 +479,6 @@ public class ProjectServiceV1
     {
         var validationResult = Result.Merge(
             Result.FailIf(string.IsNullOrEmpty(request.Name), "Name is required."),
-            Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId != request.ProjectId && t.Sequence == request.Sequence, ct), "Sequence must be unique."),
-
             Result.FailIf(await _context.ProjectActivities.AnyAsync(t => t.ProjectId == request.ProjectId && t.Name == request.Name, ct), "Name must be unique.")
         );
 
@@ -321,5 +504,38 @@ public class ProjectServiceV1
         {
             Id = activity.Id
         };
+    }
+
+    public async Task<Result<AddProjectMemberV1.Response>> AddProjectMemberV1(AddProjectMemberV1.Request request, CancellationToken ct = default)
+    {
+        var projectMember = await _context.ProjectMembers.SingleOrDefaultAsync(t => t.ProjectId == request.ProjectId && t.StaffId == request.StaffId, ct);
+        if (projectMember == null)
+        {
+            projectMember = new ProjectMember()
+            {
+                ProjectId = request.ProjectId,
+                StaffId = request.StaffId
+            };
+
+            _context.ProjectMembers.Add(projectMember);
+            await _context.SaveChangesAsync(ct);
+        }
+
+        return new AddProjectMemberV1.Response()
+        {
+            Id = projectMember.Id
+        };
+    }
+
+    public async Task<Result<RemoveProjectMemberV1.Response>> RemoveProjectMemberV1(RemoveProjectMemberV1.Request request, CancellationToken ct = default)
+    {
+        var projectMember = await _context.ProjectMembers.SingleOrDefaultAsync(t => t.ProjectId == request.ProjectId && t.StaffId == request.StaffId, ct);
+        if (projectMember != null)
+        {
+            _context.ProjectMembers.Remove(projectMember);
+            await _context.SaveChangesAsync(ct);
+        }
+
+        return new RemoveProjectMemberV1.Response();
     }
 }

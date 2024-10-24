@@ -11,7 +11,6 @@ import {
   combineLatest,
   map,
   tap,
-  of,
   debounceTime,
   switchMap,
   shareReplay,
@@ -19,7 +18,7 @@ import {
 } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
-import { ClientDetailsService } from '../../clients/client-details.service';
+import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { SortDirection } from '../../models/common/sort-direction';
 import { GetInvoicesRecordV1 } from '../../models/Invoices/get-invoices-v1';
@@ -61,7 +60,7 @@ export class InvoicesListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    private clientDetailService: ClientDetailsService,
+    private clientDetailService: ClientDetailsServiceToReplace,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.ClientName);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -76,7 +75,7 @@ export class InvoicesListComponent {
       startWith(0),
     );
     const search$ = clientDetailService.search.valueChanges.pipe(
-      tap((t) => this.goToPage(1)),
+      tap(() => this.goToPage(1)),
       startWith(clientDetailService.search.value),
     );
 
@@ -93,7 +92,7 @@ export class InvoicesListComponent {
     const response$ = request$.pipe(
       debounceTime(500),
       switchMap((request) => this.hqService.getInvoicesV1(request)),
-      shareReplay(1),
+      shareReplay({ bufferSize: 1, refCount: false }),
     );
 
     this.invoices$ = response$.pipe(
@@ -116,7 +115,6 @@ export class InvoicesListComponent {
 
     this.clientDetailService.resetFilters();
     this.clientDetailService.hideProjectStatus();
-    this.clientDetailService.hideCurrentOnly();
   }
 
   goToPage(page: number) {

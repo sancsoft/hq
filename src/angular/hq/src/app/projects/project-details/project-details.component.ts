@@ -1,52 +1,61 @@
-import { HQService } from './../../services/hq.service';
+/* eslint-disable rxjs-angular/prefer-takeuntil */
+/* eslint-disable rxjs-angular/prefer-async-pipe */
+import { ProjectPsrDetailsComponent } from './project-psr-details/project-psr-details.component';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
-import { Observable, map } from 'rxjs';
-import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
-import { Period } from '../project-create/project-create.component';
-import { GetPSRRecordV1 } from '../../models/PSR/get-PSR-v1';
-import { PdfViewerComponent } from '../../common/pdf-viewer/pdf-viewer.component';
+import { Component } from '@angular/core';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
+import { map } from 'rxjs';
+import { ProjectPsrListComponent } from './project-psr-list/project-psr-list.component';
+import { DualPanelComponent } from '../../core/components/dual-panel/dual-panel.component';
+import { CoreModule } from '../../core/core.module';
+import { PanelComponent } from '../../core/components/panel/panel.component';
+import { ProjectDetailsService } from './project-details.service';
 
 @Component({
   selector: 'hq-project-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, PdfViewerComponent],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    ProjectPsrListComponent,
+    ProjectPsrDetailsComponent,
+    CoreModule,
+    PanelComponent,
+    DualPanelComponent,
+  ],
+  providers: [ProjectDetailsService],
   templateUrl: './project-details.component.html',
 })
 export class ProjectDetailsComponent {
-  project$?: Observable<GetProjectRecordV1 | null>;
-  projectId$: Observable<string | null>;
-  psr$?: Observable<GetPSRRecordV1 | null>;
-  BookingPeriod = Period;
-
   constructor(
-    private hqService: HQService,
+    private router: Router,
     private route: ActivatedRoute,
+    public projectDetailService: ProjectDetailsService,
   ) {
-    this.projectId$ = route.queryParams.pipe(map((t) => t['projectId']));
-    this.projectId$.subscribe((id) => {
-      if (id) {
-        this.project$ = hqService.getProjectV1(id).pipe(
-          map((t) => t.records),
-          map((t) => {
-            if (t) {
-              return t[0];
-            }
-            return null;
-          }),
-        );
+    const projectId$ = this.route.paramMap.pipe(
+      map((params) => params.get('projectId')),
+    );
 
-        this.psr$ = hqService.getPSRV1({ projectId: id }).pipe(
-          map((t) => t.records),
-          map((t) => {
-            if (t) {
-              return t[0];
-            }
-            return null;
-          }),
-        );
-      }
+    const psrId$ = route.queryParamMap.pipe(
+      map((params) => params.get('psrId')),
+    );
+
+    projectId$.subscribe({
+      next: (projectId) => this.projectDetailService.setProjectId(projectId),
+      error: console.error,
+    });
+
+    psrId$.subscribe({
+      next: (psrId) => this.projectDetailService.setPsrId(psrId),
+      error: console.error,
     });
   }
 }

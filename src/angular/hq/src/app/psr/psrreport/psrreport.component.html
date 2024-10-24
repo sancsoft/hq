@@ -1,80 +1,64 @@
-<div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 z-50">
+<div class="px-5 py-2">
   <div
-    class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap flex"
+    class="flex flex-col xl:flex-row justify-between items-center gap-4 sm:flex-row"
   >
-    <div class="ml-5 py-2">
-      @if (savedStatus === "loading") {
-        <div class="rounded min-w-[120px]">
-          <i class="bi bi-cloud-upload-fill text-gray-50"></i> Saving...
-        </div>
-      } @else if (savedStatus === "success") {
-        <div>
-          <i class="bi bi-check-circle-fill text-green-400"></i>
-        </div>
-      } @else if (savedStatus === "fail") {
-        <div>
-          <i class="bi bi-exclamation-diamond-fill text-yellow-400"></i> Error
-          saving
-        </div>
-      }
+    <div>
+      <hq-psr-search-filter></hq-psr-search-filter>
     </div>
-    <div class="ml-auto space-x-2 pr-5">
+    <div class="flex divide-x ml-aut float-right mt-3">
       @if (
         [HQRole.Manager, HQRole.Partner, HQRole.Administrator] | inRole | async
       ) {
-        <button
+        <hq-button
           [disabled]="submitButtonState === ButtonState.Disabled"
-          [ngClass]="{
-            'text-gray-50 border-gray-500 bg-gray-500 ':
-              submitButtonState === ButtonState.Disabled,
-            'text-white border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600':
-              submitButtonState === ButtonState.Enabled,
-          }"
-          class="px-2 py-2 border rounded min-w-[120px] font-normal"
           (click)="onReportSubmit()"
         >
           Submit
-        </button>
+        </hq-button>
       }
     </div>
   </div>
+</div>
+<div
+  class="bg-black-alt border-steel-blue-600 border-t sticky top-0 z-50"
+></div>
+<div class="bg-black-alt">
   <div
-    id="left-side"
-    class="grid gap-0 transition-all duration-200 ease-in-out relative"
-    [ngClass]="{
-      'grid-cols-[1fr_20px_1fr]': !sideBarCollapsed,
-      'grid-cols-[1fr_20px_0fr]': sideBarCollapsed,
-    }"
+    class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
   >
-    <aside
-      class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out"
-    >
-      <div class="h-full">
-        <ngx-monaco-editor
-          [ngStyle]="{ height: '100%' }"
-          [options]="editorOptions$ | async"
-          [(ngModel)]="report"
-          (ngModelChange)="updateReport($event)"
-        ></ngx-monaco-editor>
-      </div>
-    </aside>
-    <button
-      type="button"
-      class="flex flex-col justify-center items-center bg-black-alt border-r border-black border-t border-t-steel-blue-600"
-      (click)="sideBarCollapsed = !sideBarCollapsed"
-      aria-controls="left-side"
-    >
-      <div class="cursor-pointer py-4">
-        <div class="leading-[0.5]">&bull;</div>
-        <div class="leading-[0.5]">&bull;</div>
-        <div class="leading-[0.5]">&bull;</div>
-      </div>
-    </button>
-    <main
-      class="border-r border-black sticky top-0 overflow-y-auto h-[calc(100dvh-(var(--h-header)+var(--h-footer)+139px))] transition-all duration-700 ease-in-out p-4 break-all"
-      [ngClass]="{ hidden: sideBarCollapsed }"
-    >
-      <hq-markdown [data]="report"></hq-markdown>
-    </main>
+    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
+      {{ (psr$ | async)?.submittedAt | date: "EEEE MM/dd/yyyy" }}
+    </div>
+    <div class="flex ml-aut float-right gap-2">
+      <button
+        title="Insert Previous Report"
+        [disabled]="prevPSRReportButtonState === ButtonState.Disabled"
+        [ngClass]="{
+          'text-gray-50 ': prevPSRReportButtonState === ButtonState.Disabled,
+        }"
+        (click)="insertTextAtCursor()"
+      >
+        <i title="Insert" class="bi bi-file-earmark-plus-fill"></i>
+      </button>
+    </div>
   </div>
+</div>
+
+<div class="h-[calc(100dvh-286px)] w-full bg-black-alt">
+  <hq-panel CollapseItem="first" Direction="vertical" [CSizes]="[30, 70]">
+    <hq-panel first Direction="horizontal" [CSizes]="[100, 0]">
+      <ngx-monaco-editor
+        first
+        [ngStyle]="{ height: '100%' }"
+        [options]="editorOptions$ | async"
+        [formControl]="report"
+        (onInit)="onEditorInit($event)"
+      ></ngx-monaco-editor>
+
+      <div class="bg-black-alt h-full" second>
+        <hq-markdown [data]="report$ | async"></hq-markdown>
+      </div>
+    </hq-panel>
+    <hq-psrtime-list second></hq-psrtime-list>
+  </hq-panel>
 </div>

@@ -16,7 +16,7 @@ namespace HQ.CLI.Commands.TimeEntries
         public required string ChargeCode { get; set; }
 
         [CommandArgument(1, "<hours>")]
-        public decimal BillableHours { get; set; }
+        public decimal Hours { get; set; }
 
         [CommandArgument(2, "<notes>")]
         public required string Notes { get; set; }
@@ -50,7 +50,7 @@ namespace HQ.CLI.Commands.TimeEntries
                 Notes = settings.Notes,
                 Task = settings.Task,
                 Date = settings.Date ?? DateOnly.FromDateTime(DateTime.Now),
-                BillableHours = settings.BillableHours
+                Hours = settings.Hours
 
             };
             var result = await _hqService.UpsertTimeEntryV1(timeEntryRequest);

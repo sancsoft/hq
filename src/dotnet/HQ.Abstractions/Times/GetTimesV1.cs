@@ -27,6 +27,7 @@ namespace HQ.Abstractions.Times
             public string? Task { get; set; }
             public Period? Period { get; set; }
             public bool? TimeAccepted { get; set; }
+            public TimeStatus? TimeStatus { get; set; }
             public bool? Invoiced { get; set; }
             public SortColumn SortBy { get; set; } = SortColumn.Date;
             public SortDirection SortDirection { get; set; } = SortDirection.Asc;
@@ -45,8 +46,12 @@ namespace HQ.Abstractions.Times
 
         public class Response : PagedResponseV1<Record>
         {
-
+            public decimal TotalHours { get; set; }
+            public decimal BillableHours { get; set; }
+            public decimal AcceptedHours { get; set; }
+            public decimal AcceptedBillableHours { get; set; }
         }
+
 
 
 

@@ -25,4 +25,7 @@ public class Time : Base
     public Guid? ActivityId { get; set; }
     public ProjectActivity? Activity { get; set; }
     public string? RejectionNotes { get; set; }
+    public DateTime? CapturedAt { get; set; }
+    public Guid? HolidayId { get; set; }
+    public Holiday? Holiday { get; set; }
 }

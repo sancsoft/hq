@@ -3,7 +3,7 @@ import {
   HQSnackBarService,
   IHQSnackbarMessage,
 } from './services/hq-snack-bar-service';
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -13,10 +13,8 @@ import { Observable } from 'rxjs';
   templateUrl: './hq-snack-bar.component.html',
 })
 export class HqSnackBarComponent {
-  message?: IHQSnackbarMessage | null;
+  message$: Observable<IHQSnackbarMessage | null>;
   constructor(public hqSnackbarService: HQSnackBarService) {
-    hqSnackbarService.currentMessage.subscribe((message) => {
-      this.message = message;
-    });
+    this.message$ = hqSnackbarService.currentMessage;
   }
 }

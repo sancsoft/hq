@@ -1,20 +1,27 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { NavigationEnd, Router, ActivatedRoute } from '@angular/router';
-import { Subject, Subscription, filter, map, takeUntil } from 'rxjs';
-import { ClientDetailsService } from '../../client-details.service';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ClientDetailsService } from '../client-details.service';
+import { SearchInputComponent } from '../../../core/components/search-input/search-input.component';
+import { SelectInputComponent } from '../../../core/components/select-input/select-input.component';
+import { SelectInputOptionDirective } from '../../../core/directives/select-input-option.directive';
+import { enumToArrayObservable } from '../../../core/functions/enum-to-array';
+import { ProjectStatus } from '../../../enums/project-status';
 
 @Component({
   selector: 'hq-client-details-search-filter',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    SearchInputComponent,
+    SelectInputComponent,
+    SelectInputOptionDirective,
+  ],
   templateUrl: './client-details-search-filter.component.html',
 })
 export class ClientDetailsSearchFilterComponent {
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    public clientDetailService: ClientDetailsService,
-  ) {}
+  public projectStatusEnum$ = enumToArrayObservable(ProjectStatus);
+  constructor(public clientDetailService: ClientDetailsService) {}
 }
