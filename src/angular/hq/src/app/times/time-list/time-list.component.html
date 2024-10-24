@@ -144,13 +144,6 @@
         Hours Approved
       </th>
       <th
-        width="100px"
-        scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3"
-      >
-        Approved By
-      </th>
-      <th
         width="80px"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 whitespace-nowrap"
@@ -192,7 +185,6 @@
           {{ time.hours | number: "1.2-2" }}
         </td>
         <td class="border-b border-black py-2">{{ time.hoursApproved }}</td>
-        <td class="border-b border-black py-2">{{ time.hoursApprovedBy }}</td>
         <td class="border-b border-black py-2">{{ time.invoiceNumber }}</td>
         <td class="border-b border-black px-3 py-2">{{ time.description }}</td>
 
