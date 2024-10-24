@@ -53,10 +53,16 @@ namespace HQ.Abstractions.ChargeCodes
             public Guid? ServiceAgreementId { get; set; }
             public string? ClientName { get; set; }
             public Guid? ClientId { get; set; }
+            public List<Activity>? Activities { get; set; }
 
             public string? Description { get; set; }
             public bool? IsProjectMember { get; set; }
             public int IsProjectMemberSort { get; set; }
+        }
+        public class Activity
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; } = null!;
         }
     }
 }
