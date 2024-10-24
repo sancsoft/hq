@@ -22,6 +22,7 @@ public class GetProjectsV1
         public SortColumn SortBy { get; set; } = SortColumn.ProjectName;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
         public ProjectStatus? ProjectStatus { get; set; }
+        public bool? CurrentOnly { get; set; } = true;
     }
 
     public enum SortColumn

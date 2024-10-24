@@ -6,8 +6,8 @@
   <div class="flex flex-col xl:flex-row justify-between items-start gap-4">
     <hq-client-details-search-filter></hq-client-details-search-filter>
     <div class="flex divide-x ml-auto">
-      <hq-tab routerLink="projects">Projects</hq-tab>
-      <hq-tab routerLink="quotes">Quotes</hq-tab>
+      <hq-tab routerLink="projects" (click)="clientDetailsService.showCurrentOnly()">Projects</hq-tab>
+      <hq-tab routerLink="quotes" (click)="clientDetailsService.hideCurrentOnly()">Quotes</hq-tab>
       <!-- <hq-tab routerLink="services">Services</hq-tab>
       <hq-tab routerLink="invoices">Invoices</hq-tab> -->
     </div>
