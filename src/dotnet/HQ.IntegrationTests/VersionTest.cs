@@ -1,5 +1,4 @@
 using HQ.IntegrationTests.Fixtures;
-using HQ.Server.Commands;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 

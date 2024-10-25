@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HQ.Server\HQ.Server.csproj" />
+    <ProjectReference Include="..\HQ.CLI\HQ.CLI.csproj" />
   </ItemGroup>
 
 </Project>

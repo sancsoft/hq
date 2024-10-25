@@ -1,7 +1,7 @@
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 
-using HQ.Server.Commands;
+// using HQ.Server.Commands;
 using HQ.Server.Data;
 
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -53,7 +53,7 @@ public class HQFixture : IAsyncLifetime
         var connectionString = _hqPostgresql.GetConnectionString();
         Console.WriteLine("Connection String: {0}", connectionString);
 
-        _factory = new HQWebApplicationFactory(connectionString);
+        _factory = new HQWebApplicationFactory();
 
         await _factory.MigrateAsync();
 

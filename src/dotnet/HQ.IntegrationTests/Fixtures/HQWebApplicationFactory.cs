@@ -1,32 +1,46 @@
-﻿using HQ.Server.Commands;
+﻿using HQ.Server;
 using HQ.Server.Data;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.IntegrationTests.Fixtures;
 
-public class HQWebApplicationFactory : WebApplicationFactory<APICommand>
+public class HQWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly string _connectionString;
 
-    public HQWebApplicationFactory(string connectionString)
+    public HQWebApplicationFactory()
     {
-        _connectionString = connectionString;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        var configuration = new Dictionary<string, string?>()
+        builder.ConfigureServices(services =>
         {
-            { "ConnectionStrings__HQ", _connectionString }
-        };
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "TestScheme";
+                options.DefaultChallengeScheme = "TestScheme";
+            })
+            .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestScheme", options => { });
 
-        builder.ConfigureAppConfiguration(builder => builder.AddInMemoryCollection(configuration));
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("TestPolicy", policy =>
+                    policy.RequireAuthenticatedUser());
+            });
+        });
 
         builder.UseEnvironment("Test");
     }
-
+    public HttpClient CreateClientWithBaseUrl()
+    {
+        return this.CreateClient(new WebApplicationFactoryClientOptions
+        {
+            BaseAddress = new Uri("http://api.hq.localhost:5186")
+        });
+    }
     public async Task MigrateAsync()
     {
         await using var scope = Services.CreateAsyncScope();
