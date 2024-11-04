@@ -439,6 +439,15 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'create',
+        title: 'Create Staff',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./staff/staff-create/staff-create.component').then(
+            (m) => m.StaffCreateComponent,
+          ),
+      },
+      {
         path: ':staffId/timesheet',
         canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
         loadComponent: () =>
@@ -483,15 +492,6 @@ export const routes: Routes = [
               ).then((m) => m.StaffContactsComponent),
           },
         ],
-      },
-      {
-        path: 'create',
-        title: 'Create Staff',
-        canActivate: [userRoleGuard(HQRole.Administrator)],
-        loadComponent: () =>
-          import('./staff/staff-create/staff-create.component').then(
-            (m) => m.StaffCreateComponent,
-          ),
       },
     ],
   },
