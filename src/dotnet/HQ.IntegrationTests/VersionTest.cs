@@ -4,24 +4,22 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace HQ.IntegrationTests;
 
-[Collection("HQ")]
-public class VersionTest
+public class VersionTest : IClassFixture<HQWebApplicationFactory>
 {
-    private readonly HQFixture _fixture;
+    private readonly HttpClient _client;
 
-    public VersionTest(HQFixture fixture)
+    public VersionTest(HQWebApplicationFactory factory)
     {
-        _fixture = fixture;
+        _client = factory.CreateClientWithBaseUrl();
+
     }
 
     [Fact]
     public async Task Get_Version_Returns_Success_Contains_HQ_Parse_Version()
     {
-        // Arrange
-        var client = _fixture.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/");
+        var response = await _client.GetAsync("/");
 
         // Assert
         response.EnsureSuccessStatusCode();

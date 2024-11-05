@@ -39,7 +39,6 @@ public class HQFixture : IAsyncLifetime
         _keycloak = new ContainerBuilder()
             .WithImage("quay.io/keycloak/keycloak:24.0.4")
             .WithCommand("start-dev", "--import-realm")
-            .WithVolumeMount("", "")
             .WithEnvironment("KC_DB", "postgres")
             .WithEnvironment("KC_DB_URL_HOST", _keycloakPostgresql.IpAddress)
             .WithEnvironment("KC_DB_URL_PORT", _keycloakPostgresql.GetMappedPublicPort(5432).ToString())
