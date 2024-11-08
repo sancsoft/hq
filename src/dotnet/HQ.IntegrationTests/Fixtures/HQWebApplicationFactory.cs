@@ -2,49 +2,75 @@
 using HQ.Server.Data;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 
-namespace HQ.IntegrationTests.Fixtures;
+using Testcontainers.PostgreSql;
 
-public class HQWebApplicationFactory : WebApplicationFactory<Program>
+namespace HQ.IntegrationTests.Fixtures
 {
-
-    public HQWebApplicationFactory()
+    public class HQWebApplicationFactory : WebApplicationFactory<Program>
     {
-    }
+        private readonly PostgreSqlContainer _postgresContainer;
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
-        builder.ConfigureServices(services =>
+        public HQWebApplicationFactory()
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "TestScheme";
-                options.DefaultChallengeScheme = "TestScheme";
-            })
-            .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestScheme", options => { });
+            _postgresContainer = new PostgreSqlBuilder()
+                .WithDatabase("test")
+                .WithUsername("test")
+                .WithPassword("password")
+                .Build();
 
-            services.AddAuthorization(options =>
+            _postgresContainer.StartAsync().GetAwaiter().GetResult();
+        }
+
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
+            builder.ConfigureServices(services =>
             {
-                options.AddPolicy("TestPolicy", policy =>
-                    policy.RequireAuthenticatedUser());
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = "TestScheme";
+                    options.DefaultChallengeScheme = "TestScheme";
+                })
+                .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestScheme", options => { });
+
+                services.AddAuthorization(options =>
+                {
+                    options.AddPolicy("TestPolicy", policy =>
+                        policy.RequireAuthenticatedUser());
+                });
+
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType == typeof(DbContextOptions<HQDbContext>));
+                if (descriptor != null)
+                {
+                    services.Remove(descriptor);
+                }
+
+                services.AddDbContext<HQDbContext>(options =>
+                    options.UseNpgsql(_postgresContainer.GetConnectionString()).UseSnakeCaseNamingConvention());
+                services.AddDataProtection().PersistKeysToDbContext<HQDbContext>();
             });
-        });
 
-        builder.UseEnvironment("Test");
-    }
-    public HttpClient CreateClientWithBaseUrl()
-    {
-        return this.CreateClient(new WebApplicationFactoryClientOptions
+            builder.UseEnvironment("Test");
+
+        }
+
+        public HttpClient CreateClientWithBaseUrl()
         {
-            BaseAddress = new Uri("http://api.hq.localhost:5186")
-        });
-    }
-    public async Task MigrateAsync()
-    {
-        await using var scope = Services.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<HQDbContext>();
-        await context.Database.MigrateAsync();
+            return this.CreateClient(new WebApplicationFactoryClientOptions
+            {
+                BaseAddress = new Uri("http://api.hq.localhost:5186")
+            });
+        }
+
+        public override async ValueTask DisposeAsync()
+        {
+            // Dispose of the container when tests are done
+            await _postgresContainer.DisposeAsync();
+            await base.DisposeAsync();
+        }
     }
 }

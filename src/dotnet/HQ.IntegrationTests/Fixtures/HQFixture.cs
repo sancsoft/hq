@@ -54,7 +54,7 @@ public class HQFixture : IAsyncLifetime
 
         _factory = new HQWebApplicationFactory();
 
-        await _factory.MigrateAsync();
+        // await _factory.MigrateAsync();
 
         // TestContainer = new ContainerBuilder()
         //   .WithImage("testcontainers/helloworld:1.1.0")
