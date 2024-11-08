@@ -1,5 +1,6 @@
 ﻿using HQ.Server;
 using HQ.Server.Data;
+using HQ.Server.Data.Models;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
@@ -23,6 +24,8 @@ namespace HQ.IntegrationTests.Fixtures
                 .Build();
 
             _postgresContainer.StartAsync().GetAwaiter().GetResult();
+            
+            SeedDatabase();
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -56,6 +59,47 @@ namespace HQ.IntegrationTests.Fixtures
 
             builder.UseEnvironment("Test");
 
+        }
+        private void SeedDatabase()
+        {
+            using var scope = Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<HQDbContext>();
+
+            try
+            {
+                context.Database.EnsureCreated();
+
+                if (!context.Clients.Any())
+                {
+                    context.Clients.AddRange(
+                        new Client
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Seeded Client 1",
+                            OfficialName = "Seeded Official Client 1",
+                            BillingEmail = "seededclient1@example.com",
+                            HourlyRate = 50.0m,
+                            CreatedAt = DateTime.UtcNow
+                        },
+                        new Client
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Seeded Client 2",
+                            OfficialName = "Seeded Official Client 2",
+                            BillingEmail = "seededclient2@example.com",
+                            HourlyRate = 75.0m,
+                            CreatedAt = DateTime.UtcNow
+                        }
+                    );
+                    context.SaveChanges();
+                }
+
+                Console.WriteLine("Database seeded successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error seeding the database: {ex.Message}");
+            }
         }
 
         public HttpClient CreateClientWithBaseUrl()
