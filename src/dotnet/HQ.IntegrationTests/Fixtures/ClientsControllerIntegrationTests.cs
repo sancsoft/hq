@@ -40,6 +40,30 @@ public class ClientsControllerIntegrationTests : IClassFixture<HQWebApplicationF
             Console.WriteLine($"Client Name: {client.Name}, Official Name: {client.OfficialName}");
         }
     }
+    [Fact]
+    public async Task GetClientsV1_Should_Return_Client_When_Searching_By_Seeded_Email()
+    {
+        // Arrange
+        var seededClientEmail = "seededclient1@example.com";
+        var request = new GetClientsV1.Request
+        {
+            Search = seededClientEmail
+        };
+
+        // Act
+        var result = await hqService.GetClientsV1(request);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Value);
+        Assert.NotEmpty(result.Value!.Records);
+        Assert.Contains(result.Value.Records, client => client.BillingEmail == seededClientEmail);
+
+        foreach (var client in result.Value.Records)
+        {
+            Console.WriteLine($"Client Name: {client.BillingEmail}, Official Name: {client.BillingEmail}");
+        }
+    }
 
     [Fact]
     public async Task GetClientsV1_Should_Return_All_Clients_When_Request_Is_Empty()
