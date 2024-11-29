@@ -1,4 +1,5 @@
-﻿using HQ.Server;
+﻿using HQ.Abstractions.Enumerations;
+using HQ.Server;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
 
@@ -24,7 +25,7 @@ namespace HQ.IntegrationTests.Fixtures
                 .Build();
 
             _postgresContainer.StartAsync().GetAwaiter().GetResult();
-            
+
             SeedDatabase();
         }
 
@@ -92,6 +93,38 @@ namespace HQ.IntegrationTests.Fixtures
                         }
                     );
                     context.SaveChanges();
+
+                    context.Staff.AddRange(
+                    new Staff
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Seeded Staff 1",
+                        FirstName = "John",
+                        LastName = "Doe",
+                        Email = "john.doe@example.com",
+                        WorkHours = 40,
+                        VacationHours = 10,
+                        Jurisdiciton = Jurisdiciton.USA,
+                        StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
+                        EndDate = null,
+                        CreatedAt = DateTime.UtcNow
+                    },
+                    new Staff
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Seeded Staff 2",
+                        FirstName = "Jane",
+                        LastName = "Smith",
+                        Email = "jane.smith@example.com",
+                        WorkHours = 35,
+                        VacationHours = 8,
+                        Jurisdiciton = Jurisdiciton.Colombia,
+                        StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
+                        EndDate = null,
+                        CreatedAt = DateTime.UtcNow
+                    });
+                    context.SaveChanges();
+
                 }
 
                 Console.WriteLine("Database seeded successfully.");
