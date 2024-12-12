@@ -26,7 +26,7 @@ namespace HQ.IntegrationTests.Fixtures
 
             _postgresContainer.StartAsync().GetAwaiter().GetResult();
 
-            SeedDatabase();
+            SeedDatabaseAsync().GetAwaiter().GetResult();
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -61,71 +61,97 @@ namespace HQ.IntegrationTests.Fixtures
             builder.UseEnvironment("Test");
 
         }
-        private void SeedDatabase()
+        private async Task SeedDatabaseAsync()
         {
             using var scope = Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<HQDbContext>();
 
             try
             {
-                context.Database.EnsureCreated();
-
-                if (!context.Clients.Any())
-                {
-                    context.Clients.AddRange(
-                        new Client
-                        {
-                            Id = Guid.NewGuid(),
-                            Name = "Seeded Client 1",
-                            OfficialName = "Seeded Official Client 1",
-                            BillingEmail = "seededclient1@example.com",
-                            HourlyRate = 50.0m,
-                            CreatedAt = DateTime.UtcNow
-                        },
-                        new Client
-                        {
-                            Id = Guid.NewGuid(),
-                            Name = "Seeded Client 2",
-                            OfficialName = "Seeded Official Client 2",
-                            BillingEmail = "seededclient2@example.com",
-                            HourlyRate = 75.0m,
-                            CreatedAt = DateTime.UtcNow
-                        }
-                    );
-                    context.SaveChanges();
-
-                    context.Staff.AddRange(
-                    new Staff
+                await context.Database.EnsureCreatedAsync();
+                await context.Clients.AddRangeAsync(
+                    new Client
                     {
                         Id = Guid.NewGuid(),
-                        Name = "Seeded Staff 1",
-                        FirstName = "John",
-                        LastName = "Doe",
-                        Email = "john.doe@example.com",
-                        WorkHours = 40,
-                        VacationHours = 10,
-                        Jurisdiciton = Jurisdiciton.USA,
-                        StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
-                        EndDate = null,
+                        Name = "Seeded Client 1",
+                        OfficialName = "Seeded Official Client 1",
+                        BillingEmail = "seededclient1@example.com",
+                        HourlyRate = 50.0m,
                         CreatedAt = DateTime.UtcNow
                     },
-                    new Staff
+                    new Client
                     {
                         Id = Guid.NewGuid(),
-                        Name = "Seeded Staff 2",
-                        FirstName = "Jane",
-                        LastName = "Smith",
-                        Email = "jane.smith@example.com",
-                        WorkHours = 35,
-                        VacationHours = 8,
-                        Jurisdiciton = Jurisdiciton.Colombia,
-                        StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
-                        EndDate = null,
+                        Name = "Seeded Client 2",
+                        OfficialName = "Seeded Official Client 2",
+                        BillingEmail = "seededclient2@example.com",
+                        HourlyRate = 75.0m,
                         CreatedAt = DateTime.UtcNow
-                    });
-                    context.SaveChanges();
+                    }
+                );
 
-                }
+                await context.SaveChangesAsync();
+
+                await context.Staff.AddRangeAsync(
+                new Staff
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Seeded Staff 1",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Email = "john.doe@example.com",
+                    WorkHours = 40,
+                    VacationHours = 10,
+                    Jurisdiciton = Jurisdiciton.USA,
+                    StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
+                    EndDate = null,
+                    CreatedAt = DateTime.UtcNow
+                },
+                new Staff
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Seeded Staff 2",
+                    FirstName = "Jane",
+                    LastName = "Smith",
+                    Email = "jane.smith@example.com",
+                    WorkHours = 35,
+                    VacationHours = 8,
+                    Jurisdiciton = Jurisdiciton.Colombia,
+                    StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
+                    EndDate = null,
+                    CreatedAt = DateTime.UtcNow
+                });
+
+                await context.SaveChangesAsync();
+
+                await context.ChargeCodes.AddRangeAsync(
+                    new ChargeCode
+                    {
+                        Activity = ChargeCodeActivity.Project,
+                        Billable = true,
+                        Active = true,
+                        ProjectId = null,
+                        CreatedAt = DateTime.UtcNow
+                    },
+                    new ChargeCode
+                    {
+                        Activity = ChargeCodeActivity.Quote,
+                        Billable = false,
+                        Active = true,
+                        ProjectId = Guid.NewGuid(),
+                        CreatedAt = DateTime.UtcNow
+                    },
+                    new ChargeCode
+                    {
+                        Activity = ChargeCodeActivity.Service,
+                        Billable = true,
+                        Active = false,
+                        ProjectId = Guid.NewGuid(),
+                        CreatedAt = DateTime.UtcNow
+                    }
+                );
+                await context.SaveChangesAsync();
+
 
                 Console.WriteLine("Database seeded successfully.");
             }
