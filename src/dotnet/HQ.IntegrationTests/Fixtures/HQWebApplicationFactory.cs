@@ -69,6 +69,7 @@ namespace HQ.IntegrationTests.Fixtures
             try
             {
                 await context.Database.EnsureCreatedAsync();
+                // Clients seeding
                 await context.Clients.AddRangeAsync(
                     new Client
                     {
@@ -92,6 +93,7 @@ namespace HQ.IntegrationTests.Fixtures
 
                 await context.SaveChangesAsync();
 
+                // Staff seeding
                 await context.Staff.AddRangeAsync(
                 new Staff
                 {
@@ -123,35 +125,51 @@ namespace HQ.IntegrationTests.Fixtures
                 });
 
                 await context.SaveChangesAsync();
+                // Chargecode seeding
 
                 await context.ChargeCodes.AddRangeAsync(
                     new ChargeCode
                     {
                         Activity = ChargeCodeActivity.Project,
                         Billable = true,
+                        Code = "P0001",
                         Active = true,
-                        ProjectId = null,
                         CreatedAt = DateTime.UtcNow
                     },
                     new ChargeCode
                     {
                         Activity = ChargeCodeActivity.Quote,
                         Billable = false,
+                        Code = "Q0001",
                         Active = true,
-                        ProjectId = Guid.NewGuid(),
                         CreatedAt = DateTime.UtcNow
                     },
                     new ChargeCode
                     {
                         Activity = ChargeCodeActivity.Service,
                         Billable = true,
+                        Code = "S0001",
                         Active = false,
-                        ProjectId = Guid.NewGuid(),
                         CreatedAt = DateTime.UtcNow
                     }
                 );
                 await context.SaveChangesAsync();
 
+                // Project seeding
+                await context.Projects.AddRangeAsync(
+                    new Project
+                    {
+                        Name = "Seeded Project 1",
+                        Client = await context.Clients.FirstAsync(),
+                        ProjectManager = await context.Staff.FirstAsync(),
+                        ChargeCode = await context.ChargeCodes.FirstOrDefaultAsync(),
+                        StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
+                        EndDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-1)),
+                        Status = ProjectStatus.InProduction,
+                        CreatedAt = DateTime.UtcNow
+                    }
+                );
+                await context.SaveChangesAsync();
 
                 Console.WriteLine("Database seeded successfully.");
             }
