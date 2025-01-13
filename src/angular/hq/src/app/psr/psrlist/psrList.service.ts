@@ -1,4 +1,3 @@
-import { FormControl } from '@angular/forms';
 import {
   BehaviorSubject,
   Observable,
@@ -8,11 +7,11 @@ import {
   debounceTime,
   finalize,
   map,
-  of,
   startWith,
   switchMap,
   takeUntil,
   tap,
+  throwError,
 } from 'rxjs';
 import { GetPSRTimeRecordStaffV1 } from '../../models/PSR/get-psr-time-v1';
 import { HQService } from '../../services/hq.service';
@@ -26,6 +25,7 @@ import {
 } from '../../models/PSR/get-PSR-v1';
 import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
+import { FormControl } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -142,7 +142,7 @@ export class PsrListService extends BaseListService<
             console.log(error);
             this.loadingSubject.next(false);
             console.error('Error fetching PSR records:', error);
-            return of(error);
+            return throwError(() => error);
           }),
         ),
       ),

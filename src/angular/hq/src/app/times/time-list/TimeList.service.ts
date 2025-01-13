@@ -9,11 +9,11 @@ import {
   combineLatest,
   debounceTime,
   map,
-  of,
   startWith,
   switchMap,
   takeUntil,
   tap,
+  throwError,
 } from 'rxjs';
 import {
   GetTimeRecordClientsV1,
@@ -179,7 +179,7 @@ export class TimeListService extends BaseListService<
           catchError((error: unknown) => {
             this.loadingSubject.next(false);
             console.error('Error fetching Time records:', error);
-            return of(error);
+            return throwError(() => error);
           }),
         ),
       ),
