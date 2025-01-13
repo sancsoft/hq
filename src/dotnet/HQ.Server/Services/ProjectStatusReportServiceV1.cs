@@ -114,16 +114,18 @@ public class ProjectStatusReportServiceV1
         int createdCount = 0;
         int skippedCount = 0;
 
-        var projects = await _context.Projects
-            .Where(t => (t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing)) || t.Status == ProjectStatus.Closed)
-            .ToListAsync(ct);
-
         DateOnly startDate = request.ForDate.GetPeriodStartDate(Period.Week);
         DateOnly endDate = request.ForDate.GetPeriodEndDate(Period.Week);
 
+        var projects = await _context.Projects
+            .Where(t => 
+                (t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing)) || 
+                (t.ChargeCode != null && t.ChargeCode.Times.Any(x => x.Date >= startDate && x.Date <= endDate)))
+            .ToListAsync(ct);
+
         foreach (var project in projects)
         {
-            if (await _context.ProjectStatusReports.AnyAsync(t => t.ProjectId == project.Id && t.StartDate == startDate && t.EndDate == endDate || ((t.Project.Status == ProjectStatus.Closed && t.BilledTime > 0)), ct))
+            if (await _context.ProjectStatusReports.AnyAsync(t => t.ProjectId == project.Id && t.StartDate == startDate && t.EndDate == endDate, ct))
             {
                 skippedCount++;
                 continue;
