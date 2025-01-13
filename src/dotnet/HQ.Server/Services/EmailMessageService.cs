@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using FluentResults;
 using FluentResults.Extensions.AspNetCore;
 
+using HQ.Abstractions;
 using HQ.Abstractions.Emails;
 using HQ.Abstractions.EmailTemplates;
 using HQ.Abstractions.Enumerations;
