@@ -118,8 +118,8 @@ public class ProjectStatusReportServiceV1
         DateOnly endDate = request.ForDate.GetPeriodEndDate(Period.Week);
 
         var projects = await _context.Projects
-            .Where(t => 
-                (t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing)) || 
+            .Where(t =>
+                (t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing)) ||
                 (t.ChargeCode != null && t.ChargeCode.Times.Any(x => x.Date >= startDate && x.Date <= endDate)))
             .ToListAsync(ct);
 

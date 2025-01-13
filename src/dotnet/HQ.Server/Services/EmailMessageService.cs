@@ -9,8 +9,8 @@ using HQ.Abstractions.Emails;
 using HQ.Abstractions.EmailTemplates;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Services;
-using HQ.API;
 using HQ.Abstractions.Times;
+using HQ.API;
 using HQ.Server.Data;
 using HQ.Server.Services;
 
@@ -184,7 +184,7 @@ namespace HQ.Server.Services
 
             await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Time Submission Reminder", MailPriority.High, null, ct);
         }
-        
+
         public async Task SendPlanSubmissionReminderEmail(Guid staffId, DateOnly date, CancellationToken ct)
         {
             var staff = await _context.Staff
@@ -206,7 +206,7 @@ namespace HQ.Server.Services
 
             await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Plan Submission Reminder", MailPriority.High, null, ct);
         }
-        
+
         public async Task SendRejectedTimeSubmissionReminderEmail(Guid staffId, DateOnly from, DateOnly to, CancellationToken ct)
         {
             var staff = await _context.Staff
@@ -228,7 +228,7 @@ namespace HQ.Server.Services
 
             await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Rejected Time Reminder", MailPriority.High, null, ct);
         }
-        
+
         public async Task SendPointSubmissionReminderEmail(Guid staffId, DateOnly from, DateOnly to, CancellationToken ct)
         {
             var staff = await _context.Staff

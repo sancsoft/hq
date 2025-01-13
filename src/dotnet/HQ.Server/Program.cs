@@ -393,10 +393,10 @@ recurringJobManager.AddOrUpdate<PointServiceV1>(
     recurringJobOptions);
 
 recurringJobManager.AddOrUpdate<PointServiceV1>(
-	nameof(PointServiceV1.BackgroundAutoGenerateVacationPlanningPointsV1),
-	(t) => t.BackgroundAutoGenerateVacationPlanningPointsV1(CancellationToken.None),
-	Cron.Weekly(DayOfWeek.Friday, 8),
-	recurringJobOptions);
+    nameof(PointServiceV1.BackgroundAutoGenerateVacationPlanningPointsV1),
+    (t) => t.BackgroundAutoGenerateVacationPlanningPointsV1(CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Friday, 8),
+    recurringJobOptions);
 
 recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     nameof(TimeEntryServiceV1.BackgroundSendTimeEntryReminderEmail),
