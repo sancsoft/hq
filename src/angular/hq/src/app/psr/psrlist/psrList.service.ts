@@ -26,7 +26,6 @@ import {
 } from '../../models/PSR/get-PSR-v1';
 import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
-import { APIError } from '../../errors/apierror';
 
 @Injectable({
   providedIn: 'root',
@@ -139,7 +138,7 @@ export class PsrListService extends BaseListService<
       tap(() => this.loadingSubject.next(true)),
       switchMap((request) =>
         this.hqService.getPSRV1(request).pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             console.log(error);
             this.loadingSubject.next(false);
             console.error('Error fetching PSR records:', error);

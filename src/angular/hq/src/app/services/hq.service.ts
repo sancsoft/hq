@@ -269,7 +269,7 @@ export class HQService {
             request,
           )
           .pipe(
-            catchError((error) => {
+            catchError((error: unknown) => {
               console.error('Error in getPSRV1:', error);
               return throwError(() => error);
             }),

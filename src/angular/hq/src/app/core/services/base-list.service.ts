@@ -92,7 +92,7 @@ export abstract class BaseListService<
       switchMap(() => response$),
     );
     this.response$ = merge(response$, refreshResponse$).pipe(
-      catchError((error) => {
+      catchError((error: unknown) => {
         return of({
           error:
             error instanceof APIError

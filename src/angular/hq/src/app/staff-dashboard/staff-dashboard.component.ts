@@ -63,10 +63,6 @@ import { ButtonComponent } from '../core/components/button/button.component';
 import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staff-dashboard-planning.component';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 import { ButtonState } from '../enums/button-state';
-import {
-  GetChargeCodeRecordV1,
-  SortColumn,
-} from '../models/charge-codes/get-chargecodes-v1';
 import { StaffDashboardMonthViewComponent } from './staff-dashboard-month-view/staff-dashboard-month-view.component';
 import { StaffStatus } from '../enums/staff-status';
 

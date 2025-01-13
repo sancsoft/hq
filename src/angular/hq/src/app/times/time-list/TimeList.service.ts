@@ -28,7 +28,6 @@ import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
 import { GetProjectRecordV1 } from '../../models/projects/get-project-v1';
 import { formControlChanges } from '../../core/functions/form-control-changes';
-import { APIError } from '../../errors/apierror';
 
 @Injectable({
   providedIn: 'root',
@@ -177,7 +176,7 @@ export class TimeListService extends BaseListService<
       tap(() => this.loadingSubject.next(true)),
       switchMap((request) =>
         this.hqService.getTimesV1(request).pipe(
-          catchError((error) => {
+          catchError((error: unknown) => {
             this.loadingSubject.next(false);
             console.error('Error fetching Time records:', error);
             return of(error);
