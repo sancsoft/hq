@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.16] - 2024-11-04
+
+### Fixed
+
+- Staff create routing
+
 ## [0.4.15] - 2024-08-19
 
 ### Added
@@ -633,7 +639,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.11...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.16...HEAD
+[0.4.16]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.16
+[0.4.15]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.15
+[0.4.14]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.14
+[0.4.13]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.13
+[0.4.12]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.12
 [0.4.11]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.11
 [0.4.10]: https://github.com/sancsoft/hq/compare/v0.4.9...v0.4.10
 [0.4.9]: https://github.com/sancsoft/hq/compare/v0.4.8...v0.4.9
