@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Max hour time limit to projects
+  - Configurable on project edit page
+- Logging and metrics support with OpenTelemetry
+- Points reminder email
+  - Sends Monday at 12PM EST
+- Plan reminder email
+  - Sends daily at 10AM EST
+- Link to project on PSR list and PSR detail page
+- Automatically add vacation planning points based on time entries
+  - Generates Friday at 8AM EST for the following week
+- Filtering staff by jurisdiction on staff list
+- Staff name to points modal on points page
+- Show current only filter to project list
+
+### Fixed
+
+- User list not filtering
+- File download bug (Quotes, Exports, etc.)
+- Fixed PSR list autocomplete z-index bug
+- Client name sorting on project list
+- PSR header not updating after changing/ editing time
+- PM Can't adjust charge code or activity/task on resubmitted time on PSR time table 
+
+### Changed
+
+- Sort project managers by name in project crud dropdown
+- Added staff management under admin dropdown
+- Allow PMs to edit project rosters
+- Charge code list refactor
+- Holiday list refactor
+- Staff list refactor
+- Allow admin to change client on project
+- Gray PSR row on PSR list if current period
+- Update status options with list from MJT
+  - In The Office
+  - At Customer
+  - WFH
+  - WFH AM
+  - WFH PM
+  - Vacation
+  - Sick
+  - Holiday
+- Time admin updates
+  - Add billable filter to list
+  - Approved by in list can be removed
+  - Change filters to autocomplete, update format of projects to use expanded charge code (QXXX: Client: Project)
+  - Add the ability to create time entries
+  - Add the ability to change date on edit page
+  - Add the ability to delete a time entry for admins only
+
 ## [0.4.16] - 2024-11-04
 
 ### Fixed
