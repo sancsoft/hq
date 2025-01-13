@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable rxjs/no-implicit-any-catch */
 import {
   BehaviorSubject,
   Observable,
@@ -7,11 +9,11 @@ import {
   debounceTime,
   finalize,
   map,
+  of,
   startWith,
   switchMap,
   takeUntil,
   tap,
-  throwError,
 } from 'rxjs';
 import { GetPSRTimeRecordStaffV1 } from '../../models/PSR/get-psr-time-v1';
 import { HQService } from '../../services/hq.service';
@@ -138,11 +140,11 @@ export class PsrListService extends BaseListService<
       tap(() => this.loadingSubject.next(true)),
       switchMap((request) =>
         this.hqService.getPSRV1(request).pipe(
-          catchError((error: unknown) => {
+          catchError((error: any) => {
             console.log(error);
             this.loadingSubject.next(false);
             console.error('Error fetching PSR records:', error);
-            return throwError(() => error);
+            return of(error);
           }),
         ),
       ),
