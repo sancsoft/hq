@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2025-01-13
+
 ### Added
 
 - Max hour time limit to projects
@@ -26,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Send weekly staff hour summary email Monday at 12:15PM EST
 - Database indexes to improve performance
 - Updated holiday time entry to be re-entrant and called when a new holiday is added after they are generated
+- Timesheet month view
 
 ### Fixed
 
@@ -700,7 +703,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.4.16...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/sancsoft/hq/releases/tag/v0.5.0
 [0.4.16]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.16
 [0.4.15]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.15
 [0.4.14]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.14
