@@ -68,7 +68,7 @@
           [tabindex]="-1"
           (click)="chooseDate()"
           title="Change date"
-          [disabled]="!(form.value.id && form.valid)"
+          [disabled]="!(form.value.id && form.valid) && !enableChooseDate"
           class="flex items-center justify-center h-full pointer-events-auto cursor-pointer z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
         >
           <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
@@ -211,29 +211,16 @@
     <td class="border-b border-black py-2 px-4 text-gray-450">
       {{ time?.date }}
     </td>
-    <td class="border-b border-black py-2 pl-2 text-center text-gray-450">
-      <div class="px-3">
-        <hq-select-input
-          [readonly]="true"
-          [formControlName]="'chargeCodeId'"
-          [autocomplete]="true"
-          variant="pill"
-          [inline]="true"
+    <td class="border-b border-black py-2 text-center text-gray-450">
+      <div class="px-4">
+        <button
+          type="button"
+          disabled
+          class="flex items-center border justify-between bg-blue-900 select-none overflow-hidden border-transparent text-center font-semibold rounded-full px-3 py-1"
+          [style.background-color]="chargeCodeToColor(time?.chargeCode ?? '')"
         >
-          <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
-          @for (code of chargeCodes; track code.id) {
-            <ng-template
-              [hqSelectInputOption]="code.id"
-              [hqSelectInputOptionSelectedDisplay]="code.code"
-              [hqSelectInputOptionSearch]="
-                code.code + ': ' + code.clientName + ': ' + code.projectName
-              "
-              >{{
-                code.code + ": " + code.clientName + ": " + code.projectName
-              }}</ng-template
-            >
-          }
-        </hq-select-input>
+          {{ time?.chargeCode }}
+        </button>
       </div>
     </td>
     <td class="border-b border-black py-2 pl-2 text-gray-450">

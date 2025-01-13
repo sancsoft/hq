@@ -1,3 +1,4 @@
+import { SortColumn } from './../../models/times/get-time-v1';
 import { Injectable, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { HQService } from '../../services/hq.service';
@@ -26,9 +27,10 @@ import { Period } from '../../enums/period';
 import { HQRole } from '../../enums/hqrole';
 import {
   GetChargeCodeRecordV1,
-  SortColumn,
+  SortColumn as ChargeCodeSortColumn,
 } from '../../models/charge-codes/get-chargecodes-v1';
 import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
+import { SortDirection } from '../../models/common/sort-direction';
 
 @Injectable({
   providedIn: 'root',
@@ -60,6 +62,10 @@ export class StaffDashboardService implements OnDestroy {
   refresh$ = new Subject<void>();
   canEdit$: Observable<boolean>;
   canEditPoints$: Observable<boolean>;
+  public sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
+  public sortDirection$ = new BehaviorSubject<SortDirection>(
+    SortDirection.Desc,
+  );
 
   constructor(
     private hqService: HQService,
@@ -97,7 +103,7 @@ export class StaffDashboardService implements OnDestroy {
         this.hqService.getChargeCodeseV1({
           active: true,
           staffId,
-          sortBy: SortColumn.IsProjectMember,
+          sortBy: ChargeCodeSortColumn.IsProjectMember,
         }),
       ),
     );
@@ -143,6 +149,8 @@ export class StaffDashboardService implements OnDestroy {
       search: search$,
       date: date$,
       status: timeStatus$,
+      sortBy: this.sortOption$,
+      sortDirection: this.sortDirection$,
     }).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
     const time$ = request$.pipe(

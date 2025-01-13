@@ -67,6 +67,7 @@ import {
   GetChargeCodeRecordV1,
   SortColumn,
 } from '../models/charge-codes/get-chargecodes-v1';
+import { StaffDashboardMonthViewComponent } from './staff-dashboard-month-view/staff-dashboard-month-view.component';
 import { StaffStatus } from '../enums/staff-status';
 
 export interface PointForm {
@@ -98,6 +99,7 @@ export interface PointForm {
     StaffDashboardPlanningPointComponent,
     ButtonComponent,
     StaffDashboardPlanningComponent,
+    StaffDashboardMonthViewComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',

@@ -95,7 +95,8 @@ export class StaffDashboardTimeEntryComponent
   time?: Partial<GetDashboardTimeV1TimeForDateTimes>;
   @Input()
   chargeCodes: GetChargeCodeRecordV1[] | null = [];
-
+  @Input()
+  enableChooseDate: boolean = false;
   @Output()
   hqTimeChange = new EventEmitter<HQTimeChangeEvent>();
 
@@ -354,7 +355,7 @@ export class StaffDashboardTimeEntryComponent
     this.form.reset({ date: this.form.controls.date.value });
   }
   async chooseDate() {
-    if (!this.form.value.id || !this.form.valid) {
+    if (!(this.form.value.id && this.form.valid) && !this.enableChooseDate) {
       return;
     }
 
