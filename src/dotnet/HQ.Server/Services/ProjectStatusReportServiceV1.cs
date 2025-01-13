@@ -114,12 +114,14 @@ public class ProjectStatusReportServiceV1
         int createdCount = 0;
         int skippedCount = 0;
 
-        var projects = await _context.Projects
-            .Where(t => t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing))
-            .ToListAsync(ct);
-
         DateOnly startDate = request.ForDate.GetPeriodStartDate(Period.Week);
         DateOnly endDate = request.ForDate.GetPeriodEndDate(Period.Week);
+
+        var projects = await _context.Projects
+            .Where(t => 
+                (t.ChargeCode != null && t.ChargeCode.Active && (t.Status == ProjectStatus.InProduction || t.Status == ProjectStatus.Ongoing)) || 
+                (t.ChargeCode != null && t.ChargeCode.Times.Any(x => x.Date >= startDate && x.Date <= endDate)))
+            .ToListAsync(ct);
 
         foreach (var project in projects)
         {
@@ -135,7 +137,7 @@ public class ProjectStatusReportServiceV1
             psr.ProjectId = project.Id;
             psr.ProjectManagerId = project.ProjectManagerId;
             psr.BookingPeriod = project.BookingPeriod;
-            psr.Status = project.Status;
+            psr.Project.Status = project.Status;
 
             switch (project.BookingPeriod)
             {
@@ -256,7 +258,7 @@ public class ProjectStatusReportServiceV1
                 ClientName = t.Row.Project.Client.Name,
                 ProjectManagerId = t.Row.ProjectManagerId,
                 ProjectManagerName = t.Row.Project.ProjectManager != null ? t.Row.Project.ProjectManager.Name : null,
-                Status = t.Row.Status,
+                Status = t.Row.Project.Status,
                 IsLate = t.Row.SubmittedAt == null,
                 ProjectType = t.Row.Project.Type,
 
