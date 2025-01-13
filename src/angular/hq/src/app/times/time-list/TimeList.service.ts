@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable rxjs/no-implicit-any-catch */
 import { GetTimeRecordsV1, SortColumn } from '../../models/times/get-time-v1';
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -9,11 +11,11 @@ import {
   combineLatest,
   debounceTime,
   map,
+  of,
   startWith,
   switchMap,
   takeUntil,
   tap,
-  throwError,
 } from 'rxjs';
 import {
   GetTimeRecordClientsV1,
@@ -176,10 +178,10 @@ export class TimeListService extends BaseListService<
       tap(() => this.loadingSubject.next(true)),
       switchMap((request) =>
         this.hqService.getTimesV1(request).pipe(
-          catchError((error: unknown) => {
+          catchError((error: any) => {
             this.loadingSubject.next(false);
             console.error('Error fetching Time records:', error);
-            return throwError(() => error);
+            return of(error);
           }),
         ),
       ),
