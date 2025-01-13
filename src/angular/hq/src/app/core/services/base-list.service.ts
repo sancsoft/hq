@@ -50,7 +50,7 @@ export abstract class BaseListService<
 
   public takeToDisplay$: Observable<number>;
   public totalRecords$: Observable<number>;
-  protected response$: Observable<TResponse>;
+  public response$: Observable<TResponse>;
 
   public records$: Observable<TRecord[]>;
 
