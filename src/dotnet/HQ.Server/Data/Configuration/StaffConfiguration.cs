@@ -13,7 +13,13 @@ public class StaffConfiguration : BaseConfiguration<Staff>
 
         builder.ToTable("staff");
 
-        builder.HasIndex(t => t.Name)
+        builder
+            .HasMany(t => t.Times)
+            .WithOne(s => s.Staff)
+            .HasForeignKey(t => t.StaffId);
+
+        builder
+            .HasIndex(t => t.Name)
             .IsUnique();
     }
 }

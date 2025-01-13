@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    [Migration("20241010142333_AddIndexPointStaffIdDate")]
-    partial class AddIndexPointStaffIdDate
+    [Migration("20250113191251_AddedIndexes")]
+    partial class AddedIndexes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -445,9 +445,6 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("ChargeCodeId")
                         .HasDatabaseName("ix_points_charge_code_id");
 
-                    b.HasIndex("StaffId", "Date")
-                        .HasDatabaseName("idx_point_staffId_date");
-
                     b.HasIndex("StaffId", "Sequence", "Date")
                         .IsUnique()
                         .HasDatabaseName("ix_points_staff_id_sequence_date");
@@ -530,9 +527,6 @@ namespace HQ.Server.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_projects");
 
-                    b.HasIndex("ClientId")
-                        .HasDatabaseName("ix_projects_client_id");
-
                     b.HasIndex("ProjectManagerId")
                         .HasDatabaseName("ix_projects_project_manager_id");
 
@@ -542,6 +536,9 @@ namespace HQ.Server.Data.Migrations
 
                     b.HasIndex("QuoteId")
                         .HasDatabaseName("ix_projects_quote_id");
+
+                    b.HasIndex("ClientId", "ProjectManagerId")
+                        .HasDatabaseName("ix_projects_client_id_project_manager_id");
 
                     b.ToTable("projects", (string)null);
                 });
@@ -694,7 +691,8 @@ namespace HQ.Server.Data.Migrations
                         .HasDatabaseName("ix_project_status_reports_project_manager_id");
 
                     b.HasIndex("ProjectId", "StartDate", "EndDate")
-                        .HasDatabaseName("idx_psr_projectid_startdate_enddate");
+                        .IsDescending(false, true, true)
+                        .HasDatabaseName("ix_project_status_reports_project_id_start_date_end_date");
 
                     b.ToTable("project_status_reports", (string)null);
                 });
@@ -1038,7 +1036,8 @@ namespace HQ.Server.Data.Migrations
                         .HasDatabaseName("ix_times_activity_id");
 
                     b.HasIndex("Date")
-                        .HasDatabaseName("idx_time_date");
+                        .IsDescending()
+                        .HasDatabaseName("ix_times_date");
 
                     b.HasIndex("HolidayId")
                         .HasDatabaseName("ix_times_holiday_id");
@@ -1052,8 +1051,15 @@ namespace HQ.Server.Data.Migrations
                     b.HasIndex("StaffId")
                         .HasDatabaseName("ix_times_staff_id");
 
-                    b.HasIndex("ChargeCodeId", "Hours", "HoursApproved")
-                        .HasDatabaseName("idx_time_chargecodeid_hours_hoursapproved");
+                    b.HasIndex("ChargeCodeId", "Date")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("ix_times_charge_code_id_date");
+
+                    NpgsqlIndexBuilderExtensions.IncludeProperties(b.HasIndex("ChargeCodeId", "Date"), new[] { "Hours", "HoursApproved" });
+
+                    b.HasIndex("ChargeCodeId", "Status", "Date")
+                        .IsDescending(false, false, true)
+                        .HasDatabaseName("ix_times_charge_code_id_status_date");
 
                     b.ToTable("times", (string)null);
                 });

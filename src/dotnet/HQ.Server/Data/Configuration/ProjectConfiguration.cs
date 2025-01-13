@@ -15,5 +15,8 @@ public class ProjectConfiguration : BaseConfiguration<Project>
 
         builder.HasIndex(t => t.ProjectNumber)
             .IsUnique();
+
+        builder
+            .HasIndex(p => new { p.ClientId, p.ProjectManagerId });
     }
 }
