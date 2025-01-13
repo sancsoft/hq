@@ -75,11 +75,10 @@ export class ClientDetailsService {
       this.clientIdSubject.next(clientId);
     }
   }
-  showCurrentOnly(){
+  showCurrentOnly() {
     this.showCurrentOnlySubject.next(true);
   }
-  hideCurrentOnly(){
+  hideCurrentOnly() {
     this.showCurrentOnlySubject.next(false);
-
   }
 }
