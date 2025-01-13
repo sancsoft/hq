@@ -82,9 +82,18 @@
             >
           </td>
           <td>
-            <button (click)="editStaffPlanningPoint(staff)" title="Edit points">
-              <i class="bi bi-pencil-fill text-gray-450"></i>
-            </button>
+            @if (
+              [HQRole.Manager, HQRole.Partner, HQRole.Administrator]
+                | inRole
+                | async
+            ) {
+              <button
+                (click)="editStaffPlanningPoint(staff)"
+                title="Edit points"
+              >
+                <i class="bi bi-pencil-fill text-gray-450"></i>
+              </button>
+            }
           </td>
           @for (point of staff.points; track point.id) {
             <td width="165" class="border-l border-black">
