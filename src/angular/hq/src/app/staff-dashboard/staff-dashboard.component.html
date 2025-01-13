@@ -283,7 +283,7 @@
                     <tr
                       hq-staff-dashboard-time-entry
                       (hqTimeChange)="upsertTime($event)"
-                      [chargeCodes]="chargeCodes$ | async"
+                      [chargeCodes]="staffDashboardService.chargeCodes$ | async"
                       [time]="{
                         date: date.date,
                         timeStatus: timeStatus.Unsubmitted,
@@ -293,7 +293,7 @@
                   @for (time of date.times; track time.id) {
                     <tr
                       hq-staff-dashboard-time-entry
-                      [chargeCodes]="chargeCodes$ | async"
+                      [chargeCodes]="staffDashboardService.chargeCodes$ | async"
                       (hqTimeChange)="upsertTime($event)"
                       (hqTimeDelete)="deleteTime($event)"
                       (hqTimeDuplicate)="duplicateTime($event)"
@@ -447,7 +447,9 @@
                       ) {
                         <tr
                           hq-staff-dashboard-time-entry
-                          [chargeCodes]="chargeCodes$ | async"
+                          [chargeCodes]="
+                            staffDashboardService.chargeCodes$ | async
+                          "
                           (hqTimeChange)="upsertTime($event)"
                           [time]="{
                             date: date.date,
@@ -458,7 +460,9 @@
                       @for (time of date.times; track time.id) {
                         <tr
                           hq-staff-dashboard-time-entry
-                          [chargeCodes]="chargeCodes$ | async"
+                          [chargeCodes]="
+                            staffDashboardService.chargeCodes$ | async
+                          "
                           (hqTimeChange)="upsertTime($event)"
                           (hqTimeDelete)="deleteTime($event)"
                           (hqTimeDuplicate)="duplicateTime($event)"

@@ -1,4 +1,6 @@
-﻿using HQ.Abstractions.Enumerations;
+﻿using System.Diagnostics;
+
+using HQ.Abstractions.Enumerations;
 
 namespace HQ.Abstractions.Times;
 
@@ -22,8 +24,6 @@ public class GetDashboardTimeV1
         public DateOnly PreviousDate { get; set; }
         public DateOnly NextDate { get; set; }
         public List<TimeForDate> Dates { get; set; } = new();
-        public List<ChargeCode> ChargeCodes { get; set; } = new();
-        public List<Client> Clients { get; set; } = new();
         public decimal HoursThisWeek { get; set; }
         public decimal HoursThisMonth { get; set; }
         public decimal HoursLastWeek { get; set; }
@@ -32,36 +32,7 @@ public class GetDashboardTimeV1
         public int RejectedCount { get; set; }
         public bool CanSubmit { get; set; }
 
-    }
-
-    public class ChargeCode
-    {
-        public Guid Id { get; set; }
-        public Guid? ClientId { get; set; }
-        public Guid? ProjectId { get; set; }
-        public string Code { get; set; } = null!;
-    }
-
-    public class Client
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
-        public List<Project> Projects { get; set; } = null!;
-    }
-
-    public class Project
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
-        public List<Activities> Activities { get; set; } = new();
-        public Guid? ChargeCodeId { get; set; }
-        public string? ChargeCode { get; set; }
-    }
-
-    public class Activities
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
+        public DateOnly? TimeEntryCutoffDate { get; set; }
     }
 
     public class TimeForDate
