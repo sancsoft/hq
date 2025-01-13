@@ -9,6 +9,7 @@ using HQ.Abstractions.EmailTemplates;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Services;
 using HQ.API;
+using HQ.Abstractions.Times;
 using HQ.Server.Data;
 using HQ.Server.Services;
 
@@ -351,6 +352,53 @@ namespace HQ.Server.Services
                 };
                 //sends email 
                 await SendEmail(EmailMessage.UpdatedPlanningPoints, model, staff.Email, "[HQ] Planning Points Updated", MailPriority.High, null, ct);
+            }
+        }
+        public async Task SendEmployeeHoursEmail(CancellationToken ct)
+        {
+            var date = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .Where(t => t.EndDate == null)
+                .Select(t => new EmployeeHoursEmail.StaffHoursModel()
+                {
+                    HoursLastWeek = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.LastWeek) && x.Date <= date.GetPeriodEndDate(Period.LastWeek)).Sum(x => x.Hours),
+                    HoursLastMonth = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.LastMonth) && x.Date <= date.GetPeriodEndDate(Period.LastMonth)).Sum(x => x.Hours),
+                    HoursThisMonth = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.Month) && x.Date <= date.GetPeriodEndDate(Period.Month)).Sum(x => x.Hours),
+                    StaffName = t.Name,
+                    WorkHours = t.WorkHours
+                })
+                .OrderBy(t => t.HoursLastWeek)
+                .ToListAsync(ct);
+            foreach (var employee in staff)
+            {
+                employee.MissingHours = employee.HoursLastWeek == 0;
+                employee.LessThanExpectedHours = employee.HoursLastWeek < employee.WorkHours;
+            }
+
+            var managersToNotify = await _context.Projects
+                .AsNoTracking()
+                .Where(t => t.EndDate == null && t.ProjectManager!.Email != null)
+                .Select(t => t.ProjectManager!.Email)
+                .Distinct()
+                .ToListAsync(ct);
+
+            var model = new EmployeeHoursEmail()
+            {
+                Date = date,
+                PeriodBegin = date.GetPeriodStartDate(Period.LastWeek),
+                PeriodEnd = date.GetPeriodEndDate(Period.LastWeek),
+                ButtonLabel = "Open HQ",
+                ButtonUrl = _options.CurrentValue.WebUrl,
+                Staff = staff
+            };
+            foreach (var manager in managersToNotify)
+            {
+                if (manager != null)
+                {
+                    await SendEmail(EmailMessage.EmployeeHours, model, manager, "[HQ] Staff Hours", MailPriority.High, null, ct);
+                }
             }
         }
     }
