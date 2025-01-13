@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filtering staff by jurisdiction on staff list
 - Staff name to points modal on points page
 - Show current only filter to project list
+- Send staff notification if a PM or admin modifies their points
+- Send weekly staff hour summary email Monday at 12:15PM EST
+- Database indexes to improve performance
+- Updated holiday time entry to be re-entrant and called when a new holiday is added after they are generated
 
 ### Fixed
 
@@ -31,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Client name sorting on project list
 - PSR header not updating after changing/ editing time
 - PM Can't adjust charge code or activity/task on resubmitted time on PSR time table 
+- Hide edit icon on points page if user does not have permission
 
 ### Changed
 
@@ -40,6 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Charge code list refactor
 - Holiday list refactor
 - Staff list refactor
+- Time list refactor
+- PSR list refactor
 - Allow admin to change client on project
 - Gray PSR row on PSR list if current period
 - Update status options with list from MJT
@@ -58,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Add the ability to create time entries
   - Add the ability to change date on edit page
   - Add the ability to delete a time entry for admins only
+- Optimized dashboard response time by removing unused fields
 
 ## [0.4.16] - 2024-11-04
 
