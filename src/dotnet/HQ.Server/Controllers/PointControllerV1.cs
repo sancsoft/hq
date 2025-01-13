@@ -8,6 +8,8 @@ using Asp.Versioning;
 
 using FluentResults.Extensions.AspNetCore;
 
+using Hangfire;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Points;
 using HQ.API;
@@ -31,13 +33,15 @@ namespace HQ.Server.Controllers
     {
         private readonly PointServiceV1 _pointService;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
 
-        public PointControllerV1(PointServiceV1 pointService, IAuthorizationService authorizationService)
+        public PointControllerV1(PointServiceV1 pointService, IAuthorizationService authorizationService, IBackgroundJobClient backgroundJobClient)
         {
             _pointService = pointService;
             _authorizationService = authorizationService;
 
+            _backgroundJobClient = backgroundJobClient;
         }
 
         [Authorize(HQAuthorizationPolicies.Staff)]
@@ -83,8 +87,16 @@ namespace HQ.Server.Controllers
             {
                 return Forbid();
             }
-            return await _pointService.UpsertPointV1(request, ct)
-       .ToActionResult(new HQResultEndpointProfile());
+            var result = await _pointService.UpsertPointV1(request, ct);
+
+            if (request.StaffId.HasValue)
+            {
+                if (request.StaffId != User.GetStaffId() && result.IsSuccess)
+                {
+                    _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendUpdatedPlanningPointsEmail(request.StaffId.Value, User.GetStaffId()!.Value, request.Date, CancellationToken.None));
+                }
+            }
+            return result.ToActionResult(new HQResultEndpointProfile());
         }
 
     }
