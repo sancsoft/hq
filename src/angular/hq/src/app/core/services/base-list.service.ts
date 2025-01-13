@@ -1,12 +1,16 @@
+import { APIError } from './../../errors/apierror';
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
   BehaviorSubject,
+  catchError,
   combineLatest,
   defer,
+  finalize,
   map,
   merge,
   Observable,
+  of,
   shareReplay,
   Subject,
   switchMap,
@@ -46,7 +50,8 @@ export abstract class BaseListService<
 
   public takeToDisplay$: Observable<number>;
   public totalRecords$: Observable<number>;
-  public response$: Observable<TResponse>;
+  protected response$: Observable<TResponse>;
+
   public records$: Observable<TRecord[]>;
 
   public itemsPerPage$: Observable<number>;
@@ -86,8 +91,16 @@ export abstract class BaseListService<
     const refreshResponse$ = this.refreshSubject.pipe(
       switchMap(() => response$),
     );
-
     this.response$ = merge(response$, refreshResponse$).pipe(
+      catchError((error) => {
+        return of({
+          error:
+            error instanceof APIError
+              ? error.message
+              : 'An unknown error occurred',
+        } as unknown as TResponse);
+      }),
+      finalize(() => this.loadingSubject.next(false)),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
 

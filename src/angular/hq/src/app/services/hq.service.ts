@@ -14,7 +14,7 @@ import {
   GetClientResponseV1,
 } from '../models/clients/get-client-v1';
 import { AppSettingsService } from '../app-settings.service';
-import { map, switchMap } from 'rxjs';
+import { catchError, map, switchMap, throwError } from 'rxjs';
 import {
   UpsertClientRequestV1,
   UpsertClientResponseV1,
@@ -263,10 +263,17 @@ export class HQService {
   getPSRV1(request: Partial<GetPSRRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<GetPSRRecordsV1>(
-          `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportsV1`,
-          request,
-        ),
+        this.http
+          .post<GetPSRRecordsV1>(
+            `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportsV1`,
+            request,
+          )
+          .pipe(
+            catchError((error) => {
+              console.error('Error in getPSRV1:', error);
+              return throwError(() => error);
+            }),
+          ),
       ),
     );
   }
