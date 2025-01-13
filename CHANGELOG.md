@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PSR header not updating after changing/ editing time
 - PM Can't adjust charge code or activity/task on resubmitted time on PSR time table 
 - Hide edit icon on points page if user does not have permission
+- Updated logic for calculating PSRs to generate for closed projects with time for the previous week
 
 ### Changed
 
