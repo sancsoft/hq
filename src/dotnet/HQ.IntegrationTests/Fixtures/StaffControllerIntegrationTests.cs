@@ -9,7 +9,6 @@ using Xunit;
 
 namespace HQ.IntegrationTests;
 
-[Collection("Sequential")]
 
 public class StaffControllerIntegrationTests : IClassFixture<HQWebApplicationFactory>
 {
