@@ -24,7 +24,7 @@ namespace HQ.IntegrationTests
         public async Task GetProjectsV1_Should_Return_All_Projects_When_Empty_Request()
         {
             // Arrange
-            var request = new GetProjectsV1.Request{};
+            var request = new GetProjectsV1.Request { };
             // Act
             var result = await _hqService.GetProjectsV1(request);
 
