@@ -14,11 +14,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import {
-  GetDashboardTimeV1Project,
-  GetDashboardTimeV1ProjectActivity,
-  GetDashboardTimeV1TimeForDateTimes,
-} from '../../models/staff-dashboard/get-dashboard-time-v1';
+import { GetDashboardTimeV1TimeForDateTimes } from '../../models/staff-dashboard/get-dashboard-time-v1';
 import { StaffDashboardService } from '../service/staff-dashboard.service';
 import {
   FormControl,
@@ -30,17 +26,15 @@ import { CommonModule } from '@angular/common';
 import {
   Observable,
   Subject,
-  combineLatest,
   concat,
-  debounceTime,
   defer,
   distinctUntilChanged,
   firstValueFrom,
   map,
   of,
   shareReplay,
-  startWith,
   takeUntil,
+  combineLatest,
 } from 'rxjs';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
@@ -48,6 +42,7 @@ import { ModalService } from '../../services/modal.service';
 import { TimeStatus } from '../../enums/time-status';
 import { DateInputComponent } from '../../core/components/date-input/date-input.component';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
+import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
 
 export interface HQTimeChangeEvent {
   id?: string | null;
@@ -100,7 +95,8 @@ export class StaffDashboardTimeEntryComponent
   time?: Partial<GetDashboardTimeV1TimeForDateTimes>;
   @Input()
   chargeCodes: GetChargeCodeRecordV1[] | null = [];
-
+  @Input()
+  enableChooseDate: boolean = false;
   @Output()
   hqTimeChange = new EventEmitter<HQTimeChangeEvent>();
 
@@ -150,13 +146,10 @@ export class StaffDashboardTimeEntryComponent
     activityId: new FormControl<string | null>(null),
   });
 
-  projects$: Observable<GetDashboardTimeV1Project[]>;
-  activities$: Observable<GetDashboardTimeV1ProjectActivity[]>;
   projectName$: Observable<string | null | undefined>;
   clientName$: Observable<string | null | undefined>;
-
   timeStatus = TimeStatus;
-
+  filteredActivities$: Observable<GetProjectActivityRecordV1[]>;
   ngOnInit(): void {
     this.staffDashboardService.canEdit$
       .pipe(takeUntil(this.destroyed$))
@@ -211,10 +204,6 @@ export class StaffDashboardTimeEntryComponent
       this.form.valueChanges,
     ).pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
-    const clientId$ = form$.pipe(
-      map((t) => t.clientId),
-      distinctUntilChanged(),
-    );
     this.projectName$ = form$.pipe(
       map((t) => t.projectName),
       distinctUntilChanged(),
@@ -224,47 +213,17 @@ export class StaffDashboardTimeEntryComponent
       distinctUntilChanged(),
     );
 
-    const projectId$ = form$.pipe(
-      map((t) => t.projectId),
-      distinctUntilChanged(),
+    this.filteredActivities$ = combineLatest({
+      activities: staffDashboardService.activities$,
+      form: form$,
+    }).pipe(
+      map((t) => t.activities.filter((x) => x.projectId === t.form.projectId)),
     );
 
     const hours$ = form$.pipe(
       map((t) => t.hours),
       distinctUntilChanged(),
     );
-
-    const client$ = combineLatest({
-      clientId: clientId$,
-      clients: this.staffDashboardService.clients$,
-    }).pipe(map((t) => t.clients.find((x) => x.id == t.clientId)));
-
-    this.projects$ = client$.pipe(map((t) => t?.projects ?? []));
-
-    const project$ = combineLatest({
-      projectId: projectId$,
-      client: client$,
-    }).pipe(map((t) => t.client?.projects?.find((x) => x.id == t.projectId)));
-
-    this.activities$ = project$.pipe(
-      map((t) => t?.activities ?? []),
-      startWith([]),
-    );
-
-    this.activities$
-      .pipe(debounceTime(500), takeUntil(this.destroyed$))
-      .subscribe({
-        next: (activities) => {
-          if (activities.length > 0) {
-            this.form.controls.activityId.addValidators(Validators.required);
-          } else {
-            this.form.controls.activityId.removeValidators(Validators.required);
-          }
-
-          this.form.controls.activityId.updateValueAndValidity();
-        },
-        error: console.error,
-      });
 
     // clientId$.pipe(takeUntil(this.destroyed$)).subscribe({
     //   next: () => {
@@ -364,16 +323,39 @@ export class StaffDashboardTimeEntryComponent
       this.hqTimeDelete.emit({ id });
     }
   }
-  duplicateTime() {
-    const time = { ...this.form.value };
-    time.id = null; // to create a new time
-    this.hqTimeDuplicate.emit(time);
+  async duplicateTime() {
+    const newDate = await firstValueFrom(
+      this.modalService.chooseDate(
+        'Duplicate Time Entry',
+        'Choose the date where you would like to duplicate this time entry to',
+        this.form.controls.date.value ?? '',
+      ),
+    );
+    if (newDate) {
+      const cutoffDate = await firstValueFrom(
+        this.staffDashboardService.timeEntryCutoffDate$,
+      );
+      if (newDate >= cutoffDate) {
+        const time = { ...this.form.value };
+        time.date = newDate;
+        time.id = null; // to create a new time
+        this.hqTimeDuplicate.emit(time);
+        this.staffDashboardService.date.setValue(time.date);
+      } else {
+        await firstValueFrom(
+          this.modalService.alert(
+            'Error',
+            'Cannot copy outside of current week period',
+          ),
+        );
+      }
+    }
   }
   resetTime() {
     this.form.reset({ date: this.form.controls.date.value });
   }
   async chooseDate() {
-    if (!this.form.value.id || !this.form.valid) {
+    if (!(this.form.value.id && this.form.valid) && !this.enableChooseDate) {
       return;
     }
 
@@ -399,7 +381,6 @@ export class StaffDashboardTimeEntryComponent
 
   private setMaximumHours(maxTime?: number): void {
     const maxTimeEntry = maxTime ?? this.time?.maximumTimeEntryHours;
-    console.log('maxTimeEntry ', maxTimeEntry, maxTime);
     if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
       this.form.controls.hours.setValidators([
         Validators.required,

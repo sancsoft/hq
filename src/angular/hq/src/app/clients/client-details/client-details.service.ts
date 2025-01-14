@@ -18,21 +18,25 @@ import { GetClientInvoiceSummaryV1Response } from '../../models/clients/get-clie
 })
 export class ClientDetailsService {
   ProjectStatus = ProjectStatus;
+  currentOnly = new FormControl<boolean>(true);
 
   search = new FormControl<string | null>(null);
   projectStatus = new FormControl<ProjectStatus | null>(null);
 
   showProjectStatus$: Observable<boolean>;
+  showCurrentOnly$: Observable<boolean>;
 
   clientId$: Observable<string>;
   client$: Observable<GetClientRecordV1>;
   clientInvoiceSummary$: Observable<GetClientInvoiceSummaryV1Response>;
 
+  private showCurrentOnlySubject = new BehaviorSubject<boolean>(true);
   private showProjectStatusSubject = new BehaviorSubject<boolean>(true);
   private clientIdSubject = new BehaviorSubject<string | null>(null);
 
   constructor(private hqService: HQService) {
     this.showProjectStatus$ = this.showProjectStatusSubject.asObservable();
+    this.showCurrentOnly$ = this.showCurrentOnlySubject.asObservable();
 
     this.clientId$ = this.clientIdSubject.asObservable().pipe(
       filter((clientId) => clientId != null),
@@ -70,5 +74,11 @@ export class ClientDetailsService {
     if (clientId) {
       this.clientIdSubject.next(clientId);
     }
+  }
+  showCurrentOnly() {
+    this.showCurrentOnlySubject.next(true);
+  }
+  hideCurrentOnly() {
+    this.showCurrentOnlySubject.next(false);
   }
 }

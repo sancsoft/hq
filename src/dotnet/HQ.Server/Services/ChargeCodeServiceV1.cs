@@ -157,6 +157,13 @@ public class ChargeCodeServiceV1
             QuoteId = t.QuoteId != null ? t.QuoteId : null,
             ServiceAgreementId = t.ServiceAgreementId != null ? t.ServiceAgreementId : null,
             Description = t.Description,
+            Activities = t.Project != null && t.Project.Activities != null
+    ? t.Project.Activities.Select(a => new GetChargeCodesV1.Activity
+    {
+        Name = a.Name,
+        Id = a.Id,
+    }).ToList()
+    : new List<GetChargeCodesV1.Activity>(),
             IsProjectMember = !request.StaffId.HasValue ? null : t.Project!.ProjectMembers.Any(x => x.StaffId == request.StaffId.Value),
             IsProjectMemberSort = !request.StaffId.HasValue ? 1 : (t.Project!.ProjectMembers.Any(x => x.StaffId == request.StaffId.Value)) ? 0 : 1
         });

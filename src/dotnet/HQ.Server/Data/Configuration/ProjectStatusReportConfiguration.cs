@@ -12,5 +12,9 @@ public class ProjectStatusReportConfiguration : BaseConfiguration<ProjectStatusR
         base.Configure(builder);
 
         builder.ToTable("project_status_reports");
+
+        builder
+            .HasIndex(p => new { p.ProjectId, p.StartDate, p.EndDate })
+            .IsDescending([false, true, true]);
     }
 }

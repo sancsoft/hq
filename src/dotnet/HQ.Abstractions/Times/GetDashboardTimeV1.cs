@@ -1,4 +1,8 @@
-﻿using HQ.Abstractions.Enumerations;
+﻿using System.Diagnostics;
+
+using HQ.Abstractions.Enumerations;
+
+using static HQ.Abstractions.Times.GetTimesV1;
 
 namespace HQ.Abstractions.Times;
 
@@ -9,6 +13,9 @@ public class GetDashboardTimeV1
         public Guid StaffId { get; set; }
         public DateOnly Date { get; set; }
         public Period Period { get; set; }
+        public SortColumn SortBy { get; set; } = SortColumn.Date;
+        public SortDirection SortDirection { get; set; } = SortDirection.Desc;
+
         public string? Search { get; set; }
         public TimeStatus? Status { get; set; }
     }
@@ -22,8 +29,6 @@ public class GetDashboardTimeV1
         public DateOnly PreviousDate { get; set; }
         public DateOnly NextDate { get; set; }
         public List<TimeForDate> Dates { get; set; } = new();
-        public List<ChargeCode> ChargeCodes { get; set; } = new();
-        public List<Client> Clients { get; set; } = new();
         public decimal HoursThisWeek { get; set; }
         public decimal HoursThisMonth { get; set; }
         public decimal HoursLastWeek { get; set; }
@@ -32,42 +37,17 @@ public class GetDashboardTimeV1
         public int RejectedCount { get; set; }
         public bool CanSubmit { get; set; }
 
-    }
-
-    public class ChargeCode
-    {
-        public Guid Id { get; set; }
-        public Guid? ClientId { get; set; }
-        public Guid? ProjectId { get; set; }
-        public string Code { get; set; } = null!;
-    }
-
-    public class Client
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
-        public List<Project> Projects { get; set; } = null!;
-    }
-
-    public class Project
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
-        public List<Activities> Activities { get; set; } = new();
-        public Guid? ChargeCodeId { get; set; }
-        public string? ChargeCode { get; set; }
-    }
-
-    public class Activities
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = null!;
+        public DateOnly? TimeEntryCutoffDate { get; set; }
     }
 
     public class TimeForDate
     {
         public bool CanCreateTime { get; set; }
         public DateOnly Date { get; set; }
+        public DateOnly StartDate { get; set; }
+
+        public DateOnly EndDate { get; set; }
+
         public List<TimeEntry> Times { get; set; } = new List<TimeEntry>();
         public decimal TotalHours { get; set; }
     }

@@ -16,6 +16,7 @@ export interface GetTimeRequestV1 {
   projectId?: string | null;
   clientId?: string | null;
   invoiced?: boolean | null;
+  billable?: boolean | null;
   TimeStatus?: TimeStatus | null;
   activityId: string | null;
 }
@@ -69,7 +70,7 @@ export interface BaseRecordV1 {
 export interface GetTimeRecordsV1 {
   records: [GetTimeRecordV1];
   staff: [GetTimeRecordStaffV1];
-  total: number | null;
+  total: number | undefined;
   totalHours: number;
   billableHours: number;
   acceptedHours: number;

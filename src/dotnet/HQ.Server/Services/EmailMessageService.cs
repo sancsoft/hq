@@ -4,10 +4,12 @@ using System.Text.RegularExpressions;
 using FluentResults;
 using FluentResults.Extensions.AspNetCore;
 
+using HQ.Abstractions;
 using HQ.Abstractions.Emails;
 using HQ.Abstractions.EmailTemplates;
 using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Services;
+using HQ.Abstractions.Times;
 using HQ.API;
 using HQ.Server.Data;
 using HQ.Server.Services;
@@ -182,6 +184,7 @@ namespace HQ.Server.Services
 
             await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Time Submission Reminder", MailPriority.High, null, ct);
         }
+
         public async Task SendPlanSubmissionReminderEmail(Guid staffId, DateOnly date, CancellationToken ct)
         {
             var staff = await _context.Staff
@@ -203,6 +206,7 @@ namespace HQ.Server.Services
 
             await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Plan Submission Reminder", MailPriority.High, null, ct);
         }
+
         public async Task SendRejectedTimeSubmissionReminderEmail(Guid staffId, DateOnly from, DateOnly to, CancellationToken ct)
         {
             var staff = await _context.Staff
@@ -224,6 +228,7 @@ namespace HQ.Server.Services
 
             await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Rejected Time Reminder", MailPriority.High, null, ct);
         }
+
         public async Task SendPointSubmissionReminderEmail(Guid staffId, DateOnly from, DateOnly to, CancellationToken ct)
         {
             var staff = await _context.Staff
@@ -244,6 +249,158 @@ namespace HQ.Server.Services
             };
 
             await SendEmail(EmailMessage.Notification, model, staff.Email, "[HQ] Planning Point Submission Reminder", MailPriority.High, null, ct);
+        }
+
+        public async Task SendUpdatedPlanningPointsEmail(Guid staffId, Guid modifiedByStaffId, DateOnly date, CancellationToken ct)
+        {
+            //date in order to pull this weeks planning points 
+            var today = date;
+            var startDate = today.GetPeriodStartDate(Period.Week);
+
+            // GetPiontsV1 request object
+            var getPointsRequest = new GetPointsV1.Request
+            {
+                StaffId = staffId,
+                Date = startDate
+            };
+
+            //get name of user who modified points
+            var modifyingUser = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == modifiedByStaffId, ct);
+
+            //get name of staff whose points were modified
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId, ct);
+
+
+            if (staff == null || String.IsNullOrEmpty(staff.Email))
+            {
+                return;
+            }
+
+            var records = _context.Points
+                            .AsNoTracking()
+                            .Include(t => t.ChargeCode)
+                            .Include(t => t.ChargeCode.Project)
+                            .OrderByDescending(t => t.CreatedAt)
+                            .AsQueryable();
+
+            var endDate = date.GetPeriodEndDate(Period.Week);
+
+
+            records = records
+                    .Where(p => p.StaffId == staffId && p.Date == startDate);
+            var points = await records.ToListAsync(ct);
+            var times = _context.Times.AsNoTracking().AsQueryable().Where(t => t.StaffId == staffId && t.Date >= startDate && t.Date <= endDate);
+            var pointTime = 4m; // A point represents 4 hours of logged work
+            var timesDictionary = await times
+            .GroupBy(x => x.ChargeCodeId)
+            .ToDictionaryAsync(g => g.Key, g => g.Sum(x => x.Hours));
+
+            var _points = points.Select(t => new GetPointsV1.Point
+            {
+                ChargeCodeId = t.ChargeCodeId,
+                Id = t.Id,
+                Sequence = t.Sequence,
+                ChargeCode = t.ChargeCode?.Code,
+                ProjectName = t.ChargeCode?.Project?.Name,
+                ProjectId = t.ChargeCode?.Project?.Id,
+            }).OrderBy(t => t.Sequence).ToList();
+
+            for (int i = 0; i < 10; i++)
+            {
+                var sequence = i + 1;
+                var point = _points.Find(p => p.Sequence == sequence);
+
+
+                if (point == null)
+                {
+                    var nullPoint = new GetPointsV1.Point
+                    {
+                        ChargeCodeId = null,
+                        Id = null,
+                        Sequence = sequence,
+                        Completed = false,
+                        ChargeCode = null,
+                        ProjectName = null,
+                        ProjectId = null
+                    };
+                    _points.Insert(i, nullPoint);
+                }
+                else
+                {
+                    if (!point.ChargeCodeId.HasValue) continue;
+                    var hours = timesDictionary.GetValueOrDefault(point.ChargeCodeId.Value, 0);
+                    if (hours < pointTime) continue;
+                    point.Completed = true;
+                    timesDictionary[point.ChargeCodeId.Value] -= pointTime;
+                }
+
+
+                var pointsFinal = _points;
+
+                //set model data for the email which will be sent to user
+                var model = new UpdatedPlanningPointsEmail()
+                {
+                    StaffName = staff.Name,
+                    UpdatedBy = modifyingUser?.Name,
+                    ButtonLabel = "Open HQ",
+                    ButtonUrl = _options.CurrentValue.WebUrl,
+                    Date = date,
+                    Points = pointsFinal
+                };
+                //sends email 
+                await SendEmail(EmailMessage.UpdatedPlanningPoints, model, staff.Email, "[HQ] Planning Points Updated", MailPriority.High, null, ct);
+            }
+        }
+        public async Task SendEmployeeHoursEmail(CancellationToken ct)
+        {
+            var date = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .Where(t => t.EndDate == null)
+                .Select(t => new EmployeeHoursEmail.StaffHoursModel()
+                {
+                    HoursLastWeek = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.LastWeek) && x.Date <= date.GetPeriodEndDate(Period.LastWeek)).Sum(x => x.Hours),
+                    HoursLastMonth = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.LastMonth) && x.Date <= date.GetPeriodEndDate(Period.LastMonth)).Sum(x => x.Hours),
+                    HoursThisMonth = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.Month) && x.Date <= date.GetPeriodEndDate(Period.Month)).Sum(x => x.Hours),
+                    StaffName = t.Name,
+                    WorkHours = t.WorkHours
+                })
+                .OrderBy(t => t.HoursLastWeek)
+                .ToListAsync(ct);
+            foreach (var employee in staff)
+            {
+                employee.MissingHours = employee.HoursLastWeek == 0;
+                employee.LessThanExpectedHours = employee.HoursLastWeek < employee.WorkHours;
+            }
+
+            var managersToNotify = await _context.Projects
+                .AsNoTracking()
+                .Where(t => t.EndDate == null && t.ProjectManager!.Email != null)
+                .Select(t => t.ProjectManager!.Email)
+                .Distinct()
+                .ToListAsync(ct);
+
+            var model = new EmployeeHoursEmail()
+            {
+                Date = date,
+                PeriodBegin = date.GetPeriodStartDate(Period.LastWeek),
+                PeriodEnd = date.GetPeriodEndDate(Period.LastWeek),
+                ButtonLabel = "Open HQ",
+                ButtonUrl = _options.CurrentValue.WebUrl,
+                Staff = staff
+            };
+            foreach (var manager in managersToNotify)
+            {
+                if (manager != null)
+                {
+                    await SendEmail(EmailMessage.EmployeeHours, model, manager, "[HQ] Staff Hours", MailPriority.High, null, ct);
+                }
+            }
         }
     }
 }

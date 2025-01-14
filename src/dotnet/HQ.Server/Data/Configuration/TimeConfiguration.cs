@@ -12,5 +12,18 @@ public class TimeConfiguration : BaseConfiguration<Time>
         base.Configure(builder);
 
         builder.ToTable("times");
+
+        builder
+            .HasIndex(t => t.Date)
+            .IsDescending();
+
+        builder
+            .HasIndex(t => new { t.ChargeCodeId, t.Status, t.Date })
+            .IsDescending([false, false, true]);
+
+        builder
+            .HasIndex(t => new { t.ChargeCodeId, t.Date })
+            .IncludeProperties(t => new { t.Hours, t.HoursApproved })
+            .IsDescending([false, true]);
     }
 }

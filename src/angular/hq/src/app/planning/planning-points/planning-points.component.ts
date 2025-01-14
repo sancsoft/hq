@@ -26,6 +26,8 @@ import { formControlChanges } from '../../core/functions/form-control-changes';
 import { PlanningPointsModalComponent } from '../planning-points-modal/planning-points-modal.component';
 import { Dialog } from '@angular/cdk/dialog';
 import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
+import { HQRole } from '../../enums/hqrole';
+import { InRolePipe } from '../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-planning-points',
@@ -34,6 +36,7 @@ import { SelectInputComponent } from '../../core/components/select-input/select-
     CommonModule,
     CoreModule,
     RouterLink,
+    InRolePipe,
     FormsModule,
     ReactiveFormsModule,
     SelectInputComponent,
@@ -55,6 +58,8 @@ export class PlanningPointsComponent implements OnDestroy {
 
   chargeCodeToColor = chargeCodeToColor;
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+
+  HQRole = HQRole;
 
   summary$: Observable<GetPointsSummaryResponseV1>;
 

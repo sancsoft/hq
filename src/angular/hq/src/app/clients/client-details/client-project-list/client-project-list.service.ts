@@ -12,6 +12,7 @@ import {
   combineLatest,
   debounceTime,
   switchMap,
+  startWith,
 } from 'rxjs';
 import { formControlChanges } from '../../../core/functions/form-control-changes';
 import { BaseListService } from '../../../core/services/base-list.service';
@@ -43,9 +44,23 @@ export class ClientProjectListService extends BaseListService<
       this.clientDetailsService.projectStatus,
     ).pipe(
       tap(() => this.goToPage(1)),
+      tap((status) => {
+        if (status != null) {
+          this.clientDetailsService.currentOnly.setValue(false);
+        }
+      }),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
-
+    const currentOnly$ = formControlChanges(
+      this.clientDetailsService.currentOnly,
+    ).pipe(
+      startWith(this.clientDetailsService.currentOnly.value),
+      tap((value) => {
+        if (value) {
+          this.clientDetailsService.projectStatus.setValue(null);
+        }
+      }),
+    );
     const result$ = combineLatest({
       search: search$,
       clientId: this.clientDetailsService.clientId$,
@@ -54,6 +69,7 @@ export class ClientProjectListService extends BaseListService<
       sortBy: this.sortOption$,
       projectStatus: projectStatus$,
       sortDirection: this.sortDirection$,
+      currentOnly: currentOnly$,
     }).pipe(
       debounceTime(500),
       tap(() => this.loadingSubject.next(true)),
