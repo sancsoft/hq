@@ -1,11 +1,13 @@
 using System.Net.Http.Json;
-using HQ.Abstractions.Projects;
+
+using HQ.Abstractions.Clients;
 using HQ.Abstractions.Enumerations;
+using HQ.Abstractions.Projects;
+using HQ.Abstractions.Staff;
 using HQ.IntegrationTests.Fixtures;
 using HQ.SDK;
+
 using Xunit;
-using HQ.Abstractions.Staff;
-using HQ.Abstractions.Clients;
 
 namespace HQ.IntegrationTests
 {

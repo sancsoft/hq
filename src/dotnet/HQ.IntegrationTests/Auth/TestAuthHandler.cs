@@ -1,9 +1,10 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
+using HQ.IntegrationTests;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
-using HQ.IntegrationTests;
 
 public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
