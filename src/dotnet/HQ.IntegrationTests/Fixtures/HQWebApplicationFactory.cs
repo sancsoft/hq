@@ -24,9 +24,13 @@ namespace HQ.IntegrationTests.Fixtures
                 .WithPassword("password")
                 .Build();
 
-            _postgresContainer.StartAsync().GetAwaiter().GetResult();
+            InitializeAsync().GetAwaiter().GetResult();
+        }
 
-            SeedDatabaseAsync().GetAwaiter().GetResult();
+        private async Task InitializeAsync()
+        {
+            await _postgresContainer.StartAsync();
+            await SeedDatabaseAsync();
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -61,6 +65,7 @@ namespace HQ.IntegrationTests.Fixtures
             builder.UseEnvironment("Test");
 
         }
+
         private async Task SeedDatabaseAsync()
         {
             using var scope = Services.CreateScope();
@@ -68,37 +73,56 @@ namespace HQ.IntegrationTests.Fixtures
 
             try
             {
+                await context.Database.EnsureDeletedAsync();
                 await context.Database.EnsureCreatedAsync();
-                // Clients seeding
-                await context.Clients.AddRangeAsync(
-                    new Client
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Seeded Client 1",
-                        OfficialName = "Seeded Official Client 1",
-                        BillingEmail = "seededclient1@example.com",
-                        HourlyRate = 50.0m,
-                        CreatedAt = DateTime.UtcNow
-                    },
-                    new Client
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Seeded Client 2",
-                        OfficialName = "Seeded Official Client 2",
-                        BillingEmail = "seededclient2@example.com",
-                        HourlyRate = 75.0m,
-                        CreatedAt = DateTime.UtcNow
-                    }
-                );
 
-                await context.SaveChangesAsync();
+                await SeedClientsAsync(context);
+                await SeedStaffAsync(context);
+                await SeedChargeCodesAsync(context);
+                await SeedProjectsAsync(context);
 
-                // Staff seeding
-                await context.Staff.AddRangeAsync(
+                Console.WriteLine("Database seeded successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error seeding the database: {ex.Message}");
+                throw;
+            }
+        }
+
+        private async Task SeedClientsAsync(HQDbContext context)
+        {
+            await context.Clients.AddRangeAsync(
+                new Client
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Seeded Client 1",
+                    OfficialName = "Seeded Official Client 1",
+                    BillingEmail = "seededclient1@example.com",
+                    HourlyRate = 50.0m,
+                    CreatedAt = DateTime.UtcNow
+                },
+                new Client
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Seeded Client 2",
+                    OfficialName = "Seeded Official Client 2",
+                    BillingEmail = "seededclient2@example.com",
+                    HourlyRate = 75.0m,
+                    CreatedAt = DateTime.UtcNow
+                }
+            );
+            await context.SaveChangesAsync();
+            Console.WriteLine("Clients seeded.");
+        }
+
+        private async Task SeedStaffAsync(HQDbContext context)
+        {
+            await context.Staff.AddRangeAsync(
                 new Staff
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Seeded Staff 1",
+                    Name = "SeededStaff1",
                     FirstName = "John",
                     LastName = "Doe",
                     Email = "john.doe@example.com",
@@ -112,7 +136,7 @@ namespace HQ.IntegrationTests.Fixtures
                 new Staff
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Seeded Staff 2",
+                    Name = "SeededStaff2",
                     FirstName = "Jane",
                     LastName = "Smith",
                     Email = "jane.smith@example.com",
@@ -122,61 +146,65 @@ namespace HQ.IntegrationTests.Fixtures
                     StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
                     EndDate = null,
                     CreatedAt = DateTime.UtcNow
-                });
+                }
+            );
+            await context.SaveChangesAsync();
+            Console.WriteLine("Staff seeded.");
+        }
 
-                await context.SaveChangesAsync();
-                // Chargecode seeding
+        private async Task SeedChargeCodesAsync(HQDbContext context)
+        {
+            await context.ChargeCodes.AddRangeAsync(
+                new ChargeCode
+                {
+                    Activity = ChargeCodeActivity.Project,
+                    Billable = true,
+                    Code = "P0001",
+                    Active = true,
+                    CreatedAt = DateTime.UtcNow
+                },
+                new ChargeCode
+                {
+                    Activity = ChargeCodeActivity.Quote,
+                    Billable = false,
+                    Code = "Q0001",
+                    Active = true,
+                    CreatedAt = DateTime.UtcNow
+                },
+                new ChargeCode
+                {
+                    Activity = ChargeCodeActivity.Service,
+                    Billable = true,
+                    Code = "S0001",
+                    Active = false,
+                    CreatedAt = DateTime.UtcNow
+                }
+            );
+            await context.SaveChangesAsync();
+            Console.WriteLine("Charge codes seeded.");
+        }
 
-                await context.ChargeCodes.AddRangeAsync(
-                    new ChargeCode
-                    {
-                        Activity = ChargeCodeActivity.Project,
-                        Billable = true,
-                        Code = "P0001",
-                        Active = true,
-                        CreatedAt = DateTime.UtcNow
-                    },
-                    new ChargeCode
-                    {
-                        Activity = ChargeCodeActivity.Quote,
-                        Billable = false,
-                        Code = "Q0001",
-                        Active = true,
-                        CreatedAt = DateTime.UtcNow
-                    },
-                    new ChargeCode
-                    {
-                        Activity = ChargeCodeActivity.Service,
-                        Billable = true,
-                        Code = "S0001",
-                        Active = false,
-                        CreatedAt = DateTime.UtcNow
-                    }
-                );
-                await context.SaveChangesAsync();
+        private async Task SeedProjectsAsync(HQDbContext context)
+        {
+            var client = await context.Clients.FirstAsync();
+            var projectManager = await context.Staff.FirstAsync();
+            var chargeCode = await context.ChargeCodes.FirstOrDefaultAsync();
 
-                // Project seeding
-                await context.Projects.AddRangeAsync(
-                    new Project
-                    {
-                        Name = "Seeded Project 1",
-                        Client = await context.Clients.FirstAsync(),
-                        ProjectManager = await context.Staff.FirstAsync(),
-                        ChargeCode = await context.ChargeCodes.FirstOrDefaultAsync(),
-                        StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
-                        EndDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-1)),
-                        Status = ProjectStatus.InProduction,
-                        CreatedAt = DateTime.UtcNow
-                    }
-                );
-                await context.SaveChangesAsync();
-
-                Console.WriteLine("Database seeded successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error seeding the database: {ex.Message}");
-            }
+            await context.Projects.AddRangeAsync(
+                new Project
+                {
+                    Name = "Seeded Project 1",
+                    Client = client,
+                    ProjectManager = projectManager,
+                    ChargeCode = chargeCode,
+                    StartDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-6)),
+                    EndDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-1)),
+                    Status = ProjectStatus.InProduction,
+                    CreatedAt = DateTime.UtcNow
+                }
+            );
+            await context.SaveChangesAsync();
+            Console.WriteLine("Projects seeded.");
         }
 
         public HttpClient CreateClientWithBaseUrl()
