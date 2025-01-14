@@ -9,6 +9,10 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="HQ.IntegrationTests" />
+    </ItemGroup>
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <NoWarn>CS1591</NoWarn>
     </PropertyGroup>
@@ -32,6 +36,7 @@
         <PackageReference Include="Hangfire.PostgreSql" Version="1.20.9" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -39,6 +44,7 @@
         <PackageReference Include="MimeKit" Version="4.7.1" />
         <PackageReference Include="Mjml.Net" Version="3.11.0" />
         <PackageReference Include="Npgsql" Version="8.0.3" />
+        <PackageReference Include="Spectre.Console.Cli" Version="0.48.1-preview.0.38" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
         <PackageReference Include="Npgsql.OpenTelemetry" Version="8.0.3" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
@@ -55,5 +61,8 @@
         <ProjectReference Include="..\HQ.Abstractions\HQ.Abstractions.csproj" />
         <ProjectReference Include="..\HQ.Email\HQ.Email.csproj" />
     </ItemGroup>
+    <ItemGroup>
+     <InternalsVisibleTo Include="IntegrationTests" />
+</ItemGroup>
 
 </Project>

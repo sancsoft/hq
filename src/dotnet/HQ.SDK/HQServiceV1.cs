@@ -174,6 +174,9 @@ namespace HQ.SDK
         public Task<Result<GetChargeCodesV1.Response?>> GetChargeCodesV1(GetChargeCodesV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<GetChargeCodesV1.Response>("/v1/ChargeCodes/GetChargeCodesV1", request, ct);
 
+        public Task<Result<UpsertChargeCodeV1.Response?>> UpsertChargeCodesV1(UpsertChargeCodeV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertChargeCodeV1.Response>("/v1/ChargeCodes/UpsertChargeCodesV1", request, ct);
+
         public Task<Result<GetQuotesV1.Response?>> GetQuotesV1(GetQuotesV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<GetQuotesV1.Response>("/v1/Quotes/GetQuotesV1", request, ct);
 

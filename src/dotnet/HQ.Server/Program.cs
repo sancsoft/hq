@@ -152,8 +152,9 @@ builder.Services.AddApiVersioning(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddAuthentication(options =>
+if (!builder.Environment.IsEnvironment("Test"))
+{
+    builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -190,6 +191,7 @@ builder.Services.AddAuthentication(options =>
     options.Scope.Add("email");
     options.Scope.Add("offline_access");
 });
+}
 
 builder.Services.AddAuthorization(options =>
 {
@@ -405,3 +407,5 @@ recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     recurringJobOptions);
 
 await app.RunAsync();
+
+public partial class Program { }
