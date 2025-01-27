@@ -368,15 +368,18 @@ namespace HQ.Server.Services
                     HoursLastMonth = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.LastMonth) && x.Date <= date.GetPeriodEndDate(Period.LastMonth)).Sum(x => x.Hours),
                     HoursThisMonth = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.Month) && x.Date <= date.GetPeriodEndDate(Period.Month)).Sum(x => x.Hours),
                     StaffName = t.Name,
-                    WorkHours = t.WorkHours
+                    WorkHours = t.WorkHours,
+                    StaffDashboardURL = _options.CurrentValue.WebUrl + $"staff/{t.Id}/timesheet",
+
                 })
-                .OrderBy(t => t.HoursLastWeek)
                 .ToListAsync(ct);
             foreach (var employee in staff)
             {
                 employee.MissingHours = employee.HoursLastWeek == 0;
                 employee.LessThanExpectedHours = employee.HoursLastWeek < employee.WorkHours;
+                employee.PercentageWorkedHours = employee.WorkHours == 0 ? 0 : Convert.ToInt32((employee.HoursLastWeek / employee.WorkHours) * 100);
             }
+            staff = staff.OrderBy(s => s.PercentageWorkedHours).ThenBy(s => s.StaffName).ToList();
 
             var managersToNotify = await _context.Projects
                 .AsNoTracking()
@@ -390,8 +393,6 @@ namespace HQ.Server.Services
                 Date = date,
                 PeriodBegin = date.GetPeriodStartDate(Period.LastWeek),
                 PeriodEnd = date.GetPeriodEndDate(Period.LastWeek),
-                ButtonLabel = "Open HQ",
-                ButtonUrl = _options.CurrentValue.WebUrl,
                 Staff = staff
             };
             foreach (var manager in managersToNotify)

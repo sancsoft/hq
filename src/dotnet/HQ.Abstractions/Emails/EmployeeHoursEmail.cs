@@ -17,8 +17,6 @@ namespace HQ.Abstractions.Emails
         {
             Heading = "Staff Hours",
             Message = "Staff with red signify they have less working hours than expected",
-            ButtonLabel = "Open HQ",
-            ButtonUrl = new Uri("http://hq.localhost:4200/dashboard"),
             Date = new DateOnly(2024, 7, 17),
             PeriodBegin = new DateOnly(2024, 7, 17),
             PeriodEnd = new DateOnly(2024, 7, 23),
@@ -29,19 +27,20 @@ namespace HQ.Abstractions.Emails
                     HoursLastWeek= 0,
                     HoursLastMonth = 0,
                     HoursThisMonth = 4,
-                    MissingHours = true
+                    WorkHours = 40,
                 },
                 new StaffHoursModel{
                     StaffName = "Ryan",
-                    HoursLastWeek= 5,
+                    HoursLastWeek= 55,
                     HoursLastMonth = 6,
                     HoursThisMonth = 7,
-                    LessThanExpectedHours = true
+                    WorkHours = 40,
                 },
                 new StaffHoursModel{
                     StaffName = "Pri",
-                    HoursLastWeek= 8,
+                    HoursLastWeek= 32,
                     HoursLastMonth = 9,
+                    WorkHours = 40,
                     HoursThisMonth = 10
                 }
             }
@@ -53,9 +52,11 @@ namespace HQ.Abstractions.Emails
             public decimal HoursLastMonth { get; set; }
             public decimal HoursThisMonth { get; set; }
             public string? StaffName { get; set; }
+            public string? StaffDashboardURL { get; set; }
             public bool MissingHours { get; set; }
             public bool LessThanExpectedHours { get; set; }
             public int WorkHours { get; set; }
+            public int PercentageWorkedHours { get; set; }
 
         }
     }
