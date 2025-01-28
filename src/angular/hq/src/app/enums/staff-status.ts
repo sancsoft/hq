@@ -1,6 +1,6 @@
 export const StaffStatus = [
   'In The Office',
-  'At Customer',
+  'At Client',
   'WFH',
   'WFH AM',
   'WFH PM',
