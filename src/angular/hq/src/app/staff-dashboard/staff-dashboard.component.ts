@@ -1,3 +1,4 @@
+import { SortIconComponent } from './../common/sort-icon/sort-icon.component';
 /* eslint-disable rxjs-angular/prefer-async-pipe */
 import { StaffDashboardPlanningPointComponent } from './staff-dashboard-planning-point/staff-dashboard-planning-point.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -65,6 +66,8 @@ import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 import { ButtonState } from '../enums/button-state';
 import { StaffDashboardMonthViewComponent } from './staff-dashboard-month-view/staff-dashboard-month-view.component';
 import { StaffStatus } from '../enums/staff-status';
+import { SortColumn } from '../models/times/get-time-v1';
+import { SortDirection } from '../models/common/sort-direction';
 
 export interface PointForm {
   id: FormControl<string | null>;
@@ -96,6 +99,7 @@ export interface PointForm {
     ButtonComponent,
     StaffDashboardPlanningComponent,
     StaffDashboardMonthViewComponent,
+    SortIconComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
@@ -115,6 +119,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   plan$ = this.plan.valueChanges;
 
   ButtonState = ButtonState;
+  sortColumn = SortColumn;
   currentDate = new Date();
   previousPlan: string | null = null;
   planResponse$: Observable<GetPlanResponseV1>;
@@ -322,6 +327,19 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
       this.staffDashboardService.setStaffId(this.staffId);
     }
   }
+
+    onSortClick(sortColumn: SortColumn) {
+      if (this.staffDashboardService.sortOption$.value === sortColumn) {
+        this.staffDashboardService.sortDirection$.next(
+          this.staffDashboardService.sortDirection$.value === SortDirection.Asc
+            ? SortDirection.Desc
+            : SortDirection.Asc,
+        );
+      } else {
+        this.staffDashboardService.sortOption$.next(sortColumn);
+        this.staffDashboardService.sortDirection$.next(SortDirection.Asc);
+      }
+    }
 
   insertTextAtCursor() {
     const selection = this.editorInstance.getSelection();
