@@ -20,7 +20,7 @@ public class GetStaffV1
         public bool? IsAssignedProjectManager { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.Name;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
-        public bool? CurrentOnly { get; set; } = true;
+        public bool? CurrentOnly { get; set; }
         public Guid? ProjectId { get; set; }
         public Guid? ExcludeProjectId { get; set; }
     }
