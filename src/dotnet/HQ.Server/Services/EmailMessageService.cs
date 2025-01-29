@@ -337,23 +337,19 @@ namespace HQ.Server.Services
                     point.Completed = true;
                     timesDictionary[point.ChargeCodeId.Value] -= pointTime;
                 }
-
-
-                var pointsFinal = _points;
-
-                //set model data for the email which will be sent to user
-                var model = new UpdatedPlanningPointsEmail()
-                {
-                    StaffName = staff.Name,
-                    UpdatedBy = modifyingUser?.Name,
-                    ButtonLabel = "Open HQ",
-                    ButtonUrl = _options.CurrentValue.WebUrl,
-                    Date = date,
-                    Points = pointsFinal
-                };
-                //sends email 
-                await SendEmail(EmailMessage.UpdatedPlanningPoints, model, staff.Email, "[HQ] Planning Points Updated", MailPriority.High, null, ct);
             }
+            var pointsFinal = _points;
+            var model = new UpdatedPlanningPointsEmail()
+            {
+                StaffName = staff.Name,
+                UpdatedBy = modifyingUser?.Name,
+                ButtonLabel = "Open HQ",
+                ButtonUrl = _options.CurrentValue.WebUrl,
+                Date = date,
+                Points = pointsFinal
+            };
+            //sends email 
+            await SendEmail(EmailMessage.UpdatedPlanningPoints, model, staff.Email, "[HQ] Planning Points Updated", MailPriority.High, null, ct);
         }
         public async Task SendEmployeeHoursEmail(CancellationToken ct)
         {
