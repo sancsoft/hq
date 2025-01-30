@@ -166,6 +166,18 @@ export class TimeEditComponent implements OnInit, OnDestroy {
       },
       error: console.error,
     });
+        this.activities$.pipe(takeUntil(this.destroyed$)).subscribe({
+          next: (activities) => {
+            if (activities && activities.length > 0) {
+              this.form.controls.ActivityId.addValidators(Validators.required);
+            } else {
+              this.form.controls.ActivityId.removeValidators(
+                Validators.required,
+              );
+            }
+          },
+          error: console.error,
+        });
   }
 
   async submit() {

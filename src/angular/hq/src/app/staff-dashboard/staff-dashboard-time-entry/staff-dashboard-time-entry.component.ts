@@ -166,7 +166,6 @@ export class StaffDashboardTimeEntryComponent
         next: (id) => {
           const chargeCode = this.chargeCodes?.find((t) => t.id === id);
           const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 0;
-          console.log(chargeCode, this.chargeCodes, id);
           this.setMaximumHours(maxTimeEntryHours);
           if (chargeCode) {
             this.form.patchValue(
@@ -219,6 +218,18 @@ export class StaffDashboardTimeEntryComponent
     }).pipe(
       map((t) => t.activities.filter((x) => x.projectId === t.form.projectId)),
     );
+    this.filteredActivities$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (activities) => {
+          if (activities.length > 0) {
+            this.form.controls.activityId.addValidators(Validators.required);
+          } else {
+            this.form.controls.activityId.removeValidators(Validators.required);
+          }
+        },
+        error: console.error,
+      });
 
     const hours$ = form$.pipe(
       map((t) => t.hours),
