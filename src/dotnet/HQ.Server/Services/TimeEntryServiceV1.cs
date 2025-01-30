@@ -719,6 +719,7 @@ namespace HQ.Server.Services
                 Period = exportRequest.Period,
                 TimeAccepted = exportRequest.TimeAccepted,
                 Invoiced = exportRequest.Invoiced,
+                Billable = exportRequest.Billable,
                 SortBy = (GetTimesV1.SortColumn)exportRequest.SortBy,
                 SortDirection = exportRequest.SortDirection,
                 TimeStatus = exportRequest.TimeStatus

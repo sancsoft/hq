@@ -108,6 +108,9 @@ export class TimeListComponent implements OnDestroy {
     const invoiced$ = this.listService.invoiced.valueChanges.pipe(
       startWith(this.listService.invoiced.value),
     );
+    const billable$ = this.listService.billable.valueChanges.pipe(
+      startWith(this.listService.billable.value),
+    );
     const timeStatus$ = this.listService.timeStatus.valueChanges.pipe(
       startWith(this.listService.timeStatus.value),
     );
@@ -123,6 +126,7 @@ export class TimeListComponent implements OnDestroy {
       endDate: endDate$,
       period: period$,
       invoiced: invoiced$,
+      billable: billable$,
       timeStatus: timeStatus$,
       sortDirection: this.listService.sortDirection$,
     };
