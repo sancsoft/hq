@@ -644,8 +644,20 @@ namespace HQ.Server.Services
                 RejectedCount = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Status == TimeStatus.Rejected).CountAsync(ct),
                 TimeEntryCutoffDate = staff.TimeEntryCutoffDate
             };
+            if(request.Status == TimeStatus.Rejected) {
+                var rejectedTimes = new GetDashboardTimeV1.TimeForDate
+                {
+                    Date = startDate,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    Times = groupedTimes.Values.SelectMany(v => v).ToList(),
+                    TotalHours = timeEntriesList.Sum(t => t.Hours),
+                    CanCreateTime = !staff.TimeEntryCutoffDate.HasValue || endDate >= staff.TimeEntryCutoffDate.Value
+                };
 
-            if (request.Period == Period.Today || request.Period == Period.Week)
+                response.Dates.Add(rejectedTimes);
+            }
+            else if (request.Period == Period.Today || request.Period == Period.Week)
             {
                 DateOnly date = endDate;
                 do
