@@ -137,7 +137,7 @@ public class ProjectStatusReportServiceV1
             psr.ProjectId = project.Id;
             psr.ProjectManagerId = project.ProjectManagerId;
             psr.BookingPeriod = project.BookingPeriod;
-            psr.Project.Status = project.Status;
+            psr.Status = project.Status;
 
             switch (project.BookingPeriod)
             {
