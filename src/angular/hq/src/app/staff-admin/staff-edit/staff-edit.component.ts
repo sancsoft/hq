@@ -1,3 +1,6 @@
+/* eslint-disable rxjs-angular/prefer-takeuntil */
+/* eslint-disable rxjs-angular/prefer-async-pipe */
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormGroup,
