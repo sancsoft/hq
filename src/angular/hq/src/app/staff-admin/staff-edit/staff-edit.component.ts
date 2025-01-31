@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
@@ -42,7 +42,7 @@ interface Form {
   ],
   templateUrl: './staff-edit.component.html',
 })
-export class StaffEditComponent implements OnInit {
+export class StaffEditComponent implements OnDestroy, OnInit {
   staffId?: string;
   apiErrors: string[] = [];
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
@@ -83,6 +83,12 @@ export class StaffEditComponent implements OnInit {
     await this.getStaff();
   }
 
+  private destroy = new Subject<void>();
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
+  }
+
   constructor(
     private hqService: HQService,
     private router: Router,
@@ -90,11 +96,13 @@ export class StaffEditComponent implements OnInit {
     private staffDetailsService: StaffDetailsService,
     private toastService: ToastService,
   ) {
-    this.form.controls.endDate.valueChanges.subscribe((endDate) => {
-      if (typeof endDate == 'string' && endDate == '') {
-        this.form.controls.endDate.setValue(null, { emitEvent: false });
-      }
-    });
+    this.form.controls.endDate.valueChanges
+      .pipe(takeUntil(this.destroy))
+      .subscribe((endDate) => {
+        if (typeof endDate == 'string' && endDate == '') {
+          this.form.controls.endDate.setValue(null, { emitEvent: false });
+        }
+      });
   }
 
   async submit() {
