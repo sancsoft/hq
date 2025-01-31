@@ -63,7 +63,9 @@
     <div class="mt-4">
       <hq-button
         [disabled]="
-          staffDashboardService.date.value === staffDashboardService.localIsoDate()"
+          staffDashboardService.date.value ===
+          staffDashboardService.localIsoDate()
+        "
         (click)="staffDashboardService.resetFilters()"
         >Today</hq-button
       >

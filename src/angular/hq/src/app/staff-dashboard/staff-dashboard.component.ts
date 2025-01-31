@@ -328,18 +328,18 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-    onSortClick(sortColumn: SortColumn) {
-      if (this.staffDashboardService.sortOption$.value === sortColumn) {
-        this.staffDashboardService.sortDirection$.next(
-          this.staffDashboardService.sortDirection$.value === SortDirection.Asc
-            ? SortDirection.Desc
-            : SortDirection.Asc,
-        );
-      } else {
-        this.staffDashboardService.sortOption$.next(sortColumn);
-        this.staffDashboardService.sortDirection$.next(SortDirection.Asc);
-      }
+  onSortClick(sortColumn: SortColumn) {
+    if (this.staffDashboardService.sortOption$.value === sortColumn) {
+      this.staffDashboardService.sortDirection$.next(
+        this.staffDashboardService.sortDirection$.value === SortDirection.Asc
+          ? SortDirection.Desc
+          : SortDirection.Asc,
+      );
+    } else {
+      this.staffDashboardService.sortOption$.next(sortColumn);
+      this.staffDashboardService.sortDirection$.next(SortDirection.Asc);
     }
+  }
 
   insertTextAtCursor() {
     const selection = this.editorInstance.getSelection();
