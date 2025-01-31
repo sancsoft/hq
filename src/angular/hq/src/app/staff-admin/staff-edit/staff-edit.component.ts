@@ -81,6 +81,17 @@ export class StaffEditComponent implements OnDestroy, OnInit {
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('staffId')) ?? undefined;
     await this.getStaff();
+
+    this.form.controls.endDate.valueChanges
+      .pipe(takeUntil(this.destroy))
+      .subscribe({
+        next: (endDate) => {
+          if (typeof endDate == 'string' && endDate == '') {
+            this.form.controls.endDate.setValue(null, { emitEvent: false });
+          }
+        },
+        error: console.error,
+      });
   }
 
   private destroy = new Subject<void>();
@@ -95,15 +106,7 @@ export class StaffEditComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute,
     private staffDetailsService: StaffDetailsService,
     private toastService: ToastService,
-  ) {
-    this.form.controls.endDate.valueChanges
-      .pipe(takeUntil(this.destroy))
-      .subscribe((endDate) => {
-        if (typeof endDate == 'string' && endDate == '') {
-          this.form.controls.endDate.setValue(null, { emitEvent: false });
-        }
-      });
-  }
+  ) {}
 
   async submit() {
     this.form.markAllAsTouched();
