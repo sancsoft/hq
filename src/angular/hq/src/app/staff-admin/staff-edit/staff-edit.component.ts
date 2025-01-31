@@ -89,7 +89,13 @@ export class StaffEditComponent implements OnInit {
     private route: ActivatedRoute,
     private staffDetailsService: StaffDetailsService,
     private toastService: ToastService,
-  ) {}
+  ) {
+    this.form.controls.endDate.valueChanges.subscribe((endDate) => {
+      if (typeof endDate == 'string' && endDate == '') {
+        this.form.controls.endDate.setValue(null, { emitEvent: false });
+      }
+    });
+  }
 
   async submit() {
     this.form.markAllAsTouched();
