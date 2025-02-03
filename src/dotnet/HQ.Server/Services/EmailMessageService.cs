@@ -389,7 +389,9 @@ namespace HQ.Server.Services
                 Date = date,
                 PeriodBegin = date.GetPeriodStartDate(Period.LastWeek),
                 PeriodEnd = date.GetPeriodEndDate(Period.LastWeek),
-                Staff = staff
+                Staff = staff,
+                ThisMonthDate = date.GetPeriodStartDate(Period.Month),
+                LastMonthDate = date.GetPeriodStartDate(Period.LastMonth)
             };
             foreach (var manager in managersToNotify)
             {

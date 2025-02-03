@@ -12,6 +12,8 @@ namespace HQ.Abstractions.Emails
 
         public DateOnly PeriodBegin { get; set; }
         public DateOnly PeriodEnd { get; set; }
+        public DateOnly ThisMonthDate { get; set; }
+        public DateOnly LastMonthDate { get; set; }
 
         public static new EmployeeHoursEmail Sample = new()
         {
