@@ -33,6 +33,9 @@ public class HolidayServiceV1
     {
         using (var transaction = await _context.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable, ct))
         {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var weekStart = today.GetPeriodStartDate(Period.Week);
+            var weekEnd = today.GetPeriodEndDate(Period.Week);
 
             try
             {
@@ -64,7 +67,10 @@ public class HolidayServiceV1
                 {
                     return Result.Fail<UpsertHolidayV1.Response>("Holiday charge code not found");
                 }
-                await GenerateTimeEntriesForHoliday(holiday, holidayChargeCode, ct);
+                if (holiday.Date >= weekStart && holiday.Date <= weekEnd)
+                {
+                    await GenerateTimeEntriesForHoliday(holiday, holidayChargeCode, ct);
+                }
                 await transaction.CommitAsync(ct);
 
                 return new UpsertHolidayV1.Response()

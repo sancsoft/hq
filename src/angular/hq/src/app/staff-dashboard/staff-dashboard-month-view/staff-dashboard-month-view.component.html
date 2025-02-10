@@ -82,20 +82,22 @@
     </tr>
   </thead>
   <tbody>
-    @if (this.staffDashboardService.canEdit$ | async) {
-      <tr
-        hq-staff-dashboard-time-entry
-        (hqTimeChange)="upsertTime($event)"
-        [enableChooseDate]="true"
-        [chargeCodes]="chargeCodes"
-        [time]="{
-          date: localISODate,
-          timeStatus: timeStatus.Unsubmitted,
-        }"
-        class="relative z-[1]"
-      ></tr>
-    }
     @for (date of dashboard.dates; track date.date) {
+      @if (
+        (this.staffDashboardService.canEdit$ | async) && date.canCreateTime
+      ) {
+        <tr
+          hq-staff-dashboard-time-entry
+          (hqTimeChange)="upsertTime($event)"
+          [enableChooseDate]="true"
+          [chargeCodes]="chargeCodes"
+          [time]="{
+            date: localISODate,
+            timeStatus: timeStatus.Unsubmitted,
+          }"
+          class="relative z-[1]"
+        ></tr>
+      }
       @for (time of date.times; track time.id) {
         <tr
           hq-staff-dashboard-time-entry

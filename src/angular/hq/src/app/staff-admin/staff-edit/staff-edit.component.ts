@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+/* eslint-disable rxjs-angular/prefer-takeuntil */
+/* eslint-disable rxjs-angular/prefer-async-pipe */
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -7,7 +10,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
@@ -42,7 +45,7 @@ interface Form {
   ],
   templateUrl: './staff-edit.component.html',
 })
-export class StaffEditComponent implements OnInit {
+export class StaffEditComponent implements OnDestroy, OnInit {
   staffId?: string;
   apiErrors: string[] = [];
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
@@ -81,6 +84,23 @@ export class StaffEditComponent implements OnInit {
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('staffId')) ?? undefined;
     await this.getStaff();
+
+    this.form.controls.endDate.valueChanges
+      .pipe(takeUntil(this.destroy))
+      .subscribe({
+        next: (endDate) => {
+          if (typeof endDate == 'string' && endDate == '') {
+            this.form.controls.endDate.setValue(null, { emitEvent: false });
+          }
+        },
+        error: console.error,
+      });
+  }
+
+  private destroy = new Subject<void>();
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
   }
 
   constructor(

@@ -139,6 +139,15 @@
                             </ng-template>
                           }
                         </hq-select-input>
+                        @if (
+                          form.get("ActivityId")?.touched &&
+                          form.get("ActivityId")?.errors?.["required"]
+                        ) {
+                          <span
+                            class="text-red-700 text-xs leading-normal inline-block"
+                            >Activity is required.</span
+                          >
+                        }
                       } @else {
                         <hq-form-label>Task</hq-form-label>
                         <input
