@@ -599,16 +599,30 @@ namespace HQ.Server.Services
 
 
             var sortMap = new Dictionary<Abstractions.Times.GetTimesV1.SortColumn, string>()
-    {
-        { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
-        { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-        { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
-        { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "ClientName" },
-        { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
-    };
+            {
+                { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
+                { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "ClientName" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
+            };
 
-
-            if (sortMap.ContainsKey(request.SortBy))
+            if (request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.Date)
+            {
+                if (request.SortDirection == SortDirection.Desc)
+                {
+                    times = times
+                        .OrderByDescending(t => t.Date)
+                        .ThenByDescending(t => t.CreatedAt);
+                }
+                else
+                {
+                    times = times
+                        .OrderBy(t => t.Date)
+                        .ThenBy(t => t.CreatedAt);
+                }
+            }
+            else if (sortMap.ContainsKey(request.SortBy))
             {
                 var sortProperty = sortMap[request.SortBy];
 
