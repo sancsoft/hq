@@ -314,6 +314,12 @@ export class StaffDashboardTimeEntryComponent
   ngOnChanges(changes: SimpleChanges) {
     if (changes['time'] && changes['time'].currentValue) {
       this.form.patchValue(changes['time'].currentValue);
+      if (this.form.value.chargeCodeId) {
+        const id = this.form.value.chargeCodeId;
+        const chargeCode = this.chargeCodes?.find((t) => t.id === id);
+        const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 0;
+        this.setMaximumHours(maxTimeEntryHours);
+      }
       if (this.form.value.id) {
         // Force validation to run and highlight invalid fields red
         this.form.markAllAsTouched();
@@ -389,6 +395,7 @@ export class StaffDashboardTimeEntryComponent
   }
 
   private setMaximumHours(maxTime?: number): void {
+    console.log(`maxTime: ${maxTime}`);
     const maxTimeEntry = maxTime ?? this.time?.maximumTimeEntryHours;
     if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
       this.form.controls.hours.setValidators([
