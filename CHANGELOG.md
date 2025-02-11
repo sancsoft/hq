@@ -7,6 +7,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.4] - 2025-02-10
+
+### Removed
+
+- Default ShowCurrentOnly filter on GetProject request
+
+## [0.5.3] - 2025-02-10
+
+### Added
+
+- Secondary sort to timesheet day view so new time entries appear at the top by default matching v0.4 functionality
+
+## [0.5.2] - 2025-02-10
+
+### Removed
+
+- Default ShowCurrentOnly filter on GetStaff request
+
+### Fixed
+
+- Vacation planning point logic to account for 4 hour increments
+- Month view not looking at time entry cutoff when looking at time in the past (hide new time entry row if the time entry cutoff is after the end of the month)
+- Heading on staff admin edit page
+- Rejected time filtering on timesheet
+- Resubmitting rejected times
+- Billable filter not filtering in time export
+
+### Changed
+
+- Weekly staff hour email formatting
+- Renamed At Customer status to At The Client
+- Default S charge codes max to 24 hours
+- Only generate holiday time entries when creating a holiday if the holiday is within the current week period
+
+### Added
+
+- "Today" button to timesheet that jumps you back to today
+- Sorting support to day view
+
+## [0.5.1] - 2025-01-13
+
+### Fixed
+
+- Linter errors
+
 ## [0.5.0] - 2025-01-13
 
 ### Added
@@ -703,7 +748,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.5.4...HEAD
+[0.5.4]: https://github.com/sancsoft/hq/compare/v0.5.3...v0.5.4
+[0.5.3]: https://github.com/sancsoft/hq/compare/v0.5.2...v0.5.3
+[0.5.2]: https://github.com/sancsoft/hq/compare/v0.5.1...v0.5.2
+[0.5.1]: https://github.com/sancsoft/hq/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/sancsoft/hq/releases/tag/v0.5.0
 [0.4.16]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.16
 [0.4.15]: https://github.com/sancsoft/hq/compare/v0.4.10...v0.4.15
