@@ -225,6 +225,9 @@ export class StaffDashboardTimeEntryComponent
         } else {
           this.form.controls.activityId.removeValidators(Validators.required);
         }
+        this.form.controls.activityId.updateValueAndValidity({
+          emitEvent: false,
+        });
       },
       error: console.error,
     });
