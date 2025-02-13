@@ -165,7 +165,7 @@ export class StaffDashboardTimeEntryComponent
       .subscribe({
         next: (id) => {
           const chargeCode = this.chargeCodes?.find((t) => t.id === id);
-          const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 0;
+          const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
           this.setMaximumHours(maxTimeEntryHours);
           if (chargeCode) {
             this.form.patchValue(
@@ -237,43 +237,6 @@ export class StaffDashboardTimeEntryComponent
       distinctUntilChanged(),
     );
 
-    // clientId$.pipe(takeUntil(this.destroyed$)).subscribe({
-    //   next: () => {
-    //     this.form.patchValue(
-    //       {
-    //         chargeCodeId: null,
-    //         projectId: null,
-    //         chargeCode: null,
-    //       },
-    //       { emitEvent: false },
-    //     );
-    //   },
-    //   error: console.error,
-    // });
-
-    // project$.pipe(takeUntil(this.destroyed$)).subscribe({
-    //   next: (project) => {
-    //     if (project) {
-    //       this.form.patchValue(
-    //         {
-    //           chargeCodeId: project.chargeCodeId,
-    //           chargeCode: project.chargeCode,
-    //         },
-    //         { emitEvent: false },
-    //       );
-    //     } else {
-    //       this.form.patchValue(
-    //         {
-    //           chargeCodeId: null,
-    //           chargeCode: null,
-    //         },
-    //         { emitEvent: false },
-    //       );
-    //     }
-    //   },
-    //   error: console.error,
-    // });
-
     hours$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (hours) => {
         if (hours != null) {
@@ -320,7 +283,7 @@ export class StaffDashboardTimeEntryComponent
       if (this.form.value.chargeCodeId) {
         const id = this.form.value.chargeCodeId;
         const chargeCode = this.chargeCodes?.find((t) => t.id === id);
-        const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 0;
+        const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
         this.setMaximumHours(maxTimeEntryHours);
       }
       if (this.form.value.id) {
@@ -398,7 +361,6 @@ export class StaffDashboardTimeEntryComponent
   }
 
   private setMaximumHours(maxTime?: number): void {
-    console.log(`maxTime: ${maxTime}`);
     const maxTimeEntry = maxTime ?? this.time?.maximumTimeEntryHours;
     if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
       this.form.controls.hours.setValidators([
