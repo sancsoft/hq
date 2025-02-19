@@ -464,12 +464,77 @@ export const routes: Routes = [
                 './staff/staff-details/staff-view/staff-view.component'
               ).then((m) => m.StaffViewComponent),
           },
+
+          {
+            path: 'contacts',
+            title: 'staff Contacts',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './staff/staff-details/staff-contacts/staff-contacts.component'
+              ).then((m) => m.StaffContactsComponent),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: 'staff-admin',
+    title: 'Staff Admin',
+    canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
+    loadComponent: () =>
+      import('./users/users.component').then((m) => m.UsersComponent),
+    children: [
+      {
+        path: '',
+        title: 'Staff',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import(
+            './staff-admin/staff-admin-list/staff-admin-list.component'
+          ).then((m) => m.StaffAdminListComponent),
+      },
+      {
+        path: 'create',
+        title: 'Create Staff',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./staff-admin/staff-create/staff-create.component').then(
+            (m) => m.StaffCreateComponent,
+          ),
+      },
+      {
+        path: ':staffId/timesheet',
+        canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
+        loadComponent: () =>
+          import('./staff/staff-timesheet/staff-timesheet.component').then(
+            (m) => m.StaffTimesheetComponent,
+          ),
+      },
+      {
+        path: ':staffId',
+        title: 'staff Details',
+        canActivate: [userRoleGuard(HQRole.Staff)],
+        loadComponent: () =>
+          import('./staff/staff-details/staff-details.component').then(
+            (m) => m.StaffDetailsComponent,
+          ),
+        children: [
+          {
+            path: '',
+            title: 'staff View',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './staff/staff-details/staff-view/staff-view.component'
+              ).then((m) => m.StaffViewComponent),
+          },
           {
             path: 'edit',
             title: 'Edit Staff',
             canActivate: [userRoleGuard(HQRole.Administrator)],
             loadComponent: () =>
-              import('./staff/staff-edit/staff-edit.component').then(
+              import('./staff-admin/staff-edit/staff-edit.component').then(
                 (m) => m.StaffEditComponent,
               ),
           },
@@ -484,17 +549,9 @@ export const routes: Routes = [
           },
         ],
       },
-      {
-        path: 'create',
-        title: 'Create Staff',
-        canActivate: [userRoleGuard(HQRole.Administrator)],
-        loadComponent: () =>
-          import('./staff/staff-create/staff-create.component').then(
-            (m) => m.StaffCreateComponent,
-          ),
-      },
     ],
   },
+
   {
     path: 'times',
     title: 'Times',
@@ -509,6 +566,15 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./times/time-list/time-list.component').then(
             (m) => m.TimeListComponent,
+          ),
+      },
+      {
+        path: 'create',
+        title: 'Time Create',
+        canActivate: [userRoleGuard(HQRole.Administrator)],
+        loadComponent: () =>
+          import('./times/time-create/time-create.component').then(
+            (m) => m.TimeCreateComponent,
           ),
       },
       {

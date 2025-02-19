@@ -77,6 +77,7 @@ public class StaffServiceV1
                         Email = staff.Email,
                     };
                     var createdUser = await _UserServiceV1.UpsertUserV1(upsertUserRequest, ct);
+                    await _context.SaveChangesAsync();
                     await transaction.CommitAsync(ct);
                     return new UpsertStaffV1.Response()
                     {
@@ -84,6 +85,7 @@ public class StaffServiceV1
                         UserId = createdUser.Value.Id
                     };
                 }
+                await _context.SaveChangesAsync();
                 await transaction.CommitAsync(ct);
                 return new UpsertStaffV1.Response()
                 {
@@ -134,9 +136,15 @@ public class StaffServiceV1
 
         if (!string.IsNullOrEmpty(request.Search))
         {
-            records = records.Where(t =>
-                t.Name.ToLower().Contains(request.Search.ToLower())
-            );
+            if (Enum.TryParse<Jurisdiciton>(request.Search.Trim().ToLower(), true, out Jurisdiciton parsedJurisdiction))
+            {
+                records = records.Where(t => t.Jurisdiciton.Equals(parsedJurisdiction));
+            }
+            else
+            {
+                records = records.Where(t =>
+                  t.Name.ToLower().Contains(request.Search.ToLower()));
+            }
         }
 
         if (request.Id.HasValue)
@@ -164,7 +172,7 @@ public class StaffServiceV1
         {
             if (request.CurrentOnly.Value)
             {
-                records = records.Where(t => t.EndDate == null);
+                records = records.Where(t => t.EndDate == null || t.EndDate >= today);
             }
         }
 

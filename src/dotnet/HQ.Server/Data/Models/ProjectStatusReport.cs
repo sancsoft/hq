@@ -14,7 +14,6 @@ public class ProjectStatusReport : Base
     public decimal? BookedTime { get; set; }
     public decimal? BilledTime { get; set; }
     public decimal? PercentComplete { get; set; }
-    // Project status at time PSR was generated
     public ProjectStatus Status { get; set; }
     public DateOnly BookingStartDate { get; set; }
     public DateOnly BookingEndDate { get; set; }

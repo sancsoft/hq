@@ -1,4 +1,7 @@
+using System.Collections.Frozen;
+using System.Diagnostics;
 using System.Net;
+using System.Security.Claims;
 
 using Hangfire;
 
@@ -22,6 +25,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
+using Npgsql;
+
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -30,6 +40,35 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables("HQ_");
 
 var serverOptions = builder.Configuration.GetSection(HQServerOptions.Server).Get<HQServerOptions>() ?? throw new Exception("Error parsing configuration section 'Server'.");
+
+if (serverOptions.OpenTelemetry)
+{
+    var serviceName = "hq-server";
+    var serviceVersion = VersionNumber.GetVersionNumber();
+
+    builder.Logging.AddOpenTelemetry(logging =>
+    {
+        logging.IncludeFormattedMessage = true;
+        logging.IncludeScopes = true;
+    });
+
+    builder.Services.AddOpenTelemetry()
+        .ConfigureResource(resource => resource.AddService(serviceName: serviceName, serviceVersion: serviceVersion))
+        .WithTracing(tracing => tracing
+            .AddAspNetCoreInstrumentation()
+            .AddNpgsql()
+            .AddHttpClientInstrumentation()
+            .AddHangfireInstrumentation()
+            .AddOtlpExporter())
+        .WithMetrics(metrics => metrics
+            .AddAspNetCoreInstrumentation()
+            .AddProcessInstrumentation()
+            .AddHttpClientInstrumentation()
+            .SetExemplarFilter(ExemplarFilterType.TraceBased)
+            .AddOtlpExporter())
+        .WithLogging(logging => logging
+            .AddOtlpExporter());
+}
 
 // Add services to the container.
 builder.Services.AddHealthChecks();
@@ -87,7 +126,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddScoped<IAuthorizationHandler, ProjectStatusReportAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, PointsAuthorizationHandler>();
-
+builder.Services.AddScoped<IAuthorizationHandler, ProjectsAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TimeEntryAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, PlanAuthorizationHandler>();
 
@@ -228,6 +267,31 @@ app.UseCors(policy => policy
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.Use(async (context, next) =>
+{
+    var staffId = context.User.GetStaffId();
+    var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var userRoles = String.Join(", ", context.User.FindAll(ClaimTypes.Role).Select(t => t.Value));
+
+    var activity = Activity.Current;
+    activity?.AddTag("user.id", userId);
+    activity?.AddTag("user.roles", userRoles);
+    activity?.AddTag("hq.staff_id", staffId);
+
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    var logScope = new Dictionary<string, object?>()
+    {
+        { "user.id", userId },
+        { "user.roles", userRoles },
+        { "hq.staff_id", staffId },
+    }.ToList();
+
+    using (logger.BeginScope(logScope))
+    {
+        await next();
+    }
+});
+
 app.MapHangfireDashboard("/hangfire", new()
 {
     Authorization = [],
@@ -264,6 +328,13 @@ recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     Cron.Daily(8),
     recurringJobOptions);
 
+
+recurringJobManager.AddOrUpdate<PlanServiceV1>(
+    nameof(PlanServiceV1.BackgroundSendPlanSubmissionReminderEmail),
+    (t) => t.BackgroundSendPlanSubmissionReminderEmail(Period.Today, CancellationToken.None),
+    Cron.Daily(10),
+    recurringJobOptions);
+
 // Monday morning
 recurringJobManager.AddOrUpdate<TimeEntryServiceV1>(
     nameof(TimeEntryServiceV1.BackgroundSendTimeSubmissionReminderEmail),
@@ -296,6 +367,18 @@ recurringJobManager.AddOrUpdate<ProjectStatusReportServiceV1>(
     Cron.Weekly(DayOfWeek.Monday, 12),
     recurringJobOptions);
 
+recurringJobManager.AddOrUpdate<PointServiceV1>(
+    nameof(PointServiceV1.BackgroundSendPointSubmissionReminderEmail),
+    (t) => t.BackgroundSendPointSubmissionReminderEmail(Period.Week, CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Monday, 12),
+    recurringJobOptions);
+
+recurringJobManager.AddOrUpdate<EmailMessageService>(
+    nameof(EmailMessageService.SendEmployeeHoursEmail),
+    (t) => t.SendEmployeeHoursEmail(CancellationToken.None),
+    "15 12 * * 1",
+    recurringJobOptions);
+
 // Friday morning
 recurringJobManager.AddOrUpdate<HolidayServiceV1>(
     nameof(HolidayServiceV1.BackgroundAutoGenerateHolidayTimeEntryV1),
@@ -306,6 +389,12 @@ recurringJobManager.AddOrUpdate<HolidayServiceV1>(
 recurringJobManager.AddOrUpdate<PointServiceV1>(
     nameof(PointServiceV1.BackgroundAutoGenerateHolidayPlanningPointsV1),
     (t) => t.BackgroundAutoGenerateHolidayPlanningPointsV1(CancellationToken.None),
+    Cron.Weekly(DayOfWeek.Friday, 8),
+    recurringJobOptions);
+
+recurringJobManager.AddOrUpdate<PointServiceV1>(
+    nameof(PointServiceV1.BackgroundAutoGenerateVacationPlanningPointsV1),
+    (t) => t.BackgroundAutoGenerateVacationPlanningPointsV1(CancellationToken.None),
     Cron.Weekly(DayOfWeek.Friday, 8),
     recurringJobOptions);
 

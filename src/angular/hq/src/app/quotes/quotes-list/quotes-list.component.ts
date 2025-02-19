@@ -10,9 +10,9 @@ import { ClientDetailsSearchFilterComponent } from '../../clients/client-details
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { CoreModule } from '../../core/core.module';
-import saveAs from 'file-saver';
 import { QuoteListService } from './quote-list.service';
 import { BaseListService } from '../../core/services/base-list.service';
+import FileSaver from 'file-saver';
 
 @Component({
   selector: 'hq-quotes-list',
@@ -51,7 +51,7 @@ export class QuotesListComponent {
     if (result.file === null) {
       return;
     }
-
-    saveAs(result.file, result.fileName);
+    console.log(id);
+    FileSaver.saveAs(result.file, result.fileName);
   }
 }

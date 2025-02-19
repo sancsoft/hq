@@ -1,7 +1,13 @@
 @if (projectReportStatus$ | async; as psr) {
   <div class="px-5">
     <h1 class="font-rajdhani font-semibold text-3xl">
-      {{ psr.chargeCode }}: {{ psr.projectName }}
+      {{ psr.chargeCode }}:
+      <a
+        class="text-teal-200 hover:text-teal-300"
+        [routerLink]="['/projects', psr.projectId]"
+        target="_blank"
+        >{{ psr.projectName }}</a
+      >
     </h1>
   </div>
 

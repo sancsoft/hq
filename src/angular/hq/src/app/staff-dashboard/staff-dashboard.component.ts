@@ -1,3 +1,4 @@
+import { SortIconComponent } from './../common/sort-icon/sort-icon.component';
 /* eslint-disable rxjs-angular/prefer-async-pipe */
 import { StaffDashboardPlanningPointComponent } from './staff-dashboard-planning-point/staff-dashboard-planning-point.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -37,7 +38,6 @@ import {
   Observable,
   of,
   ReplaySubject,
-  shareReplay,
   skip,
   startWith,
   switchMap,
@@ -64,10 +64,10 @@ import { ButtonComponent } from '../core/components/button/button.component';
 import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staff-dashboard-planning.component';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 import { ButtonState } from '../enums/button-state';
-import {
-  GetChargeCodeRecordV1,
-  SortColumn,
-} from '../models/charge-codes/get-chargecodes-v1';
+import { StaffDashboardMonthViewComponent } from './staff-dashboard-month-view/staff-dashboard-month-view.component';
+import { StaffStatus } from '../enums/staff-status';
+import { SortColumn } from '../models/times/get-time-v1';
+import { SortDirection } from '../models/common/sort-direction';
 
 export interface PointForm {
   id: FormControl<string | null>;
@@ -98,6 +98,8 @@ export interface PointForm {
     StaffDashboardPlanningPointComponent,
     ButtonComponent,
     StaffDashboardPlanningComponent,
+    StaffDashboardMonthViewComponent,
+    SortIconComponent,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
@@ -105,6 +107,8 @@ export interface PointForm {
 export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   Period = Period;
   HQRole = HQRole;
+
+  staffStatus = StaffStatus;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;
@@ -115,13 +119,13 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   plan$ = this.plan.valueChanges;
 
   ButtonState = ButtonState;
+  sortColumn = SortColumn;
   currentDate = new Date();
   previousPlan: string | null = null;
   planResponse$: Observable<GetPlanResponseV1>;
   staffStatus$: Observable<GetStatusResponseV1>;
   prevPlan$: Observable<GetPrevPlanResponseV1 | null>;
   prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
-  chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   canEdit$: Observable<boolean>;
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
@@ -171,19 +175,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     private cdr: ChangeDetectorRef,
   ) {
     this.canEdit$ = this.staffDashboardService.canEdit$;
-    const chargeCodeResponse$ = this.staffDashboardService.staffId$.pipe(
-      switchMap((staffId) =>
-        this.hqService.getChargeCodeseV1({
-          active: true,
-          staffId,
-          sortBy: SortColumn.IsProjectMember,
-        }),
-      ),
-    );
-    this.chargeCodes$ = chargeCodeResponse$.pipe(
-      map((chargeCode) => chargeCode.records),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
+
     const staffId$ = this.staffDashboardService.staffId$;
     const date$ = staffDashboardService.date.valueChanges
       .pipe(startWith(staffDashboardService.date.value))
@@ -333,6 +325,19 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['staffId'] && this.staffId !== null) {
       this.staffDashboardService.setStaffId(this.staffId);
+    }
+  }
+
+  onSortClick(sortColumn: SortColumn) {
+    if (this.staffDashboardService.sortOption$.value === sortColumn) {
+      this.staffDashboardService.sortDirection$.next(
+        this.staffDashboardService.sortDirection$.value === SortDirection.Asc
+          ? SortDirection.Desc
+          : SortDirection.Asc,
+      );
+    } else {
+      this.staffDashboardService.sortOption$.next(sortColumn);
+      this.staffDashboardService.sortDirection$.next(SortDirection.Asc);
     }
   }
 

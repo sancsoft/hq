@@ -1,20 +1,26 @@
 using FluentResults;
 
+using Hangfire;
+
+using HQ.Abstractions;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Plan;
 using HQ.Abstractions.Staff;
-
 using HQ.Server.Data;
 
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.IdentityModel.Tokens;
 namespace HQ.Server.Services;
 public class PlanServiceV1
 {
     private readonly HQDbContext _context;
+    private readonly IBackgroundJobClient _backgroundJobClient;
 
-    public PlanServiceV1(HQDbContext context)
+    public PlanServiceV1(HQDbContext context, IBackgroundJobClient backgroundJobClient)
     {
         _context = context;
+        _backgroundJobClient = backgroundJobClient;
+
     }
 
     public async Task<Result<UpsertPlanV1.Response>> UpsertPlanV1(UpsertPlanV1.Request request, CancellationToken ct = default)
@@ -90,5 +96,35 @@ public class PlanServiceV1
             body = previousPlan.Body,
             StaffId = previousPlan.StaffId
         };
+    }
+    public async Task BackgroundSendPlanSubmissionReminderEmail(Period period, CancellationToken ct)
+    {
+        var date = DateOnly.FromDateTime(DateTime.UtcNow).GetPeriodStartDate(period);
+        if (date.DayOfWeek == DayOfWeek.Sunday || date.DayOfWeek == DayOfWeek.Saturday)
+        {
+            return;
+        }
+
+        var plans = _context.Plans.Where(t => t.Date == date);
+        var unsubmittedPlansStatus = plans.Where(t => t.Body == null || t.Status == null);
+        var holidayChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("holiday")).FirstOrDefaultAsync(ct);
+        var vacationChargeCode = await _context.ChargeCodes.Where(t => t.Project!.Name.ToLower().Contains("vacation")).FirstOrDefaultAsync(ct);
+        if (holidayChargeCode == null || vacationChargeCode == null)
+        {
+            return;
+        }
+
+        var times = _context.Times.Where(t => t.Date == date);
+        var holidayVacationTimes = times.Where(t => t.ChargeCodeId == holidayChargeCode.Id || t.ChargeCodeId == vacationChargeCode.Id);
+
+        var staffToNotify = await _context.Staff
+            .AsNoTracking()
+            .Where(t => t.EndDate == null && holidayVacationTimes.Where(x => x.StaffId == t.Id).Count() == 0 && (plans.Where(x => x.StaffId == t.Id).Count() == 0 || unsubmittedPlansStatus.Where(x => x.StaffId == t.Id).Count() > 0))
+            .ToListAsync(ct);
+
+        foreach (var staff in staffToNotify)
+        {
+            _backgroundJobClient.Enqueue<EmailMessageService>(t => t.SendPlanSubmissionReminderEmail(staff.Id, date, CancellationToken.None));
+        }
     }
 }

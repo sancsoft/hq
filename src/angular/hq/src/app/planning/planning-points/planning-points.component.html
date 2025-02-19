@@ -82,9 +82,18 @@
             >
           </td>
           <td>
-            <button (click)="editStaffPlanningPoint(staff)" title="Edit points">
-              <i class="bi bi-pencil-fill text-gray-450"></i>
-            </button>
+            @if (
+              [HQRole.Manager, HQRole.Partner, HQRole.Administrator]
+                | inRole
+                | async
+            ) {
+              <button
+                (click)="editStaffPlanningPoint(staff)"
+                title="Edit points"
+              >
+                <i class="bi bi-pencil-fill text-gray-450"></i>
+              </button>
+            }
           </td>
           @for (point of staff.points; track point.id) {
             <td width="165" class="border-l border-black">
@@ -94,7 +103,7 @@
               >
                 @if (point.chargeCodeId) {
                   <a
-                    class="px-2 font-semibold rounded-full w-full"
+                    class="px-2 font-semibold rounded-full w-full whitespace-nowrap"
                     [routerLink]="['/projects', point.projectId]"
                     [title]="
                       point.chargeCode +
@@ -108,12 +117,7 @@
                       configureChargeCodeColorOpacity(point)
                     "
                   >
-                    {{ point.chargeCode }}:
-                    {{
-                      point.projectName!.length > 10
-                        ? (point.projectName | slice: 0 : 8) + ".."
-                        : point.projectName
-                    }}
+                    {{ getDisplayName(point) }}
                   </a>
                 }
               </div>

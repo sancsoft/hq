@@ -1,0 +1,43 @@
+@model HQ.Abstractions.Emails.EmployeeHoursEmail
+@{
+    Layout = "_LayoutEmailNotificationHTML";
+}
+<mj-text>
+    <div><strong>Dates:</strong> @Model.PeriodBegin - @Model.PeriodEnd</div>
+</mj-text>
+<mj-table>
+    <tr style="white;padding:15px 0;color:white;text-align:center;padding:15px 5px;">
+        <td style="padding: 0 15px 0 0;text-align:left;font-weight:bold;border-bottom:1px solid white;">Staff</td>
+        <td style="text-align:right; font-weight:bold;border-bottom:1px solid white;">working hours %
+        </td>
+        <td style="text-align:right; font-weight:bold;border-bottom:1px solid white;">Week</td>
+        <td style="text-align:right; font-weight:bold;border-bottom:1px solid white;">@Model.ThisMonthDate.ToString("MMM-yy")</td>
+        <td style="text-align:right; font-weight:bold;border-bottom:1px solid white;">@Model.LastMonthDate.ToString("MMM-yy")</td>
+    </tr>
+    @foreach (var staff in Model.Staff)
+    {
+        @if (staff.LessThanExpectedHours || staff.MissingHours)
+        {
+            <tr style="color:#f97316; text-align:center;">
+                <td style="text-align:left"> <a href="@staff.StaffDashboardURL"
+                        style="color: inherit;">@staff.StaffName</a> </td>
+                <td style="text-align:right;">@staff.PercentageWorkedHours.ToString()%</td>
+                <td style="text-align:right;">@staff.HoursLastWeek.ToString("F")</td>
+                <td style="text-align:right;">@staff.HoursThisMonth.ToString("F")</td>
+                <td style="text-align:right;">@staff.HoursLastMonth.ToString("F")</td>
+            </tr>
+        }
+        else
+        {
+            <tr style="color:white; text-align:center;">
+                <td style="text-align:left"> <a href="@staff.StaffDashboardURL"
+                        style="color: inherit;">@staff.StaffName</a> </td>
+                <td style="text-align:right;">@staff.PercentageWorkedHours.ToString()%</td>
+                <td style="text-align:right;">@staff.HoursLastWeek.ToString("F")</td>
+                <td style="text-align:right;">@staff.HoursThisMonth.ToString("F")</td>
+                <td style="text-align:right;">@staff.HoursLastMonth.ToString("F")</td>
+            </tr>
+        }
+    }
+</mj-table>
+<mj-text></mj-text>

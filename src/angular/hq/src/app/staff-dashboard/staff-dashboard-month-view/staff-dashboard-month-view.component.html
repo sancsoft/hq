@@ -1,0 +1,114 @@
+<table class="w-full border-spacing-0 border-separate">
+  <thead class="z-[100] sticky top-0">
+    <tr class="text-left">
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap w-3"
+      ></th>
+      <th
+        width="28"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
+      ></th>
+      <th
+        width="80"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap cursor-pointer"
+        (click)="onSortClick(sortColumn.Hours)"
+      >
+        Hrs
+        <hq-sort-icon
+          [column]="sortColumn.Hours"
+          [activeColumn]="staffDashboardService.sortOption$ | async"
+          [activeSortDirection]="staffDashboardService.sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="160"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 cursor-pointer"
+        (click)="onSortClick(sortColumn.Date)"
+      >
+        Date
+        <hq-sort-icon
+          [column]="sortColumn.Date"
+          [activeColumn]="staffDashboardService.sortOption$ | async"
+          [activeSortDirection]="staffDashboardService.sortDirection$ | async"
+        />
+      </th>
+      <th
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 text-nowrap cursor-pointer"
+        (click)="onSortClick(sortColumn.ChargeCode)"
+      >
+        Chrg Code
+        <hq-sort-icon
+          [column]="sortColumn.ChargeCode"
+          [activeColumn]="staffDashboardService.sortOption$ | async"
+          [activeSortDirection]="staffDashboardService.sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="160"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 cursor-pointer"
+        (click)="onSortClick(sortColumn.ClientName)"
+      >
+        Client
+        <hq-sort-icon
+          [column]="sortColumn.ClientName"
+          [activeColumn]="staffDashboardService.sortOption$ | async"
+          [activeSortDirection]="staffDashboardService.sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="160"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 cursor-pointer"
+        (click)="onSortClick(sortColumn.ProjectName)"
+      >
+        Project
+        <hq-sort-icon
+          [column]="sortColumn.ProjectName"
+          [activeColumn]="staffDashboardService.sortOption$ | async"
+          [activeSortDirection]="staffDashboardService.sortDirection$ | async"
+        />
+      </th>
+      <th
+        width="160"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
+      >
+        Activity / Task
+      </th>
+      <th class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2">
+        Description
+      </th>
+      <th width="40" class="bg-blue-900 border-steel-blue-600 border-y"></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (date of dashboard.dates; track date.date) {
+      @if (
+        (this.staffDashboardService.canEdit$ | async) && date.canCreateTime
+      ) {
+        <tr
+          hq-staff-dashboard-time-entry
+          (hqTimeChange)="upsertTime($event)"
+          [enableChooseDate]="true"
+          [chargeCodes]="chargeCodes"
+          [time]="{
+            date: localISODate,
+            timeStatus: timeStatus.Unsubmitted,
+          }"
+          class="relative z-[1]"
+        ></tr>
+      }
+      @for (time of date.times; track time.id) {
+        <tr
+          hq-staff-dashboard-time-entry
+          [chargeCodes]="chargeCodes"
+          (hqTimeChange)="upsertTime($event)"
+          (hqTimeDelete)="deleteTime($event)"
+          (hqTimeDuplicate)="duplicateTime($event)"
+          [time]="time"
+          class="relative z-[1]"
+        ></tr>
+      }
+    }
+  </tbody>
+</table>

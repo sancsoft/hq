@@ -27,98 +27,63 @@
   </div>
 </div>
 
-<table class="min-w-full border-spacing-0 border-separate table-fixed">
+<hq-table class="min-w-full border-spacing-0 border-separate table-fixed">
   <thead>
     <tr class="sticky top-0 text-left select-none">
       <th
         width="100"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.ChargeCode)"
+        [hq-sort-header]="sortColumn.ChargeCode"
       >
         Code
-        <hq-sort-icon
-          [column]="sortColumn.ChargeCode"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="90"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.StartDate)"
+        [hq-sort-header]="sortColumn.StartDate"
       >
         Start
-        <hq-sort-icon
-          [column]="sortColumn.StartDate"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="90"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.EndDate)"
+        [hq-sort-header]="sortColumn.EndDate"
       >
         End
-        <hq-sort-icon
-          [column]="sortColumn.EndDate"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="150"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ClientName)"
+        [hq-sort-header]="sortColumn.ClientName"
       >
         Client Name
-        <hq-sort-icon
-          [column]="sortColumn.ClientName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ProjectName)"
+        [hq-sort-header]="sortColumn.ProjectName"
       >
         Project Name
-        <hq-sort-icon
-          [column]="sortColumn.ProjectName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="100"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.ProjectManagerName)"
+        [hq-sort-header]="sortColumn.ProjectManagerName"
       >
         PM
-        <hq-sort-icon
-          [column]="sortColumn.ProjectManagerName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="170"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer text-right"
-        (click)="onSortClick(sortColumn.ThisHours)"
+        [hq-sort-header]="sortColumn.ThisHours"
       >
         Hrs
-        <hq-sort-icon
-          [column]="sortColumn.ThisHours"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         width="150"
@@ -131,37 +96,42 @@
         colspan="2"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.SummaryPercentComplete)"
+        [hq-sort-header]="sortColumn.SummaryPercentComplete"
       >
         Complete %
-        <hq-sort-icon
-          [column]="sortColumn.SummaryPercentComplete"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
     </tr>
   </thead>
-  <tbody>
-    @if ((projectStatusReports$ | async)?.length === 0) {
+  <tbody hq-table-body>
+    @if ((listService.records$ | async)?.length === 0) {
       <td colspan="13" class="bg-black-alt">
         <h1 class="text-center py-4 font-bold">No matching records found</h1>
       </td>
     }
-    @for ((report of projectStatusReports$ | async); track report.id) {
+    @for ((report of listService.records$ | async); track report.id) {
       <tr
-        [class]="
-          (!report.submittedAt || report.thisPendingHours > 0) &&
-          !report.isCurrentPsrPeriod
-            ? 'bg-red-850'
-            : 'even:bg-gray-850 odd:bg-black-alt'
-        "
+        [ngClass]="{
+          'bg-red-850':
+            (!report.submittedAt || report.thisPendingHours > 0) &&
+            !report.isCurrentPsrPeriod,
+          'even:bg-gray-850 odd:bg-black-alt':
+            (!report.submittedAt && report.thisPendingHours <= 0) ||
+            report.isCurrentPsrPeriod,
+          'text-gray-50': report.isCurrentPsrPeriod,
+        }"
       >
         <td class="border-b border-black py-2 pl-5">{{ report.chargeCode }}</td>
         <td class="border-b border-black py-2">{{ report.startDate }}</td>
         <td class="border-b border-black py-2">{{ report.endDate }}</td>
         <td class="border-b border-black py-2">{{ report.clientName }}</td>
-        <td class="border-b border-black py-2">{{ report.projectName }}</td>
+        <td class="border-b border-black py-2">
+          <a
+            class="text-teal-200 hover:text-teal-300"
+            [routerLink]="['/projects', report.projectId]"
+            target="_blank"
+            >{{ report.projectName }}</a
+          >
+        </td>
         <td class="border-b border-black py-2">
           {{ report.projectManagerName }}
         </td>
@@ -256,38 +226,14 @@
         <td width="80" class="border-b border-black py-2 text-right pr-5">
           <a
             [routerLink]="[report.id]"
-            class="truncate text-teal-200 hover:text-teal-300"
+            class="truncate hover:text-teal-300"
+            [class]="
+              report.isCurrentPsrPeriod ? ' text-gray-50' : ' text-teal-200'
+            "
             >VIEW</a
           >
         </td>
       </tr>
     }
   </tbody>
-</table>
-<div
-  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
->
-  <div>
-    <select
-      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="psrListService.itemsPerPage"
-    >
-      <option [ngValue]="10">10</option>
-      <option [ngValue]="20">20</option>
-      <option [ngValue]="50">50</option>
-      <option [ngValue]="100">100</option>
-      <!-- Add more options as needed -->
-    </select>
-    <span>items per page</span>
-  </div>
-  <hq-paginator
-    [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="psrListService.itemsPerPage.value"
-    [currentPage]="psrListService.page.value"
-    (page)="goToPage($event)"
-  ></hq-paginator>
-  <div class="flex justify-end text-xs">
-    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
-    {{ totalRecords$ | async }} items
-  </div>
-</div>
+</hq-table>

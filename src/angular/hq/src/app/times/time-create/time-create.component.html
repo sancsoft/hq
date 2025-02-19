@@ -1,0 +1,239 @@
+<form [formGroup]="form">
+  <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
+    <div class="px-5">
+      <h1 class="font-rajdhani font-semibold text-3xl">Create Time</h1>
+
+      <div class="py-3">
+        <a routerLink="/times" class="text-gray-50 underline">Time List</a>
+      </div>
+    </div>
+
+    <div class="overflow-hidden flex-auto">
+      <div class="grid gap-0 relative">
+        <main
+          class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]"
+        >
+          <div
+            class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
+          >
+            <div
+              class="w-full flex flex-row border-b border-black justify-between pe-5"
+            >
+              <div class="flex pt-[23px]">
+                <a
+                  href="#"
+                  routerLink="projects"
+                  routerLinkActive="border-gray-100"
+                  class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
+                  >Details</a
+                >
+              </div>
+              <div class="flex flex-column justify-center items-center">
+                <button
+                  (click)="submit()"
+                  type="submit"
+                  class="h-[36px] px-2 py-2 border border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white rounded min-w-[120px]"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="grid flex-1">
+            <div class="p-5 pr-0">
+              <div class="grid gap-[20px]">
+                <hq-error-display [errors]="apiErrors"></hq-error-display>
+
+                <!-- row grid -->
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"
+                >
+                  <div>
+                    <hq-select-input
+                      [autocomplete]="true"
+                      formControlName="StaffId"
+                      label="Staff Member"
+                      variant="secondary"
+                      [inline]="true"
+                    >
+                      <ng-template [hqSelectInputOption]="null"
+                        >Please Select a staff member</ng-template
+                      >
+                      <ng-template hqValidationError="required">
+                        Project manager is required.
+                      </ng-template>
+                      @for (staff of staffMembers$ | async; track staff.id) {
+                        <ng-template
+                          [hqSelectInputOption]="staff.id"
+                          [hqSelectInputOptionSearch]="staff.name"
+                          >{{ staff.name }}</ng-template
+                        >
+                      }
+                    </hq-select-input>
+                  </div>
+                  <div>
+                    <hq-date-input
+                      formControlName="Date"
+                      label="Date"
+                      variant="secondary"
+                    >
+                    </hq-date-input>
+                  </div>
+
+                  <!-- column -->
+                </div>
+                <!-- Row grid -->
+
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(200px,395px)] pr-5"
+                >
+                  <div>
+                    <hq-select-input
+                      label="Charge Code"
+                      formControlName="ChargeCode"
+                      [autocomplete]="true"
+                      variant="secondary"
+                    >
+                      <ng-template [hqSelectInputOption]="null"
+                        >Chrg</ng-template
+                      >
+                      @for (code of chargeCodes$ | async; track code.code) {
+                        <ng-template
+                          [hqSelectInputOption]="code.code"
+                          [hqSelectInputOptionSelectedDisplay]="
+                            code.code + ': ' + code.projectName
+                          "
+                          [hqSelectInputOptionSearch]="
+                            code.code +
+                            ': ' +
+                            code.clientName +
+                            ': ' +
+                            code.projectName
+                          "
+                          >{{
+                            code.code +
+                              ": " +
+                              code.clientName +
+                              ": " +
+                              code.projectName
+                          }}</ng-template
+                        >
+                      }
+                    </hq-select-input>
+                  </div>
+                  <div>
+                    @if (activities$ | async; as activities) {
+                      @if (activities && activities.length > 0) {
+                        <hq-select-input
+                          label="Select Activity"
+                          formControlName="ActivityId"
+                          [autocomplete]="false"
+                          variant="secondary"
+                        >
+                          <ng-template [hqSelectInputOption]="null"
+                            >Activity</ng-template
+                          >
+                          @for (activity of activities; track activity.id) {
+                            <ng-template [hqSelectInputOption]="activity.id">
+                              {{ activity.name }}
+                            </ng-template>
+                          }
+                        </hq-select-input>
+                        @if (
+                          form.get("ActivityId")?.touched &&
+                          form.get("ActivityId")?.errors?.["required"]
+                        ) {
+                          <span
+                            class="text-red-700 text-xs leading-normal inline-block"
+                            >Activity is required.</span
+                          >
+                        }
+                      } @else {
+                        <hq-form-label>Task</hq-form-label>
+                        <input
+                          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+                          type="text"
+                          aria-label="Task"
+                          formControlName="Task"
+                        />
+                      }
+                    }
+                  </div>
+                </div>
+                <!-- row grid -->
+                <div
+                  class="grid gap-[20px] grid-flow-col grid-cols-[395px_minmax(200px,395px)] pr-5"
+                >
+                  <!-- column -->
+                  <div>
+                    <label
+                      for=""
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                      >Hours</label
+                    >
+                    <input
+                      [ngClass]="{
+                        'border-red-700 focus:border-red-700':
+                          form.controls.Hours.errors && form.touched,
+                        'focus:border-white placeholder:text-gray-100':
+                          !form.controls.Hours.errors || !form.touched,
+                      }"
+                      formControlName="Hours"
+                      type="number"
+                      name=""
+                      id="Hours"
+                      min="0"
+                      (change)="updateHours($event)"
+                      class="w-[100%] max-w-[121px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+                      placeholder="Hours"
+                    />
+                    @if (
+                      form.get("Hours")?.touched &&
+                      form.get("Hours")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >Hours are required.</span
+                      >
+                    }
+                  </div>
+
+                  <div>
+                    <!-- text input -->
+                    <label
+                      for=""
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+                      >Description</label
+                    >
+                    <input
+                      [class.border-red-700]="
+                        form.get('Notes')?.touched &&
+                        form.get('Notes')?.errors?.['required']
+                      "
+                      type="text"
+                      name="Notes"
+                      id="Notes"
+                      class="w-[100%] max-w-[395px] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
+                      placeholder="Enter Description"
+                      formControlName="Notes"
+                    />
+                    @if (
+                      form.get("Notes")?.touched &&
+                      form.get("Notes")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >Description is required.</span
+                      >
+                    }
+                  </div>
+                </div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+</form>
