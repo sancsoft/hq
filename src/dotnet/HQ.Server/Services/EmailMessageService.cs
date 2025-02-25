@@ -337,23 +337,19 @@ namespace HQ.Server.Services
                     point.Completed = true;
                     timesDictionary[point.ChargeCodeId.Value] -= pointTime;
                 }
-
-
-                var pointsFinal = _points;
-
-                //set model data for the email which will be sent to user
-                var model = new UpdatedPlanningPointsEmail()
-                {
-                    StaffName = staff.Name,
-                    UpdatedBy = modifyingUser?.Name,
-                    ButtonLabel = "Open HQ",
-                    ButtonUrl = _options.CurrentValue.WebUrl,
-                    Date = date,
-                    Points = pointsFinal
-                };
-                //sends email 
-                await SendEmail(EmailMessage.UpdatedPlanningPoints, model, staff.Email, "[HQ] Planning Points Updated", MailPriority.High, null, ct);
             }
+            var pointsFinal = _points;
+            var model = new UpdatedPlanningPointsEmail()
+            {
+                StaffName = staff.Name,
+                UpdatedBy = modifyingUser?.Name,
+                ButtonLabel = "Open HQ",
+                ButtonUrl = _options.CurrentValue.WebUrl,
+                Date = date,
+                Points = pointsFinal
+            };
+            //sends email 
+            await SendEmail(EmailMessage.UpdatedPlanningPoints, model, staff.Email, "[HQ] Planning Points Updated", MailPriority.High, null, ct);
         }
         public async Task SendEmployeeHoursEmail(CancellationToken ct)
         {
@@ -368,15 +364,18 @@ namespace HQ.Server.Services
                     HoursLastMonth = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.LastMonth) && x.Date <= date.GetPeriodEndDate(Period.LastMonth)).Sum(x => x.Hours),
                     HoursThisMonth = t.Times.Where(x => x.Date >= date.GetPeriodStartDate(Period.Month) && x.Date <= date.GetPeriodEndDate(Period.Month)).Sum(x => x.Hours),
                     StaffName = t.Name,
-                    WorkHours = t.WorkHours
+                    WorkHours = t.WorkHours,
+                    StaffDashboardURL = _options.CurrentValue.WebUrl + $"staff/{t.Id}/timesheet",
+
                 })
-                .OrderBy(t => t.HoursLastWeek)
                 .ToListAsync(ct);
             foreach (var employee in staff)
             {
                 employee.MissingHours = employee.HoursLastWeek == 0;
                 employee.LessThanExpectedHours = employee.HoursLastWeek < employee.WorkHours;
+                employee.PercentageWorkedHours = employee.WorkHours == 0 ? 0 : Convert.ToInt32((employee.HoursLastWeek / employee.WorkHours) * 100);
             }
+            staff = staff.OrderBy(s => s.PercentageWorkedHours).ThenBy(s => s.StaffName).ToList();
 
             var managersToNotify = await _context.Projects
                 .AsNoTracking()
@@ -390,9 +389,9 @@ namespace HQ.Server.Services
                 Date = date,
                 PeriodBegin = date.GetPeriodStartDate(Period.LastWeek),
                 PeriodEnd = date.GetPeriodEndDate(Period.LastWeek),
-                ButtonLabel = "Open HQ",
-                ButtonUrl = _options.CurrentValue.WebUrl,
-                Staff = staff
+                Staff = staff,
+                ThisMonthDate = date.GetPeriodStartDate(Period.Month),
+                LastMonthDate = date.GetPeriodStartDate(Period.LastMonth)
             };
             foreach (var manager in managersToNotify)
             {

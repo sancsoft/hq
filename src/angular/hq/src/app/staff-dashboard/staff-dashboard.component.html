@@ -239,13 +239,13 @@
                         width="28"
                         scope="col"
                         class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
-                      ></th>
-                      <th
-                        width="80"
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
                       >
                         Hrs
                       </th>
+                      <th
+                        width="80"
+                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
+                      ></th>
                       <th
                         width="160"
                         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
@@ -411,9 +411,19 @@
                         ></th>
                         <th
                           width="80"
-                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap cursor-pointer"
+                          (click)="onSortClick(sortColumn.Hours)"
                         >
                           Hrs
+                          <hq-sort-icon
+                            [column]="sortColumn.Hours"
+                            [activeColumn]="
+                              staffDashboardService.sortOption$ | async
+                            "
+                            [activeSortDirection]="
+                              staffDashboardService.sortDirection$ | async
+                            "
+                          />
                         </th>
                         <th
                           width="160"
@@ -423,21 +433,51 @@
                         </th>
                         <th
                           width="160"
-                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+                          (click)="onSortClick(sortColumn.ChargeCode)"
                         >
                           Chrg Code
+                          <hq-sort-icon
+                            [column]="sortColumn.ChargeCode"
+                            [activeColumn]="
+                              staffDashboardService.sortOption$ | async
+                            "
+                            [activeSortDirection]="
+                              staffDashboardService.sortDirection$ | async
+                            "
+                          />
                         </th>
                         <th
                           width="160"
-                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 cursor-pointer"
+                          (click)="onSortClick(sortColumn.ClientName)"
                         >
                           Client
+                          <hq-sort-icon
+                            [column]="sortColumn.ClientName"
+                            [activeColumn]="
+                              staffDashboardService.sortOption$ | async
+                            "
+                            [activeSortDirection]="
+                              staffDashboardService.sortDirection$ | async
+                            "
+                          />
                         </th>
                         <th
                           width="160"
-                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 cursor-pointer"
+                          (click)="onSortClick(sortColumn.ProjectName)"
                         >
                           Project
+                          <hq-sort-icon
+                            [column]="sortColumn.ProjectName"
+                            [activeColumn]="
+                              staffDashboardService.sortOption$ | async
+                            "
+                            [activeSortDirection]="
+                              staffDashboardService.sortDirection$ | async
+                            "
+                          />
                         </th>
                         <th
                           width="160"

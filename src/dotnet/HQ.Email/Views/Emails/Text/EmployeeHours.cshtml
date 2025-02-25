@@ -16,38 +16,39 @@ Dates: <text>@Model.PeriodBegin - @Model.PeriodEnd</text>
 
 <table>
     <tr style="white;padding:15px 0;color:white;text-align:center;padding:15px 5px;">
-        <td style="padding: 0 15px 0 0;font-weight:bold;border-bottom:1px solid white;">Staff</td>
-        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Last Week</td>
-        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">This Month</td>
-        <td style="padding: 0 15px;font-weight:bold;border-bottom:1px solid white;">Last Month</td>
+        <td style="padding: 0 15px 0 0; text-align:left; font-weight:bold;border-bottom:1px solid white;">Staff</td>
+        <td style="text-align:right; font-weight:bold;border-bottom:1px solid white;">working hours %
+        </td>
+        <td style="text-align:right; font-weight:bold;border-bottom:1px solid white;">Week</td>
+        <td style="text-align:right; font-weight:bold;border-bottom:1px solid white;">@Model.ThisMonthDate.ToString("MMM-yy")</td>
+        <td style="text-align:right; font-weight:bold;border-bottom:1px solid white;">@Model.LastMonthDate.ToString("MMM-yy")</td>
     </tr>
     @foreach (var staff in @Model.Staff)
     {
         @if (staff.LessThanExpectedHours || staff.MissingHours)
         {
 
-            <tr style="color:red; text-align:center;">
-                <td style="padding: 0 15px 0 0;">@staff.StaffName</td>
-                <td style="padding: 0 15px;">@staff.HoursLastWeek</td>
-                <td style="padding: 0 15px;">@staff.HoursThisMonth</td>
-                <td style="padding: 0 15px;">@staff.HoursLastMonth</td>
+            <tr style="color:#f97316; text-align:center;">
+                <td style="text-align:left"> <a href="@staff.StaffDashboardURL"
+                       style="color: inherit;" >@staff.StaffName</a> </td>
+                <td style="text-align:right;">@staff.PercentageWorkedHours.ToString()%</td>
+                <td style="text-align:right;">@staff.HoursLastWeek.ToString("F")</td>
+                <td style="text-align:right;">@staff.HoursThisMonth.ToString("F")</td>
+                <td style="text-align:right;">@staff.HoursLastMonth.ToString("F")</td>
             </tr>
 
         }
         else
         {
             <tr style="color:white; text-align:center;">
-                <td style="padding: 0 15px 0 0;">@staff.StaffName</td>
-                <td style="padding: 0 15px;">@staff.HoursLastWeek</td>
-                <td style="padding: 0 15px;">@staff.HoursThisMonth</td>
-                <td style="padding: 0 15px;">@staff.HoursLastMonth</td>
+                <td style="text-align:left"> <a href="@staff.StaffDashboardURL"
+                        style="color: inherit;">@staff.StaffName</a> </td>
+                <td style="text-align:right;">@staff.PercentageWorkedHours.ToString()%</td>
+                <td style="text-align:right;">@staff.HoursLastWeek.ToString("F")</td>
+                <td style="text-align:right;">@staff.HoursThisMonth.ToString("F")</td>
+                <td style="text-align:right;">@staff.HoursLastMonth.ToString("F")</td>
             </tr>
         }
 
-    }
-
-    @if (!String.IsNullOrEmpty(Model.ButtonLabel) && Model.ButtonUrl != null)
-    {
-        <text>@Model.ButtonLabel: @Model.ButtonUrl</text>
     }
 </table>

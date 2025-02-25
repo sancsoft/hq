@@ -19,6 +19,7 @@ public class ExportTimesV1
         public Period? Period { get; set; }
         public bool? TimeAccepted { get; set; }
         public bool? Invoiced { get; set; }
+        public bool? Billable { get; set; }
         public TimeStatus? TimeStatus { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.Date;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;

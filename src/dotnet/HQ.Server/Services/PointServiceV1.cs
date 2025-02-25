@@ -388,7 +388,11 @@ public class PointServiceV1
 
         foreach (var staffMember in staff)
         {
-            var upcomingVacations = await _context.Times.AsNoTracking().AsQueryable().Where(t => t.Date >= startDate && t.Date <= endDate && t.ChargeCode == vacationChargeCode).ToListAsync(ct);
+            var upcomingVacations = await _context.Times.AsNoTracking().AsQueryable().Where(t => t.Date >= startDate && t.Date <= endDate && t.ChargeCode == vacationChargeCode && t.StaffId == staffMember.Id).ToListAsync(ct);
+            if (!upcomingVacations.Any())
+            {
+                continue;
+            }
             var getPointsRequest = new GetPointsV1.Request
             {
                 StaffId = staffMember.Id,
@@ -397,7 +401,8 @@ public class PointServiceV1
 
             var staffPointsResponse = await GetPointsV1(getPointsRequest, ct);
             var points = staffPointsResponse.Value.Points;
-            var pointsToUpdate = upcomingVacations.Count * 2;
+            var vacationHours = upcomingVacations.Sum(t => t.Hours);
+            var pointsToUpdate = Math.Ceiling(vacationHours / 4);
             var updatedCount = 0;
             for (int i = 0; i < points.Count && updatedCount < pointsToUpdate; i++)
             {

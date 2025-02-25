@@ -599,16 +599,30 @@ namespace HQ.Server.Services
 
 
             var sortMap = new Dictionary<Abstractions.Times.GetTimesV1.SortColumn, string>()
-    {
-        { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
-        { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-        { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
-        { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "ClientName" },
-        { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
-    };
+            {
+                { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
+                { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "ClientName" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
+            };
 
-
-            if (sortMap.ContainsKey(request.SortBy))
+            if (request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.Date)
+            {
+                if (request.SortDirection == SortDirection.Desc)
+                {
+                    times = times
+                        .OrderByDescending(t => t.Date)
+                        .ThenByDescending(t => t.CreatedAt);
+                }
+                else
+                {
+                    times = times
+                        .OrderBy(t => t.Date)
+                        .ThenBy(t => t.CreatedAt);
+                }
+            }
+            else if (sortMap.ContainsKey(request.SortBy))
             {
                 var sortProperty = sortMap[request.SortBy];
 
@@ -644,8 +658,21 @@ namespace HQ.Server.Services
                 RejectedCount = await _context.Times.Where(t => t.StaffId == request.StaffId && t.Status == TimeStatus.Rejected).CountAsync(ct),
                 TimeEntryCutoffDate = staff.TimeEntryCutoffDate
             };
+            if (request.Status == TimeStatus.Rejected)
+            {
+                var rejectedTimes = new GetDashboardTimeV1.TimeForDate
+                {
+                    Date = startDate,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    Times = groupedTimes.Values.SelectMany(v => v).ToList(),
+                    TotalHours = timeEntriesList.Sum(t => t.Hours),
+                    CanCreateTime = !staff.TimeEntryCutoffDate.HasValue || endDate >= staff.TimeEntryCutoffDate.Value
+                };
 
-            if (request.Period == Period.Today || request.Period == Period.Week)
+                response.Dates.Add(rejectedTimes);
+            }
+            else if (request.Period == Period.Today || request.Period == Period.Week)
             {
                 DateOnly date = endDate;
                 do
@@ -707,6 +734,7 @@ namespace HQ.Server.Services
                 Period = exportRequest.Period,
                 TimeAccepted = exportRequest.TimeAccepted,
                 Invoiced = exportRequest.Invoiced,
+                Billable = exportRequest.Billable,
                 SortBy = (GetTimesV1.SortColumn)exportRequest.SortBy,
                 SortDirection = exportRequest.SortDirection,
                 TimeStatus = exportRequest.TimeStatus

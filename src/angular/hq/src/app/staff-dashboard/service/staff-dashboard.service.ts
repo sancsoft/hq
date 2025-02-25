@@ -66,6 +66,7 @@ export class StaffDashboardService implements OnDestroy {
   public sortDirection$ = new BehaviorSubject<SortDirection>(
     SortDirection.Desc,
   );
+  localIsoDate = localISODate;
 
   constructor(
     private hqService: HQService,

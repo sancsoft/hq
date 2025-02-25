@@ -235,6 +235,9 @@ table.hq-table {
         @apply border-b border-black;
       }
     }
+    tr.bg-red-850 {
+      background-color: rgb(133 36 32 / var(--tw-bg-opacity));
+    }
   }
 
   thead,
