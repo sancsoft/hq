@@ -2,7 +2,7 @@ import { PsrListSearchFilterComponent } from './../psr-list-search-filter/psr-li
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { BehaviorSubject, map, firstValueFrom } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { SortColumn } from '../../models/PSR/get-PSR-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
@@ -48,15 +48,9 @@ export class PSRListComponent implements OnInit {
   ProjectStatus = ProjectStatus;
   ProjectType = ProjectType;
 
+
   async ngOnInit() {
-    const staffId = await firstValueFrom(
-      this.oidcSecurityService.userData$.pipe(map((t) => t.userData?.staff_id)),
-    );
-    if (staffId) {
-      this.listService.staffMember.setValue(staffId);
-    } else {
-      console.log('ERROR: Could not find staff');
-    }
+    await this.listService.initStaffId();
   }
 
   constructor(
