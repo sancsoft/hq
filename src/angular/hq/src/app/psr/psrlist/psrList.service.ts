@@ -35,9 +35,11 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 @Injectable({
   providedIn: 'root',
 })
-export class PsrListService
-  extends BaseListService<GetPSRRecordsV1, GetPSRRecordV1, SortColumn>
-{
+export class PsrListService extends BaseListService<
+  GetPSRRecordsV1,
+  GetPSRRecordV1,
+  SortColumn
+> {
   private _initialized = false;
   staffMembers$: Observable<GetPSRTimeRecordStaffV1[]>;
 

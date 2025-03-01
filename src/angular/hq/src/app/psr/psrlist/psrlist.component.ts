@@ -48,7 +48,6 @@ export class PSRListComponent implements OnInit {
   ProjectStatus = ProjectStatus;
   ProjectType = ProjectType;
 
-
   async ngOnInit() {
     await this.listService.initStaffId();
   }
