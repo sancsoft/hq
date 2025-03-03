@@ -50,6 +50,7 @@ export class StaffEditComponent implements OnDestroy, OnInit {
   apiErrors: string[] = [];
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
   Jurisdiction = Jurisdiciton;
+  canSubmit$ = new BehaviorSubject<boolean>(false);
 
   form = new FormGroup<Form>({
     name: new FormControl(null, {
@@ -65,16 +66,16 @@ export class StaffEditComponent implements OnDestroy, OnInit {
       validators: [Validators.email],
     }),
     workHours: new FormControl(0, {
-      validators: [Validators.min(0)],
+      validators: [Validators.required, Validators.min(0)],
     }),
     vacationHours: new FormControl(0, {
-      validators: [Validators.min(0)],
+      validators: [Validators.required, Validators.min(0)],
     }),
     jurisdiciton: new FormControl(Jurisdiciton.USA, {
       validators: [],
     }),
     startDate: new FormControl(null, {
-      validators: [],
+      validators: [Validators.required],
     }),
     endDate: new FormControl(null, {}),
   });
@@ -95,6 +96,13 @@ export class StaffEditComponent implements OnDestroy, OnInit {
         },
         error: console.error,
       });
+
+    this.form.statusChanges.pipe(takeUntil(this.destroy)).subscribe({
+      next: (status) => {
+        this.canSubmit$.next(status === 'VALID');
+      },
+      error: console.error,
+    });
   }
 
   private destroy = new Subject<void>();
@@ -151,13 +159,13 @@ export class StaffEditComponent implements OnDestroy, OnInit {
       );
       const staffMember = response.records[0];
       this.form.setValue({
-        name: staffMember.name || null,
-        firstName: staffMember.firstName || null,
-        lastName: staffMember.lastName || null,
-        email: staffMember.email || null,
-        workHours: staffMember.workHours || null,
-        vacationHours: staffMember.vacationHours || null,
-        jurisdiciton: staffMember.jurisdiciton || null,
+        name: staffMember.name,
+        firstName: staffMember.firstName,
+        lastName: staffMember.lastName,
+        email: staffMember.email,
+        workHours: staffMember.workHours,
+        vacationHours: staffMember.vacationHours,
+        jurisdiciton: staffMember.jurisdiciton,
         startDate: staffMember.startDate || null,
         endDate: staffMember.endDate || null,
       });
