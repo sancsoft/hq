@@ -50,7 +50,7 @@ export class StaffEditComponent implements OnDestroy, OnInit {
   apiErrors: string[] = [];
   showStaffMembers$ = new BehaviorSubject<boolean | null>(null);
   Jurisdiction = Jurisdiciton;
-  canSubmit$ = new BehaviorSubject<boolean>(false);
+  canSubmit$ = new BehaviorSubject<boolean>(true);
 
   form = new FormGroup<Form>({
     name: new FormControl(null, {
