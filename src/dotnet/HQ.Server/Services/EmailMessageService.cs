@@ -397,7 +397,7 @@ namespace HQ.Server.Services
             {
                 if (manager != null)
                 {
-                    await SendEmail(EmailMessage.EmployeeHours, model, manager, "[HQ] Staff Hours", MailPriority.High, null, ct);
+                    await SendEmail(EmailMessage.EmployeeHours, model, manager, "[HQ] Staff Hours", MailPriority.Normal, null, ct);
                 }
             }
         }
