@@ -7,17 +7,18 @@ using FluentResults;
 
 using HQ.Abstractions.Invoices;
 using HQ.Server.Data;
+using HQ.Server.Data.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Invoices
 {
-    public class InvoicesServiceV1
+    public partial class InvoicesServiceV1
     {
         private readonly HQDbContext _context;
         public InvoicesServiceV1(HQDbContext context)
         {
-            this._context = context;
+            _context = context;
         }
 
         public async Task<Result<GetInvoicesV1.Response>> GetInvoicesV1(GetInvoicesV1.Request request, CancellationToken ct = default)
@@ -88,8 +89,211 @@ namespace HQ.Server.Invoices
             };
 
             return response;
+        }
+
+        public async Task<Result<CreateInvoiceV1.Response>> CreateInvoiceV1(CreateInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            var client = await _context.Clients.FirstOrDefaultAsync(c => c.Id == request.ClientId, ct);
+            if (client == null)
+            {
+                return Result.Fail<CreateInvoiceV1.Response>("Client not found");
+            }
+            if (string.IsNullOrEmpty(request.InvoiceNumber))
+            {
+                return Result.Fail<CreateInvoiceV1.Response>("Invoice number is required");
+            }
+
+            var existingInvoice = await _context.Invoices.FirstOrDefaultAsync(i => i.InvoiceNumber.Trim().ToLower() == request.InvoiceNumber.Trim().ToLower(), ct);
+
+            if (existingInvoice != null)
+            {
+                return Result.Fail<CreateInvoiceV1.Response>("Invoice number already exists");
+            }
+
+            var invoice = new Invoice
+            {
+                ClientId = request.ClientId,
+                Date = request.Date ?? DateOnly.FromDateTime(DateTime.Today),
+                InvoiceNumber = request.InvoiceNumber,
+                Total = 0,
+                TotalApprovedHours = 0,
+                Times = new List<Time>()
+            };
+
+            _context.Invoices.Add(invoice);
+            await _context.SaveChangesAsync(ct);
+
+            return Result.Ok(new CreateInvoiceV1.Response
+            {
+                Id = invoice.Id,
+
+            });
+        }
+
+        public async Task<Result<AddTimeToInvoiceV1.Response>> AddTimeToInvoiceV1(AddTimeToInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+            var invoice = await _context.Invoices
+                .Include(i => i.Times)
+                .FirstOrDefaultAsync(i => i.Id == request.InvoiceId, ct);
+
+            if (invoice == null)
+            {
+                return Result.Fail<AddTimeToInvoiceV1.Response>("Invoice not found");
+            }
+
+            var timeEntries = await _context.Times
+                .Where(t => request.TimeEntryIds.Contains(t.Id))
+                .Include(t => t.ChargeCode)
+                .ThenInclude(c => c.Project)
+                .ToListAsync(ct);
+
+            if (timeEntries.Count != request.TimeEntryIds.Count)
+            {
+                return Result.Fail<AddTimeToInvoiceV1.Response>("Some time entries were not found");
+            }
+
+            foreach (var time in timeEntries)
+            {
+                if (time.InvoiceId != null)
+                {
+                    return Result.Fail<AddTimeToInvoiceV1.Response>($"Time entry {time.Id} is already linked to an invoice");
+                }
+                if (time.ChargeCode.Project?.ClientId != invoice.ClientId)
+                {
+                    return Result.Fail<AddTimeToInvoiceV1.Response>($"Time entry {time?.Id} does not belong to the client of the invoice");
+                }
+                time.InvoiceId = invoice.Id;
+                invoice.Times.Add(time);
+            }
 
 
+            invoice.Total = invoice.Times.Sum(t => t.Hours);
+            invoice.TotalApprovedHours = invoice.Times.Sum(t => t.HoursApproved ?? 0);
+
+            await _context.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
+            return Result.Ok(new AddTimeToInvoiceV1.Response
+            {
+                InvoiceId = invoice.Id,
+                TimeEntriesAdded = timeEntries.Count
+            });
+        }
+
+        public async Task<Result<RemoveTimeFromInvoiceV1.Response>> RemoveTimeFromInvoiceV1(RemoveTimeFromInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+            var invoice = await _context.Invoices
+                .Include(i => i.Times)
+                .FirstOrDefaultAsync(i => i.Id == request.InvoiceId, ct);
+
+            if (invoice == null)
+            {
+                return Result.Fail<RemoveTimeFromInvoiceV1.Response>("Invoice not found");
+            }
+
+            var timeEntriesToRemove = await _context.Times
+                .Where(t => request.TimeEntryIds.Contains(t.Id) && t.InvoiceId == request.InvoiceId)
+                .ToListAsync(ct);
+
+            if (timeEntriesToRemove.Count != request.TimeEntryIds.Count)
+            {
+                return Result.Fail<RemoveTimeFromInvoiceV1.Response>("Some time entries were not found on this invoice");
+            }
+
+            foreach (var timeEntry in timeEntriesToRemove)
+            {
+                timeEntry.InvoiceId = null;
+                invoice.Times.Remove(timeEntry);
+            }
+
+            invoice.Total = invoice.Times.Sum(t => t.Hours);
+            invoice.TotalApprovedHours = invoice.Times.Sum(t => t.HoursApproved ?? 0);
+
+            await _context.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
+
+            return Result.Ok(new RemoveTimeFromInvoiceV1.Response
+            {
+                InvoiceId = invoice.Id,
+            });
+        }
+
+        public async Task<Result<UpdateInvoiceV1.Response>> UpdateInvoiceV1(UpdateInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync(ct);
+
+            var invoice = await _context.Invoices
+                .Include(i => i.Client)
+                .Include(i => i.Times)
+                .ThenInclude(t => t.ChargeCode)
+                .ThenInclude(c => c.Project)
+                .FirstOrDefaultAsync(i => i.Id == request.Id, ct);
+
+            if (invoice == null)
+            {
+                return Result.Fail<UpdateInvoiceV1.Response>("Invoice not found");
+            }
+
+            if (request.ClientId.HasValue && invoice.ClientId != request.ClientId)
+            {
+                var newClient = await _context.Clients.FirstOrDefaultAsync(c => c.Id == request.ClientId, ct);
+                if (newClient == null)
+                {
+                    return Result.Fail<UpdateInvoiceV1.Response>("Client not found");
+                }
+                foreach (var timeEntry in invoice.Times.ToList())
+                {
+                    if (timeEntry.ChargeCode.Project?.ClientId != request.ClientId)
+                    {
+                        timeEntry.InvoiceId = null;
+                        timeEntry.Invoice = null;
+                        invoice.Times.Remove(timeEntry);
+                    }
+                }
+                invoice.Client = newClient;
+                invoice.ClientId = request.ClientId.Value;
+
+            }
+
+            if (!string.IsNullOrEmpty(request.InvoiceNumber) && invoice.InvoiceNumber != request.InvoiceNumber)
+            {
+                var existingInvoice = await _context.Invoices
+                    .FirstOrDefaultAsync(i => i.Id != request.Id &&
+                                        i.InvoiceNumber.Trim().ToLower() == request.InvoiceNumber.Trim().ToLower(), ct);
+
+                if (existingInvoice != null)
+                {
+                    return Result.Fail<UpdateInvoiceV1.Response>("Invoice number already exists");
+                }
+
+                invoice.InvoiceNumber = request.InvoiceNumber;
+            }
+
+            if (request.Date.HasValue)
+            {
+                invoice.Date = request.Date.Value;
+            }
+
+            invoice.Total = invoice.Times.Sum(t => t.Hours);
+            invoice.TotalApprovedHours = invoice.Times.Sum(t => t.HoursApproved ?? 0);
+
+            await _context.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
+
+            return Result.Ok(new UpdateInvoiceV1.Response
+            {
+                Id = invoice.Id,
+                ClientId = invoice.ClientId,
+                ClientName = invoice.Client.Name,
+                Date = invoice.Date,
+                InvoiceNumber = invoice.InvoiceNumber,
+                Total = invoice.Total,
+                TotalApprovedHours = invoice.TotalApprovedHours,
+                TimeEntriesCount = invoice.Times.Count
+            });
         }
     }
 }
