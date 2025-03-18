@@ -10,7 +10,11 @@
           >
             <div class="font-bold">Staff Information</div>
             <div class="pb-2">
-              <hq-button type="submit">Save</hq-button>
+              <hq-button
+                [disabled]="(canSubmit$ | async) === false"
+                type="submit"
+                >Save</hq-button
+              >
             </div>
           </div>
 
