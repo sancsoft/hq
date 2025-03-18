@@ -8,6 +8,7 @@ import {
   combineLatest,
   debounceTime,
   finalize,
+  firstValueFrom,
   map,
   of,
   startWith,
@@ -28,6 +29,8 @@ import {
 import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
 import { FormControl } from '@angular/forms';
+import { formControlChanges } from '../../core/functions/form-control-changes';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +40,7 @@ export class PsrListService extends BaseListService<
   GetPSRRecordV1,
   SortColumn
 > {
+  private _initialized = false;
   staffMembers$: Observable<GetPSRTimeRecordStaffV1[]>;
 
   roaster = new FormControl<string | null>('');
@@ -56,7 +60,10 @@ export class PsrListService extends BaseListService<
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
-  constructor(private hqService: HQService) {
+  constructor(
+    private hqService: HQService,
+    private oidcSecurityService: OidcSecurityService,
+  ) {
     super(SortColumn.ChargeCode, SortDirection.Asc);
     this.staffMembers$ = this.hqService
       .getStaffMembersV1({ isAssignedProjectManager: true })
@@ -90,6 +97,20 @@ export class PsrListService extends BaseListService<
     });
   }
 
+  async initStaffId() {
+    if (this._initialized) return;
+
+    const staffId = await firstValueFrom(
+      this.oidcSecurityService.userData$.pipe(map((t) => t.userData?.staff_id)),
+    );
+    if (staffId) {
+      this.staffMember.setValue(staffId);
+    } else {
+      console.log('ERROR: Could not find staff');
+    }
+    this._initialized = true;
+  }
+
   showStartDate() {
     this.showStartDate$.next(true);
   }
@@ -104,9 +125,7 @@ export class PsrListService extends BaseListService<
   }
 
   protected override getResponse(): Observable<GetPSRRecordsV1> {
-    const staffMemberId$ = this.staffMember.valueChanges.pipe(
-      startWith(this.staffMember.value),
-    );
+    const staffMemberId$ = formControlChanges(this.staffMember);
 
     const period$ = this.selectedPeriod.valueChanges.pipe(
       startWith(this.selectedPeriod.value),
