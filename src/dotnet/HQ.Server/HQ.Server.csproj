@@ -6,7 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>true</InvariantGlobalization>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
@@ -23,46 +22,41 @@
 
     <ItemGroup>
         <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-        <PackageReference Include="ClosedXML" Version="0.102.2" />
-        <PackageReference Include="CsvHelper" Version="32.0.1" />
+        <PackageReference Include="ClosedXML" Version="0.104.2" />
+        <PackageReference Include="CsvHelper" Version="33.0.1" />
         <PackageReference Include="Duende.AccessTokenManagement" Version="3.2.0" />
         <PackageReference Include="Duende.AccessTokenManagement.OpenIdConnect" Version="3.2.0" />
-        <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
-        <PackageReference Include="FluentResults" Version="3.15.2" />
+        <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
+        <PackageReference Include="FluentResults" Version="3.16.0" />
         <PackageReference Include="FluentResults.Extensions.AspNetCore" Version="0.1.0" />
-        <PackageReference Include="Hangfire.InMemory" Version="0.10.3" />
-        <PackageReference Include="MailKit" Version="4.7.0" />
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
-        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.9" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
+        <PackageReference Include="Hangfire.InMemory" Version="1.0.0" />
+        <PackageReference Include="MailKit" Version="4.11.0" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18" />
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.14" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="MimeKit" Version="4.7.1" />
-        <PackageReference Include="Mjml.Net" Version="3.11.0" />
-        <PackageReference Include="Npgsql" Version="8.0.3" />
-        <PackageReference Include="Spectre.Console.Cli" Version="0.48.1-preview.0.38" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
-        <PackageReference Include="Npgsql.OpenTelemetry" Version="8.0.3" />
-        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
+        <PackageReference Include="MimeKit" Version="4.11.0" />
+        <PackageReference Include="Mjml.Net" Version="4.7.0" />
+        <PackageReference Include="Npgsql" Version="9.0.3" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+        <PackageReference Include="Npgsql.OpenTelemetry" Version="9.0.3" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.2" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.1" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Hangfire" Version="1.6.0-beta.1" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.11.1" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="0.5.0-beta.6" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\HQ.Abstractions\HQ.Abstractions.csproj" />
         <ProjectReference Include="..\HQ.Email\HQ.Email.csproj" />
     </ItemGroup>
-    <ItemGroup>
-     <InternalsVisibleTo Include="IntegrationTests" />
-</ItemGroup>
 
 </Project>

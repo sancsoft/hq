@@ -50,6 +50,9 @@
     }
   </button>
   <ng-template
+    [cdkConnectedOverlayHasBackdrop]="true"
+    (backdropClick)="backdrop()"
+    [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
     cdkConnectedOverlay
     [cdkConnectedOverlayOrigin]="button"
     [cdkConnectedOverlayOpen]="isOpen"
@@ -66,8 +69,8 @@
       >
         <div class="border-b border-b-black">
           <hq-search-input
+            #searchInput
             variant="transparent"
-            (hqBlur)="onBlur()"
             (keydown)="onSearchKeyDown($event)"
             [formControl]="searchForm"
           >
@@ -111,7 +114,6 @@
           ngControl?.invalid && ngControl?.touched,
         'border-black': !(ngControl?.invalid && ngControl?.touched),
       }"
-      (blur)="onBlur()"
       (keydown.enter)="onEnter($event.target)"
       class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-white bg-blue-900 rounded h-[30px]"
     >

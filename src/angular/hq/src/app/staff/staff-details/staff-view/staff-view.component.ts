@@ -121,13 +121,13 @@ export class StaffViewComponent implements OnInit {
       );
       const staffMember = response.records[0];
       this.form.setValue({
-        name: staffMember.name || null,
-        firstName: staffMember.firstName || null,
-        lastName: staffMember.lastName || null,
-        email: staffMember.email || null,
-        workHours: staffMember.workHours || null,
-        vacationHours: staffMember.vacationHours || null,
-        jurisdiciton: staffMember.jurisdiciton || null,
+        name: staffMember.name,
+        firstName: staffMember.firstName,
+        lastName: staffMember.lastName,
+        email: staffMember.email,
+        workHours: staffMember.workHours,
+        vacationHours: staffMember.vacationHours,
+        jurisdiciton: staffMember.jurisdiciton,
         startDate: staffMember.startDate || null,
         endDate: staffMember.endDate || null,
       });

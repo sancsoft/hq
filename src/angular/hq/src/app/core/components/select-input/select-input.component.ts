@@ -178,6 +178,7 @@ export class SelectInputComponent<T>
     if (click) {
       this.ignoreFocus = true;
       this.button?.nativeElement?.focus();
+      this.onBlur();
     }
   }
 
@@ -221,15 +222,20 @@ export class SelectInputComponent<T>
       case 'Enter':
       case 'Escape':
         event.preventDefault();
-        this.isOpen = false;
-        this.searchForm.reset(null);
-        this.hqBlur.emit();
         this.ignoreFocus = true;
+        this.isOpen = false;
+        this.hqBlur.emit();
+        this.searchForm.reset(null);
         this.button?.nativeElement?.focus();
         break;
       case 'Tab':
-        this.ignoreFocus = true;
-        this.button?.nativeElement?.focus();
+        if (this.isOpen) {
+          this.ignoreFocus = true;
+          this.isOpen = false;
+          this.hqBlur.emit();
+          this.searchForm.reset(null);
+          this.button?.nativeElement?.focus();
+        }
     }
   }
 
@@ -337,5 +343,8 @@ export class SelectInputComponent<T>
   focus() {
     this.select?.nativeElement?.focus();
     this.select?.nativeElement?.select();
+  }
+  backdrop() {
+    this.onBlur();
   }
 }
