@@ -65,6 +65,7 @@ export interface ChargeCodeViewModel {
     SelectInputOptionDirective,
     SelectInputComponent,
   ],
+  styleUrls: ['./psrtime-list.component.scss'],
   templateUrl: './psrtime-list.component.html',
 })
 export class PSRTimeListComponent implements OnInit, OnDestroy {
