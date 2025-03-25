@@ -331,12 +331,48 @@ export const routes: Routes = [
   },
   {
     path: 'invoices',
-    title: 'Invoice List',
+    title: 'Invoices',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
-      import('./Invoices/invoices-list/invoices-list.component').then(
-        (m) => m.InvoicesListComponent,
+      import('./Invoices/invoices.component').then(
+        (m) => m.InvoicesComponent,
       ),
+      children: [
+        {
+          path: '',
+          title: 'Invoice List',
+          canActivate: [userRoleGuard(HQRole.Staff)],
+          loadComponent: () => 
+            import('./Invoices/invoices-list/invoices-list.component').then(
+              (m) => m.InvoicesListComponent,
+            )
+        },
+        {
+          path: ':invoiceId/details',
+          canActivate: [userRoleGuard(HQRole.Staff)],
+          loadComponent: () =>
+            import('./Invoices/invoice-details/invoice-details.component').then(
+              (m) => m.InvoiceDetailsComponent,
+            )
+        },
+        {
+          path: ':invoiceId/time',
+          canActivate: [userRoleGuard(HQRole.Staff)],
+          loadComponent: () =>
+            import('./Invoices/invoice-details/invoice-details.component').then(
+              (m) => m.InvoiceDetailsComponent,
+            )
+        },
+        {
+          path: 'create',
+          title: 'Create Invoice',
+          canActivate: [userRoleGuard(HQRole.Staff)],
+          loadComponent: () =>
+            import('./Invoices/invoices-create/invoices-create.component').then(
+              (m) => m.InvoicesCreateComponent,
+            )
+        }
+      ]
   },
   {
     path: 'services',

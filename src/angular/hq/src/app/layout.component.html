@@ -102,6 +102,15 @@
         >Time</a
       >
     </div>
+    <div *ngIf="HQRole.Staff | inRole | async">
+      <a
+        routerLink="/invoices"
+        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+        aria-disabled="true"
+        >Invoices</a
+      >
+    </div>
     <!--<div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
       <a
         routerLink="/services"

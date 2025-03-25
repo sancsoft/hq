@@ -1,7 +1,7 @@
 <table class="min-w-full border-spacing-0 border-separate">
   <thead>
     <tr class="sticky top-0 text-left">
-      <th
+      <!-- <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
         (click)="onSortClick(sortColumn.ClientName)"
@@ -12,13 +12,13 @@
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
-      </th>
+      </th> -->
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
         (click)="onSortClick(sortColumn.InvoiceNumber)"
       >
-        Invoices Number
+        Invoice Number
         <hq-sort-icon
           [column]="sortColumn.InvoiceNumber"
           [activeColumn]="sortOption$ | async"
@@ -68,7 +68,6 @@
       >
         @if([HQRole.Executive, HQRole.Administrator] | inRole | async) {
         <hq-button
-          [disabled]="true"
           routerLink="/invoices/create"
           [queryParams]="{ clientId: clientDetailService.clientId$ | async }"
         >
@@ -86,7 +85,7 @@
     </td>
     } @for (invoice of invoices$ | async; track $index) {
     <tr class="even:bg-gray-850 odd:bg-black-alt">
-      <td class="border-b border-black py-2 pl-5">{{ invoice.clientName}}</td>
+      <!-- <td class="border-b border-black py-2 pl-5">{{ invoice.clientName}}</td> -->
       <td class="border-b border-black py-2 pl-5">
         {{ invoice.invoiceNumber }}
       </td>
@@ -96,7 +95,7 @@
       </td>
       <td class="border-b border-black py-2">{{ invoice.date}}</td>
       <td class="border-b border-black py-2 text-right pr-5">
-        <a class="text-teal-200 hover:text-teal-300">VIEW</a>
+        <a class="text-teal-200 hover:text-teal-300" [routerLink]="['../../../invoices', invoice.id, 'details']">VIEW</a>
       </td>
     </tr>
     }

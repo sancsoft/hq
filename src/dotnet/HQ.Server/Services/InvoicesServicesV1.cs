@@ -8,6 +8,7 @@ using FluentResults;
 using HQ.Abstractions.Invoices;
 using HQ.Server.Data;
 
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Invoices
@@ -90,6 +91,47 @@ namespace HQ.Server.Invoices
             return response;
 
 
+        }
+
+        public async Task<Result<GetInvoiceDetailsV1.Response>> GetInvoiceDetailsV1(GetInvoiceDetailsV1.Request request, CancellationToken ct = default)
+        {
+            var response = await _context.Invoices
+                .Where(t => t.Id == request.Id)
+                .Select(t => new GetInvoiceDetailsV1.Response()
+                {
+                    Id = t.Id,
+                    ClientId = t.ClientId,
+                    ClientName = t.Client.Name,
+                    Date = t.Date,
+                    InvoiceNumber = t.InvoiceNumber,
+                    Total = t.Total
+                }).SingleOrDefaultAsync(ct);
+
+            response.ChargeCodes = await _context.Times
+                .AsNoTracking()
+                .Where(t => t.InvoiceId == request.Id)
+                .Select(t => {
+                    // calculate hour sums
+                    response.TotalHours += t.TotalHours;
+                    repsonse.BillableHours += t.BillableHours;
+                    response.AcceptedHours += t.AcceptedHours;
+                    response.AcceptedBillableHours += t.AcceptedBillableHours;
+
+                    return new GetInvoiceDetailsV1.ChargeCode() {
+                        Id = t.Id,
+                        Code = t.Code,
+                        Billable = t.Billable,
+                        Active = t.Active,
+                        ProjectName = t.ProjectName,
+                        QuoteName = t.QuoteName,
+                        ProjectId = t.ProjectId,
+                        QuoteId = t.QuoteId,
+                    };
+                })
+                .Distinct()
+                .ToListAsync();
+
+            return response;
         }
     }
 }

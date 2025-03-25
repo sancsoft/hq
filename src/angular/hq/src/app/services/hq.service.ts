@@ -178,6 +178,14 @@ import {
   GetPointsSummaryRequestV1,
   GetPointsSummaryResponseV1,
 } from '../models/Points/get-points-summary-v1';
+import {
+  UpsertInvoiceRequestV1, 
+  UpsertInvoiceResponseV1 
+} from '../models/Invoices/upsert-invoice-v1';
+import { 
+  GetInvoiceDetailsRequestV1, 
+  GetInvoiceDetailsRecordV1 
+} from '../models/Invoices/get-invoice-details-v1';
 @Injectable({
   providedIn: 'root',
 })
@@ -260,6 +268,29 @@ export class HQService {
     );
   }
 
+  upsertInvoiceV1(request: Partial<UpsertInvoiceRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertInvoiceResponseV1>(
+          `${apiUrl}/v1/Invoices/UpsertInvoiceV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  getInvoiceDetailsV1(request: GetInvoiceDetailsRequestV1) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetInvoiceDetailsRecordV1>(
+          `${apiUrl}/v1/Invoice/GetInvoiceDetailsV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  // PSR
   getPSRV1(request: Partial<GetPSRRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
