@@ -12,6 +12,7 @@ export interface GetTimeRequestV1 {
   startDate?: Date | null;
   endDate?: Date | null;
   date?: Date | null;
+  invoiceId?: string | null;
   staffId?: string | null;
   projectId?: string | null;
   clientId?: string | null;

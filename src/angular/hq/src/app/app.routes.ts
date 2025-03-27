@@ -348,20 +348,31 @@ export const routes: Routes = [
             )
         },
         {
-          path: ':invoiceId/details',
+          path: ':invoiceId',
           canActivate: [userRoleGuard(HQRole.Staff)],
           loadComponent: () =>
             import('./Invoices/invoice-details/invoice-details.component').then(
               (m) => m.InvoiceDetailsComponent,
-            )
-        },
-        {
-          path: ':invoiceId/time',
-          canActivate: [userRoleGuard(HQRole.Staff)],
-          loadComponent: () =>
-            import('./Invoices/invoice-details/invoice-details.component').then(
-              (m) => m.InvoiceDetailsComponent,
-            )
+            ),
+          children:[
+            {
+              path: 'details',
+              canActivate: [userRoleGuard(HQRole.Staff)],
+              loadComponent: () =>
+                import('./Invoices/invoice-details/invoice-details-edit/invoice-details-edit.component').then(
+                  (m) => m.InvoiceDetailsEditComponent,
+            ),
+            },
+            {
+              path: 'time',
+              canActivate: [userRoleGuard(HQRole.Staff)],
+              loadComponent: () =>
+                import('./Invoices/invoice-details/invoice-time/invoice-time.component').then(
+                  (m) => m.InvoiceTimeEntriesComponent,
+                )
+            },
+
+          ]
         },
         {
           path: 'create',

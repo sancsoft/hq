@@ -283,7 +283,7 @@ export class HQService {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<GetInvoiceDetailsRecordV1>(
-          `${apiUrl}/v1/Invoice/GetInvoiceDetailsV1`,
+          `${apiUrl}/v1/Invoices/GetInvoiceDetailsV1`,
           request,
         ),
       ),

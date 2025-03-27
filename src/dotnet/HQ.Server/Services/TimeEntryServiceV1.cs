@@ -399,6 +399,10 @@ namespace HQ.Server.Services
             {
                 records = records.Where(t => t.StaffId == request.StaffId);
             }
+            if (request.InvoiceId.HasValue)
+            {
+                records = records.Where(t => t.InvoiceId == request.InvoiceId);
+            }
             if (request.ProjectId.HasValue)
             {
                 records = records.Where(t => t.ChargeCode.ProjectId.Equals(request.ProjectId.Value));

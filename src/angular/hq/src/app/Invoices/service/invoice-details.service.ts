@@ -5,6 +5,8 @@ import { GetInvoicesRecordV1 } from "../../models/Invoices/get-invoices-v1";
 import { GetClientRecordV1 } from "../../models/clients/get-client-v1";
 import { GetChargeCodeRecordV1 } from "../../models/charge-codes/get-chargecodes-v1";
 import { GetInvoiceDetailsRecordV1 } from "../../models/Invoices/get-invoice-details-v1";
+import { BaseListService } from "../../core/services/base-list.service";
+import { GetTimeRecordsV1, GetTimeRecordV1, SortColumn } from "../../models/times/get-time-v1";
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +21,7 @@ export class InvoiceDetaisService {
   client$: Observable<GetClientRecordV1>;
 
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
+  // times$: Observable<GetTimeRecordV1[]>;
 
   constructor(
     private hqService: HQService
@@ -54,9 +57,18 @@ export class InvoiceDetaisService {
       shareReplay({ bufferSize: 1, refCount: false}),
     );
 
-    // this.totalHrs$ = this.invoice$.pipe(
-    //   map((invoice) => invoice.totalApprovedHours)
-    // )
+    // this.times$ = this.invoiceId$.pipe(
+    //   switchMap((invoiceId) => this.hqService.getTimesV1({ invoiceId: invoiceId})),
+    //   map((t) => t.records),
+    //   shareReplay({bufferSize: 1, refCount: false}),
+    // );
+
+
+    
+  }
+
+  getInvoiceId() {
+    return this.invoiceIdSubject$.getValue();
   }
 
   setInvoiceId(invoiceId?: string | null) {

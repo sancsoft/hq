@@ -1,0 +1,240 @@
+<div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
+  <div class="flex justify-between gap-[20px]">
+    <div class="px-5">
+        <h1 class="font-rajdhani font-semibold text-3xl">Invoice Details</h1>
+        <div>
+          <div class="flex flex-col xl:flex-row xl:justify-between xl:items-center">
+            <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
+              <!-- @if (invoice$ | async; as invoice){ -->
+              @if (invoice){
+                <div class="text-gray-50">
+                  {{ invoice.invoiceNumber }}
+                </div>
+              }
+              @if (currentClient; as client){
+                <div class="text-gray-50">
+                  Client Email: {{ client.billingEmail || "None" }}
+                </div>
+                <div class="text-gray-50">
+                  Official Client Name - 
+                  <a
+                      [routerLink]="['/clients', client.id]"
+                      class="underline"
+                      >{{ client.officialName }}</a
+                    >
+                </div>
+              }
+              </div>
+      
+            </div>
+        </div>
+        <div class="py-3">
+          <a routerLink="/invoices" class="text-gray-50 underline">Invoice List</a>
+        </div>
+    </div>
+        <div class="flex space-x-8 p-4">
+          <div class="text-center text-white">
+            <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+              TOTAL HOURS
+            </div>
+            <p class="text-right">
+              {{ invoice?.totalHours || "-" }}
+              <!-- {{
+                (staffDashboardService.time$ | async)?.hoursThisWeek?.toFixed(2) ||
+                  "-"
+              }} -->
+            </p>
+          </div>
+          <div class="text-center text-white">
+            <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+              BILLABLE HOURS
+            </div>
+            <p class="text-right">
+              {{ invoice?.billableHours || "-" }}
+              <!-- {{
+                (staffDashboardService.time$ | async)?.hoursLastWeek?.toFixed(2) ||
+                  "-"
+              }} -->
+            </p>
+          </div>
+          <div class="text-center text-white">
+            <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+              ACCEPTED HOURS
+            </div>
+            <p class="text-right">
+              {{ invoice?.acceptedHours || "-" }}
+              <!-- {{
+                (staffDashboardService.time$ | async)?.hoursThisMonth?.toFixed(2) ||
+                  "-"
+              }} -->
+            </p>
+          </div>
+          <div class="text-center text-white">
+            <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+              ACCEPTED BILLABLE HOURS
+            </div>
+            <p class="text-right">
+              {{ invoice?.acceptedBillableHours || "-" }}
+              <!-- {{
+                (staffDashboardService.time$ | async)?.vacation?.toFixed(2) || "-"
+              }} -->
+            </p>
+          </div>
+        </div>
+    </div>
+  
+    <div class="overflow-hidden flex-auto">
+      <div class="grid gap-0 relative">
+        <main
+          class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]"
+        >
+          <div
+            class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
+          >
+            <div
+              class="w-full flex flex-row border-b border-black justify-between pe-5"
+            >
+              <div class="flex pt-[23px]">
+                <a
+                  href="#"
+                  routerLink="./"
+                  routerLinkActive="border-gray-100"
+                  class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
+                  >Details</a
+                >
+                <a
+                  href="#"
+                  routerLink="../time"
+                  class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold hover:border-gray-100"
+                  >Time</a
+                >
+              </div>
+  
+              <div class="flex flex-column justify-center items-center">
+                <hq-button (click)="onSubmit()" type="submit">Save</hq-button>
+              </div>
+            </div>
+          </div>
+  
+          <form [formGroup]="invoiceFormGroup" (ngSubmit)="onSubmit()">
+            <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
+              <div class="p-5 pr-0">
+                <div class="grid gap-[20px]">
+                  @if (this.apiErrors) {
+                  @for (error of this.apiErrors; track $index) {
+                      <div
+                      class="text-red-700 text-xs leading-normal inline-block"
+                      >
+                      {{ error }}
+                      </div>
+                  }
+                  }
+
+                  <!-- row grid -->
+                  <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                      <!-- column -->
+                      <div>
+                          <hq-select-input
+                          [autocomplete]="true"
+                          formControlName="clientId"
+                          label="Client"
+                          variant="secondary"
+                          >
+                          <ng-template [hqSelectInputOption]="null"
+                              >Please select a client</ng-template
+                          >
+                          <ng-template hqValidationError="required">
+                              Client is required.
+                          </ng-template>
+                          @for (client of clients$ | async; track client.id) {
+                            <ng-template
+                              [hqSelectInputOption]="client.id"
+                              [hqSelectInputOptionSearch]="client.name"
+                              >{{ client.name }}</ng-template
+                            >
+                          }
+                          </hq-select-input>
+                      </div>
+                  </div>
+
+                  <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                      <!-- column -->
+                      <div>
+                          <hq-text-input
+                          type="text"
+                          formControlName="invoiceNumber"
+                          label="Invoice Number"
+                          variant="secondary"
+                          placeholder="Invoice Number"
+                          >
+                          <ng-template hqValidationError="required">
+                              Invoice Number is required.
+                          </ng-template>
+                          </hq-text-input>
+                      </div>
+                  </div>
+
+                  <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                      <!-- column -->
+                      <div>
+                          <hq-date-input
+                          formControlName="date"
+                          label="Date"
+                          variant="secondary"
+                          >
+                          <ng-template hqValidationError="required">
+                              Date is required.
+                          </ng-template>
+                          </hq-date-input>
+                      </div>
+                  </div>
+                  
+                  <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                      <!-- column -->
+                      <div>
+                          <hq-text-input
+                          type="number"
+                          formControlName="total"
+                          label="Total"
+                          variant="secondary"
+                          placeholder="Total"
+                          >
+                          </hq-text-input>
+                      </div>
+                  </div>
+                  <div class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5">
+                      <!-- column -->
+                      <div>
+                          <hq-text-input
+                          type="number"
+                          formControlName="totalApprovedHours"
+                          label="Total Approved Hours"
+                          variant="secondary"
+                          placeholder="Total Approved Hours"
+                          >
+                          </hq-text-input>
+                      </div>
+                  </div>
+                </div>
+                <div class="border-b border-black pt-14 pb-1 mb-3 font-bold">
+                  Included Chargecodes
+                </div>
+                @if(invoice && invoice.chargeCodes.length > 0){
+                  @for(chargeCode of invoice.chargeCodes; track chargeCode.id){
+                  <div class="ps-3 font-light">
+                    {{chargeCode.code}}: {{invoice.clientName}}: {{chargeCode.projectName}}
+                  </div>
+                  }
+                } @else {
+                  <div class="ps-3 font-light">
+                    None
+                  </div>
+                }
+              </div>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+  </div>
+  

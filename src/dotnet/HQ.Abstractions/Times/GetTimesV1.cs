@@ -20,6 +20,7 @@ namespace HQ.Abstractions.Times
             public DateOnly? StartDate { get; set; }
             public DateOnly? EndDate { get; set; }
             public DateOnly? Date { get; set; }
+            public Guid? InvoiceId { get; set; }
             public Guid? ClientId { get; set; }
             public Guid? ProjectId { get; set; }
             public string? ChargeCode { get; set; }

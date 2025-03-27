@@ -7,6 +7,7 @@ using FluentResults;
 
 using HQ.Abstractions.Invoices;
 using HQ.Server.Data;
+using HQ.Server.Data.Models;
 
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -104,33 +105,114 @@ namespace HQ.Server.Invoices
                     ClientName = t.Client.Name,
                     Date = t.Date,
                     InvoiceNumber = t.InvoiceNumber,
-                    Total = t.Total
+                    Total = t.Total,
+                    TotalApprovedHours = t.TotalApprovedHours
                 }).SingleOrDefaultAsync(ct);
 
-            response.ChargeCodes = await _context.Times
-                .AsNoTracking()
-                .Where(t => t.InvoiceId == request.Id)
-                .Select(t => {
-                    // calculate hour sums
-                    response.TotalHours += t.TotalHours;
-                    repsonse.BillableHours += t.BillableHours;
-                    response.AcceptedHours += t.AcceptedHours;
-                    response.AcceptedBillableHours += t.AcceptedBillableHours;
 
-                    return new GetInvoiceDetailsV1.ChargeCode() {
+            if (response != null)
+            {
+                var times = await _context.Times
+                    .AsNoTracking()
+                    .Where(t => t.InvoiceId == request.Id)
+                    .ToListAsync();
+                // Console.WriteLine($"{times.Count} Times");
+
+                var chargeCodeIds = times.Select(t => t.ChargeCodeId);
+
+                var chargeCodes = await _context.ChargeCodes
+                    .AsNoTracking()
+                    .Where(t => chargeCodeIds.Contains(t.Id))
+                    .ToListAsync();
+
+                // Console.WriteLine($"{chargeCodes.Count} charge codes");
+
+                decimal totalHours = 0;
+                decimal billableHours = 0;
+                decimal acceptedHours = 0;
+                decimal acceptedBillableHours = 0;
+
+                foreach (Time time in times)
+                {
+                    var code = chargeCodes.Find(c => c.Id == time.ChargeCodeId);
+                    totalHours += time.Hours;
+                    if (code != null)
+                    {
+                        if (code.Billable)
+                        {
+                            billableHours += time.Hours;
+                        }
+                        if (time.AcceptedAt != null)
+                        {
+                            acceptedHours += time.Hours;
+                        }
+                        if (code.Billable && time.AcceptedAt != null)
+                        {
+                            acceptedBillableHours += time.Hours;
+                        }
+                    }
+                }
+
+                List<string> projectIds = new List<string>();
+                List<string> quoteIds = new List<string>();
+                foreach (ChargeCode code in chargeCodes)
+                {
+                    if (code.ProjectId != null)
+                    {
+                        projectIds.Add(code.ProjectId.ToString());
+                    }
+                    if (code.QuoteId != null)
+                    {
+                        quoteIds.Add(code.QuoteId.ToString());
+                    }
+                }
+
+                var quotes = await _context.Quotes
+                    .AsNoTracking()
+                    .Where(t => quoteIds.Contains(t.Id.ToString()))
+                    .ToListAsync();
+
+                var projects = await _context.Projects
+                    .AsNoTracking()
+                    .Where(t => projectIds.Contains(t.Id.ToString()))
+                    .ToListAsync();
+
+                foreach (ChargeCode code in chargeCodes)
+                {
+                    if (code.ProjectId != null)
+                    {
+                        code.Project = projects.Find(p => p.Id == code.ProjectId);
+                    }
+                    if (code.QuoteId != null)
+                    {
+                        code.Quote = quotes.Find(q => q.Id == code.QuoteId);
+                    }
+                }
+
+                response.ChargeCodes = chargeCodes
+                    .Select(t => new GetInvoiceDetailsV1.ChargeCode()
+                    {
                         Id = t.Id,
                         Code = t.Code,
                         Billable = t.Billable,
                         Active = t.Active,
-                        ProjectName = t.ProjectName,
-                        QuoteName = t.QuoteName,
+                        QuoteName = t.Quote != null ? t.Quote.Name : null,
+                        ProjectName = t.Project != null ? t.Project.Name : null,
                         ProjectId = t.ProjectId,
                         QuoteId = t.QuoteId,
-                    };
-                })
-                .Distinct()
-                .ToListAsync();
+                    })
+                    .Distinct()
+                    .ToList();
 
+                response.TotalHours = totalHours;
+                response.BillableHours = billableHours;
+                response.AcceptedHours = acceptedHours;
+                response.AcceptedBillableHours = acceptedBillableHours;
+            }
+            if (response == null)
+            {
+                Console.WriteLine("Null response");
+            }
             return response;
         }
     }
