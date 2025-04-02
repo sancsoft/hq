@@ -365,21 +365,31 @@ export const routes: Routes = [
             },
             {
               path: 'time',
-              canActivate: [userRoleGuard(HQRole.Staff)],
+              title: 'Invoice times',
+              canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
               loadComponent: () =>
                 import('./Invoices/invoice-details/invoice-time/invoice-time.component').then(
-                  (m) => m.InvoiceTimeEntriesComponent,
+                  (m) => m.InvoiceTimeComponent,
                 ),
+              children: [
+                {
+                  path: '',
+                  canActivate: [userRoleGuard(HQRole.Staff)],
+                  loadComponent: () => 
+                    import('./Invoices/invoice-details/invoice-time/invoice-time-list/invoice-time-list.component').then(
+                      (m) => m.InvoiceTimeListComponent
+                    )
+                },
+                {
+                  path: 'add',
+                  canActivate: [userRoleGuard(HQRole.Staff)],
+                  loadComponent: () =>
+                    import('./Invoices/invoice-details/invoice-time/invoice-add-time/invoice-add-time.component').then(
+                      (m) => m.InvoiceAddTimeComponent,
+                    ),
+                },
+              ]
             },
-            {
-              path: 'add-time',
-              canActivate: [userRoleGuard(HQRole.Executive)],
-              loadComponent: () =>
-                import('./Invoices/invoice-details/invoice-add-time/invoice-add-time.component').then(
-                  (m) => m.InvoiceAddTimeComponent,
-                ),
-            },
-
           ]
         },
         {

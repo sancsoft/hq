@@ -1,32 +1,33 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { CoreModule } from "../../../core/core.module";
-import { GetInvoicesRecordV1 } from "../../../models/Invoices/get-invoices-v1";
+import { CoreModule } from "../../../../core/core.module";
+import { GetInvoicesRecordV1 } from "../../../../models/Invoices/get-invoices-v1";
 import { AbstractControl, FormGroup, ValidationErrors } from "@angular/forms";
 import { map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
-import { GetClientRecordV1 } from "../../../models/clients/get-client-v1";
-import { GetChargeCodeRecordV1 } from "../../../models/charge-codes/get-chargecodes-v1";
-import { HQService } from "../../../services/hq.service";
+import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
+import { GetChargeCodeRecordV1 } from "../../../../models/charge-codes/get-chargecodes-v1";
+import { HQService } from "../../../../services/hq.service";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
-import { InvoiceDetaisService } from "../../service/invoice-details.service";
-import { GetInvoiceDetailsRecordV1 } from "../../../models/Invoices/get-invoice-details-v1";
-import { GetTimeRecordClientsV1, GetTimeRecordV1, SortColumn } from "../../../models/times/get-time-v1";
-import { SortIconComponent } from "../../../common/sort-icon/sort-icon.component";
-import { SortDirection } from "../../../models/common/sort-direction";
-import { BaseListService } from "../../../core/services/base-list.service";
-import { TimeListService } from "../../../times/time-list/TimeList.service";
-import { HQRole } from "../../../enums/hqrole";
-import { InRolePipe } from "../../../pipes/in-role.pipe";
-import { SearchInputComponent } from "../../../core/components/search-input/search-input.component";
+import { InvoiceDetaisService } from "../../../service/invoice-details.service";
+import { GetInvoiceDetailsRecordV1 } from "../../../../models/Invoices/get-invoice-details-v1";
+import { GetTimeRecordClientsV1, GetTimeRecordV1, SortColumn } from "../../../../models/times/get-time-v1";
+import { SortIconComponent } from "../../../../common/sort-icon/sort-icon.component";
+import { SortDirection } from "../../../../models/common/sort-direction";
+import { BaseListService } from "../../../../core/services/base-list.service";
+import { TimeListService } from "../../../../times/time-list/TimeList.service";
+import { HQRole } from "../../../../enums/hqrole";
+import { InRolePipe } from "../../../../pipes/in-role.pipe";
+import { SearchInputComponent } from "../../../../core/components/search-input/search-input.component";
+import { SelectInputComponent } from "../../../../core/components/select-input/select-input.component";
 @Component({
-  selector: 'hq-invoice-time-entries',
+  selector: 'hq-invoice-add-time',
   standalone: true,
   imports: [
     CommonModule,
     CoreModule,
     RouterLink,
     InRolePipe,
-    SearchInputComponent
+    SelectInputComponent
   ],
   providers: [
     {
@@ -58,9 +59,9 @@ export class InvoiceAddTimeComponent {
 
   constructor(
     private hqService: HQService,
-    private invoiceDetailsService: InvoiceDetaisService
+    private invoiceDetailsService: InvoiceDetaisService,
+    public timeService: TimeListService
   ) {
-    console.log("Hi, I'm Paul")
     this.invoiceDetailsService.invoice$.pipe(takeUntil(this.destroy)).subscribe(
       (invoice) => {
         if(invoice){
@@ -72,9 +73,9 @@ export class InvoiceAddTimeComponent {
       this.currentClient = client;
     });    
     this.invoiceDetailsService.refresh();
-    this.times$ = this.invoiceDetailsService.invoiceId$.pipe(
+    this.times$ = this.invoiceDetailsService.client$.pipe(
       takeUntil(this.destroy),
-      switchMap((invoiceId) => this.hqService.getTimesV1({ invoiceId: invoiceId})),
+      switchMap((client) => this.hqService.getTimesV1({ clientId: client.id})),
       map((t) => t.records),
       tap((t) => console.log(t)),
       shareReplay({bufferSize: 1, refCount: false}),
