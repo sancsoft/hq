@@ -34,9 +34,9 @@ import { SearchInputComponent } from "../../../core/components/search-input/sear
       useExisting: TimeListService
     }
   ],
-  templateUrl: './invoice-time.component.html',
+  templateUrl: './invoice-add-time.component.html',
 })
-export class InvoiceTimeEntriesComponent {
+export class InvoiceAddTimeComponent {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   // invoiceId$: Observable<string>;
@@ -60,6 +60,7 @@ export class InvoiceTimeEntriesComponent {
     private hqService: HQService,
     private invoiceDetailsService: InvoiceDetaisService
   ) {
+    console.log("Hi, I'm Paul")
     this.invoiceDetailsService.invoice$.pipe(takeUntil(this.destroy)).subscribe(
       (invoice) => {
         if(invoice){

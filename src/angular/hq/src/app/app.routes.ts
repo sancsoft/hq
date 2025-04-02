@@ -369,7 +369,15 @@ export const routes: Routes = [
               loadComponent: () =>
                 import('./Invoices/invoice-details/invoice-time/invoice-time.component').then(
                   (m) => m.InvoiceTimeEntriesComponent,
-                )
+                ),
+            },
+            {
+              path: 'add-time',
+              canActivate: [userRoleGuard(HQRole.Executive)],
+              loadComponent: () =>
+                import('./Invoices/invoice-details/invoice-add-time/invoice-add-time.component').then(
+                  (m) => m.InvoiceAddTimeComponent,
+                ),
             },
 
           ]
