@@ -79,8 +79,10 @@
             <i class="bi bi-search text-[14px]"></i>
           </span>
           <input
+            class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
             id="search"
             type="text"
+            [formControl]="invoiceDetailsService.search"
             class="w-full block text-[14px] px-2 py-1 appearance-none focus:outline-none font-medium bg-inherit rounded"
             aria-label="Search"
           />
@@ -212,11 +214,11 @@
             Hrs
           </th>
           <th
-            width="80px"
+            width="100px"
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3"
           >
-            Invoiced Hrs
+            Invoice Hrs
           </th>
           <th
             scope="col"
@@ -224,6 +226,11 @@
           >
             Description
           </th>
+          <th
+            width="40px"
+            scope="col"
+            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
+          ></th>
         </tr>
       </thead>
       <tbody class="overflow-scroll">
@@ -257,9 +264,10 @@
           <td class="border-y border-white py-1 px-2">
             <input title="invoiced hours" type="number" class="bg-blue-900 text-gray-450 border border-black px-1 w-12" placeholder="0">
           </td>
-          <td class="border-e border-y border-white py-1 px-2">
+          <td class="border-y border-white py-1 px-2">
             <input title="description" type="text" class="bg-blue-900 text-gray-450 border border-black px-1 w-full" placeholder="Description">
           </td>
+          <td class="border-e border-y border-white py-1 px-2"></td>
         </tr>
         @for ((time of times$| async); track $index) {
           <tr class="even:bg-gray-850 odd:bg-black-alt {{time.status === 1 ? 'text-gray-450' : 'text-gray-100'}}">
@@ -271,12 +279,12 @@
               }}
             "></td>
             <td class="border-b border-black py-2 pl-2">
-                <div class="flex justify-center">
+                <!-- <div class="flex justify-center">
                   @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
                     <input #time{{index}}Checkbox title="Select Entry" type="checkbox" (click)="updateTimeSelection(time, $index)">
                   }
-                </div>
-              </td>
+                </div> -->
+            </td>
             <td class="border-b px-3 border-black py-2">{{ time.staffName }}</td>
             <td class="border-b border-black px-3 py-2">{{ time.date }}</td>
             <td class="border-b px-3 border-black py-2">{{ time.chargeCode }}</td>
@@ -285,13 +293,18 @@
               {{ time.activityName ?? time.task }}
             </td>
             <td class="border-b border-black px-3 py-2 text-right">
-              {{ time.hours | number: "1.2-2" }}
+              {{ time.hoursApproved !== undefined ? time.hoursApproved : time.hours }}
             </td>
             <td class="border-b border-black px-2 py-2">
-              <input title="invoiced hours" type="number" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" placeholder="{{time.hours}}">
+              <input title="invoiced hours" type="number" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" placeholder="{{time.hoursApproved !== undefined ? time.hoursApproved : time.hours}}">
             </td>
             <!-- <td class="border-b border-black py-2">{{ time.invoiceNumber }}</td> -->
             <td class="border-b border-black px-3 py-2">{{ time.description }}</td>
+            <td class="border-b border-black px-3 py-2 justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#852420" class="size-3 hover:fill-red-600">
+                <path fill-rule="evenodd" d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z" clip-rule="evenodd" />
+              </svg>              
+            </td>
           </tr>
         }
       </tbody>

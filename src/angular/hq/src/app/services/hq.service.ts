@@ -565,6 +565,7 @@ export class HQService {
   }
 
   getTimesV1(request: Partial<GetTimeRequestV1>) {
+    console.log("Get times request:", request)
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<GetTimeRecordsV1>(

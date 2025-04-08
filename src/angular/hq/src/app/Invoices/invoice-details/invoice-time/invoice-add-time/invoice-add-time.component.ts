@@ -19,6 +19,14 @@ import { HQRole } from "../../../../enums/hqrole";
 import { InRolePipe } from "../../../../pipes/in-role.pipe";
 import { SearchInputComponent } from "../../../../core/components/search-input/search-input.component";
 import { SelectInputComponent } from "../../../../core/components/select-input/select-input.component";
+import { TimeSearchFilterComponent } from "../../../../times/search-filter/time-search-filter/time-search-filter.component";
+import { InvoiceTimeSearchFilterComponent } from "../invoice-time-search-filter/invoice-time-search-filter.component";
+
+interface InvoiceTimeEntry {
+  record: GetTimeRecordV1,
+  selected: boolean
+}
+
 @Component({
   selector: 'hq-invoice-add-time',
   standalone: true,
@@ -27,8 +35,10 @@ import { SelectInputComponent } from "../../../../core/components/select-input/s
     CoreModule,
     RouterLink,
     InRolePipe,
-    SelectInputComponent
-  ],
+    SelectInputComponent,
+    TimeSearchFilterComponent,
+    InvoiceTimeSearchFilterComponent
+],
   providers: [
     {
       provide: BaseListService,
@@ -50,41 +60,99 @@ export class InvoiceAddTimeComponent {
 
   apiErrors: string[] = [];
 
-  times$: Observable<GetTimeRecordV1[]>;
-  clients$: Observable<GetClientRecordV1[]>;
+  times$: Observable<InvoiceTimeEntry[]>;
+  // clients$: Observable<GetClientRecordV1[]>;
   currentClient?: GetClientRecordV1;
   chargeCodes?: Array<GetChargeCodeRecordV1>;
 
-  selectedTimes: Array<GetTimeRecordV1> = new Array<GetTimeRecordV1>();
+  selectedTimes: Map<string, number> = new Map<string, number>();
+  selectedHrs: number = 0;
 
   constructor(
     private hqService: HQService,
     private invoiceDetailsService: InvoiceDetaisService,
     public timeService: TimeListService
   ) {
+    console.log("ADD TIME")
+    this.invoiceDetailsService.invoiced$.next(false);
     this.invoiceDetailsService.invoice$.pipe(takeUntil(this.destroy)).subscribe(
       (invoice) => {
         if(invoice){
           this.invoice = invoice;
         }
       });
-    this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
+    // this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
     this.invoiceDetailsService.client$.subscribe((client) => {
       this.currentClient = client;
     });    
-    this.invoiceDetailsService.refresh();
-    this.times$ = this.invoiceDetailsService.client$.pipe(
-      takeUntil(this.destroy),
-      switchMap((client) => this.hqService.getTimesV1({ clientId: client.id})),
-      map((t) => t.records),
-      tap((t) => console.log(t)),
-      shareReplay({bufferSize: 1, refCount: false}),
-    );
+    this.invoiceDetailsService.invoiceRefresh();
+    // this.times$ = this.invoiceDetailsService.client$.pipe(
+    //   takeUntil(this.destroy),
+    //   switchMap((client) => this.hqService.getTimesV1({ clientId: client.id})),
+    //   map((t) => t.records),
+    //   tap((t) => console.log(t)),
+    //   shareReplay({bufferSize: 1, refCount: false}),
+    // );
+    // this.times$ = this.timeService.records$.pipe(map((t) => t), tap((t) => console.log(t)));
+    this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => {
+      let t: InvoiceTimeEntry[] = new Array();
+      r.forEach(r => {
+        t.push({record: r, selected: this.selectedTimes.has(r.id)});
+      })
+      return t;
+    }), tap((t) => {
+      console.log("Time records:", t);
+    }),);
+    // this.invoiceDetailsService.response$.pipe(takeUntil(this.destroy), map(r => r.records.flatMap((t) => t.id))).subscribe((r) => {
+    //   this.refreshTimeSelection2(r);
+    // });
   }
 
   updateTimeSelection(time: GetTimeRecordV1, i: number){
-    console.log("time entry", i, "clicked:");
-    console.log(time)
+    console.log("time entry", time.id, "checked:", (document.getElementById('time_checkbox_'+time.id) as HTMLInputElement).checked);
+    console.log("  ", time.hoursApproved);
+    // console.log(time, document.getElementById('time_checkbox_'+time.id))
+    if((document.getElementById('time_checkbox_'+time.id) as HTMLInputElement).checked){
+      this.selectedHrs += time.hours;
+      this.selectedTimes.set(time.id, time.hours);
+    } else {
+      this.selectedHrs -= time.hours;
+      this.selectedTimes.delete(time.id);
+    }
+    console.log("Selected times:", this.selectedTimes);
+  }
+
+  // keeps catching status of the elements from before they've been reloaded
+  refreshTimeSelection(){
+    console.log("refreshing ", this.selectedTimes.size, " elements")
+    this.selectedTimes.forEach((hrs: number, id: string) => {
+      console.log(id, hrs);
+      let timeCheckbox = document.getElementById('time_checkbox_'+id) as HTMLInputElement;
+      if(timeCheckbox == null){
+        this.selectedTimes.delete(id);
+        this.selectedHrs -= hrs;
+        console.log("goodbye")
+      } else if(timeCheckbox.checked){
+        console.log("still here and checked")
+      }
+    })
+  }
+
+  refreshTimeSelection2(records: Array<string>){
+    // console.log(records, "in refresh")
+    // maybe check record ids ^ with selectedTimes map keys for discrepancies? 
+    console.log("Selected times:", this.selectedTimes);
+    this.selectedTimes.forEach((hrs, id) => {
+      if(records.find(r => r == id) == null){
+        console.log(id," filtered out")
+        // this.selectedHrs -= this.selectedTimes.get(id)?? 0;
+        // this.selectedTimes.delete(id);
+      }
+    })
+  }
+
+  isChecked(id: string){
+    return this.selectedTimes.has(id);
   }
 
   private destroy = new Subject<void>();

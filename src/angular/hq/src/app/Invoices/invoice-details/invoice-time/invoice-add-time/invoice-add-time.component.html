@@ -17,32 +17,11 @@
     </div>
   </div>
 
-  <div class="px-5 overflow-hidden">
+  <div class="px-5 pb-3 overflow-hidden">
     <div class="grid grid-cols-10 grid-flow-col">
       <!-- Search and filters -->
       <div class="grid col-span-6">
-        <div class="flex flex-row justify-start space-x-4">
-          <hq-select-input id="" label="" class="w-48"/>
-          <hq-select-input id="" label="" class="w-48"/>
-          <hq-select-input id="" label="" class="w-48"/>
-          <hq-select-input id="" label="" class="w-48"/>
-        </div>
-        <div class="flex flex-row justify-start space-x-4 ">
-          <div class="relative flex items-stretch border text-gray-100 rounded h-[36px] w-full max-w-80 bg-blue-900 border-steel-blue-600">
-            <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
-              <i class="bi bi-search text-[14px]"></i>
-            </span>
-            <input
-              id="search"
-              type="text"
-              class="w-full block text-[14px] px-2 py-1 appearance-none focus:outline-none font-medium bg-inherit rounded"
-              aria-label="Search"
-            />
-          </div>
-          <hq-select-input id="" label="" class="w-48"/>
-          <hq-select-input id="" label="" class="w-48"/>
-          <hq-select-input id="" label="" class="w-48"/>
-        </div>
+        <hq-invoice-time-search-filter></hq-invoice-time-search-filter>
       </div>
       <!-- Hrs and add time btn -->
       <div class="grid col-span-4">
@@ -88,7 +67,7 @@
               SELECTED HOURS
             </div>
             <p class="w-32 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]">
-              {{ invoice?.acceptedHours?.toFixed(2) || "--" }}
+              {{ selectedHrs.toFixed(2) || "--" }}
             </p>
           </div>
           <div class="pt-3">
@@ -104,14 +83,16 @@
   </div>
 
   <div class="overflow-scroll flex-auto bg-black-alt">
-    <hq-table [withPagination]="false" class="w-full border-spacing-0 border-separate">
+    <hq-table [withPagination]="false" class="w-full border-spacing-0 border-separate z-10">
       <thead>
         <tr class="sticky top-0 text-left">
           <th
+            scope="col"
             width="15px"
             style="padding:0px"
           ></th>
           <th
+            scope="col"
             width="30px"
           ></th>
           <th
@@ -165,7 +146,7 @@
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3"
           >
-            Invoiced Hrs
+            Invoice Hrs
           </th>
           <th
             scope="col"
@@ -175,7 +156,7 @@
           </th>
         </tr>
       </thead>
-      <tbody class="overflow-scroll">
+      <!-- <tbody> -->
         <!-- <tr class="sticky top-0 bg-black-alt border-spacing-0 border-separate text-left">
           <td class="border-b border-black py-2 bg-gray-450"></td>
           <td class="border-y border-s border-white py-1 px-2">
@@ -210,40 +191,46 @@
             <input title="description" type="text" class="bg-blue-900 text-gray-450 border border-black px-1 w-full" placeholder="Description">
           </td>
         </tr> -->
-        @for ((time of times$| async); track $index) {
-          <tr class="even:bg-gray-850 odd:bg-black-alt {{time.status === 1 ? 'text-gray-450' : 'text-gray-100'}}">
+        @for ((time of times$ | async); track $index) {
+          <!-- <tr>
+            <td class=""> -->
+              <!-- <div class="overflow-scroll"> -->
+          <tr class="even:bg-gray-850 odd:bg-black-alt {{time.record.status === 1 ? 'text-gray-450' : 'text-gray-100'}}">
             <td class="border-b border-black py-2 {{
-              time.status === 1 ? 'bg-green-450' : 
-              time.status === 2 ? 'bg-red-850' :
-              time.status === 3 ? 'bg-yellow-550' :
+              time.record.status === 1 ? 'bg-green-450' : 
+              time.record.status === 2 ? 'bg-red-850' :
+              time.record.status === 3 ? 'bg-yellow-550' :
               'bg-gray-450'
               }}
             "></td>
             <td class="border-b border-black py-2 pl-2">
                 <div class="flex justify-center">
                   @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-                    <input #time{{index}}Checkbox title="Select Entry" type="checkbox" (click)="updateTimeSelection(time, $index)">
+                    <input id="time_checkbox_{{time.record.id}}" title="Select Entry" [checked]="isChecked(time.record.id)" type="checkbox" (click)="updateTimeSelection(time.record, $index)">
                   }
                 </div>
               </td>
-            <td class="border-b px-3 border-black py-2">{{ time.staffName }}</td>
-            <td class="border-b border-black px-3 py-2">{{ time.date }}</td>
-            <td class="border-b px-3 border-black py-2">{{ time.chargeCode }}</td>
-            <td class="border-b border-black px-3 py-2">{{ time.projectName }}</td>
+            <td class="border-b px-3 border-black py-2">{{ time.record.staffName }}</td>
+            <td class="border-b border-black px-3 py-2">{{ time.record.date }}</td>
+            <td class="border-b px-3 border-black py-2">{{ time.record.chargeCode }}</td>
+            <td class="border-b border-black px-3 py-2">{{ time.record.projectName }}</td>
             <td class="border-b px-3 border-black py-2">
-              {{ time.activityName ?? time.task }}
+              {{ time.record.activityName ?? time.record.task }}
             </td>
             <td class="border-b border-black px-3 py-2 text-right">
-              {{ time.hours | number: "1.2-2" }}
+              {{ time.record.hoursApproved !== undefined ? time.record.hoursApproved : time.record.hours | number: "1.2-2" }}
             </td>
             <td class="border-b border-black px-2 py-2">
-              <input title="invoiced hours" type="number" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" placeholder="{{time.hours}}">
+              <input title="invoiced hours" type="number" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" placeholder="{{time.record.hours}}">
             </td>
-            <!-- <td class="border-b border-black py-2">{{ time.invoiceNumber }}</td> -->
-            <td class="border-b border-black px-3 py-2">{{ time.description }}</td>
+            <!-- <td class="border-b border-black py-2">{{ time.record.invoiceNumber }}</td> -->
+            <td class="border-b border-black px-3 py-2">{{ time.record.description }}</td>
           </tr>
+              <!-- </div> -->
+          <!-- </td>
+        </tr> -->
         }
-      </tbody>
+      <!-- </tbody> -->
     </hq-table>
     @if((times$ | async)?.length === 0){
       <div class="w-full h-full relative text-gray-50">

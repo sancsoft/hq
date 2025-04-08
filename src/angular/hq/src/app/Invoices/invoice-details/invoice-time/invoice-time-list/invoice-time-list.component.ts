@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CoreModule } from "../../../../core/core.module";
 import { GetInvoicesRecordV1 } from "../../../../models/Invoices/get-invoices-v1";
-import { AbstractControl, FormGroup, ValidationErrors } from "@angular/forms";
+import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors } from "@angular/forms";
 import { map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
 import { GetChargeCodeRecordV1 } from "../../../../models/charge-codes/get-chargecodes-v1";
@@ -18,6 +18,7 @@ import { TimeListService } from "../../../../times/time-list/TimeList.service";
 import { HQRole } from "../../../../enums/hqrole";
 import { InRolePipe } from "../../../../pipes/in-role.pipe";
 import { SearchInputComponent } from "../../../../core/components/search-input/search-input.component";
+import { InvoiceTimeSearchFilterComponent } from "../invoice-time-search-filter/invoice-time-search-filter.component";
 @Component({
   selector: 'hq-invoice-time-list',
   standalone: true,
@@ -26,7 +27,10 @@ import { SearchInputComponent } from "../../../../core/components/search-input/s
     CoreModule,
     RouterLink,
     InRolePipe,
-    SearchInputComponent
+    InvoiceTimeSearchFilterComponent,
+    SearchInputComponent,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     {
@@ -50,7 +54,6 @@ export class InvoiceTimeListComponent {
   apiErrors: string[] = [];
 
   times$: Observable<GetTimeRecordV1[]>;
-  clients$: Observable<GetClientRecordV1[]>;
   currentClient?: GetClientRecordV1;
   chargeCodes?: Array<GetChargeCodeRecordV1>;
 
@@ -58,32 +61,35 @@ export class InvoiceTimeListComponent {
 
   constructor(
     private hqService: HQService,
-    private invoiceDetailsService: InvoiceDetaisService,
+    public invoiceDetailsService: InvoiceDetaisService,
     private route: ActivatedRoute,
     private router: Router
   ) {
+    console.log("LIST TIME")
+    this.invoiceDetailsService.invoiced$.next(true);
     this.invoiceDetailsService.invoice$.pipe(takeUntil(this.destroy)).subscribe(
       (invoice) => {
         if(invoice){
           this.invoice = invoice;
         }
       });
-    this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
     this.invoiceDetailsService.client$.subscribe((client) => {
       this.currentClient = client;
     });    
-    this.invoiceDetailsService.refresh();
-    this.times$ = this.invoiceDetailsService.invoiceId$.pipe(
-      takeUntil(this.destroy),
-      switchMap((invoiceId) => this.hqService.getTimesV1({ invoiceId: invoiceId})),
-      map((t) => t.records),
-      tap((t) => console.log(t)),
-      shareReplay({bufferSize: 1, refCount: false}),
-    );
+    this.invoiceDetailsService.invoiceRefresh();
+    // this.times$ = this.invoiceDetailsService.invoiceId$.pipe(
+    //   takeUntil(this.destroy),
+    //   switchMap((invoiceId) => this.hqService.getTimesV1({ invoiceId: invoiceId})),
+    //   map((t) => t.records),
+    //   tap((t) => console.log(t)),
+    //   shareReplay({bufferSize: 1, refCount: false}),
+    // );
+    this.times$ = this.invoiceDetailsService.records$.pipe(takeUntil(this.destroy), map((r) => r), tap(r => console.log('times:',r)));
   }
 
   updateTimeSelection(time: GetTimeRecordV1, i: number){
     console.log("time entry", i, "clicked:");
+    console.log("Hours approved:", time.hoursApproved)
     console.log(time)
   }
 
