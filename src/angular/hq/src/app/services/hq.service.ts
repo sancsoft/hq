@@ -585,6 +585,16 @@ export class HQService {
       ),
     );
   }
+  upsertTimeInvoiceV1(request: Partial<updateTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdateTimeResponseV1>(
+          `${apiUrl}/v1/TimeEntries/UpsertTimeInvoiceV1`,
+          request,
+        ),
+      ),
+    );
+  }
   submitTimesV1(request: Partial<SubmitTimesRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>

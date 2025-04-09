@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CoreModule } from "../../../../core/core.module";
 import { GetInvoicesRecordV1 } from "../../../../models/Invoices/get-invoices-v1";
 import { AbstractControl, FormGroup, ValidationErrors } from "@angular/forms";
-import { map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
+import { firstValueFrom, map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
 import { GetChargeCodeRecordV1 } from "../../../../models/charge-codes/get-chargecodes-v1";
 import { HQService } from "../../../../services/hq.service";
@@ -21,6 +21,7 @@ import { SearchInputComponent } from "../../../../core/components/search-input/s
 import { SelectInputComponent } from "../../../../core/components/select-input/select-input.component";
 import { TimeSearchFilterComponent } from "../../../../times/search-filter/time-search-filter/time-search-filter.component";
 import { InvoiceTimeSearchFilterComponent } from "../invoice-time-search-filter/invoice-time-search-filter.component";
+import { updateTimeRequestV1 } from "../../../../models/times/update-time-v1";
 
 interface InvoiceTimeEntry {
   record: GetTimeRecordV1,
@@ -71,7 +72,9 @@ export class InvoiceAddTimeComponent {
   constructor(
     private hqService: HQService,
     private invoiceDetailsService: InvoiceDetaisService,
-    public timeService: TimeListService
+    public timeService: TimeListService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     console.log("ADD TIME")
     this.invoiceDetailsService.invoiced$.next(false);
@@ -153,6 +156,22 @@ export class InvoiceAddTimeComponent {
 
   isChecked(id: string){
     return this.selectedTimes.has(id);
+  }
+
+  async addToInvoice(){
+    this.selectedTimes.forEach(async (hrs, t) => {
+      const request: Partial<updateTimeRequestV1> = {
+        id: t,
+        invoiceId: this.invoice?.id,
+        hoursInvoiced: hrs
+      };
+      console.info("Request:");
+      console.table(request);
+      await firstValueFrom(this.hqService.upsertTimeInvoiceV1(request))
+    })
+    await this.router.navigate(['../'], {
+      relativeTo: this.route,
+    });
   }
 
   private destroy = new Subject<void>();

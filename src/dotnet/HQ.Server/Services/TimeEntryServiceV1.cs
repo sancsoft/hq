@@ -299,6 +299,40 @@ namespace HQ.Server.Services
             return Result.Ok(new UpsertTimeChargeCodeV1.Response() { Id = timeEntry.Id });
         }
 
+        public async Task<Result<UpsertTimeInvoiceV1.Response>> UpsertTimeInvoiceV1(UpsertTimeInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            Console.WriteLine("Upsert Time Invoice");
+            System.Diagnostics.Debug.WriteLine("Upsert Time Invoice");
+            _logger.LogInformation("Upsert Time Invoice");
+            if (string.IsNullOrEmpty(request.InvoiceId.ToString()))
+            {
+                return Result.Fail("Invoice Id can't be null or empty");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+            var invoice = await _context.Invoices.Where(t => t.Id == request.InvoiceId).FirstOrDefaultAsync();
+
+            if (!string.IsNullOrEmpty(request.InvoiceId.ToString()))
+            {
+                if (invoice != null)
+                {
+                    timeEntry.Invoice = invoice;
+                    timeEntry.InvoiceId = request.InvoiceId;
+                    timeEntry.HoursInvoiced = request.HoursInvoiced != null ? request.HoursInvoiced : timeEntry.Hours;
+                }
+                else
+                {
+                    return Result.Fail($"The Invoice: {request.InvoiceId} not found");
+                }
+
+            }
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeInvoiceV1.Response() { Id = timeEntry.Id });
+        }
 
         public async Task<Result<GetTimesV1.Response>> GetTimesV1(GetTimesV1.Request request, CancellationToken ct = default)
         {
@@ -436,6 +470,7 @@ namespace HQ.Server.Services
                 Task = t.Task,
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved,
+                HoursInvoiced = t.HoursInvoiced,
                 ChargeCode = t.ChargeCode.Code,
                 ProjectName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Name : null,
                 ProjectId = t.ChargeCode.Project != null ? t.ChargeCode.Project.Id : null,
@@ -788,6 +823,7 @@ namespace HQ.Server.Services
                 Map(t => t.Task).Name("Task");
                 Map(t => t.Hours).Name("Hours");
                 Map(t => t.BillableHours).Name("AcceptedHours");
+                Map(t => t.HoursInvoiced).Name("HoursInvoiced");
                 Map(t => t.HoursApprovedBy).Name("AcceptedBy");
                 Map(t => t.Description).Name("Description");
                 Map(t => t.Status).Name("Status");

@@ -169,6 +169,26 @@ namespace HQ.Server.Controllers
             return await _TimeEntryServiceV1.UpsertTimeTaskV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(UpsertTimeInvoiceV1))]
+        [ProducesResponseType<UpsertTimeInvoiceV1.Response>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> UpsertTimeInvoiceV1([FromBody] UpsertTimeInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            return await _TimeEntryServiceV1.UpsertTimeInvoiceV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
 
 
         [Authorize(HQAuthorizationPolicies.Staff)]

@@ -51,7 +51,7 @@ export interface GetTimeRecordV1 {
   activityId: string | null;
   description?: string | undefined;
   invoiceId?: string | null;
-  invoicedTime?: number | null;
+  hoursInvoiced?: number | null;
   invoiceNumber?: string | null;
   hoursApproved?: number | null;
   hoursApprovedBy?: string | null;
