@@ -299,11 +299,8 @@ namespace HQ.Server.Services
             return Result.Ok(new UpsertTimeChargeCodeV1.Response() { Id = timeEntry.Id });
         }
 
-        public async Task<Result<UpsertTimeInvoiceV1.Response>> UpsertTimeInvoiceV1(UpsertTimeInvoiceV1.Request request, CancellationToken ct = default)
+        public async Task<Result<AddTimeToInvoiceV1.Response>> AddTimeToInvoiceV1(AddTimeToInvoiceV1.Request request, CancellationToken ct = default)
         {
-            Console.WriteLine("Upsert Time Invoice");
-            System.Diagnostics.Debug.WriteLine("Upsert Time Invoice");
-            _logger.LogInformation("Upsert Time Invoice");
             if (string.IsNullOrEmpty(request.InvoiceId.ToString()))
             {
                 return Result.Fail("Invoice Id can't be null or empty");
@@ -331,7 +328,7 @@ namespace HQ.Server.Services
 
             }
             await _context.SaveChangesAsync(ct);
-            return Result.Ok(new UpsertTimeInvoiceV1.Response() { Id = timeEntry.Id });
+            return Result.Ok(new AddTimeToInvoiceV1.Response() { Id = timeEntry.Id });
         }
 
         public async Task<Result<GetTimesV1.Response>> GetTimesV1(GetTimesV1.Request request, CancellationToken ct = default)

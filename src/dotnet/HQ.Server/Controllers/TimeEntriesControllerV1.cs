@@ -170,11 +170,11 @@ namespace HQ.Server.Controllers
                 .ToActionResult(new HQResultEndpointProfile());
         }
         [Authorize(HQAuthorizationPolicies.Staff)]
-        [HttpPost(nameof(UpsertTimeInvoiceV1))]
-        [ProducesResponseType<UpsertTimeInvoiceV1.Response>(StatusCodes.Status201Created)]
+        [HttpPost(nameof(AddTimeToInvoiceV1))]
+        [ProducesResponseType<AddTimeToInvoiceV1.Response>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult> UpsertTimeInvoiceV1([FromBody] UpsertTimeInvoiceV1.Request request, CancellationToken ct = default)
+        public async Task<ActionResult> AddTimeToInvoiceV1([FromBody] AddTimeToInvoiceV1.Request request, CancellationToken ct = default)
         {
             var staffId = User.GetStaffId();
             var staff = await _context.Staff
@@ -186,7 +186,7 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            return await _TimeEntryServiceV1.UpsertTimeInvoiceV1(request, ct)
+            return await _TimeEntryServiceV1.AddTimeToInvoiceV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
 

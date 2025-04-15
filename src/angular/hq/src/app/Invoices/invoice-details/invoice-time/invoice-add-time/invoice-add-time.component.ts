@@ -22,6 +22,7 @@ import { SelectInputComponent } from "../../../../core/components/select-input/s
 import { TimeSearchFilterComponent } from "../../../../times/search-filter/time-search-filter/time-search-filter.component";
 import { InvoiceTimeSearchFilterComponent } from "../invoice-time-search-filter/invoice-time-search-filter.component";
 import { updateTimeRequestV1 } from "../../../../models/times/update-time-v1";
+import { AddTimeToInvoiceRequestV1 } from "../../../../models/times/add-time-to-invoice-v1";
 
 interface InvoiceTimeEntry {
   record: GetTimeRecordV1,
@@ -36,8 +37,6 @@ interface InvoiceTimeEntry {
     CoreModule,
     RouterLink,
     InRolePipe,
-    SelectInputComponent,
-    TimeSearchFilterComponent,
     InvoiceTimeSearchFilterComponent
 ],
   providers: [
@@ -159,19 +158,22 @@ export class InvoiceAddTimeComponent {
   }
 
   async addToInvoice(){
-    this.selectedTimes.forEach(async (hrs, t) => {
-      const request: Partial<updateTimeRequestV1> = {
-        id: t,
-        invoiceId: this.invoice?.id,
-        hoursInvoiced: hrs
-      };
-      console.info("Request:");
-      console.table(request);
-      await firstValueFrom(this.hqService.upsertTimeInvoiceV1(request))
-    })
-    await this.router.navigate(['../'], {
-      relativeTo: this.route,
-    });
+    if(this.invoice){
+      let invoiceId = this.invoice.id;
+      this.selectedTimes.forEach(async (hrs, t) => {
+        const request: AddTimeToInvoiceRequestV1 = {
+          id: t,
+          invoiceId: invoiceId,
+          hoursInvoiced: hrs
+        };
+        console.info("Request:");
+        console.table(request);
+        await firstValueFrom(this.hqService.addTimeToInvoiceV1(request))
+      })
+      await this.router.navigate(['../'], {
+        relativeTo: this.route,
+      });
+    }
   }
 
   private destroy = new Subject<void>();

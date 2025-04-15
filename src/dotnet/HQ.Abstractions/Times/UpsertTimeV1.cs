@@ -119,7 +119,7 @@ namespace HQ.Abstractions.Times
         }
     }
 
-    public class UpsertTimeInvoiceV1
+    public class AddTimeToInvoiceV1
     {
         public class Request
         {
