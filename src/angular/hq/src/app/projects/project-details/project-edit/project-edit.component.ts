@@ -211,6 +211,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       billable: project.billable,
       bookingHours: project.projectBookingHours,
       projectNumber: project.projectNumber,
+      requireTask: project.requireTask,
     });
 
     this.form.controls.quoteId.disable();

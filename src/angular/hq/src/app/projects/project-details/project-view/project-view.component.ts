@@ -160,6 +160,7 @@ export class ProjectViewComponent implements OnDestroy {
             billable: project.billable,
             bookingHours: project.projectBookingHours,
             projectNumber: project.projectNumber,
+            requireTask: project.requireTask,
           });
         },
         error: console.error,
