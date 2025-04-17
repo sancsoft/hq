@@ -137,15 +137,16 @@ namespace HQ.Server.Invoices
                 foreach (Time time in times)
                 {
                     var code = chargeCodes.Find(c => c.Id == time.ChargeCodeId);
-                    totalHours += time.Hours;
+                    totalHours += time.HoursApproved ?? time.Hours;
                     if (code != null)
                     {
                         if (code.Billable)
                         {
-                            billableHours += time.Hours;
+                            billableHours += time.HoursApproved ?? time.Hours;
                         }
                         if (time.HoursApproved.HasValue)
                         {
+                            Console.WriteLine("  ");
                             acceptedHours += time.HoursApproved ?? 0;
                         }
                         if (code.Billable && time.HoursApproved.HasValue)
@@ -238,25 +239,19 @@ namespace HQ.Server.Invoices
             {
                 return validationResult;
             }
-            Console.WriteLine("  Passed validation");
             var invoice = await _context.Invoices.FindAsync(request.Id);
             if (invoice == null)
             {
                 invoice = new();
-                Console.WriteLine("  making new invoice" + invoice.Id);
                 _context.Invoices.Add(invoice);
             }
-            Console.WriteLine("  Invoice found/made");
 
             var client = await _context.Clients.FindAsync(request.ClientId);
-            Console.WriteLine("  Got client");
             invoice.ClientId = request.ClientId ?? Guid.Empty;
             invoice.Date = request.Date;
             invoice.Total = request.Total;
             invoice.TotalApprovedHours = request.TotalApprovedHours;
             invoice.InvoiceNumber = request.InvoiceNumber;
-
-            Console.WriteLine("  Passed invoice number");
 
             await _context.SaveChangesAsync(ct);
 

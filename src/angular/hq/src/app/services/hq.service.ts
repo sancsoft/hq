@@ -127,6 +127,8 @@ import {
   GetClientInvoiceSummaryV1Response,
 } from '../models/clients/get-client-invoice-summary-v1';
 import {
+  UpdateTimeHoursInvoicedRequestV1,
+  UpdateTimeHoursInvoicedResponseV1,
   updateTimeRequestV1,
   UpdateTimeResponseV1,
 } from '../models/times/update-time-v1';
@@ -582,6 +584,16 @@ export class HQService {
         this.http.post<UpdateTimeResponseV1>(
           `${apiUrl}/v1/TimeEntries/UpsertTimeV1`,
           request,
+        ),
+      ),
+    );
+  }
+  upsertTimeHoursInvoicedV1(request: UpdateTimeHoursInvoicedRequestV1) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdateTimeHoursInvoicedResponseV1>(
+          `${apiUrl}/v1/TimeEntries/UpsertTimeHoursInvoicedV1`,
+          request
         ),
       ),
     );

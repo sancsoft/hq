@@ -219,10 +219,17 @@
               {{ time.record.activityName ?? time.record.task }}
             </td>
             <td class="border-b border-black px-3 py-2 text-right">
-              {{ time.record.hoursApproved !== undefined ? time.record.hoursApproved : time.record.hours | number: "1.2-2" }}
+              {{ time.record.hoursApproved ?? time.record.hours | number: "1.2-2" }}
             </td>
             <td class="border-b border-black px-2 py-2">
-              <input title="invoiced hours" type="number" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" placeholder="{{time.record.hours}}">
+              <!-- <input title="invoiced hours" type="number" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" placeholder="{{time.record.hoursApproved ?? time.record.hours}}"> -->
+              <input title="invoiced hours" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" 
+                [value]="((time.record.hoursInvoiced ?? time.record.hoursApproved ?? time.record.hours) | number: '1.2-2')?.replace(',', '')"
+                (change)="updateInvoicedHours(time.record, $event)"
+                type="number"
+                step="0.25"
+                min="0"
+              />
             </td>
             <!-- <td class="border-b border-black py-2">{{ time.record.invoiceNumber }}</td> -->
             <td class="border-b border-black px-3 py-2">{{ time.record.description }}</td>

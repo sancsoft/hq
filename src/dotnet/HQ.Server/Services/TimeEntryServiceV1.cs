@@ -158,6 +158,25 @@ namespace HQ.Server.Services
             return Result.Ok(new UpsertTimeHoursV1.Response() { Id = timeEntry.Id });
         }
 
+        public async Task<Result<UpsertTimeHoursInvoicedV1.Response>> UpsertTimeHoursInvoicedV1(UpsertTimeHoursInvoicedV1.Request request, CancellationToken ct = default)
+        {
+            if (request.HoursInvoiced < 0)
+            {
+                return Result.Fail("Hours invoiced must be at least zero");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            timeEntry.HoursInvoiced = request.HoursInvoiced;
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok(new UpsertTimeHoursInvoicedV1.Response() { Id = timeEntry.Id, HoursInvoiced = request.HoursInvoiced });
+        }
+
 
         public async Task<Result<UpsertTimeDateV1.Response>> UpsertTimeDateV1(UpsertTimeDateV1.Request request, CancellationToken ct = default)
         {
@@ -499,6 +518,7 @@ namespace HQ.Server.Services
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved,
                 HoursInvoiced = t.HoursInvoiced,
+                HoursApproved = t.HoursApproved,
                 ChargeCode = t.ChargeCode.Code,
                 ProjectName = t.ChargeCode.Project != null ? t.ChargeCode.Project.Name : null,
                 ProjectId = t.ChargeCode.Project != null ? t.ChargeCode.Project.Id : null,

@@ -1,8 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CoreModule } from "../../../../core/core.module";
-import { GetInvoicesRecordV1 } from "../../../../models/Invoices/get-invoices-v1";
-import { AbstractControl, FormGroup, ValidationErrors } from "@angular/forms";
 import { firstValueFrom, map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
 import { GetChargeCodeRecordV1 } from "../../../../models/charge-codes/get-chargecodes-v1";
@@ -17,12 +15,11 @@ import { BaseListService } from "../../../../core/services/base-list.service";
 import { TimeListService } from "../../../../times/time-list/TimeList.service";
 import { HQRole } from "../../../../enums/hqrole";
 import { InRolePipe } from "../../../../pipes/in-role.pipe";
-import { SearchInputComponent } from "../../../../core/components/search-input/search-input.component";
-import { SelectInputComponent } from "../../../../core/components/select-input/select-input.component";
-import { TimeSearchFilterComponent } from "../../../../times/search-filter/time-search-filter/time-search-filter.component";
+import { roundToNextQuarter } from '../../../../common/functions/round-to-next-quarter';
 import { InvoiceTimeSearchFilterComponent } from "../invoice-time-search-filter/invoice-time-search-filter.component";
-import { updateTimeRequestV1 } from "../../../../models/times/update-time-v1";
 import { AddTimeToInvoiceRequestV1 } from "../../../../models/times/add-time-to-invoice-v1";
+import { ToastService } from "../../../../services/toast.service";
+import { ModalService } from "../../../../services/modal.service";
 
 interface InvoiceTimeEntry {
   record: GetTimeRecordV1,
@@ -73,7 +70,9 @@ export class InvoiceAddTimeComponent {
     private invoiceDetailsService: InvoiceDetaisService,
     public timeService: TimeListService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService,
+    private modalService: ModalService
   ) {
     console.log("ADD TIME")
     this.invoiceDetailsService.invoiced$.next(false);
@@ -112,16 +111,51 @@ export class InvoiceAddTimeComponent {
 
   updateTimeSelection(time: GetTimeRecordV1, i: number){
     console.log("time entry", time.id, "checked:", (document.getElementById('time_checkbox_'+time.id) as HTMLInputElement).checked);
-    console.log("  ", time.hoursApproved);
     // console.log(time, document.getElementById('time_checkbox_'+time.id))
+    let hrs = time.hoursInvoiced ?? time.hoursApproved ?? time.hours;
+    console.log("  ", hrs);
     if((document.getElementById('time_checkbox_'+time.id) as HTMLInputElement).checked){
-      this.selectedHrs += time.hours;
-      this.selectedTimes.set(time.id, time.hours);
+      this.selectedHrs += hrs;
+      this.selectedTimes.set(time.id, hrs);
     } else {
-      this.selectedHrs -= time.hours;
+      this.selectedHrs -= hrs;
       this.selectedTimes.delete(time.id);
     }
     console.log("Selected times:", this.selectedTimes);
+  }
+
+  async updateInvoicedHours(time: GetTimeRecordV1, event: Event) {
+    const invoicedHours = (event.target as HTMLInputElement).value;
+    const roundedInvoicedHours = roundToNextQuarter(invoicedHours);
+
+    if (!time || invoicedHours == '') {
+      await firstValueFrom(
+        this.modalService.alert(
+          'Error',
+          'Please Add a time to your invoiced hours',
+        ),
+      );
+      return;
+    }
+    const chargecodeId = await firstValueFrom(
+      this.invoiceDetailsService.chargeCodes$.pipe(
+        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+      ),
+    );
+
+    const request = {
+      id: time.id,
+      hoursInvoiced: roundedInvoicedHours
+    };
+    //  Call API
+    let newTime = await firstValueFrom(this.hqService.upsertTimeHoursInvoicedV1(request));
+    if(this.selectedTimes.has(newTime.id)){
+      this.selectedTimes.set(newTime.id, newTime.hoursInvoiced);
+      let hrsSum = 0;
+      this.selectedTimes.forEach((t) => {hrsSum += t; console.log(hrsSum)});
+      this.selectedHrs = hrsSum;
+    }
+    this.toastService.show('Updated', 'Invoiced hours have been updated.');
   }
 
   // keeps catching status of the elements from before they've been reloaded

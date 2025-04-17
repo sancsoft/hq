@@ -1,7 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CoreModule } from "../../../../core/core.module";
-import { GetInvoicesRecordV1 } from "../../../../models/Invoices/get-invoices-v1";
 import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors } from "@angular/forms";
 import { firstValueFrom, map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
@@ -12,15 +11,14 @@ import { InvoiceDetaisService } from "../../../service/invoice-details.service";
 import { GetInvoiceDetailsRecordV1 } from "../../../../models/Invoices/get-invoice-details-v1";
 import { GetTimeRecordClientsV1, GetTimeRecordV1, SortColumn } from "../../../../models/times/get-time-v1";
 import { SortIconComponent } from "../../../../common/sort-icon/sort-icon.component";
+import { roundToNextQuarter } from '../../../../common/functions/round-to-next-quarter';
 import { SortDirection } from "../../../../models/common/sort-direction";
 import { BaseListService } from "../../../../core/services/base-list.service";
 import { TimeListService } from "../../../../times/time-list/TimeList.service";
 import { HQRole } from "../../../../enums/hqrole";
-import { InRolePipe } from "../../../../pipes/in-role.pipe";
-import { SearchInputComponent } from "../../../../core/components/search-input/search-input.component";
-import { InvoiceTimeSearchFilterComponent } from "../invoice-time-search-filter/invoice-time-search-filter.component";
-import { RemoveTimeFromInvoiceRequestV1 } from "../../../../models/times/add-time-to-invoice-v1";
 import { HQConfirmationModalService } from "../../../../common/confirmation-modal/services/hq-confirmation-modal-service";
+import { ModalService } from "../../../../services/modal.service";
+import { ToastService } from "../../../../services/toast.service";
 @Component({
   selector: 'hq-invoice-time-list',
   standalone: true,
@@ -63,7 +61,9 @@ export class InvoiceTimeListComponent {
     public invoiceDetailsService: InvoiceDetaisService,
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: HQConfirmationModalService
+    private confirmModalService: HQConfirmationModalService,
+    private modalService: ModalService,
+    private toastService: ToastService
   ) {
     console.log("LIST TIME")
     this.invoiceDetailsService.invoiced$.next(true);
@@ -93,6 +93,35 @@ export class InvoiceTimeListComponent {
     console.log(time)
   }
 
+  async updateInvoicedHours(time: GetTimeRecordV1, event: Event) {
+    const invoicedHours = (event.target as HTMLInputElement).value;
+    const roundedInvoicedHours = roundToNextQuarter(invoicedHours);
+
+    if (!time || invoicedHours == '') {
+      await firstValueFrom(
+        this.modalService.alert(
+          'Error',
+          'Please Add a time to your invoiced hours',
+        ),
+      );
+      return;
+    }
+    const chargecodeId = await firstValueFrom(
+      this.invoiceDetailsService.chargeCodes$.pipe(
+        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+      ),
+    );
+
+    const request = {
+      id: time.id,
+      hoursInvoiced: roundedInvoicedHours
+    };
+    //  Call API
+    await firstValueFrom(this.hqService.upsertTimeHoursInvoicedV1(request));
+    this.toastService.show('Updated', 'Approved hours have been updated.');
+    this.invoiceDetailsService.invoiceRefresh();
+  }
+
   async toAddTime() {
     console.log(this.route.toString())
     await this.router.navigate(['add'], {
@@ -101,8 +130,8 @@ export class InvoiceTimeListComponent {
   }
 
   async openRemoveTimeModal(id: string) {
-    this.modalService.showModal("Are you sure you want to remove this time entry from this invoice?");
-    if(await firstValueFrom(this.modalService.performAction$)){
+    this.confirmModalService.showModal("Are you sure you want to remove this time entry from this invoice?");
+    if(await firstValueFrom(this.confirmModalService.performAction$)){
       this.removeTime(id);
     }
   }

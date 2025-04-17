@@ -58,6 +58,23 @@ namespace HQ.Abstractions.Times
         }
     }
 
+    public class UpsertTimeHoursInvoicedV1
+    {
+        public class Request
+        {
+            public Guid Id { get; set; }
+            public Guid? StaffId { get; set; }
+
+            public decimal HoursInvoiced { get; set; }
+        }
+
+        public class Response
+        {
+            public Guid Id { get; set; }
+            public decimal HoursInvoiced { get; set; }
+        }
+    }
+
     public class UpsertTimeDateV1
     {
         public class Request

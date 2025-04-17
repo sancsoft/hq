@@ -287,16 +287,23 @@
             </td>
             <td class="border-b px-3 border-black py-2">{{ time.staffName }}</td>
             <td class="border-b border-black px-3 py-2">{{ time.date }}</td>
-            <td class="border-b px-3 border-black py-2">{{ time.chargeCode }}</td>
+            <td class="border-b px-3 border-black py-2" title="{{time.billable ? 'Billable' : 'Not billable'}}">{{ time.chargeCode }}</td>
             <td class="border-b border-black px-3 py-2">{{ time.projectName }}</td>
             <td class="border-b px-3 border-black py-2">
               {{ time.activityName ?? time.task }}
             </td>
             <td class="border-b border-black px-3 py-2 text-right">
-              {{ time.hoursApproved !== undefined ? time.hoursApproved : time.hours }}
+              {{ time.hoursApproved ?? time.hours }}
             </td>
             <td class="border-b border-black px-2 py-2">
-              <input title="invoiced hours" type="number" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" placeholder="{{time.hoursApproved !== undefined ? time.hoursApproved : time.hours}}">
+              <!-- <input title="invoiced hours" type="number" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" placeholder="{{time.hoursInvoiced ?? time.hoursApproved ?? time.hours}}"> -->
+              <input title="invoiced hours" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" 
+                [value]="(time.hoursInvoiced | number: '1.2-2')?.replace(',', '')"
+                (change)="updateInvoicedHours(time, $event)"
+                type="number"
+                step="0.25"
+                min="0"
+              />
             </td>
             <!-- <td class="border-b border-black py-2">{{ time.invoiceNumber }}</td> -->
             <td class="border-b border-black px-3 py-2">{{ time.description }}</td>

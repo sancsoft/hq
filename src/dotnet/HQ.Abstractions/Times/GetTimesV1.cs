@@ -63,6 +63,7 @@ namespace HQ.Abstractions.Times
             public TimeStatus Status { get; set; }
             public decimal? BillableHours { get; set; }
             public decimal? HoursInvoiced { get; set; }
+            public decimal? HoursApproved { get; set; }
             public decimal Hours { get; set; }
             public string? HoursApprovedBy { get; set; }
             public Guid? InvoiceId { get; set; }
