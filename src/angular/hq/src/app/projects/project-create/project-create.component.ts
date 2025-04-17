@@ -58,6 +58,7 @@ interface Form {
   status: FormControl<ProjectStatus | null>;
   totalHours: FormControl<number | null>;
   projectNumber: FormControl<number | null>;
+  requireTask: FormControl<boolean | null>;
 }
 @Component({
   selector: 'hq-project-create',
@@ -104,6 +105,7 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
       billable: new FormControl(true, { nonNullable: true }),
       bookingHours: new FormControl(null, [Validators.required]),
       projectNumber: new FormControl(null),
+      requireTask: new FormControl(false, { nonNullable: true }),
     },
     { validators: this.dateRangeValidator },
   );

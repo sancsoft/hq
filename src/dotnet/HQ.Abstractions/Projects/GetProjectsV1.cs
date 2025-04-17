@@ -115,5 +115,7 @@ public class GetProjectsV1
         public bool Billable { get; set; }
         public decimal? ProjectBookingHours { get; set; }
         public decimal? ProjectTotalHours { get; set; }
+        public bool RequireTask { get; set; }
+
     }
 }

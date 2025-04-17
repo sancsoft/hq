@@ -30,6 +30,7 @@ public class UpsertProjectV1
         public Decimal? TimeEntryMaxHours { get; set; }
         public decimal? TotalHours { get; set; }
         public int? ProjectNumber { get; set; }
+        public bool RequireTask { get; set; } = false;
     }
 
     public class Response

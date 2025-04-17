@@ -75,6 +75,7 @@ public class ProjectServiceV1
                 project.Status = request.Status;
                 project.TotalHours = request.TotalHours;
                 project.TimeEntryMaxHours = request.TimeEntryMaxHours ?? 4; // default to 4 hours
+                project.RequireTask = request.RequireTask;
 
                 switch (request.Type)
                 {
@@ -275,6 +276,7 @@ public class ProjectServiceV1
             Type = t.Type,
             Billable = t.ChargeCode!.Billable,
             ProjectTotalHours = t.TotalHours,
+            RequireTask = t.RequireTask,
 
             BookingStartDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Min(x => x.Date),
             BookingEndDate = t.ChargeCode!.Times.Where(x => x.Date >= bookingStartDate && x.Date <= bookingEndDate).Max(x => x.Date),
@@ -314,6 +316,7 @@ public class ProjectServiceV1
             Type = t.Type,
             Billable = t.Billable,
             ProjectTotalHours = t.ProjectTotalHours,
+            RequireTask = t.RequireTask,
 
             BookingStartDate = t.BookingStartDate,
             BookingEndDate = t.BookingEndDate,

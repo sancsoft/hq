@@ -10,6 +10,8 @@ export interface UpsertProjectRequestV1 {
   startDate: string | null;
   endDate: string | null;
   timeEntryMaxHours: number | null;
+  requireTask: boolean | null;
+
 }
 
 export interface UpsertProjectResponsetV1 {

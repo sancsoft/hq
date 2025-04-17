@@ -74,6 +74,7 @@ export interface GetProjectRecordV1 {
   billable: boolean;
   projectTotalHours: number | null;
   projectBookingHours: number | null;
+  requireTask: boolean;
 }
 
 export interface GetProjectResponseV1
