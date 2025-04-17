@@ -331,6 +331,37 @@ namespace HQ.Server.Services
             return Result.Ok(new AddTimeToInvoiceV1.Response() { Id = timeEntry.Id });
         }
 
+        public async Task<Result> RemoveTimeFromInvoiceV1(RemoveTimeFromInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            if (request.Id == Guid.Empty)
+            {
+                return Result.Fail("Time entry Id can't be null or empty");
+            }
+            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+
+
+            if (timeEntry == null)
+            {
+                return Result.Fail("Time entry could not be found.");
+            }
+            Console.WriteLine($"Found time {timeEntry.Id}");
+            var invoice = await _context.Invoices.Where(t => t.Id == timeEntry.InvoiceId).FirstOrDefaultAsync();
+
+            if (invoice != null)
+            {
+                Console.WriteLine($"Found invoice {invoice.Id}");
+                timeEntry.InvoiceId = null;
+                timeEntry.HoursInvoiced = null;
+            }
+            else
+            {
+                return Result.Fail("This time entry was not invoiced.");
+            }
+
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok();
+        }
+
         public async Task<Result<GetTimesV1.Response>> GetTimesV1(GetTimesV1.Request request, CancellationToken ct = default)
         {
             if (request.Period.HasValue && request.Period == Period.Custom)

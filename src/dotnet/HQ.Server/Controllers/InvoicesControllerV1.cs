@@ -42,5 +42,12 @@ namespace HQ.Server.Controllers
         public Task<ActionResult> GetInvoiceDetailsV1([FromBody] GetInvoiceDetailsV1.Request request, CancellationToken ct = default) =>
             _invoicesService.GetInvoiceDetailsV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(UpsertInvoiceV1))]
+        [ProducesResponseType<UpsertInvoiceV1.Response>(StatusCodes.Status201Created)]
+        public Task<ActionResult> UpsertInvoiceV1([FromBody] UpsertInvoiceV1.Request request, CancellationToken ct = default) =>
+            _invoicesService.UpsertInvoiceV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
     }
 }

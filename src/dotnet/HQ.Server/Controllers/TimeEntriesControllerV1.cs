@@ -190,6 +190,28 @@ namespace HQ.Server.Controllers
                 .ToActionResult(new HQResultEndpointProfile());
         }
 
+        [Authorize(HQAuthorizationPolicies.Administrator)]
+        [HttpPost(nameof(RemoveTimeFromInvoiceV1))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> RemoveTimeFromInvoiceV1([FromBody] RemoveTimeFromInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            Console.WriteLine("In controller");
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            return await _TimeEntryServiceV1.RemoveTimeFromInvoiceV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
 
         [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(GetTimesV1))]

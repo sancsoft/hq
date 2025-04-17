@@ -46,6 +46,11 @@ export class TextInputComponent {
   max: number | null = null;
 
   @Input()
+  minLength: number | null = null;
+  @Input()
+  maxLength: number | null = null;
+
+  @Input()
   public disabled = false;
 
   @ContentChildren(ValidationErrorDirective)

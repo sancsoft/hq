@@ -3,11 +3,11 @@ using HQ.Abstractions.Enumerations;
 
 namespace HQ.Abstractions.Invoices
 {
-      public class GetInvoiceDetailsV1
-      {
+    public class GetInvoiceDetailsV1
+    {
         public class Request
         {
-           public Guid Id { get; set; }
+            public Guid Id { get; set; }
         }
         public enum SortColumn
         {
@@ -34,6 +34,7 @@ namespace HQ.Abstractions.Invoices
             public decimal BillableHours { get; set; }
             public decimal AcceptedHours { get; set; }
             public decimal AcceptedBillableHours { get; set; }
+            public decimal InvoicedHours { get; set; }
             public List<ChargeCode> ChargeCodes { get; set; }
         }
 

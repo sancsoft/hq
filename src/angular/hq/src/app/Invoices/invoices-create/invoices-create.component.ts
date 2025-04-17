@@ -37,6 +37,7 @@ import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { formControlChanges } from '../../core/functions/form-control-changes';
 import { APIError } from '../../errors/apierror';
 import { CoreModule } from '../../core/core.module';
+import { UpsertInvoiceRequestV1 } from '../../models/Invoices/upsert-invoice-v1';
 
 interface Form {
   clientId: FormControl<string | null>;
@@ -70,7 +71,7 @@ export class InvoicesCreateComponent {
   form = new FormGroup<Form>(
     {
       clientId: new FormControl(null, [Validators.required]),
-      invoiceNumber: new FormControl(null),
+      invoiceNumber: new FormControl(null, [Validators.required]),
       totalApprovedHours: new FormControl(null, [Validators.required]),
       total: new FormControl(null, [Validators.required]),
       date: new FormControl(null, Validators.required),
@@ -115,12 +116,12 @@ export class InvoicesCreateComponent {
 
     try {
       if (this.form.valid && this.form.touched && this.form.dirty) {
-        const request = this.form.value;
+        const request: Partial<UpsertInvoiceRequestV1> = this.form.value;
         const response = await firstValueFrom(
           this.hqService.upsertInvoiceV1(request),
         );
 
-        await this.router.navigate(['../', response.id], {
+        await this.router.navigate(['../', response.id, 'details'], {
           relativeTo: this.route,
         });
       } else {

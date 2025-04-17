@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CoreModule } from "../../../../core/core.module";
 import { GetInvoicesRecordV1 } from "../../../../models/Invoices/get-invoices-v1";
 import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors } from "@angular/forms";
-import { map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
+import { firstValueFrom, map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
 import { GetChargeCodeRecordV1 } from "../../../../models/charge-codes/get-chargecodes-v1";
 import { HQService } from "../../../../services/hq.service";
@@ -19,6 +19,8 @@ import { HQRole } from "../../../../enums/hqrole";
 import { InRolePipe } from "../../../../pipes/in-role.pipe";
 import { SearchInputComponent } from "../../../../core/components/search-input/search-input.component";
 import { InvoiceTimeSearchFilterComponent } from "../invoice-time-search-filter/invoice-time-search-filter.component";
+import { RemoveTimeFromInvoiceRequestV1 } from "../../../../models/times/add-time-to-invoice-v1";
+import { HQConfirmationModalService } from "../../../../common/confirmation-modal/services/hq-confirmation-modal-service";
 @Component({
   selector: 'hq-invoice-time-list',
   standalone: true,
@@ -26,11 +28,8 @@ import { InvoiceTimeSearchFilterComponent } from "../invoice-time-search-filter/
     CommonModule,
     CoreModule,
     RouterLink,
-    InRolePipe,
-    InvoiceTimeSearchFilterComponent,
-    SearchInputComponent,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [
     {
@@ -63,7 +62,8 @@ export class InvoiceTimeListComponent {
     private hqService: HQService,
     public invoiceDetailsService: InvoiceDetaisService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private modalService: HQConfirmationModalService
   ) {
     console.log("LIST TIME")
     this.invoiceDetailsService.invoiced$.next(true);
@@ -87,17 +87,29 @@ export class InvoiceTimeListComponent {
     this.times$ = this.invoiceDetailsService.records$.pipe(takeUntil(this.destroy), map((r) => r), tap(r => console.log('times:',r)));
   }
 
-  updateTimeSelection(time: GetTimeRecordV1, i: number){
+  updateTimeSelection(time: GetTimeRecordV1, i: number) {
     console.log("time entry", i, "clicked:");
     console.log("Hours approved:", time.hoursApproved)
     console.log(time)
   }
 
-  async toAddTime(){
+  async toAddTime() {
     console.log(this.route.toString())
     await this.router.navigate(['add'], {
       relativeTo: this.route,
     });
+  }
+
+  async openRemoveTimeModal(id: string) {
+    this.modalService.showModal("Are you sure you want to remove this time entry from this invoice?");
+    if(await firstValueFrom(this.modalService.performAction$)){
+      this.removeTime(id);
+    }
+  }
+  async removeTime(id: string) {
+    console.warn("Removing", id);
+    await firstValueFrom(this.hqService.removeTimeFromInvoiceV1({id: id}));
+    this.invoiceDetailsService.invoiceRefresh();
   }
 
   private destroy = new Subject<void>();

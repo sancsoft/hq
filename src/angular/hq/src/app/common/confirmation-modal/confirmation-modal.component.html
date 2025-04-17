@@ -36,7 +36,7 @@
             Cancel
           </button>
         </div>
-        @if (confirmationModalService.showNotes) {
+        @if (confirmationModalService.showNotes | async) {
           <div class="mt-4">
             <input
               type="text"

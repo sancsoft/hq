@@ -7,3 +7,7 @@ export interface AddTimeToInvoiceRequestV1 {
 export interface AddTimeToInvoiceResponseV1 {
   id: string;
 }
+
+export interface RemoveTimeFromInvoiceRequestV1 {
+  id: string;
+}

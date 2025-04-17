@@ -14,6 +14,7 @@ export interface GetInvoiceDetailsRecordV1 {
   totalHours : number;
   billableHours : number;
   acceptedHours : number;
+  invoicedHours: number;
   acceptedBillableHours : number;
   chargeCodes: Array<InvoiceChargeCode>;
 }

@@ -131,7 +131,9 @@ namespace HQ.Server.Invoices
                 decimal billableHours = 0;
                 decimal acceptedHours = 0;
                 decimal acceptedBillableHours = 0;
+                decimal invoicedHours = 0;
 
+                Console.WriteLine("==========");
                 foreach (Time time in times)
                 {
                     var code = chargeCodes.Find(c => c.Id == time.ChargeCodeId);
@@ -142,14 +144,20 @@ namespace HQ.Server.Invoices
                         {
                             billableHours += time.Hours;
                         }
-                        if (time.AcceptedAt != null)
+                        if (time.HoursApproved.HasValue)
                         {
-                            acceptedHours += time.Hours;
+                            acceptedHours += time.HoursApproved ?? 0;
                         }
-                        if (code.Billable && time.AcceptedAt != null)
+                        if (code.Billable && time.HoursApproved.HasValue)
                         {
-                            acceptedBillableHours += time.Hours;
+                            acceptedBillableHours += time.HoursApproved ?? 0;
                         }
+                        if (time.HoursInvoiced.HasValue)
+                        {
+                            invoicedHours += time.HoursInvoiced ?? 0;
+                        }
+                        Console.WriteLine(time.Date);
+                        Console.WriteLine($"  hrs: {time.Hours}, hrsAppr: {time.HoursApproved}, hrsBill: " + (code.Billable ? time.Hours : 0) + $", hrsInv: {time.HoursInvoiced}");
                     }
                 }
 
@@ -208,12 +216,54 @@ namespace HQ.Server.Invoices
                 response.BillableHours = billableHours;
                 response.AcceptedHours = acceptedHours;
                 response.AcceptedBillableHours = acceptedBillableHours;
+                response.InvoicedHours = invoicedHours;
             }
             if (response == null)
             {
                 Console.WriteLine("Null response");
             }
             return response;
+        }
+
+        public async Task<Result<UpsertInvoiceV1.Response>> UpsertInvoiceV1(UpsertInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            Console.WriteLine("Upserting invoice");
+            var validationResult = Result.Merge(
+                Result.FailIf(!request.ClientId.HasValue, "Client is required."),
+                Result.FailIf(!await _context.Clients.AnyAsync(t => t.Id == request.ClientId), "No client found."),
+                Result.FailIf(await _context.Invoices.AnyAsync(t => t.Id != request.Id && t.InvoiceNumber == request.InvoiceNumber), "An invoice already exists with that invoice number.")
+            );
+
+            if (validationResult.IsFailed)
+            {
+                return validationResult;
+            }
+            Console.WriteLine("  Passed validation");
+            var invoice = await _context.Invoices.FindAsync(request.Id);
+            if (invoice == null)
+            {
+                invoice = new();
+                Console.WriteLine("  making new invoice" + invoice.Id);
+                _context.Invoices.Add(invoice);
+            }
+            Console.WriteLine("  Invoice found/made");
+
+            var client = await _context.Clients.FindAsync(request.ClientId);
+            Console.WriteLine("  Got client");
+            invoice.ClientId = request.ClientId ?? Guid.Empty;
+            invoice.Date = request.Date;
+            invoice.Total = request.Total;
+            invoice.TotalApprovedHours = request.TotalApprovedHours;
+            invoice.InvoiceNumber = request.InvoiceNumber;
+
+            Console.WriteLine("  Passed invoice number");
+
+            await _context.SaveChangesAsync(ct);
+
+            return new UpsertInvoiceV1.Response()
+            {
+                Id = invoice.Id
+            };
         }
     }
 }

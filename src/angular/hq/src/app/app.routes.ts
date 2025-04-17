@@ -348,6 +348,15 @@ export const routes: Routes = [
             )
         },
         {
+          path: 'create',
+          title: 'Create Invoice',
+          canActivate: [userRoleGuard(HQRole.Administrator)],
+          loadComponent: () =>
+            import('./Invoices/invoices-create/invoices-create.component').then(
+              (m) => m.InvoicesCreateComponent,
+            )
+        },
+        {
           path: ':invoiceId',
           canActivate: [userRoleGuard(HQRole.Staff)],
           loadComponent: () =>
@@ -392,15 +401,6 @@ export const routes: Routes = [
             },
           ]
         },
-        {
-          path: 'create',
-          title: 'Create Invoice',
-          canActivate: [userRoleGuard(HQRole.Staff)],
-          loadComponent: () =>
-            import('./Invoices/invoices-create/invoices-create.component').then(
-              (m) => m.InvoicesCreateComponent,
-            )
-        }
       ]
   },
   {

@@ -38,22 +38,22 @@
             <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
               <div class="p-5 pr-0">
                 <div class="grid gap-[20px]">
-                    @if (this.apiErrors) {
-                    @for (error of this.apiErrors; track $index) {
-                        <div
-                        class="text-red-700 text-xs leading-normal inline-block"
-                        >
-                        {{ error }}
-                        </div>
-                    }
-                    }
+                  @if (this.apiErrors) {
+                  @for (error of this.apiErrors; track $index) {
+                      <div
+                      class="text-red-700 text-xs leading-normal inline-block"
+                      >
+                      {{ error }}
+                      </div>
+                  }
+                  }
 
-                    <div class="border-b border-black pb-1 px-1 font-bold">
-                    Project Information
-                    </div>
+                  <div class="border-b border-black pb-1 px-1 font-bold">
+                  Project Information
+                  </div>
 
-                    <!-- row grid -->
-                    <div class="grid gap-[20px] grid-cols-3">
+                  <!-- row grid -->
+                  <div class="grid gap-[20px] grid-cols-3">
                     <!-- column -->
                     <div>
                         <hq-select-input
@@ -80,15 +80,19 @@
 
                     <!-- column -->
                     <div>
+                      <!-- [maxLength]="5"
+                        [minLength]="5" -->
                         <hq-text-input
-                        type="number"
+                        type="text"
                         formControlName="invoiceNumber"
                         label="Invoice Number"
                         variant="secondary"
                         placeholder="Invoice Number"
                         >
+                        <ng-template hqValidationError="required">
+                          Invoice Number is required.
+                        </ng-template>
                         </hq-text-input>
-                        <small class="text-gray-700">Leave blank to generate</small>
                     </div>
 
                     <!-- column -->
@@ -101,8 +105,10 @@
                         </hq-date-input>
                     </div>
 
-                    </div>
+                  </div>
 
+                  <!-- row grid -->
+                  <div class="grid gap-[20px] grid-cols-3">
                     <!-- column -->
                     <div>
                         <hq-text-input
@@ -117,6 +123,22 @@
                         </ng-template>
                         </hq-text-input>
                     </div>
+
+                    <!-- column -->
+                    <div>
+                      <hq-text-input
+                      type="number"
+                      formControlName="total"
+                      label="Total"
+                      variant="secondary"
+                      placeholder="Total"
+                      >
+                      <ng-template hqValidationError="required">
+                          Invoice Total is required.
+                      </ng-template>
+                      </hq-text-input>
+                    </div>
+                  </div>
 
                 </div>
               </div>
