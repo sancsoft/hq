@@ -124,18 +124,25 @@
             Chrg Code
           </th>
           <th
-            width="210px"
+            width="190px"
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
           >
             Project
           </th>
           <th
-            width="130px"
+            width="120px"
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
           >
-            Activity/Task
+            Activity
+          </th>
+          <th
+            width="80px"
+            scope="col"
+            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
+          >
+            Task
           </th>
           <th
             width="40px"
@@ -147,7 +154,7 @@
             Hrs
           </th>
           <th
-            width="80px"
+            width="100px"
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3"
           >
@@ -196,14 +203,17 @@
                 <td class="border-b px-3 border-black py-2">{{ time.record.chargeCode }}</td>
                 <td class="border-b border-black px-3 py-2">{{ time.record.projectName }}</td>
                 <td class="border-b px-3 border-black py-2">
-                  {{ time.record.activityName ?? time.record.task }}
+                  {{ time.record.activityName }}
+                </td>
+                <td class="border-b px-3 border-black py-2">
+                  {{ time.record.task }}
                 </td>
                 <td class="border-b border-black px-3 py-2 text-right">
-                  {{ time.record.hoursApproved ?? time.record.hours | number: "1.2-2" }}
+                  {{ time.record.hoursApproved ?? time.record.hours }}
                 </td>
                 <td class="border-b border-black px-2 py-2">
                   <input title="invoiced hours" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" 
-                    [value]="((time.record.hoursInvoiced ?? time.record.hoursApproved ?? time.record.hours) | number: '1.2-2')?.replace(',', '')"
+                    [value]="(time.record.hoursInvoiced ?? time.record.hoursApproved ?? time.record.hours)"
                     (change)="updateInvoicedHours(time.record, $event)"
                     type="number"
                     step="0.25"
