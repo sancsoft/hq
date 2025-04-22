@@ -1,3 +1,4 @@
+using System.Data;
 using System.Globalization;
 
 using CsvHelper;
@@ -507,7 +508,6 @@ namespace HQ.Server.Services
             var acceptedHours = await records.Where(t => t.Status == TimeStatus.Accepted).SumAsync(t => t.HoursApproved, ct);
             var acceptedBillableHours = await records.Where(t => t.Status == TimeStatus.Accepted && t.ChargeCode.Billable).SumAsync(t => t.HoursApproved, ct);
 
-
             var mapped = records
             .Select(t => new GetTimesV1.Record()
             {
@@ -527,6 +527,7 @@ namespace HQ.Server.Services
                 StaffName = t.Staff.Name,
                 StaffId = t.Staff.Id,
                 InvoiceId = t.InvoiceId,
+                InvoiceNumber = t.Invoice != null ? t.Invoice.InvoiceNumber : null,
                 HoursApprovedBy = t.AcceptedBy != null ? t.AcceptedBy.Name : null,
                 Billable = t.ChargeCode.Billable,
                 Date = t.Date,
@@ -544,24 +545,46 @@ namespace HQ.Server.Services
                 { Abstractions.Times.GetTimesV1.SortColumn.Billable, "Billable" },
                 { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
                 { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
-                { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" }
+                { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" },
+                { Abstractions.Times.GetTimesV1.SortColumn.HoursApproved, "HoursApproved" }
             };
 
 
             var sortProperty = sortMap[request.SortBy];
 
+            // HoursApproved has to sort differently since the Hours column displayed on invoice time list pages technically use
+            // a records HoursApproved value only if the record has been approved, and otherwise uses the records Hours value
+            // Sorting this way should prevent null values throwing off the time orders like with the standard OrderBy column name approach
+            if (sortProperty == "HoursApproved")
+            {
+                var tempMapped = mapped.Select(t => new { Record = t, FunctionalHours = t.HoursApproved ?? t.Hours });
 
-            var sorted = request.SortDirection == SortDirection.Asc ?
-               mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-               mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+                var sorted = request.SortDirection == SortDirection.Asc ?
+                    tempMapped.OrderBy(t => EF.Property<object>(t, "FunctionalHours")) :
+                    tempMapped.OrderByDescending(t => EF.Property<object>(t, "FunctionalHours"));
 
-            sorted = sorted
-                .ThenBy(t => t.Date)
-                .ThenBy(t => t.StaffName)
-                .ThenBy(t => t.ClientName)
-                .ThenBy(t => t.ProjectName);
+                sorted = sorted
+                    .ThenBy(t => t.Record.Date)
+                    .ThenBy(t => t.Record.StaffName)
+                    .ThenBy(t => t.Record.ClientName)
+                    .ThenBy(t => t.Record.ProjectName);
 
-            mapped = sorted;
+                mapped = sorted.Select(t => t.Record);
+            }
+            else
+            {
+                var sorted = request.SortDirection == SortDirection.Asc ?
+                    mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+                    mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+                sorted = sorted
+                    .ThenBy(t => t.Date)
+                    .ThenBy(t => t.StaffName)
+                    .ThenBy(t => t.ClientName)
+                    .ThenBy(t => t.ProjectName);
+
+                mapped = sorted;
+            }
 
             if (request.Skip.HasValue)
             {

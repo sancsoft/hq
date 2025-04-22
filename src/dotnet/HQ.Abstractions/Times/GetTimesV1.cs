@@ -44,6 +44,7 @@ namespace HQ.Abstractions.Times
             ClientName = 5,
             ProjectName = 6,
             Billable = 7,
+            HoursApproved = 8,
         }
 
         public class Response : PagedResponseV1<Record>
@@ -67,6 +68,7 @@ namespace HQ.Abstractions.Times
             public decimal Hours { get; set; }
             public string? HoursApprovedBy { get; set; }
             public Guid? InvoiceId { get; set; }
+            public string? InvoiceNumber { get; set; }
             public string? RejectionNotes { get; set; } = null!;
             public DateOnly Date { get; set; }
             public string ChargeCode { get; set; } = null!;

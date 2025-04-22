@@ -139,13 +139,8 @@
                           formControlName="clientId"
                           label="Client"
                           variant="secondary"
+                          [readonly]="true"
                           >
-                          <ng-template [hqSelectInputOption]="null"
-                              >Please select a client</ng-template
-                          >
-                          <ng-template hqValidationError="required">
-                              Client is required.
-                          </ng-template>
                           @for (client of clients$ | async; track client.id) {
                             <ng-template
                               [hqSelectInputOption]="client.id"

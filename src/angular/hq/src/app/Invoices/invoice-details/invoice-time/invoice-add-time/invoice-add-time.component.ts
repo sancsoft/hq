@@ -67,7 +67,7 @@ export class InvoiceAddTimeComponent {
 
   constructor(
     private hqService: HQService,
-    private invoiceDetailsService: InvoiceDetaisService,
+    public invoiceDetailsService: InvoiceDetaisService,
     public timeService: TimeListService,
     private router: Router,
     private route: ActivatedRoute,
@@ -82,19 +82,11 @@ export class InvoiceAddTimeComponent {
           this.invoice = invoice;
         }
       });
-    // this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
     this.invoiceDetailsService.client$.subscribe((client) => {
       this.currentClient = client;
     });    
     this.invoiceDetailsService.invoiceRefresh();
-    // this.times$ = this.invoiceDetailsService.client$.pipe(
-    //   takeUntil(this.destroy),
-    //   switchMap((client) => this.hqService.getTimesV1({ clientId: client.id})),
-    //   map((t) => t.records),
-    //   tap((t) => console.log(t)),
-    //   shareReplay({bufferSize: 1, refCount: false}),
-    // );
-    // this.times$ = this.timeService.records$.pipe(map((t) => t), tap((t) => console.log(t)));
+    
     this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => {
       let t: InvoiceTimeEntry[] = new Array();
       r.forEach(r => {
@@ -104,9 +96,6 @@ export class InvoiceAddTimeComponent {
     }), tap((t) => {
       console.log("Time records:", t);
     }),);
-    // this.invoiceDetailsService.response$.pipe(takeUntil(this.destroy), map(r => r.records.flatMap((t) => t.id))).subscribe((r) => {
-    //   this.refreshTimeSelection2(r);
-    // });
   }
 
   updateTimeSelection(time: GetTimeRecordV1, i: number){
@@ -189,6 +178,10 @@ export class InvoiceAddTimeComponent {
 
   isChecked(id: string){
     return this.selectedTimes.has(id);
+  }
+
+  onSortClick(sortColumn: SortColumn) {
+    this.invoiceDetailsService.onSortClick(sortColumn);
   }
 
   async addToInvoice(){

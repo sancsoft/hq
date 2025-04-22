@@ -133,7 +133,6 @@ namespace HQ.Server.Invoices
                 decimal acceptedBillableHours = 0;
                 decimal invoicedHours = 0;
 
-                Console.WriteLine("==========");
                 foreach (Time time in times)
                 {
                     var code = chargeCodes.Find(c => c.Id == time.ChargeCodeId);
@@ -146,7 +145,6 @@ namespace HQ.Server.Invoices
                         }
                         if (time.HoursApproved.HasValue)
                         {
-                            Console.WriteLine("  ");
                             acceptedHours += time.HoursApproved ?? 0;
                         }
                         if (code.Billable && time.HoursApproved.HasValue)
@@ -157,8 +155,6 @@ namespace HQ.Server.Invoices
                         {
                             invoicedHours += time.HoursInvoiced ?? 0;
                         }
-                        Console.WriteLine(time.Date);
-                        Console.WriteLine($"  hrs: {time.Hours}, hrsAppr: {time.HoursApproved}, hrsBill: " + (code.Billable ? time.Hours : 0) + $", hrsInv: {time.HoursInvoiced}");
                     }
                 }
 
@@ -228,7 +224,7 @@ namespace HQ.Server.Invoices
 
         public async Task<Result<UpsertInvoiceV1.Response>> UpsertInvoiceV1(UpsertInvoiceV1.Request request, CancellationToken ct = default)
         {
-            Console.WriteLine("Upserting invoice");
+            // Console.WriteLine($"Upserting invoice {request.Id}");
             var validationResult = Result.Merge(
                 Result.FailIf(!request.ClientId.HasValue, "Client is required."),
                 Result.FailIf(!await _context.Clients.AnyAsync(t => t.Id == request.ClientId), "No client found."),
@@ -242,6 +238,7 @@ namespace HQ.Server.Invoices
             var invoice = await _context.Invoices.FindAsync(request.Id);
             if (invoice == null)
             {
+                // Console.WriteLine("New invoice");
                 invoice = new();
                 _context.Invoices.Add(invoice);
             }

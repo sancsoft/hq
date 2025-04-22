@@ -30,6 +30,7 @@ export enum SortColumn {
   ClientName = 5,
   ProjectName = 6,
   Billable = 7,
+  HoursApproved = 8,
 }
 
 export interface GetTimeRecordV1 {

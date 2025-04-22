@@ -127,11 +127,7 @@ export class InvoiceDetaisService extends BaseListService<
 
     this.activities$ = this.project.valueChanges.pipe(takeWhile((p) => p != null),
       switchMap((p) => { 
-        // if(p != null){
-          return this.hqService.getprojectActivitiesV1({ projectId: p })
-        // } else {
-        //   return null;
-        // }
+        return this.hqService.getprojectActivitiesV1({ projectId: p })
       }),
       map((activities) => activities.records)
     )
@@ -180,90 +176,100 @@ export class InvoiceDetaisService extends BaseListService<
   }
 
   protected override getResponse(): Observable<GetTimeRecordsV1> {
-      const projectId$ = this.project.valueChanges.pipe(
-        startWith(this.project.value),
-      );
-      const activityId$ = this.projectActivity.valueChanges.pipe(
-        startWith(null),
-      )
-      const staffMemberId$ = this.staffMember.valueChanges.pipe(
-        startWith(this.staffMember.value),
-      );
-      const startDate$ = this.startDate.valueChanges.pipe(
-        startWith(this.startDate.value),
-      );
-      const endDate$ = this.endDate.valueChanges.pipe(
-        startWith(this.endDate.value),
-      );
-      const periodFilter$ = this.selectedPeriod.valueChanges.pipe(
-        startWith(this.selectedPeriod.value),
-      );
+    const projectId$ = this.project.valueChanges.pipe(
+      startWith(this.project.value),
+    );
+    const activityId$ = this.projectActivity.valueChanges.pipe(
+      startWith(null),
+    )
+    const staffMemberId$ = this.staffMember.valueChanges.pipe(
+      startWith(this.staffMember.value),
+    );
+    const startDate$ = this.startDate.valueChanges.pipe(
+      startWith(this.startDate.value),
+    );
+    const endDate$ = this.endDate.valueChanges.pipe(
+      startWith(this.endDate.value),
+    );
+    const periodFilter$ = this.selectedPeriod.valueChanges.pipe(
+      startWith(this.selectedPeriod.value),
+    );
 
-      const period$: Observable<Period | null> = combineLatest([this.invoiced$, periodFilter$]).pipe(
-        map(([b, p]): Period | null => {
-          if(b){
-            console.log("  none")
-            return null;
-          } else {
-            console.log("  ", p)
-            return p;
-          }
-        }),
-      );
-
-      // const invoiced$ = this.invoiced.valueChanges.pipe(
-      //   startWith(this.invoiced.value),
-      // );
-      const timeStatus$ = this.timeStatus.valueChanges.pipe(
-        startWith(this.timeStatus.value),
-      );
-      const billable$ = this.billable.valueChanges.pipe(
-        startWith(this.billable.value),
-      );
-
-      const invoiceId$ = combineLatest([this.invoiced$, this.invoiceId$]).pipe(map((b) => {
-        if(b[0]){ 
-          console.log("Invoice id returned", b[1])
-          return b[1];
-        } else {
-          console.log("Null returned")
+    const period$: Observable<Period | null> = combineLatest([this.invoiced$, periodFilter$]).pipe(
+      map(([b, p]): Period | null => {
+        if(b){
+          console.log("  none")
           return null;
+        } else {
+          console.log("  ", p)
+          return p;
         }
-      }))
+      }),
+    );
+    const timeStatus$ = this.timeStatus.valueChanges.pipe(
+      startWith(this.timeStatus.value),
+    );
+    const billable$ = this.billable.valueChanges.pipe(
+      startWith(this.billable.value),
+    );
 
-      const combinedParams = {
-        search: this.search$,
-        skip: this.skip$,
-        clientId: this.clientId$,
-        projectId: projectId$,
-        staffId: staffMemberId$,
-        sortBy: this.sortOption$,
-        invoiceId: invoiceId$,
-        invoiced: this.invoiced$,
-        startDate: startDate$,
-        endDate: endDate$,
-        period: period$,
-        timeStatus: timeStatus$,
-        sortDirection: this.sortDirection$,
-        billable: billable$,
-        activityId: activityId$
-      };
+    const invoiceId$ = combineLatest([this.invoiced$, this.invoiceId$]).pipe(map((b) => {
+      if(b[0]){ 
+        console.log("Invoice id returned", b[1])
+        return b[1];
+      } else {
+        console.log("Null returned")
+        return null;
+      }
+    }))
 
-      return combineLatest(combinedParams).pipe(
-        debounceTime(500),
-        tap(() => this.loadingSubject.next(true)),
-        switchMap((request) => 
-          this.hqService.getTimesV1(request).pipe(
-            catchError((error: any) => {
-              this.loadingSubject.next(false);
-              console.error('Error fetching Invoice Time records', error);
-              return of(error);
-            }),
-          ),
+    const combinedParams = {
+      search: this.search$,
+      skip: this.skip$,
+      clientId: this.clientId$,
+      projectId: projectId$,
+      staffId: staffMemberId$,
+      sortBy: this.sortOption$,
+      invoiceId: invoiceId$,
+      invoiced: this.invoiced$,
+      startDate: startDate$,
+      endDate: endDate$,
+      period: period$,
+      timeStatus: timeStatus$,
+      sortDirection: this.sortDirection$,
+      billable: billable$,
+      activityId: activityId$
+    };
+
+    return combineLatest(combinedParams).pipe(
+      debounceTime(500),
+      tap(() => {console.log("true tapped"); this.loadingSubject.next(true)}),
+      switchMap((request) => 
+        this.hqService.getTimesV1(request).pipe(
+          catchError((error: any) => {
+            this.loadingSubject.next(false);
+            console.error('Error fetching Invoice Time records', error);
+            return of(error);
+          }),
         ),
-        tap(() => this.loadingSubject.next(false)),
+      ),
+      tap(() => {console.log("false tapped"); this.loadingSubject.next(false)}),
+    );
+  }
+
+  override onSortClick(sortColumn: any) {
+    if (this.sortOption$.value === sortColumn) {
+      this.sortDirection$.next(
+        this.sortDirection$.value == SortDirection.Asc
+          ? SortDirection.Desc
+          : SortDirection.Asc,
       );
+    } else {
+      this.sortOption$.next(sortColumn);
+      this.sortDirection$.next(SortDirection.Asc);
     }
+    this.goToPage(1);
+  }
 
   invoiceRefresh() {
     this.invoiceRefreshSubject.next();

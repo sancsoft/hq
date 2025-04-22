@@ -77,14 +77,8 @@ export class InvoiceTimeListComponent {
       this.currentClient = client;
     });    
     this.invoiceDetailsService.invoiceRefresh();
-    // this.times$ = this.invoiceDetailsService.invoiceId$.pipe(
-    //   takeUntil(this.destroy),
-    //   switchMap((invoiceId) => this.hqService.getTimesV1({ invoiceId: invoiceId})),
-    //   map((t) => t.records),
-    //   tap((t) => console.log(t)),
-    //   shareReplay({bufferSize: 1, refCount: false}),
-    // );
-    this.times$ = this.invoiceDetailsService.records$.pipe(takeUntil(this.destroy), map((r) => r), tap(r => console.log('times:',r)));
+    
+    this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => r), tap(r => console.log('times:',r)),);
   }
 
   updateTimeSelection(time: GetTimeRecordV1, i: number) {
@@ -120,6 +114,10 @@ export class InvoiceTimeListComponent {
     await firstValueFrom(this.hqService.upsertTimeHoursInvoicedV1(request));
     this.toastService.show('Updated', 'Approved hours have been updated.');
     this.invoiceDetailsService.invoiceRefresh();
+  }
+
+  onSortClick(sortColumn: SortColumn) {
+    this.invoiceDetailsService.onSortClick(sortColumn);
   }
 
   async toAddTime() {

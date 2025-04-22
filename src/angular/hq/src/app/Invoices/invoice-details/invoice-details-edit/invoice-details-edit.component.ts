@@ -98,14 +98,19 @@ export class InvoiceDetailsEditComponent {
 
     try {
       if (this.invoiceFormGroup.valid && this.invoiceFormGroup.touched && this.invoiceFormGroup.dirty) {
-        const request = this.invoiceFormGroup.value;
+        const request = {
+          id: this.invoice?.id,
+          clientId: this.invoiceFormGroup.value.clientId,
+          date: this.invoiceFormGroup.value.date,
+          invoiceNumber: this.invoiceFormGroup.value.invoiceNumber,
+          total: this.invoiceFormGroup.value.total,
+          totalApprovedHours: this.invoiceFormGroup.value.totalApprovedHours
+        };
         const response = await firstValueFrom(
           this.hqService.upsertInvoiceV1(request),
         );
 
-        await this.router.navigate(['../', response.id], {
-          relativeTo: this.route,
-        });
+        this.invoiceDetailsService.invoiceRefresh();
       } else {
         this.apiErrors.length = 0;
         this.apiErrors.push(
