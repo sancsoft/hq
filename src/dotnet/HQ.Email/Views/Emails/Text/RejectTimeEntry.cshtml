@@ -19,8 +19,15 @@ Hours: @Model.Hours.ToString("0.00")
 Charge Code: @Model.ChargeCode
 Client: @Model.Client
 Project: @Model.Project
-Activity: @Model.Activity
-Task: @Model.Task
+
+@if (Model.RequireActivity)
+{
+<text>Activity: @Model.Activity</text>
+}
+@if (Model.RequireTask)
+{
+<text>Task: @Model.Task</text>
+}
 Description: @Model.Description
 Reason for Rejection: @Model.ReasonForRejection
 Rejected By: @Model.RejectedBy

@@ -9,8 +9,9 @@ namespace HQ.Abstractions.Emails
         public string Client { get; set; } = null!;
         public string Project { get; set; } = null!;
         public string? Activity { get; set; }
+        public Boolean RequireActivity { get; set; } = false;
         public string? Task { get; set; }
-
+        public Boolean RequireTask { get; set; } = false;
         public string? Description { get; set; }
         public string? ReasonForRejection { get; set; }
         public string? RejectedBy { get; set; }
