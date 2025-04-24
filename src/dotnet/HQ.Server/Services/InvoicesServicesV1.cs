@@ -116,7 +116,6 @@ namespace HQ.Server.Invoices
                     .AsNoTracking()
                     .Where(t => t.InvoiceId == request.Id)
                     .ToListAsync();
-                // Console.WriteLine($"{times.Count} Times");
 
                 var chargeCodeIds = times.Select(t => t.ChargeCodeId);
 
@@ -124,8 +123,6 @@ namespace HQ.Server.Invoices
                     .AsNoTracking()
                     .Where(t => chargeCodeIds.Contains(t.Id))
                     .ToListAsync();
-
-                // Console.WriteLine($"{chargeCodes.Count} charge codes");
 
                 decimal totalHours = 0;
                 decimal billableHours = 0;
@@ -158,17 +155,17 @@ namespace HQ.Server.Invoices
                     }
                 }
 
-                List<string> projectIds = new List<string>();
-                List<string> quoteIds = new List<string>();
+                List<string> projectIds = [];
+                List<string> quoteIds = [];
                 foreach (ChargeCode code in chargeCodes)
                 {
                     if (code.ProjectId != null)
                     {
-                        projectIds.Add(code.ProjectId.ToString());
+                        projectIds.Add(code.ProjectId.ToString() ?? "");
                     }
                     if (code.QuoteId != null)
                     {
-                        quoteIds.Add(code.QuoteId.ToString());
+                        quoteIds.Add(code.QuoteId.ToString() ?? "");
                     }
                 }
 
@@ -215,16 +212,12 @@ namespace HQ.Server.Invoices
                 response.AcceptedBillableHours = acceptedBillableHours;
                 response.InvoicedHours = invoicedHours;
             }
-            if (response == null)
-            {
-                Console.WriteLine("Null response");
-            }
+            // return response != null ? Result.Ok(response) : Result.Fail("No response returned");
             return response;
         }
 
         public async Task<Result<UpsertInvoiceV1.Response>> UpsertInvoiceV1(UpsertInvoiceV1.Request request, CancellationToken ct = default)
         {
-            // Console.WriteLine($"Upserting invoice {request.Id}");
             var validationResult = Result.Merge(
                 Result.FailIf(!request.ClientId.HasValue, "Client is required."),
                 Result.FailIf(!await _context.Clients.AnyAsync(t => t.Id == request.ClientId), "No client found."),
@@ -238,7 +231,6 @@ namespace HQ.Server.Invoices
             var invoice = await _context.Invoices.FindAsync(request.Id);
             if (invoice == null)
             {
-                // Console.WriteLine("New invoice");
                 invoice = new();
                 _context.Invoices.Add(invoice);
             }

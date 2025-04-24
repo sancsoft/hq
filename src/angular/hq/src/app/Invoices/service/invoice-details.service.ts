@@ -14,6 +14,9 @@ import { Period } from "../../enums/period";
 import { TimeStatus } from "../../enums/time-status";
 import { FormControl } from "@angular/forms";
 import { GetProjectActivityRecordV1 } from "../../models/projects/get-project-activity-v1";
+import { ToastService } from "../../services/toast.service";
+import { ModalService } from "../../services/modal.service";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: 'root',
@@ -69,7 +72,11 @@ export class InvoiceDetaisService extends BaseListService<
 
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
-  constructor(private hqService: HQService) {
+  constructor(
+    private hqService: HQService, 
+    private modalService: ModalService,
+    private router: Router
+  ) {
     super(SortColumn.Date, SortDirection.Desc);
     const invoiceId$ = this.invoiceIdSubject$.asObservable().pipe(
       filter((invoiceId) => invoiceId != null),
@@ -83,7 +90,14 @@ export class InvoiceDetaisService extends BaseListService<
     this.invoiceId$ = merge(invoiceId$, refreshInvoiceId$);
 
     this.invoice$ = this.invoiceId$.pipe(
-      switchMap((invoiceId) => this.hqService.getInvoiceDetailsV1({ id: invoiceId})),
+      switchMap((invoiceId) => 
+        this.hqService.getInvoiceDetailsV1({ id: invoiceId})
+      ), 
+      catchError(_ => {
+        this.router.navigateByUrl("/invoices");
+        this.modalService.alert("Error", "Invoice details could not be found.");
+        return of();
+      }),
       shareReplay({ bufferSize: 1, refCount: false}),
     );
 

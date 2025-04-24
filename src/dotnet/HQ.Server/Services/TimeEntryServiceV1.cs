@@ -353,7 +353,6 @@ namespace HQ.Server.Services
 
         public async Task<Result> AddTimesToInvoiceV1(AddTimesToInvoiceV1.Request request, CancellationToken ct = default)
         {
-            Console.WriteLine("    Made it to service");
             if (string.IsNullOrEmpty(request.InvoiceId.ToString()))
             {
                 return Result.Fail("Invoice Id can't be null or empty");
@@ -389,7 +388,6 @@ namespace HQ.Server.Services
                     if (failCt > 0)
                     {
                         await _context.SaveChangesAsync(ct);
-                        Console.WriteLine($"{failCt}/{request.TimeEntries.Count} time entries could not be found.");
                         return Result.Fail($"{failCt}/{request.TimeEntries.Count} time entries could not be found.");
                     }
                 }
@@ -412,12 +410,10 @@ namespace HQ.Server.Services
             {
                 return Result.Fail("Time entry could not be found.");
             }
-            Console.WriteLine($"Found time {timeEntry.Id}");
             var invoice = await _context.Invoices.Where(t => t.Id == timeEntry.InvoiceId).FirstOrDefaultAsync();
 
             if (invoice != null)
             {
-                Console.WriteLine($"Found invoice {invoice.Id}");
                 timeEntry.InvoiceId = null;
                 timeEntry.HoursInvoiced = null;
             }

@@ -115,7 +115,6 @@ namespace HQ.Server.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> UpsertTimeHoursInvoicedV1([FromBody] UpsertTimeHoursInvoicedV1.Request request, CancellationToken ct = default)
         {
-            Console.WriteLine(" Updating invoice hours");
             var staffId = User.GetStaffId();
             var staff = await _context.Staff
                 .AsNoTracking()
@@ -228,7 +227,6 @@ namespace HQ.Server.Controllers
                 return NotFound();
             }
 
-            Console.WriteLine("    Made it through controller");
             return await _TimeEntryServiceV1.AddTimesToInvoiceV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
@@ -240,7 +238,6 @@ namespace HQ.Server.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> RemoveTimeFromInvoiceV1([FromBody] RemoveTimeFromInvoiceV1.Request request, CancellationToken ct = default)
         {
-            Console.WriteLine("In controller");
             var staffId = User.GetStaffId();
             var staff = await _context.Staff
                 .AsNoTracking()

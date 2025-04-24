@@ -35,7 +35,7 @@ namespace HQ.Abstractions.Invoices
             public decimal AcceptedHours { get; set; }
             public decimal AcceptedBillableHours { get; set; }
             public decimal InvoicedHours { get; set; }
-            public List<ChargeCode> ChargeCodes { get; set; }
+            public List<ChargeCode>? ChargeCodes { get; set; }
         }
 
         public class ChargeCode
