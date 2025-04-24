@@ -84,7 +84,6 @@ export class InvoiceDetaisService extends BaseListService<
 
     this.invoice$ = this.invoiceId$.pipe(
       switchMap((invoiceId) => this.hqService.getInvoiceDetailsV1({ id: invoiceId})),
-      tap((t) => console.log("invoice:",t)),
       shareReplay({ bufferSize: 1, refCount: false}),
     );
 
@@ -198,10 +197,8 @@ export class InvoiceDetaisService extends BaseListService<
     const period$: Observable<Period | null> = combineLatest([this.invoiced$, periodFilter$]).pipe(
       map(([b, p]): Period | null => {
         if(b){
-          console.log("  none")
           return null;
         } else {
-          console.log("  ", p)
           return p;
         }
       }),
@@ -215,10 +212,8 @@ export class InvoiceDetaisService extends BaseListService<
 
     const invoiceId$ = combineLatest([this.invoiced$, this.invoiceId$]).pipe(map((b) => {
       if(b[0]){ 
-        console.log("Invoice id returned", b[1])
         return b[1];
       } else {
-        console.log("Null returned")
         return null;
       }
     }))
@@ -243,7 +238,7 @@ export class InvoiceDetaisService extends BaseListService<
 
     return combineLatest(combinedParams).pipe(
       debounceTime(500),
-      tap(() => {console.log("true tapped"); this.loadingSubject.next(true)}),
+      tap(() => {this.loadingSubject.next(true)}),
       switchMap((request) => 
         this.hqService.getTimesV1(request).pipe(
           catchError((error: any) => {
@@ -253,7 +248,7 @@ export class InvoiceDetaisService extends BaseListService<
           }),
         ),
       ),
-      tap(() => {console.log("false tapped"); this.loadingSubject.next(false)}),
+      tap(() => {this.loadingSubject.next(false)}),
     );
   }
 

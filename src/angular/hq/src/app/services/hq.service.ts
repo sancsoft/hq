@@ -188,7 +188,7 @@ import {
   GetInvoiceDetailsRequestV1, 
   GetInvoiceDetailsRecordV1 
 } from '../models/Invoices/get-invoice-details-v1';
-import { AddTimeToInvoiceRequestV1, AddTimeToInvoiceResponseV1, RemoveTimeFromInvoiceRequestV1 } from '../models/times/add-time-to-invoice-v1';
+import { AddTimesToInvoiceRequestV1, AddTimeToInvoiceRequestV1, AddTimeToInvoiceResponseV1, RemoveTimeFromInvoiceRequestV1 } from '../models/times/add-time-to-invoice-v1';
 @Injectable({
   providedIn: 'root',
 })
@@ -567,8 +567,8 @@ export class HQService {
     );
   }
 
+  // Times
   getTimesV1(request: Partial<GetTimeRequestV1>) {
-    console.log("Get times request:", request)
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<GetTimeRecordsV1>(
@@ -603,6 +603,16 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<AddTimeToInvoiceResponseV1>(
           `${apiUrl}/v1/TimeEntries/AddTimeToInvoiceV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  addTimesToInvoiceV1(request: AddTimesToInvoiceRequestV1) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post(
+          `${apiUrl}/v1/TimeEntries/AddTimesToInvoiceV1`,
           request,
         ),
       ),

@@ -40,8 +40,6 @@ import { ToastService } from "../../../../services/toast.service";
 export class InvoiceTimeListComponent {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
-  // invoiceId$: Observable<string>;
-  // invoice$: Observable<GetInvoicesRecordV1>;
   invoice?: GetInvoiceDetailsRecordV1;
 
   date: string = Date.now.toString();
@@ -65,7 +63,6 @@ export class InvoiceTimeListComponent {
     private modalService: ModalService,
     private toastService: ToastService
   ) {
-    console.log("LIST TIME")
     this.invoiceDetailsService.invoiced$.next(true);
     this.invoiceDetailsService.invoice$.pipe(takeUntil(this.destroy)).subscribe(
       (invoice) => {
@@ -76,15 +73,8 @@ export class InvoiceTimeListComponent {
     this.invoiceDetailsService.client$.subscribe((client) => {
       this.currentClient = client;
     });    
-    this.invoiceDetailsService.invoiceRefresh();
     
-    this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => r), tap(r => console.log('times:',r)),);
-  }
-
-  updateTimeSelection(time: GetTimeRecordV1, i: number) {
-    console.log("time entry", i, "clicked:");
-    console.log("Hours approved:", time.hoursApproved)
-    console.log(time)
+    this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => r),);
   }
 
   async updateInvoicedHours(time: GetTimeRecordV1, event: Event) {
@@ -134,7 +124,6 @@ export class InvoiceTimeListComponent {
     }
   }
   async removeTime(id: string) {
-    console.warn("Removing", id);
     await firstValueFrom(this.hqService.removeTimeFromInvoiceV1({id: id}));
     this.invoiceDetailsService.invoiceRefresh();
   }

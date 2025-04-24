@@ -151,6 +151,15 @@ namespace HQ.Abstractions.Times
         }
     }
 
+    public class AddTimesToInvoiceV1
+    {
+        public class Request
+        {
+            public required Guid InvoiceId { get; set; }
+            public List<AddTimeToInvoiceV1.Request>? TimeEntries { get; set; }
+        }
+    }
+
     public class RemoveTimeFromInvoiceV1
     {
         public class Request

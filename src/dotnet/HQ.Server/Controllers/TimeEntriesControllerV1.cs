@@ -211,6 +211,27 @@ namespace HQ.Server.Controllers
             return await _TimeEntryServiceV1.AddTimeToInvoiceV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(AddTimesToInvoiceV1))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> AddTimesToInvoiceV1([FromBody] AddTimesToInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            Console.WriteLine("    Made it through controller");
+            return await _TimeEntryServiceV1.AddTimesToInvoiceV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
 
         [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(RemoveTimeFromInvoiceV1))]

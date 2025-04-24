@@ -351,6 +351,54 @@ namespace HQ.Server.Services
             return Result.Ok(new AddTimeToInvoiceV1.Response() { Id = timeEntry.Id });
         }
 
+        public async Task<Result> AddTimesToInvoiceV1(AddTimesToInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            Console.WriteLine("    Made it to service");
+            if (string.IsNullOrEmpty(request.InvoiceId.ToString()))
+            {
+                return Result.Fail("Invoice Id can't be null or empty");
+            }
+            var invoice = await _context.Invoices.Where(t => t.Id == request.InvoiceId).FirstOrDefaultAsync();
+
+            int failCt = 0;
+            if (!string.IsNullOrEmpty(request.InvoiceId.ToString()))
+            {
+                if (invoice == null)
+                {
+                    return Result.Fail($"The Invoice: {request.InvoiceId} not found");
+                }
+                else if (request.TimeEntries == null)
+                {
+                    return Result.Fail("No time entries were selected.");
+                }
+                else
+                {
+                    request.TimeEntries.ForEach(t =>
+                    {
+                        var timeEntry = _context.Times.FirstOrDefault(e => e.Id == t.Id);
+                        if (timeEntry == null)
+                        {
+                            ++failCt;
+                        }
+                        else
+                        {
+                            timeEntry.InvoiceId = invoice.Id;
+                            timeEntry.HoursInvoiced = t.HoursInvoiced;
+                        }
+                    });
+                    if (failCt > 0)
+                    {
+                        await _context.SaveChangesAsync(ct);
+                        Console.WriteLine($"{failCt}/{request.TimeEntries.Count} time entries could not be found.");
+                        return Result.Fail($"{failCt}/{request.TimeEntries.Count} time entries could not be found.");
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync(ct);
+            return Result.Ok();
+        }
+
         public async Task<Result> RemoveTimeFromInvoiceV1(RemoveTimeFromInvoiceV1.Request request, CancellationToken ct = default)
         {
             if (request.Id == Guid.Empty)

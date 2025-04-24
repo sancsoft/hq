@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CoreModule } from "../../../../core/core.module";
-import { firstValueFrom, map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
+import { catchError, first, firstValueFrom, map, Observable, shareReplay, Subject, switchMap, take, takeUntil, takeWhile, tap } from "rxjs";
 import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
 import { GetChargeCodeRecordV1 } from "../../../../models/charge-codes/get-chargecodes-v1";
 import { HQService } from "../../../../services/hq.service";
@@ -17,7 +17,7 @@ import { HQRole } from "../../../../enums/hqrole";
 import { InRolePipe } from "../../../../pipes/in-role.pipe";
 import { roundToNextQuarter } from '../../../../common/functions/round-to-next-quarter';
 import { InvoiceTimeSearchFilterComponent } from "../invoice-time-search-filter/invoice-time-search-filter.component";
-import { AddTimeToInvoiceRequestV1 } from "../../../../models/times/add-time-to-invoice-v1";
+import { AddTimesToInvoiceRequestV1, AddTimeToInvoiceRequestV1 } from "../../../../models/times/add-time-to-invoice-v1";
 import { ToastService } from "../../../../services/toast.service";
 import { ModalService } from "../../../../services/modal.service";
 
@@ -47,8 +47,6 @@ interface InvoiceTimeEntry {
 export class InvoiceAddTimeComponent {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
-  // invoiceId$: Observable<string>;
-  // invoice$: Observable<GetInvoicesRecordV1>;
   invoice?: GetInvoiceDetailsRecordV1;
 
   date: string = Date.now.toString();
@@ -58,12 +56,12 @@ export class InvoiceAddTimeComponent {
   apiErrors: string[] = [];
 
   times$: Observable<InvoiceTimeEntry[]>;
-  // clients$: Observable<GetClientRecordV1[]>;
   currentClient?: GetClientRecordV1;
   chargeCodes?: Array<GetChargeCodeRecordV1>;
 
   selectedTimes: Map<string, number> = new Map<string, number>();
   selectedHrs: number = 0;
+  addBtnDisabled: boolean = true;
 
   constructor(
     private hqService: HQService,
@@ -74,7 +72,6 @@ export class InvoiceAddTimeComponent {
     private toastService: ToastService,
     private modalService: ModalService
   ) {
-    console.log("ADD TIME")
     this.invoiceDetailsService.invoiced$.next(false);
     this.invoiceDetailsService.invoice$.pipe(takeUntil(this.destroy)).subscribe(
       (invoice) => {
@@ -85,32 +82,41 @@ export class InvoiceAddTimeComponent {
     this.invoiceDetailsService.client$.subscribe((client) => {
       this.currentClient = client;
     });    
-    this.invoiceDetailsService.invoiceRefresh();
     
     this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => {
       let t: InvoiceTimeEntry[] = new Array();
       r.forEach(r => {
         t.push({record: r, selected: this.selectedTimes.has(r.id)});
       })
+
+      this.selectedTimes.forEach((hrs, id) => {
+        if(!t.find(el => el.record.id == id)){
+          this.selectedHrs -= hrs;
+          this.selectedTimes.delete(id);
+        }
+        if(this.selectedTimes.size < 1){
+          this.addBtnDisabled = true;
+        }
+      })
+
       return t;
-    }), tap((t) => {
-      console.log("Time records:", t);
-    }),);
+    })
+    );
   }
 
   updateTimeSelection(time: GetTimeRecordV1, i: number){
-    console.log("time entry", time.id, "checked:", (document.getElementById('time_checkbox_'+time.id) as HTMLInputElement).checked);
-    // console.log(time, document.getElementById('time_checkbox_'+time.id))
     let hrs = time.hoursInvoiced ?? time.hoursApproved ?? time.hours;
-    console.log("  ", hrs);
     if((document.getElementById('time_checkbox_'+time.id) as HTMLInputElement).checked){
       this.selectedHrs += hrs;
       this.selectedTimes.set(time.id, hrs);
+      this.addBtnDisabled = false;
     } else {
       this.selectedHrs -= hrs;
       this.selectedTimes.delete(time.id);
+      if(this.selectedTimes.size < 1){
+        this.addBtnDisabled = true;
+      }
     }
-    console.log("Selected times:", this.selectedTimes);
   }
 
   async updateInvoicedHours(time: GetTimeRecordV1, event: Event) {
@@ -147,35 +153,6 @@ export class InvoiceAddTimeComponent {
     this.toastService.show('Updated', 'Invoiced hours have been updated.');
   }
 
-  // keeps catching status of the elements from before they've been reloaded
-  refreshTimeSelection(){
-    console.log("refreshing ", this.selectedTimes.size, " elements")
-    this.selectedTimes.forEach((hrs: number, id: string) => {
-      console.log(id, hrs);
-      let timeCheckbox = document.getElementById('time_checkbox_'+id) as HTMLInputElement;
-      if(timeCheckbox == null){
-        this.selectedTimes.delete(id);
-        this.selectedHrs -= hrs;
-        console.log("goodbye")
-      } else if(timeCheckbox.checked){
-        console.log("still here and checked")
-      }
-    })
-  }
-
-  refreshTimeSelection2(records: Array<string>){
-    // console.log(records, "in refresh")
-    // maybe check record ids ^ with selectedTimes map keys for discrepancies? 
-    console.log("Selected times:", this.selectedTimes);
-    this.selectedTimes.forEach((hrs, id) => {
-      if(records.find(r => r == id) == null){
-        console.log(id," filtered out")
-        // this.selectedHrs -= this.selectedTimes.get(id)?? 0;
-        // this.selectedTimes.delete(id);
-      }
-    })
-  }
-
   isChecked(id: string){
     return this.selectedTimes.has(id);
   }
@@ -186,19 +163,27 @@ export class InvoiceAddTimeComponent {
 
   async addToInvoice(){
     if(this.invoice){
-      let invoiceId = this.invoice.id;
-      this.selectedTimes.forEach(async (hrs, t) => {
-        const request: AddTimeToInvoiceRequestV1 = {
+      var request: AddTimesToInvoiceRequestV1 = {
+        invoiceId: this.invoice.id,
+        timeEntries: new Array<Partial<AddTimeToInvoiceRequestV1>>
+      };
+      request.invoiceId = this.invoice.id;
+      this.selectedTimes.forEach((hrs, t) => {
+        request.timeEntries.push({
           id: t,
-          invoiceId: invoiceId,
           hoursInvoiced: hrs
-        };
-        console.info("Request:");
-        console.table(request);
-        await firstValueFrom(this.hqService.addTimeToInvoiceV1(request))
-      })
-      await this.router.navigate(['../'], {
-        relativeTo: this.route,
+        });
+      });
+      this.hqService.addTimesToInvoiceV1(request).subscribe({
+        next: async () => {
+          await this.router.navigate(['../'], {
+            relativeTo: this.route,
+          })
+        },
+        error: async (err) => {
+          this.toastService.show("Error", "An unexpected error occurred.");
+          this.invoiceDetailsService.invoiceRefresh();
+        }
       });
     }
   }
