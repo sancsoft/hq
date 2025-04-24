@@ -22,6 +22,7 @@ import {
   Subject,
   takeUntil,
   combineLatest,
+  startWith,
 } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import {
@@ -85,6 +86,7 @@ export class TimeCreateComponent implements OnDestroy {
   showProjects$ = new BehaviorSubject<boolean | null>(null);
   showQuotes$ = new BehaviorSubject<boolean | null>(null);
   showServices$ = new BehaviorSubject<boolean | null>(null);
+  requireTask$ = new BehaviorSubject<boolean>(false);
   private destroyed$ = new Subject<void>();
 
   form = new FormGroup<Form>({
@@ -151,6 +153,32 @@ export class TimeCreateComponent implements OnDestroy {
         return response.records;
       }),
     );
+
+    const chargeCodeChange$ = this.form.controls.ChargeCode.valueChanges.pipe(
+      startWith(this.form.controls.ChargeCode.value),
+    );
+
+    const chargeCodeSelection$ = combineLatest([
+      this.chargeCodes$,
+      chargeCodeChange$,
+    ]).pipe(takeUntil(this.destroyed$));
+
+    chargeCodeSelection$.subscribe({
+      next: ([chargeCodes, code]) => {
+        const chargeCode = chargeCodes.find((t) => t.code === code);
+        const mustTask = chargeCode?.requireTask ?? false;
+        this.requireTask$.next(mustTask);
+
+        const taskCtrl = this.form.controls.Task;
+        if (mustTask) {
+          taskCtrl.addValidators(Validators.required);
+        } else {
+          taskCtrl.clearValidators();
+        }
+        taskCtrl.updateValueAndValidity({ emitEvent: false });
+      },
+    });
+
     this.activities$ = combineLatest([
       this.chargeCodes$,
       this.form.controls.ChargeCode.valueChanges,

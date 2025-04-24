@@ -8,7 +8,9 @@ namespace HQ.Abstractions.Emails
         public string ChargeCode { get; set; } = null!;
         public string Client { get; set; } = null!;
         public string Project { get; set; } = null!;
-        public string? ActivityTask { get; set; }
+        public string? Activity { get; set; }
+        public string? Task { get; set; }
+
         public string? Description { get; set; }
         public string? ReasonForRejection { get; set; }
         public string? RejectedBy { get; set; }
@@ -24,7 +26,8 @@ namespace HQ.Abstractions.Emails
             Client = "SANCSOFT",
             Project = "HQ",
             StaffName = "amahdy",
-            ActivityTask = "#123",
+            Activity = "#123",
+            Task = "Task 1",
             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
             ReasonForRejection = "The hours entered (0) are not valid. Please ensure that the hours reflect actual time worked.",
             RejectedBy = "Joe Fabitz"

@@ -15,6 +15,7 @@ import {
   Subject,
   combineLatest,
   debounceTime,
+  filter,
   first,
   firstValueFrom,
   map,
@@ -90,6 +91,8 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   selectedTimes$ = new BehaviorSubject<string[]>([]);
   lastSelectedTime$ = new BehaviorSubject<string | null>(null);
   shiftKey$ = new BehaviorSubject<boolean>(false);
+
+  public requireTask$ = new BehaviorSubject<boolean>(false);
 
   sortColumn = SortColumn;
   sortDirection = SortDirection;
@@ -170,6 +173,17 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       },
       error: console.error,
     });
+    this.projectId$
+      .pipe(
+        filter((id): id is string => id != null),
+        switchMap((id) =>
+          this.hqService
+            .getProjectsV1({ id })
+            .pipe(map((r) => r.records[0]?.requireTask ?? false)),
+        ),
+        takeUntil(this.destroy),
+      )
+      .subscribe(this.requireTask$);
 
     const projectActivitiesRequest$ = combineLatest({
       projectId: this.projectId$,

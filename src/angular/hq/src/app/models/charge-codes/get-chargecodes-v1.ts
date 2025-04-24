@@ -46,6 +46,7 @@ export interface GetChargeCodeRecordV1 {
   maximumTimeEntryHours: number;
   serviceAgreementId?: string;
   isProjectMember: boolean | null;
+  requireTask: boolean;
 }
 export interface Activity {
   id: string;

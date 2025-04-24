@@ -1,4 +1,4 @@
-import { skip } from 'rxjs';
+import { skip, startWith } from 'rxjs';
 /* eslint-disable rxjs-angular/prefer-async-pipe */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
@@ -79,6 +79,8 @@ export class TimeEditComponent implements OnInit, OnDestroy {
   showProjects$ = new BehaviorSubject<boolean | null>(null);
   showQuotes$ = new BehaviorSubject<boolean | null>(null);
   showServices$ = new BehaviorSubject<boolean | null>(null);
+  requireTask$ = new BehaviorSubject<boolean>(false);
+
   activities$: Observable<Activity[] | null>;
   private destroyed$ = new Subject<void>();
 
@@ -149,6 +151,32 @@ export class TimeEditComponent implements OnInit, OnDestroy {
         return response.records;
       }),
     );
+
+    const chargeCodeChange$ = this.form.controls.ChargeCode.valueChanges.pipe(
+      startWith(this.form.controls.ChargeCode.value),
+    );
+
+    const chargeCodeSelection$ = combineLatest([
+      this.chargeCodes$,
+      chargeCodeChange$,
+    ]).pipe(takeUntil(this.destroyed$));
+
+    chargeCodeSelection$.subscribe({
+      next: ([chargeCodes, code]) => {
+        const chargeCode = chargeCodes.find((t) => t.code === code);
+        const mustTask = chargeCode?.requireTask ?? false;
+        this.requireTask$.next(mustTask);
+
+        const taskCtrl = this.form.controls.Task;
+        if (mustTask) {
+          taskCtrl.addValidators(Validators.required);
+        } else {
+          taskCtrl.clearValidators();
+        }
+        taskCtrl.updateValueAndValidity({ emitEvent: false });
+      },
+    });
+
     this.activities$ = combineLatest([
       this.chargeCodes$,
       this.form.controls.ChargeCode.valueChanges,

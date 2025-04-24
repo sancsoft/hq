@@ -55,12 +55,18 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap"
         (click)="onSortClick(sortColumn.Activity)"
       >
-        Activity/Task
+        Activity
         <hq-sort-icon
           [column]="sortColumn.Activity"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
+      </th>
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 px-2 text-nowrap"
+      >
+        Task
       </th>
       <th
         scope="col"
@@ -199,17 +205,47 @@
                       }
                     </select>
                   } @else {
-                    <input
-                      class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                      [value]="time.task"
-                      (change)="updateTask(time.id, $event)"
-                    />
+                    <div class="grid relative w-full max-w-[220px]">
+                      <select
+                        [disabled]="true"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none border-gray-450 text-gray-450 font-medium row-start-1 col-start-1 border bg-blue-900 rounded h-[30px]"
+                      ></select>
+                      <span
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after: after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
+                        <i
+                          class="bi bi-arrow-down-short text-[24px] text-gray-450"
+                        ></i>
+                      </span>
+                    </div>
                   }
                 } @else {
+                  <div class="grid relative w-full max-w-[220px]">
+                    <select
+                      [disabled]="true"
+                      class="w-full pl-2 pr-[43px] appearance-none focus:outline-none border-gray-450 text-gray-450 font-medium row-start-1 col-start-1 border bg-blue-900 rounded h-[30px]"
+                    ></select>
+                    <span
+                      class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after: after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                    >
+                      <i
+                        class="bi bi-arrow-down-short text-[24px] text-gray-450"
+                      ></i>
+                    </span>
+                  </div>
+                }
+              </td>
+              <td class="border-b border-black py-2 px-2">
+                @if (requireTask$ | async) {
                   <input
-                    class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+                    class="w-[60px] bg-blue-900 border border-black rounded py-1 px-2 mr-2"
                     [value]="time.task"
                     (change)="updateTask(time.id, $event)"
+                  />
+                } @else {
+                  <input
+                    [disabled]="true"
+                    class="w-[60px] bg-blue-900 border border-gray-450 text-gray-450 rounded py-1 px-2 mr-2"
                   />
                 }
               </td>
@@ -328,17 +364,47 @@
                       }
                     </select>
                   } @else {
-                    <input
-                      class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                      [value]="time.task"
-                      (change)="updateTask(time.id, $event)"
-                    />
+                    <div class="grid relative w-full max-w-[220px]">
+                      <select
+                        [disabled]="true"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none border-gray-450 text-gray-450 font-medium row-start-1 col-start-1 border bg-blue-900 rounded h-[30px]"
+                      ></select>
+                      <span
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after: after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
+                        <i
+                          class="bi bi-arrow-down-short text-[24px] text-gray-450"
+                        ></i>
+                      </span>
+                    </div>
                   }
                 } @else {
+                  <div class="grid relative w-full max-w-[220px]">
+                    <select
+                      [disabled]="true"
+                      class="w-full pl-2 pr-[43px] appearance-none focus:outline-none border-gray-450 text-gray-450 font-medium row-start-1 col-start-1 border bg-blue-900 rounded h-[30px]"
+                    ></select>
+                    <span
+                      class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after: after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                    >
+                      <i
+                        class="bi bi-arrow-down-short text-[24px] text-gray-450"
+                      ></i>
+                    </span>
+                  </div>
+                }
+              </td>
+              <td class="border-b border-black py-2 px-2">
+                @if (requireTask$ | async) {
                   <input
-                    class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+                    class="w-[60px] bg-blue-900 border border-black rounded py-1 px-2 mr-2"
                     [value]="time.task"
                     (change)="updateTask(time.id, $event)"
+                  />
+                } @else {
+                  <input
+                    [disabled]="true"
+                    class="w-[60px] bg-blue-900 border border-gray-450 text-gray-450 rounded py-1 px-2 mr-2"
                   />
                 }
               </td>
@@ -398,7 +464,10 @@
                 {{ time.staffName }}
               </td>
               <td class="border-b border-black py-2 px-2">
-                {{ time.activityName || time.task || "None" }}
+                {{ time.activityName || "None" }}
+              </td>
+              <td class="border-b border-black py-2 px-2">
+                {{ time.task || "None" }}
               </td>
               <td class="border-b border-black py-2 px-2 w-full">
                 <input
@@ -447,7 +516,10 @@
                 {{ time.staffName }}
               </td>
               <td class="border-b border-black py-2 px-2">
-                {{ time.activityName || time.task || "None" }}
+                {{ time.activityName || "None" }}
+              </td>
+              <td class="border-b border-black py-2 px-2">
+                {{ time.task || "None" }}
               </td>
               <td class="border-b border-black py-2 px-2 w-full">
                 <input
@@ -565,17 +637,47 @@
                       }
                     </select>
                   } @else {
-                    <input
-                      class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
-                      [value]="time.task"
-                      (change)="updateTask(time.id, $event)"
-                    />
+                    <div class="grid relative w-full max-w-[220px]">
+                      <select
+                        [disabled]="true"
+                        class="w-full pl-2 pr-[43px] appearance-none focus:outline-none border-gray-450 text-gray-450 font-medium row-start-1 col-start-1 border bg-blue-900 rounded h-[30px]"
+                      ></select>
+                      <span
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after: after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
+                        <i
+                          class="bi bi-arrow-down-short text-[24px] text-gray-450"
+                        ></i>
+                      </span>
+                    </div>
                   }
                 } @else {
+                  <div class="grid relative w-full max-w-[220px]">
+                    <select
+                      [disabled]="true"
+                      class="w-full pl-2 pr-[43px] appearance-none focus:outline-none border-gray-450 text-gray-450 font-medium row-start-1 col-start-1 border bg-blue-900 rounded h-[30px]"
+                    ></select>
+                    <span
+                      class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after: after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                    >
+                      <i
+                        class="bi bi-arrow-down-short text-[24px] text-gray-450"
+                      ></i>
+                    </span>
+                  </div>
+                }
+              </td>
+              <td class="border-b border-black py-2 px-2">
+                @if (requireTask$ | async) {
                   <input
-                    class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2"
+                    class="w-[60px] bg-blue-900 border border-black rounded py-1 px-2 mr-2"
                     [value]="time.task"
                     (change)="updateTask(time.id, $event)"
+                  />
+                } @else {
+                  <input
+                    [disabled]="true"
+                    class="w-[60px] bg-blue-900 border border-gray-450 text-gray-450 rounded py-1 px-2 mr-2"
                   />
                 }
               </td>
@@ -654,7 +756,10 @@
           <td class="border-b border-black py-2 px-2">{{ time.chargeCode }}</td>
           <td class="border-b border-black py-2 px-2">{{ time.staffName }}</td>
           <td class="border-b border-black py-2 px-2">
-            {{ time.activityName || time.task || "None" }}
+            {{ time.activityName }}
+          </td>
+          <td class="border-b border-black py-2 px-2">
+            {{ time.task }}
           </td>
           <td class="border-b border-black py-2 px-2 w-full">
             <input
