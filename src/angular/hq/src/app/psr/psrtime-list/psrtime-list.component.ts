@@ -92,8 +92,15 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   lastSelectedTime$ = new BehaviorSubject<string | null>(null);
   shiftKey$ = new BehaviorSubject<boolean>(false);
 
-  public requireTask$ = new BehaviorSubject<boolean>(false);
-
+  requireTask$: Observable<boolean> = this.projectId$.pipe(
+    filter((id): id is string => id != null),
+    switchMap((id) =>
+      this.hqService
+        .getProjectsV1({ id })
+        .pipe(map((response) => response.records[0]?.requireTask ?? false)),
+    ),
+    shareReplay({ bufferSize: 1, refCount: false }),
+  );
   sortColumn = SortColumn;
   sortDirection = SortDirection;
   timeStatus = TimeStatus;
@@ -173,17 +180,17 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       },
       error: console.error,
     });
-    this.projectId$
-      .pipe(
-        filter((id): id is string => id != null),
-        switchMap((id) =>
-          this.hqService
-            .getProjectsV1({ id })
-            .pipe(map((r) => r.records[0]?.requireTask ?? false)),
-        ),
-        takeUntil(this.destroy),
-      )
-      .subscribe(this.requireTask$);
+    // this.projectId$
+    //   .pipe(
+    //     filter((id): id is string => id != null),
+    //     switchMap((id) =>
+    //       this.hqService
+    //         .getProjectsV1({ id })
+    //         .pipe(map((r) => r.records[0]?.requireTask ?? false)),
+    //     ),
+    //     takeUntil(this.destroy),
+    //   )
+    //   .subscribe(this.requireTask$);
 
     const projectActivitiesRequest$ = combineLatest({
       projectId: this.projectId$,
@@ -470,7 +477,12 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     if (!time) {
       return;
     }
-
+    if (task.length < 1) {
+      await firstValueFrom(
+        this.modalService.alert('Error', 'Please Enter a task'),
+      );
+      return;
+    }
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
         map((c) => c.find((x) => x.code == time.chargeCode)?.id),
@@ -587,6 +599,12 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
         this.modalService.alert('Error', 'Please Enter Charge Code'),
       );
       // TODO: Alert the users
+      return;
+    }
+    if (activityId == null) {
+      await firstValueFrom(
+        this.modalService.alert('Error', 'Please Enter Activity'),
+      );
       return;
     }
     const chargecodeId = await firstValueFrom(

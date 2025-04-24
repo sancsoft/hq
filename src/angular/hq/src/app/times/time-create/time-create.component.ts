@@ -163,7 +163,7 @@ export class TimeCreateComponent implements OnDestroy {
       chargeCodeChange$,
     ]).pipe(takeUntil(this.destroyed$));
 
-    chargeCodeSelection$.subscribe({
+    chargeCodeSelection$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: ([chargeCodes, code]) => {
         const chargeCode = chargeCodes.find((t) => t.code === code);
         const mustTask = chargeCode?.requireTask ?? false;

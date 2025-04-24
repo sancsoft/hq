@@ -199,9 +199,8 @@ export class StaffDashboardTimeEntryComponent
         error: console.error,
       });
 
-    this.requireTask$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((isRequired) => {
+    this.requireTask$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (isRequired) => {
         const taskControl = this.form.controls.task;
         if (isRequired) {
           taskControl.addValidators(Validators.required);
@@ -210,7 +209,9 @@ export class StaffDashboardTimeEntryComponent
         }
         console.log(taskControl);
         taskControl.updateValueAndValidity({ emitEvent: false });
-      });
+      },
+      error: console.error,
+    });
   }
   constructor(
     public staffDashboardService: StaffDashboardService,
