@@ -212,8 +212,7 @@ namespace HQ.Server.Invoices
                 response.AcceptedBillableHours = acceptedBillableHours;
                 response.InvoicedHours = invoicedHours;
             }
-            // return response != null ? Result.Ok(response) : Result.Fail("No response returned");
-            return response;
+            return response != null ? Result.Ok(response) : Result.Fail("No response returned");
         }
 
         public async Task<Result<UpsertInvoiceV1.Response>> UpsertInvoiceV1(UpsertInvoiceV1.Request request, CancellationToken ct = default)
