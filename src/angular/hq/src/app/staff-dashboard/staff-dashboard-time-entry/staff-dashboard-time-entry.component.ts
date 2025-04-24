@@ -161,7 +161,7 @@ export class StaffDashboardTimeEntryComponent
           ? this.form.enable({ emitEvent: false })
           : this.form.disable({ emitEvent: false });
       });
-      console.log(this.form);
+    console.log(this.form);
 
     this.form.controls.chargeCodeId.valueChanges
       .pipe(takeUntil(this.destroyed$))
@@ -199,18 +199,18 @@ export class StaffDashboardTimeEntryComponent
         error: console.error,
       });
 
-      this.requireTask$
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe((isRequired) => {
-          const taskControl = this.form.controls.task;
-          if (isRequired) {
-            taskControl.addValidators(Validators.required);
-          } else {
-            taskControl.removeValidators(Validators.required);
-          }
-          console.log(taskControl);
-          taskControl.updateValueAndValidity({ emitEvent: false });
-        });
+    this.requireTask$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((isRequired) => {
+        const taskControl = this.form.controls.task;
+        if (isRequired) {
+          taskControl.addValidators(Validators.required);
+        } else {
+          taskControl.removeValidators(Validators.required);
+        }
+        console.log(taskControl);
+        taskControl.updateValueAndValidity({ emitEvent: false });
+      });
   }
   constructor(
     public staffDashboardService: StaffDashboardService,
@@ -392,5 +392,4 @@ export class StaffDashboardTimeEntryComponent
       this.form.controls.hours.updateValueAndValidity();
     }
   }
-
 }
