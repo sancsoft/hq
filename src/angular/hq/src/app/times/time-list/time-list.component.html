@@ -115,11 +115,18 @@
         Charge Code
       </th>
       <th
-        width="130px"
+        width="120px"
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
       >
-        Activity/Task
+        Activity
+      </th>
+      <th
+        width="60px"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
+      >
+        Task
       </th>
       <th
         width="40px"
@@ -176,7 +183,10 @@
         <td class="border-b border-black py-2">{{ time.projectName }}</td>
         <td class="border-b px-3 border-black py-2">{{ time.chargeCode }}</td>
         <td class="border-b px-3 border-black py-2">
-          {{ time.activityName ?? time.task }}
+          {{ time.activityName }}
+        </td>
+        <td class="border-b px-3 border-black py-2">
+          {{ time.task }}
         </td>
         <td class="border-b border-black py-2">
           {{ time.billable ? "Yes" : "No" }}

@@ -16,7 +16,6 @@ export enum SortColumn {
   Date = 3,
   ChargeCode = 4,
   StaffName = 5,
-  Activity = 6,
 }
 
 export interface GetPSRTimeRecordV1 {

@@ -143,20 +143,55 @@
                           form.get("ActivityId")?.touched &&
                           form.get("ActivityId")?.errors?.["required"]
                         ) {
-                          <span
+                          <div
                             class="text-red-700 text-xs leading-normal inline-block"
-                            >Activity is required.</span
                           >
+                            Activity is required.
+                          </div>
                         }
                       } @else {
-                        <hq-form-label>Task</hq-form-label>
-                        <input
-                          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-                          type="text"
-                          aria-label="Task"
-                          formControlName="Task"
-                        />
+                        <hq-select-input
+                          label="Select Activity"
+                          [disabled]="true"
+                          [autocomplete]="true"
+                          variant="secondary"
+                        >
+                        </hq-select-input>
                       }
+                    }
+                    @if (requireTask$ | async) {
+                      <div>
+                        <hq-form-label>Task</hq-form-label>
+                      </div>
+                      <input
+                        [ngClass]="{
+                          'border-red-700 focus:border-red-700':
+                            form.controls.Task.errors && form.touched,
+                          'focus:border-white placeholder:text-gray-100':
+                            !form.controls.Task.errors || !form.touched,
+                        }"
+                        class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+                        type="text"
+                        aria-label="Task"
+                        formControlName="Task"
+                      />
+                      @if (
+                        form.get("Task")?.touched &&
+                        form.get("Task")?.errors?.["required"]
+                      ) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                          >Task is required.</span
+                        >
+                      }
+                    } @else {
+                      <hq-form-label>Task</hq-form-label>
+                      <input
+                        [disabled]="true"
+                        class="w-[100%] block text-[14px] px-2 py-1 border border-gray-450 appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+                        type="text"
+                        aria-label="Task"
+                      />
                     }
                   </div>
                 </div>

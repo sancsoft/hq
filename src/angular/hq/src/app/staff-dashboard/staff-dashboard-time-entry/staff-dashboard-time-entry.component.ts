@@ -35,6 +35,7 @@ import {
   shareReplay,
   takeUntil,
   combineLatest,
+  BehaviorSubject,
 } from 'rxjs';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
@@ -150,6 +151,7 @@ export class StaffDashboardTimeEntryComponent
   clientName$: Observable<string | null | undefined>;
   timeStatus = TimeStatus;
   filteredActivities$: Observable<GetProjectActivityRecordV1[]>;
+  requireTask$ = new BehaviorSubject<boolean>(false);
   ngOnInit(): void {
     this.staffDashboardService.canEdit$
       .pipe(takeUntil(this.destroyed$))
@@ -159,6 +161,7 @@ export class StaffDashboardTimeEntryComponent
           ? this.form.enable({ emitEvent: false })
           : this.form.disable({ emitEvent: false });
       });
+    console.log(this.form);
 
     this.form.controls.chargeCodeId.valueChanges
       .pipe(takeUntil(this.destroyed$))
@@ -167,6 +170,8 @@ export class StaffDashboardTimeEntryComponent
           const chargeCode = this.chargeCodes?.find((t) => t.id === id);
           const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
           this.setMaximumHours(maxTimeEntryHours);
+          // set requireTask to true if the charge code project requires a task
+          this.requireTask$.next(chargeCode?.requireTask ?? false);
           if (chargeCode) {
             this.form.patchValue(
               {
@@ -193,6 +198,20 @@ export class StaffDashboardTimeEntryComponent
         },
         error: console.error,
       });
+
+    this.requireTask$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (isRequired) => {
+        const taskControl = this.form.controls.task;
+        if (isRequired) {
+          taskControl.addValidators(Validators.required);
+        } else {
+          taskControl.removeValidators(Validators.required);
+        }
+        console.log(taskControl);
+        taskControl.updateValueAndValidity({ emitEvent: false });
+      },
+      error: console.error,
+    });
   }
   constructor(
     public staffDashboardService: StaffDashboardService,
@@ -285,6 +304,9 @@ export class StaffDashboardTimeEntryComponent
         const chargeCode = this.chargeCodes?.find((t) => t.id === id);
         const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
         this.setMaximumHours(maxTimeEntryHours);
+        // set requireTask to true if the charge code project requires a task
+        this.requireTask$.next(chargeCode?.requireTask ?? false);
+        console.log(chargeCode?.requireTask);
       }
       if (this.form.value.id) {
         // Force validation to run and highlight invalid fields red

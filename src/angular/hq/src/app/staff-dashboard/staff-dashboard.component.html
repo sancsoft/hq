@@ -113,7 +113,7 @@
   <hq-panel
     [Direction]="'horizontal'"
     GutterVariant="secondary"
-    [CSizes]="[74, 26]"
+    [CSizes]="[78, 22]"
   >
     <div first class="h-full">
       <div class="px-5 py-2 bg-black-alt">
@@ -226,9 +226,7 @@
                     <div>{{ date.totalHours | number: "1.2-2" }} hours</div>
                   </div>
                 }
-                <table
-                  class="w-full border-spacing-0 border-separate table-fixed"
-                >
+                <table class="w-full border-spacing-0 border-separate">
                   <thead>
                     <tr class="top-0 text-left">
                       <th
@@ -239,41 +237,48 @@
                         width="28"
                         scope="col"
                         class="bg-blue-900 border-steel-blue-600 border-y py-3 pr-2 text-nowrap"
+                      ></th>
+                      <th
+                        width="80"
+                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
                       >
                         Hrs
                       </th>
                       <th
-                        width="80"
-                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-3 text-nowrap"
-                      ></th>
-                      <th
-                        width="160"
+                        width="100"
                         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                       >
                         Date
                       </th>
                       <th
+                        width="160"
                         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 text-nowrap"
                       >
                         Chrg Code
                       </th>
                       <th
-                        width="160"
+                        width="120"
                         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                       >
                         Client
                       </th>
                       <th
-                        width="160"
+                        width="120"
                         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                       >
                         Project
                       </th>
                       <th
-                        width="160"
+                        width="120"
                         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
                       >
-                        Activity / Task
+                        Activity
+                      </th>
+                      <th
+                        width="60"
+                        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
+                      >
+                        Task
                       </th>
                       <th
                         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
@@ -323,7 +328,6 @@
             }
           }
         </div>
-        <!-- } @else { -->
         <div
           class="h-full"
           [hidden]="
@@ -426,7 +430,7 @@
                           />
                         </th>
                         <th
-                          width="160"
+                          width="100"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
                         >
                           Date
@@ -448,7 +452,7 @@
                           />
                         </th>
                         <th
-                          width="160"
+                          width="120"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 cursor-pointer"
                           (click)="onSortClick(sortColumn.ClientName)"
                         >
@@ -464,7 +468,7 @@
                           />
                         </th>
                         <th
-                          width="160"
+                          width="120"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 cursor-pointer"
                           (click)="onSortClick(sortColumn.ProjectName)"
                         >
@@ -480,10 +484,16 @@
                           />
                         </th>
                         <th
-                          width="160"
+                          width="120"
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
                         >
-                          Activity / Task
+                          Activity
+                        </th>
+                        <th
+                          width="60"
+                          class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2 text-nowrap"
+                        >
+                          Task
                         </th>
                         <th
                           class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-2"
@@ -534,7 +544,6 @@
             </div>
           </hq-panel>
         </div>
-        <!-- } -->
       </div>
     </div>
     <div second class="border-b-black border-b-[1px] pb-2">

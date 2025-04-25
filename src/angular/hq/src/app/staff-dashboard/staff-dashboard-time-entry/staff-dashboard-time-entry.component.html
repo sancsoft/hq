@@ -138,15 +138,41 @@
             </span>
           </div>
         } @else {
-          <input
-            class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-            type="text"
-            aria-label="Task"
-            formControlName="task"
-            (blur)="save()"
-            (keydown.enter)="onEnter($event.target)"
-          />
+          <div class="grid relative w-full max-w-[220px]">
+            <select
+              [disabled]="true"
+              class="w-full pl-2 pr-[43px] appearance-none focus:outline-none border-gray-450 text-gray-450 font-medium row-start-1 col-start-1 border bg-blue-900 rounded h-[30px]"
+            ></select>
+            <span
+              class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after: after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+            >
+              <i class="bi bi-arrow-down-short text-[24px] text-gray-450"></i>
+            </span>
+          </div>
         }
+      }
+    </td>
+    <td class="border-b border-black py-2 pl-2">
+      @if (requireTask$ | async; as requireTask) {
+        <input
+          [ngClass]="{
+            'border-red-700 focus:border-red-700':
+              form.controls.task.errors && form.touched,
+            'border-black': !form.controls.task.errors || !form.touched,
+          }"
+          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          type="text"
+          aria-label="Task"
+          formControlName="task"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
+        />
+      } @else {
+        <input
+          class="w-[100%] block text-[14px] px-2 py-1 border appearance-none focus:outline-none border-gray-450 text-gray-450 focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          type="text"
+          [disabled]="true"
+        />
       }
     </td>
     <td class="border-b border-black py-2 pl-2">
@@ -230,7 +256,10 @@
       {{ projectName$ | async }}
     </td>
     <td class="border-b border-black py-2 pl-2 text-gray-450">
-      {{ time?.activityName || time?.task }}
+      {{ time?.activityName }}
+    </td>
+    <td class="border-b border-black py-2 pl-2 text-gray-450">
+      {{ time?.task }}
     </td>
     <td class="border-b border-black py-2 pl-3 text-gray-450">
       @if (time?.notes; as notes) {

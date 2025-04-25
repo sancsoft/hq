@@ -60,6 +60,7 @@ interface Form {
   totalHours: FormControl<number | null>;
   projectNumber: FormControl<number | null>;
   timeEntryMaxHours: FormControl<number | null>;
+  requireTask: FormControl<boolean | null>;
 }
 
 @Component({
@@ -109,6 +110,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       billable: new FormControl(true, { nonNullable: true }),
       bookingHours: new FormControl(null, [Validators.required]),
       projectNumber: new FormControl(null),
+      requireTask: new FormControl(false, { nonNullable: true }),
     },
     { validators: this.dateRangeValidator },
   );
@@ -209,6 +211,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       billable: project.billable,
       bookingHours: project.projectBookingHours,
       projectNumber: project.projectNumber,
+      requireTask: project.requireTask,
     });
 
     this.form.controls.quoteId.disable();
