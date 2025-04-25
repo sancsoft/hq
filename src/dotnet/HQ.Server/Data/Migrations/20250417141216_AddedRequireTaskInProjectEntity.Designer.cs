@@ -3,6 +3,7 @@ using System;
 using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HQ.Server.Data.Migrations
 {
     [DbContext(typeof(HQDbContext))]
-    partial class HQDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250417141216_AddedRequireTaskInProjectEntity")]
+    partial class AddedRequireTaskInProjectEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -990,10 +993,6 @@ namespace HQ.Server.Data.Migrations
                     b.Property<decimal?>("HoursApproved")
                         .HasColumnType("numeric")
                         .HasColumnName("hours_approved");
-
-                    b.Property<decimal?>("HoursInvoiced")
-                        .HasColumnType("numeric")
-                        .HasColumnName("hours_invoiced");
 
                     b.Property<Guid?>("InvoiceId")
                         .HasColumnType("uuid")

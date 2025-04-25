@@ -131,14 +131,41 @@
                           >
                         }
                       } @else {
-                        <hq-form-label>Task</hq-form-label>
-                        <input
-                          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-                          type="text"
-                          aria-label="Task"
-                          formControlName="Task"
-                        />
+                        <hq-select-input
+                          [disabled]="true"
+                          label="Select Activity"
+                          [autocomplete]="true"
+                          [variant]="'secondary'"
+                        >
+                        </hq-select-input>
                       }
+                    }
+                  </div>
+                  <div>
+                    @if (requireTask$ | async) {
+                      <div>
+                        <hq-form-label>Task</hq-form-label>
+                      </div>
+                      <input
+                        [ngClass]="{
+                          'border-red-700 focus:border-red-700':
+                            form.controls.Task.errors && form.touched,
+                          'focus:border-white placeholder:text-gray-100':
+                            !form.controls.Task.errors || !form.touched,
+                        }"
+                        class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+                        type="text"
+                        aria-label="Task"
+                        formControlName="Task"
+                      />
+                    } @else {
+                      <hq-form-label>Task</hq-form-label>
+                      <input
+                        disabled="true"
+                        class="w-[100%] block text-[14px] px-2 py-1 border border-gray-450 appearance-none focus:outline-none focus:border-white placeholder:text-gray-450 bg-blue-900 rounded h-[30px]"
+                        type="text"
+                        aria-label="Task"
+                      />
                     }
                   </div>
                 </div>

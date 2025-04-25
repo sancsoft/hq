@@ -85,6 +85,20 @@ namespace HQ.Server.Services
             {
                 timeEntry.ChargeCodeId = request.ChargeCodeId.Value;
             }
+            var project = chargeCode.Project;
+
+            if (project == null)
+            {
+                return Result.Fail("Project not found for the given charge code.");
+            }
+            if (project.RequireTask && string.IsNullOrEmpty(request.Task))
+            {
+                return Result.Fail("Task is required for this project.");
+            }
+
+            if (project.Activities.Any() && !request.ActivityId.HasValue)
+                return Result.Fail("Activity is required for this project.");
+
 
 
             if (!string.IsNullOrEmpty(request.ActivityName) && !request.ActivityId.HasValue)

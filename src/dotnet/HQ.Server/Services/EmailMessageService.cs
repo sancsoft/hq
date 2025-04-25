@@ -68,6 +68,9 @@ namespace HQ.Server.Services
                 .Include(t => t.ChargeCode)
                 .ThenInclude(t => t.Project)
                 .ThenInclude(t => t!.Client)
+                .Include(t => t.ChargeCode)
+                .ThenInclude(c => c.Project)
+                .ThenInclude(p => p!.Activities)
                 .SingleAsync(t => t.Id == timeId, ct);
 
             if (String.IsNullOrEmpty(time.Staff.Email))
@@ -80,7 +83,10 @@ namespace HQ.Server.Services
                 Date = time.Date,
                 Hours = time.Hours,
                 Description = time.Notes,
-                ActivityTask = time.Activity?.Name ?? time.Task,
+                Activity = time.Activity?.Name ?? String.Empty,
+                Task = time.Task ?? String.Empty,
+                RequireTask = time.ChargeCode.Project?.RequireTask ?? false,
+                RequireActivity = (time.ChargeCode.Project?.Activities?.Count ?? 0) > 0,
                 ChargeCode = time.ChargeCode.Code,
                 Client = time.ChargeCode.Project?.Client?.Name ?? String.Empty,
                 Project = time.ChargeCode.Project?.Name ?? String.Empty,
@@ -106,6 +112,9 @@ namespace HQ.Server.Services
                 .Include(t => t.ChargeCode)
                 .ThenInclude(t => t.Project)
                 .ThenInclude(t => t!.Client)
+                .Include(t => t.ChargeCode)
+                .ThenInclude(c => c.Project)
+                .ThenInclude(p => p!.Activities)
                 .SingleAsync(t => t.Id == timeId, ct);
 
             var psr = await _context.ProjectStatusReports
@@ -124,7 +133,10 @@ namespace HQ.Server.Services
                 Date = time.Date,
                 Hours = time.Hours,
                 Description = time.Notes,
-                ActivityTask = time.Activity?.Name ?? time.Task,
+                Activity = time.Activity?.Name ?? String.Empty,
+                Task = time.Task ?? String.Empty,
+                RequireTask = time.ChargeCode.Project?.RequireTask ?? false,
+                RequireActivity = (time.ChargeCode.Project?.Activities?.Count ?? 0) > 0,
                 ChargeCode = time.ChargeCode.Code,
                 Client = time.ChargeCode.Project?.Client?.Name ?? String.Empty,
                 Project = time.ChargeCode.Project?.Name ?? String.Empty,
