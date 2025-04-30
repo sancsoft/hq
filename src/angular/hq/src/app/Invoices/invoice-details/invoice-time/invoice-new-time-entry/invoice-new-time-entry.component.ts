@@ -1,6 +1,5 @@
-/* eslint-disable rxjs-angular/prefer-async-pipe */
-import { SelectInputComponent } from './../../core/components/select-input/select-input.component';
-import { SelectInputOptionDirective } from './../../core/directives/select-input-option.directive';
+import { SelectInputComponent } from './../../../../core/components/select-input/select-input.component';
+import { SelectInputOptionDirective } from './../../../../core/directives/select-input-option.directive';
 import {
   Component,
   ElementRef,
@@ -14,8 +13,6 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { GetDashboardTimeV1TimeForDateTimes } from '../../models/staff-dashboard/get-dashboard-time-v1';
-import { StaffDashboardService } from '../service/staff-dashboard.service';
 import {
   FormControl,
   FormGroup,
@@ -36,39 +33,43 @@ import {
   takeUntil,
   combineLatest,
   BehaviorSubject,
+  switchMap,
 } from 'rxjs';
-import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
-import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
-import { ModalService } from '../../services/modal.service';
-import { TimeStatus } from '../../enums/time-status';
-import { DateInputComponent } from '../../core/components/date-input/date-input.component';
-import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
-import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
+import { roundToNextQuarter } from '../../../../common/functions/round-to-next-quarter';
+import { chargeCodeToColor } from '../../../../common/functions/charge-code-to-color';
+import { ModalService } from '../../../../services/modal.service';
+import { TimeStatus } from '../../../../enums/time-status';
+import { DateInputComponent } from '../../../../core/components/date-input/date-input.component';
+import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
+import { GetProjectActivityRecordV1 } from '../../../../models/projects/get-project-activity-v1';
+import { GetDashboardTimeV1TimeForDateTimes } from '../../../../models/staff-dashboard/get-dashboard-time-v1';
+import { InvoiceDetaisService } from '../../../service/invoice-details.service';
+import { HQTimeChangeEvent, HQTimeDeleteEvent } from '../../../../staff-dashboard/staff-dashboard-time-entry/staff-dashboard-time-entry.component';
+import { HQService } from '../../../../services/hq.service';
 
-export interface HQTimeChangeEvent {
+export interface HQInvoiceTimeChangeEvent {
   id?: string | null;
+  staffId?: string | null;
   date?: string | null;
   hours?: number | null;
+  invoicedHours?: number | null;
+  invoiceId?: string | null;
   notes?: string | null;
   task?: string | null;
-  chargeCode?: string | null;
   chargeCodeId?: string | null;
   clientId?: string | null;
   projectId?: string | null;
   activityId?: string | null;
 }
 
-export interface HQTimeDeleteEvent {
-  id: string;
-}
-
 interface Form {
   id: FormControl<string | null>;
+  staffId: FormControl<string | null>;
   date: FormControl<string | null>;
   hours: FormControl<number | null>;
+  invoicedHours: FormControl<number | null>;
   notes: FormControl<string | null>;
   task: FormControl<string | null>;
-  chargeCode: FormControl<string | null>;
   chargeCodeId: FormControl<string | null>;
   clientName: FormControl<string | null>;
   projectName: FormControl<string | null>;
@@ -78,18 +79,17 @@ interface Form {
 }
 
 @Component({
-  selector: 'tr[hq-staff-dashboard-time-entry]',
+  selector: 'tr[hq-invoice-new-time-entry]',
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    DateInputComponent,
     SelectInputOptionDirective,
     SelectInputComponent,
   ],
-  templateUrl: './staff-dashboard-time-entry.component.html',
+  templateUrl: './invoice-new-time-entry.component.html',
 })
-export class StaffDashboardTimeEntryComponent
+export class InvoiceNewTimeEntryComponent
   implements OnInit, OnChanges, OnDestroy
 {
   @Input()
@@ -99,13 +99,7 @@ export class StaffDashboardTimeEntryComponent
   @Input()
   enableChooseDate: boolean = false;
   @Output()
-  hqTimeChange = new EventEmitter<HQTimeChangeEvent>();
-
-  @Output()
-  hqTimeDelete = new EventEmitter<HQTimeDeleteEvent>();
-
-  @Output()
-  hqTimeDuplicate = new EventEmitter<HQTimeChangeEvent>();
+  hqInvoiceTimeChange = new EventEmitter<HQInvoiceTimeChangeEvent>();
 
   @HostBinding('class')
   class = 'even:bg-gray-850 odd:bg-black-alt';
@@ -118,8 +112,19 @@ export class StaffDashboardTimeEntryComponent
 
   form = new FormGroup<Form>({
     id: new FormControl<string | null>(null),
-    date: new FormControl<string | null>(null),
+    staffId: new FormControl<string | null>(null, {
+      updateOn: 'change',
+      validators: [Validators.required, Validators.minLength(1)]
+    }),
+    date: new FormControl<string | null>(null, {
+      updateOn: 'blur',
+      validators: [Validators.required],
+    }),
     hours: new FormControl<number | null>(null, {
+      updateOn: 'blur',
+      validators: [Validators.required, Validators.min(0.25)],
+    }),
+    invoicedHours: new FormControl<number | null>(null, {
       updateOn: 'blur',
       validators: [Validators.required, Validators.min(0.25)],
     }),
@@ -128,7 +133,6 @@ export class StaffDashboardTimeEntryComponent
       validators: [Validators.required],
     }),
     task: new FormControl<string | null>(null, { updateOn: 'blur' }),
-    chargeCode: new FormControl<string | null>(null),
     chargeCodeId: new FormControl<string | null>(null, {
       updateOn: 'change',
       validators: [Validators.required],
@@ -153,16 +157,6 @@ export class StaffDashboardTimeEntryComponent
   filteredActivities$: Observable<GetProjectActivityRecordV1[]>;
   requireTask$ = new BehaviorSubject<boolean>(false);
   ngOnInit(): void {
-    this.staffDashboardService.canEdit$
-      .pipe(takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs/no-ignored-error
-      .subscribe((canEdit) => {
-        canEdit
-          ? this.form.enable({ emitEvent: false })
-          : this.form.disable({ emitEvent: false });
-      });
-    console.log(this.form);
-
     this.form.controls.chargeCodeId.valueChanges
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
@@ -199,6 +193,22 @@ export class StaffDashboardTimeEntryComponent
         error: console.error,
       });
 
+    this.form.controls.staffId.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (id) => {
+          this.form.patchValue(
+            {
+              staffId: id
+            },
+            {
+              emitEvent: false
+            }
+          )
+        },
+        error: console.error,
+      })
+
     this.requireTask$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (isRequired) => {
         const taskControl = this.form.controls.task;
@@ -207,14 +217,16 @@ export class StaffDashboardTimeEntryComponent
         } else {
           taskControl.removeValidators(Validators.required);
         }
+        console.log(taskControl);
         taskControl.updateValueAndValidity({ emitEvent: false });
       },
       error: console.error,
     });
   }
   constructor(
-    public staffDashboardService: StaffDashboardService,
+    public invoiceDetailsService: InvoiceDetaisService,
     private modalService: ModalService,
+    private hqService: HQService
   ) {
     const form$ = concat(
       defer(() => of(this.form.value)),
@@ -230,12 +242,19 @@ export class StaffDashboardTimeEntryComponent
       distinctUntilChanged(),
     );
 
-    this.filteredActivities$ = combineLatest({
-      activities: staffDashboardService.activities$,
-      form: form$,
-    }).pipe(
-      map((t) => t.activities.filter((x) => x.projectId === t.form.projectId)),
+    this.filteredActivities$ = form$.pipe(
+      map((t) => t.projectId),
+      switchMap((id) => {
+        if(id != null && id != undefined) {
+          return this.hqService.getprojectActivitiesV1({projectId: id}).pipe(
+            map((response) => response.records)
+          );
+        } else {
+          return of();
+        }
+      })
     );
+
     this.filteredActivities$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (activities) => {
         if (activities.length > 0) {
@@ -264,16 +283,19 @@ export class StaffDashboardTimeEntryComponent
       error: console.error,
     });
 
-    this.staffDashboardService.refresh$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: () => {
-          if (!this.time?.id) {
-            this.resetTime();
-          }
-        },
-        error: console.error,
-      });
+    const invoicedHours$ = form$.pipe(
+      map((t) => t.invoicedHours),
+      distinctUntilChanged(),
+    );
+
+    invoicedHours$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (invoicedHours) => {
+        if (invoicedHours != null) {
+          this.form.patchValue({ invoicedHours: roundToNextQuarter(invoicedHours) });
+        }
+      },
+      error: console.error,
+    });
   }
 
   async onEnter(target: EventTarget | null) {
@@ -287,7 +309,8 @@ export class StaffDashboardTimeEntryComponent
 
   async save() {
     if (this.form.valid && this.form.dirty) {
-      this.hqTimeChange.emit(this.form.value);
+      this.hqInvoiceTimeChange.emit(this.form.value);
+      this.form.reset();
       this.form.markAsPristine();
       if (!this.form.value.id) {
         this.hoursInput?.nativeElement?.focus();
@@ -319,52 +342,14 @@ export class StaffDashboardTimeEntryComponent
     this.destroyed$.complete();
   }
 
-  deleteTime() {
-    const id = this.form.controls.id.value;
-    if (id) {
-      this.hqTimeDelete.emit({ id });
-    }
-  }
-  async duplicateTime() {
-    const newDate = await firstValueFrom(
-      this.modalService.chooseDate(
-        'Duplicate Time Entry',
-        'Choose the date where you would like to duplicate this time entry to',
-        this.form.controls.date.value ?? '',
-      ),
-    );
-    if (newDate) {
-      const cutoffDate = await firstValueFrom(
-        this.staffDashboardService.timeEntryCutoffDate$,
-      );
-      if (newDate >= cutoffDate) {
-        const time = { ...this.form.value };
-        time.date = newDate;
-        time.id = null; // to create a new time
-        this.hqTimeDuplicate.emit(time);
-        this.staffDashboardService.date.setValue(time.date);
-      } else {
-        await firstValueFrom(
-          this.modalService.alert(
-            'Error',
-            'Cannot copy outside of current week period',
-          ),
-        );
-      }
-    }
-  }
   resetTime() {
     this.form.reset({ date: this.form.controls.date.value });
   }
   async chooseDate() {
-    if (!(this.form.value.id && this.form.valid) && !this.enableChooseDate) {
-      return;
-    }
-
     const newDate = await firstValueFrom(
       this.modalService.chooseDate(
         'Change Date',
-        'Changing the date may make the time entry disappear from view.',
+        'Choose a date for a new time entry to be created on.',
         this.form.controls.date.value ?? '',
       ),
     );

@@ -1,8 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { CoreModule } from "../../../../core/core.module";
-import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors } from "@angular/forms";
-import { firstValueFrom, map, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
+import { BehaviorSubject, concat, defer, distinctUntilChanged, firstValueFrom, map, Observable, of, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
 import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
 import { GetChargeCodeRecordV1 } from "../../../../models/charge-codes/get-chargecodes-v1";
 import { HQService } from "../../../../services/hq.service";
@@ -19,6 +19,33 @@ import { HQRole } from "../../../../enums/hqrole";
 import { HQConfirmationModalService } from "../../../../common/confirmation-modal/services/hq-confirmation-modal-service";
 import { ModalService } from "../../../../services/modal.service";
 import { ToastService } from "../../../../services/toast.service";
+import { HQInvoiceTimeChangeEvent, InvoiceNewTimeEntryComponent } from "../invoice-new-time-entry/invoice-new-time-entry.component";
+import { updateTimeRequestV1 } from "../../../../models/times/update-time-v1";
+import { APIError } from "../../../../errors/apierror";
+import { HttpErrorResponse } from "@angular/common/http";
+import { GetDashboardTimeV1TimeForDateTimes } from "../../../../models/staff-dashboard/get-dashboard-time-v1";
+import { TimeStatus } from "../../../../enums/time-status";
+
+interface InvoiceTimeEntry {
+  id: string;
+  date: string;
+  hours: number;
+  invoicedHours: number;
+  notes: string | null;
+  task: string | null;
+  chargeCodeId: string | null;
+  maximumTimeEntryHours: number;
+  chargeCode: string;
+  clientId: string | null;
+  projectId: string | null;
+  activityName: string | null;
+  clientName: string | null;
+  projectName: string | null;
+  activityId: string | null;
+  timeStatus: TimeStatus | null;
+  rejectionNotes: string | null;
+}
+
 @Component({
   selector: 'hq-invoice-time-list',
   standalone: true,
@@ -28,6 +55,7 @@ import { ToastService } from "../../../../services/toast.service";
     RouterLink,
     FormsModule,
     ReactiveFormsModule,
+    InvoiceNewTimeEntryComponent,
   ],
   providers: [
     {
@@ -110,6 +138,49 @@ export class InvoiceTimeListComponent {
     this.invoiceDetailsService.onSortClick(sortColumn);
   }
 
+  async upsertTime(event: HQInvoiceTimeChangeEvent) {
+    if (!event.date) {
+      return;
+    }
+
+    const request: Partial<updateTimeRequestV1> = {
+      staffId: event.staffId?.toString(),
+      id: event.id,
+      hours: event.hours,
+      hoursInvoiced: event.invoicedHours,
+      chargeCodeId: event.chargeCodeId,
+      task: event.task,
+      activityId: event.activityId,
+      notes: event.notes,
+      date: event.date,
+    };
+
+    try {
+      let newTimeId = (await firstValueFrom(this.hqService.upsertTimeV1(request))).id;
+      await firstValueFrom(this.hqService.addTimeToInvoiceV1({id: newTimeId, invoiceId: this.invoice?.id, hoursInvoiced: event.invoicedHours ?? undefined}));
+      if (event.id) {
+        this.toastService.show('Success', 'Time entry successfully updated.');
+        this.invoiceDetailsService.refresh();
+        // this.planningPointsRequestTrigger$.next(); // TODO: Trigger this
+      } else {
+        this.toastService.show('Success', 'Time entry successfully created.');
+        this.invoiceDetailsService.refresh();
+        // this.planningPointsRequestTrigger$.next();
+      }
+    } catch (err) {
+      if (err instanceof APIError) {
+        this.toastService.show('Error', err.errors.join('\n'));
+      } else if (err instanceof HttpErrorResponse && err.status == 403) {
+        this.toastService.show(
+          'Unauthorized',
+          'You are not authorized to create or modify time for this date.',
+        );
+      } else {
+        this.toastService.show('Error', 'An unexpected error has occurred.');
+      }
+    }
+  }
+
   async toAddTime() {
     console.log(this.route.toString())
     await this.router.navigate(['add'], {
@@ -123,6 +194,7 @@ export class InvoiceTimeListComponent {
       this.removeTime(id);
     }
   }
+  
   async removeTime(id: string) {
     await firstValueFrom(this.hqService.removeTimeFromInvoiceV1({id: id}));
     this.invoiceDetailsService.invoiceRefresh();
