@@ -131,6 +131,114 @@ namespace HQ.Server.Services
             return Result.Ok(new UpsertTimeV1.Response() { Id = timeEntry.Id });
         }
 
+        public async Task<Result<CreateInvoicedTimeV1.Response>> CreateInvoicedTimeV1(CreateInvoicedTimeV1.Request request, CancellationToken ct = default)
+        {
+            var validationResult = Result.Merge(
+                Result.FailIf(request.StaffId == Guid.Empty, "A staff member is required."),
+                Result.FailIf(!request.InvoiceId.HasValue, "Invoice is required."),
+                Result.FailIf(string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue, "A valid charge code is required."),
+                Result.FailIf(request.Hours <= 0, "Hours must be greater than 0."),
+                Result.FailIf(string.IsNullOrEmpty(request.Notes), "A time entry description is required.")
+            );
+
+            if (validationResult.IsFailed)
+            {
+                return validationResult;
+            }
+
+            var timeEntry = new Time();
+
+            //  Check staff
+            var staff = await _context.Staff.Where(t => t.Id == request.StaffId).FirstOrDefaultAsync(ct);
+            if (staff == null)
+            {
+                return Result.Fail("Could not find selected staff member.");
+            }
+            // Check invoice
+            var invoice = await _context.Invoices.Where(t => t.Id == request.InvoiceId).FirstOrDefaultAsync(ct);
+            if (invoice == null)
+            {
+                return Result.Fail("Could not find a valid invoice.");
+            }
+            // Check charge code
+            var chargeCode = await _context.ChargeCodes.Where(t => t.Code == request.ChargeCode || t.Id == request.ChargeCodeId).Include(t => t.Project).FirstOrDefaultAsync(ct);
+            var maximumTimeEntryHours = chargeCode?.Project?.TimeEntryMaxHours;
+            if (request.Hours > maximumTimeEntryHours)
+            {
+                return Result.Fail($"Time entry hours ({request.Hours}) exceed the maximum allowed hours ({maximumTimeEntryHours})");
+
+            }
+            if (request.HoursInvoiced > maximumTimeEntryHours)
+            {
+                return Result.Fail($"Invoiced hours ({request.HoursInvoiced}) exceed the maximum allowed hours ({maximumTimeEntryHours})");
+            }
+
+            if ((!string.IsNullOrEmpty(request.ChargeCode) && !request.ChargeCodeId.HasValue) || chargeCode == null)
+            {
+                if (chargeCode != null)
+                {
+                    timeEntry.ChargeCode = chargeCode;
+                }
+                else
+                {
+                    return Result.Fail($"The Charge code: {request.ChargeCode} not found");
+                }
+            }
+
+            if (request.ChargeCodeId.HasValue)
+            {
+                timeEntry.ChargeCodeId = request.ChargeCodeId.Value;
+            }
+            var project = chargeCode.Project;
+
+            if (project == null)
+            {
+                return Result.Fail("Project not found for the given charge code.");
+            }
+            if (project.RequireTask && string.IsNullOrEmpty(request.Task))
+            {
+                return Result.Fail("Task is required for this project.");
+            }
+
+            if (project.Activities.Any() && !request.ActivityId.HasValue)
+                return Result.Fail("Activity is required for this project.");
+
+            // Check activities
+            if (!string.IsNullOrEmpty(request.ActivityName) && !request.ActivityId.HasValue)
+            {
+                var activity = await _context.ProjectActivities
+                    .Where(t => t.ProjectId.Equals(chargeCode.ProjectId) && t.Name.ToLower() == request.ActivityName.ToLower())
+                    .FirstOrDefaultAsync();
+
+                if (activity != null)
+                {
+                    timeEntry.ActivityId = activity.Id;
+                }
+                else
+                {
+                    return Result.Fail($"The Activity Name: {request.ActivityName} not found");
+                }
+            }
+            else
+            {
+                timeEntry.ActivityId = request.ActivityId;
+            }
+
+            timeEntry.StaffId = request.StaffId;
+            timeEntry.InvoiceId = request.InvoiceId;
+            timeEntry.Date = request.Date;
+            timeEntry.Notes = request.Notes;
+            timeEntry.Hours = request.Hours ?? 0;
+            timeEntry.HoursInvoiced = request.HoursInvoiced;
+            timeEntry.Task = request.Task;
+            timeEntry.Status = TimeStatus.Submitted;
+
+            _context.Times.Add(timeEntry);
+
+            await _context.SaveChangesAsync(ct);
+
+            return Result.Ok(new CreateInvoicedTimeV1.Response() { Id = timeEntry.Id });
+        }
 
         public async Task<Result<UpsertTimeDescriptionV1.Response>> UpsertTimeDescriptionV1(UpsertTimeDescriptionV1.Request request, CancellationToken ct = default)
         {
@@ -331,38 +439,6 @@ namespace HQ.Server.Services
             }
             await _context.SaveChangesAsync(ct);
             return Result.Ok(new UpsertTimeChargeCodeV1.Response() { Id = timeEntry.Id });
-        }
-
-        public async Task<Result<AddTimeToInvoiceV1.Response>> AddTimeToInvoiceV1(AddTimeToInvoiceV1.Request request, CancellationToken ct = default)
-        {
-            if (string.IsNullOrEmpty(request.InvoiceId.ToString()))
-            {
-                return Result.Fail("Invoice Id can't be null or empty");
-            }
-            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
-
-            if (timeEntry == null)
-            {
-                return Result.Fail("Time Id is required.");
-            }
-            var invoice = await _context.Invoices.Where(t => t.Id == request.InvoiceId).FirstOrDefaultAsync();
-
-            if (!string.IsNullOrEmpty(request.InvoiceId.ToString()))
-            {
-                if (invoice != null)
-                {
-                    timeEntry.Invoice = invoice;
-                    timeEntry.InvoiceId = request.InvoiceId;
-                    timeEntry.HoursInvoiced = request.HoursInvoiced != null ? request.HoursInvoiced : timeEntry.Hours;
-                }
-                else
-                {
-                    return Result.Fail($"The Invoice: {request.InvoiceId} not found");
-                }
-
-            }
-            await _context.SaveChangesAsync(ct);
-            return Result.Ok(new AddTimeToInvoiceV1.Response() { Id = timeEntry.Id });
         }
 
         public async Task<Result> AddTimesToInvoiceV1(AddTimesToInvoiceV1.Request request, CancellationToken ct = default)

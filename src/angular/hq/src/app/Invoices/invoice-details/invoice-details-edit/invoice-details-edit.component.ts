@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { GetInvoicesRecordV1 } from '../../../models/Invoices/get-invoices-v1';
 import { HQService } from '../../../services/hq.service';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
+import { HQRole } from '../../../enums/hqrole';
 import { APIError } from '../../../errors/apierror';
 import { ButtonComponent } from '../../../core/components/button/button.component';
 import { GetClientRecordV1 } from '../../../models/clients/get-client-v1';
@@ -20,6 +21,7 @@ import { CoreModule } from '../../../core/core.module';
 import { GetChargeCodeRecordV1 } from '../../../models/charge-codes/get-chargecodes-v1';
 import { InvoiceDetaisService } from '../../service/invoice-details.service';
 import { GetInvoiceDetailsRecordV1 } from '../../../models/Invoices/get-invoice-details-v1';
+
 
 interface invoiceFormGroup {
   clientId: FormControl<string | null>;
@@ -45,6 +47,7 @@ interface invoiceFormGroup {
   templateUrl: './invoice-details-edit.component.html',
 })
 export class InvoiceDetailsEditComponent {
+  HQRole = HQRole;
   invoice?: GetInvoiceDetailsRecordV1;
 
   editMode: boolean = false;
@@ -100,14 +103,13 @@ export class InvoiceDetailsEditComponent {
       if (this.invoiceFormGroup.valid && this.invoiceFormGroup.touched && this.invoiceFormGroup.dirty) {
         const request = {
           id: this.invoice?.id,
-          clientId: this.invoiceFormGroup.value.clientId,
           date: this.invoiceFormGroup.value.date,
           invoiceNumber: this.invoiceFormGroup.value.invoiceNumber,
           total: this.invoiceFormGroup.value.total,
           totalApprovedHours: this.invoiceFormGroup.value.totalApprovedHours
         };
         const response = await firstValueFrom(
-          this.hqService.upsertInvoiceV1(request),
+          this.hqService.updateInvoiceV1(request),
         );
 
         this.invoiceDetailsService.invoiceRefresh();

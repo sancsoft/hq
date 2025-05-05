@@ -51,7 +51,7 @@ export class TextInputComponent {
   maxLength: number | null = null;
 
   @Input()
-  public disabled = false;
+  public disabled: boolean = false;
 
   @ContentChildren(ValidationErrorDirective)
   validationErrors!: QueryList<ValidationErrorDirective>;

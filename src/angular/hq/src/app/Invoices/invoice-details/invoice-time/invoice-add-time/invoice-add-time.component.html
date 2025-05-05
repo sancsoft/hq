@@ -95,7 +95,7 @@
   </div>
 
   <div class="overflow-scroll flex-auto bg-black-alt">
-    <hq-table [withPagination]="false" class="w-full border-spacing-0 border-separate">
+    <hq-table [withPagination]="false" class="w-full border-spacing-0 border-separate {{(invoiceDetailsService.loading$ | async) === true ? 'loading' : ''}}">
       <thead>
         <tr class="sticky top-0 text-left">
           <th

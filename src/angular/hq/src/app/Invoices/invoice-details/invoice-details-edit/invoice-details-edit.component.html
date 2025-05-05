@@ -109,10 +109,11 @@
                   >Time</a
                 >
               </div>
-  
-              <div class="flex flex-column justify-center items-center">
-                <hq-button (click)="onSubmit()" type="submit">Save</hq-button>
-              </div>
+              @if([HQRole.Executive, HQRole.Administrator] | inRole | async){
+                <div class="flex flex-column justify-center items-center">
+                  <hq-button (click)="onSubmit()" type="submit">Save</hq-button>
+                </div>
+              }
             </div>
           </div>
   

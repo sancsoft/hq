@@ -215,7 +215,7 @@ namespace HQ.Server.Invoices
             return response != null ? Result.Ok(response) : Result.Fail("No response returned");
         }
 
-        public async Task<Result<UpsertInvoiceV1.Response>> UpsertInvoiceV1(UpsertInvoiceV1.Request request, CancellationToken ct = default)
+        public async Task<Result<CreateInvoiceV1.Response>> CreateInvoiceV1(CreateInvoiceV1.Request request, CancellationToken ct = default)
         {
             var validationResult = Result.Merge(
                 Result.FailIf(!request.ClientId.HasValue, "Client is required."),
@@ -243,7 +243,39 @@ namespace HQ.Server.Invoices
 
             await _context.SaveChangesAsync(ct);
 
-            return new UpsertInvoiceV1.Response()
+            return new CreateInvoiceV1.Response()
+            {
+                Id = invoice.Id
+            };
+        }
+
+        public async Task<Result<UpdateInvoiceV1.Response>> UpdateInvoiceV1(UpdateInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            var validationResult = Result.Merge(
+                Result.FailIf(request.Id == Guid.Empty, "Invoice Id cannot be empty."),
+                Result.FailIf(!await _context.Invoices.AnyAsync(t => t.Id == request.Id), "Invoice could not be found."),
+                Result.FailIf(await _context.Invoices.AnyAsync(t => t.Id != request.Id && t.InvoiceNumber == request.InvoiceNumber), "An invoice already exists with that invoice number.")
+            );
+
+            if (validationResult.IsFailed)
+            {
+                return validationResult;
+            }
+            var invoice = await _context.Invoices.FindAsync(request.Id);
+            if (invoice == null)
+            {
+                invoice = new();
+                _context.Invoices.Add(invoice);
+            }
+
+            invoice.Date = request.Date;
+            invoice.Total = request.Total;
+            invoice.TotalApprovedHours = request.TotalApprovedHours;
+            invoice.InvoiceNumber = request.InvoiceNumber;
+
+            await _context.SaveChangesAsync(ct);
+
+            return new UpdateInvoiceV1.Response()
             {
                 Id = invoice.Id
             };

@@ -6,8 +6,6 @@ export interface updateTimeRequestV1 {
   task?: string | null;
   notes?: string | null;
   chargeCodeId?: string | null;
-  invoiceId?: string | null;
-  hoursInvoiced?: number | null;
   hours?: number | null;
   chargeCode: string;
 }

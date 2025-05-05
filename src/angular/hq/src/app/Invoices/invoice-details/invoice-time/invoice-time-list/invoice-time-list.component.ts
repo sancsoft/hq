@@ -1,16 +1,15 @@
 import { CommonModule } from "@angular/common";
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
+import { Component } from "@angular/core";
 import { CoreModule } from "../../../../core/core.module";
-import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
-import { BehaviorSubject, concat, defer, distinctUntilChanged, firstValueFrom, map, Observable, of, shareReplay, Subject, switchMap, takeUntil, tap } from "rxjs";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { firstValueFrom, map, Observable, Subject, takeUntil } from "rxjs";
 import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
 import { GetChargeCodeRecordV1 } from "../../../../models/charge-codes/get-chargecodes-v1";
 import { HQService } from "../../../../services/hq.service";
 import { ActivatedRoute, Route, Router, RouterLink } from "@angular/router";
 import { InvoiceDetaisService } from "../../../service/invoice-details.service";
 import { GetInvoiceDetailsRecordV1 } from "../../../../models/Invoices/get-invoice-details-v1";
-import { GetTimeRecordClientsV1, GetTimeRecordV1, SortColumn } from "../../../../models/times/get-time-v1";
-import { SortIconComponent } from "../../../../common/sort-icon/sort-icon.component";
+import { GetTimeRecordV1, SortColumn } from "../../../../models/times/get-time-v1";
 import { roundToNextQuarter } from '../../../../common/functions/round-to-next-quarter';
 import { SortDirection } from "../../../../models/common/sort-direction";
 import { BaseListService } from "../../../../core/services/base-list.service";
@@ -20,31 +19,10 @@ import { HQConfirmationModalService } from "../../../../common/confirmation-moda
 import { ModalService } from "../../../../services/modal.service";
 import { ToastService } from "../../../../services/toast.service";
 import { HQInvoiceTimeChangeEvent, InvoiceNewTimeEntryComponent } from "../invoice-new-time-entry/invoice-new-time-entry.component";
-import { updateTimeRequestV1 } from "../../../../models/times/update-time-v1";
 import { APIError } from "../../../../errors/apierror";
 import { HttpErrorResponse } from "@angular/common/http";
-import { GetDashboardTimeV1TimeForDateTimes } from "../../../../models/staff-dashboard/get-dashboard-time-v1";
-import { TimeStatus } from "../../../../enums/time-status";
-
-interface InvoiceTimeEntry {
-  id: string;
-  date: string;
-  hours: number;
-  invoicedHours: number;
-  notes: string | null;
-  task: string | null;
-  chargeCodeId: string | null;
-  maximumTimeEntryHours: number;
-  chargeCode: string;
-  clientId: string | null;
-  projectId: string | null;
-  activityName: string | null;
-  clientName: string | null;
-  projectName: string | null;
-  activityId: string | null;
-  timeStatus: TimeStatus | null;
-  rejectionNotes: string | null;
-}
+import { CreateInvoicedTimeRequestV1 } from "../../../../models/times/create-invoiced-time-v1";
+import { InRolePipe } from "../../../../pipes/in-role.pipe";
 
 @Component({
   selector: 'hq-invoice-time-list',
@@ -56,6 +34,7 @@ interface InvoiceTimeEntry {
     FormsModule,
     ReactiveFormsModule,
     InvoiceNewTimeEntryComponent,
+    InRolePipe
   ],
   providers: [
     {
@@ -143,10 +122,11 @@ export class InvoiceTimeListComponent {
       return;
     }
 
-    const request: Partial<updateTimeRequestV1> = {
+    const request: Partial<CreateInvoicedTimeRequestV1> = {
       staffId: event.staffId?.toString(),
       id: event.id,
       hours: event.hours,
+      invoiceId: this.invoice?.id,
       hoursInvoiced: event.invoicedHours,
       chargeCodeId: event.chargeCodeId,
       task: event.task,
@@ -156,8 +136,8 @@ export class InvoiceTimeListComponent {
     };
 
     try {
-      let newTimeId = (await firstValueFrom(this.hqService.upsertTimeV1(request))).id;
-      await firstValueFrom(this.hqService.addTimeToInvoiceV1({id: newTimeId, invoiceId: this.invoice?.id, hoursInvoiced: event.invoicedHours ?? undefined}));
+      await firstValueFrom(this.hqService.createInvoicedTimeV1(request));
+
       if (event.id) {
         this.toastService.show('Success', 'Time entry successfully updated.');
         this.invoiceDetailsService.refresh();
@@ -182,7 +162,6 @@ export class InvoiceTimeListComponent {
   }
 
   async toAddTime() {
-    console.log(this.route.toString())
     await this.router.navigate(['add'], {
       relativeTo: this.route,
     });

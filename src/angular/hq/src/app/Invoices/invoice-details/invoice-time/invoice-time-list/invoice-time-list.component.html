@@ -117,12 +117,14 @@
           title="Export Invoice time entries">
           Export
         </button>
-        <button type="button" 
-          (click)="toAddTime()"
-          class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white" 
-          title="Add new time entries">
-          +Time 
-        </button>
+        @if([HQRole.Executive, HQRole.Administrator] | inRole | async){
+          <button type="button" 
+            (click)="toAddTime()"
+            class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white" 
+            title="Add new time entries">
+            +Time 
+          </button>
+        }
       </div>
     </div>
   </div>
@@ -157,7 +159,7 @@
     </main>
   </div>
   <div class="overflow-scroll flex-auto bg-black-alt">
-    <hq-table [withPagination]="false" class="w-full border-spacing-0 border-separate text-sm">
+    <hq-table [withPagination]="false" class="w-full border-spacing-0 border-separate text-sm {{(invoiceDetailsService.loading$ | async) === true ? 'loading' : ''}}">
       <thead>
         <tr class="sticky top-0 text-left">
           <th
@@ -245,13 +247,15 @@
         </tr>
       </thead>
         <!-- New time entry row -->
-        <tr 
-          hq-invoice-new-time-entry
-          [chargeCodes]="invoiceDetailsService.chargeCodes$ | async"
-          (hqInvoiceTimeChange)="upsertTime($event)"
-                
-          class="sticky top-[39px] bg-black-alt border-spacing-0 border-separate text-left">
-        </tr>
+        @if([HQRole.Executive, HQRole.Administrator] | inRole | async){
+          <tr 
+            hq-invoice-new-time-entry
+            [chargeCodes]="invoiceDetailsService.chargeCodes$ | async"
+            (hqInvoiceTimeChange)="upsertTime($event)"
+                  
+            class="sticky top-[39px] bg-black-alt border-spacing-0 border-separate text-left">
+          </tr>
+        }
         <!-- Invoice time entry list -->
         @if (times$ | async; as times) {
           @if (times.length === 0) {
@@ -293,6 +297,7 @@
                 </td>
                 <td class="border-b border-black px-2 py-2">
                   <input title="invoiced hours" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" 
+                    [disabled]="([HQRole.Executive, HQRole.Administrator] | inRole | async) === false"
                     [value]="time.hoursInvoiced"
                     (change)="updateInvoicedHours(time, $event)"
                     type="number"

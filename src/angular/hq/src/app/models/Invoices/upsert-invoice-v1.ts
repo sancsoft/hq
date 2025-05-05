@@ -1,6 +1,5 @@
 export interface UpsertInvoiceRequestV1 {
     id?: string;
-    clientId: string | null;
     date: Date | null;
     invoiceNumber: string | null;
     total: number | null;

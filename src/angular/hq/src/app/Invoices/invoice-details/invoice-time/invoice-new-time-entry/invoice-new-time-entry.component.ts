@@ -217,7 +217,6 @@ export class InvoiceNewTimeEntryComponent
         } else {
           taskControl.removeValidators(Validators.required);
         }
-        console.log(taskControl);
         taskControl.updateValueAndValidity({ emitEvent: false });
       },
       error: console.error,
@@ -328,7 +327,6 @@ export class InvoiceNewTimeEntryComponent
         this.setMaximumHours(maxTimeEntryHours);
         // set requireTask to true if the charge code project requires a task
         this.requireTask$.next(chargeCode?.requireTask ?? false);
-        console.log(chargeCode?.requireTask);
       }
       if (this.form.value.id) {
         // Force validation to run and highlight invalid fields red

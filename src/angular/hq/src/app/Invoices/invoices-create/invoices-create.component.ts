@@ -1,43 +1,26 @@
 import { ClientDetailsSearchFilterComponent } from './../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
 import { SortIconComponent } from './../../common/sort-icon/sort-icon.component';
-import { SortColumn } from './../../models/Invoices/get-invoices-v1';
-
 import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   Observable,
-  startWith,
   combineLatest,
   map,
-  tap,
-  debounceTime,
-  switchMap,
   shareReplay,
-  BehaviorSubject,
-  filter,
-  takeUntil,
   Subject,
   firstValueFrom,
 } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
-import { ClientDetailsServiceToReplace } from '../../clients/client-details.service';
 import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { SortDirection } from '../../models/common/sort-direction';
-import { GetInvoicesRecordV1 } from '../../models/Invoices/get-invoices-v1';
 import { HQService } from '../../services/hq.service';
-import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
-import { Period } from '../../enums/period';
-import { ProjectType } from '../../enums/project-type';
-import { ProjectStatus } from '../../enums/project-status';
-import { localISODate } from '../../common/functions/local-iso-date';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { formControlChanges } from '../../core/functions/form-control-changes';
 import { APIError } from '../../errors/apierror';
 import { CoreModule } from '../../core/core.module';
-import { UpsertInvoiceRequestV1 } from '../../models/Invoices/upsert-invoice-v1';
+import { CreateInvoiceRequestV1 } from '../../models/Invoices/create-invoice-v1';
 
 interface Form {
   clientId: FormControl<string | null>;
@@ -55,10 +38,6 @@ interface Form {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    ClientDetailsSearchFilterComponent,
-    InRolePipe,
     CoreModule
   ],
   templateUrl: './invoices-create.component.html',
@@ -116,9 +95,9 @@ export class InvoicesCreateComponent {
 
     try {
       if (this.form.valid && this.form.touched && this.form.dirty) {
-        const request: Partial<UpsertInvoiceRequestV1> = this.form.value;
+        const request: Partial<CreateInvoiceRequestV1> = this.form.value;
         const response = await firstValueFrom(
-          this.hqService.upsertInvoiceV1(request),
+          this.hqService.createInvoiceV1(request),
         );
 
         await this.router.navigate(['../', response.id, 'details'], {
