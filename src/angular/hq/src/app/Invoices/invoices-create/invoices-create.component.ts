@@ -1,7 +1,15 @@
 import { ClientDetailsSearchFilterComponent } from './../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
 import { SortIconComponent } from './../../common/sort-icon/sort-icon.component';
 import { Component } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   Observable,
@@ -38,7 +46,7 @@ interface Form {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    CoreModule
+    CoreModule,
   ],
   templateUrl: './invoices-create.component.html',
 })

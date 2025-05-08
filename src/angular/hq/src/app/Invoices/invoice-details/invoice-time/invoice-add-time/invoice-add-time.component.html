@@ -5,13 +5,23 @@
         <svg
           href="#"
           routerLink="../"
-          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="inline align-middle size-6 pe-2 cursor-pointer">
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="inline align-middle size-6 pe-2 cursor-pointer"
+        >
           <title>Back</title>
-          <path fill-rule="evenodd" d="M14 8a.75.75 0 0 1-.75.75H4.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L4.56 7.25h8.69A.75.75 0 0 1 14 8Z" clip-rule="evenodd" />
+          <path
+            fill-rule="evenodd"
+            d="M14 8a.75.75 0 0 1-.75.75H4.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 1.06L4.56 7.25h8.69A.75.75 0 0 1 14 8Z"
+            clip-rule="evenodd"
+          />
         </svg>
-        
-        @if (invoice !== null && currentClient; as client){
-          <span class="inline align-middle">{{ invoice?.invoiceNumber }} | {{client.name}}</span>
+
+        @if (invoice !== null && currentClient; as client) {
+          <span class="inline align-middle"
+            >{{ invoice?.invoiceNumber }} | {{ client.name }}</span
+          >
         }
       </h1>
     </div>
@@ -28,7 +38,9 @@
         <div class="flex flex-row justify-end">
           <div class="flex space-x-4">
             <div class="text-center text-white">
-              <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+              <div
+                class="text-xs text-right uppercase font-bold tracking-[.06em]"
+              >
                 TOTAL HOURS
               </div>
               <p class="text-right">
@@ -36,7 +48,9 @@
               </p>
             </div>
             <div class="text-center text-white">
-              <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+              <div
+                class="text-xs text-right uppercase font-bold tracking-[.06em]"
+              >
                 BILLABLE HOURS
               </div>
               <p class="text-right">
@@ -44,7 +58,9 @@
               </p>
             </div>
             <div class="text-center text-white">
-              <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+              <div
+                class="text-xs text-right uppercase font-bold tracking-[.06em]"
+              >
                 ACCEPTED HOURS
               </div>
               <p class="text-right">
@@ -52,7 +68,9 @@
               </p>
             </div>
             <div class="text-center text-white">
-              <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+              <div
+                class="text-xs text-right uppercase font-bold tracking-[.06em]"
+              >
                 ACCEPTED BILLABLE HOURS
               </div>
               <p class="text-right">
@@ -63,31 +81,36 @@
         </div>
         <div class="flex flex-row justify-between pb-4">
           <div class="text-center text-white">
-            <div class="text-xs w-32 text-right uppercase font-bold tracking-[.06em]">
+            <div
+              class="text-xs w-32 text-right uppercase font-bold tracking-[.06em]"
+            >
               SELECTED HOURS
             </div>
-            <p class="w-32 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]">
+            <p
+              class="w-32 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]"
+            >
               {{ selectedHrs.toFixed(2) || "--" }}
             </p>
           </div>
           <div class="pt-3">
-          <button type="button" 
-            [title]="
-              addBtnDisabled
-                ? 'No time entries selected to add to invoice'
-                : 'Add time entrie(s) to invoice'
-            "
-            [disabled]="addBtnDisabled"
-            [ngClass]="{
-              'text-gray-50 border-gray-500 bg-gray-500 ':
-                addBtnDisabled,
-              'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                !addBtnDisabled,
-            }"
-            class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white" 
-            (click)="addToInvoice()">
-            Add to Invoice 
-          </button>
+            <button
+              type="button"
+              [title]="
+                addBtnDisabled
+                  ? 'No time entries selected to add to invoice'
+                  : 'Add time entrie(s) to invoice'
+              "
+              [disabled]="addBtnDisabled"
+              [ngClass]="{
+                'text-gray-50 border-gray-500 bg-gray-500 ': addBtnDisabled,
+                'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+                  !addBtnDisabled,
+              }"
+              class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white"
+              (click)="addToInvoice()"
+            >
+              Add to Invoice
+            </button>
           </div>
         </div>
       </div>
@@ -95,25 +118,23 @@
   </div>
 
   <div class="overflow-scroll flex-auto bg-black-alt">
-    <hq-table [withPagination]="false" class="w-full border-spacing-0 border-separate {{(invoiceDetailsService.loading$ | async) === true ? 'loading' : ''}}">
+    <hq-table
+      [withPagination]="false"
+      class="w-full border-spacing-0 border-separate {{
+        (invoiceDetailsService.loading$ | async) === true ? 'loading' : ''
+      }}"
+    >
       <thead>
         <tr class="sticky top-0 text-left">
+          <th scope="col" width="15px" style="padding: 0px"></th>
+          <th scope="col" width="30px"></th>
           <th
             scope="col"
-            width="15px"
-            style="padding:0px"
-          ></th>
-          <th
-            scope="col"
-            width="30px"
-          ></th>
-          <th
-          scope="col"
             width="120px"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
             [hq-sort-header]="sortColumn.StaffName"
             (click)="onSortClick(sortColumn.StaffName)"
-            >
+          >
             Staff
           </th>
           <th
@@ -179,75 +200,119 @@
           </th>
         </tr>
       </thead>
-        @if (times$ | async; as times) {
-          @if (times.length === 0) {
-              <tr>
-                <td [colSpan]="999" class="bg-black-alt">
-                  <h1 class="text-center justify-items-center py-4 text-gray-50">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3">
-                      <path fill-rule="evenodd" d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM6 8c.552 0 1-.672 1-1.5S6.552 5 6 5s-1 .672-1 1.5S5.448 8 6 8Zm5-1.5c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5Zm-6.005 5.805a.75.75 0 0 0 1.06 0 2.75 2.75 0 0 1 3.89 0 .75.75 0 0 0 1.06-1.06 4.25 4.25 0 0 0-6.01 0 .75.75 0 0 0 0 1.06Z" clip-rule="evenodd" />
-                    </svg>      
-                    <p class=""><b>No time associated with this search!</b></p>
-                    <p class="">Please adjust the filters above to find matching time entries.</p>
-                  </h1>
-                </td>
-              </tr>
-          } @else {
-            @for (time of times; track $index) {
-              <tr class="even:bg-gray-850 odd:bg-black-alt {{time.record.status === 1 ? 'text-gray-450' : 'text-gray-100'}}">
-                <td class="border-b border-black py-2 {{
-                  time.record.status === 1 ? 'bg-green-450' : 
-                  time.record.status === 2 ? 'bg-red-850' :
-                  time.record.status === 3 ? 'bg-yellow-550' :
-                  'bg-gray-450'
-                  }}
-                "></td>
-                <td class="border-b border-black py-2 pl-2">
-                    <div class="flex justify-center">
-                      @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
-                        <input id="time_checkbox_{{time.record.id}}" title="Select Entry" [checked]="isChecked(time.record.id)" type="checkbox" (click)="updateTimeSelection(time.record, $index)">
-                      }
-                    </div>
-                  </td>
-                <td class="border-b px-3 border-black py-2">{{ time.record.staffName }}</td>
-                <td class="border-b border-black px-3 py-2">{{ time.record.date }}</td>
-                <td class="border-b px-3 border-black py-2">{{ time.record.chargeCode }}</td>
-                <td class="border-b border-black px-3 py-2">{{ time.record.projectName }}</td>
-                <td class="border-b px-3 border-black py-2">
-                  {{ time.record.activityName }}
-                </td>
-                <td class="border-b px-3 border-black py-2">
-                  {{ time.record.task }}
-                </td>
-                <td class="border-b border-black px-3 py-2 text-right">
-                  {{ time.record.hoursApproved ?? time.record.hours }}
-                </td>
-                <td class="border-b border-black px-2 py-2">
-                  <input title="invoiced hours" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" 
-                    [value]="(time.record.hoursInvoiced ?? time.record.hoursApproved ?? time.record.hours)"
-                    (change)="updateInvoicedHours(time.record, $event)"
-                    type="number"
-                    step="0.25"
-                    min="0"
-                  />
-                </td>
-                <td class="border-b border-black px-3 py-2">{{ time.record.description }}</td>
-              </tr>
-            }
-          }
-        } @else if (invoiceDetailsService.loading$ | async) {
+      @if (times$ | async; as times) {
+        @if (times.length === 0) {
           <tr>
-            <td [colSpan]="999" class="bg-black-alt text-gray-50" >
-              <h1 class="text-center py-4 font-bold">Loading...</h1>
+            <td [colSpan]="999" class="bg-black-alt">
+              <h1 class="text-center justify-items-center py-4 text-gray-50">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  class="size-3"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM6 8c.552 0 1-.672 1-1.5S6.552 5 6 5s-1 .672-1 1.5S5.448 8 6 8Zm5-1.5c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5Zm-6.005 5.805a.75.75 0 0 0 1.06 0 2.75 2.75 0 0 1 3.89 0 .75.75 0 0 0 1.06-1.06 4.25 4.25 0 0 0-6.01 0 .75.75 0 0 0 0 1.06Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <p class=""><b>No time associated with this search!</b></p>
+                <p class="">
+                  Please adjust the filters above to find matching time entries.
+                </p>
+              </h1>
             </td>
           </tr>
         } @else {
-          <tr>
-            <td [colSpan]="999" class="bg-black-alt text-gray-50">
-              <h1 class="text-center py-4 font-bold">Error fetching records</h1>
-            </td>
-          </tr>
+          @for (time of times; track $index) {
+            <tr
+              class="even:bg-gray-850 odd:bg-black-alt {{
+                time.record.status === 1 ? 'text-gray-450' : 'text-gray-100'
+              }}"
+            >
+              <td
+                class="border-b border-black py-2 {{
+                  time.record.status === 1
+                    ? 'bg-green-450'
+                    : time.record.status === 2
+                      ? 'bg-red-850'
+                      : time.record.status === 3
+                        ? 'bg-yellow-550'
+                        : 'bg-gray-450'
+                }}
+                "
+              ></td>
+              <td class="border-b border-black py-2 pl-2">
+                <div class="flex justify-center">
+                  @if (
+                    [HQRole.Executive, HQRole.Administrator] | inRole | async
+                  ) {
+                    <input
+                      id="time_checkbox_{{ time.record.id }}"
+                      title="Select Entry"
+                      [checked]="isChecked(time.record.id)"
+                      type="checkbox"
+                      (click)="updateTimeSelection(time.record, $index)"
+                    />
+                  }
+                </div>
+              </td>
+              <td class="border-b px-3 border-black py-2">
+                {{ time.record.staffName }}
+              </td>
+              <td class="border-b border-black px-3 py-2">
+                {{ time.record.date }}
+              </td>
+              <td class="border-b px-3 border-black py-2">
+                {{ time.record.chargeCode }}
+              </td>
+              <td class="border-b border-black px-3 py-2">
+                {{ time.record.projectName }}
+              </td>
+              <td class="border-b px-3 border-black py-2">
+                {{ time.record.activityName }}
+              </td>
+              <td class="border-b px-3 border-black py-2">
+                {{ time.record.task }}
+              </td>
+              <td class="border-b border-black px-3 py-2 text-right">
+                {{ time.record.hoursApproved ?? time.record.hours }}
+              </td>
+              <td class="border-b border-black px-2 py-2">
+                <input
+                  title="invoiced hours"
+                  class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12"
+                  [value]="
+                    time.record.hoursInvoiced ??
+                    time.record.hoursApproved ??
+                    time.record.hours
+                  "
+                  (change)="updateInvoicedHours(time.record, $event)"
+                  type="number"
+                  step="0.25"
+                  min="0"
+                />
+              </td>
+              <td class="border-b border-black px-3 py-2">
+                {{ time.record.description }}
+              </td>
+            </tr>
+          }
         }
+      } @else if (invoiceDetailsService.loading$ | async) {
+        <tr>
+          <td [colSpan]="999" class="bg-black-alt text-gray-50">
+            <h1 class="text-center py-4 font-bold">Loading...</h1>
+          </td>
+        </tr>
+      } @else {
+        <tr>
+          <td [colSpan]="999" class="bg-black-alt text-gray-50">
+            <h1 class="text-center py-4 font-bold">Error fetching records</h1>
+          </td>
+        </tr>
+      }
     </hq-table>
   </div>
 </div>

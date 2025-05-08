@@ -1,5 +1,5 @@
 <div class="grid grid-flow-row-dense col-span-6 gap-[20px] pt-1 xl:mb-0">
-<div class="flex flex-row justify-start space-x-4">
+  <div class="flex flex-row justify-start space-x-4">
     <div class="w-full">
       <hq-select-input
         [autocomplete]="false"
@@ -7,19 +7,24 @@
         variant="secondary"
       >
         <ng-template [hqSelectInputOption]="null">All (Time State)</ng-template>
-        <ng-template [hqSelectInputOption]="invoiceDetailsService.Status.Unsubmitted"
+        <ng-template
+          [hqSelectInputOption]="invoiceDetailsService.Status.Unsubmitted"
           >Unsubmitted (Time State)</ng-template
         >
-        <ng-template [hqSelectInputOption]="invoiceDetailsService.Status.Submitted"
+        <ng-template
+          [hqSelectInputOption]="invoiceDetailsService.Status.Submitted"
           >Submitted (Time State)</ng-template
         >
-        <ng-template [hqSelectInputOption]="invoiceDetailsService.Status.Accepted"
+        <ng-template
+          [hqSelectInputOption]="invoiceDetailsService.Status.Accepted"
           >Accepted (Time State)</ng-template
         >
-        <ng-template [hqSelectInputOption]="invoiceDetailsService.Status.Rejected"
+        <ng-template
+          [hqSelectInputOption]="invoiceDetailsService.Status.Rejected"
           >Rejected (Time State)</ng-template
         >
-        <ng-template [hqSelectInputOption]="invoiceDetailsService.Status.Resubmitted"
+        <ng-template
+          [hqSelectInputOption]="invoiceDetailsService.Status.Resubmitted"
           >Resubmitted (Time State)</ng-template
         >
       </hq-select-input>
@@ -53,7 +58,9 @@
         [formControl]="invoiceDetailsService.selectedPeriod"
         variant="secondary"
       >
-        <ng-template [hqSelectInputOption]="null">All Time (Period)</ng-template>
+        <ng-template [hqSelectInputOption]="null"
+          >All Time (Period)</ng-template
+        >
         <ng-template [hqSelectInputOption]="invoiceDetailsService.Period.Today"
           >Today (Period)</ng-template
         >
@@ -63,10 +70,12 @@
         <ng-template [hqSelectInputOption]="invoiceDetailsService.Period.Month"
           >This Month (Period)</ng-template
         >
-        <ng-template [hqSelectInputOption]="invoiceDetailsService.Period.LastWeek"
+        <ng-template
+          [hqSelectInputOption]="invoiceDetailsService.Period.LastWeek"
           >Last Week (Period)</ng-template
         >
-        <ng-template [hqSelectInputOption]="invoiceDetailsService.Period.LastMonth"
+        <ng-template
+          [hqSelectInputOption]="invoiceDetailsService.Period.LastMonth"
           >Last Month (Period)</ng-template
         >
         <ng-template [hqSelectInputOption]="invoiceDetailsService.Period.Year"
@@ -142,7 +151,8 @@
       </div>
     }
     @if (
-      (invoiceDetailsService.staffMembers$ | async) && invoiceDetailsService.showStaffMembers$ | async
+      (invoiceDetailsService.staffMembers$ | async) &&
+        invoiceDetailsService.showStaffMembers$ | async
     ) {
       <div class="w-full">
         <hq-select-input
@@ -150,8 +160,13 @@
           [formControl]="invoiceDetailsService.staffMember"
           variant="secondary"
         >
-          <ng-template [hqSelectInputOption]="null">All (Staff Member)</ng-template>
-          @for (staff of invoiceDetailsService.staffMembers$ | async; track staff.id) {
+          <ng-template [hqSelectInputOption]="null"
+            >All (Staff Member)</ng-template
+          >
+          @for (
+            staff of invoiceDetailsService.staffMembers$ | async;
+            track staff.id
+          ) {
             <ng-template
               [hqSelectInputOption]="staff.id"
               [hqSelectInputOptionSearch]="staff.name"
@@ -169,10 +184,15 @@
           variant="secondary"
         >
           <ng-template [hqSelectInputOption]="null">All (Project)</ng-template>
-          @for (project of invoiceDetailsService.projects$ | async; track project.id) {
+          @for (
+            project of invoiceDetailsService.projects$ | async;
+            track project.id
+          ) {
             <ng-template
               [hqSelectInputOption]="project.id"
-              [hqSelectInputOptionSelectedDisplay]="project.chargeCode +' (Project)'"
+              [hqSelectInputOptionSelectedDisplay]="
+                project.chargeCode + ' (Project)'
+              "
               [hqSelectInputOptionSearch]="
                 project.chargeCode +
                 ': ' +
@@ -191,7 +211,7 @@
           }
         </hq-select-input>
       </div>
-    } 
+    }
     @if (invoiceDetailsService.showProjectActivities$ | async) {
       <div class="w-full">
         <hq-select-input
@@ -201,21 +221,21 @@
           variant="secondary"
         >
           <ng-template [hqSelectInputOption]="null">All (Activity)</ng-template>
-          @for (activity of invoiceDetailsService.activities$ | async; track activity.id) {
+          @for (
+            activity of invoiceDetailsService.activities$ | async;
+            track activity.id
+          ) {
             <ng-template
               [hqSelectInputOption]="activity.id"
-              [hqSelectInputOptionSelectedDisplay]="activity.name +' (Activity)'"
-              [hqSelectInputOptionSearch]="
-                activity.name
+              [hqSelectInputOptionSelectedDisplay]="
+                activity.name + ' (Activity)'
               "
-              >{{
-                activity.name
-              }}</ng-template
+              [hqSelectInputOptionSearch]="activity.name"
+              >{{ activity.name }}</ng-template
             >
           }
         </hq-select-input>
       </div>
     }
   </div>
-  
 </div>

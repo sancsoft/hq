@@ -100,7 +100,10 @@ export abstract class BaseListService<
               : 'An unknown error occurred',
         } as unknown as TResponse);
       }),
-      finalize(() => {console.log("Finalize"); this.loadingSubject.next(false)}),
+      finalize(() => {
+        console.log('Finalize');
+        this.loadingSubject.next(false);
+      }),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
 

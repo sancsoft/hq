@@ -3,28 +3,27 @@
     <div class="pb-3 px-5">
       <h1 class="font-rajdhani font-semibold text-3xl">Invoice Details</h1>
       <div>
-        <div class="flex flex-col xl:flex-row xl:justify-between xl:items-center">
+        <div
+          class="flex flex-col xl:flex-row xl:justify-between xl:items-center"
+        >
           <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-            @if (invoice){
+            @if (invoice) {
               <div class="text-gray-50">
                 {{ invoice.invoiceNumber }}
               </div>
             }
-            @if (currentClient; as client){
+            @if (currentClient; as client) {
               <div class="text-gray-50">
                 Client Email: {{ client.billingEmail || "None" }}
               </div>
               <div class="text-gray-50">
-                Official Client Name - 
-                <a
-                    [routerLink]="['/clients', client.id]"
-                    class="underline"
-                    >{{ client.officialName }}</a
-                  >
+                Official Client Name -
+                <a [routerLink]="['/clients', client.id]" class="underline">{{
+                  client.officialName
+                }}</a>
               </div>
             }
           </div>
-    
         </div>
       </div>
     </div>
@@ -71,11 +70,17 @@
       <div class="min-w-[130px]">
         <!-- Invoices page link -->
         <div class="pb-2">
-          <a routerLink="/invoices" class="text-gray-50 underline">Invoice List</a>
+          <a routerLink="/invoices" class="text-gray-50 underline"
+            >Invoice List</a
+          >
         </div>
         <!-- Search bar -->
-        <div class="relative flex items-stretch border text-gray-100 rounded h-[36px] w-full bg-blue-900 border-steel-blue-600">
-          <span class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100">
+        <div
+          class="relative flex items-stretch border text-gray-100 rounded h-[36px] w-full bg-blue-900 border-steel-blue-600"
+        >
+          <span
+            class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100"
+          >
             <i class="bi bi-search text-[14px]"></i>
           </span>
           <input
@@ -93,18 +98,26 @@
       <div class="flex justify-center min-w-[256px]">
         <div class="flex flex-row mt-2">
           <div class="text-center text-white">
-            <div class="text-xs w-24 text-right uppercase font-bold tracking-[.06em]">
+            <div
+              class="text-xs w-24 text-right uppercase font-bold tracking-[.06em]"
+            >
               TOTAL HOURS
             </div>
-            <p class="w-24 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]">
-              {{ invoice?.totalHours?.toFixed(2) || "--"}}
+            <p
+              class="w-24 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]"
+            >
+              {{ invoice?.totalHours?.toFixed(2) || "--" }}
             </p>
           </div>
           <div class="text-center text-white">
-            <div class="text-xs w-32 text-right uppercase font-bold tracking-[.06em]">
+            <div
+              class="text-xs w-32 text-right uppercase font-bold tracking-[.06em]"
+            >
               INVOICED HOURS
             </div>
-            <p class="w-32 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]">
+            <p
+              class="w-32 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]"
+            >
               {{ invoice?.invoicedHours?.toFixed(2) || "--" }}
             </p>
           </div>
@@ -112,17 +125,21 @@
       </div>
       <!-- Col 3 - Export/+Time buttons -->
       <div class="flex justify-end gap-[20px] mt-6 min-w-[260px]">
-        <button type="button" 
-          class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white" 
-          title="Export Invoice time entries">
+        <button
+          type="button"
+          class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white"
+          title="Export Invoice time entries"
+        >
           Export
         </button>
-        @if([HQRole.Executive, HQRole.Administrator] | inRole | async){
-          <button type="button" 
+        @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+          <button
+            type="button"
             (click)="toAddTime()"
-            class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white" 
-            title="Add new time entries">
-            +Time 
+            class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white"
+            title="Add new time entries"
+          >
+            +Time
           </button>
         }
       </div>
@@ -130,9 +147,7 @@
   </div>
 
   <div class="grid gap-0 relative">
-    <main
-      class="flex flex-col bg-black-alt overflow-y-auto "
-    >
+    <main class="flex flex-col bg-black-alt overflow-y-auto">
       <div
         class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
       >
@@ -159,23 +174,23 @@
     </main>
   </div>
   <div class="overflow-scroll flex-auto bg-black-alt">
-    <hq-table [withPagination]="false" class="w-full border-spacing-0 border-separate text-sm {{(invoiceDetailsService.loading$ | async) === true ? 'loading' : ''}}">
+    <hq-table
+      [withPagination]="false"
+      class="w-full border-spacing-0 border-separate text-sm {{
+        (invoiceDetailsService.loading$ | async) === true ? 'loading' : ''
+      }}"
+    >
       <thead>
         <tr class="sticky top-0 text-left">
-          <th
-            width="15px"
-            style="padding:0px"
-          ></th>
-          <th
-            width="30px"
-          ></th>
+          <th width="15px" style="padding: 0px"></th>
+          <th width="30px"></th>
           <th
             scope="col"
             width="120px"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
             [hq-sort-header]="sortColumn.StaffName"
             (click)="onSortClick(sortColumn.StaffName)"
-            >
+          >
             Staff
           </th>
           <th
@@ -246,87 +261,128 @@
           ></th>
         </tr>
       </thead>
-        <!-- New time entry row -->
-        @if([HQRole.Executive, HQRole.Administrator] | inRole | async){
-          <tr 
-            hq-invoice-new-time-entry
-            [chargeCodes]="invoiceDetailsService.chargeCodes$ | async"
-            (hqInvoiceTimeChange)="upsertTime($event)"
-                  
-            class="sticky top-[39px] bg-black-alt border-spacing-0 border-separate text-left">
-          </tr>
-        }
-        <!-- Invoice time entry list -->
-        @if (times$ | async; as times) {
-          @if (times.length === 0) {
-            <tr>
-              <td [colSpan]="999" class="bg-black-alt">
-                <h1 class="text-center justify-items-center py-4 text-gray-50">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3">
-                    <path fill-rule="evenodd" d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM6 8c.552 0 1-.672 1-1.5S6.552 5 6 5s-1 .672-1 1.5S5.448 8 6 8Zm5-1.5c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5Zm-6.005 5.805a.75.75 0 0 0 1.06 0 2.75 2.75 0 0 1 3.89 0 .75.75 0 0 0 1.06-1.06 4.25 4.25 0 0 0-6.01 0 .75.75 0 0 0 0 1.06Z" clip-rule="evenodd" />
-                  </svg>      
-                  <p><b>No time associated with this invoice yet!</b></p>
-                  <p>Please press <b>+Time</b> or create a time entry to complete the invoice.</p>
-                </h1>
-              </td>
-            </tr>
-          } @else {
-            @for (time of times; track $index) {
-              <tr class="even:bg-gray-850 odd:bg-black-alt {{time.status === 1 ? 'text-gray-450' : 'text-gray-100'}}">
-                <td class="border-b border-black py-2 {{
-                  time.status === 1 ? 'bg-green-450' : 
-                  time.status === 2 ? 'bg-red-850' :
-                  time.status === 3 ? 'bg-yellow-550' :
-                  'bg-gray-450'
-                  }}
-                "></td>
-                <td class="border-b border-black py-2 pl-2">
-                </td>
-                <td class="border-b px-3 border-black py-2">{{ time.staffName }}</td>
-                <td class="border-b border-black px-3 py-2">{{ time.date }}</td>
-                <td class="border-b px-3 border-black py-2" title="{{time.billable ? 'Billable' : 'Not billable'}}">{{ time.chargeCode }}</td>
-                <td class="border-b border-black px-3 py-2">{{ time.projectName }}</td>
-                <td class="border-b px-3 border-black py-2">
-                  {{ time.activityName }}
-                </td>
-                <td class="border-b px-3 border-black py-2">
-                  {{ time.task }}
-                </td>
-                <td class="border-b border-black px-3 py-2 text-right">
-                  {{ time.hoursApproved ?? time.hours }}
-                </td>
-                <td class="border-b border-black px-2 py-2">
-                  <input title="invoiced hours" class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12" 
-                    [disabled]="([HQRole.Executive, HQRole.Administrator] | inRole | async) === false"
-                    [value]="time.hoursInvoiced"
-                    (change)="updateInvoicedHours(time, $event)"
-                    type="number"
-                    step="0.25"
-                    min="0"
-                  />
-                </td>
-                <td class="border-b border-black px-3 py-2">{{ time.description }}</td>
-                <td class="border-b border-black px-3 py-2 justify-center">
-                  <button type="button" class="h-[30px] px-2 py-2 rounded w-full" title="Delete Entry from Invoice" (click)="openRemoveTimeModal(time.id)">
-                    <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
-                  </button>
-                </td>
-              </tr>
-            } 
-          }
-        } @else if (invoiceDetailsService.loading$ | async) {
+      <!-- New time entry row -->
+      @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+        <tr
+          hq-invoice-new-time-entry
+          [chargeCodes]="invoiceDetailsService.chargeCodes$ | async"
+          (hqInvoiceTimeChange)="upsertTime($event)"
+          class="sticky top-[39px] bg-black-alt border-spacing-0 border-separate text-left"
+        ></tr>
+      }
+      <!-- Invoice time entry list -->
+      @if (times$ | async; as times) {
+        @if (times.length === 0) {
           <tr>
-            <td [colSpan]="999" class="bg-black-alt text-gray-50">
-              <h1 class="text-center py-4 font-bold">Loading...</h1>
+            <td [colSpan]="999" class="bg-black-alt">
+              <h1 class="text-center justify-items-center py-4 text-gray-50">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  class="size-3"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM6 8c.552 0 1-.672 1-1.5S6.552 5 6 5s-1 .672-1 1.5S5.448 8 6 8Zm5-1.5c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5Zm-6.005 5.805a.75.75 0 0 0 1.06 0 2.75 2.75 0 0 1 3.89 0 .75.75 0 0 0 1.06-1.06 4.25 4.25 0 0 0-6.01 0 .75.75 0 0 0 0 1.06Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <p><b>No time associated with this invoice yet!</b></p>
+                <p>
+                  Please press <b>+Time</b> or create a time entry to complete
+                  the invoice.
+                </p>
+              </h1>
             </td>
           </tr>
         } @else {
-          <tr>
-            <td [colSpan]="999" class="bg-black-alt text-gray-50">
-              <h1 class="text-center py-4 font-bold">Error fetching records</h1>
-            </td>
-          </tr>
+          @for (time of times; track $index) {
+            <tr
+              class="even:bg-gray-850 odd:bg-black-alt {{
+                time.status === 1 ? 'text-gray-450' : 'text-gray-100'
+              }}"
+            >
+              <td
+                class="border-b border-black py-2 {{
+                  time.status === 1
+                    ? 'bg-green-450'
+                    : time.status === 2
+                      ? 'bg-red-850'
+                      : time.status === 3
+                        ? 'bg-yellow-550'
+                        : 'bg-gray-450'
+                }}
+                "
+              ></td>
+              <td class="border-b border-black py-2 pl-2"></td>
+              <td class="border-b px-3 border-black py-2">
+                {{ time.staffName }}
+              </td>
+              <td class="border-b border-black px-3 py-2">{{ time.date }}</td>
+              <td
+                class="border-b px-3 border-black py-2"
+                title="{{ time.billable ? 'Billable' : 'Not billable' }}"
+              >
+                {{ time.chargeCode }}
+              </td>
+              <td class="border-b border-black px-3 py-2">
+                {{ time.projectName }}
+              </td>
+              <td class="border-b px-3 border-black py-2">
+                {{ time.activityName }}
+              </td>
+              <td class="border-b px-3 border-black py-2">
+                {{ time.task }}
+              </td>
+              <td class="border-b border-black px-3 py-2 text-right">
+                {{ time.hoursApproved ?? time.hours }}
+              </td>
+              <td class="border-b border-black px-2 py-2">
+                <input
+                  title="invoiced hours"
+                  class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12"
+                  [disabled]="
+                    ([HQRole.Executive, HQRole.Administrator]
+                      | inRole
+                      | async) === false
+                  "
+                  [value]="time.hoursInvoiced"
+                  (change)="updateInvoicedHours(time, $event)"
+                  type="number"
+                  step="0.25"
+                  min="0"
+                />
+              </td>
+              <td class="border-b border-black px-3 py-2">
+                {{ time.description }}
+              </td>
+              <td class="border-b border-black px-3 py-2 justify-center">
+                <button
+                  type="button"
+                  class="h-[30px] px-2 py-2 rounded w-full"
+                  title="Delete Entry from Invoice"
+                  (click)="openRemoveTimeModal(time.id)"
+                >
+                  <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
+                </button>
+              </td>
+            </tr>
+          }
         }
+      } @else if (invoiceDetailsService.loading$ | async) {
+        <tr>
+          <td [colSpan]="999" class="bg-black-alt text-gray-50">
+            <h1 class="text-center py-4 font-bold">Loading...</h1>
+          </td>
+        </tr>
+      } @else {
+        <tr>
+          <td [colSpan]="999" class="bg-black-alt text-gray-50">
+            <h1 class="text-center py-4 font-bold">Error fetching records</h1>
+          </td>
+        </tr>
+      }
     </hq-table>
   </div>
 </div>

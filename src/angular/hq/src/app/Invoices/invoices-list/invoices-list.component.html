@@ -106,7 +106,11 @@
         </td>
         <td class="border-b border-black py-2">{{ invoice.date }}</td>
         <td class="border-b border-black py-2 text-right pr-5">
-          <a class="text-teal-200 hover:text-teal-300" [routerLink]="[invoice.id, 'details']">VIEW</a>
+          <a
+            class="text-teal-200 hover:text-teal-300"
+            [routerLink]="[invoice.id, 'details']"
+            >VIEW</a
+          >
         </td>
       </tr>
     }

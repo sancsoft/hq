@@ -1,28 +1,34 @@
-import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
-import { CoreModule } from "../../../../core/core.module";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { firstValueFrom, map, Observable, Subject, takeUntil } from "rxjs";
-import { GetClientRecordV1 } from "../../../../models/clients/get-client-v1";
-import { GetChargeCodeRecordV1 } from "../../../../models/charge-codes/get-chargecodes-v1";
-import { HQService } from "../../../../services/hq.service";
-import { ActivatedRoute, Route, Router, RouterLink } from "@angular/router";
-import { InvoiceDetaisService } from "../../../service/invoice-details.service";
-import { GetInvoiceDetailsRecordV1 } from "../../../../models/Invoices/get-invoice-details-v1";
-import { GetTimeRecordV1, SortColumn } from "../../../../models/times/get-time-v1";
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { CoreModule } from '../../../../core/core.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
+import { GetClientRecordV1 } from '../../../../models/clients/get-client-v1';
+import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
+import { HQService } from '../../../../services/hq.service';
+import { ActivatedRoute, Route, Router, RouterLink } from '@angular/router';
+import { InvoiceDetaisService } from '../../../service/invoice-details.service';
+import { GetInvoiceDetailsRecordV1 } from '../../../../models/Invoices/get-invoice-details-v1';
+import {
+  GetTimeRecordV1,
+  SortColumn,
+} from '../../../../models/times/get-time-v1';
 import { roundToNextQuarter } from '../../../../common/functions/round-to-next-quarter';
-import { SortDirection } from "../../../../models/common/sort-direction";
-import { BaseListService } from "../../../../core/services/base-list.service";
-import { TimeListService } from "../../../../times/time-list/TimeList.service";
-import { HQRole } from "../../../../enums/hqrole";
-import { HQConfirmationModalService } from "../../../../common/confirmation-modal/services/hq-confirmation-modal-service";
-import { ModalService } from "../../../../services/modal.service";
-import { ToastService } from "../../../../services/toast.service";
-import { HQInvoiceTimeChangeEvent, InvoiceNewTimeEntryComponent } from "../invoice-new-time-entry/invoice-new-time-entry.component";
-import { APIError } from "../../../../errors/apierror";
-import { HttpErrorResponse } from "@angular/common/http";
-import { CreateInvoicedTimeRequestV1 } from "../../../../models/times/create-invoiced-time-v1";
-import { InRolePipe } from "../../../../pipes/in-role.pipe";
+import { SortDirection } from '../../../../models/common/sort-direction';
+import { BaseListService } from '../../../../core/services/base-list.service';
+import { TimeListService } from '../../../../times/time-list/TimeList.service';
+import { HQRole } from '../../../../enums/hqrole';
+import { HQConfirmationModalService } from '../../../../common/confirmation-modal/services/hq-confirmation-modal-service';
+import { ModalService } from '../../../../services/modal.service';
+import { ToastService } from '../../../../services/toast.service';
+import {
+  HQInvoiceTimeChangeEvent,
+  InvoiceNewTimeEntryComponent,
+} from '../invoice-new-time-entry/invoice-new-time-entry.component';
+import { APIError } from '../../../../errors/apierror';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CreateInvoicedTimeRequestV1 } from '../../../../models/times/create-invoiced-time-v1';
+import { InRolePipe } from '../../../../pipes/in-role.pipe';
 
 @Component({
   selector: 'hq-invoice-time-list',
@@ -34,13 +40,13 @@ import { InRolePipe } from "../../../../pipes/in-role.pipe";
     FormsModule,
     ReactiveFormsModule,
     InvoiceNewTimeEntryComponent,
-    InRolePipe
+    InRolePipe,
   ],
   providers: [
     {
       provide: BaseListService,
-      useExisting: TimeListService
-    }
+      useExisting: TimeListService,
+    },
   ],
   templateUrl: './invoice-time-list.component.html',
 })
@@ -68,20 +74,21 @@ export class InvoiceTimeListComponent {
     private router: Router,
     private confirmModalService: HQConfirmationModalService,
     private modalService: ModalService,
-    private toastService: ToastService
+    private toastService: ToastService,
   ) {
     this.invoiceDetailsService.invoiced$.next(true);
-    this.invoiceDetailsService.invoice$.pipe(takeUntil(this.destroy)).subscribe(
-      (invoice) => {
-        if(invoice){
+    this.invoiceDetailsService.invoice$
+      .pipe(takeUntil(this.destroy))
+      .subscribe((invoice) => {
+        if (invoice) {
           this.invoice = invoice;
         }
       });
     this.invoiceDetailsService.client$.subscribe((client) => {
       this.currentClient = client;
-    });    
-    
-    this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => r),);
+    });
+
+    this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => r));
   }
 
   async updateInvoicedHours(time: GetTimeRecordV1, event: Event) {
@@ -105,7 +112,7 @@ export class InvoiceTimeListComponent {
 
     const request = {
       id: time.id,
-      hoursInvoiced: roundedInvoicedHours
+      hoursInvoiced: roundedInvoicedHours,
     };
     //  Call API
     await firstValueFrom(this.hqService.upsertTimeHoursInvoicedV1(request));
@@ -168,14 +175,16 @@ export class InvoiceTimeListComponent {
   }
 
   async openRemoveTimeModal(id: string) {
-    this.confirmModalService.showModal("Are you sure you want to remove this time entry from this invoice?");
-    if(await firstValueFrom(this.confirmModalService.performAction$)){
+    this.confirmModalService.showModal(
+      'Are you sure you want to remove this time entry from this invoice?',
+    );
+    if (await firstValueFrom(this.confirmModalService.performAction$)) {
       this.removeTime(id);
     }
   }
-  
+
   async removeTime(id: string) {
-    await firstValueFrom(this.hqService.removeTimeFromInvoiceV1({id: id}));
+    await firstValueFrom(this.hqService.removeTimeFromInvoiceV1({ id: id }));
     this.invoiceDetailsService.invoiceRefresh();
   }
 

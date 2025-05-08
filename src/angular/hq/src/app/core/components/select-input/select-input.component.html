@@ -7,7 +7,9 @@
     [disabled]="disabled"
     [tabIndex]="isOpen ? -1 : 0"
     type="button"
-    class="flex items-center border justify-between bg-blue-900 rounded select-none overflow-hidden px-1 {{variant !== 'pill' ? 'h-['+btnHeightOverride+'px]' : ''}}"
+    class="flex items-center border justify-between bg-blue-900 rounded select-none overflow-hidden px-1 {{
+      variant !== 'pill' ? 'h-[' + btnHeightOverride + 'px]' : ''
+    }}"
     (focus)="onFocus()"
     [style.background-color]="
       variant === 'pill' ? (chargeCodeColor$ | async) : null
@@ -22,7 +24,7 @@
         !(ngControl?.invalid && ngControl?.touched) && variant === 'pill',
       'border-white text-white': focused && variant !== 'pill',
       'text-center font-semibold rounded-full px-3 py-1': variant === 'pill',
-      'text-left' : variant !== 'pill',
+      'text-left': variant !== 'pill',
       'rounded-br-none rounded-bl-none': isOpen && variant !== 'pill',
       'w-full': !inline,
       'border-gray-450 text-gray-450': disabled,

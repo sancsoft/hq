@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
-  Observable,
-  map,
-  firstValueFrom,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Observable, map, firstValueFrom, Subject, takeUntil } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
 import { GetInvoicesRecordV1 } from '../../../models/Invoices/get-invoices-v1';
@@ -21,7 +23,6 @@ import { CoreModule } from '../../../core/core.module';
 import { GetChargeCodeRecordV1 } from '../../../models/charge-codes/get-chargecodes-v1';
 import { InvoiceDetaisService } from '../../service/invoice-details.service';
 import { GetInvoiceDetailsRecordV1 } from '../../../models/Invoices/get-invoice-details-v1';
-
 
 interface invoiceFormGroup {
   clientId: FormControl<string | null>;
@@ -64,7 +65,7 @@ export class InvoiceDetailsEditComponent {
     },
     { validators: this.dateRangeValidator },
   );
-  
+
   clients$: Observable<GetClientRecordV1[]>;
   currentClient?: GetClientRecordV1;
   chargeCodes?: Array<GetChargeCodeRecordV1>;
@@ -73,11 +74,12 @@ export class InvoiceDetailsEditComponent {
     private hqService: HQService,
     private router: Router,
     private route: ActivatedRoute,
-    private invoiceDetailsService: InvoiceDetaisService
+    private invoiceDetailsService: InvoiceDetaisService,
   ) {
-    this.invoiceDetailsService.invoice$.pipe(takeUntil(this.destroy)).subscribe(
-      (invoice) => {
-        if(invoice){
+    this.invoiceDetailsService.invoice$
+      .pipe(takeUntil(this.destroy))
+      .subscribe((invoice) => {
+        if (invoice) {
           this.invoice = invoice;
           this.invoiceFormGroup.patchValue(invoice);
         }
@@ -86,7 +88,7 @@ export class InvoiceDetailsEditComponent {
     this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
     this.invoiceDetailsService.client$.subscribe((client) => {
       this.currentClient = client;
-    });    
+    });
   }
 
   private destroy = new Subject<void>();
@@ -100,13 +102,17 @@ export class InvoiceDetailsEditComponent {
     this.invoiceFormGroup.markAllAsTouched();
 
     try {
-      if (this.invoiceFormGroup.valid && this.invoiceFormGroup.touched && this.invoiceFormGroup.dirty) {
+      if (
+        this.invoiceFormGroup.valid &&
+        this.invoiceFormGroup.touched &&
+        this.invoiceFormGroup.dirty
+      ) {
         const request = {
           id: this.invoice?.id,
           date: this.invoiceFormGroup.value.date,
           invoiceNumber: this.invoiceFormGroup.value.invoiceNumber,
           total: this.invoiceFormGroup.value.total,
-          totalApprovedHours: this.invoiceFormGroup.value.totalApprovedHours
+          totalApprovedHours: this.invoiceFormGroup.value.totalApprovedHours,
         };
         const response = await firstValueFrom(
           this.hqService.updateInvoiceV1(request),

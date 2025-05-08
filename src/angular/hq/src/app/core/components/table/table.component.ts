@@ -24,7 +24,7 @@ export class TableComponent<
   TSort,
 > implements AfterViewChecked
 {
-  @Input() withPagination = true; 
+  @Input() withPagination = true;
   public columnCount: number = 0;
 
   constructor(

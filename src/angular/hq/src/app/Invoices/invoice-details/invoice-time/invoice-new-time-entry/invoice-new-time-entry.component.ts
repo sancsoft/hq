@@ -44,7 +44,10 @@ import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-charg
 import { GetProjectActivityRecordV1 } from '../../../../models/projects/get-project-activity-v1';
 import { GetDashboardTimeV1TimeForDateTimes } from '../../../../models/staff-dashboard/get-dashboard-time-v1';
 import { InvoiceDetaisService } from '../../../service/invoice-details.service';
-import { HQTimeChangeEvent, HQTimeDeleteEvent } from '../../../../staff-dashboard/staff-dashboard-time-entry/staff-dashboard-time-entry.component';
+import {
+  HQTimeChangeEvent,
+  HQTimeDeleteEvent,
+} from '../../../../staff-dashboard/staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import { HQService } from '../../../../services/hq.service';
 
 export interface HQInvoiceTimeChangeEvent {
@@ -114,7 +117,7 @@ export class InvoiceNewTimeEntryComponent
     id: new FormControl<string | null>(null),
     staffId: new FormControl<string | null>(null, {
       updateOn: 'change',
-      validators: [Validators.required, Validators.minLength(1)]
+      validators: [Validators.required, Validators.minLength(1)],
     }),
     date: new FormControl<string | null>(null, {
       updateOn: 'blur',
@@ -199,15 +202,15 @@ export class InvoiceNewTimeEntryComponent
         next: (id) => {
           this.form.patchValue(
             {
-              staffId: id
+              staffId: id,
             },
             {
-              emitEvent: false
-            }
-          )
+              emitEvent: false,
+            },
+          );
         },
         error: console.error,
-      })
+      });
 
     this.requireTask$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (isRequired) => {
@@ -225,7 +228,7 @@ export class InvoiceNewTimeEntryComponent
   constructor(
     public invoiceDetailsService: InvoiceDetaisService,
     private modalService: ModalService,
-    private hqService: HQService
+    private hqService: HQService,
   ) {
     const form$ = concat(
       defer(() => of(this.form.value)),
@@ -244,14 +247,14 @@ export class InvoiceNewTimeEntryComponent
     this.filteredActivities$ = form$.pipe(
       map((t) => t.projectId),
       switchMap((id) => {
-        if(id != null && id != undefined) {
-          return this.hqService.getprojectActivitiesV1({projectId: id}).pipe(
-            map((response) => response.records)
-          );
+        if (id != null && id != undefined) {
+          return this.hqService
+            .getprojectActivitiesV1({ projectId: id })
+            .pipe(map((response) => response.records));
         } else {
           return of();
         }
-      })
+      }),
     );
 
     this.filteredActivities$.pipe(takeUntil(this.destroyed$)).subscribe({
@@ -290,7 +293,9 @@ export class InvoiceNewTimeEntryComponent
     invoicedHours$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (invoicedHours) => {
         if (invoicedHours != null) {
-          this.form.patchValue({ invoicedHours: roundToNextQuarter(invoicedHours) });
+          this.form.patchValue({
+            invoicedHours: roundToNextQuarter(invoicedHours),
+          });
         }
       },
       error: console.error,

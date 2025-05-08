@@ -1,151 +1,148 @@
 <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
-    <div class="px-5">
-      <h1 class="font-rajdhani font-semibold text-3xl">Create Invoice</h1>
-  
-      <div class="py-3">
-        <a routerLink="/invoices" class="text-gray-50 underline">Invoice List</a>
-      </div>
+  <div class="px-5">
+    <h1 class="font-rajdhani font-semibold text-3xl">Create Invoice</h1>
+
+    <div class="py-3">
+      <a routerLink="/invoices" class="text-gray-50 underline">Invoice List</a>
     </div>
-  
-    <div class="overflow-hidden flex-auto">
-      <div class="grid gap-0 relative">
-        <main
-          class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]"
+  </div>
+
+  <div class="overflow-hidden flex-auto">
+    <div class="grid gap-0 relative">
+      <main
+        class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]"
+      >
+        <div
+          class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
         >
           <div
-            class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
+            class="w-full flex flex-row border-b border-black justify-between pe-5"
           >
-            <div
-              class="w-full flex flex-row border-b border-black justify-between pe-5"
-            >
-              <div class="flex pt-[23px]">
-                <a
-                  href="#"
-                  routerLink="quotes"
-                  routerLinkActive="border-gray-100"
-                  class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
-                  >Details</a
-                >
-              </div>
-  
-              <div class="flex flex-column justify-center items-center">
-                <hq-button (click)="onSubmit()" type="submit">Save</hq-button>
-              </div>
+            <div class="flex pt-[23px]">
+              <a
+                href="#"
+                routerLink="quotes"
+                routerLinkActive="border-gray-100"
+                class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
+                >Details</a
+              >
+            </div>
+
+            <div class="flex flex-column justify-center items-center">
+              <hq-button (click)="onSubmit()" type="submit">Save</hq-button>
             </div>
           </div>
-  
-          <form [formGroup]="form" (ngSubmit)="onSubmit()">
-            <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
-              <div class="p-5 pr-0">
-                <div class="grid gap-[20px]">
-                  @if (this.apiErrors) {
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="grid 2xl:grid-cols-[1fr_594px] flex-1">
+            <div class="p-5 pr-0">
+              <div class="grid gap-[20px]">
+                @if (this.apiErrors) {
                   @for (error of this.apiErrors; track $index) {
-                      <div
+                    <div
                       class="text-red-700 text-xs leading-normal inline-block"
-                      >
+                    >
                       {{ error }}
-                      </div>
+                    </div>
                   }
-                  }
+                }
 
-                  <div class="border-b border-black pb-1 px-1 font-bold">
+                <div class="border-b border-black pb-1 px-1 font-bold">
                   Project Information
+                </div>
+
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-cols-3">
+                  <!-- column -->
+                  <div>
+                    <hq-select-input
+                      [autocomplete]="true"
+                      formControlName="clientId"
+                      label="Client"
+                      variant="secondary"
+                    >
+                      <ng-template [hqSelectInputOption]="null"
+                        >Please Select a client</ng-template
+                      >
+                      <ng-template hqValidationError="required">
+                        Client is required.
+                      </ng-template>
+                      @for (client of clients$ | async; track client.id) {
+                        <ng-template
+                          [hqSelectInputOption]="client.id"
+                          [hqSelectInputOptionSearch]="client.name"
+                          >{{ client.name }}</ng-template
+                        >
+                      }
+                    </hq-select-input>
                   </div>
 
-                  <!-- row grid -->
-                  <div class="grid gap-[20px] grid-cols-3">
-                    <!-- column -->
-                    <div>
-                        <hq-select-input
-                        [autocomplete]="true"
-                        formControlName="clientId"
-                        label="Client"
-                        variant="secondary"
-                        >
-                        <ng-template [hqSelectInputOption]="null"
-                            >Please Select a client</ng-template
-                        >
-                        <ng-template hqValidationError="required">
-                            Client is required.
-                        </ng-template>
-                        @for (client of clients$ | async; track client.id) {
-                            <ng-template
-                            [hqSelectInputOption]="client.id"
-                            [hqSelectInputOptionSearch]="client.name"
-                            >{{ client.name }}</ng-template
-                            >
-                        }
-                        </hq-select-input>
-                    </div>
-
-                    <!-- column -->
-                    <div>
-                      <!-- [maxLength]="5"
+                  <!-- column -->
+                  <div>
+                    <!-- [maxLength]="5"
                         [minLength]="5" -->
-                        <hq-text-input
-                        type="text"
-                        formControlName="invoiceNumber"
-                        label="Invoice Number"
-                        variant="secondary"
-                        placeholder="Invoice Number"
-                        >
-                        <ng-template hqValidationError="required">
-                          Invoice Number is required.
-                        </ng-template>
-                        </hq-text-input>
-                    </div>
-
-                    <!-- column -->
-                    <div>
-                        <hq-date-input
-                        formControlName="date"
-                        label="Date"
-                        variant="secondary"
-                        >
-                        </hq-date-input>
-                    </div>
-
+                    <hq-text-input
+                      type="text"
+                      formControlName="invoiceNumber"
+                      label="Invoice Number"
+                      variant="secondary"
+                      placeholder="Invoice Number"
+                    >
+                      <ng-template hqValidationError="required">
+                        Invoice Number is required.
+                      </ng-template>
+                    </hq-text-input>
                   </div>
 
-                  <!-- row grid -->
-                  <div class="grid gap-[20px] grid-cols-3">
-                    <!-- column -->
-                    <div>
-                        <hq-text-input
-                        type="number"
-                        formControlName="totalApprovedHours"
-                        label="Total Approved Hours"
-                        variant="secondary"
-                        placeholder="Total Approved Hours"
-                        >
-                        <ng-template hqValidationError="required">
-                            Total Approved Hours is required.
-                        </ng-template>
-                        </hq-text-input>
-                    </div>
+                  <!-- column -->
+                  <div>
+                    <hq-date-input
+                      formControlName="date"
+                      label="Date"
+                      variant="secondary"
+                    >
+                    </hq-date-input>
+                  </div>
+                </div>
 
-                    <!-- column -->
-                    <div>
-                      <hq-text-input
+                <!-- row grid -->
+                <div class="grid gap-[20px] grid-cols-3">
+                  <!-- column -->
+                  <div>
+                    <hq-text-input
+                      type="number"
+                      formControlName="totalApprovedHours"
+                      label="Total Approved Hours"
+                      variant="secondary"
+                      placeholder="Total Approved Hours"
+                    >
+                      <ng-template hqValidationError="required">
+                        Total Approved Hours is required.
+                      </ng-template>
+                    </hq-text-input>
+                  </div>
+
+                  <!-- column -->
+                  <div>
+                    <hq-text-input
                       type="number"
                       formControlName="total"
                       label="Total"
                       variant="secondary"
                       placeholder="Total"
-                      >
+                    >
                       <ng-template hqValidationError="required">
-                          Invoice Total is required.
+                        Invoice Total is required.
                       </ng-template>
-                      </hq-text-input>
-                    </div>
+                    </hq-text-input>
                   </div>
-
                 </div>
               </div>
             </div>
-          </form>
-        </main>
-      </div>
+          </div>
+        </form>
+      </main>
     </div>
   </div>
-  
+</div>

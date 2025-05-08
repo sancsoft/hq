@@ -1,4 +1,3 @@
-
 export interface GetInvoiceDetailsRequestV1 {
   id: string;
 }
@@ -11,11 +10,11 @@ export interface GetInvoiceDetailsRecordV1 {
   invoiceNumber: string;
   total: number;
   totalApprovedHours: number;
-  totalHours : number;
-  billableHours : number;
-  acceptedHours : number;
+  totalHours: number;
+  billableHours: number;
+  acceptedHours: number;
   invoicedHours: number;
-  acceptedBillableHours : number;
+  acceptedBillableHours: number;
   chargeCodes: Array<InvoiceChargeCode>;
 }
 
