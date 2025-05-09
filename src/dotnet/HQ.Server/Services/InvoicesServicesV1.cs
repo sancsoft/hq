@@ -251,6 +251,7 @@ namespace HQ.Server.Invoices
 
         public async Task<Result<UpdateInvoiceV1.Response>> UpdateInvoiceV1(UpdateInvoiceV1.Request request, CancellationToken ct = default)
         {
+            Console.WriteLine("Updating invoice");
             var validationResult = Result.Merge(
                 Result.FailIf(request.Id == Guid.Empty, "Invoice Id cannot be empty."),
                 Result.FailIf(!await _context.Invoices.AnyAsync(t => t.Id == request.Id), "Invoice could not be found."),
@@ -267,6 +268,10 @@ namespace HQ.Server.Invoices
                 invoice = new();
                 _context.Invoices.Add(invoice);
             }
+
+            Console.WriteLine($"Invoice Number {request.InvoiceNumber}");
+            Console.WriteLine($"Total {request.Total}");
+            Console.WriteLine($"Total approved hrs {request.TotalApprovedHours}");
 
             invoice.Date = request.Date;
             invoice.Total = request.Total;

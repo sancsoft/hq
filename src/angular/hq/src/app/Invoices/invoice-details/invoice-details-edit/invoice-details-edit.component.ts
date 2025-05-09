@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -9,10 +9,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, map, firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { Observable, map, firstValueFrom, Subject } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
-import { GetInvoicesRecordV1 } from '../../../models/Invoices/get-invoices-v1';
 import { HQService } from '../../../services/hq.service';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { HQRole } from '../../../enums/hqrole';
@@ -23,10 +22,11 @@ import { CoreModule } from '../../../core/core.module';
 import { GetChargeCodeRecordV1 } from '../../../models/charge-codes/get-chargecodes-v1';
 import { InvoiceDetaisService } from '../../service/invoice-details.service';
 import { GetInvoiceDetailsRecordV1 } from '../../../models/Invoices/get-invoice-details-v1';
+import { ModalService } from '../../../services/modal.service';
 
 interface invoiceFormGroup {
   clientId: FormControl<string | null>;
-  date: FormControl<Date | null>;
+  date: FormControl<string | null>;
   invoiceNumber: FormControl<string | null>;
   total: FormControl<number | null>;
   totalApprovedHours: FormControl<number | null>;
@@ -47,10 +47,8 @@ interface invoiceFormGroup {
   ],
   templateUrl: './invoice-details-edit.component.html',
 })
-export class InvoiceDetailsEditComponent {
+export class InvoiceDetailsEditComponent implements OnDestroy {
   HQRole = HQRole;
-  invoice?: GetInvoiceDetailsRecordV1;
-
   editMode: boolean = false;
 
   apiErrors: string[] = [];
@@ -58,7 +56,7 @@ export class InvoiceDetailsEditComponent {
   invoiceFormGroup = new FormGroup<invoiceFormGroup>(
     {
       clientId: new FormControl(null, [Validators.required]),
-      date: new FormControl(null, Validators.required),
+      date: new FormControl<string | null>(null, [Validators.required]),
       invoiceNumber: new FormControl(null),
       total: new FormControl(null, [Validators.required]),
       totalApprovedHours: new FormControl(null, [Validators.required]),
@@ -67,7 +65,10 @@ export class InvoiceDetailsEditComponent {
   );
 
   clients$: Observable<GetClientRecordV1[]>;
-  currentClient?: GetClientRecordV1;
+  currentClient$: Observable<GetClientRecordV1>;
+  invoice$: Observable<GetInvoiceDetailsRecordV1>;
+
+  invoiceId?: string;
   chargeCodes?: Array<GetChargeCodeRecordV1>;
 
   constructor(
@@ -75,20 +76,24 @@ export class InvoiceDetailsEditComponent {
     private router: Router,
     private route: ActivatedRoute,
     private invoiceDetailsService: InvoiceDetaisService,
+    private modalService: ModalService,
   ) {
-    this.invoiceDetailsService.invoice$
-      .pipe(takeUntil(this.destroy))
-      .subscribe((invoice) => {
-        if (invoice) {
-          this.invoice = invoice;
-          this.invoiceFormGroup.patchValue(invoice);
+    this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
+      map((i) => {
+        if (i) {
+          this.invoiceId = i.id;
+          this.invoiceFormGroup.patchValue(i);
+        } else {
+          void this.router.navigateByUrl('/invoices');
         }
-      });
+        return i;
+      }),
+    );
 
     this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
-    this.invoiceDetailsService.client$.subscribe((client) => {
-      this.currentClient = client;
-    });
+    this.currentClient$ = this.invoiceDetailsService.client$.pipe(
+      map((client) => client),
+    );
   }
 
   private destroy = new Subject<void>();
@@ -102,23 +107,19 @@ export class InvoiceDetailsEditComponent {
     this.invoiceFormGroup.markAllAsTouched();
 
     try {
-      if (
-        this.invoiceFormGroup.valid &&
-        this.invoiceFormGroup.touched &&
-        this.invoiceFormGroup.dirty
-      ) {
+      if (this.invoiceFormGroup.valid) {
         const request = {
-          id: this.invoice?.id,
+          id: this.invoiceId,
           date: this.invoiceFormGroup.value.date,
           invoiceNumber: this.invoiceFormGroup.value.invoiceNumber,
           total: this.invoiceFormGroup.value.total,
           totalApprovedHours: this.invoiceFormGroup.value.totalApprovedHours,
         };
-        const response = await firstValueFrom(
-          this.hqService.updateInvoiceV1(request),
-        );
 
-        this.invoiceDetailsService.invoiceRefresh();
+        if (this.invoiceFormGroup.touched && this.invoiceFormGroup.dirty) {
+          await firstValueFrom(this.hqService.updateInvoiceV1(request));
+          this.invoiceDetailsService.invoiceRefresh();
+        }
       } else {
         this.apiErrors.length = 0;
         this.apiErrors.push(
@@ -144,27 +145,30 @@ export class InvoiceDetailsEditComponent {
       : null;
   }
 
-  // private async getInvoice() {
-  //   try {
-  //     // const request = { id: this.invoiceId };
-  //     // const response = await firstValueFrom(
-  //     //   this.hqService.getInvoicesV1(request),
-  //     // );
-  //     // const invoiceMember = response.records[0];
-  //     // this.invoice = invoiceMember;
-  //     const invoiceMember = await firstValueFrom(this.invoice$);
-  //     this.invoiceFormGroup.patchValue(invoiceMember);
-  //   } catch (err) {
-  //     if (err instanceof APIError) {
-  //       this.apiErrors = err.errors;
-  //     } else {
-  //       this.apiErrors = ['An unexpected error has occurred.'];
-  //     }
-  //   }
-  // }
+  async save() {
+    console.log(' Save hit');
+    if (this.invoiceFormGroup.valid && this.invoiceFormGroup.dirty) {
+      // this.hqInvoiceTimeChange.emit(this.invoiceFormGroup.value);
+      this.invoiceFormGroup.reset();
+      this.invoiceFormGroup.markAsPristine();
+      // if (!this.invoiceFormGroup.value.id) {
+      //   this.hoursInput?.nativeElement?.focus();
+      // }
+    }
+  }
 
-  private async getChargeCodes() {
-    // needs to gather all the charge codes assigned to the invoice on the time tab
-    // this.chargeCodes = ;
+  async chooseDate() {
+    const newDate = await firstValueFrom(
+      this.modalService.chooseDate(
+        'Change Date',
+        'Choose a date for a new time entry to be created on.',
+        this.invoiceFormGroup.controls.date.value ?? '',
+      ),
+    );
+    if (newDate) {
+      this.invoiceFormGroup.patchValue({ date: newDate });
+      this.invoiceFormGroup.markAsDirty();
+      await this.save();
+    }
   }
 }

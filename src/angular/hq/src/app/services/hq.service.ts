@@ -181,9 +181,9 @@ import {
   GetPointsSummaryResponseV1,
 } from '../models/Points/get-points-summary-v1';
 import {
-  UpsertInvoiceRequestV1,
-  UpsertInvoiceResponseV1,
-} from '../models/Invoices/upsert-invoice-v1';
+  UpdateInvoiceRequestV1,
+  UpdateInvoiceResponseV1,
+} from '../models/Invoices/update-invoice-v1';
 import {
   GetInvoiceDetailsRequestV1,
   GetInvoiceDetailsRecordV1,
@@ -195,6 +195,10 @@ import {
   RemoveTimeFromInvoiceRequestV1,
 } from '../models/times/add-time-to-invoice-v1';
 import { CreateInvoicedTimeRequestV1 } from '../models/times/create-invoiced-time-v1';
+import {
+  CreateInvoiceRequestV1,
+  CreateInvoiceResponseV1,
+} from '../models/Invoices/create-invoice-v1';
 @Injectable({
   providedIn: 'root',
 })
@@ -277,10 +281,10 @@ export class HQService {
     );
   }
 
-  createInvoiceV1(request: Partial<UpsertInvoiceRequestV1>) {
+  createInvoiceV1(request: Partial<CreateInvoiceRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<UpsertInvoiceResponseV1>(
+        this.http.post<CreateInvoiceResponseV1>(
           `${apiUrl}/v1/Invoices/CreateInvoiceV1`,
           request,
         ),
@@ -288,11 +292,11 @@ export class HQService {
     );
   }
 
-  updateInvoiceV1(request: Partial<UpsertInvoiceRequestV1>) {
+  updateInvoiceV1(request: Partial<UpdateInvoiceRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<UpsertInvoiceResponseV1>(
-          `${apiUrl}/v1/Invoices/UpsertInvoiceV1`,
+        this.http.post<UpdateInvoiceResponseV1>(
+          `${apiUrl}/v1/Invoices/UpdateInvoiceV1`,
           request,
         ),
       ),

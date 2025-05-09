@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import { map, Subject } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { firstValueFrom, Subject } from 'rxjs';
 
 import { InvoiceDetaisService } from '../service/invoice-details.service';
 @Component({
@@ -9,24 +9,29 @@ import { InvoiceDetaisService } from '../service/invoice-details.service';
   imports: [RouterOutlet],
   templateUrl: './invoice-details.component.html',
 })
-export class InvoiceDetailsComponent {
+export class InvoiceDetailsComponent implements OnDestroy, OnInit {
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private invoiceDetailsService: InvoiceDetaisService,
-  ) {
-    const invoiceId$ = this.route.paramMap.pipe(
-      map((params) => params.get('invoiceId')),
-    );
+  ) {}
 
-    invoiceId$.subscribe({
-      next: (invoiceId) => this.invoiceDetailsService.setInvoiceId(invoiceId),
-      error: console.error,
-    });
+  async ngOnInit() {
+    const invoiceId =
+      (await firstValueFrom(this.route.paramMap.pipe())).get('invoiceId') ??
+      null;
+
+    if (invoiceId != null) {
+      this.invoiceDetailsService.invoiceIdSubject.next(invoiceId);
+    } else {
+      await this.router.navigateByUrl('/invoices');
+    }
   }
 
   private destroy = new Subject<void>();
 
   ngOnDestroy() {
+    console.log('Destroyed');
     this.destroy.next();
     this.destroy.complete();
   }

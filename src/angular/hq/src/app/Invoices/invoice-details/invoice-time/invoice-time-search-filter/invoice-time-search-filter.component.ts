@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { TimeListService } from '../../../../times/time-list/TimeList.service';
 import { CoreModule } from '../../../../core/core.module';
 import { Period } from '../../../../enums/period';
 import { InvoiceDetaisService } from '../../../service/invoice-details.service';

@@ -1,6 +1,6 @@
 export interface AddTimeToInvoiceRequestV1 {
   id: string;
-  invoiceId: string;
+  //invoicedId: string;
   hoursInvoiced?: number;
 }
 
@@ -10,7 +10,7 @@ export interface AddTimeToInvoiceResponseV1 {
 
 export interface AddTimesToInvoiceRequestV1 {
   invoiceId: string;
-  timeEntries: Array<Partial<AddTimeToInvoiceRequestV1>>;
+  timeEntries: Array<AddTimeToInvoiceRequestV1>;
 }
 
 export interface RemoveTimeFromInvoiceRequestV1 {

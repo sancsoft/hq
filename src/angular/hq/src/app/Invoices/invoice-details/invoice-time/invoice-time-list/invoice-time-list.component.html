@@ -7,12 +7,12 @@
           class="flex flex-col xl:flex-row xl:justify-between xl:items-center"
         >
           <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-            @if (invoice) {
+            @if (invoice$ | async; as invoice) {
               <div class="text-gray-50">
                 {{ invoice.invoiceNumber }}
               </div>
             }
-            @if (currentClient; as client) {
+            @if (currentClient$ | async; as client) {
               <div class="text-gray-50">
                 Client Email: {{ client.billingEmail || "None" }}
               </div>
@@ -29,38 +29,40 @@
     </div>
     <!-- Hour Amounts -->
     <div class="flex space-x-8 pb-4 px-5 pt-3">
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          TOTAL HOURS
+      @if (invoice$ | async; as invoice) {
+        <div class="text-center text-white">
+          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+            TOTAL HOURS
+          </div>
+          <p class="text-right">
+            {{ invoice?.totalHours || "-" }}
+          </p>
         </div>
-        <p class="text-right">
-          {{ invoice?.totalHours || "-" }}
-        </p>
-      </div>
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          BILLABLE HOURS
+        <div class="text-center text-white">
+          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+            BILLABLE HOURS
+          </div>
+          <p class="text-right">
+            {{ invoice?.billableHours || "-" }}
+          </p>
         </div>
-        <p class="text-right">
-          {{ invoice?.billableHours || "-" }}
-        </p>
-      </div>
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          ACCEPTED HOURS
+        <div class="text-center text-white">
+          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+            ACCEPTED HOURS
+          </div>
+          <p class="text-right">
+            {{ invoice?.acceptedHours || "-" }}
+          </p>
         </div>
-        <p class="text-right">
-          {{ invoice?.acceptedHours || "-" }}
-        </p>
-      </div>
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          ACCEPTED BILLABLE HOURS
+        <div class="text-center text-white">
+          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+            ACCEPTED BILLABLE HOURS
+          </div>
+          <p class="text-right">
+            {{ invoice?.acceptedBillableHours || "-" }}
+          </p>
         </div>
-        <p class="text-right">
-          {{ invoice?.acceptedBillableHours || "-" }}
-        </p>
-      </div>
+      }
     </div>
   </div>
 
@@ -106,7 +108,7 @@
             <p
               class="w-24 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]"
             >
-              {{ invoice?.totalHours?.toFixed(2) || "--" }}
+              {{ (invoice$ | async)?.totalHours?.toFixed(2) || "--" }}
             </p>
           </div>
           <div class="text-center text-white">
@@ -118,7 +120,7 @@
             <p
               class="w-32 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]"
             >
-              {{ invoice?.invoicedHours?.toFixed(2) || "--" }}
+              {{ (invoice$ | async)?.invoicedHours?.toFixed(2) || "--" }}
             </p>
           </div>
         </div>

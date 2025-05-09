@@ -7,13 +7,12 @@
           class="flex flex-col xl:flex-row xl:justify-between xl:items-center"
         >
           <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-            <!-- @if (invoice$ | async; as invoice){ -->
-            @if (invoice) {
+            @if (invoice$ | async; as invoice) {
               <div class="text-gray-50">
-                {{ invoice.invoiceNumber }}
+                {{ invoice?.invoiceNumber }}
               </div>
             }
-            @if (currentClient; as client) {
+            @if (currentClient$ | async; as client) {
               <div class="text-gray-50">
                 Client Email: {{ client.billingEmail || "None" }}
               </div>
@@ -34,53 +33,40 @@
       </div>
     </div>
     <div class="flex space-x-8 p-4">
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          TOTAL HOURS
+      @if (invoice$ | async; as invoice) {
+        <div class="text-center text-white">
+          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+            TOTAL HOURS
+          </div>
+          <p class="text-right">
+            {{ invoice?.totalHours || "-" }}
+          </p>
         </div>
-        <p class="text-right">
-          {{ invoice?.totalHours || "-" }}
-          <!-- {{
-                (staffDashboardService.time$ | async)?.hoursThisWeek?.toFixed(2) ||
-                  "-"
-              }} -->
-        </p>
-      </div>
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          BILLABLE HOURS
+        <div class="text-center text-white">
+          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+            BILLABLE HOURS
+          </div>
+          <p class="text-right">
+            {{ invoice?.billableHours || "-" }}
+          </p>
         </div>
-        <p class="text-right">
-          {{ invoice?.billableHours || "-" }}
-          <!-- {{
-                (staffDashboardService.time$ | async)?.hoursLastWeek?.toFixed(2) ||
-                  "-"
-              }} -->
-        </p>
-      </div>
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          ACCEPTED HOURS
+        <div class="text-center text-white">
+          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+            ACCEPTED HOURS
+          </div>
+          <p class="text-right">
+            {{ invoice?.acceptedHours || "-" }}
+          </p>
         </div>
-        <p class="text-right">
-          {{ invoice?.acceptedHours || "-" }}
-          <!-- {{
-                (staffDashboardService.time$ | async)?.hoursThisMonth?.toFixed(2) ||
-                  "-"
-              }} -->
-        </p>
-      </div>
-      <div class="text-center text-white">
-        <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
-          ACCEPTED BILLABLE HOURS
+        <div class="text-center text-white">
+          <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
+            ACCEPTED BILLABLE HOURS
+          </div>
+          <p class="text-right">
+            {{ invoice?.acceptedBillableHours || "-" }}
+          </p>
         </div>
-        <p class="text-right">
-          {{ invoice?.acceptedBillableHours || "-" }}
-          <!-- {{
-                (staffDashboardService.time$ | async)?.vacation?.toFixed(2) || "-"
-              }} -->
-        </p>
-      </div>
+      }
     </div>
   </div>
 
@@ -226,15 +212,20 @@
               <div class="border-b border-black pt-14 pb-1 mb-3 font-bold">
                 Included Chargecodes
               </div>
-              @if (invoice && invoice.chargeCodes.length > 0) {
-                @for (chargeCode of invoice.chargeCodes; track chargeCode.id) {
-                  <div class="ps-3 font-light">
-                    {{ chargeCode.code }}: {{ invoice.clientName }}:
-                    {{ chargeCode.projectName }}
-                  </div>
+              @if (invoice$ | async; as invoice) {
+                @if (invoice.chargeCodes.length > 0) {
+                  @for (
+                    chargeCode of invoice.chargeCodes;
+                    track chargeCode.id
+                  ) {
+                    <div class="ps-3 font-light">
+                      {{ chargeCode.code }}: {{ invoice.clientName }}:
+                      {{ chargeCode.projectName }}
+                    </div>
+                  }
+                } @else {
+                  <div class="ps-3 font-light">None</div>
                 }
-              } @else {
-                <div class="ps-3 font-light">None</div>
               }
             </div>
           </div>

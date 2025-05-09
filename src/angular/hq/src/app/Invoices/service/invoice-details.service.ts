@@ -1,10 +1,10 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
-  catchError,
   combineLatest,
   debounceTime,
   filter,
+  firstValueFrom,
   map,
   merge,
   Observable,
@@ -20,7 +20,6 @@ import {
 } from 'rxjs';
 import { HQService } from '../../services/hq.service';
 import { SortColumn as staffSortColumn } from '../../models/staff-members/get-staff-member-v1';
-import { GetInvoicesRecordV1 } from '../../models/Invoices/get-invoices-v1';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 import { GetInvoiceDetailsRecordV1 } from '../../models/Invoices/get-invoice-details-v1';
@@ -37,9 +36,8 @@ import { Period } from '../../enums/period';
 import { TimeStatus } from '../../enums/time-status';
 import { FormControl } from '@angular/forms';
 import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
-import { ToastService } from '../../services/toast.service';
 import { ModalService } from '../../services/modal.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -50,7 +48,8 @@ export class InvoiceDetaisService extends BaseListService<
   SortColumn
 > {
   private invoiceRefreshSubject = new Subject<void>();
-  private invoiceIdSubject$ = new BehaviorSubject<string | null>(null);
+  public invoiceIdSubject = new BehaviorSubject<string | null>(null);
+  public rawInvoiceId$: Observable<string | null> = of();
   invoiceId$: Observable<string>;
   invoice$: Observable<GetInvoiceDetailsRecordV1>;
   invoiced$ = new BehaviorSubject<boolean | null>(null);
@@ -83,7 +82,6 @@ export class InvoiceDetaisService extends BaseListService<
 
   projectActivity = new FormControl<string | null>(null);
   isSubmitted = new FormControl<boolean | null>(null);
-  // invoiced = new FormControl<boolean | null>(null);
   timeStatus = new FormControl<TimeStatus | null>(null);
   billable = new FormControl<boolean | null>(null);
 
@@ -99,11 +97,13 @@ export class InvoiceDetaisService extends BaseListService<
     private hqService: HQService,
     private modalService: ModalService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {
     super(SortColumn.Date, SortDirection.Desc);
-    const invoiceId$ = this.invoiceIdSubject$.asObservable().pipe(
-      filter((invoiceId) => invoiceId != null),
-      map((invoiceId) => invoiceId!),
+
+    const invoiceId$ = this.invoiceIdSubject.asObservable().pipe(
+      filter((t) => t != null),
+      map((t) => t!),
     );
 
     const refreshInvoiceId$ = this.invoiceRefreshSubject.pipe(
@@ -113,13 +113,13 @@ export class InvoiceDetaisService extends BaseListService<
     this.invoiceId$ = merge(invoiceId$, refreshInvoiceId$);
 
     this.invoice$ = this.invoiceId$.pipe(
-      switchMap((invoiceId) =>
-        this.hqService.getInvoiceDetailsV1({ id: invoiceId }),
-      ),
-      catchError((_) => {
-        this.router.navigateByUrl('/invoices');
-        this.modalService.alert('Error', 'Invoice details could not be found.');
-        return of();
+      switchMap((invoiceId) => {
+        try {
+          return this.hqService.getInvoiceDetailsV1({ id: invoiceId });
+        } catch {
+          void this.catchNullInvoice();
+          return of();
+        }
       }),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
@@ -204,16 +204,6 @@ export class InvoiceDetaisService extends BaseListService<
     this.showEndDate$.next(false);
   }
 
-  getInvoiceId() {
-    return this.invoiceIdSubject$.getValue();
-  }
-
-  setInvoiceId(invoiceId?: string | null) {
-    if (invoiceId) {
-      this.invoiceIdSubject$.next(invoiceId);
-    }
-  }
-
   protected override getResponse(): Observable<GetTimeRecordsV1> {
     const projectId$ = this.project.valueChanges.pipe(
       startWith(this.project.value),
@@ -284,22 +274,23 @@ export class InvoiceDetaisService extends BaseListService<
       tap(() => {
         this.loadingSubject.next(true);
       }),
-      switchMap((request) =>
-        this.hqService.getTimesV1(request).pipe(
-          catchError((error: any) => {
-            this.loadingSubject.next(false);
-            console.error('Error fetching Invoice Time records', error);
-            return of(error);
-          }),
-        ),
-      ),
+      switchMap((request) => {
+        try {
+          return this.hqService.getTimesV1(request);
+        } catch {
+          this.loadingSubject.next(false);
+          // console.error('Error fetching Invoice Time records', err);
+          return of();
+        }
+      }),
+
       tap(() => {
         this.loadingSubject.next(false);
       }),
     );
   }
 
-  override onSortClick(sortColumn: any) {
+  override onSortClick(sortColumn: SortColumn) {
     if (this.sortOption$.value === sortColumn) {
       this.sortDirection$.next(
         this.sortDirection$.value == SortDirection.Asc
@@ -311,6 +302,13 @@ export class InvoiceDetaisService extends BaseListService<
       this.sortDirection$.next(SortDirection.Asc);
     }
     this.goToPage(1);
+  }
+
+  async catchNullInvoice() {
+    await this.router.navigateByUrl('/invoices');
+    await firstValueFrom(
+      this.modalService.alert('Error', 'Invoice details could not be found.'),
+    );
   }
 
   invoiceRefresh() {

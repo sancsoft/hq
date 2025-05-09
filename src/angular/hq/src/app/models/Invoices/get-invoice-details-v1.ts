@@ -6,7 +6,7 @@ export interface GetInvoiceDetailsRecordV1 {
   id: string;
   clientId: string;
   clientName: string;
-  date: Date;
+  date: string;
   invoiceNumber: string;
   total: number;
   totalApprovedHours: number;

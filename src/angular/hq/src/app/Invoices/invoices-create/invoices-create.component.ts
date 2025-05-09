@@ -1,6 +1,4 @@
-import { ClientDetailsSearchFilterComponent } from './../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
-import { SortIconComponent } from './../../common/sort-icon/sort-icon.component';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -11,28 +9,18 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import {
-  Observable,
-  combineLatest,
-  map,
-  shareReplay,
-  Subject,
-  firstValueFrom,
-} from 'rxjs';
+import { Observable, map, shareReplay, Subject, firstValueFrom } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { HQService } from '../../services/hq.service';
-import { InRolePipe } from '../../pipes/in-role.pipe';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
-import { formControlChanges } from '../../core/functions/form-control-changes';
 import { APIError } from '../../errors/apierror';
 import { CoreModule } from '../../core/core.module';
 import { CreateInvoiceRequestV1 } from '../../models/Invoices/create-invoice-v1';
 
 interface Form {
   clientId: FormControl<string | null>;
-  date: FormControl<Date | null>;
+  date: FormControl<string | null>;
   invoiceNumber: FormControl<string | null>;
   total: FormControl<number | null>;
   totalApprovedHours: FormControl<number | null>;
@@ -50,7 +38,7 @@ interface Form {
   ],
   templateUrl: './invoices-create.component.html',
 })
-export class InvoicesCreateComponent {
+export class InvoicesCreateComponent implements OnInit, OnDestroy {
   clients$: Observable<GetClientRecordV1[]>;
 
   apiErrors: string[] = [];
@@ -75,13 +63,6 @@ export class InvoicesCreateComponent {
       map((t) => t.records),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
-
-    const clientId$ = formControlChanges(this.form.controls.clientId);
-
-    const selectedClient$ = combineLatest({
-      clientId: clientId$,
-      clients: this.clients$,
-    }).pipe(map((t) => t.clients.find((x) => x.id == t.clientId)));
   }
 
   async ngOnInit() {

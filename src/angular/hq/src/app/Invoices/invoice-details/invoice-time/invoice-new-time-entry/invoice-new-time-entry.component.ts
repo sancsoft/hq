@@ -8,7 +8,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -31,7 +30,6 @@ import {
   of,
   shareReplay,
   takeUntil,
-  combineLatest,
   BehaviorSubject,
   switchMap,
 } from 'rxjs';
@@ -39,15 +37,10 @@ import { roundToNextQuarter } from '../../../../common/functions/round-to-next-q
 import { chargeCodeToColor } from '../../../../common/functions/charge-code-to-color';
 import { ModalService } from '../../../../services/modal.service';
 import { TimeStatus } from '../../../../enums/time-status';
-import { DateInputComponent } from '../../../../core/components/date-input/date-input.component';
 import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
 import { GetProjectActivityRecordV1 } from '../../../../models/projects/get-project-activity-v1';
 import { GetDashboardTimeV1TimeForDateTimes } from '../../../../models/staff-dashboard/get-dashboard-time-v1';
 import { InvoiceDetaisService } from '../../../service/invoice-details.service';
-import {
-  HQTimeChangeEvent,
-  HQTimeDeleteEvent,
-} from '../../../../staff-dashboard/staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import { HQService } from '../../../../services/hq.service';
 
 export interface HQInvoiceTimeChangeEvent {
@@ -92,9 +85,7 @@ interface Form {
   ],
   templateUrl: './invoice-new-time-entry.component.html',
 })
-export class InvoiceNewTimeEntryComponent
-  implements OnInit, OnChanges, OnDestroy
-{
+export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
   @Input()
   time?: Partial<GetDashboardTimeV1TimeForDateTimes>;
   @Input()
@@ -159,72 +150,7 @@ export class InvoiceNewTimeEntryComponent
   timeStatus = TimeStatus;
   filteredActivities$: Observable<GetProjectActivityRecordV1[]>;
   requireTask$ = new BehaviorSubject<boolean>(false);
-  ngOnInit(): void {
-    this.form.controls.chargeCodeId.valueChanges
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: (id) => {
-          const chargeCode = this.chargeCodes?.find((t) => t.id === id);
-          const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
-          this.setMaximumHours(maxTimeEntryHours);
-          // set requireTask to true if the charge code project requires a task
-          this.requireTask$.next(chargeCode?.requireTask ?? false);
-          if (chargeCode) {
-            this.form.patchValue(
-              {
-                clientId: chargeCode.clientId,
-                projectId: chargeCode.projectId,
-                clientName: chargeCode.clientName,
-                projectName: chargeCode.projectName,
-                activityId: null,
-              },
-              { emitEvent: false },
-            );
-          } else {
-            this.form.patchValue(
-              {
-                clientId: null,
-                projectId: null,
-                clientName: null,
-                projectName: null,
-                activityId: null,
-              },
-              { emitEvent: false },
-            );
-          }
-        },
-        error: console.error,
-      });
 
-    this.form.controls.staffId.valueChanges
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: (id) => {
-          this.form.patchValue(
-            {
-              staffId: id,
-            },
-            {
-              emitEvent: false,
-            },
-          );
-        },
-        error: console.error,
-      });
-
-    this.requireTask$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (isRequired) => {
-        const taskControl = this.form.controls.task;
-        if (isRequired) {
-          taskControl.addValidators(Validators.required);
-        } else {
-          taskControl.removeValidators(Validators.required);
-        }
-        taskControl.updateValueAndValidity({ emitEvent: false });
-      },
-      error: console.error,
-    });
-  }
   constructor(
     public invoiceDetailsService: InvoiceDetaisService,
     private modalService: ModalService,
@@ -233,73 +159,61 @@ export class InvoiceNewTimeEntryComponent
     const form$ = concat(
       defer(() => of(this.form.value)),
       this.form.valueChanges,
-    ).pipe(shareReplay({ bufferSize: 1, refCount: false }));
+    ).pipe(
+      map((t) => {
+        if (t.hours != null) {
+          this.form.patchValue(
+            { hours: roundToNextQuarter(t.hours) },
+            { emitEvent: false },
+          );
+        }
+        if (t.invoicedHours != null) {
+          this.form.patchValue(
+            { invoicedHours: roundToNextQuarter(t.invoicedHours) },
+            { emitEvent: false },
+          );
+        }
+        return t;
+      }),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     this.projectName$ = form$.pipe(
-      map((t) => t.projectName),
+      map((t) => t?.projectName),
       distinctUntilChanged(),
     );
     this.clientName$ = form$.pipe(
-      map((t) => t.clientName),
+      map((t) => t?.clientName),
       distinctUntilChanged(),
     );
 
     this.filteredActivities$ = form$.pipe(
-      map((t) => t.projectId),
+      map((t) => t?.projectId),
       switchMap((id) => {
         if (id != null && id != undefined) {
-          return this.hqService
-            .getprojectActivitiesV1({ projectId: id })
-            .pipe(map((response) => response.records));
+          return this.hqService.getprojectActivitiesV1({ projectId: id }).pipe(
+            map((response) => {
+              if (response.records.length > 0) {
+                this.form.controls.activityId.addValidators(
+                  Validators.required,
+                );
+              } else {
+                this.form.controls.activityId.removeValidators(
+                  Validators.required,
+                );
+              }
+              this.form.controls.activityId.updateValueAndValidity({
+                emitEvent: false,
+              });
+              return response.records;
+            }),
+          );
         } else {
           return of();
         }
       }),
+      takeUntil(this.destroyed$),
     );
-
-    this.filteredActivities$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (activities) => {
-        if (activities.length > 0) {
-          this.form.controls.activityId.addValidators(Validators.required);
-        } else {
-          this.form.controls.activityId.removeValidators(Validators.required);
-        }
-        this.form.controls.activityId.updateValueAndValidity({
-          emitEvent: false,
-        });
-      },
-      error: console.error,
-    });
-
-    const hours$ = form$.pipe(
-      map((t) => t.hours),
-      distinctUntilChanged(),
-    );
-
-    hours$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (hours) => {
-        if (hours != null) {
-          this.form.patchValue({ hours: roundToNextQuarter(hours) });
-        }
-      },
-      error: console.error,
-    });
-
-    const invoicedHours$ = form$.pipe(
-      map((t) => t.invoicedHours),
-      distinctUntilChanged(),
-    );
-
-    invoicedHours$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (invoicedHours) => {
-        if (invoicedHours != null) {
-          this.form.patchValue({
-            invoicedHours: roundToNextQuarter(invoicedHours),
-          });
-        }
-      },
-      error: console.error,
-    });
   }
 
   async onEnter(target: EventTarget | null) {
@@ -312,6 +226,51 @@ export class InvoiceNewTimeEntryComponent
   }
 
   async save() {
+    if (this.form.valid && this.form.dirty) {
+      this.hqInvoiceTimeChange.emit(this.form.value);
+      this.form.reset();
+      this.form.markAsPristine();
+      if (!this.form.value.id) {
+        this.hoursInput?.nativeElement?.focus();
+      }
+    }
+  }
+
+  async saveChargeCode() {
+    if (this.form.value.chargeCodeId != null) {
+      console.log('Save charge code');
+      const chargeCode = this.chargeCodes?.find(
+        (c) => c.id === this.form.value.chargeCodeId,
+      );
+      const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
+      this.setMaximumHours(maxTimeEntryHours);
+      // set requireTask to true if the charge code project requires a task
+      this.requireTask$.next(chargeCode?.requireTask ?? false);
+      const taskControl = this.form.controls.task;
+      if (chargeCode?.requireTask ?? false) {
+        taskControl.addValidators(Validators.required);
+      } else {
+        taskControl.removeValidators(Validators.required);
+      }
+      taskControl.updateValueAndValidity({ emitEvent: false });
+      if (chargeCode) {
+        this.form.patchValue({
+          clientId: chargeCode.clientId,
+          projectId: chargeCode.projectId,
+          clientName: chargeCode.clientName,
+          projectName: chargeCode.projectName,
+          activityId: null,
+        });
+      } else {
+        this.form.patchValue({
+          clientId: null,
+          projectId: null,
+          clientName: null,
+          projectName: null,
+          activityId: null,
+        });
+      }
+    }
     if (this.form.valid && this.form.dirty) {
       this.hqInvoiceTimeChange.emit(this.form.value);
       this.form.reset();
@@ -370,6 +329,7 @@ export class InvoiceNewTimeEntryComponent
   }
 
   private setMaximumHours(maxTime?: number): void {
+    console.log(maxTime);
     const maxTimeEntry = maxTime ?? this.time?.maximumTimeEntryHours;
     if (maxTimeEntry !== undefined && maxTimeEntry !== null) {
       this.form.controls.hours.setValidators([
@@ -377,7 +337,17 @@ export class InvoiceNewTimeEntryComponent
         Validators.min(0.25),
         Validators.max(maxTimeEntry),
       ]);
-      this.form.controls.hours.updateValueAndValidity();
+      this.form.controls.invoicedHours.setValidators([
+        Validators.required,
+        Validators.min(0.25),
+        Validators.max(maxTimeEntry),
+      ]);
+      this.form.controls.hours.updateValueAndValidity({
+        emitEvent: false,
+      });
+      this.form.controls.invoicedHours.updateValueAndValidity({
+        emitEvent: false,
+      });
     }
   }
 }

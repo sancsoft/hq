@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
 import { GetClientRecordV1 } from '../../../../models/clients/get-client-v1';
 import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../../../services/hq.service';
-import { ActivatedRoute, Route, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { InvoiceDetaisService } from '../../../service/invoice-details.service';
 import { GetInvoiceDetailsRecordV1 } from '../../../../models/Invoices/get-invoice-details-v1';
 import {
@@ -50,10 +50,9 @@ import { InRolePipe } from '../../../../pipes/in-role.pipe';
   ],
   templateUrl: './invoice-time-list.component.html',
 })
-export class InvoiceTimeListComponent {
+export class InvoiceTimeListComponent implements OnDestroy {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
-  invoice?: GetInvoiceDetailsRecordV1;
 
   date: string = Date.now.toString();
 
@@ -61,10 +60,12 @@ export class InvoiceTimeListComponent {
 
   apiErrors: string[] = [];
 
+  invoice$: Observable<GetInvoiceDetailsRecordV1>;
   times$: Observable<GetTimeRecordV1[]>;
-  currentClient?: GetClientRecordV1;
+  currentClient$: Observable<GetClientRecordV1>;
   chargeCodes?: Array<GetChargeCodeRecordV1>;
 
+  invoiceId: string | null = null;
   selectedTimes: Array<GetTimeRecordV1> = new Array<GetTimeRecordV1>();
 
   constructor(
@@ -77,16 +78,18 @@ export class InvoiceTimeListComponent {
     private toastService: ToastService,
   ) {
     this.invoiceDetailsService.invoiced$.next(true);
-    this.invoiceDetailsService.invoice$
-      .pipe(takeUntil(this.destroy))
-      .subscribe((invoice) => {
-        if (invoice) {
-          this.invoice = invoice;
-        }
-      });
-    this.invoiceDetailsService.client$.subscribe((client) => {
-      this.currentClient = client;
-    });
+    this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
+      map((invoice) => {
+        // console.log(invoice);
+        this.invoiceId = invoice.id;
+        return invoice;
+      }),
+      takeUntil(this.destroy),
+    );
+    this.currentClient$ = this.invoiceDetailsService.client$.pipe(
+      map((client) => client),
+      takeUntil(this.destroy),
+    );
 
     this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => r));
   }
@@ -104,11 +107,6 @@ export class InvoiceTimeListComponent {
       );
       return;
     }
-    const chargecodeId = await firstValueFrom(
-      this.invoiceDetailsService.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
-      ),
-    );
 
     const request = {
       id: time.id,
@@ -133,7 +131,7 @@ export class InvoiceTimeListComponent {
       staffId: event.staffId?.toString(),
       id: event.id,
       hours: event.hours,
-      invoiceId: this.invoice?.id,
+      invoiceId: this.invoiceId,
       hoursInvoiced: event.invoicedHours,
       chargeCodeId: event.chargeCodeId,
       task: event.task,
@@ -178,8 +176,10 @@ export class InvoiceTimeListComponent {
     this.confirmModalService.showModal(
       'Are you sure you want to remove this time entry from this invoice?',
     );
-    if (await firstValueFrom(this.confirmModalService.performAction$)) {
-      this.removeTime(id);
+    if (
+      (await firstValueFrom(this.confirmModalService.performAction$)) === true
+    ) {
+      await this.removeTime(id);
     }
   }
 

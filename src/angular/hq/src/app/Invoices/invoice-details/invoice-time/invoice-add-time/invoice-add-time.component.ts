@@ -1,20 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
-import {
-  catchError,
-  first,
-  firstValueFrom,
-  map,
-  Observable,
-  shareReplay,
-  Subject,
-  switchMap,
-  take,
-  takeUntil,
-  takeWhile,
-  tap,
-} from 'rxjs';
+import { firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
 import { GetClientRecordV1 } from '../../../../models/clients/get-client-v1';
 import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../../../services/hq.service';
@@ -22,11 +9,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { InvoiceDetaisService } from '../../../service/invoice-details.service';
 import { GetInvoiceDetailsRecordV1 } from '../../../../models/Invoices/get-invoice-details-v1';
 import {
-  GetTimeRecordClientsV1,
   GetTimeRecordV1,
   SortColumn,
 } from '../../../../models/times/get-time-v1';
-import { SortIconComponent } from '../../../../common/sort-icon/sort-icon.component';
 import { SortDirection } from '../../../../models/common/sort-direction';
 import { BaseListService } from '../../../../core/services/base-list.service';
 import { TimeListService } from '../../../../times/time-list/TimeList.service';
@@ -64,10 +49,9 @@ interface InvoiceTimeEntry {
   ],
   templateUrl: './invoice-add-time.component.html',
 })
-export class InvoiceAddTimeComponent {
+export class InvoiceAddTimeComponent implements OnDestroy {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
-  invoice?: GetInvoiceDetailsRecordV1;
 
   date: string = Date.now.toString();
 
@@ -76,7 +60,8 @@ export class InvoiceAddTimeComponent {
   apiErrors: string[] = [];
 
   times$: Observable<InvoiceTimeEntry[]>;
-  currentClient?: GetClientRecordV1;
+  invoice$: Observable<GetInvoiceDetailsRecordV1>;
+  currentClient$: Observable<GetClientRecordV1>;
   chargeCodes?: Array<GetChargeCodeRecordV1>;
 
   selectedTimes: Map<string, number> = new Map<string, number>();
@@ -93,20 +78,18 @@ export class InvoiceAddTimeComponent {
     private modalService: ModalService,
   ) {
     this.invoiceDetailsService.invoiced$.next(false);
-    this.invoiceDetailsService.invoice$
-      .pipe(takeUntil(this.destroy))
-      .subscribe((invoice) => {
-        if (invoice) {
-          this.invoice = invoice;
-        }
-      });
-    this.invoiceDetailsService.client$.subscribe((client) => {
-      this.currentClient = client;
-    });
+    this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
+      map((invoice) => invoice),
+      takeUntil(this.destroy),
+    );
+    this.currentClient$ = this.invoiceDetailsService.client$.pipe(
+      map((c) => c),
+      takeUntil(this.destroy),
+    );
 
     this.times$ = this.invoiceDetailsService.records$.pipe(
       map((r) => {
-        let t: InvoiceTimeEntry[] = new Array();
+        const t: InvoiceTimeEntry[] = [];
         r.forEach((r) => {
           t.push({ record: r, selected: this.selectedTimes.has(r.id) });
         });
@@ -126,8 +109,8 @@ export class InvoiceAddTimeComponent {
     );
   }
 
-  updateTimeSelection(time: GetTimeRecordV1, i: number) {
-    let hrs = time.hoursInvoiced ?? time.hoursApproved ?? time.hours;
+  updateTimeSelection(time: GetTimeRecordV1) {
+    const hrs = time.hoursInvoiced ?? time.hoursApproved ?? time.hours;
     if (
       (document.getElementById('time_checkbox_' + time.id) as HTMLInputElement)
         .checked
@@ -157,18 +140,13 @@ export class InvoiceAddTimeComponent {
       );
       return;
     }
-    const chargecodeId = await firstValueFrom(
-      this.invoiceDetailsService.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
-      ),
-    );
 
     const request = {
       id: time.id,
       hoursInvoiced: roundedInvoicedHours,
     };
     //  Call API
-    let newTime = await firstValueFrom(
+    const newTime = await firstValueFrom(
       this.hqService.upsertTimeHoursInvoicedV1(request),
     );
     if (this.selectedTimes.has(newTime.id)) {
@@ -192,29 +170,31 @@ export class InvoiceAddTimeComponent {
   }
 
   async addToInvoice() {
-    if (this.invoice) {
-      var request: AddTimesToInvoiceRequestV1 = {
-        invoiceId: this.invoice.id,
-        timeEntries: new Array<Partial<AddTimeToInvoiceRequestV1>>(),
+    const invoiceId = await firstValueFrom(
+      this.invoice$.pipe(map((i) => i?.id ?? null)),
+    );
+
+    if (invoiceId) {
+      const request: AddTimesToInvoiceRequestV1 = {
+        invoiceId: invoiceId,
+        timeEntries: new Array<AddTimeToInvoiceRequestV1>(),
       };
-      request.invoiceId = this.invoice.id;
       this.selectedTimes.forEach((hrs, t) => {
         request.timeEntries.push({
           id: t,
           hoursInvoiced: hrs,
         });
       });
-      this.hqService.addTimesToInvoiceV1(request).subscribe({
-        next: async () => {
-          await this.router.navigate(['../'], {
-            relativeTo: this.route,
-          });
-        },
-        error: async (err) => {
-          this.toastService.show('Error', 'An unexpected error occurred.');
-          this.invoiceDetailsService.invoiceRefresh();
-        },
-      });
+
+      try {
+        await firstValueFrom(this.hqService.addTimesToInvoiceV1(request));
+        this.invoiceDetailsService.invoiceRefresh();
+        await this.router.navigate(['../'], {
+          relativeTo: this.route,
+        });
+      } catch (err) {
+        this.toastService.show('Error', 'An unexpected error occurred.');
+      }
     }
   }
 

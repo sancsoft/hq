@@ -63,7 +63,7 @@
   <!-- Charge code -->
   <td class="border-y border-white py-1 ps-1 pe-2">
     <hq-select-input
-      (hqBlur)="save()"
+      (hqBlur)="saveChargeCode()"
       [formControlName]="'chargeCodeId'"
       [autocomplete]="true"
       variant="pill"
@@ -140,7 +140,7 @@
       } @else {
         <input
           aria-label="Task"
-          class="w-[100%] block text-[14px] px-2 py-1 border appearance-none focus:outline-none text-gray-450 border border-black focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none text-gray-450 border border-black focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
           type="text"
           [disabled]="true"
         />

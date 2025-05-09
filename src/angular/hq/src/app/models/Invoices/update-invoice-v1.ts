@@ -1,11 +1,11 @@
-export interface UpsertInvoiceRequestV1 {
+export interface UpdateInvoiceRequestV1 {
   id?: string;
-  date: Date | null;
+  date: string | null;
   invoiceNumber: string | null;
   total: number | null;
   totalApprovedHours: number | null;
 }
 
-export interface UpsertInvoiceResponseV1 {
+export interface UpdateInvoiceResponseV1 {
   id: string;
 }
