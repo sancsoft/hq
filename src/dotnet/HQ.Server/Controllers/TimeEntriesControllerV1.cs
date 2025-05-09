@@ -87,6 +87,27 @@ namespace HQ.Server.Controllers
                 .ToActionResult(new HQResultEndpointProfile());
         }
 
+        [Authorize(HQAuthorizationPolicies.Executive)]
+        [HttpPost(nameof(CreateInvoicedTimeV1))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> CreateInvoicedTimeV1([FromBody] CreateInvoicedTimeV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            return await _TimeEntryServiceV1.CreateInvoicedTimeV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
         [Authorize(HQAuthorizationPolicies.Staff)]
         [HttpPost(nameof(UpsertTimeDescriptionV1))]
         [ProducesResponseType<UpsertTimeDescriptionV1.Response>(StatusCodes.Status201Created)]
@@ -105,6 +126,27 @@ namespace HQ.Server.Controllers
             }
 
             return await _TimeEntryServiceV1.UpsertTimeDescriptionV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+        [Authorize(HQAuthorizationPolicies.Executive)]
+        [HttpPost(nameof(UpsertTimeHoursInvoicedV1))]
+        [ProducesResponseType<UpsertTimeHoursInvoicedV1.Response>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> UpsertTimeHoursInvoicedV1([FromBody] UpsertTimeHoursInvoicedV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            return await _TimeEntryServiceV1.UpsertTimeHoursInvoicedV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
 
@@ -167,6 +209,48 @@ namespace HQ.Server.Controllers
             }
 
             return await _TimeEntryServiceV1.UpsertTimeTaskV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+        [Authorize(HQAuthorizationPolicies.Executive)]
+        [HttpPost(nameof(AddTimesToInvoiceV1))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> AddTimesToInvoiceV1([FromBody] AddTimesToInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            return await _TimeEntryServiceV1.AddTimesToInvoiceV1(request, ct)
+                .ToActionResult(new HQResultEndpointProfile());
+        }
+
+        [Authorize(HQAuthorizationPolicies.Executive)]
+        [HttpPost(nameof(RemoveTimeFromInvoiceV1))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult> RemoveTimeFromInvoiceV1([FromBody] RemoveTimeFromInvoiceV1.Request request, CancellationToken ct = default)
+        {
+            var staffId = User.GetStaffId();
+            var staff = await _context.Staff
+                .AsNoTracking()
+                .SingleOrDefaultAsync(t => t.Id == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            return await _TimeEntryServiceV1.RemoveTimeFromInvoiceV1(request, ct)
                 .ToActionResult(new HQResultEndpointProfile());
         }
 

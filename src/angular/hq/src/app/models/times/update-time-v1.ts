@@ -13,3 +13,13 @@ export interface updateTimeRequestV1 {
 export interface UpdateTimeResponseV1 {
   id: string;
 }
+
+export interface UpdateTimeHoursInvoicedRequestV1 {
+  id: string;
+  hoursInvoiced: number;
+}
+
+export interface UpdateTimeHoursInvoicedResponseV1 {
+  id: string;
+  hoursInvoiced: number;
+}
