@@ -45,6 +45,9 @@ export abstract class BaseListService<
 
   // Filters
   public search = new FormControl<string | null>(null);
+  public showUpcoming = new FormControl<boolean>(true, {
+    nonNullable: true,
+  });
   public itemsPerPage = new FormControl(15, { nonNullable: true });
   public page = new FormControl<number>(1, { nonNullable: true });
 
@@ -60,6 +63,7 @@ export abstract class BaseListService<
   public skipDisplay$: Observable<number>;
 
   public search$: Observable<string | null>;
+  public showUpcoming$: Observable<boolean>;
 
   protected abstract getResponse(): Observable<TResponse>;
 
@@ -83,6 +87,10 @@ export abstract class BaseListService<
 
     this.search$ = formControlChanges(this.search).pipe(
       tap(() => this.goToPage(1)),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
+
+    this.showUpcoming$ = formControlChanges(this.showUpcoming).pipe(
       shareReplay({ bufferSize: 1, refCount: false }),
     );
 

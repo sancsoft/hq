@@ -108,7 +108,6 @@ public class HolidayServiceV1
             .OrderByDescending(t => t.CreatedAt)
             .AsQueryable();
 
-        var total = await records.CountAsync(ct);
 
         if (!string.IsNullOrEmpty(request.Search))
         {
@@ -130,6 +129,14 @@ public class HolidayServiceV1
         {
             records = records.Where(t => t.Date == request.Date.Value);
         }
+
+        if (request.UpcomingOnly.HasValue && request.UpcomingOnly.Value)
+        {
+            var lastWeek = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(Period.Week);
+            records = records.Where(t => t.Date >= lastWeek);
+        }
+
+        var total = await records.CountAsync(ct);
 
         var sortMap = new Dictionary<GetHolidayV1.SortColumn, string>()
         {
