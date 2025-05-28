@@ -5,7 +5,28 @@
 </div>
 <div class="px-5 pt-4 pb-2">
   <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
-    <hq-search-input [formControl]="listService.search"></hq-search-input>
+    <div>
+      <hq-search-input [formControl]="listService.search"></hq-search-input>
+    </div>
+    <div class="inline-flex items-center">
+      <div class="text-[12px] mr-[10px] leading-none text-nowrap">
+        Show upcoming only
+      </div>
+      <label class="relative inline-flex cursor-pointer items-center">
+        <input
+          id="switch"
+          type="checkbox"
+          class="peer sr-only"
+          [formControl]="listService.showUpcoming"
+          checked
+        />
+        <label for="switch" class="hidden"></label>
+        <div
+          class="peer h-[14px] w-[33px] rounded-full bg-slate-200 after:absolute after:left-[4px] after:top-[3px] after:h-[8px] after:w-[8px] after:rounded-full after:bg-gray-500 peer-checked:after:bg-white after:transition-all after:content-[''] peer-checked:bg-steel-blue-600 peer-checked:after:translate-x-full peer-checked:after:right-[12px] peer-checked:after:left-auto"
+        ></div>
+      </label>
+      <div class="text-xs ml-[6px]">On</div>
+    </div>
   </div>
 </div>
 <hq-table class="min-w-full border-spacing-0 border-separate">
@@ -13,18 +34,19 @@
     <tr class="sticky top-0 text-left">
       <th
         scope="col"
-        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        [hq-sort-header]="sortColumn.Name"
-      >
-        Name
-      </th>
-
-      <th
-        scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
         [hq-sort-header]="sortColumn.Date"
+        width="300"
       >
         Date
+      </th>
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
+        [hq-sort-header]="sortColumn.Name"
+        width="700"
+      >
+        Name
       </th>
 
       <th scope="col" class="bg-blue-900 border-steel-blue-600 border-y py-3">
@@ -56,11 +78,11 @@
     }
     @for (member of listService.records$ | async; track $index) {
       <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black py-2 pl-5">
-          {{ member.name }}
-        </td>
         <td class="border-b border-black py-2">
           {{ member.date }}
+        </td>
+        <td class="border-b border-black py-2 pl-5">
+          {{ member.name }}
         </td>
 
         <td class="border-b border-black py-2 pl-5">
