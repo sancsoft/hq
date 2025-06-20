@@ -27,7 +27,7 @@ import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 
 @Component({
-  selector: 'hq-client-list',
+  selector: 'hq-invoices-list',
   standalone: true,
   imports: [
     RouterLink,

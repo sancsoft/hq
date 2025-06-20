@@ -7,6 +7,7 @@ export class HQConfirmationModalService {
   showNotes = new BehaviorSubject<boolean | null>(false);
 
   private performAction = new Subject<boolean | null>();
+  public performAction$ = this.performAction.asObservable();
   private notes = new BehaviorSubject<string | null>(null);
   currentNotes = this.notes.asObservable();
   currentMessage = this.messageSource.asObservable();

@@ -20,6 +20,7 @@ export enum SortColumn {
 
 export interface GetInvoicesRecordV1 {
   id: string;
+  clientId: string;
   clientName: string;
   date: Date;
   invoiceNumber: string;

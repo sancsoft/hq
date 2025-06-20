@@ -35,5 +35,26 @@ namespace HQ.Server.Controllers
         public Task<ActionResult> GetInvoicesV1([FromBody] GetInvoicesV1.Request request, CancellationToken ct = default) =>
             _invoicesService.GetInvoicesV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetInvoiceDetailsV1))]
+        [ProducesResponseType<GetInvoiceDetailsV1.Response>(StatusCodes.Status200OK)]
+        public Task<ActionResult> GetInvoiceDetailsV1([FromBody] GetInvoiceDetailsV1.Request request, CancellationToken ct = default) =>
+            _invoicesService.GetInvoiceDetailsV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Executive)]
+        [HttpPost(nameof(CreateInvoiceV1))]
+        [ProducesResponseType<CreateInvoiceV1.Response>(StatusCodes.Status201Created)]
+        public Task<ActionResult> CreateInvoiceV1([FromBody] CreateInvoiceV1.Request request, CancellationToken ct = default) =>
+            _invoicesService.CreateInvoiceV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Executive)]
+        [HttpPost(nameof(UpdateInvoiceV1))]
+        [ProducesResponseType<UpdateInvoiceV1.Response>(StatusCodes.Status201Created)]
+        public Task<ActionResult> UpdateInvoiceV1([FromBody] UpdateInvoiceV1.Request request, CancellationToken ct = default) =>
+            _invoicesService.UpdateInvoiceV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
     }
 }
