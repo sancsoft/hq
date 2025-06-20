@@ -17,6 +17,9 @@
         "db:5432",
         "grafana:3000"
     ],
+    "features": {
+        "ghcr.io/devcontainers/features/docker-outside-of-docker": {}
+    },
     "customizations": {
         "vscode": {
             "extensions": [
