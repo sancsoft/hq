@@ -9,17 +9,18 @@
 		<SelfContained>true</SelfContained>
 		<PublishReadyToRunComposite>true</PublishReadyToRunComposite>
 		<AssemblyName>hq</AssemblyName>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CsvHelper" Version="33.0.1" />
+		<PackageReference Include="CsvHelper" Version="31.0.3" />
 		<PackageReference Include="IdentityModel" Version="7.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="9.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.3" />
-		<PackageReference Include="Spectre.Console.Cli" Version="0.49.1" />
-		<PackageReference Include="Spectre.Console.Json" Version="0.49.1" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="8.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+		<PackageReference Include="Spectre.Console.Cli" Version="0.48.1-preview.0.38" />
+		<PackageReference Include="Spectre.Console.Json" Version="0.48.0" />
 	</ItemGroup>
 
 	<ItemGroup>

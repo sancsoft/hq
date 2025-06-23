@@ -41,6 +41,7 @@ public class EmailTemplateServiceV1
         var mjmlRenderer = new MjmlRenderer();
         var mjmlOptions = new MjmlOptions()
         {
+            Minify = true,
             Beautify = false,
         };
 
