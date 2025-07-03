@@ -1,4 +1,3 @@
-import { SortIconComponent } from './../../common/sort-icon/sort-icon.component';
 import { SortColumn } from './../../models/Invoices/get-invoices-v1';
 
 import { Component } from '@angular/core';
@@ -13,7 +12,7 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 import { InvoiceListService } from './invoice-list.service';
 import { CoreModule } from '../../core/core.module';
 import { BaseListService } from '../../core/services/base-list.service';
-import { InvoiceSearchFilterComponent } from "../invoice-search-filter/invoice-search-filter.component";
+import { InvoiceSearchFilterComponent } from '../invoice-search-filter/invoice-search-filter.component';
 
 @Component({
   selector: 'hq-invoices-list',
@@ -24,13 +23,13 @@ import { InvoiceSearchFilterComponent } from "../invoice-search-filter/invoice-s
     ReactiveFormsModule,
     InRolePipe,
     CoreModule,
-    InvoiceSearchFilterComponent
-],
+    InvoiceSearchFilterComponent,
+  ],
   providers: [
     {
       provide: BaseListService,
       useExisting: InvoiceListService,
-    }
+    },
   ],
   templateUrl: './invoices-list.component.html',
 })
@@ -47,7 +46,7 @@ export class InvoicesListComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
-    public invoiceListService: InvoiceListService
+    public invoiceListService: InvoiceListService,
   ) {}
 
   goToPage(page: number) {

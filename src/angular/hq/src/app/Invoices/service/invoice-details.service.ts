@@ -53,7 +53,7 @@ export class InvoiceDetaisService extends BaseListService<
   invoiceId$: Observable<string>;
   invoice$: Observable<GetInvoiceDetailsRecordV1>;
   invoiced$ = new BehaviorSubject<boolean | null>(null);
-  
+
   clientId$: Observable<string>;
 
   client$: Observable<GetClientRecordV1>;

@@ -3,10 +3,23 @@ import { Injectable } from '@angular/core';
 import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
-import { BehaviorSubject, combineLatest, debounceTime, Observable, ReplaySubject, startWith, switchMap, takeUntil, tap } from 'rxjs';
-import { GetInvoicesRecordV1, GetInvoicesResponseV1, SortColumn } from '../../models/Invoices/get-invoices-v1';
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  Observable,
+  ReplaySubject,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
+import {
+  GetInvoicesRecordV1,
+  GetInvoicesResponseV1,
+  SortColumn,
+} from '../../models/Invoices/get-invoices-v1';
 import { FormControl } from '@angular/forms';
-import { formControlChanges } from '../../core/functions/form-control-changes';
 import { enumToArrayObservable } from '../../core/functions/enum-to-array';
 import { Period } from '../../enums/period';
 
@@ -29,7 +42,7 @@ export class InvoiceListService extends BaseListService<
   showStartDate$ = new BehaviorSubject<boolean>(false);
   showEndDate$ = new BehaviorSubject<boolean>(false);
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
-  
+
   constructor(private hqService: HQService) {
     super(SortColumn.ClientName, SortDirection.Asc);
 
@@ -50,7 +63,7 @@ export class InvoiceListService extends BaseListService<
       error: console.error,
     });
   }
-  
+
   showStartDate() {
     this.showStartDate$.next(true);
   }
@@ -63,7 +76,7 @@ export class InvoiceListService extends BaseListService<
   hideEndDate() {
     this.showEndDate$.next(false);
   }
-  
+
   protected override getResponse(): Observable<GetInvoicesResponseV1> {
     const period$ = this.selectedPeriod.valueChanges.pipe(
       startWith(this.selectedPeriod.value),
@@ -82,7 +95,7 @@ export class InvoiceListService extends BaseListService<
       sortDirection: this.sortDirection$,
       period: period$,
       startDate: startDate$,
-      endDate: endDate$
+      endDate: endDate$,
     }).pipe(
       debounceTime(500),
       tap(() => this.loadingSubject.next(true)),
