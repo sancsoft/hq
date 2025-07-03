@@ -15,6 +15,9 @@ namespace HQ.Abstractions.Invoices
             public Guid? clientId { get; set; }
             public SortColumn SortBy { get; set; } = SortColumn.ClientName;
             public SortDirection SortDirection { get; set; } = SortDirection.Asc;
+            public Period? Period { get; set; }
+            public DateOnly? StartDate { get; set; }
+            public DateOnly? EndDate { get; set; }
         }
         public enum SortColumn
         {

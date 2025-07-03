@@ -73,6 +73,12 @@ export class SelectInputComponent<T>
   variant: 'primary' | 'secondary' | 'pill' = 'primary';
 
   @Input()
+  enableSearch: boolean = true;
+
+  @Input()
+  btnHeightOverride: number = 36;
+
+  @Input()
   pillCode?: string | null = null;
 
   chargeCodeToColor = chargeCodeToColor;
