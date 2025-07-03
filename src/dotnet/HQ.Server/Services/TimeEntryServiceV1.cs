@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Data;
 using System.Globalization;
 
@@ -447,39 +448,30 @@ namespace HQ.Server.Services
             {
                 return Result.Fail("Invoice Id can't be null or empty");
             }
-            var invoice = await _context.Invoices.Where(t => t.Id == request.InvoiceId).FirstOrDefaultAsync();
+            var invoice = await _context.Invoices.Where(t => t.Id == request.InvoiceId).FirstOrDefaultAsync(ct);
 
-            int failCt = 0;
-            if (!string.IsNullOrEmpty(request.InvoiceId.ToString()))
+            if (invoice == null)
             {
-                if (invoice == null)
+                return Result.Fail($"The Invoice: {request.InvoiceId} not found");
+            }
+            else if (request.TimeEntries == null)
+            {
+                return Result.Fail("No time entries were selected.");
+            }
+            else
+            {
+                var timeEntriesId = request.TimeEntries.Select(t => t.Id).ToList();
+                var timeEntriesFromDb = await _context.Times
+                    .Where(t => timeEntriesId.Contains(t.Id))
+                    .ToListAsync(ct);
+
+                var dbEntryIds = timeEntriesFromDb.Select(t => t.Id).ToList();
+                var missedEntries = (from id in timeEntriesId.Except(dbEntryIds) select id).ToList();
+
+                if (missedEntries.Count > 0)
                 {
-                    return Result.Fail($"The Invoice: {request.InvoiceId} not found");
-                }
-                else if (request.TimeEntries == null)
-                {
-                    return Result.Fail("No time entries were selected.");
-                }
-                else
-                {
-                    request.TimeEntries.ForEach(t =>
-                    {
-                        var timeEntry = _context.Times.FirstOrDefault(e => e.Id == t.Id);
-                        if (timeEntry == null)
-                        {
-                            ++failCt;
-                        }
-                        else
-                        {
-                            timeEntry.InvoiceId = invoice.Id;
-                            timeEntry.HoursInvoiced = t.HoursInvoiced;
-                        }
-                    });
-                    if (failCt > 0)
-                    {
-                        await _context.SaveChangesAsync(ct);
-                        return Result.Fail($"{failCt}/{request.TimeEntries.Count} time entries could not be found.");
-                    }
+                    await _context.SaveChangesAsync(ct);
+                    return Result.Fail($"{missedEntries.Count}/{request.TimeEntries.Count} time entries could not be found.");
                 }
             }
 
@@ -966,6 +958,7 @@ namespace HQ.Server.Services
             return new GetTimesV1.Request
             {
                 StaffId = exportRequest.StaffId,
+                InvoiceId = exportRequest.InvoiceId,
                 Search = exportRequest.Search,
                 StartDate = exportRequest.StartDate,
                 EndDate = exportRequest.EndDate,

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable, startWith, Subject, switchMap, takeUntil } from 'rxjs';
 import { GetClientRecordV1 } from '../../../../models/clients/get-client-v1';
 import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../../../services/hq.service';
@@ -29,6 +29,7 @@ import { APIError } from '../../../../errors/apierror';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CreateInvoicedTimeRequestV1 } from '../../../../models/times/create-invoiced-time-v1';
 import { InRolePipe } from '../../../../pipes/in-role.pipe';
+import FileSaver from 'file-saver';
 
 @Component({
   selector: 'hq-invoice-time-list',
@@ -80,7 +81,6 @@ export class InvoiceTimeListComponent implements OnDestroy {
     this.invoiceDetailsService.invoiced$.next(true);
     this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
       map((invoice) => {
-        // console.log(invoice);
         this.invoiceId = invoice.id;
         return invoice;
       }),
@@ -186,6 +186,30 @@ export class InvoiceTimeListComponent implements OnDestroy {
   async removeTime(id: string) {
     await firstValueFrom(this.hqService.removeTimeFromInvoiceV1({ id: id }));
     this.invoiceDetailsService.invoiceRefresh();
+  }
+
+  async exportTime() {
+    const combinedParams = {
+      search: this.invoiceDetailsService.search$,
+      skip: this.invoiceDetailsService.skip$,
+      invoiceId: this.invoiceDetailsService.invoiceId$,
+      clientId: this.invoiceDetailsService.clientId$,
+      take: this.invoiceDetailsService.itemsPerPage$,
+      sortBy: this.invoiceDetailsService.sortOption$,
+      sortDirection: this.invoiceDetailsService.sortDirection$,
+    };
+    const result = await firstValueFrom(
+      combineLatest(combinedParams).pipe(
+        switchMap((request) => this.hqService.exportTimesV1(request)),
+      ),
+    );
+
+    if (result.file === null) {
+      this.toastService.show('Error', 'Unable to download export.');
+      return;
+    }
+
+    FileSaver.saveAs(result.file, result.fileName);
   }
 
   private destroy = new Subject<void>();

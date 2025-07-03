@@ -34,6 +34,7 @@ import {
 import {
   GetInvoicesRecordsV1,
   GetInvoicesRequestV1,
+  GetInvoicesResponseV1,
 } from '../models/Invoices/get-invoices-v1';
 import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
 import {
@@ -273,7 +274,7 @@ export class HQService {
   getInvoicesV1(request: Partial<GetInvoicesRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<GetInvoicesRecordsV1>(
+        this.http.post<GetInvoicesResponseV1>(
           `${apiUrl}/v1/Invoices/GetInvoicesV1`,
           request,
         ),

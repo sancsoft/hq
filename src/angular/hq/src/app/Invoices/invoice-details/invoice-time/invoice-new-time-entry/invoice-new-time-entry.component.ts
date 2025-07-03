@@ -189,6 +189,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
 
     this.filteredActivities$ = form$.pipe(
       map((t) => t?.projectId),
+      distinctUntilChanged(),
       switchMap((id) => {
         if (id != null && id != undefined) {
           return this.hqService.getprojectActivitiesV1({ projectId: id }).pipe(

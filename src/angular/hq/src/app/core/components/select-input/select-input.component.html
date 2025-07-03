@@ -69,15 +69,17 @@
         }"
         [style.width.px]="button.offsetWidth"
       >
-        <div class="border-b border-b-black">
-          <hq-search-input
-            #searchInput
-            variant="transparent"
-            (keydown)="onSearchKeyDown($event)"
-            [formControl]="searchForm"
-          >
-          </hq-search-input>
-        </div>
+        @if (enableSearch) {
+          <div class="border-b border-b-black">
+            <hq-search-input
+              #searchInput
+              variant="transparent"
+              (keydown)="onSearchKeyDown($event)"
+              [formControl]="searchForm"
+            >
+            </hq-search-input>
+          </div>
+        }
 
         <div
           class="bg-blue-900 rounded-md max-h-48 overflow-y-scroll"

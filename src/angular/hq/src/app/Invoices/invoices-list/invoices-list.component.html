@@ -4,70 +4,45 @@
   <div class="grid gap-7 grid-flow-col auto-cols-max pt-3">&nbsp;</div>
 </div>
 <div class="px-5 pt-4 pb-2">
-  <hq-client-details-search-filter></hq-client-details-search-filter>
+  <hq-invoice-search-filter></hq-invoice-search-filter>
 </div>
-<table class="min-w-full border-spacing-0 border-separate">
+<hq-table>
   <thead>
     <tr class="sticky top-0 text-left">
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
-        (click)="onSortClick(sortColumn.ClientName)"
+        [hq-sort-header]="sortColumn.ClientName"
       >
         Client Name
-        <hq-sort-icon
-          [column]="sortColumn.ClientName"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.InvoiceNumber)"
+        [hq-sort-header]="sortColumn.InvoiceNumber"
       >
         Invoices Number
-        <hq-sort-icon
-          [column]="sortColumn.InvoiceNumber"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.Total)"
+        [hq-sort-header]="sortColumn.Total"
       >
         Total
-        <hq-sort-icon
-          [column]="sortColumn.Total"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.TotalApprovedHours)"
+        [hq-sort-header]="sortColumn.TotalApprovedHours"
       >
         Total Approved Hours
-        <hq-sort-icon
-          [column]="sortColumn.TotalApprovedHours"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
-        (click)="onSortClick(sortColumn.Date)"
+        [hq-sort-header]="sortColumn.Date"  
       >
         Date
-        <hq-sort-icon
-          [column]="sortColumn.Date"
-          [activeColumn]="sortOption$ | async"
-          [activeSortDirection]="sortDirection$ | async"
-        />
       </th>
       <th
         scope="col"
@@ -86,60 +61,24 @@
       </th>
     </tr>
   </thead>
-  <tbody>
-    @if ((invoices$ | async)?.length === 0) {
-      <td colspan="6" class="bg-black-alt">
-        <h1 class="text-center py-4 font-bold">No matching records found</h1>
-      </td>
-    }
-    @for (invoice of invoices$ | async; track $index) {
-      <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black py-2 pl-5">
-          {{ invoice.clientName }}
-        </td>
-        <td class="border-b border-black py-2 pl-5">
-          {{ invoice.invoiceNumber }}
-        </td>
-        <td class="border-b border-black py-2">{{ invoice.total }}</td>
-        <td class="border-b border-black py-2">
-          {{ invoice.totalApprovedHours }}
-        </td>
-        <td class="border-b border-black py-2">{{ invoice.date }}</td>
-        <td class="border-b border-black py-2 text-right pr-5">
-          <a
-            class="text-teal-200 hover:text-teal-300"
-            [routerLink]="[invoice.id, 'details']"
-            >VIEW</a
-          >
+  <tbody hq-table-body>
+    @for (invoice of invoiceListService.records$ | async; track invoice.id) {
+      <tr>
+        <td>{{ invoice.clientName }}</td>
+        <td>{{ invoice.invoiceNumber }}</td>
+        <td>{{ invoice.total }}</td>
+        <td>{{ invoice.totalApprovedHours }}</td>
+        <td>{{ invoice.date }}</td>
+        <td class="text-right">
+          <div class="text-nowrap divide-x divide-teal-200">
+              <a
+                class="text-teal-200 hover:text-teal-300"
+                [routerLink]="[invoice.id, 'details']"
+                >VIEW
+              </a>
+          </div>
         </td>
       </tr>
     }
   </tbody>
-</table>
-<div
-  class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
->
-  <div>
-    <select
-      class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
-      [formControl]="itemsPerPage"
-    >
-      <option [ngValue]="10">10</option>
-      <option [ngValue]="20">20</option>
-      <option [ngValue]="50">50</option>
-      <option [ngValue]="100">100</option>
-      <!-- Add more options as needed -->
-    </select>
-    <span>items per page</span>
-  </div>
-  <hq-paginator
-    [total]="(totalRecords$ | async) ?? 0"
-    [pageSize]="itemsPerPage.value"
-    [currentPage]="page.value"
-    (page)="goToPage($event)"
-  ></hq-paginator>
-  <div class="flex justify-end text-xs">
-    {{ skipDisplay$ | async }}-{{ takeToDisplay$ | async }} /
-    {{ totalRecords$ | async }} items
-  </div>
-</div>
+</hq-table>

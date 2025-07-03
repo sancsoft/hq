@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 using FluentResults;
 
+using HQ.Abstractions;
+using HQ.Abstractions.Enumerations;
 using HQ.Abstractions.Invoices;
 using HQ.Server.Data;
 using HQ.Server.Data.Models;
@@ -17,13 +19,28 @@ namespace HQ.Server.Invoices
     public class InvoicesServiceV1
     {
         private readonly HQDbContext _context;
-        public InvoicesServiceV1(HQDbContext context)
+        private readonly ILogger<InvoicesServiceV1> _logger;
+        public InvoicesServiceV1(HQDbContext context, ILogger<InvoicesServiceV1> logger)
         {
-            this._context = context;
+            _context = context;
+            _logger = logger;
         }
 
         public async Task<Result<GetInvoicesV1.Response>> GetInvoicesV1(GetInvoicesV1.Request request, CancellationToken ct = default)
         {
+            if (request.Period.HasValue && request.Period == Period.Custom)
+            {
+                if (request.StartDate.HasValue && request.EndDate.HasValue && request.StartDate.Value > request.EndDate.Value)
+                {
+                    return Result.Fail("Invalid date range.");
+                }
+            }
+            else if (request.Period.HasValue)
+            {
+                request.StartDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodStartDate(request.Period.Value);
+                request.EndDate = DateOnly.FromDateTime(DateTime.Today).GetPeriodEndDate(request.Period.Value);
+            }
+
             var records = _context.Invoices
                 .AsNoTracking()
                 .OrderByDescending(t => t.CreatedAt)
@@ -32,6 +49,16 @@ namespace HQ.Server.Invoices
             if (request.clientId.HasValue)
             {
                 records = records.Where(t => t.ClientId == request.clientId);
+            }
+
+            if (request.StartDate.HasValue)
+            {
+                records = records.Where(t => t.Date >= request.StartDate);
+            }
+
+            if (request.EndDate.HasValue)
+            {
+                records = records.Where(t => t.Date <= request.EndDate);
             }
 
             if (!string.IsNullOrEmpty(request.Search))
@@ -107,89 +134,37 @@ namespace HQ.Server.Invoices
                     InvoiceNumber = t.InvoiceNumber,
                     Total = t.Total,
                     TotalApprovedHours = t.TotalApprovedHours
-                }).SingleOrDefaultAsync(ct);
+                }).AsNoTracking()
+                .SingleOrDefaultAsync(ct);
 
 
-            if (response != null)
+            if (response == null)
+            {
+                return Result.Fail("Invoice not found");
+            }
+            else
             {
                 var times = await _context.Times
                     .AsNoTracking()
-                    .Where(t => t.InvoiceId == request.Id)
-                    .ToListAsync();
+                    .Where(time => time.InvoiceId == request.Id)
+                    .Include(time => time.ChargeCode)
+                    .ThenInclude(chargeCode => chargeCode.Quote)
+                    .Include(time => time.ChargeCode)
+                    .ThenInclude(chargeCode => chargeCode.Project)
+                    .ToListAsync(ct);
 
-                var chargeCodeIds = times.Select(t => t.ChargeCodeId);
+                var chargeCodes = times.Select(t => t.ChargeCode).ToList();
 
-                var chargeCodes = await _context.ChargeCodes
-                    .AsNoTracking()
-                    .Where(t => chargeCodeIds.Contains(t.Id))
-                    .ToListAsync();
-
-                decimal totalHours = 0;
-                decimal billableHours = 0;
-                decimal acceptedHours = 0;
-                decimal acceptedBillableHours = 0;
-                decimal invoicedHours = 0;
-
-                foreach (Time time in times)
-                {
-                    var code = chargeCodes.Find(c => c.Id == time.ChargeCodeId);
-                    totalHours += time.HoursApproved ?? time.Hours;
-                    if (code != null)
+                var timeValues = times
+                    .GroupBy(g => 1)
+                    .Select(time => new
                     {
-                        if (code.Billable)
-                        {
-                            billableHours += time.HoursApproved ?? time.Hours;
-                        }
-                        if (time.HoursApproved.HasValue)
-                        {
-                            acceptedHours += time.HoursApproved ?? 0;
-                        }
-                        if (code.Billable && time.HoursApproved.HasValue)
-                        {
-                            acceptedBillableHours += time.HoursApproved ?? 0;
-                        }
-                        if (time.HoursInvoiced.HasValue)
-                        {
-                            invoicedHours += time.HoursInvoiced ?? 0;
-                        }
-                    }
-                }
-
-                List<string> projectIds = [];
-                List<string> quoteIds = [];
-                foreach (ChargeCode code in chargeCodes)
-                {
-                    if (code.ProjectId != null)
-                    {
-                        projectIds.Add(code.ProjectId.ToString() ?? "");
-                    }
-                    if (code.QuoteId != null)
-                    {
-                        quoteIds.Add(code.QuoteId.ToString() ?? "");
-                    }
-                }
-
-                var quotes = await _context.Quotes
-                    .AsNoTracking()
-                    .Where(t => quoteIds.Contains(t.Id.ToString()))
-                    .ToListAsync();
-
-                var projects = await _context.Projects
-                    .AsNoTracking()
-                    .Where(t => projectIds.Contains(t.Id.ToString()))
-                    .ToListAsync();
-
-                foreach (ChargeCode code in chargeCodes)
-                {
-                    if (code.ProjectId != null)
-                    {
-                        code.Project = projects.Find(p => p.Id == code.ProjectId);
-                    }
-                    if (code.QuoteId != null)
-                    {
-                        code.Quote = quotes.Find(q => q.Id == code.QuoteId);
-                    }
-                }
+                        totalHours = time.Sum(t => t.HoursApproved ?? t.Hours),
+                        billableHours = time.Sum(t => t.ChargeCode.Billable ? t.HoursApproved ?? t.Hours : 0),
+                        acceptedHours = time.Sum(t => t.HoursApproved ?? 0),
+                        acceptedBillableHours = time.Sum(t => t.ChargeCode.Billable ? t.HoursApproved ?? 0 : 0),
+                        invoicedHours = time.Sum(t => t.HoursInvoiced ?? 0)
+                    }).Single();
 
                 response.ChargeCodes = chargeCodes
                     .Select(t => new GetInvoiceDetailsV1.ChargeCode()
@@ -198,21 +173,21 @@ namespace HQ.Server.Invoices
                         Code = t.Code,
                         Billable = t.Billable,
                         Active = t.Active,
-                        QuoteName = t.Quote != null ? t.Quote.Name : null,
-                        ProjectName = t.Project != null ? t.Project.Name : null,
+                        QuoteName = t.Quote?.Name,
+                        ProjectName = t.Project?.Name,
                         ProjectId = t.ProjectId,
                         QuoteId = t.QuoteId,
                     })
                     .Distinct()
                     .ToList();
 
-                response.TotalHours = totalHours;
-                response.BillableHours = billableHours;
-                response.AcceptedHours = acceptedHours;
-                response.AcceptedBillableHours = acceptedBillableHours;
-                response.InvoicedHours = invoicedHours;
+                response.TotalHours = timeValues.totalHours;
+                response.BillableHours = timeValues.billableHours;
+                response.AcceptedHours = timeValues.acceptedHours;
+                response.AcceptedBillableHours = timeValues.acceptedBillableHours;
+                response.InvoicedHours = timeValues.invoicedHours;
             }
-            return response != null ? Result.Ok(response) : Result.Fail("No response returned");
+            return Result.Ok(response);
         }
 
         public async Task<Result<CreateInvoiceV1.Response>> CreateInvoiceV1(CreateInvoiceV1.Request request, CancellationToken ct = default)
@@ -220,26 +195,22 @@ namespace HQ.Server.Invoices
             var validationResult = Result.Merge(
                 Result.FailIf(!request.ClientId.HasValue, "Client is required."),
                 Result.FailIf(!await _context.Clients.AnyAsync(t => t.Id == request.ClientId), "No client found."),
-                Result.FailIf(await _context.Invoices.AnyAsync(t => t.Id != request.Id && t.InvoiceNumber == request.InvoiceNumber), "An invoice already exists with that invoice number.")
+                Result.FailIf(await _context.Invoices.AnyAsync(t => t.InvoiceNumber == request.InvoiceNumber), "An invoice already exists with that invoice number.")
             );
 
             if (validationResult.IsFailed)
             {
                 return validationResult;
             }
-            var invoice = await _context.Invoices.FindAsync(request.Id);
-            if (invoice == null)
-            {
-                invoice = new();
-                _context.Invoices.Add(invoice);
-            }
 
-            var client = await _context.Clients.FindAsync(request.ClientId);
-            invoice.ClientId = request.ClientId ?? Guid.Empty;
-            invoice.Date = request.Date;
-            invoice.Total = request.Total;
-            invoice.TotalApprovedHours = request.TotalApprovedHours;
-            invoice.InvoiceNumber = request.InvoiceNumber;
+            Invoice invoice = new()
+            {
+                ClientId = request.ClientId ?? Guid.Empty,
+                Date = request.Date,
+                Total = request.Total,
+                TotalApprovedHours = request.TotalApprovedHours,
+                InvoiceNumber = request.InvoiceNumber
+            };
 
             await _context.SaveChangesAsync(ct);
 
@@ -251,7 +222,7 @@ namespace HQ.Server.Invoices
 
         public async Task<Result<UpdateInvoiceV1.Response>> UpdateInvoiceV1(UpdateInvoiceV1.Request request, CancellationToken ct = default)
         {
-            Console.WriteLine("Updating invoice");
+            _logger.LogInformation("Updating invoice");
             var validationResult = Result.Merge(
                 Result.FailIf(request.Id == Guid.Empty, "Invoice Id cannot be empty."),
                 Result.FailIf(!await _context.Invoices.AnyAsync(t => t.Id == request.Id), "Invoice could not be found."),
@@ -263,15 +234,15 @@ namespace HQ.Server.Invoices
                 return validationResult;
             }
             var invoice = await _context.Invoices.FindAsync(request.Id);
+
             if (invoice == null)
             {
-                invoice = new();
-                _context.Invoices.Add(invoice);
+                return Result.Fail("Invoice could not be found");
             }
 
-            Console.WriteLine($"Invoice Number {request.InvoiceNumber}");
-            Console.WriteLine($"Total {request.Total}");
-            Console.WriteLine($"Total approved hrs {request.TotalApprovedHours}");
+            _logger.LogInformation($"  Invoice Number {request.InvoiceNumber}");
+            _logger.LogInformation($"  Total {request.Total}");
+            _logger.LogInformation($"  Total approved hrs {request.TotalApprovedHours}");
 
             invoice.Date = request.Date;
             invoice.Total = request.Total;
