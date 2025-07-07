@@ -42,7 +42,7 @@ body {
   h5 {
     @apply font-rajdhani font-semibold text-base;
   }
-  p {
+  li:not(.markdown ul>li>ul>li) {
     @apply mb-[1rem];
   }
   a {
@@ -74,6 +74,15 @@ body {
   }
   tr td {
     @apply border-b border-black p-2 text-left;
+  }
+  code {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    border-width: thin;
+    border-radius: 4px;
+    padding-right: 2px;
+    padding-left: 2px;
+    font-family: monospace;
   }
 }
 // Custom panel gutter
