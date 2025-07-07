@@ -155,16 +155,12 @@ namespace HQ.Server.Invoices
 
                 var chargeCodes = times.Select(t => t.ChargeCode).ToList();
 
-                var timeValues = times
-                    .GroupBy(g => 1)
-                    .Select(time => new
-                    {
-                        totalHours = time.Sum(t => t.HoursApproved ?? t.Hours),
-                        billableHours = time.Sum(t => t.ChargeCode.Billable ? t.HoursApproved ?? t.Hours : 0),
-                        acceptedHours = time.Sum(t => t.HoursApproved ?? 0),
-                        acceptedBillableHours = time.Sum(t => t.ChargeCode.Billable ? t.HoursApproved ?? 0 : 0),
-                        invoicedHours = time.Sum(t => t.HoursInvoiced ?? 0)
-                    }).Single();
+
+                decimal totalHours = times.Sum(t => t.HoursApproved ?? t.Hours);
+                decimal billableHours = times.Sum(t => t.ChargeCode.Billable ? t.HoursApproved ?? t.Hours : 0);
+                decimal acceptedHours = times.Sum(t => t.HoursApproved ?? 0);
+                decimal acceptedBillableHours = times.Sum(t => t.ChargeCode.Billable ? t.HoursApproved ?? 0 : 0);
+                decimal invoicedHours = times.Sum(t => t.HoursInvoiced ?? 0);
 
                 response.ChargeCodes = chargeCodes
                     .Select(t => new GetInvoiceDetailsV1.ChargeCode()
@@ -181,11 +177,11 @@ namespace HQ.Server.Invoices
                     .Distinct()
                     .ToList();
 
-                response.TotalHours = timeValues.totalHours;
-                response.BillableHours = timeValues.billableHours;
-                response.AcceptedHours = timeValues.acceptedHours;
-                response.AcceptedBillableHours = timeValues.acceptedBillableHours;
-                response.InvoicedHours = timeValues.invoicedHours;
+                response.TotalHours = totalHours;
+                response.BillableHours = billableHours;
+                response.AcceptedHours = acceptedHours;
+                response.AcceptedBillableHours = acceptedBillableHours;
+                response.InvoicedHours = invoicedHours;
             }
             return Result.Ok(response);
         }

@@ -18,13 +18,13 @@ import { TimeListService } from '../../../../times/time-list/TimeList.service';
 import { HQRole } from '../../../../enums/hqrole';
 import { InRolePipe } from '../../../../pipes/in-role.pipe';
 import { roundToNextQuarter } from '../../../../common/functions/round-to-next-quarter';
-import { InvoiceTimeSearchFilterComponent } from '../invoice-time-search-filter/invoice-time-search-filter.component';
 import {
   AddTimesToInvoiceRequestV1,
   AddTimeToInvoiceRequestV1,
 } from '../../../../models/times/add-time-to-invoice-v1';
 import { ToastService } from '../../../../services/toast.service';
 import { ModalService } from '../../../../services/modal.service';
+import { InvoiceTimeSearchFilterComponent } from '../invoice-time-search-filter/invoice-time-search-filter.component';
 
 interface InvoiceTimeEntry {
   record: GetTimeRecordV1;
