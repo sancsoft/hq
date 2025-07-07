@@ -42,7 +42,7 @@ body {
   h5 {
     @apply font-rajdhani font-semibold text-base;
   }
-  li:not(.markdown ul>li>ul>li) {
+  li:not(.markdown ul > li > ul > li) {
     @apply mb-[1rem];
   }
   a {
