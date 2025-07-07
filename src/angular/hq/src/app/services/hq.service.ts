@@ -32,7 +32,6 @@ import {
   GetServicesRequestV1,
 } from '../models/Services/get-services-v1';
 import {
-  GetInvoicesRecordsV1,
   GetInvoicesRequestV1,
   GetInvoicesResponseV1,
 } from '../models/Invoices/get-invoices-v1';
