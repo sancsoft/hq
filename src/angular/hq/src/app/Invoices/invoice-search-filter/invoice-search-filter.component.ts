@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { InvoiceListService } from '../invoices-list/invoice-list.service';
-import { CoreModule } from '../../core/core.module';
 import { Period } from '../../enums/period';
+import { InvoiceListService } from '../invoices-list/invoices-list.service';
+import { CoreModule } from '../../core/core.module';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'hq-invoice-search-filter',
@@ -19,6 +19,8 @@ import { Period } from '../../enums/period';
 })
 export class InvoiceSearchFilterComponent {
   constructor(public invoiceService: InvoiceListService) {}
+
+  Period = Period;
 
   showHideDates() {
     if (this.invoiceService.selectedPeriod.value == Period.Custom) {

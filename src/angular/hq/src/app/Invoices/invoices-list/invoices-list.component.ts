@@ -9,7 +9,7 @@ import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
-import { InvoiceListService } from './invoice-list.service';
+import { InvoiceListService } from './invoices-list.service';
 import { CoreModule } from '../../core/core.module';
 import { BaseListService } from '../../core/services/base-list.service';
 import { InvoiceSearchFilterComponent } from '../invoice-search-filter/invoice-search-filter.component';
