@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
@@ -70,6 +69,7 @@ export class InvoiceListService extends BaseListService<
   hideStartDate() {
     this.showStartDate$.next(false);
   }
+
   showEndDate() {
     this.showEndDate$.next(true);
   }
