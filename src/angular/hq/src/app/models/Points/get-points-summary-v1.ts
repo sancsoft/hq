@@ -2,6 +2,7 @@ export interface GetPointsSummaryRequestV1 {
   date: string;
   search?: string | null;
   isCompleted?: boolean | null;
+  projectManagerId?: string | null;
 }
 
 export interface GetPointsSummaryPlanningPoint {
@@ -13,6 +14,7 @@ export interface GetPointsSummaryPlanningPoint {
   projectId: string | null;
   clientName: string | null;
   clientId: string | null;
+  projectManagerId: string | null;
   completed: boolean;
 }
 

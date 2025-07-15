@@ -5,6 +5,7 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
+  map,
   Observable,
   ReplaySubject,
   shareReplay,
@@ -28,6 +29,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
+import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 
 @Component({
   selector: 'hq-planning-points',
@@ -46,9 +48,12 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 export class PlanningPointsComponent implements OnDestroy {
   search = new FormControl<string | null>(null);
   isCompleted = new FormControl<boolean | null>(null);
+  projectManagerId = new FormControl<string | null>(null);
 
   search$ = formControlChanges(this.search);
   isCompleted$ = formControlChanges(this.isCompleted);
+  projectManagerId$ = formControlChanges(this.projectManagerId);
+  projectManagers$: Observable<GetStaffV1Record[]>;
 
   date = new BehaviorSubject<string>(localISODate());
   opacity = new BehaviorSubject<number>(0.25);
@@ -72,6 +77,7 @@ export class PlanningPointsComponent implements OnDestroy {
       search: this.search$,
       refresh: this.refresh$,
       isCompleted: this.isCompleted$,
+      projectManagerId: this.projectManagerId$,
     }).pipe(
       debounceTime(500),
       tap(() => this.loading.next(true)),
@@ -80,11 +86,20 @@ export class PlanningPointsComponent implements OnDestroy {
           date: t.date,
           search: t.search,
           isCompleted: t.isCompleted,
+          projectManagerId: t.projectManagerId,
         }),
       ),
       tap(() => this.loading.next(false)),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
+    this.projectManagers$ = this.hqService
+      .getStaffMembersV1({
+        isAssignedProjectManager: true,
+      })
+      .pipe(
+        map((t) => t.records),
+        shareReplay({ bufferSize: 1, refCount: false }),
+      );
   }
   ngOnDestroy(): void {
     this.destroyed$.next(true);
@@ -140,19 +155,21 @@ export class PlanningPointsComponent implements OnDestroy {
 
   isNonMatched(point: GetPointsSummaryPlanningPoint) {
     const searchValue = this.search.value?.toLowerCase();
+    const projectManagerId = this.projectManagerId.value;
 
-    if (!searchValue?.trim().length) {
+    if (!searchValue?.trim().length && !projectManagerId) {
       return false;
     }
 
-    if (
+    const matchesSearch =
+      !searchValue?.trim().length ||
       point.clientName?.toLowerCase()?.includes(searchValue) ||
       point.projectName?.toLowerCase()?.includes(searchValue) ||
-      point.chargeCode?.toLowerCase()?.includes(searchValue)
-    ) {
-      return false;
-    }
+      point.chargeCode?.toLowerCase()?.includes(searchValue);
 
-    return true;
+    const matchesProjectManager =
+      !projectManagerId || point.projectManagerId === projectManagerId;
+
+    return !matchesSearch || !matchesProjectManager;
   }
 }

@@ -1,12 +1,32 @@
 <h1 class="font-rajdhani font-semibold text-3xl px-5 mb-5">Planning Points</h1>
-<div class="flex w-full flex-1 items-center gap-[20px] px-5 mb-3">
+<div class="flex w-full flex-1 items-end gap-[20px] px-5 mb-3">
   <hq-search-input [formControl]="search"></hq-search-input>
-  <div class="pb-3 w-40">
+  <div class="w-40">
     <hq-select-input
-      [autocomplete]="false"
+      label="Project Manager"
+      [formControl]="projectManagerId"
+      [autocomplete]="true"
+    >
+      <ng-template [hqSelectInputOption]="null">All</ng-template>
+      @for (
+        projectManager of projectManagers$ | async;
+        track projectManager.id
+      ) {
+        <ng-template
+          [hqSelectInputOption]="projectManager.id"
+          [hqSelectInputOptionSelectedDisplay]="projectManager.name"
+          [hqSelectInputOptionSearch]="projectManager.name"
+          >{{ projectManager.name }}</ng-template
+        >
+      }
+    </hq-select-input>
+  </div>
+  <div class="w-40">
+    <hq-select-input
+      [autocomplete]="true"
       [formControl]="isCompleted"
       label="Completed"
-      variant="secondary"
+      
     >
       <ng-template [hqSelectInputOption]="null">All</ng-template>
       <ng-template [hqSelectInputOption]="true">Yes</ng-template>
