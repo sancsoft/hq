@@ -8,7 +8,7 @@ public class CreateInvoiceV1
 {
     public class Request
     {
-        public Guid? ClientId { get; set; }
+        public Guid ClientId { get; set; }
         public string? ClientName { get; set; }
         public DateOnly Date { get; set; }
         public required string InvoiceNumber { get; set; }

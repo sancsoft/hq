@@ -454,27 +454,28 @@ namespace HQ.Server.Services
             {
                 return Result.Fail($"The Invoice: {request.InvoiceId} not found");
             }
-            else if (request.TimeEntries == null)
+            if (request.TimeEntries == null || request.TimeEntries.Count() == 0)
             {
                 return Result.Fail("No time entries were selected.");
             }
-            else
-            {
-                var timeEntriesId = request.TimeEntries.Select(t => t.Id).ToList();
-                var timeEntriesFromDb = await _context.Times
-                    .Where(t => timeEntriesId.Contains(t.Id))
-                    .ToListAsync(ct);
 
+            var timeEntriesId = request.TimeEntries.Select(t => t.Id).ToList();
+            var timeEntriesFromDb = await _context.Times
+                .Where(t => timeEntriesId.Contains(t.Id))
+                .ToListAsync(ct);
+
+            if (timeEntriesFromDb.Count != timeEntriesId.Count)
+            {
                 var dbEntryIds = timeEntriesFromDb.Select(t => t.Id).ToList();
                 var missedEntries = (from id in timeEntriesId.Except(dbEntryIds) select id).ToList();
-
-                if (missedEntries.Count > 0)
-                {
-                    await _context.SaveChangesAsync(ct);
-                    return Result.Fail($"{missedEntries.Count}/{request.TimeEntries.Count} time entries could not be found.");
-                }
+                return Result.Fail($"{missedEntries.Count}/{request.TimeEntries.Count} time entries could not be found.");
             }
 
+            foreach (var t in timeEntriesFromDb)
+            {
+                if (t.InvoiceId == null)
+                    t.InvoiceId = invoice.Id;
+            }
             await _context.SaveChangesAsync(ct);
             return Result.Ok();
         }

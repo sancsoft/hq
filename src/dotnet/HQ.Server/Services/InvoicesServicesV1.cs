@@ -189,7 +189,6 @@ namespace HQ.Server.Invoices
         public async Task<Result<CreateInvoiceV1.Response>> CreateInvoiceV1(CreateInvoiceV1.Request request, CancellationToken ct = default)
         {
             var validationResult = Result.Merge(
-                Result.FailIf(!request.ClientId.HasValue, "Client is required."),
                 Result.FailIf(!await _context.Clients.AnyAsync(t => t.Id == request.ClientId), "No client found."),
                 Result.FailIf(await _context.Invoices.AnyAsync(t => t.InvoiceNumber == request.InvoiceNumber), "An invoice already exists with that invoice number.")
             );
@@ -201,12 +200,14 @@ namespace HQ.Server.Invoices
 
             Invoice invoice = new()
             {
-                ClientId = request.ClientId ?? Guid.Empty,
+                ClientId = request.ClientId,
                 Date = request.Date,
                 Total = request.Total,
                 TotalApprovedHours = request.TotalApprovedHours,
                 InvoiceNumber = request.InvoiceNumber
             };
+            
+            _context.Invoices.Add(invoice);
 
             await _context.SaveChangesAsync(ct);
 
