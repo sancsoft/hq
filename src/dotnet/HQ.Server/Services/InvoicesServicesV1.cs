@@ -206,7 +206,7 @@ namespace HQ.Server.Invoices
                 TotalApprovedHours = request.TotalApprovedHours,
                 InvoiceNumber = request.InvoiceNumber
             };
-            
+
             _context.Invoices.Add(invoice);
 
             await _context.SaveChangesAsync(ct);
