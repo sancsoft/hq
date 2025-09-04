@@ -12,6 +12,7 @@ export interface GetTimeRequestV1 {
   startDate?: Date | null;
   endDate?: Date | null;
   date?: Date | null;
+  invoiceId?: string | null;
   staffId?: string | null;
   projectId?: string | null;
   clientId?: string | null;
@@ -29,6 +30,7 @@ export enum SortColumn {
   ClientName = 5,
   ProjectName = 6,
   Billable = 7,
+  HoursApproved = 8,
 }
 
 export interface GetTimeRecordV1 {
@@ -50,6 +52,7 @@ export interface GetTimeRecordV1 {
   activityId: string | null;
   description?: string | undefined;
   invoiceId?: string | null;
+  hoursInvoiced?: number | null;
   invoiceNumber?: string | null;
   hoursApproved?: number | null;
   hoursApprovedBy?: string | null;

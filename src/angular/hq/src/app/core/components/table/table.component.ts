@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Input,
 } from '@angular/core';
 import { PagedResponseV1 } from '../../../models/common/paged-response-v1';
 import { BaseListService } from '../../services/base-list.service';
@@ -22,6 +23,7 @@ export class TableComponent<
   TSort,
 > implements AfterViewChecked
 {
+  @Input() withPagination = true;
   public columnCount: number = 0;
 
   constructor(

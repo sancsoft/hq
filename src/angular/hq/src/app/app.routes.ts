@@ -331,12 +331,80 @@ export const routes: Routes = [
   },
   {
     path: 'invoices',
-    title: 'Invoice List',
+    title: 'Invoices',
     canActivate: [AutoLoginPartialRoutesGuard, userRoleGuard(HQRole.Staff)],
     loadComponent: () =>
-      import('./Invoices/invoices-list/invoices-list.component').then(
-        (m) => m.InvoicesListComponent,
-      ),
+      import('./Invoices/invoices.component').then((m) => m.InvoicesComponent),
+    children: [
+      {
+        path: '',
+        title: 'Invoice List',
+        canActivate: [userRoleGuard(HQRole.Staff)],
+        loadComponent: () =>
+          import('./Invoices/invoices-list/invoices-list.component').then(
+            (m) => m.InvoicesListComponent,
+          ),
+      },
+      {
+        path: 'create',
+        title: 'Create Invoice',
+        canActivate: [userRoleGuard(HQRole.Administrator, HQRole.Executive)],
+        loadComponent: () =>
+          import('./Invoices/invoices-create/invoices-create.component').then(
+            (m) => m.InvoicesCreateComponent,
+          ),
+      },
+      {
+        path: ':invoiceId',
+        canActivate: [userRoleGuard(HQRole.Staff)],
+        loadComponent: () =>
+          import('./Invoices/invoice-details/invoice-details.component').then(
+            (m) => m.InvoiceDetailsComponent,
+          ),
+        children: [
+          {
+            path: 'details',
+            canActivate: [userRoleGuard(HQRole.Staff)],
+            loadComponent: () =>
+              import(
+                './Invoices/invoice-details/invoice-details-edit/invoice-details-edit.component'
+              ).then((m) => m.InvoiceDetailsEditComponent),
+          },
+          {
+            path: 'time',
+            title: 'Invoice times',
+            canActivate: [
+              AutoLoginPartialRoutesGuard,
+              userRoleGuard(HQRole.Staff),
+            ],
+            loadComponent: () =>
+              import(
+                './Invoices/invoice-details/invoice-time/invoice-time.component'
+              ).then((m) => m.InvoiceTimeComponent),
+            children: [
+              {
+                path: '',
+                canActivate: [userRoleGuard(HQRole.Staff)],
+                loadComponent: () =>
+                  import(
+                    './Invoices/invoice-details/invoice-time/invoice-time-list/invoice-time-list.component'
+                  ).then((m) => m.InvoiceTimeListComponent),
+              },
+              {
+                path: 'add',
+                canActivate: [
+                  userRoleGuard(HQRole.Administrator, HQRole.Executive),
+                ],
+                loadComponent: () =>
+                  import(
+                    './Invoices/invoice-details/invoice-time/invoice-add-time/invoice-add-time.component'
+                  ).then((m) => m.InvoiceAddTimeComponent),
+              },
+            ],
+          },
+        ],
+      },
+    ],
   },
   {
     path: 'services',

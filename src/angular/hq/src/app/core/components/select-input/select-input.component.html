@@ -7,7 +7,9 @@
     [disabled]="disabled"
     [tabIndex]="isOpen ? -1 : 0"
     type="button"
-    class="flex items-center border justify-between bg-blue-900 rounded select-none overflow-hidden px-1"
+    class="flex items-center border justify-between bg-blue-900 rounded select-none overflow-hidden px-1 {{
+      variant !== 'pill' ? 'h-[' + btnHeightOverride + 'px]' : ''
+    }}"
     (focus)="onFocus()"
     [style.background-color]="
       variant === 'pill' ? (chargeCodeColor$ | async) : null
@@ -22,7 +24,7 @@
         !(ngControl?.invalid && ngControl?.touched) && variant === 'pill',
       'border-white text-white': focused && variant !== 'pill',
       'text-center font-semibold rounded-full px-3 py-1': variant === 'pill',
-      'text-left h-[36px]': variant !== 'pill',
+      'text-left': variant !== 'pill',
       'rounded-br-none rounded-bl-none': isOpen && variant !== 'pill',
       'w-full': !inline,
       'border-gray-450 text-gray-450': disabled,
@@ -67,15 +69,17 @@
         }"
         [style.width.px]="button.offsetWidth"
       >
-        <div class="border-b border-b-black">
-          <hq-search-input
-            #searchInput
-            variant="transparent"
-            (keydown)="onSearchKeyDown($event)"
-            [formControl]="searchForm"
-          >
-          </hq-search-input>
-        </div>
+        @if (enableSearch) {
+          <div class="border-b border-b-black">
+            <hq-search-input
+              #searchInput
+              variant="transparent"
+              (keydown)="onSearchKeyDown($event)"
+              [formControl]="searchForm"
+            >
+            </hq-search-input>
+          </div>
+        }
 
         <div
           class="bg-blue-900 rounded-md max-h-48 overflow-y-scroll"

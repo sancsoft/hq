@@ -20,6 +20,7 @@ namespace HQ.Abstractions.Times
             public DateOnly? StartDate { get; set; }
             public DateOnly? EndDate { get; set; }
             public DateOnly? Date { get; set; }
+            public Guid? InvoiceId { get; set; }
             public Guid? ClientId { get; set; }
             public Guid? ProjectId { get; set; }
             public string? ChargeCode { get; set; }
@@ -43,6 +44,7 @@ namespace HQ.Abstractions.Times
             ClientName = 5,
             ProjectName = 6,
             Billable = 7,
+            HoursApproved = 8,
         }
 
         public class Response : PagedResponseV1<Record>
@@ -61,9 +63,12 @@ namespace HQ.Abstractions.Times
             public Guid Id { get; set; }
             public TimeStatus Status { get; set; }
             public decimal? BillableHours { get; set; }
+            public decimal? HoursInvoiced { get; set; }
+            public decimal? HoursApproved { get; set; }
             public decimal Hours { get; set; }
             public string? HoursApprovedBy { get; set; }
             public Guid? InvoiceId { get; set; }
+            public string? InvoiceNumber { get; set; }
             public string? RejectionNotes { get; set; } = null!;
             public DateOnly Date { get; set; }
             public string ChargeCode { get; set; } = null!;

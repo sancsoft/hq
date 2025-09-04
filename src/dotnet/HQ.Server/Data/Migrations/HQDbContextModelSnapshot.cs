@@ -991,6 +991,10 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("hours_approved");
 
+                    b.Property<decimal?>("HoursInvoiced")
+                        .HasColumnType("numeric")
+                        .HasColumnName("hours_invoiced");
+
                     b.Property<Guid?>("InvoiceId")
                         .HasColumnType("uuid")
                         .HasColumnName("invoice_id");

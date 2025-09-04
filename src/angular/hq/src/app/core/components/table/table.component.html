@@ -1,6 +1,6 @@
 <table class="hq-table" [class.loading]="listService.loading$ | async">
   <ng-content></ng-content>
-  <tbody>
+  <tbody *ngIf="withPagination">
     <tr>
       <td [colSpan]="999">
         <div

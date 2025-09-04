@@ -12,6 +12,7 @@ public class Time : Base
     public decimal Hours { get; set; }
     public string? Notes { get; set; }
     public decimal? HoursApproved { get; set; }
+    public decimal? HoursInvoiced { get; set; }
     public Guid? AcceptedById { get; set; }
     public Staff? AcceptedBy { get; set; }
     public DateTime? AcceptedAt { get; set; }

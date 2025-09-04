@@ -32,8 +32,8 @@ import {
   GetServicesRequestV1,
 } from '../models/Services/get-services-v1';
 import {
-  GetInvoicesRecordsV1,
   GetInvoicesRequestV1,
+  GetInvoicesResponseV1,
 } from '../models/Invoices/get-invoices-v1';
 import { GetPSRRecordsV1, GetPSRRequestV1 } from '../models/PSR/get-PSR-v1';
 import {
@@ -127,6 +127,8 @@ import {
   GetClientInvoiceSummaryV1Response,
 } from '../models/clients/get-client-invoice-summary-v1';
 import {
+  UpdateTimeHoursInvoicedRequestV1,
+  UpdateTimeHoursInvoicedResponseV1,
   updateTimeRequestV1,
   UpdateTimeResponseV1,
 } from '../models/times/update-time-v1';
@@ -178,6 +180,25 @@ import {
   GetPointsSummaryRequestV1,
   GetPointsSummaryResponseV1,
 } from '../models/Points/get-points-summary-v1';
+import {
+  UpdateInvoiceRequestV1,
+  UpdateInvoiceResponseV1,
+} from '../models/Invoices/update-invoice-v1';
+import {
+  GetInvoiceDetailsRequestV1,
+  GetInvoiceDetailsRecordV1,
+} from '../models/Invoices/get-invoice-details-v1';
+import {
+  AddTimesToInvoiceRequestV1,
+  AddTimeToInvoiceRequestV1,
+  AddTimeToInvoiceResponseV1,
+  RemoveTimeFromInvoiceRequestV1,
+} from '../models/times/add-time-to-invoice-v1';
+import { CreateInvoicedTimeRequestV1 } from '../models/times/create-invoiced-time-v1';
+import {
+  CreateInvoiceRequestV1,
+  CreateInvoiceResponseV1,
+} from '../models/Invoices/create-invoice-v1';
 @Injectable({
   providedIn: 'root',
 })
@@ -252,7 +273,7 @@ export class HQService {
   getInvoicesV1(request: Partial<GetInvoicesRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
-        this.http.post<GetInvoicesRecordsV1>(
+        this.http.post<GetInvoicesResponseV1>(
           `${apiUrl}/v1/Invoices/GetInvoicesV1`,
           request,
         ),
@@ -260,6 +281,40 @@ export class HQService {
     );
   }
 
+  createInvoiceV1(request: Partial<CreateInvoiceRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<CreateInvoiceResponseV1>(
+          `${apiUrl}/v1/Invoices/CreateInvoiceV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  updateInvoiceV1(request: Partial<UpdateInvoiceRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdateInvoiceResponseV1>(
+          `${apiUrl}/v1/Invoices/UpdateInvoiceV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  getInvoiceDetailsV1(request: GetInvoiceDetailsRequestV1) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetInvoiceDetailsRecordV1>(
+          `${apiUrl}/v1/Invoices/GetInvoiceDetailsV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  // PSR
   getPSRV1(request: Partial<GetPSRRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
@@ -533,6 +588,7 @@ export class HQService {
     );
   }
 
+  // Times
   getTimesV1(request: Partial<GetTimeRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
@@ -553,6 +609,55 @@ export class HQService {
       ),
     );
   }
+
+  createInvoicedTimeV1(request: Partial<CreateInvoicedTimeRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdateTimeHoursInvoicedResponseV1>(
+          `${apiUrl}/v1/TimeEntries/CreateInvoicedTimeV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  upsertTimeHoursInvoicedV1(request: UpdateTimeHoursInvoicedRequestV1) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdateTimeHoursInvoicedResponseV1>(
+          `${apiUrl}/v1/TimeEntries/UpsertTimeHoursInvoicedV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  addTimeToInvoiceV1(request: Partial<AddTimeToInvoiceRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<AddTimeToInvoiceResponseV1>(
+          `${apiUrl}/v1/TimeEntries/AddTimeToInvoiceV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  addTimesToInvoiceV1(request: AddTimesToInvoiceRequestV1) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post(`${apiUrl}/v1/TimeEntries/AddTimesToInvoiceV1`, request),
+      ),
+    );
+  }
+  removeTimeFromInvoiceV1(request: RemoveTimeFromInvoiceRequestV1) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post(
+          `${apiUrl}/v1/TimeEntries/RemoveTimeFromInvoiceV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
   submitTimesV1(request: Partial<SubmitTimesRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>

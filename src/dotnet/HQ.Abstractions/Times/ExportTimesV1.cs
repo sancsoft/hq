@@ -7,6 +7,7 @@ public class ExportTimesV1
     public class Request
     {
         public Guid? StaffId { get; set; }
+        public Guid? InvoiceId { get; set; }
         public string? Search { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }

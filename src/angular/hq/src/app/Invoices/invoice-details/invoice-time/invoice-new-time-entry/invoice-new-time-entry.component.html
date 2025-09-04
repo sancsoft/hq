@@ -1,0 +1,210 @@
+<ng-container [formGroup]="form">
+  <!-- Status indicator -->
+  <td class="border-b border-black py-2 bg-gray-450"></td>
+  <!-- Spacing -->
+  <td class="border-y border-s border-white py-1 px-2"></td>
+  <!-- Staff selection -->
+  <td class="border-y border-white py-2">
+    <div class="w-26 px-2">
+      <hq-select-input
+        [ngClass]="{
+          'border-red-700 focus:border-red-700':
+            form.controls.staffId.errors && form.touched,
+          'border-black': !form.controls.staffId.errors || !form.touched,
+        }"
+        (hqBlur)="save()"
+        [formControlName]="'staffId'"
+        [autocomplete]="true"
+        variant="secondary"
+        [inline]="true"
+        [btnHeightOverride]="30"
+      >
+        <ng-template [hqSelectInputOption]>[staff]</ng-template>
+        @for (
+          staff of invoiceDetailsService.staffMembers$ | async;
+          track staff.id
+        ) {
+          <ng-template
+            [hqSelectInputOption]="staff.id"
+            [hqSelectInputOptionSelectedDisplay]="staff.name"
+            [hqSelectInputOptionSearch]="staff.name"
+            >{{ staff.name }}</ng-template
+          >
+        }
+      </hq-select-input>
+    </div>
+  </td>
+  <!-- Date -->
+  <td class="border-y border-white py-1 px-2">
+    <div class="grid relative w-full">
+      <input
+        [ngClass]="{
+          'border-red-700 focus:border-red-700':
+            form.controls.date.errors && form.touched,
+          'focus:border-white placeholder:text-gray-100':
+            !form.controls.date.errors || !form.touched,
+        }"
+        title="Date"
+        class="w-full pl-2 border-black appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+        type="date"
+        formControlName="date"
+        [tabindex]="-1"
+      />
+      <button
+        [tabindex]="-1"
+        (click)="chooseDate()"
+        title="Change date"
+        class="flex items-center justify-center h-full pointer-events-auto cursor-pointer z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+      >
+        <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
+      </button>
+    </div>
+  </td>
+  <!-- Charge code -->
+  <td class="border-y border-white py-1 ps-1 pe-2">
+    <hq-select-input
+      (hqBlur)="saveChargeCode()"
+      [formControlName]="'chargeCodeId'"
+      [autocomplete]="true"
+      variant="pill"
+      [inline]="true"
+    >
+      <ng-template [hqSelectInputOption]>Chrge</ng-template>
+      @for (code of invoiceDetailsService.chargeCodes$ | async; track code.id) {
+        <ng-template
+          [hqSelectInputOption]="code.id"
+          [hqSelectInputOptionSelectedDisplay]="code.code"
+          [hqSelectInputOptionSearch]="
+            code.code + ': ' + code.clientName + ': ' + code.projectName
+          "
+        >
+          <span>{{
+            code.code + ": " + code.clientName + ": " + code.projectName
+          }}</span></ng-template
+        >
+      }
+    </hq-select-input>
+  </td>
+  <!-- Project name -->
+  <td class="border-y border-white py-1 px-2 text-left">
+    {{ projectName$ | async }}
+  </td>
+  <!-- Activity -->
+  <td class="border-y border-white py-2 pl-2">
+    @if (filteredActivities$ | async; as activities) {
+      @if (activities.length > 0 && (projectName$ | async)) {
+        <div class="grid relative w-full max-w-[220px]">
+          <select
+            aria-label="Activity"
+            [ngClass]="{
+              'border-red-700 focus:border-red-700':
+                form.controls.activityId.errors && form.touched,
+              'border-black': !form.controls.activityId.errors || !form.touched,
+            }"
+            class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded h-[30px]"
+            formControlName="activityId"
+            (blur)="save()"
+            (keydown.enter)="onEnter($event.target)"
+          >
+            <option [ngValue]="null" class="text-gray-50">Activity</option>
+            @for (activity of filteredActivities$ | async; track activity.id) {
+              <option [ngValue]="activity.id">{{ activity.name }}</option>
+            }
+          </select>
+          <span
+            class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+          >
+            <i class="bi bi-arrow-down-short text-[24px]"></i>
+          </span>
+        </div>
+      }
+    }
+  </td>
+  <!-- Task -->
+  <td class="border-y border-white py-2 pl-2">
+    @if (projectName$ | async) {
+      @if (requireTask$ | async; as requireTask) {
+        <input
+          [ngClass]="{
+            'border-red-700 focus:border-red-700':
+              form.controls.task.errors && form.touched,
+            'border-black': !form.controls.task.errors || !form.touched,
+          }"
+          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          type="text"
+          aria-label="Task"
+          formControlName="task"
+          (blur)="save()"
+          (keydown.enter)="onEnter($event.target)"
+        />
+      } @else {
+        <input
+          aria-label="Task"
+          class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none text-gray-450 border border-black focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+          type="text"
+          [disabled]="true"
+        />
+      }
+    }
+  </td>
+  <!-- Hours -->
+  <td class="border-y border-white py-1 px-2">
+    <input
+      [ngClass]="{
+        'border-red-700 focus:border-red-700':
+          form.controls.hours.errors && form.touched,
+        'focus:border-white placeholder:text-gray-100':
+          !form.controls.hours.errors || !form.touched,
+      }"
+      class="w-12 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
+      type="number"
+      min="0"
+      formControlName="hours"
+      aria-label="Hours"
+      #hoursInput
+      step="0.25"
+      (blur)="save()"
+      (keydown.enter)="onEnter($event.target)"
+    />
+  </td>
+  <!-- Invoiced hours -->
+  <td class="border-y border-white py-1 px-2">
+    <input
+      [ngClass]="{
+        'border-red-700 focus:border-red-700':
+          form.controls.invoicedHours.errors && form.touched,
+        'focus:border-white placeholder:text-gray-100':
+          !form.controls.invoicedHours.errors || !form.touched,
+      }"
+      class="w-12 bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right text-nowrap appearance-none"
+      type="number"
+      min="0"
+      formControlName="invoicedHours"
+      aria-label="Invoiced Hours"
+      #invoicedHoursInput
+      step="0.25"
+      (blur)="save()"
+      (keydown.enter)="onEnter($event.target)"
+    />
+  </td>
+  <!-- Description -->
+  <td class="border-y border-white py-1 px-2">
+    <input
+      [ngClass]="{
+        'border-red-700 focus:border-red-700':
+          form.controls.notes.errors && form.touched,
+        'focus:border-white placeholder:text-gray-100':
+          !form.controls.notes.errors || !form.touched,
+      }"
+      class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none bg-blue-900 rounded h-[30px]"
+      type="text"
+      placeholder="Description"
+      aria-label="Time Entry Description"
+      formControlName="notes"
+      (blur)="save()"
+      (keydown.enter)="onEnter($event.target)"
+    />
+  </td>
+  <!-- Spacer for trash can icon -->
+  <td class="border-e border-y border-white py-1 px-2"></td>
+</ng-container>

@@ -36,7 +36,7 @@ import { ButtonComponent } from '../../../core/components/button/button.componen
     InRolePipe,
     ButtonComponent,
   ],
-  templateUrl: './client-invoices.component-list.html',
+  templateUrl: './client-invoices.list.component.html',
 })
 export class ClientInvoicesComponent {
   clientId?: string;

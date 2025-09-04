@@ -207,7 +207,6 @@ export class StaffDashboardTimeEntryComponent
         } else {
           taskControl.removeValidators(Validators.required);
         }
-        console.log(taskControl);
         taskControl.updateValueAndValidity({ emitEvent: false });
       },
       error: console.error,
