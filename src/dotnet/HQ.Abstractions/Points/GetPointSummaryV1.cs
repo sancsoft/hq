@@ -8,7 +8,7 @@ public class GetPointSummaryV1
         public DateOnly Date { get; set; }
         public string? Search { get; set; }
         public bool? IsCompleted { get; set; }
-
+        public Guid? ProjectManagerId { get; set; }
     }
 
     public class StaffSummary
@@ -27,6 +27,7 @@ public class GetPointSummaryV1
             public Guid? ClientId { get; set; }
             public string? ClientName { get; set; }
             public Guid? ProjectId { get; set; }
+            public Guid? ProjectManagerId { get; set; }
             public string? ProjectName { get; set; }
             public bool Completed { get; set; }
         }
