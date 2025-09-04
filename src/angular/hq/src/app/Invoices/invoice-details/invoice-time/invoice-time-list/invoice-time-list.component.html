@@ -7,12 +7,12 @@
           class="flex flex-col xl:flex-row xl:justify-between xl:items-center"
         >
           <div class="grid grid-flow-col gap-[30px] auto-cols-max pt-3">
-            @if (invoice$ | async; as invoice) {
+            @if (invoiceTimeListService.invoice$ | async; as invoice) {
               <div class="text-gray-50">
                 {{ invoice.invoiceNumber }}
               </div>
             }
-            @if (currentClient$ | async; as client) {
+            @if (invoiceTimeListService.client$ | async; as client) {
               <div class="text-gray-50">
                 Client Email: {{ client.billingEmail || "None" }}
               </div>
@@ -29,7 +29,7 @@
     </div>
     <!-- Hour Amounts -->
     <div class="flex space-x-8 pb-4 px-5 pt-3">
-      @if (invoice$ | async; as invoice) {
+      @if (invoiceTimeListService.invoice$ | async; as invoice) {
         <div class="text-center text-white">
           <div class="text-xs text-right uppercase font-bold tracking-[.06em]">
             TOTAL HOURS
@@ -89,7 +89,7 @@
             class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
             id="search"
             type="text"
-            [formControl]="invoiceDetailsService.search"
+            [formControl]="invoiceTimeListService.search"
             class="w-full block text-[14px] px-2 py-1 appearance-none focus:outline-none font-medium bg-inherit rounded"
             aria-label="Search"
           />
@@ -108,7 +108,7 @@
             <p
               class="w-24 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]"
             >
-              {{ (invoice$ | async)?.totalHours?.toFixed(2) || "--" }}
+              {{ (invoiceTimeListService.invoice$ | async)?.totalHours?.toFixed(2) || "--" }}
             </p>
           </div>
           <div class="text-center text-white">
@@ -120,7 +120,7 @@
             <p
               class="w-32 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]"
             >
-              {{ (invoice$ | async)?.invoicedHours?.toFixed(2) || "--" }}
+              {{ (invoiceTimeListService.invoice$ | async)?.invoicedHours?.toFixed(2) || "--" }}
             </p>
           </div>
         </div>
@@ -180,7 +180,7 @@
     <hq-table
       [withPagination]="false"
       class="w-full border-spacing-0 border-separate text-sm {{
-        (invoiceDetailsService.loading$ | async) === true ? 'loading' : ''
+        (invoiceTimeListService.loading$ | async) === true ? 'loading' : ''
       }}"
     >
       <thead>
@@ -192,7 +192,6 @@
             width="120px"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
             [hq-sort-header]="sortColumn.StaffName"
-            (click)="onSortClick(sortColumn.StaffName)"
           >
             Staff
           </th>
@@ -201,7 +200,6 @@
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
             [hq-sort-header]="sortColumn.Date"
-            (click)="onSortClick(sortColumn.Date)"
           >
             Date
           </th>
@@ -210,7 +208,6 @@
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
             [hq-sort-header]="sortColumn.ChargeCode"
-            (click)="onSortClick(sortColumn.ChargeCode)"
           >
             Chrg Code
           </th>
@@ -240,7 +237,6 @@
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
             [hq-sort-header]="sortColumn.HoursApproved"
-            (click)="onSortClick(sortColumn.HoursApproved)"
           >
             Hrs
           </th>
@@ -268,7 +264,7 @@
       @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
         <tr
           hq-invoice-new-time-entry
-          [chargeCodes]="invoiceDetailsService.chargeCodes$ | async"
+          [chargeCodes]="invoiceTimeListService.chargeCodes$ | async"
           (hqInvoiceTimeChange)="upsertTime($event)"
           class="sticky top-[39px] bg-black-alt border-spacing-0 border-separate text-left"
         ></tr>
@@ -373,7 +369,7 @@
             </tr>
           }
         }
-      } @else if (invoiceDetailsService.loading$ | async) {
+      } @else if (invoiceTimeListService.loading$ | async) {
         <tr>
           <td [colSpan]="999" class="bg-black-alt text-gray-50">
             <h1 class="text-center py-4 font-bold">Loading...</h1>

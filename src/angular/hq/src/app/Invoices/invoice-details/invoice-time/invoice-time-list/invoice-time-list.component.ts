@@ -1,15 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   combineLatest,
+  filter,
   firstValueFrom,
   map,
   Observable,
+  shareReplay,
   Subject,
   switchMap,
   takeUntil,
+  tap,
+  distinctUntilChanged, // added
 } from 'rxjs';
 import { GetClientRecordV1 } from '../../../../models/clients/get-client-v1';
 import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
@@ -38,6 +42,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CreateInvoicedTimeRequestV1 } from '../../../../models/times/create-invoiced-time-v1';
 import { InRolePipe } from '../../../../pipes/in-role.pipe';
 import FileSaver from 'file-saver';
+import { InvoiceTimeListService } from '../../../service/invoice-time-list.service';
 
 @Component({
   selector: 'hq-invoice-time-list',
@@ -54,12 +59,12 @@ import FileSaver from 'file-saver';
   providers: [
     {
       provide: BaseListService,
-      useExisting: TimeListService,
+      useExisting: InvoiceTimeListService,
     },
   ],
   templateUrl: './invoice-time-list.component.html',
 })
-export class InvoiceTimeListComponent implements OnDestroy {
+export class InvoiceTimeListComponent implements OnDestroy, OnInit {
   sortColumn = SortColumn;
   sortDirection = SortDirection;
 
@@ -69,9 +74,7 @@ export class InvoiceTimeListComponent implements OnDestroy {
 
   apiErrors: string[] = [];
 
-  invoice$: Observable<GetInvoiceDetailsRecordV1>;
   times$: Observable<GetTimeRecordV1[]>;
-  currentClient$: Observable<GetClientRecordV1>;
   chargeCodes?: Array<GetChargeCodeRecordV1>;
 
   invoiceId: string | null = null;
@@ -79,27 +82,33 @@ export class InvoiceTimeListComponent implements OnDestroy {
 
   constructor(
     private hqService: HQService,
-    public invoiceDetailsService: InvoiceDetaisService,
+    public invoiceTimeListService: InvoiceTimeListService,
     private route: ActivatedRoute,
     private router: Router,
     private confirmModalService: HQConfirmationModalService,
     private modalService: ModalService,
     private toastService: ToastService,
   ) {
-    this.invoiceDetailsService.invoiced$.next(true);
-    this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
-      map((invoice) => {
-        this.invoiceId = invoice.id;
-        return invoice;
-      }),
-      takeUntil(this.destroy),
-    );
-    this.currentClient$ = this.invoiceDetailsService.client$.pipe(
-      map((client) => client),
-      takeUntil(this.destroy),
-    );
+    this.invoiceTimeListService.invoiced$.next(true);
 
-    this.times$ = this.invoiceDetailsService.records$.pipe(map((r) => r));
+    this.times$ = this.invoiceTimeListService.records$.pipe(map((r) => r));
+  }
+
+  ngOnInit(): void {
+    const invoiceRoute = this.route.parent?.parent; 
+    invoiceRoute?.paramMap
+      .pipe(
+        map((pm) => pm.get('invoiceId')),
+        filter((id): id is string => !!id),
+        distinctUntilChanged(),
+        takeUntil(this.destroy),
+      )
+      .subscribe((id) => {
+        this.invoiceId = id;
+        console.log(id);
+        this.invoiceTimeListService.invoiceIdSubject.next(id);
+        this.invoiceTimeListService.refresh();
+      });
   }
 
   async updateInvoicedHours(time: GetTimeRecordV1, event: Event) {
@@ -123,11 +132,7 @@ export class InvoiceTimeListComponent implements OnDestroy {
     //  Call API
     await firstValueFrom(this.hqService.upsertTimeHoursInvoicedV1(request));
     this.toastService.show('Updated', 'Approved hours have been updated.');
-    this.invoiceDetailsService.invoiceRefresh();
-  }
-
-  onSortClick(sortColumn: SortColumn) {
-    this.invoiceDetailsService.onSortClick(sortColumn);
+    this.invoiceTimeListService.refresh();
   }
 
   async upsertTime(event: HQInvoiceTimeChangeEvent) {
@@ -153,11 +158,11 @@ export class InvoiceTimeListComponent implements OnDestroy {
 
       if (event.id) {
         this.toastService.show('Success', 'Time entry successfully updated.');
-        this.invoiceDetailsService.refresh();
+        this.invoiceTimeListService.refresh();
         // this.planningPointsRequestTrigger$.next(); // TODO: Trigger this
       } else {
         this.toastService.show('Success', 'Time entry successfully created.');
-        this.invoiceDetailsService.refresh();
+        this.invoiceTimeListService.refresh();
         // this.planningPointsRequestTrigger$.next();
       }
     } catch (err) {
@@ -193,18 +198,18 @@ export class InvoiceTimeListComponent implements OnDestroy {
 
   async removeTime(id: string) {
     await firstValueFrom(this.hqService.removeTimeFromInvoiceV1({ id: id }));
-    this.invoiceDetailsService.invoiceRefresh();
+    this.invoiceTimeListService.refresh();
   }
 
   async exportTime() {
     const combinedParams = {
-      search: this.invoiceDetailsService.search$,
-      skip: this.invoiceDetailsService.skip$,
-      invoiceId: this.invoiceDetailsService.invoiceId$,
-      clientId: this.invoiceDetailsService.clientId$,
-      take: this.invoiceDetailsService.itemsPerPage$,
-      sortBy: this.invoiceDetailsService.sortOption$,
-      sortDirection: this.invoiceDetailsService.sortDirection$,
+      search: this.invoiceTimeListService.search$,
+      skip: this.invoiceTimeListService.skip$,
+      invoiceId: this.invoiceTimeListService.invoiceId$,
+      // clientId: this.invoiceTimeListService.clientId$,
+      take: this.invoiceTimeListService.itemsPerPage$,
+      sortBy: this.invoiceTimeListService.sortOption$,
+      sortDirection: this.invoiceTimeListService.sortDirection$,
     };
     const result = await firstValueFrom(
       combineLatest(combinedParams).pipe(
