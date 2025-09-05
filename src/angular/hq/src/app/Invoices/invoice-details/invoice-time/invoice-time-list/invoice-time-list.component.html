@@ -108,7 +108,11 @@
             <p
               class="w-24 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]"
             >
-              {{ (invoiceTimeListService.invoice$ | async)?.totalHours?.toFixed(2) || "--" }}
+              {{
+                (invoiceTimeListService.invoice$ | async)?.totalHours?.toFixed(
+                  2
+                ) || "--"
+              }}
             </p>
           </div>
           <div class="text-center text-white">
@@ -120,7 +124,11 @@
             <p
               class="w-32 text-right font-rajdhani font-semibold text-3xl tracking-[.06em]"
             >
-              {{ (invoiceTimeListService.invoice$ | async)?.invoicedHours?.toFixed(2) || "--" }}
+              {{
+                (
+                  invoiceTimeListService.invoice$ | async
+                )?.invoicedHours?.toFixed(2) || "--"
+              }}
             </p>
           </div>
         </div>

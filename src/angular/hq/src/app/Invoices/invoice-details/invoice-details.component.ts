@@ -25,7 +25,7 @@ export class InvoiceDetailsComponent implements OnDestroy, OnInit {
 
     if (invoiceId != null) {
       this.invoiceDetailsService.invoiceIdSubject.next(invoiceId);
-      this.invoiceTimeListService.invoiceId$
+      this.invoiceTimeListService.invoiceId$;
     } else {
       await this.router.navigateByUrl('/invoices');
     }

@@ -75,7 +75,7 @@ export class InvoiceAddTimeComponent implements OnDestroy {
     private toastService: ToastService,
     private modalService: ModalService,
   ) {
-    this.invoiceDetailsService
+    this.invoiceDetailsService;
     this.invoiceDetailsService.invoiced$.next(false);
     this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
       map((invoice) => invoice),

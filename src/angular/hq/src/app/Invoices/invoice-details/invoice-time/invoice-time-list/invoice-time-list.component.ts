@@ -8,19 +8,14 @@ import {
   firstValueFrom,
   map,
   Observable,
-  shareReplay,
   Subject,
   switchMap,
   takeUntil,
-  tap,
   distinctUntilChanged, // added
 } from 'rxjs';
-import { GetClientRecordV1 } from '../../../../models/clients/get-client-v1';
 import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../../../services/hq.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { InvoiceDetaisService } from '../../../service/invoice-details.service';
-import { GetInvoiceDetailsRecordV1 } from '../../../../models/Invoices/get-invoice-details-v1';
 import {
   GetTimeRecordV1,
   SortColumn,
@@ -28,7 +23,6 @@ import {
 import { roundToNextQuarter } from '../../../../common/functions/round-to-next-quarter';
 import { SortDirection } from '../../../../models/common/sort-direction';
 import { BaseListService } from '../../../../core/services/base-list.service';
-import { TimeListService } from '../../../../times/time-list/TimeList.service';
 import { HQRole } from '../../../../enums/hqrole';
 import { HQConfirmationModalService } from '../../../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { ModalService } from '../../../../services/modal.service';
@@ -94,8 +88,8 @@ export class InvoiceTimeListComponent implements OnDestroy, OnInit {
     this.times$ = this.invoiceTimeListService.records$.pipe(map((r) => r));
   }
 
-  ngOnInit(): void {
-    const invoiceRoute = this.route.parent?.parent; 
+  async ngOnInit() {
+    const invoiceRoute = this.route.parent?.parent;
     invoiceRoute?.paramMap
       .pipe(
         map((pm) => pm.get('invoiceId')),
@@ -103,11 +97,14 @@ export class InvoiceTimeListComponent implements OnDestroy, OnInit {
         distinctUntilChanged(),
         takeUntil(this.destroy),
       )
-      .subscribe((id) => {
-        this.invoiceId = id;
-        console.log(id);
-        this.invoiceTimeListService.invoiceIdSubject.next(id);
-        this.invoiceTimeListService.refresh();
+      .subscribe({
+        next: (id) => {
+          this.invoiceId = id;
+          console.log(id);
+          this.invoiceTimeListService.invoiceIdSubject.next(id);
+          this.invoiceTimeListService.refresh();
+        },
+        error: console.error,
       });
   }
 

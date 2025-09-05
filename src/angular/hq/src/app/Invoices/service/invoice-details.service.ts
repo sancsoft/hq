@@ -314,6 +314,4 @@ export class InvoiceDetaisService extends BaseListService<
   invoiceRefresh() {
     this.invoiceRefreshSubject.next();
   }
-
- 
 }
