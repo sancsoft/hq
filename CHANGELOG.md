@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2025-09-04
+
+### Added
+
+- Invoicing functionality
+- Upcoming filter to Holiday list
+- Project manager filter to points page
+
+### Changed
+
+- Package updates
+- Upgraded Duende.AccessTokenManagement
+- Staff hour mail priority to normal
+- Added ability to enter activity and/or tasks based on project configuration
+
+### Fixed
+
+- PSR unsubmitted styling
+- Fixed staff selection in PSR list
+- Autocomplete closing on clicking items
+- Employee hours email template styling
+- Markdown styling for list elements
+
+## [0.5.9] - 2025-06-23
+
+### Changed
+
+- Upgraded Duende.AccessTokenManagement
+
+## [0.5.8] - 2025-06-17
+
+### Changed
+
+- Package updates
+
+## [0.5.7] - 2025-06-17
+
+### Fixed
+
+- Employee hours email template styling
+
+## [0.5.6] - 2025-02-13
+
+### Fixed
+
+- Time entry validation
+
+## [0.5.5] - 2025-02-12
+
+### Changed
+
+- Staff list feedback
+
+### Fixed
+
+-  PSR unsubmitted styling
+
 ## [0.5.4] - 2025-02-10
 
 ### Removed
@@ -748,7 +805,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.5.4...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/sancsoft/hq/releases/tag/v0.6.0
+[0.5.9]: https://github.com/sancsoft/hq/compare/v0.5.8...v0.5.9
+[0.5.8]: https://github.com/sancsoft/hq/compare/v0.5.7...v0.5.8
+[0.5.7]: https://github.com/sancsoft/hq/compare/v0.5.6...v0.5.7
+[0.5.6]: https://github.com/sancsoft/hq/compare/v0.5.5...v0.5.6
+[0.5.5]: https://github.com/sancsoft/hq/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/sancsoft/hq/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/sancsoft/hq/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/sancsoft/hq/compare/v0.5.1...v0.5.2

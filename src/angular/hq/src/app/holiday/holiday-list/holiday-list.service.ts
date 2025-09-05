@@ -21,6 +21,7 @@ export class HolidayListService extends BaseListService<
     return combineLatest({
       search: this.search$,
       skip: this.skip$,
+      upcomingOnly: this.showUpcoming$,
       take: this.itemsPerPage$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
@@ -33,6 +34,6 @@ export class HolidayListService extends BaseListService<
   }
 
   constructor(private hqService: HQService) {
-    super(SortColumn.Name, SortDirection.Asc);
+    super(SortColumn.Date, SortDirection.Asc);
   }
 }

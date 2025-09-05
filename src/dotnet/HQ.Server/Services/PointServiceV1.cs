@@ -251,6 +251,7 @@ public class PointServiceV1
                     planningPoint.Id = point.Id;
                     planningPoint.ChargeCode = point.ChargeCode.Code;
                     planningPoint.ProjectId = point.ChargeCode.ProjectId;
+                    planningPoint.ProjectManagerId = point.ChargeCode.Project?.ProjectManagerId;
                     planningPoint.ProjectName = point.ChargeCode.Project?.Name;
                     planningPoint.ClientId = point.ChargeCode.Project?.ClientId;
                     planningPoint.ClientName = point.ChargeCode.Project?.Client?.Name;
@@ -281,6 +282,14 @@ public class PointServiceV1
         if (request.IsCompleted.HasValue)
         {
             response.Staff = response.Staff.Where(t => t.Completed == request.IsCompleted.Value).ToList();
+        }
+        if (request.ProjectManagerId.HasValue)
+        {
+            var projectIds = await _context.Projects
+                .Where(pr => pr.ProjectManagerId == request.ProjectManagerId.Value)
+                .Select(pr => pr.Id)
+                .ToListAsync(ct);
+            response.Staff = response.Staff.Where(t => t.Points.Any(p => p.ProjectId.HasValue && projectIds.Contains(p.ProjectId.Value))).ToList();
         }
 
         response.TotalPoints = response.Staff.Sum(t => t.Points.Where(x => x.ChargeCodeId.HasValue).Count());

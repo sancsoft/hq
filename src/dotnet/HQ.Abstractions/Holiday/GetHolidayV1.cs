@@ -17,7 +17,7 @@ public class GetHolidayV1
         public Guid? Id { get; set; }
         public Jurisdiciton? Jurisdiciton { get; set; }
         public DateOnly? Date { get; set; }
-
+        public bool? UpcomingOnly { get; set; }
         public SortColumn SortBy { get; set; } = SortColumn.Date;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
     }
