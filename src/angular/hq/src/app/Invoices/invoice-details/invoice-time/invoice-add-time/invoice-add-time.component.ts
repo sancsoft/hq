@@ -14,7 +14,6 @@ import {
 } from '../../../../models/times/get-time-v1';
 import { SortDirection } from '../../../../models/common/sort-direction';
 import { BaseListService } from '../../../../core/services/base-list.service';
-import { TimeListService } from '../../../../times/time-list/TimeList.service';
 import { HQRole } from '../../../../enums/hqrole';
 import { InRolePipe } from '../../../../pipes/in-role.pipe';
 import { roundToNextQuarter } from '../../../../common/functions/round-to-next-quarter';
@@ -44,7 +43,7 @@ interface InvoiceTimeEntry {
   providers: [
     {
       provide: BaseListService,
-      useExisting: TimeListService,
+      useExisting: InvoiceDetaisService,
     },
   ],
   templateUrl: './invoice-add-time.component.html',
@@ -71,12 +70,12 @@ export class InvoiceAddTimeComponent implements OnDestroy {
   constructor(
     private hqService: HQService,
     public invoiceDetailsService: InvoiceDetaisService,
-    public timeService: TimeListService,
     private router: Router,
     private route: ActivatedRoute,
     private toastService: ToastService,
     private modalService: ModalService,
   ) {
+    this.invoiceDetailsService;
     this.invoiceDetailsService.invoiced$.next(false);
     this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
       map((invoice) => invoice),
