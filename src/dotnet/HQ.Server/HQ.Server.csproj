@@ -8,6 +8,10 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="HQ.IntegrationTests" />
+    </ItemGroup>
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <NoWarn>CS1591</NoWarn>
     </PropertyGroup>
