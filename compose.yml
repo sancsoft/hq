@@ -1,4 +1,3 @@
-version: '3'
 services:
   dotnet:
     image: mcr.microsoft.com/devcontainers/dotnet:10.0
