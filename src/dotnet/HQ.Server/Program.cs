@@ -179,6 +179,11 @@ builder.Services.AddAuthentication(options =>
     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.SignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
+    if (builder.Environment.IsDevelopment())
+    {
+        options.RequireHttpsMetadata = false;
+    }
+
     options.Authority = builder.Configuration["AUTH_ISSUER"] ?? throw new ArgumentNullException("Undefined AUTH_ISSUER");
     options.SaveTokens = true;
     options.ClientId = "hq";
@@ -312,6 +317,211 @@ if (serverOptions.AutoMigrate)
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
     await dbContext.Database.MigrateAsync();
+
+    if(builder.Environment.IsDevelopment())
+    {
+        var sancsoft = await dbContext.Clients.SingleOrDefaultAsync(t => t.Name == "SANCSOFT");
+        if(sancsoft == null)
+        {
+            sancsoft = new()
+            {
+                Name = "SANCSOFT",
+                OfficialName = "Sanctuary Software Studio, Inc."
+            };
+
+            dbContext.Clients.Add(sancsoft);
+        }
+
+        var holidayProject = await dbContext.Projects.SingleOrDefaultAsync(t => t.Name == "HOLIDAY");
+        if(holidayProject == null)
+        {
+            holidayProject = new()
+            {
+                Name = "HOLIDAY",
+                ClientId = sancsoft.Id,
+                TimeEntryMaxHours = 8,
+                Status = ProjectStatus.Ongoing,
+                BookingHours = 0,
+                BookingPeriod = Period.Month,
+            };
+
+            dbContext.Projects.Add(holidayProject);
+        }
+
+        var holidayChargeCode = await dbContext.ChargeCodes.SingleOrDefaultAsync(t => t.ProjectId == holidayProject.Id);
+        if(holidayChargeCode == null)
+        {
+            holidayChargeCode = new()
+            {
+                ProjectId = holidayProject.Id,
+                Code = "S1022",
+                Active = true,
+                Activity = ChargeCodeActivity.General,
+                Billable = false,
+            };
+
+            dbContext.ChargeCodes.Add(holidayChargeCode);
+        }
+
+        var vacationProject = await dbContext.Projects.SingleOrDefaultAsync(t => t.Name == "VACATION");
+        if(vacationProject == null)
+        {
+            vacationProject = new()
+            {
+                Name = "VACATION",
+                ClientId = sancsoft.Id,
+                TimeEntryMaxHours = 8,
+                Status = ProjectStatus.Ongoing,
+                BookingHours = 0,
+                BookingPeriod = Period.Month,
+            };
+
+            dbContext.Projects.Add(vacationProject);
+        }
+
+        var vacationChargeCode = await dbContext.ChargeCodes.SingleOrDefaultAsync(t => t.ProjectId == vacationProject.Id);
+        if(vacationChargeCode == null)
+        {
+            vacationChargeCode = new()
+            {
+                ProjectId = vacationProject.Id,
+                Code = "S1001",
+                Active = true,
+                Activity = ChargeCodeActivity.General,
+                Billable = false,
+            };
+
+            dbContext.ChargeCodes.Add(vacationChargeCode);
+        }
+
+        var sickProject = await dbContext.Projects.SingleOrDefaultAsync(t => t.Name == "SICK");
+        if(sickProject == null)
+        {
+            sickProject = new()
+            {
+                Name = "SICK",
+                ClientId = sancsoft.Id,
+                TimeEntryMaxHours = 8,
+                Status = ProjectStatus.Ongoing,
+                BookingHours = 0,
+                BookingPeriod = Period.Month,
+            };
+
+            dbContext.Projects.Add(sickProject);
+        }
+
+        var sickChargeCode = await dbContext.ChargeCodes.SingleOrDefaultAsync(t => t.ProjectId == sickProject.Id);
+        if(sickChargeCode == null)
+        {
+            sickChargeCode = new()
+            {
+                ProjectId = sickProject.Id,
+                Code = "S1002",
+                Active = true,
+                Activity = ChargeCodeActivity.General,
+                Billable = false,
+            };
+
+            dbContext.ChargeCodes.Add(sickChargeCode);
+        }
+
+        var adminStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "admin@localhost");
+        if(adminStaff == null)
+        {
+            adminStaff = new()
+            {
+                Id = Guid.Parse("32bded97-1d95-48c3-966a-fea9756df4aa"),
+                Email = "admin@localhost",
+                FirstName = "Admin",
+                LastName = "User",
+                Name = "admin",
+                StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                WorkHours = 40,
+                VacationHours = 80,
+                Jurisdiciton = Jurisdiciton.USA,
+            };
+
+            dbContext.Staff.Add(adminStaff);
+        }
+
+        var executiveStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "executive@localhost");
+        if(executiveStaff == null)
+        {
+            executiveStaff = new()
+            {
+                Id = Guid.Parse("7a3f8c2e-5b1d-4f9a-8e6c-2d4b7a9f1c3e"),
+                Email = "executive@localhost",
+                FirstName = "Executive",
+                LastName = "User",
+                Name = "executive",
+                StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                WorkHours = 40,
+                VacationHours = 80,
+                Jurisdiciton = Jurisdiciton.USA,
+            };
+
+            dbContext.Staff.Add(executiveStaff);
+        }
+
+        var managerStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "manager@localhost");
+        if(managerStaff == null)
+        {
+            managerStaff = new()
+            {
+                Id = Guid.Parse("9c5e1f7a-3d8b-4a2e-b6f9-1c7d4e8a3b5f"),
+                Email = "manager@localhost",
+                FirstName = "Manager",
+                LastName = "User",
+                Name = "manager",
+                StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                WorkHours = 40,
+                VacationHours = 80,
+                Jurisdiciton = Jurisdiciton.USA,
+            };
+
+            dbContext.Staff.Add(managerStaff);
+        }
+
+        var partnerStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "partner@localhost");
+        if(partnerStaff == null)
+        {
+            partnerStaff = new()
+            {
+                Id = Guid.Parse("4e7b2d9f-6a1c-4e8b-9d3f-5c7a2e4b8d1f"),
+                Email = "partner@localhost",
+                FirstName = "Partner",
+                LastName = "User",
+                Name = "partner",
+                StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                WorkHours = 40,
+                VacationHours = 80,
+                Jurisdiciton = Jurisdiciton.USA,
+            };
+
+            dbContext.Staff.Add(partnerStaff);
+        }
+
+        var staffStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "staff@localhost");
+        if(staffStaff == null)
+        {
+            staffStaff = new()
+            {
+                Id = Guid.Parse("2b8d4f6a-9e3c-4a7b-8f1d-3e5c9a7b2d4f"),
+                Email = "staff@localhost",
+                FirstName = "Staff",
+                LastName = "User",
+                Name = "staff",
+                StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                WorkHours = 40,
+                VacationHours = 80,
+                Jurisdiciton = Jurisdiciton.USA,
+            };
+
+            dbContext.Staff.Add(staffStaff);
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
 }
 
 // Setup recurring hangfire jobs
