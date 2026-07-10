@@ -1,3 +1,4 @@
+name: hq
 services:
   hq-db:
     image: ghcr.io/sancsoft/postgresql:18-202607050018-trixie
@@ -87,6 +88,18 @@ services:
       - loki-data:/loki
     ports:
       - 5008:3100
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "23391:80"
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+      - pgadmin-data:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pantheon-cloud.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
 
 volumes:
   hq-db-data:
@@ -94,3 +107,4 @@ volumes:
   tempo-data:
   prom-data:
   loki-data:
+  pgadmin-data:
