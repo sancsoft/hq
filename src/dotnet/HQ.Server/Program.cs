@@ -43,7 +43,7 @@ builder.Configuration.AddEnvironmentVariables("HQ_");
 
 var serverOptions = builder.Configuration.GetSection(HQServerOptions.Server).Get<HQServerOptions>() ?? throw new Exception("Error parsing configuration section 'Server'.");
 
-if (serverOptions.OpenTelemetry)
+if (serverOptions.OpenTelemetry && serverOptions.OpenTelemetryEndpointUrl != null)
 {
     var serviceName = "hq-server";
     var serviceVersion = VersionNumber.GetVersionNumber();
@@ -61,15 +61,15 @@ if (serverOptions.OpenTelemetry)
             .AddNpgsql()
             .AddHttpClientInstrumentation()
             .AddHangfireInstrumentation()
-            .AddOtlpExporter())
+            .AddOtlpExporter(o => o.Endpoint = serverOptions.OpenTelemetryEndpointUrl))
         .WithMetrics(metrics => metrics
             .AddAspNetCoreInstrumentation()
             .AddProcessInstrumentation()
             .AddHttpClientInstrumentation()
             .SetExemplarFilter(ExemplarFilterType.TraceBased)
-            .AddOtlpExporter())
+            .AddOtlpExporter(o => o.Endpoint = serverOptions.OpenTelemetryEndpointUrl))
         .WithLogging(logging => logging
-            .AddOtlpExporter());
+            .AddOtlpExporter(o => o.Endpoint = serverOptions.OpenTelemetryEndpointUrl));
 }
 
 // Add services to the container.
