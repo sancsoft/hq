@@ -21,7 +21,7 @@ namespace HQ.Abstractions.Emails
             Message = "Your time entry has been rejected. Please review and resubmit.",
             Hours = 0,
             ButtonLabel = "Open HQ",
-            ButtonUrl = new Uri("http://hq.localhost:4200/dashboard"),
+            ButtonUrl = new Uri("http://localhost:4200/dashboard"),
             Date = new DateOnly(2024, 7, 3),
             ChargeCode = "P1041",
             Client = "SANCSOFT",
