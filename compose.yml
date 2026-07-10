@@ -56,14 +56,28 @@ services:
     volumes:
     - .:/workspace:cached
     command: sleep infinity
-  db:
-    image: postgres:16
-    restart: always
+  hq-db:
+    image: ghcr.io/sancsoft/postgresql:18-202607050018-trixie
+    shm_size: 128mb
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pantheon
+    ports:
+      - 58807:5432
     volumes:
-    - db-data:/var/lib/postgresql/data
-    - ./hack/db-init:/docker-entrypoint-initdb.d
+      - pantheon-db-data:/var/lib/postgresql
+  keycloak-db:
+    image: ghcr.io/sancsoft/postgresql:18-202607050018-trixie
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: keycloak
+    ports:
+      - 42556:5432
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql
   grafana:
     image: grafana/grafana:11.1.5
     restart: unless-stopped
