@@ -1,9 +1,0 @@
-{
-    "name": "HQ Auth Container",
-    "dockerComposeFile": [
-        "../../docker-compose.yml"
-    ],
-    "service": "auth-dev",
-    "shutdownAction": "none",
-    "workspaceFolder": "/workspace/src/auth/"
-}
