@@ -323,7 +323,7 @@
     "realmRoles" : [ ],
     "clientRoles" : {
       "realm-management" : [ "realm-admin" ],
-      "hq" : [ "administrator" ]
+      "hq" : [ "administrator", "staff" ]
     }
   }, {
     "id" : "548d72e2-8497-49cb-9799-5a8a3bc93f47",
@@ -334,7 +334,7 @@
     "realmRoles" : [ ],
     "clientRoles" : {
       "realm-management" : [ "manage-users" ],
-      "hq" : [ "executive" ]
+      "hq" : [ "executive", "staff"  ]
     }
   }, {
     "id" : "54401287-788e-426d-baf5-5e1af31b1b91",
@@ -345,7 +345,7 @@
     "realmRoles" : [ ],
     "clientRoles" : {
       "realm-management" : [ "query-users" ],
-      "hq" : [ "manager" ]
+      "hq" : [ "manager", "staff"  ]
     }
   }, {
     "id" : "3e948411-852b-4486-a886-ea4667ad7d0e",
@@ -356,7 +356,7 @@
     "realmRoles" : [ ],
     "clientRoles" : {
       "realm-management" : [ "query-users" ],
-      "hq" : [ "partner" ]
+      "hq" : [ "partner", "staff"  ]
     }
   }, {
     "id" : "e1880d68-41d1-4137-8a99-17abc176cf1f",
@@ -432,6 +432,7 @@
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-hq" ],
     "notBefore" : 0,
+    "attributes" : { "staff_id" : "32bded97-1d95-48c3-966a-fea9756df4aa" },
     "groups" : [ "/administrator" ]
   }, {
     "id" : "9fd7143b-7567-4042-9cbd-45c3add73434",
@@ -455,6 +456,7 @@
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-hq" ],
     "notBefore" : 0,
+    "attributes" : { "staff_id" : "7a3f8c2e-5b1d-4f9a-8e6c-2d4b7a9f1c3e" },
     "groups" : [ "/executive" ]
   }, {
     "id" : "e5048712-c4cd-4145-886c-1f4df5202d20",
@@ -478,6 +480,7 @@
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-hq" ],
     "notBefore" : 0,
+    "attributes" : { "staff_id" : "9c5e1f7a-3d8b-4a2e-b6f9-1c7d4e8a3b5f" },
     "groups" : [ "/manager" ]
   }, {
     "id" : "eb9a7122-9ce9-414c-bde9-d11ec20994a6",
@@ -501,6 +504,7 @@
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-hq" ],
     "notBefore" : 0,
+    "attributes" : { "staff_id" : "4e7b2d9f-6a1c-4e8b-9d3f-5c7a2e4b8d1f" },
     "groups" : [ "/partner" ]
   }, {
     "id" : "96788a46-8a12-41e8-b718-688b47abc873",
@@ -524,6 +528,7 @@
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-hq" ],
     "notBefore" : 0,
+    "attributes" : { "staff_id" : "2b8d4f6a-9e3c-4a7b-8f1d-3e5c9a7b2d4f" },
     "groups" : [ "/staff" ]
   } ],
   "scopeMappings" : [ {
@@ -666,14 +671,14 @@
     "clientId" : "hq",
     "name" : "HQ",
     "description" : "",
-    "rootUrl" : "http://hq.localhost:4200",
-    "adminUrl" : "http://hq.localhost:4200",
-    "baseUrl" : "http://hq.localhost:4200",
+    "rootUrl" : "http://localhost:4200",
+    "adminUrl" : "http://localhost:4200",
+    "baseUrl" : "http://localhost:4200",
     "surrogateAuthRequired" : false,
     "enabled" : true,
     "alwaysDisplayInConsole" : true,
     "clientAuthenticatorType" : "client-secret",
-    "redirectUris" : [ "http://hq.localhost:4200/callback", "http://api.hq.localhost:5186/swagger/oauth2-redirect.html" ],
+    "redirectUris" : [ "http://localhost:4200/callback", "http://localhost:5186/swagger/oauth2-redirect.html" ],
     "webOrigins" : [ "+" ],
     "notBefore" : 0,
     "bearerOnly" : false,
@@ -688,7 +693,7 @@
     "attributes" : {
       "oidc.ciba.grant.enabled" : "false",
       "backchannel.logout.session.required" : "true",
-      "post.logout.redirect.uris" : "http://hq.localhost:4200",
+      "post.logout.redirect.uris" : "http://localhost:4200",
       "display.on.consent.screen" : "false",
       "oauth2.device.authorization.grant.enabled" : "true",
       "backchannel.logout.revoke.offline.tokens" : "false"
