@@ -10,7 +10,7 @@ processors:
 
 exporters:
   otlp/tempo:
-    endpoint: tempo:4317
+    endpoint: tempo:4318
     tls:
       insecure: true
   otlphttp/loki:

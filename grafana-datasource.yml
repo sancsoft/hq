@@ -51,7 +51,6 @@ datasources:
     httpMethod: GET
     serviceMap:
       datasourceUid: prometheus
-    tracesToLogs: Null
     tracesToLogsV2:
       datasourceUid: 'loki'
       tags: [{ key: 'service.name', value: 'service_name' }]
