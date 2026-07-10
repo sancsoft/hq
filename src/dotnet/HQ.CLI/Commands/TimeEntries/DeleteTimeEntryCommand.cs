@@ -29,7 +29,7 @@ namespace HQ.CLI.Commands.TimeEntries
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, DeleteTimeEntrySettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, DeleteTimeEntrySettings settings, CancellationToken cancellationToken = default)
         {
             var result = await _hqService.DeleteTimeEntryV1(new()
             {

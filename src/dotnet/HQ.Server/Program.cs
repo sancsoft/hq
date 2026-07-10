@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Net;
 using System.Security.Claims;
 
+using Duende.AccessTokenManagement.OpenIdConnect;
+
 using Hangfire;
 
 using HQ;
@@ -23,7 +25,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 using Npgsql;
 
@@ -85,14 +87,14 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
         options.KnownProxies.Add(IPAddress.Parse(knownProxy.Value!));
     }
 
-    options.KnownNetworks.Clear();
+    options.KnownIPNetworks.Clear();
     foreach (var knownNetwork in forwardedHeadersOptions.GetSection("KnownNetworks").GetChildren())
     {
-        options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(
+        options.KnownIPNetworks.Add(new System.Net.IPNetwork(
             IPAddress.Parse(knownNetwork.GetValue<string>("Prefix")!),
             knownNetwork.GetValue<int>("PrefixLength")!));
 
-        Console.WriteLine(String.Join(',', options.KnownNetworks.Select(t => t.Prefix + "/" + t.PrefixLength)));
+        Console.WriteLine(String.Join(',', options.KnownIPNetworks.Select(t => t.BaseAddress + "/" + t.PrefixLength)));
     }
 });
 

@@ -31,7 +31,7 @@ namespace HQ.CLI.Commands.Projects
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, EditProjectSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, EditProjectSettings settings, CancellationToken cancellationToken = default)
         {
             var result = await _hqService.GetProjectsV1(new()
             {

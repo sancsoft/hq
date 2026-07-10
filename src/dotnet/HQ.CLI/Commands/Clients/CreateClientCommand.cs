@@ -30,7 +30,7 @@ namespace HQ.CLI.Commands.Clients
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, CreateClientSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, CreateClientSettings settings, CancellationToken cancellationToken = default)
         {
             var model = new UpsertClientV1.Request();
 

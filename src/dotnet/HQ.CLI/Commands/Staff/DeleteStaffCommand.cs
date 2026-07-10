@@ -14,13 +14,13 @@ using Spectre.Console.Json;
 
 namespace HQ.CLI.Commands.Staff
 {
-    internal class DeleteStaffettings : HQCommandSettings
+    internal class DeleteStaffSettings : HQCommandSettings
     {
         [CommandArgument(0, "<id>")]
         public Guid Id { get; set; }
     }
 
-    internal class DeleteStaffCommand : AsyncCommand<DeleteStaffettings>
+    internal class DeleteStaffCommand : AsyncCommand<DeleteStaffSettings>
     {
         private readonly HQServiceV1 _hqService;
 
@@ -29,7 +29,7 @@ namespace HQ.CLI.Commands.Staff
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, DeleteStaffettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, DeleteStaffSettings settings, CancellationToken cancellationToken = default)
         {
             var result = await _hqService.DeleteStaffV1(new()
             {

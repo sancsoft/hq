@@ -75,7 +75,7 @@ namespace HQ.CLI.Commands.TimeEntries
             _hqConfig = hQConfig;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, GetTimeEntriesSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, GetTimeEntriesSettings settings, CancellationToken cancellationToken = default)
         {
             DateOnly? startDate = null;
             DateOnly? endDate = null;

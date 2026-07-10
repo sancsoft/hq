@@ -29,7 +29,7 @@ namespace HQ.CLI.Commands.Projects
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, CreateProjectSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, CreateProjectSettings settings, CancellationToken cancellationToken = default)
         {
             var model = new UpsertProjectV1.Request();
 

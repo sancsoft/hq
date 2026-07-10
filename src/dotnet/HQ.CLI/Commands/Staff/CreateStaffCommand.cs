@@ -16,11 +16,11 @@ using Spectre.Console.Json;
 
 namespace HQ.CLI.Commands.Staff
 {
-    internal class CreateStaffettings : HQCommandSettings
+    internal class CreateStaffSettings : HQCommandSettings
     {
     }
 
-    internal class CreateStaffCommand : AsyncCommand<CreateStaffettings>
+    internal class CreateStaffCommand : AsyncCommand<CreateStaffSettings>
     {
         private readonly HQServiceV1 _hqService;
 
@@ -29,7 +29,7 @@ namespace HQ.CLI.Commands.Staff
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, CreateStaffettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, CreateStaffSettings settings, CancellationToken cancellationToken = default)
         {
             var model = new UpsertStaffV1.Request();
 

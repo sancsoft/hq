@@ -29,7 +29,7 @@ namespace HQ.CLI.Commands.Clients
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, DeleteClientSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, DeleteClientSettings settings, CancellationToken cancellationToken = default)
         {
             var result = await _hqService.DeleteClientV1(new()
             {

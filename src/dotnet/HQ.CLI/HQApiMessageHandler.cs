@@ -7,11 +7,11 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 
 using Microsoft.AspNetCore.DataProtection;
 
-using static IdentityModel.OidcConstants;
+using static Duende.IdentityModel.OidcConstants;
 
 namespace HQ.CLI
 {

@@ -52,7 +52,10 @@ public class MailgunEmailService : IEmailService
         {
             foreach (var attachment in attachments)
             {
-                builder.Attachments.Add(attachment.Name, attachment.ContentStream, ct);
+                if(!String.IsNullOrEmpty(attachment.Name))
+                {
+                    builder.Attachments.Add(attachment.Name, attachment.ContentStream, ct);   
+                }
             }
         }
 
