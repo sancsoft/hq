@@ -30,13 +30,13 @@ public class SwaggerDefaultValues : IOperationFilter
         {
             // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/blob/b7cf75e7905050305b115dd96640ddd6e74c7ac9/src/Swashbuckle.AspNetCore.SwaggerGen/SwaggerGenerator/SwaggerGenerator.cs#L383-L387
             var responseKey = responseType.IsDefaultResponse ? "default" : responseType.StatusCode.ToString();
-            if(operation.Responses == null)
+            if (operation.Responses == null)
             {
                 continue;
             }
 
             var response = operation.Responses[responseKey];
-            if(response.Content == null)
+            if (response.Content == null)
             {
                 continue;
             }

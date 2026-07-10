@@ -57,9 +57,9 @@ public class SMTPEmailService : IEmailService
         {
             foreach (var attachment in attachments)
             {
-                if(!String.IsNullOrEmpty(attachment.Name))
+                if (!String.IsNullOrEmpty(attachment.Name))
                 {
-                    builder.Attachments.Add(attachment.Name, attachment.ContentStream, ct);   
+                    builder.Attachments.Add(attachment.Name, attachment.ContentStream, ct);
                 }
             }
         }

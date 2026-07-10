@@ -10,6 +10,7 @@ using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
 namespace HQ.Abstractions;
+
 public static class SHA512Extensions
 {
     public static string ComputeHashAsString(this SHA512 sha512, byte[] bytes)

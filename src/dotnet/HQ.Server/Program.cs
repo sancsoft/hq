@@ -318,10 +318,10 @@ if (serverOptions.AutoMigrate)
     var dbContext = scope.ServiceProvider.GetRequiredService<HQDbContext>();
     await dbContext.Database.MigrateAsync();
 
-    if(builder.Environment.IsDevelopment())
+    if (builder.Environment.IsDevelopment())
     {
         var sancsoft = await dbContext.Clients.SingleOrDefaultAsync(t => t.Name == "SANCSOFT");
-        if(sancsoft == null)
+        if (sancsoft == null)
         {
             sancsoft = new()
             {
@@ -333,7 +333,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var holidayProject = await dbContext.Projects.SingleOrDefaultAsync(t => t.Name == "HOLIDAY");
-        if(holidayProject == null)
+        if (holidayProject == null)
         {
             holidayProject = new()
             {
@@ -349,7 +349,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var holidayChargeCode = await dbContext.ChargeCodes.SingleOrDefaultAsync(t => t.ProjectId == holidayProject.Id);
-        if(holidayChargeCode == null)
+        if (holidayChargeCode == null)
         {
             holidayChargeCode = new()
             {
@@ -364,7 +364,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var vacationProject = await dbContext.Projects.SingleOrDefaultAsync(t => t.Name == "VACATION");
-        if(vacationProject == null)
+        if (vacationProject == null)
         {
             vacationProject = new()
             {
@@ -380,7 +380,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var vacationChargeCode = await dbContext.ChargeCodes.SingleOrDefaultAsync(t => t.ProjectId == vacationProject.Id);
-        if(vacationChargeCode == null)
+        if (vacationChargeCode == null)
         {
             vacationChargeCode = new()
             {
@@ -395,7 +395,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var sickProject = await dbContext.Projects.SingleOrDefaultAsync(t => t.Name == "SICK");
-        if(sickProject == null)
+        if (sickProject == null)
         {
             sickProject = new()
             {
@@ -411,7 +411,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var sickChargeCode = await dbContext.ChargeCodes.SingleOrDefaultAsync(t => t.ProjectId == sickProject.Id);
-        if(sickChargeCode == null)
+        if (sickChargeCode == null)
         {
             sickChargeCode = new()
             {
@@ -426,7 +426,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var adminStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "admin@localhost");
-        if(adminStaff == null)
+        if (adminStaff == null)
         {
             adminStaff = new()
             {
@@ -445,7 +445,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var executiveStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "executive@localhost");
-        if(executiveStaff == null)
+        if (executiveStaff == null)
         {
             executiveStaff = new()
             {
@@ -464,7 +464,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var managerStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "manager@localhost");
-        if(managerStaff == null)
+        if (managerStaff == null)
         {
             managerStaff = new()
             {
@@ -483,7 +483,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var partnerStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "partner@localhost");
-        if(partnerStaff == null)
+        if (partnerStaff == null)
         {
             partnerStaff = new()
             {
@@ -502,7 +502,7 @@ if (serverOptions.AutoMigrate)
         }
 
         var staffStaff = await dbContext.Staff.SingleOrDefaultAsync(t => t.Email == "staff@localhost");
-        if(staffStaff == null)
+        if (staffStaff == null)
         {
             staffStaff = new()
             {

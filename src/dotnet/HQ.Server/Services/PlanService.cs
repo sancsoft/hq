@@ -11,6 +11,7 @@ using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 namespace HQ.Server.Services;
+
 public class PlanServiceV1
 {
     private readonly HQDbContext _context;
