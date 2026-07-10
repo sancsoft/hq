@@ -13,4 +13,6 @@ public class HQServerOptions
 
     [Required]
     public Uri WebUrl { get; set; } = null!;
+
+    public Uri? OpenTelemetryEndpointUrl { get; set; } = null!;
 }

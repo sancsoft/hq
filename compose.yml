@@ -1,0 +1,110 @@
+name: hq
+services:
+  hq-db:
+    image: ghcr.io/sancsoft/postgresql:18-202607050018-trixie
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hq
+    ports:
+      - 24393:5432
+    volumes:
+      - hq-db-data:/var/lib/postgresql
+  keycloak-db:
+    image: ghcr.io/sancsoft/postgresql:18-202607050018-trixie
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: keycloak
+    ports:
+      - 22720:5432
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql
+  keycloak:
+    build: src/auth/
+    depends_on:
+    - keycloak-db
+    ports:
+      - 33996:8080
+    volumes:
+    - ./src/auth/import:/opt/keycloak/data/import
+    - ./src/auth/themes:/opt/keycloak/themes
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: localhost
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+    command: start-dev --import-realm
+  grafana:
+    image: grafana/grafana:13.1
+    restart: unless-stopped
+    ports:
+      - 29671:3000
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor traceQLStreaming metricsSummary
+    volumes:
+      - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/grafana-datasource.yml
+  tempo:
+    image: grafana/tempo:2.10.7
+    command: [ "-config.file=/etc/tempo.yml" ]
+    ports:
+      - 9703:3200
+    volumes:
+      - ./tempo.yml:/etc/tempo.yml
+      - tempo-data:/var/tempo
+  prometheus:
+    image: prom/prometheus:v3.13.1
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+      - --enable-feature=native-histograms
+    restart: unless-stopped
+    ports:
+      - 30389:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prom-data:/prometheus
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.156.0
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      - 27196:4317
+      - 27197:4318
+  loki:
+    image: grafana/loki:3.7.3
+    command: "-config.file=/etc/loki/config.yaml -target=all"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/config.yaml
+      - loki-data:/loki
+    ports:
+      - 5008:3100
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "23391:80"
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+      - pgadmin-data:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pantheon-cloud.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+
+volumes:
+  hq-db-data:
+  keycloak-db-data:
+  tempo-data:
+  prom-data:
+  loki-data:
+  pgadmin-data:

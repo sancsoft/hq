@@ -34,7 +34,7 @@ namespace HQ.CLI.Commands.TimeEntries
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, EditTimeEntryHoursSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, EditTimeEntryHoursSettings settings, CancellationToken cancellationToken = default)
         {
             var timeEntryRequest = new UpsertTimeHoursV1.Request()
             {

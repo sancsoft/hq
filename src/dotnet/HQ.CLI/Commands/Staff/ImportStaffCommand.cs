@@ -16,13 +16,13 @@ using Spectre.Console.Json;
 
 namespace HQ.CLI.Commands.Staff
 {
-    internal class ImportStaffettings : HQCommandSettings
+    internal class ImportStaffSettings : HQCommandSettings
     {
         [CommandOption("--file|-f")]
         public FileInfo File { get; set; } = null!;
     }
 
-    internal class ImportStaffCommand : AsyncCommand<ImportStaffettings>
+    internal class ImportStaffCommand : AsyncCommand<ImportStaffSettings>
     {
         private readonly HQServiceV1 _hqService;
 
@@ -31,7 +31,7 @@ namespace HQ.CLI.Commands.Staff
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, ImportStaffettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, ImportStaffSettings settings, CancellationToken cancellationToken = default)
         {
             using var stream = settings.File.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 

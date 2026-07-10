@@ -29,7 +29,7 @@ namespace HQ.CLI.Commands.Projects
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, DeleteProjectSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, DeleteProjectSettings settings, CancellationToken cancellationToken = default)
         {
             var result = await _hqService.DeleteProjectV1(new()
             {

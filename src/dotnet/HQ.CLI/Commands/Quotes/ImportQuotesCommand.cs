@@ -31,7 +31,7 @@ namespace HQ.CLI.Commands.Quotes
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, ImportQuoteSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, ImportQuoteSettings settings, CancellationToken cancellationToken = default)
         {
             using var stream = settings.File.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 

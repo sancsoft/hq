@@ -14,7 +14,7 @@ namespace HQ.Abstractions.Emails
             Heading = "Planning Points Updated",
             Message = "Your planing points have been updated. Please review them.",
             ButtonLabel = "Open HQ",
-            ButtonUrl = new Uri("http://hq.localhost:4200/dashboard"),
+            ButtonUrl = new Uri("http://localhost:4200/dashboard"),
             Date = new DateOnly(2024, 7, 3),
             Points = new List<GetPointsV1.Point> { new GetPointsV1.Point{
                 ChargeCode = "p10101",

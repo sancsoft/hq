@@ -5,6 +5,7 @@ using HQ.Abstractions.Enumerations;
 
 
 namespace HQ.Abstractions.Invoices;
+
 public class UpdateInvoiceV1
 {
     public class Request

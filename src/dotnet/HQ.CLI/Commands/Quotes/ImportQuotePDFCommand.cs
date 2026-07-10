@@ -35,7 +35,7 @@ namespace HQ.CLI.Commands.Quotes
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, ImportQuotePDFSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, ImportQuotePDFSettings settings, CancellationToken cancellationToken = default)
         {
             var files = new List<FileInfo>();
 

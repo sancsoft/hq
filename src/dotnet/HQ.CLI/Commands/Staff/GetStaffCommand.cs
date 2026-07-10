@@ -45,7 +45,7 @@ namespace HQ.CLI.Commands.Staff
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, GetStaffSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, GetStaffSettings settings, CancellationToken cancellationToken = default)
         {
             var result = await _hqService.GetStaffV1(new()
             {

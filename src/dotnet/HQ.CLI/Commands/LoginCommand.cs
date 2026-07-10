@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-using static IdentityModel.OidcConstants;
+using static Duende.IdentityModel.OidcConstants;
 
 namespace HQ.CLI.Commands;
 
@@ -32,7 +32,7 @@ internal class LoginCommand : AsyncCommand<LoginSettings>
         _httpClient = httpClient;
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context, LoginSettings settings)
+    protected override async Task<int> ExecuteAsync(CommandContext context, LoginSettings settings, CancellationToken cancellationToken = default)
     {
         if (String.IsNullOrEmpty(_config.AuthUrl?.AbsoluteUri))
         {
@@ -90,7 +90,7 @@ Then enter the code:
             expiresAt = DateTime.UtcNow.AddSeconds(expiresIn.Value);
         }
 
-        IdentityModel.Client.TokenResponse? response = null;
+        Duende.IdentityModel.Client.TokenResponse? response = null;
         do
         {
             response = await _httpClient.RequestDeviceTokenAsync(new DeviceTokenRequest

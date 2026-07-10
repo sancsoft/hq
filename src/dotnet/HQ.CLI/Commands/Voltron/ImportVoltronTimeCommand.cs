@@ -51,7 +51,7 @@ namespace HQ.CLI.Commands.ChargeCode
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, ImportVoltronTimeSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, ImportVoltronTimeSettings settings, CancellationToken cancellationToken = default)
         {
             var files = new List<FileInfo>();
 

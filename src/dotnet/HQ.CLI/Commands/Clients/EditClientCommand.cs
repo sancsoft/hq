@@ -31,7 +31,7 @@ namespace HQ.CLI.Commands.Clients
             _hqService = hqService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, EditClientSettings settings)
+        protected override async Task<int> ExecuteAsync(CommandContext context, EditClientSettings settings, CancellationToken cancellationToken = default)
         {
             var result = await _hqService.GetClientsV1(new()
             {

@@ -20,6 +20,7 @@ using HQ.Server.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services;
+
 public class QuoteServiceV1
 {
     private readonly HQDbContext _context;

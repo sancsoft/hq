@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -22,14 +23,23 @@ public class SwaggerDefaultValues : IOperationFilter
     {
         var apiDescription = context.ApiDescription;
 
-        operation.Deprecated |= apiDescription.IsDeprecated();
+        operation.Deprecated |= apiDescription.IsDeprecated;
 
         // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/1752#issue-663991077
         foreach (var responseType in context.ApiDescription.SupportedResponseTypes)
         {
             // REF: https://github.com/domaindrivendev/Swashbuckle.AspNetCore/blob/b7cf75e7905050305b115dd96640ddd6e74c7ac9/src/Swashbuckle.AspNetCore.SwaggerGen/SwaggerGenerator/SwaggerGenerator.cs#L383-L387
             var responseKey = responseType.IsDefaultResponse ? "default" : responseType.StatusCode.ToString();
+            if (operation.Responses == null)
+            {
+                continue;
+            }
+
             var response = operation.Responses[responseKey];
+            if (response.Content == null)
+            {
+                continue;
+            }
 
             foreach (var contentType in response.Content.Keys)
             {
@@ -53,17 +63,19 @@ public class SwaggerDefaultValues : IOperationFilter
 
             parameter.Description ??= description.ModelMetadata?.Description;
 
-            if (parameter.Schema.Default == null &&
+            if (parameter.Schema?.Default == null &&
                  description.DefaultValue != null &&
                  description.DefaultValue is not DBNull &&
                  description.ModelMetadata is ModelMetadata modelMetadata)
             {
-                // REF: https://github.com/Microsoft/aspnet-api-versioning/issues/429#issuecomment-605402330
                 var json = JsonSerializer.Serialize(description.DefaultValue, modelMetadata.ModelType);
-                parameter.Schema.Default = OpenApiAnyFactory.CreateFromJson(json);
+                var openApiParameter = (OpenApiParameter)parameter;
+                if (openApiParameter.Schema == null)
+                    openApiParameter.Schema = new OpenApiSchema();
+                ((OpenApiSchema)openApiParameter.Schema).Default = JsonNode.Parse(json);
             }
 
-            parameter.Required |= description.IsRequired;
+            ((OpenApiParameter)parameter).Required |= description.IsRequired;
         }
     }
 }

@@ -20,7 +20,7 @@ internal class ConfigureCommand : AsyncCommand<HQCommandSettings>
         _config = config;
     }
 
-    public override Task<int> ExecuteAsync(CommandContext context, HQCommandSettings settings)
+    protected override Task<int> ExecuteAsync(CommandContext context, HQCommandSettings settings, CancellationToken cancellationToken = default)
     {
         _config.ApiUrl = AnsiConsole.Prompt(
             new TextPrompt<Uri>("Enter API URL:")

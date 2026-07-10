@@ -14,7 +14,7 @@ public class NotificationEmail : BaseEmail
         Heading = "Notification",
         Message = "This is a notification message.",
         ButtonLabel = "Open HQ",
-        ButtonUrl = new Uri("http://hq.localhost:4200"),
-        WebUrl = new Uri("http://hq.localhost:4200"),
+        ButtonUrl = new Uri("http://localhost:4200"),
+        WebUrl = new Uri("http://localhost:4200"),
     };
 }
