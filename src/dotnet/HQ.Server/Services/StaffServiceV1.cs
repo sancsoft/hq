@@ -124,7 +124,7 @@ public class StaffServiceV1
             .AsQueryable();
 
 
-        var timezone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+        var timezone = TimeZoneInfo.FindSystemTimeZoneById(OperatingSystem.IsWindows() ? "Eastern Standard Time" : "America/New_York");
         var currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timezone);
         var today = DateOnly.FromDateTime(currentTime);
         var startYearDate = today.GetPeriodStartDate(Period.Year);
