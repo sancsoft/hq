@@ -1,11 +1,15 @@
 <div class="flex w-full flex-1 items-center gap-[20px] mb-[8px] xl:mb-0">
-  <hq-search-input [formControl]="invoiceService.search"></hq-search-input>
+  <hq-search-input
+    label="Search"
+    [formControl]="invoiceService.search"
+  ></hq-search-input>
   <div class="relative flex flex-col w-full max-w-[220px]">
     <hq-select-input
       (change)="showHideDates()"
       [autocomplete]="false"
       [formControl]="invoiceService.selectedPeriod"
-      variant="primary"
+      label="Period"
+      variant="secondary"
     >
       <ng-template [hqSelectInputOption]="null">All</ng-template>
       <ng-template [hqSelectInputOption]="invoiceService.Period.Today"
