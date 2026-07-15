@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HQ.Abstractions.Enumerations;
 
 namespace HQ.Abstractions.Times
 {
@@ -19,6 +20,7 @@ namespace HQ.Abstractions.Times
             public Guid? StaffId { get; set; }
             public string? ChargeCode { get; set; }
             public string? ActivityName { get; set; }
+            public TimeStatus Status { get; set; }
         }
 
         public class Response
