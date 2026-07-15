@@ -526,7 +526,7 @@ if (serverOptions.AutoMigrate)
 
 // Setup recurring hangfire jobs
 var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
-var timezone = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+var timezone = TimeZoneInfo.FindSystemTimeZoneById(OperatingSystem.IsWindows() ? "Eastern Standard Time" : "America/New_York");
 var recurringJobOptions = new RecurringJobOptions()
 {
     TimeZone = timezone,
