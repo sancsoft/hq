@@ -189,6 +189,7 @@ export class TimeEditComponent implements OnInit, OnDestroy {
     );
     this.activities$.pipe(skip(1), takeUntil(this.destroyed$)).subscribe({
       next: () => {
+        this.form.controls.ActivityId.removeValidators(Validators.required);
         this.form.controls.ActivityId.reset();
         this.form.controls.Task.reset();
       },
