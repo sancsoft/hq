@@ -261,16 +261,6 @@
                     <ng-template [hqSelectInputOption]="false">No</ng-template>
                     <ng-template [hqSelectInputOption]="true">Yes</ng-template>
                   </hq-select-input>
-
-                  <hq-select-input
-                    [autocomplete]="true"
-                    formControlName="requireTask"
-                    label="Require Task"
-                    variant="secondary"
-                  >
-                    <ng-template [hqSelectInputOption]="false">No</ng-template>
-                    <ng-template [hqSelectInputOption]="true">Yes</ng-template>
-                  </hq-select-input>
                 </div>
 
                 <!-- column -->
@@ -288,6 +278,7 @@
                     </ng-template>
                   </hq-text-input>
                 </div>
+
                 <!-- column -->
                 <div>
                   <hq-text-input
@@ -302,6 +293,19 @@
                       Max Hours is required.
                     </ng-template>
                   </hq-text-input>
+                </div>
+
+                <!-- column -->
+                <div>
+                  <hq-select-input
+                    [autocomplete]="true"
+                    formControlName="requireTask"
+                    label="Require Task"
+                    variant="secondary"
+                  >
+                    <ng-template [hqSelectInputOption]="false">No</ng-template>
+                    <ng-template [hqSelectInputOption]="true">Yes</ng-template>
+                  </hq-select-input>
                 </div>
               </div>
             </div>
