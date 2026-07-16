@@ -23,7 +23,7 @@ import {
   combineLatest,
   takeUntil,
 } from 'rxjs';
-import { EnumRecord, enumToArray } from '../../core/functions/enum-to-array';
+import { enumToArray } from '../../core/functions/enum-to-array';
 import { APIError } from '../../errors/apierror';
 import {
   Activity,
