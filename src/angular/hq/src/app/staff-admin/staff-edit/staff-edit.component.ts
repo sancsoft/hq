@@ -103,8 +103,13 @@ export class StaffEditComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.destroy))
       .subscribe({
         next: (timeEntryCutoffDate) => {
-          if (typeof timeEntryCutoffDate == 'string' && timeEntryCutoffDate == '') {
-            this.form.controls.timeEntryCutoffDate.setValue(null, { emitEvent: false });
+          if (
+            typeof timeEntryCutoffDate == 'string' &&
+            timeEntryCutoffDate == ''
+          ) {
+            this.form.controls.timeEntryCutoffDate.setValue(null, {
+              emitEvent: false,
+            });
           }
         },
         error: console.error,
