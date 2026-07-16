@@ -129,7 +129,19 @@
       <thead>
         <tr class="sticky top-0 text-left">
           <th scope="col" width="15px" style="padding: 0px"></th>
-          <th scope="col" width="30px"></th>
+          <th scope="col" width="30px">
+            <div class="flex justify-center py-2 pl-2">
+              @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+                <input
+                  id="all_time_checkbox"
+                  title="Select All"
+                  [checked]="isAllChecked()"
+                  type="checkbox"
+                  (change)="toggleAllEntries($event)"
+                />
+              }
+            </div>
+          </th>
           <th
             scope="col"
             width="120px"

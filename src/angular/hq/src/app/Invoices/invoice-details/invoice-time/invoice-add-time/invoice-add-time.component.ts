@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
-import { firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
+import {
+  firstValueFrom,
+  map,
+  Observable,
+  Subject,
+  takeUntil,
+  take,
+} from 'rxjs';
 import { GetClientRecordV1 } from '../../../../models/clients/get-client-v1';
 import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../../../services/hq.service';
@@ -159,6 +166,55 @@ export class InvoiceAddTimeComponent implements OnDestroy {
       this.selectedHrs = hrsSum;
     }
     this.toastService.show('Updated', 'Invoiced hours have been updated.');
+  }
+
+  isAllChecked(): boolean {
+    let isAllSelected = false;
+    this.times$.pipe(take(1)).subscribe((entries: any) => {
+      if (Array.isArray(entries) && entries.length > 0) {
+        isAllSelected = (entries as InvoiceTimeEntry[]).every(
+          (time: InvoiceTimeEntry) => this.isChecked(time.record.id),
+        );
+      }
+    });
+    return isAllSelected;
+  }
+
+  toggleAllEntries(event: Event): void {
+    const shouldSelectAll = (event.target as HTMLInputElement).checked;
+
+    this.times$.pipe(take(1)).subscribe((entries: any) => {
+      if (!Array.isArray(entries)) return;
+
+      (entries as InvoiceTimeEntry[]).forEach((time: InvoiceTimeEntry) => {
+        const t = time.record;
+        const hrs = t.hoursInvoiced ?? t.hoursApproved ?? t.hours ?? 0;
+
+        if (shouldSelectAll) {
+          this.selectedTimes.set(t.id, hrs);
+        } else {
+          this.selectedTimes.delete(t.id);
+        }
+      });
+
+      this.recalculateInvoiceTotals();
+    });
+  }
+
+  private recalculateInvoiceTotals(): void {
+    let totalHrs = 0;
+
+    this.selectedTimes.forEach((hrsValue: number) => {
+      totalHrs += hrsValue;
+    });
+
+    this.selectedHrs = totalHrs;
+
+    if (this.selectedTimes.size >= 1) {
+      this.addBtnDisabled = false;
+    } else {
+      this.addBtnDisabled = true;
+    }
   }
 
   isChecked(id: string) {
