@@ -30,6 +30,7 @@ interface Form {
   jurisdiciton: FormControl<Jurisdiciton | null>;
   startDate: FormControl<Date | null>;
   endDate: FormControl<Date | null>;
+  timeEntryCutoffDate: FormControl<Date | null>;
 }
 
 @Component({
@@ -78,6 +79,7 @@ export class StaffEditComponent implements OnDestroy, OnInit {
       validators: [Validators.required],
     }),
     endDate: new FormControl(null, {}),
+    timeEntryCutoffDate: new FormControl(null, {}),
   });
   async ngOnInit() {
     this.staffId =
@@ -92,6 +94,17 @@ export class StaffEditComponent implements OnDestroy, OnInit {
         next: (endDate) => {
           if (typeof endDate == 'string' && endDate == '') {
             this.form.controls.endDate.setValue(null, { emitEvent: false });
+          }
+        },
+        error: console.error,
+      });
+
+    this.form.controls.timeEntryCutoffDate.valueChanges
+      .pipe(takeUntil(this.destroy))
+      .subscribe({
+        next: (timeEntryCutoffDate) => {
+          if (typeof timeEntryCutoffDate == 'string' && timeEntryCutoffDate == '') {
+            this.form.controls.timeEntryCutoffDate.setValue(null, { emitEvent: false });
           }
         },
         error: console.error,
@@ -168,6 +181,7 @@ export class StaffEditComponent implements OnDestroy, OnInit {
         jurisdiciton: staffMember.jurisdiciton,
         startDate: staffMember.startDate || null,
         endDate: staffMember.endDate || null,
+        timeEntryCutoffDate: staffMember.timeEntryCutoffDate || null,
       });
     } catch (err) {
       if (err instanceof APIError) {

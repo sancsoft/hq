@@ -45,6 +45,7 @@ export interface GetStaffV1Record {
   hrs?: number;
   billableHrs?: number;
   hrsThisMonth?: number;
+  timeEntryCutoffDate?: Date;
 }
 
 export interface GetStaffV1Response extends PagedResponseV1<GetStaffV1Record> {}
