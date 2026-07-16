@@ -23,11 +23,13 @@ import {
   combineLatest,
   takeUntil,
 } from 'rxjs';
+import { enumToArray } from '../../core/functions/enum-to-array';
 import { APIError } from '../../errors/apierror';
 import {
   Activity,
   GetChargeCodeRecordV1,
 } from '../../models/charge-codes/get-chargecodes-v1';
+import { TimeStatus } from '../../enums/time-status';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
@@ -49,6 +51,7 @@ interface Form {
   Date: FormControl<Date | null>;
   Task: FormControl<string | null>;
   Notes: FormControl<string | null>;
+  Status: FormControl<TimeStatus | null>;
 }
 
 @Component({
@@ -82,6 +85,8 @@ export class TimeEditComponent implements OnInit, OnDestroy {
   requireTask$ = new BehaviorSubject<boolean>(false);
 
   activities$: Observable<Activity[] | null>;
+  public timeStatusValues = enumToArray(TimeStatus);
+
   private destroyed$ = new Subject<void>();
 
   form = new FormGroup<Form>({
@@ -110,6 +115,9 @@ export class TimeEditComponent implements OnInit, OnDestroy {
       validators: [],
     }),
     Notes: new FormControl<string | null>(null, {
+      validators: [Validators.required],
+    }),
+    Status: new FormControl<TimeStatus | null>(null, {
       validators: [Validators.required],
     }),
   });
@@ -249,6 +257,7 @@ export class TimeEditComponent implements OnInit, OnDestroy {
         Task: time.task,
         ActivityId: time.activityId,
         ChargeCode: time.chargeCode,
+        Status: time.status,
       });
     } catch (err) {
       if (err instanceof APIError) {
