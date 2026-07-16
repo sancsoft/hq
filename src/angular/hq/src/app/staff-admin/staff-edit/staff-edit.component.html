@@ -326,6 +326,37 @@
                       >
                     }
                   </div>
+                  <div>
+                    <!-- Time Entry Cutoff Date input -->
+                    <label
+                      for=""
+                      class="font-open-sans text-nav-disabled text-xs font-bold uppercase -mb-4"
+                      >Time Entry Cutoff Date</label
+                    >
+                    <div class="grid relative w-full max-w-[220px]">
+                      <input
+                        formControlName="timeEntryCutoffDate"
+                        type="date"
+                        class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px] uppercase"
+                      />
+                      <span
+                        class="flex items-center justify-center h-full pointer-events-none z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+                      >
+                        <i
+                          class="bi bi-arrow-down-short text-[24px] bg-blue-900"
+                        ></i>
+                      </span>
+                    </div>
+                    @if (
+                      form.get("timeEntryCutoffDate")?.touched &&
+                      form.get("timeEntryCutoffDate")?.errors?.["required"]
+                    ) {
+                      <span
+                        class="text-red-700 text-xs leading-normal inline-block"
+                        >Time Entry Cutoff date is required</span
+                      >
+                    }
+                  </div>
                 </div>
               </div>
             </div>

@@ -25,6 +25,7 @@ public class UpsertStaffV1
         public string? LastName { get; set; }
         public bool CreateUser { get; set; }
         public string Email { get; set; } = null!;
+        public DateOnly? TimeEntryCutOffDate { get; set; }
     }
 
     public class Response
