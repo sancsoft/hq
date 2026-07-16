@@ -23,7 +23,7 @@ import {
   combineLatest,
   takeUntil,
 } from 'rxjs';
-import { enumToArray } from '../../core/functions/enum-to-array';
+import { EnumRecord, enumToArray } from '../../core/functions/enum-to-array';
 import { APIError } from '../../errors/apierror';
 import {
   Activity,
@@ -85,7 +85,7 @@ export class TimeEditComponent implements OnInit, OnDestroy {
   requireTask$ = new BehaviorSubject<boolean>(false);
 
   activities$: Observable<Activity[] | null>;
-  public timeStatusValues: any[] = [];
+  public timeStatusValues = enumToArray(TimeStatus);
 
   private destroyed$ = new Subject<void>();
 
@@ -127,8 +127,6 @@ export class TimeEditComponent implements OnInit, OnDestroy {
         await firstValueFrom(this.route.paramMap.pipe())
       ).get('timeId')) ?? undefined;
     await this.getTime();
-
-    this.timeStatusValues = enumToArray(TimeStatus);
   }
   ngOnDestroy() {
     this.destroyed$.next();
