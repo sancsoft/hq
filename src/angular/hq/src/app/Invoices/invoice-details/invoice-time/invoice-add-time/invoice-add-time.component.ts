@@ -1,7 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
-import { firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
+import {
+  firstValueFrom,
+  map,
+  Observable,
+  Subject,
+  takeUntil,
+  BehaviorSubject,
+  combineLatest,
+} from 'rxjs';
 import { GetClientRecordV1 } from '../../../../models/clients/get-client-v1';
 import { GetChargeCodeRecordV1 } from '../../../../models/charge-codes/get-chargecodes-v1';
 import { HQService } from '../../../../services/hq.service';
@@ -64,6 +72,9 @@ export class InvoiceAddTimeComponent implements OnDestroy {
   currentClient$: Observable<GetClientRecordV1>;
   chargeCodes?: Array<GetChargeCodeRecordV1>;
 
+  private selectionTrigger$ = new BehaviorSubject<void>(undefined);
+  isAllChecked$: Observable<boolean>;
+
   selectedTimes: Map<string, number> = new Map<string, number>();
   selectedHrs: number = 0;
   addBtnDisabled: boolean = true;
@@ -107,6 +118,20 @@ export class InvoiceAddTimeComponent implements OnDestroy {
         return t;
       }),
     );
+
+    this.isAllChecked$ = combineLatest([
+      this.times$,
+      this.selectionTrigger$,
+    ]).pipe(
+      map(([entries]) => {
+        if (Array.isArray(entries) && entries.length > 0) {
+          return entries.every((time: InvoiceTimeEntry) =>
+            this.isChecked(time.record.id),
+          );
+        }
+        return false;
+      }),
+    );
   }
 
   updateTimeSelection(time: GetTimeRecordV1) {
@@ -125,6 +150,7 @@ export class InvoiceAddTimeComponent implements OnDestroy {
         this.addBtnDisabled = true;
       }
     }
+    this.selectionTrigger$.next();
   }
 
   async updateInvoicedHours(time: GetTimeRecordV1, event: Event) {
@@ -159,6 +185,49 @@ export class InvoiceAddTimeComponent implements OnDestroy {
       this.selectedHrs = hrsSum;
     }
     this.toastService.show('Updated', 'Invoiced hours have been updated.');
+  }
+
+  toggleAllEntries(event: Event): void {
+    const shouldSelectAll = (event.target as HTMLInputElement).checked;
+
+    firstValueFrom(this.times$)
+      .then((entries: InvoiceTimeEntry[]) => {
+        if (!Array.isArray(entries)) return;
+
+        entries.forEach((time: InvoiceTimeEntry) => {
+          const t = time.record;
+          const hrs = t.hoursInvoiced ?? t.hoursApproved ?? t.hours ?? 0;
+
+          if (shouldSelectAll) {
+            this.selectedTimes.set(t.id, hrs);
+          } else {
+            this.selectedTimes.delete(t.id);
+          }
+        });
+
+        this.recalculateInvoiceTotals();
+
+        this.selectionTrigger$.next();
+      })
+      .catch((err: unknown) => {
+        console.error('Failed to resolve times stream:', err);
+      });
+  }
+
+  private recalculateInvoiceTotals(): void {
+    let totalHrs = 0;
+
+    this.selectedTimes.forEach((hrsValue: number) => {
+      totalHrs += hrsValue;
+    });
+
+    this.selectedHrs = totalHrs;
+
+    if (this.selectedTimes.size >= 1) {
+      this.addBtnDisabled = false;
+    } else {
+      this.addBtnDisabled = true;
+    }
   }
 
   isChecked(id: string) {

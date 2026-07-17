@@ -153,16 +153,25 @@
                           'focus:border-white placeholder:text-gray-100':
                             !form.controls.Task.errors || !form.touched,
                         }"
-                        class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+                        class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                         type="text"
                         aria-label="Task"
                         formControlName="Task"
                       />
+                      @if (
+                        form.get("Task")?.touched &&
+                        form.get("Task")?.errors?.["required"]
+                      ) {
+                        <span
+                          class="text-red-700 text-xs leading-normal inline-block"
+                          >Task is required.</span
+                        >
+                      }
                     } @else {
                       <hq-form-label>Task</hq-form-label>
                       <input
-                        disabled="true"
-                        class="w-[100%] block text-[14px] px-2 py-1 border border-gray-450 appearance-none focus:outline-none focus:border-white placeholder:text-gray-450 bg-blue-900 rounded h-[30px]"
+                        [disabled]="true"
+                        class="w-[100%] block text-[14px] px-2 py-1 border border-gray-450 appearance-none focus:outline-none focus:border-white placeholder:text-gray-450 bg-blue-900 rounded h-[36px]"
                         type="text"
                         aria-label="Task"
                       />
