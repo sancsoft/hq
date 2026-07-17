@@ -135,7 +135,7 @@
                 <input
                   id="all_time_checkbox"
                   title="Select All"
-                  [checked]="isAllChecked()"
+                  [checked]="isAllChecked$ | async"
                   type="checkbox"
                   (change)="toggleAllEntries($event)"
                 />
