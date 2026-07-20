@@ -217,7 +217,8 @@
                   @if (chargeCodes.length > 0) {
                     @for (chargeCode of chargeCodes; track chargeCode.code) {
                       <div class="ps-3 font-light">
-                        {{ chargeCode.code }}: {{ invoice.clientName }}: {{ chargeCode.projectName }}
+                        {{ chargeCode.code }}: {{ invoice.clientName }}:
+                        {{ chargeCode.projectName }}
                       </div>
                     }
                   } @else {

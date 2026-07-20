@@ -20,7 +20,10 @@ import { ButtonComponent } from '../../../core/components/button/button.componen
 import { GetClientRecordV1 } from '../../../models/clients/get-client-v1';
 import { CoreModule } from '../../../core/core.module';
 import { InvoiceDetaisService } from '../../service/invoice-details.service';
-import { GetInvoiceDetailsRecordV1, InvoiceChargeCode } from '../../../models/Invoices/get-invoice-details-v1';
+import {
+  GetInvoiceDetailsRecordV1,
+  InvoiceChargeCode,
+} from '../../../models/Invoices/get-invoice-details-v1';
 import { ModalService } from '../../../services/modal.service';
 
 interface invoiceFormGroup {
@@ -95,19 +98,21 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
     );
 
     this.distinctChargeCodes$ = this.invoice$.pipe(
-      map(invoice => {
+      map((invoice) => {
         if (!invoice || !invoice.chargeCodes) return [];
 
         const newChargeCodeList = new Set<string>();
-        
-        const uniqueObjects = invoice.chargeCodes.filter((item: InvoiceChargeCode) => {
-          const isDuplicate  = newChargeCodeList.has(item.code);
-          newChargeCodeList.add(item.code);
-          return !isDuplicate ;
-        });
+
+        const uniqueObjects = invoice.chargeCodes.filter(
+          (item: InvoiceChargeCode) => {
+            const isDuplicate = newChargeCodeList.has(item.code);
+            newChargeCodeList.add(item.code);
+            return !isDuplicate;
+          },
+        );
 
         return uniqueObjects;
-      })
+      }),
     );
   }
 
