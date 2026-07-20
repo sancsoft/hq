@@ -19,9 +19,11 @@ import { APIError } from '../../../errors/apierror';
 import { ButtonComponent } from '../../../core/components/button/button.component';
 import { GetClientRecordV1 } from '../../../models/clients/get-client-v1';
 import { CoreModule } from '../../../core/core.module';
-import { GetChargeCodeRecordV1 } from '../../../models/charge-codes/get-chargecodes-v1';
 import { InvoiceDetaisService } from '../../service/invoice-details.service';
-import { GetInvoiceDetailsRecordV1 } from '../../../models/Invoices/get-invoice-details-v1';
+import {
+  GetInvoiceDetailsRecordV1,
+  InvoiceChargeCode,
+} from '../../../models/Invoices/get-invoice-details-v1';
 import { ModalService } from '../../../services/modal.service';
 
 interface invoiceFormGroup {
@@ -69,7 +71,7 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
   invoice$: Observable<GetInvoiceDetailsRecordV1>;
 
   invoiceId?: string;
-  chargeCodes?: Array<GetChargeCodeRecordV1>;
+  distinctChargeCodes$?: Observable<InvoiceChargeCode[]>;
 
   constructor(
     private hqService: HQService,
@@ -93,6 +95,24 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
     this.clients$ = hqService.getClientsV1({}).pipe(map((t) => t.records));
     this.currentClient$ = this.invoiceDetailsService.client$.pipe(
       map((client) => client),
+    );
+
+    this.distinctChargeCodes$ = this.invoice$.pipe(
+      map((invoice) => {
+        if (!invoice || !invoice.chargeCodes) return [];
+
+        const newChargeCodeList = new Set<string>();
+
+        const uniqueObjects = invoice.chargeCodes.filter(
+          (item: InvoiceChargeCode) => {
+            const isDuplicate = newChargeCodeList.has(item.code);
+            newChargeCodeList.add(item.code);
+            return !isDuplicate;
+          },
+        );
+
+        return uniqueObjects;
+      }),
     );
   }
 
