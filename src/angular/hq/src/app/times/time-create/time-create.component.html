@@ -54,7 +54,7 @@
                       formControlName="StaffId"
                       label="Staff Member"
                       variant="secondary"
-                      [inline]="true"
+                      [inline]="false"
                     >
                       <ng-template [hqSelectInputOption]="null"
                         >Please Select a staff member</ng-template
@@ -81,6 +81,23 @@
                   </div>
 
                   <!-- column -->
+                  <div>
+                    <hq-select-input
+                      label="Status"
+                      formControlName="Status"
+                      [autocomplete]="true"
+                      variant="secondary"
+                    >
+                      @for (status of timeStatusValues; track status.id) {
+                        <ng-template
+                          [hqSelectInputOption]="status.id"
+                          [hqSelectInputOptionSelectedDisplay]="status.name"
+                          [hqSelectInputOptionSearch]="status.name"
+                          >{{ status.name }}</ng-template
+                        >
+                      }
+                    </hq-select-input>
+                  </div>
                 </div>
                 <!-- Row grid -->
 

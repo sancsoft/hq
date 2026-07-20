@@ -24,11 +24,13 @@ import {
   combineLatest,
   startWith,
 } from 'rxjs';
+import { enumToArray } from '../../core/functions/enum-to-array';
 import { APIError } from '../../errors/apierror';
 import {
   Activity,
   GetChargeCodeRecordV1,
 } from '../../models/charge-codes/get-chargecodes-v1';
+import { TimeStatus } from '../../enums/time-status';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
@@ -54,6 +56,7 @@ interface Form {
   Task: FormControl<string | null>;
   Notes: FormControl<string | null>;
   StaffId: FormControl<string | null>;
+  Status: FormControl<TimeStatus | null>;
 }
 
 @Component({
@@ -79,6 +82,7 @@ export class TimeCreateComponent implements OnDestroy {
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
   staffMembers$: Observable<GetStaffV1Record[]>;
   activities$: Observable<Activity[] | null>;
+  public timeStatusValues = enumToArray(TimeStatus);
 
   clients$: Observable<GetTimeRecordClientsV1[]>;
   timeId?: string;
@@ -118,6 +122,9 @@ export class TimeCreateComponent implements OnDestroy {
       validators: [Validators.required],
     }),
     StaffId: new FormControl<string | null>(null, {
+      validators: [Validators.required],
+    }),
+    Status: new FormControl<TimeStatus | null>(null, {
       validators: [Validators.required],
     }),
   });
@@ -196,6 +203,8 @@ export class TimeCreateComponent implements OnDestroy {
       },
       error: console.error,
     });
+
+    this.timeStatusValues = enumToArray(TimeStatus);
 
     combineLatest([
       this.chargeCodes$,
