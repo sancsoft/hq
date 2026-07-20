@@ -73,7 +73,7 @@
   <div class="overflow-hidden flex-auto">
     <div class="grid gap-0 relative">
       <main
-        class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))]"
+        class="flex flex-col bg-black-alt overflow-y-auto h-[calc(100dvh-(192px))] pb-[25px]"
       >
         <div
           class="bg-black-alt border-steel-blue-600 border-t sticky top-0 flex h-[53px] z-50"
@@ -210,21 +210,19 @@
                 </div>
               </div>
               <div class="border-b border-black pt-14 pb-1 mb-3 font-bold">
-                Included Chargecodes
+                Included Charge Codes
               </div>
               @if (invoice$ | async; as invoice) {
-                @if (invoice.chargeCodes.length > 0) {
-                  @for (
-                    chargeCode of invoice.chargeCodes;
-                    track chargeCode.id
-                  ) {
-                    <div class="ps-3 font-light">
-                      {{ chargeCode.code }}: {{ invoice.clientName }}:
-                      {{ chargeCode.projectName }}
-                    </div>
+                @if (distinctChargeCodes$ | async; as chargeCodes) {
+                  @if (chargeCodes.length > 0) {
+                    @for (chargeCode of chargeCodes; track chargeCode.code) {
+                      <div class="ps-3 font-light">
+                        {{ chargeCode.code }}: {{ invoice.clientName }}: {{ chargeCode.projectName }}
+                      </div>
+                    }
+                  } @else {
+                    <div class="ps-3 font-light">None</div>
                   }
-                } @else {
-                  <div class="ps-3 font-light">None</div>
                 }
               }
             </div>
