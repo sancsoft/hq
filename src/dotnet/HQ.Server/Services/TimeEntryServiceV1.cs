@@ -968,8 +968,6 @@ namespace HQ.Server.Services
             }
             response.CanSubmit = groupedTimes.Count > 0 && !groupedTimes.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && groupedTimes.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Unsubmitted || x.TimeStatus == TimeStatus.Rejected));
             response.CanUnsubmit = groupedTimes.Count > 0 && !groupedTimes.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && groupedTimes.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Submitted));
-            response.CanUnlock = groupedTimes.Count > 0 && !groupedTimes.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && groupedTimes.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Submitted));
-
 
             return response;
         }

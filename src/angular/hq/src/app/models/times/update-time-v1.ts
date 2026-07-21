@@ -1,5 +1,3 @@
-import { TimeStatus } from "../../enums/time-status";
-
 export interface updateTimeRequestV1 {
   id?: string | null;
   date: string;
