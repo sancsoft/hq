@@ -55,6 +55,7 @@ import { TimeStatus } from '../enums/time-status';
 import { Period } from '../enums/period';
 import { StatDisplayComponent } from '../core/components/stat-display/stat-display.component';
 import { HQRole } from '../enums/hqrole';
+import { InRolePipe } from '../pipes/in-role.pipe';
 import { HQMarkdownComponent } from '../common/markdown/markdown.component';
 import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
 import { localISODate } from '../common/functions/local-iso-date';
@@ -100,6 +101,7 @@ export interface PointForm {
     StaffDashboardPlanningComponent,
     StaffDashboardMonthViewComponent,
     SortIconComponent,
+    InRolePipe,
   ],
   providers: [StaffDashboardService],
   templateUrl: './staff-dashboard.component.html',
@@ -481,6 +483,49 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
         this.toastService.show(
           'Success',
           'Time entries successfully submitted.',
+        );
+        this.hideAllRejectedTimes();
+        this.staffDashboardService.refresh();
+      } else {
+        console.log('ERROR: Could not find staff');
+      }
+    } catch (err) {
+      if (err instanceof APIError) {
+        this.toastService.show('Error', err.errors.join('\n'));
+      } else {
+        this.toastService.show('Error', 'An unexpected error has occurred.');
+      }
+    }
+  }
+
+  async unSubmitTimes() {
+    const confirm = await firstValueFrom(
+      this.modalService.confirm(
+        'Unsubmit',
+        'Are you sure you want to unsubmit the current time entries?',
+      ),
+    );
+
+    if (!confirm) {
+      return;
+    }
+    try {
+      const submittedTimesIds = await firstValueFrom(
+        this.staffDashboardService.time$.pipe(
+          map((t) => 
+            t.dates.flatMap((d) => 
+              d.times
+                .filter((time) => time.timeStatus === TimeStatus.Submitted)
+                .map((time) => time.id))),
+        ),
+      );
+      const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
+      if (staffId) {
+        const unsubmitTimesRequest = { ids: submittedTimesIds, staffId: staffId };
+        await firstValueFrom(this.hqService.upsertTimeStatusUnsubmittedV1(unsubmitTimesRequest));
+        this.toastService.show(
+          'Success',
+          'Time entries successfully unsubmitted.',
         );
         this.hideAllRejectedTimes();
         this.staffDashboardService.refresh();

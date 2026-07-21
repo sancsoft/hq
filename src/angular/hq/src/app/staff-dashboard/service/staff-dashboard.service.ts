@@ -51,6 +51,8 @@ export class StaffDashboardService implements OnDestroy {
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
   canSubmitSubject = new BehaviorSubject<boolean>(false);
   canSubmit$: Observable<boolean> = this.canSubmitSubject.asObservable();
+  canUnsubmitSubject = new BehaviorSubject<boolean>(false);
+  canUnsubmit$: Observable<boolean> = this.canUnsubmitSubject.asObservable();
   timeEntryCutoffDate$: Observable<string>;
   time$: Observable<GetDashboardTimeV1Response>;
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
@@ -175,7 +177,10 @@ export class StaffDashboardService implements OnDestroy {
     );
 
     this.time$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (t) => this.canSubmitSubject.next(t.canSubmit),
+      next: (t) => {
+        this.canSubmitSubject.next(t.canSubmit);
+        this.canUnsubmitSubject.next(t.canUnsubmit);
+      },
       error: console.error,
     });
     this.timeEntryCutoffDate$ = this.time$.pipe(

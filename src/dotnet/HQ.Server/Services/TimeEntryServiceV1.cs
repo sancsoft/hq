@@ -322,8 +322,6 @@ namespace HQ.Server.Services
         public async Task<Result<UpsertTimeTaskV1.Response>> UpsertTimeTaskV1(UpsertTimeTaskV1.Request request, CancellationToken ct = default)
         {
             var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
-
-
             if (timeEntry == null)
             {
                 return Result.Fail("Time Id is required.");
@@ -333,6 +331,26 @@ namespace HQ.Server.Services
             timeEntry.Task = request.Task;
             await _context.SaveChangesAsync(ct);
             return Result.Ok(new UpsertTimeTaskV1.Response() { Id = timeEntry.Id });
+        }
+        public async Task<Result<UpsertTimeStatusUnsubmittedV1.Response>> UpsertTimeStatusUnsubmittedV1(UpsertTimeStatusUnsubmittedV1.Request request, CancellationToken ct = default)
+        {
+            var timeEntries = _context.Times.Where(t => request.Ids.Contains(t.Id));
+            if (timeEntries == null)
+            {
+                return Result.Fail("Time Id is required.");
+            }
+
+            foreach (var time in timeEntries)
+            {
+                if (time.Status == TimeStatus.Submitted)
+                {
+                    time.Status = TimeStatus.Unsubmitted;
+                }
+            }
+
+            await _context.SaveChangesAsync(ct);
+
+            return Result.Ok(new UpsertTimeStatusUnsubmittedV1.Response() { });
         }
         public async Task<Result<SubmitTimesV1.Response>> SubmitTimesV1(SubmitTimesV1.Request request, CancellationToken ct = default)
         {
@@ -949,6 +967,8 @@ namespace HQ.Server.Services
                 response.Dates.Add(timeForMonth);
             }
             response.CanSubmit = groupedTimes.Count > 0 && !groupedTimes.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && groupedTimes.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Unsubmitted || x.TimeStatus == TimeStatus.Rejected));
+            response.CanUnsubmit = groupedTimes.Count > 0 && !groupedTimes.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && groupedTimes.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Submitted));
+            response.CanUnlock = groupedTimes.Count > 0 && !groupedTimes.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && groupedTimes.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Submitted));
 
 
             return response;

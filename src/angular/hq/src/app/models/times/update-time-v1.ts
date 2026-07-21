@@ -1,3 +1,5 @@
+import { TimeStatus } from "../../enums/time-status";
+
 export interface updateTimeRequestV1 {
   id?: string | null;
   date: string;
@@ -22,4 +24,13 @@ export interface UpdateTimeHoursInvoicedRequestV1 {
 export interface UpdateTimeHoursInvoicedResponseV1 {
   id: string;
   hoursInvoiced: number;
+}
+
+export interface UpsertTimeStatusUnsubmittedRequestV1 {
+  ids: string[] | null;
+  staffId: string;
+}
+
+export interface UpsertTimeStatusUnsubmittedResponseV1 {
+  id: string;
 }

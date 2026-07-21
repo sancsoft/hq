@@ -119,7 +119,8 @@
       <div class="px-5 py-2 bg-black-alt">
         <div class="flex gap-[20px] justify-between items-center">
           <hq-staff-dashboard-date-range />
-          <div>
+
+          <div class="flex gap-3">
             @if (staffDashboardService.rejectedCount$ | async) {
               <button
                 [title]="
@@ -139,10 +140,54 @@
                   [class.border]="
                     staffDashboardService.showAllRejectedTimes$ | async
                   "
-                  class="bi bi-exclamation-triangle-fill py-2 px-2 rounded-sm mr-3 text-white bg-red-700"
+                  class="bi bi-exclamation-triangle-fill py-2 px-2 rounded-sm text-white bg-red-700"
                 ></i>
               </button>
             }
+
+            <!-- allow admin to: unsubmit all times in view only if the status is submitted (day, week or month) -->
+            <button
+              *ngIf="[HQRole.Administrator] | inRole | async"
+              [title]="
+                (staffDashboardService.canUnsubmit$ | async)
+                  ? 'UnSubmit all submitted time entries for the shown date period'
+                  : 'No time entries to be unsubmitted '
+              "
+              [disabled]="
+                (staffDashboardService.canUnsubmit$| async) === false ||
+                (canEdit$ | async) === false
+              "
+              [ngClass]="{
+                'text-gray-50 border-gray-500 bg-gray-500 ':
+                  (staffDashboardService.canUnsubmit$ | async) === false ||
+                  (canEdit$ | async) === false,
+                'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+                  (staffDashboardService.canUnsubmit$ | async) &&
+                  (canEdit$ | async) === true,
+              }"
+              class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
+              type="button"
+              (click)="unSubmitTimes()"
+            >
+              Unsubmit
+            </button>
+
+            <!-- allow admin to: set the staff time entry cutt off date to the start date of the selected (day, week or month) -->
+            <button
+              *ngIf="[HQRole.Administrator] | inRole | async"
+              [title]="
+                (staffDashboardService.canSubmit$ | async)
+                  ? 'Unloack all time entries for the shown date period'
+                  : 'No time entries to be unlocked '
+              "
+              ngClass="border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white"
+              class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
+              type="button"
+            >
+              Unlock
+            </button>
+
+            <!-- allow admin to: submit all entries -->
             <button
               [title]="
                 (staffDashboardService.canSubmit$ | async)
@@ -150,7 +195,7 @@
                   : 'No time entries to be submitted '
               "
               [disabled]="
-                (staffDashboardService.canSubmit$ | async) === false ||
+                (staffDashboardService.canSubmit$| async) === false ||
                 (canEdit$ | async) === false
               "
               [ngClass]="{

@@ -131,6 +131,8 @@ import {
   UpdateTimeHoursInvoicedResponseV1,
   updateTimeRequestV1,
   UpdateTimeResponseV1,
+  UpsertTimeStatusUnsubmittedRequestV1,
+  UpsertTimeStatusUnsubmittedResponseV1,
 } from '../models/times/update-time-v1';
 import {
   GetDashboardTimeV1Request,
@@ -604,6 +606,16 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpdateTimeResponseV1>(
           `${apiUrl}/v1/TimeEntries/UpsertTimeV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  upsertTimeStatusUnsubmittedV1(request: Partial<UpsertTimeStatusUnsubmittedRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertTimeStatusUnsubmittedResponseV1>(
+          `${apiUrl}/v1/TimeEntries/UpsertTimeStatusUnsubmittedV1`,
           request,
         ),
       ),
