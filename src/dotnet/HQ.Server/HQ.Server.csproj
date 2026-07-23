@@ -48,6 +48,7 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="1.16.0-rc.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
         <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="10.0.1" />
+        <PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.4.0-preview.1" />
     </ItemGroup>
 
     <ItemGroup>

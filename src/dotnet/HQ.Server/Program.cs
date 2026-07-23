@@ -27,6 +27,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 
+using HQ.Server.Middleware;
+
+using ModelContextProtocol;
+
 using Npgsql;
 
 using OpenTelemetry.Logs;
@@ -227,6 +231,10 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddOpenIdConnectAccessTokenManagement();
+builder.Services.AddMcpServer()
+    .WithHttpTransport()
+    .WithToolsFromAssembly();
+
 builder.Services.AddHttpClient<UserServiceV1>(client =>
     {
         client.BaseAddress = new Uri(builder.Configuration["AUTH_ADMIN_URL"] ?? throw new ArgumentNullException("Undefined AUTH_ADMIN_URL"));
@@ -309,6 +317,8 @@ app.MapHangfireDashboard("/hangfire", new()
 app.MapGet("/", () => $"HQ {VersionNumber.GetVersionNumber()}").ExcludeFromDescription();
 app.MapGet("/unauthorized", () => "Unauthorized").ExcludeFromDescription();
 app.MapControllers();
+app.UseMiddleware<MpcResourceMetadataMiddleware>();
+app.MapMcp("/mcp").RequireAuthorization();
 
 var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 await using var scope = serviceScopeFactory.CreateAsyncScope();
