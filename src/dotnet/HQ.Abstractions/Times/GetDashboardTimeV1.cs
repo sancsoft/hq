@@ -37,6 +37,7 @@ public class GetDashboardTimeV1
         public int RejectedCount { get; set; }
         public bool CanSubmit { get; set; }
         public bool CanUnsubmit { get; set; }
+        public bool CanUnlock { get; set; }
 
         public DateOnly? TimeEntryCutoffDate { get; set; }
     }

@@ -57,6 +57,10 @@ import {
   GetStaffV1Response,
 } from '../models/staff-members/get-staff-member-v1';
 import {
+  UpsertStaffTimeEntryCutOffDateRequestV1,
+  UpsertStaffTimeEntryCutOffDateResponseV1,
+} from '../models/staff-members/upsert-staff-member-v1';
+import {
   UpsertHolidayRequestV1,
   UpsertHolidayResponseV1,
 } from '../models/holiday/upsert-holiday-v1';
@@ -503,6 +507,19 @@ export class HQService {
       ),
     );
   }
+  upsertStaffTimeEntryCutOffDateV1(
+    request: Partial<UpsertStaffTimeEntryCutOffDateRequestV1>,
+  ) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertStaffTimeEntryCutOffDateResponseV1>(
+          `${apiUrl}/v1/Staff/UpsertStaffTimeEntryCutOffDateV1
+          `,
+          request,
+        ),
+      ),
+    );
+  }
   upsertHolidayV1(request: Partial<UpsertHolidayRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
@@ -611,7 +628,9 @@ export class HQService {
       ),
     );
   }
-  upsertTimeStatusUnsubmittedV1(request: Partial<UpsertTimeStatusUnsubmittedRequestV1>) {
+  upsertTimeStatusUnsubmittedV1(
+    request: Partial<UpsertTimeStatusUnsubmittedRequestV1>,
+  ) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
         this.http.post<UpsertTimeStatusUnsubmittedResponseV1>(

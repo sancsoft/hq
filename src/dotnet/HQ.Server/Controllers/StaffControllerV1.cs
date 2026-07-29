@@ -43,6 +43,13 @@ namespace HQ.Server.Controllers
             .ToActionResult(new HQResultEndpointProfile());
 
         [Authorize(HQAuthorizationPolicies.Executive)]
+        [HttpPost(nameof(UpsertStaffTimeEntryCutOffDateV1))]
+        [ProducesResponseType<UpsertStaffTimeEntryCutOffDateV1.Response>(StatusCodes.Status201Created)]
+        public Task<ActionResult> UpsertStaffTimeEntryCutOffDateV1(UpsertStaffTimeEntryCutOffDateV1.Request request, CancellationToken ct = default) =>
+            _staffervice.UpsertStaffTimeEntryCutOffDateV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Executive)]
         [HttpPost(nameof(DeleteStaffV1))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -63,6 +63,7 @@ public class StaffServiceV1
                 staff.FirstName = request.FirstName;
                 staff.LastName = request.LastName;
                 staff.Email = request.Email;
+                staff.TimeEntryCutoffDate = request.TimeEntryCutOffDate;
 
                 await _context.SaveChangesAsync(ct);
                 if (request.CreateUser)
@@ -207,7 +208,8 @@ public class StaffServiceV1
             HrsThisMonth = t.Times.Where(x => x.StaffId == t.Id && x.Date >= startMonthDate && x.Date <= endMonthDate).Sum(y => y.Hours),
             FirstName = t.FirstName,
             LastName = t.LastName,
-            Email = t.Email
+            Email = t.Email,
+            TimeEntryCutoffDate = t.TimeEntryCutoffDate
         });
 
 
@@ -251,6 +253,20 @@ public class StaffServiceV1
         };
 
         return response;
+    }
+
+    public async Task<Result<UpsertStaffTimeEntryCutOffDateV1.Response>> UpsertStaffTimeEntryCutOffDateV1(UpsertStaffTimeEntryCutOffDateV1.Request request, CancellationToken ct = default)
+    {
+        var staff = await _context.Staff.FindAsync(request.Id);
+        if (staff == null)
+        {
+            return Result.Fail("Staff does not exist.");
+        }
+
+        staff.TimeEntryCutoffDate = request.TimeEntryCutOffDate;
+
+        await _context.SaveChangesAsync(ct);
+        return Result.Ok(new UpsertStaffTimeEntryCutOffDateV1.Response() { Id = staff.Id });
     }
 
     public async Task<Result<ImportStaffV1.Response>> ImportStaffV1(ImportStaffV1.Request request, CancellationToken ct = default)

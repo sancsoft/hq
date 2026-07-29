@@ -925,6 +925,8 @@ namespace HQ.Server.Services
                     CanCreateTime = !staff.TimeEntryCutoffDate.HasValue || endDate >= staff.TimeEntryCutoffDate.Value
                 };
 
+                response.CanUnlock = !rejectedTimes.CanCreateTime;
+
                 response.Dates.Add(rejectedTimes);
             }
             else if (request.Period == Period.Today || request.Period == Period.Week)
@@ -947,6 +949,8 @@ namespace HQ.Server.Services
 
                     timeForDate.CanCreateTime = !staff.TimeEntryCutoffDate.HasValue || timeForDate.Date >= staff.TimeEntryCutoffDate.Value;
 
+                    response.CanUnlock = !timeForDate.CanCreateTime;
+
                     response.Dates.Add(timeForDate);
                     date = date.AddDays(-1);
                 }
@@ -964,6 +968,7 @@ namespace HQ.Server.Services
                     CanCreateTime = !staff.TimeEntryCutoffDate.HasValue || endDate >= staff.TimeEntryCutoffDate.Value
                 };
 
+                response.CanUnlock = !timeForMonth.CanCreateTime;
                 response.Dates.Add(timeForMonth);
             }
             response.CanSubmit = groupedTimes.Count > 0 && !groupedTimes.Any(t => t.Value.Any(x => x.Hours == 0 || String.IsNullOrEmpty(x.Notes))) && groupedTimes.Any(t => t.Value.Any(x => x.TimeStatus == TimeStatus.Unsubmitted || x.TimeStatus == TimeStatus.Rejected));

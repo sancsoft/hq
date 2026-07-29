@@ -512,20 +512,70 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     try {
       const submittedTimesIds = await firstValueFrom(
         this.staffDashboardService.time$.pipe(
-          map((t) => 
-            t.dates.flatMap((d) => 
+          map((t) =>
+            t.dates.flatMap((d) =>
               d.times
                 .filter((time) => time.timeStatus === TimeStatus.Submitted)
-                .map((time) => time.id))),
+                .map((time) => time.id),
+            ),
+          ),
         ),
       );
       const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
       if (staffId) {
-        const unsubmitTimesRequest = { ids: submittedTimesIds, staffId: staffId };
-        await firstValueFrom(this.hqService.upsertTimeStatusUnsubmittedV1(unsubmitTimesRequest));
+        const unsubmitTimesRequest = {
+          ids: submittedTimesIds,
+          staffId: staffId,
+        };
+        await firstValueFrom(
+          this.hqService.upsertTimeStatusUnsubmittedV1(unsubmitTimesRequest),
+        );
         this.toastService.show(
           'Success',
           'Time entries successfully unsubmitted.',
+        );
+        this.hideAllRejectedTimes();
+        this.staffDashboardService.refresh();
+      } else {
+        console.log('ERROR: Could not find staff');
+      }
+    } catch (err) {
+      if (err instanceof APIError) {
+        this.toastService.show('Error', err.errors.join('\n'));
+      } else {
+        this.toastService.show('Error', 'An unexpected error has occurred.');
+      }
+    }
+  }
+
+  async unlockTimes() {
+    const confirm = await firstValueFrom(
+      this.modalService.confirm(
+        'Unlock',
+        'Are you sure you want to unlock the current time entries?',
+      ),
+    );
+
+    if (!confirm) {
+      return;
+    }
+
+    try {
+      const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
+      if (staffId) {
+        const currentStartDate = new Date(this.staffDashboardService.date.value)
+          .toISOString()
+          .split('T')[0];
+        const unlockTimesRequest = {
+          id: staffId.toString(),
+          timeEntryCutOffDate: currentStartDate,
+        };
+        await firstValueFrom(
+          this.hqService.upsertStaffTimeEntryCutOffDateV1(unlockTimesRequest),
+        );
+        this.toastService.show(
+          'Success',
+          'Time entries successfully unlocked.',
         );
         this.hideAllRejectedTimes();
         this.staffDashboardService.refresh();

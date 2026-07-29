@@ -95,6 +95,9 @@ namespace HQ.SDK
         public Task<Result<UpsertStaffV1.Response?>> UpsertStaffV1(UpsertStaffV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<UpsertStaffV1.Response>("/v1/Staff/UpsertStaffV1", request, ct);
 
+        public Task<Result<UpsertStaffTimeEntryCutOffDateV1.Response?>> UpsertStaffTimeEntryCutOffDateV1(UpsertStaffTimeEntryCutOffDateV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertStaffTimeEntryCutOffDateV1.Response>("/v1/Staff/UpsertStaffTimeEntryCutOffDateV1", request, ct);
+
         public Task<Result<DeleteStaffV1.Response?>> DeleteStaffV1(DeleteStaffV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<DeleteStaffV1.Response>("/v1/Staff/DeleteStaffV1", request, ct);
 

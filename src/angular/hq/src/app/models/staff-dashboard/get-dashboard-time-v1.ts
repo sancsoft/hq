@@ -26,6 +26,7 @@ export interface GetDashboardTimeV1Response {
   rejectedCount: number;
   canSubmit: boolean;
   canUnsubmit: boolean;
+  canUnlock: boolean;
   timeEntryCutoffDate: string;
 }
 

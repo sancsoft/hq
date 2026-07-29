@@ -154,16 +154,13 @@
                   : 'No time entries to be unsubmitted '
               "
               [disabled]="
-                (staffDashboardService.canUnsubmit$| async) === false ||
-                (canEdit$ | async) === false
+                (staffDashboardService.canUnsubmit$ | async) === false
               "
               [ngClass]="{
                 'text-gray-50 border-gray-500 bg-gray-500 ':
-                  (staffDashboardService.canUnsubmit$ | async) === false ||
-                  (canEdit$ | async) === false,
+                  (staffDashboardService.canUnsubmit$ | async) === false,
                 'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                  (staffDashboardService.canUnsubmit$ | async) &&
-                  (canEdit$ | async) === true,
+                  (staffDashboardService.canUnsubmit$ | async),
               }"
               class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
               type="button"
@@ -172,17 +169,24 @@
               Unsubmit
             </button>
 
-            <!-- allow admin to: set the staff time entry cutt off date to the start date of the selected (day, week or month) -->
+            <!-- allow admin to: set the staff time entry cut off date to the start date of the selected (day, week or month) -->
             <button
               *ngIf="[HQRole.Administrator] | inRole | async"
               [title]="
-                (staffDashboardService.canSubmit$ | async)
+                (staffDashboardService.canUnlock$ | async)
                   ? 'Unloack all time entries for the shown date period'
                   : 'No time entries to be unlocked '
               "
-              ngClass="border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white"
+              [disabled]="(staffDashboardService.canUnlock$ | async) === false"
+              [ngClass]="{
+                'text-gray-50 border-gray-500 bg-gray-500 ':
+                  (staffDashboardService.canUnlock$ | async) === false,
+                'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+                  (staffDashboardService.canUnlock$ | async),
+              }"
               class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
               type="button"
+              (click)="unlockTimes()"
             >
               Unlock
             </button>
@@ -190,21 +194,29 @@
             <!-- allow admin to: submit all entries -->
             <button
               [title]="
-                (staffDashboardService.canSubmit$ | async)
+                (staffDashboardService.canSubmit$ | async) ||
+                ((staffDashboardService.canSubmit$ | async) &&
+                  ([HQRole.Administrator] | inRole | async))
                   ? 'Submit all time entries for the shown date period'
                   : 'No time entries to be submitted '
               "
               [disabled]="
-                (staffDashboardService.canSubmit$| async) === false ||
-                (canEdit$ | async) === false
+                (staffDashboardService.canSubmit$ | async) === false ||
+                (canEdit$ | async) === false ||
+                ((staffDashboardService.canSubmit$ | async) === false &&
+                  ([HQRole.Administrator] | inRole | async))
               "
               [ngClass]="{
                 'text-gray-50 border-gray-500 bg-gray-500 ':
                   (staffDashboardService.canSubmit$ | async) === false ||
-                  (canEdit$ | async) === false,
+                  (canEdit$ | async) === false ||
+                  ((staffDashboardService.canSubmit$ | async) === false &&
+                    ([HQRole.Administrator] | inRole | async)),
                 'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                  (staffDashboardService.canSubmit$ | async) &&
-                  (canEdit$ | async) === true,
+                  ((staffDashboardService.canSubmit$ | async) &&
+                    (canEdit$ | async) === true) ||
+                  ((staffDashboardService.canSubmit$ | async) &&
+                    ([HQRole.Administrator] | inRole | async)),
               }"
               class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
               type="button"

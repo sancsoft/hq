@@ -53,6 +53,8 @@ export class StaffDashboardService implements OnDestroy {
   canSubmit$: Observable<boolean> = this.canSubmitSubject.asObservable();
   canUnsubmitSubject = new BehaviorSubject<boolean>(false);
   canUnsubmit$: Observable<boolean> = this.canUnsubmitSubject.asObservable();
+  canUnlockSubject = new BehaviorSubject<boolean>(false);
+  canUnlock$: Observable<boolean> = this.canUnlockSubject.asObservable();
   timeEntryCutoffDate$: Observable<string>;
   time$: Observable<GetDashboardTimeV1Response>;
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;
@@ -180,6 +182,7 @@ export class StaffDashboardService implements OnDestroy {
       next: (t) => {
         this.canSubmitSubject.next(t.canSubmit);
         this.canUnsubmitSubject.next(t.canUnsubmit);
+        this.canUnlockSubject.next(t.canUnlock);
       },
       error: console.error,
     });
