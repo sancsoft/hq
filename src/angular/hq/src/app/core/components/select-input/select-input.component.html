@@ -119,7 +119,7 @@
         'border-black': !(ngControl?.invalid && ngControl?.touched),
       }"
       (keydown.enter)="onEnter($event.target)"
-      class="w-full pl-2 pr-[43px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-white bg-blue-900 rounded h-[30px]"
+      class="w-full pl-2 pr-[43px] text-[14px] appearance-none focus:outline-none hover:cursor-pointer font-medium row-start-1 col-start-1 border focus:border-white text-white bg-blue-900 rounded h-[36px] border-steel-blue-600"
     >
       @for (option of options; track option.value) {
         <option [ngValue]="option.value">
