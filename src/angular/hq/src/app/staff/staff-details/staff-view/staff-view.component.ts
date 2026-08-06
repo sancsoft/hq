@@ -25,6 +25,7 @@ interface Form {
   jurisdiciton: FormControl<Jurisdiciton | null>;
   startDate: FormControl<Date | null>;
   endDate: FormControl<Date | null>;
+  timeEntryCutoffDate: FormControl<Date | null>;
 }
 
 @Component({
@@ -72,6 +73,7 @@ export class StaffViewComponent implements OnInit {
       validators: [],
     }),
     endDate: new FormControl(null, {}),
+    timeEntryCutoffDate: new FormControl(null, {}),
   });
   async ngOnInit() {
     this.staffId =
@@ -130,6 +132,7 @@ export class StaffViewComponent implements OnInit {
         jurisdiciton: staffMember.jurisdiciton,
         startDate: staffMember.startDate || null,
         endDate: staffMember.endDate || null,
+        timeEntryCutoffDate: staffMember.timeEntryCutoffDate || null,
       });
     } catch (err) {
       if (err instanceof APIError) {

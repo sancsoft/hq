@@ -54,7 +54,7 @@
                       formControlName="StaffId"
                       label="Staff Member"
                       variant="secondary"
-                      [inline]="true"
+                      [inline]="false"
                     >
                       <ng-template [hqSelectInputOption]="null"
                         >Please Select a staff member</ng-template
@@ -81,6 +81,23 @@
                   </div>
 
                   <!-- column -->
+                  <div>
+                    <hq-select-input
+                      label="Status"
+                      formControlName="Status"
+                      [autocomplete]="true"
+                      variant="secondary"
+                    >
+                      @for (status of timeStatusValues; track status.id) {
+                        <ng-template
+                          [hqSelectInputOption]="status.id"
+                          [hqSelectInputOptionSelectedDisplay]="status.name"
+                          [hqSelectInputOptionSearch]="status.name"
+                          >{{ status.name }}</ng-template
+                        >
+                      }
+                    </hq-select-input>
+                  </div>
                 </div>
                 <!-- Row grid -->
 
@@ -158,7 +175,17 @@
                         >
                         </hq-select-input>
                       }
+                    } @else {
+                      <hq-select-input
+                        label="Select Activity"
+                        [disabled]="true"
+                        [autocomplete]="true"
+                        variant="secondary"
+                      >
+                      </hq-select-input>
                     }
+                  </div>
+                  <div>
                     @if (requireTask$ | async) {
                       <div>
                         <hq-form-label>Task</hq-form-label>
@@ -170,7 +197,7 @@
                           'focus:border-white placeholder:text-gray-100':
                             !form.controls.Task.errors || !form.touched,
                         }"
-                        class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+                        class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                         type="text"
                         aria-label="Task"
                         formControlName="Task"
@@ -188,7 +215,7 @@
                       <hq-form-label>Task</hq-form-label>
                       <input
                         [disabled]="true"
-                        class="w-[100%] block text-[14px] px-2 py-1 border border-gray-450 appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+                        class="w-[100%] block text-[14px] px-2 py-1 border border-gray-450 appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
                         type="text"
                         aria-label="Task"
                       />

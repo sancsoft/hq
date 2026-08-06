@@ -174,7 +174,8 @@ namespace HQ.Server.Invoices
                         ProjectId = t.ProjectId,
                         QuoteId = t.QuoteId,
                     })
-                    .Distinct()
+                    .GroupBy(c => c.Id)
+                    .Select(g => g.First())
                     .ToList();
 
                 response.TotalHours = totalHours;

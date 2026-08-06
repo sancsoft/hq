@@ -126,6 +126,7 @@ namespace HQ.Server.Services
             timeEntry.Notes = request.Notes;
             timeEntry.Hours = request.Hours ?? 0;
             timeEntry.Task = request.Task;
+            timeEntry.Status = request.Status;
 
             await _context.SaveChangesAsync(ct);
 
