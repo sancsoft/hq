@@ -181,13 +181,19 @@ export class InvoiceTimeListComponent implements OnDestroy {
   }
 
   async openRemoveTimeModal(id: string) {
-    this.confirmModalService.showModal(
-      'Are you sure you want to remove this time entry from this invoice?',
-    );
-    if (
-      (await firstValueFrom(this.confirmModalService.performAction$)) === true
-    ) {
-      await this.removeTime(id);
+    try {
+      const confirmed = await firstValueFrom(
+        this.modalService.confirm(
+          'Confirmation',
+          'Are you sure you want to remove this time entry from this invoice?',
+        ),
+      );
+
+      if (confirmed) {
+        await this.removeTime(id);
+      }
+    } catch (error) {
+      console.error('Modal confirmation error:', error);
     }
   }
 
