@@ -14,3 +14,12 @@ export interface UpsertStaffMemberRequestV1 {
 export interface UpsertStaffMemberResponseV1 {
   id: string;
 }
+
+export interface UpsertStaffTimeEntryCutOffDateRequestV1 {
+  id: string;
+  timeEntryCutOffDate: string;
+}
+
+export interface UpsertStaffTimeEntryCutOffDateResponseV1 {
+  id: string;
+}

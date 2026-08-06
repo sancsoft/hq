@@ -95,6 +95,9 @@ namespace HQ.SDK
         public Task<Result<UpsertStaffV1.Response?>> UpsertStaffV1(UpsertStaffV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<UpsertStaffV1.Response>("/v1/Staff/UpsertStaffV1", request, ct);
 
+        public Task<Result<UpsertStaffTimeEntryCutOffDateV1.Response?>> UpsertStaffTimeEntryCutOffDateV1(UpsertStaffTimeEntryCutOffDateV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertStaffTimeEntryCutOffDateV1.Response>("/v1/Staff/UpsertStaffTimeEntryCutOffDateV1", request, ct);
+
         public Task<Result<DeleteStaffV1.Response?>> DeleteStaffV1(DeleteStaffV1.Request request, CancellationToken ct = default)
             => ExecuteRequest<DeleteStaffV1.Response>("/v1/Staff/DeleteStaffV1", request, ct);
 
@@ -194,6 +197,8 @@ namespace HQ.SDK
             => ExecuteRequest<UpsertTimeActivityV1.Response>("/v1/TimeEntries/UpsertTimeActivityV1", request, ct);
         public Task<Result<UpsertTimeChargeCodeV1.Response?>> UpsertTimeEntryChargecodeV1(UpsertTimeChargeCodeV1.Request request, CancellationToken ct = default)
         => ExecuteRequest<UpsertTimeChargeCodeV1.Response>("/v1/TimeEntries/UpsertTimeChargecodeV1", request, ct);
+        public Task<Result<UpsertTimeStatusUnsubmittedV1.Response?>> UpsertTimeStatusUnsubmittedV1(UpsertTimeStatusUnsubmittedV1.Request request, CancellationToken ct = default)
+            => ExecuteRequest<UpsertTimeStatusUnsubmittedV1.Response>("/v1/TimeEntries/UpsertTimeStatusUnsubmittedV1", request, ct);
 
         public Task<Result<UpsertTimeDateV1.Response?>> UpsertTimeEntryDateV1(UpsertTimeDateV1.Request request, CancellationToken ct = default)
         => ExecuteRequest<UpsertTimeDateV1.Response>("/v1/TimeEntries/UpsertTimeDateV1", request, ct);

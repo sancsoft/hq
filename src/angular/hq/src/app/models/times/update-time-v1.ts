@@ -23,3 +23,12 @@ export interface UpdateTimeHoursInvoicedResponseV1 {
   id: string;
   hoursInvoiced: number;
 }
+
+export interface UpsertTimeStatusUnsubmittedRequestV1 {
+  ids: string[] | null;
+  staffId: string;
+}
+
+export interface UpsertTimeStatusUnsubmittedResponseV1 {
+  id: string;
+}

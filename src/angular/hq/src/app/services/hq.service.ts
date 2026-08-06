@@ -57,6 +57,10 @@ import {
   GetStaffV1Response,
 } from '../models/staff-members/get-staff-member-v1';
 import {
+  UpsertStaffTimeEntryCutOffDateRequestV1,
+  UpsertStaffTimeEntryCutOffDateResponseV1,
+} from '../models/staff-members/upsert-staff-member-v1';
+import {
   UpsertHolidayRequestV1,
   UpsertHolidayResponseV1,
 } from '../models/holiday/upsert-holiday-v1';
@@ -131,6 +135,8 @@ import {
   UpdateTimeHoursInvoicedResponseV1,
   updateTimeRequestV1,
   UpdateTimeResponseV1,
+  UpsertTimeStatusUnsubmittedRequestV1,
+  UpsertTimeStatusUnsubmittedResponseV1,
 } from '../models/times/update-time-v1';
 import {
   GetDashboardTimeV1Request,
@@ -501,6 +507,19 @@ export class HQService {
       ),
     );
   }
+  upsertStaffTimeEntryCutOffDateV1(
+    request: Partial<UpsertStaffTimeEntryCutOffDateRequestV1>,
+  ) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertStaffTimeEntryCutOffDateResponseV1>(
+          `${apiUrl}/v1/Staff/UpsertStaffTimeEntryCutOffDateV1
+          `,
+          request,
+        ),
+      ),
+    );
+  }
   upsertHolidayV1(request: Partial<UpsertHolidayRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
@@ -604,6 +623,18 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpdateTimeResponseV1>(
           `${apiUrl}/v1/TimeEntries/UpsertTimeV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  upsertTimeStatusUnsubmittedV1(
+    request: Partial<UpsertTimeStatusUnsubmittedRequestV1>,
+  ) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpsertTimeStatusUnsubmittedResponseV1>(
+          `${apiUrl}/v1/TimeEntries/UpsertTimeStatusUnsubmittedV1`,
           request,
         ),
       ),

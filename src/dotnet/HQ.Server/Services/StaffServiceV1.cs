@@ -255,6 +255,20 @@ public class StaffServiceV1
         return response;
     }
 
+    public async Task<Result<UpsertStaffTimeEntryCutOffDateV1.Response>> UpsertStaffTimeEntryCutOffDateV1(UpsertStaffTimeEntryCutOffDateV1.Request request, CancellationToken ct = default)
+    {
+        var staff = await _context.Staff.FindAsync(request.Id);
+        if (staff == null)
+        {
+            return Result.Fail("Staff does not exist.");
+        }
+
+        staff.TimeEntryCutoffDate = request.TimeEntryCutOffDate;
+
+        await _context.SaveChangesAsync(ct);
+        return Result.Ok(new UpsertStaffTimeEntryCutOffDateV1.Response() { Id = staff.Id });
+    }
+
     public async Task<Result<ImportStaffV1.Response>> ImportStaffV1(ImportStaffV1.Request request, CancellationToken ct = default)
     {
         var conf = new CsvConfiguration(CultureInfo.InvariantCulture)
