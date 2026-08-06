@@ -63,6 +63,7 @@ public class StaffServiceV1
                 staff.FirstName = request.FirstName;
                 staff.LastName = request.LastName;
                 staff.Email = request.Email;
+                staff.TimeEntryCutoffDate = request.TimeEntryCutOffDate;
 
                 await _context.SaveChangesAsync(ct);
                 if (request.CreateUser)
@@ -207,7 +208,8 @@ public class StaffServiceV1
             HrsThisMonth = t.Times.Where(x => x.StaffId == t.Id && x.Date >= startMonthDate && x.Date <= endMonthDate).Sum(y => y.Hours),
             FirstName = t.FirstName,
             LastName = t.LastName,
-            Email = t.Email
+            Email = t.Email,
+            TimeEntryCutoffDate = t.TimeEntryCutoffDate
         });
 
 
