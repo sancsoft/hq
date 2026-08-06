@@ -135,6 +135,9 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   @Input({ required: true })
   staffId!: string | null;
 
+  @Input({ required: false })
+  admin: boolean = false;
+
   async ngOnInit() {
     // this is added to make sure that the upsert method works in value changes
     this.staffDashboardService.date.setValue(
@@ -502,7 +505,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     const confirm = await firstValueFrom(
       this.modalService.confirm(
         'Unsubmit',
-        'Are you sure you want to unsubmit the current time entries?',
+        'Are you sure you want to unsubmit the unaccepted time entries?',
       ),
     );
 
@@ -549,10 +552,14 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async unlockTimes() {
+    const currentStartDate = new Date(this.staffDashboardService.date.value)
+      .toISOString()
+      .split('T')[0];
+
     const confirm = await firstValueFrom(
       this.modalService.confirm(
         'Unlock',
-        'Are you sure you want to unlock the current time entries?',
+        `Are you sure you want to unlock the timesheet and allow times to be submitted after ${currentStartDate}?`,
       ),
     );
 
@@ -563,9 +570,6 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
     try {
       const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
       if (staffId) {
-        const currentStartDate = new Date(this.staffDashboardService.date.value)
-          .toISOString()
-          .split('T')[0];
         const unlockTimesRequest = {
           id: staffId.toString(),
           timeEntryCutOffDate: currentStartDate,

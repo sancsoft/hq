@@ -147,7 +147,7 @@
 
             <!-- allow admin to: unsubmit all times in view only if the status is submitted (day, week or month) -->
             <button
-              *ngIf="[HQRole.Administrator] | inRole | async"
+              *ngIf="([HQRole.Administrator] | inRole | async) && admin"
               [title]="
                 (staffDashboardService.canUnsubmit$ | async)
                   ? 'UnSubmit all submitted time entries for the shown date period'
@@ -171,7 +171,7 @@
 
             <!-- allow admin to: set the staff time entry cut off date to the start date of the selected (day, week or month) -->
             <button
-              *ngIf="[HQRole.Administrator] | inRole | async"
+              *ngIf="([HQRole.Administrator] | inRole | async) && admin"
               [title]="
                 (staffDashboardService.canUnlock$ | async)
                   ? 'Unloack all time entries for the shown date period'
