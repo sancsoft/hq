@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.2] - 2026-08-06
+
+### Fixed
+
+- Build — Removed BaseController inheritance from ServicesAgreementServiceV1
+
 ## [0.6.1] - 2026-08-06
 
 ### Added
@@ -833,7 +839,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.6.1...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.6.2...HEAD
+[0.6.2]: https://github.com/sancsoft/hq/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/sancsoft/hq/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/sancsoft/hq/compare/v0.5.9...v0.6.0
 [0.5.9]: https://github.com/sancsoft/hq/compare/v0.5.8...v0.5.9
