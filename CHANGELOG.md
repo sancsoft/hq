@@ -7,25 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-08-06
+
+### Added
+
+- Time entry status management — Set and edit status on time entries
+- Admin unsubmit button on staff timesheet to unsubmit all submitted time records
+- Time entry cut-off date assignment in staff admin area
+- Windows timezone support for Eastern Time
+- DEVELOP.md with development setup documentation
+- Seed method to generate test projects, charge codes, and test users in development
+
+### Changed
+
+- Package updates
+- Upgraded to .NET 10
+- Docker Compose improvements and cleanup
+
+### Fixed
+
+- Invoice list page filter styling
+- Activity and task form field validation when switching charge codes
+- Narrow gap between billable and required tasks fields on project pages
+
 ## [0.6.0] - 2025-09-04
 
 ### Added
 
-- Invoicing functionality
+- Invoicing functionality — Create, view, and manage invoices with time entries
+  - Invoice creation with client selection and invoice number
+  - Invoice details page with time entry management (add, edit, delete time)
+  - Invoice list with search and filtering
+  - Add time entries to existing invoices
 - Upcoming filter to Holiday list
 - Project manager filter to points page
+- Ability to require activities and/or tasks on projects
 
 ### Changed
 
 - Package updates
 - Upgraded Duende.AccessTokenManagement
-- Staff hour mail priority to normal
-- Added ability to enter activity and/or tasks based on project configuration
+- Staff hour email priority changed from high to normal
+- Reject time entry email template updated to show separate Activity and Task fields based on project configuration
 
 ### Fixed
 
 - PSR unsubmitted styling
-- Fixed staff selection in PSR list
+- Staff selection in PSR list
 - Autocomplete closing on clicking items
 - Employee hours email template styling
 - Markdown styling for list elements
@@ -805,8 +833,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.6.0...HEAD
-[0.6.0]: https://github.com/sancsoft/hq/releases/tag/v0.6.0
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/sancsoft/hq/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/sancsoft/hq/compare/v0.5.9...v0.6.0
 [0.5.9]: https://github.com/sancsoft/hq/compare/v0.5.8...v0.5.9
 [0.5.8]: https://github.com/sancsoft/hq/compare/v0.5.7...v0.5.8
 [0.5.7]: https://github.com/sancsoft/hq/compare/v0.5.6...v0.5.7

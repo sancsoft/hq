@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services
 {
-    public class ServicesAgreementServiceV1 : ControllerBase
+    public class ServicesAgreementServiceV1
     {
         private readonly HQDbContext _context;
 
