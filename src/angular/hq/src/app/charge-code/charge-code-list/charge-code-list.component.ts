@@ -20,8 +20,6 @@ import { BaseListService } from '../../core/services/base-list.service';
         RouterLink,
         CommonModule,
         ReactiveFormsModule,
-        PaginatorComponent,
-        SortIconComponent,
         InRolePipe,
         CoreModule,
     ],

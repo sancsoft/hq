@@ -20,7 +20,6 @@ import { ClientProjectListService } from './client-project-list/client-project-l
     imports: [
         RouterOutlet,
         RouterLink,
-        RouterLinkActive,
         ClientDetailsSummaryComponent,
         ClientDetailsSearchFilterComponent,
         TabComponent,

@@ -36,9 +36,7 @@ interface quoteFormGroup {
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        ErrorDisplayComponent,
         RouterLink,
-        SelectableClientListComponent,
         CoreModule,
     ],
     templateUrl: './quotes-edit.component.html'

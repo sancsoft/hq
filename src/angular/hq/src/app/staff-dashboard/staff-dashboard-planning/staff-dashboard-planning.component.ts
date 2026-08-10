@@ -63,19 +63,11 @@ import { GetPlanRequestV1 } from '../../models/Plan/get-plan-v1';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        StaffDashboardTimeEntryComponent,
-        StaffDashboardSearchFilterComponent,
-        StaffDashboardDateRangeComponent,
-        StatDisplayComponent,
-        PanelComponent,
+        StaffDashboardPlanningPointComponent,
         MonacoEditorModule,
-        HQMarkdownComponent,
         CdkDropList,
         CdkDrag,
-        CdkDragPlaceholder,
-        StaffDashboardPlanningPointComponent,
         ButtonComponent,
-        StaffDashboardPlanningComponent,
     ],
     templateUrl: './staff-dashboard-planning.component.html'
 })

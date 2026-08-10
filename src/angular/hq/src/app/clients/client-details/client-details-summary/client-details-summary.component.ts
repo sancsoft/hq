@@ -8,7 +8,6 @@ import { StatDisplayComponent } from '../../../core/components/stat-display/stat
     selector: 'hq-client-details-summary',
     imports: [
         CommonModule,
-        ErrorDisplayComponent,
         RouterLink,
         StatDisplayComponent,
     ],

@@ -39,8 +39,6 @@ interface Form {
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        ErrorDisplayComponent,
-        RouterLink,
         ButtonComponent,
     ],
     templateUrl: './staff-edit.component.html'

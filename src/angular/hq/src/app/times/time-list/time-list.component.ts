@@ -32,8 +32,6 @@ import { HttpErrorResponse } from '@angular/common/http';
         RouterLink,
         CommonModule,
         ReactiveFormsModule,
-        PaginatorComponent,
-        SortIconComponent,
         TimeSearchFilterComponent,
         InRolePipe,
         CoreModule,

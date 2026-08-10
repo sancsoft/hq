@@ -28,7 +28,6 @@ import { ProjectDetailsService } from './project-details.service';
         ProjectPsrDetailsComponent,
         CoreModule,
         PanelComponent,
-        DualPanelComponent,
     ],
     providers: [ProjectDetailsService],
     templateUrl: './project-details.component.html'

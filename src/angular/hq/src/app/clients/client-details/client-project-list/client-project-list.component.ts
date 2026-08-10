@@ -21,8 +21,6 @@ import { BaseListService } from '../../../core/services/base-list.service';
         RouterModule,
         CommonModule,
         ReactiveFormsModule,
-        PaginatorComponent,
-        SortIconComponent,
         InRolePipe,
         ButtonComponent,
         CoreModule,

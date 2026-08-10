@@ -65,19 +65,11 @@ export interface DialogData {
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        StaffDashboardTimeEntryComponent,
-        StaffDashboardSearchFilterComponent,
-        StaffDashboardDateRangeComponent,
-        StatDisplayComponent,
-        PanelComponent,
+        StaffDashboardPlanningPointComponent,
         MonacoEditorModule,
-        HQMarkdownComponent,
         CdkDropList,
         CdkDrag,
-        CdkDragPlaceholder,
-        StaffDashboardPlanningPointComponent,
         ButtonComponent,
-        StaffDashboardPlanningComponent,
     ],
     templateUrl: './planning-points-modal.component.html'
 })

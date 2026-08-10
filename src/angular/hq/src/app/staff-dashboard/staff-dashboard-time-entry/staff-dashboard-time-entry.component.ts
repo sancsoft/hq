@@ -82,7 +82,6 @@ interface Form {
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        DateInputComponent,
         SelectInputOptionDirective,
         SelectInputComponent,
     ],

@@ -23,7 +23,6 @@ import { ProjectType } from '../../../enums/project-type';
     selector: 'hq-kitchen-sink',
     imports: [
         SearchInputComponent,
-        FormLabelComponent,
         CommonModule,
         FormsModule,
         ReactiveFormsModule,

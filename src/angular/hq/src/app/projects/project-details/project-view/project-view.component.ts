@@ -63,8 +63,6 @@ interface Form {
     imports: [
         CommonModule,
         RouterLink,
-        RouterLinkActive,
-        PdfViewerComponent,
         CoreModule,
         ReactiveFormsModule,
         InRolePipe,

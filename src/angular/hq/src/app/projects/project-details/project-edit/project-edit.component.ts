@@ -67,8 +67,6 @@ interface Form {
     selector: 'hq-project-edit',
     imports: [
         CommonModule,
-        RouterLink,
-        RouterLinkActive,
         CoreModule,
         ReactiveFormsModule,
     ],

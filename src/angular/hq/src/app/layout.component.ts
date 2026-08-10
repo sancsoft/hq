@@ -13,7 +13,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
     selector: 'hq-layout',
     imports: [
         CommonModule,
-        RouterOutlet,
         FormsModule,
         RouterLink,
         RouterLinkActive,

@@ -7,7 +7,7 @@ import { DateInputComponent } from '../../core/components/date-input/date-input.
 
 @Component({
     selector: 'hq-date-modal',
-    imports: [CommonModule, ReactiveFormsModule, DateInputComponent],
+    imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './date-modal.component.html'
 })
 export class DateModalComponent {

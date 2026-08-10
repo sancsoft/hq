@@ -34,7 +34,6 @@ interface Form {
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        ErrorDisplayComponent,
         RouterLink,
         ButtonComponent,
     ],

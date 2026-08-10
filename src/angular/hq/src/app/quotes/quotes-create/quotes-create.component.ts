@@ -36,8 +36,6 @@ interface quoteFormGroup {
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        SelectableClientListComponent,
-        PdfViewerComponent,
         RouterLink,
         CoreModule,
     ],

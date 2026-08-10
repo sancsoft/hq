@@ -47,7 +47,8 @@
               }
             ],
             "styles": ["src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["file-saver"]
           },
           "configurations": {
             "production": {

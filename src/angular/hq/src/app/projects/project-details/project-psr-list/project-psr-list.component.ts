@@ -23,9 +23,7 @@ import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component
     selector: 'hq-project-psr-list',
     imports: [
         CommonModule,
-        RouterOutlet,
         RouterLink,
-        RouterLinkActive,
         SortIconComponent,
     ],
     templateUrl: './project-psr-list.component.html'

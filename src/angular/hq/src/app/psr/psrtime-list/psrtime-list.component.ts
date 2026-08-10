@@ -57,11 +57,8 @@ export interface ChargeCodeViewModel {
     selector: 'hq-psrtime-list',
     imports: [
         CommonModule,
-        PsrDetailsHeaderComponent,
         SortIconComponent,
-        PsrSearchFilterComponent,
         FormsModule,
-        InRolePipe,
         SelectInputOptionDirective,
         SelectInputComponent,
     ],

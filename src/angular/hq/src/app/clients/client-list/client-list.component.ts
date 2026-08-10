@@ -24,8 +24,6 @@ export interface ClientNameId {
         CommonModule,
         RouterLink,
         ReactiveFormsModule,
-        PaginatorComponent,
-        SortIconComponent,
         InRolePipe,
         CoreModule,
     ],

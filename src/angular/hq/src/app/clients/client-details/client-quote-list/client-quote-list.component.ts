@@ -20,8 +20,6 @@ import FileSaver from 'file-saver';
         RouterLink,
         CommonModule,
         ReactiveFormsModule,
-        PaginatorComponent,
-        SortIconComponent,
         InRolePipe,
         ButtonComponent,
         CoreModule,

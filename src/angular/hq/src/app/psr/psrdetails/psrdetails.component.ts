@@ -16,11 +16,7 @@ export interface ChargeCodeViewModel {
     imports: [
         CommonModule,
         PsrDetailsHeaderComponent,
-        PsrSearchFilterComponent,
-        RouterLink,
-        RouterLinkActive,
         RouterOutlet,
-        TabComponent,
     ],
     templateUrl: './psrdetails.component.html'
 })

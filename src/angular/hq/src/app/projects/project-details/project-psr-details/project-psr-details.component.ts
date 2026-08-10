@@ -7,7 +7,7 @@ import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
 
 @Component({
     selector: 'hq-project-psr-details',
-    imports: [CommonModule, RouterLink],
+    imports: [CommonModule],
     templateUrl: './project-psr-details.component.html'
 })
 export class ProjectPsrDetailsComponent {

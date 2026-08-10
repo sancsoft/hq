@@ -66,8 +66,6 @@ interface Form {
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        SelectableClientListComponent,
-        PdfViewerComponent,
         CoreModule,
     ],
     templateUrl: './project-create.component.html'

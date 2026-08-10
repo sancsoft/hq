@@ -42,7 +42,6 @@ export interface PointForm {
         CommonModule,
         ReactiveFormsModule,
         CdkDragHandle,
-        CdkDrag,
         SelectInputOptionDirective,
         SelectInputComponent,
     ],

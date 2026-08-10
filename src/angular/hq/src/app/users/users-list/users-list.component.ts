@@ -20,13 +20,8 @@ import { TableComponent } from '../../core/components/table/table.component';
         RouterLink,
         CommonModule,
         ReactiveFormsModule,
-        PaginatorComponent,
-        SortIconComponent,
-        ClientDetailsSearchFilterComponent,
-        RouterLink,
         CoreModule,
         TableComponent,
-        ReactiveFormsModule,
         FormsModule,
     ],
     providers: [
