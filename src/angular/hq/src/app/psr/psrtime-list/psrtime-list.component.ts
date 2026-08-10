@@ -303,7 +303,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       this.shiftKey$.next(event.shiftKey);
     }
   }
-  @HostListener('window:blur', ['$event'])
+  @HostListener('window:blur')
   onBlur() {
     this.shiftKey$.next(false);
   }

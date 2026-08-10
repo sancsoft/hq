@@ -20,7 +20,7 @@ export class SortHeaderComponent<
   @HostBinding('class.cursor-pointer')
   cursorPointer: boolean = true;
 
-  @HostListener('click', ['$event']) onClick() {
+  @HostListener('click') onClick() {
     if (this.sortColumn) {
       this.listService.onSortClick(this.sortColumn);
     }
