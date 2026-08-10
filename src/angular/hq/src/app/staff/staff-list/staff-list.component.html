@@ -14,7 +14,7 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
         [hq-sort-header]="sortColumn.Name"
         width="220px"
-      >
+        >
         Name
       </th>
       <th
@@ -22,7 +22,7 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
         [hq-sort-header]="sortColumn.Hrs"
         width="220px"
-      >
+        >
         Hrs YTD
       </th>
       <th
@@ -30,7 +30,7 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 pl-5 cursor-pointer"
         [hq-sort-header]="sortColumn.BillableHrs"
         width="220px"
-      >
+        >
         Billable Hrs YTD
       </th>
       <th
@@ -38,7 +38,7 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
         [hq-sort-header]="sortColumn.VacationHours"
         width="220px"
-      >
+        >
         Vacation
       </th>
       <th
@@ -46,7 +46,7 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
         [hq-sort-header]="sortColumn.Jurisdiction"
         width="220px"
-      >
+        >
         Jurisdiction
       </th>
 
@@ -55,7 +55,7 @@
         class="bg-blue-900 border-steel-blue-600 border-y py-3 cursor-pointer"
         [hq-sort-header]="sortColumn.Status"
         width="220px"
-      >
+        >
         Status
       </th>
 
@@ -85,9 +85,15 @@
           {{ member.vacationHours }}
         </td>
         <td class="border-b border-black py-2">
-          <div [ngSwitch]="member.jurisdiciton">
-            <div *ngSwitchCase="Jurisdiction.USA">USA</div>
-            <div *ngSwitchCase="Jurisdiction.Colombia">Colombia</div>
+          <div>
+            @switch (member.jurisdiciton) {
+              @case (Jurisdiction.USA) {
+                <div>USA</div>
+              }
+              @case (Jurisdiction.Colombia) {
+                <div>Colombia</div>
+              }
+            }
           </div>
         </td>
         <td class="border-b border-black py-2 capitalize">
@@ -100,23 +106,23 @@
               [routerLink]="[member.id, 'timesheet']"
               class="text-teal-200 hover:text-teal-300 pr-3"
               >View</a
-            >
+              >
 
-            <!-- <a
+              <!-- <a
               [routerLink]="[member.id]"
               class="text-teal-200 hover:text-teal-300 pl-3"
               >View</a
-            > -->
-          </div>
-          <!-- @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+              > -->
+            </div>
+            <!-- @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
             <a
               [routerLink]="['edit', member.id]"
               class="text-teal-200 hover:text-teal-300 cursor-pointer"
               >EDIT</a
-            >
-          } -->
-        </td>
-      </tr>
-    }
-  </tbody>
-</hq-table>
+              >
+              } -->
+            </td>
+          </tr>
+        }
+      </tbody>
+    </hq-table>

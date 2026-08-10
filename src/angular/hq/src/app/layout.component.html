@@ -5,233 +5,252 @@
     <div class="pb-4 px-5 w-[100%] text-center">
       <a routerLink="/" class="inline-block"
         ><img
-          src="/assets/logo.svg"
-          alt="Sanctuary Software Studio, Inc."
-          style="height: 30px; margin: 0 auto"
+        src="/assets/logo.svg"
+        alt="Sanctuary Software Studio, Inc."
+        style="height: 30px; margin: 0 auto"
       /></a>
     </div>
   </div>
   <!-- col two -->
   <nav class="nav flex flex-1 h-[30px]">
-    <div
-      *ngIf="HQRole.Staff | inRole | async"
-      class="min-w-[50px] xl:min-w-[100px]"
-    >
-      <a
-        routerLink="/dashboard"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        >Home</a
-      >
-    </div>
-    <div
-      *ngIf="HQRole.Staff | inRole | async"
-      class="min-w-[50px] xl:min-w-[100px]"
-    >
-      <a
-        routerLink="/psr"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        >PSR</a
-      >
-    </div>
-    <div
-      *ngIf="HQRole.Staff | inRole | async"
-      class="min-w-[50px] xl:min-w-[100px]"
-    >
-      <a
-        routerLink="/staff"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        aria-disabled="true"
-        >Staff</a
-      >
-    </div>
-    <div
-      *ngIf="HQRole.Staff | inRole | async"
-      class="min-w-[50px] xl:min-w-[100px]"
-    >
-      <a
-        routerLink="/planning/points"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        aria-disabled="true"
-        >Points</a
-      >
-    </div>
-    <div
-      *ngIf="HQRole.Staff | inRole | async"
-      class="min-w-[50px] xl:min-w-[100px]"
-    >
-      <a
-        routerLink="/clients"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        >Clients</a
-      >
-    </div>
-    <div
-      *ngIf="HQRole.Staff | inRole | async"
-      class="min-w-[50px] xl:min-w-[100px]"
-    >
-      <a
-        routerLink="/projects"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        >Projects</a
-      >
-    </div>
-    <div
-      *ngIf="HQRole.Staff | inRole | async"
-      class="min-w-[50px] xl:min-w-[100px]"
-    >
-      <a
-        routerLink="/quotes"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        aria-disabled="true"
-        >Quotes</a
-      >
-    </div>
-    <div *ngIf="HQRole.Staff | inRole | async">
-      <a
-        routerLink="/times"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        aria-disabled="true"
-        >Time</a
-      >
-    </div>
-    <div *ngIf="HQRole.Staff | inRole | async">
-      <a
-        routerLink="/invoices"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        aria-disabled="true"
-        >Invoices</a
-      >
-    </div>
-    <!--<div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
-      <a
-        routerLink="/services"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        >Services</a
-      >
-    </div>
-    <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
-      <a
-        routerLink="/invoices"
-        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-        >Invoices</a
-      >
-    </div>-->
-    <div
-      class="flex items-center ml-auto pr-[1.125rem] border-r border-r-black-alt"
-    >
-      <!-- settings/more dropdown button -->
-      <button
-        (click)="toggleSettingDropdown()"
-        routerLinkActive="text-orange-500 active"
+    @if (HQRole.Staff | inRole | async) {
+      <div
+        class="min-w-[50px] xl:min-w-[100px]"
+        >
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+          class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+          >Home</a
+          >
+        </div>
+      }
+      @if (HQRole.Staff | inRole | async) {
+        <div
+          class="min-w-[50px] xl:min-w-[100px]"
+          >
+          <a
+            routerLink="/psr"
+            routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+            class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+            >PSR</a
+            >
+          </div>
+        }
+        @if (HQRole.Staff | inRole | async) {
+          <div
+            class="min-w-[50px] xl:min-w-[100px]"
+            >
+            <a
+              routerLink="/staff"
+              routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+              class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+              aria-disabled="true"
+              >Staff</a
+              >
+            </div>
+          }
+          @if (HQRole.Staff | inRole | async) {
+            <div
+              class="min-w-[50px] xl:min-w-[100px]"
+              >
+              <a
+                routerLink="/planning/points"
+                routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+                class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+                aria-disabled="true"
+                >Points</a
+                >
+              </div>
+            }
+            @if (HQRole.Staff | inRole | async) {
+              <div
+                class="min-w-[50px] xl:min-w-[100px]"
+                >
+                <a
+                  routerLink="/clients"
+                  routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+                  class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+                  >Clients</a
+                  >
+                </div>
+              }
+              @if (HQRole.Staff | inRole | async) {
+                <div
+                  class="min-w-[50px] xl:min-w-[100px]"
+                  >
+                  <a
+                    routerLink="/projects"
+                    routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+                    class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+                    >Projects</a
+                    >
+                  </div>
+                }
+                @if (HQRole.Staff | inRole | async) {
+                  <div
+                    class="min-w-[50px] xl:min-w-[100px]"
+                    >
+                    <a
+                      routerLink="/quotes"
+                      routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+                      class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+                      aria-disabled="true"
+                      >Quotes</a
+                      >
+                    </div>
+                  }
+                  @if (HQRole.Staff | inRole | async) {
+                    <div>
+                      <a
+                        routerLink="/times"
+                        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+                        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+                        aria-disabled="true"
+                        >Time</a
+                        >
+                      </div>
+                    }
+                    @if (HQRole.Staff | inRole | async) {
+                      <div>
+                        <a
+                          routerLink="/invoices"
+                          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+                          class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+                          aria-disabled="true"
+                          >Invoices</a
+                          >
+                        </div>
+                      }
+                      <!--<div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
+                      <a
+                        routerLink="/services"
+                        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+                        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+                        >Services</a
+                        >
+                      </div>
+                      <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
+                        <a
+                          routerLink="/invoices"
+                          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+                          class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+                          >Invoices</a
+                          >
+                        </div>-->
+                        <div
+                          class="flex items-center ml-auto pr-[1.125rem] border-r border-r-black-alt"
+                          >
+                          <!-- settings/more dropdown button -->
+                          <button
+                            (click)="toggleSettingDropdown()"
+                            routerLinkActive="text-orange-500 active"
         [ngClass]="
           settingDropdownOpen ? 'text-orange-500 h-[30px]' : 'h-[30px]'
         "
-        type="button"
-        cdkOverlayOrigin
-        #settingsButton
-        #trigger="cdkOverlayOrigin"
-      >
-        <i class="bi bi-sliders text-[1rem]"></i>
-      </button>
-      <!-- settings/more dropdown button overlay content -->
-      <ng-template
-        cdkConnectedOverlay
-        [cdkConnectedOverlayOrigin]="trigger"
-        [cdkConnectedOverlayOpen]="settingDropdownOpen"
-        (overlayOutsideClick)="toggleSettingDropdown()"
-      >
-        <ul
-          class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-        >
-          <!-- holidays -->
-          <li *ngIf="HQRole.Staff | inRole | async">
-            <a
-              routerLink="/holidays"
-              routerLinkActive="text-orange-500 active"
-              class="block px-4 py-2 text-gray-700 hover:text-gray-500"
-              (click)="toggleSettingDropdown()"
-              >Holidays</a
-            >
-          </li>
-          <!-- charge codes -->
-          <li *ngIf="HQRole.Staff | inRole | async">
-            <a
-              routerLink="/chargecodes"
-              routerLinkActive="text-orange-500"
-              class="block px-4 py-2 text-gray-700 hover:text-gray-500"
-              (click)="toggleSettingDropdown()"
-              >Charge codes</a
-            >
-          </li>
-          <!-- time -->
-          <!-- <li *ngIf="HQRole.Staff | inRole | async">
-            <a
-              routerLink="/times"
-              routerLinkActive="text-orange-500"
-              class="block px-4 py-2 text-gray-700 hover:text-gray-500"
-              (click)="settingDropdownOpen = false"
-              >Time</a
-            >
-          </li> -->
-          <!-- users -->
-          <li *ngIf="HQRole.Administrator | inRole | async">
-            <a
-              routerLink="/users"
-              routerLinkActive="text-orange-500"
-              class="block px-4 py-2 text-gray-700 hover:text-gray-500"
-              (click)="toggleSettingDropdown()"
-              >Users</a
-            >
-          </li>
-          <li *ngIf="HQRole.Administrator | inRole | async">
-            <a
-              routerLink="/staff-admin"
-              routerLinkActive="text-orange-500"
-              class="block px-4 py-2 text-gray-700 hover:text-gray-500"
-              (click)="toggleSettingDropdown()"
-              >Staff Admin</a
-            >
-          </li>
-        </ul>
-      </ng-template>
-    </div>
-  </nav>
-  <!-- col three -->
-  <div class="flex column justify-end items-center ml-auto pl-[1.125rem]">
-    <!-- my account dropdown menu -->
-    <div class="pe-0 xl:pe-10">
-      <!-- user dropdown button -->
-      <button
-        (click)="dropdownOpen = !dropdownOpen"
-        routerLinkActive="active"
+                            type="button"
+                            cdkOverlayOrigin
+                            #settingsButton
+                            #trigger="cdkOverlayOrigin"
+                            >
+                            <i class="bi bi-sliders text-[1rem]"></i>
+                          </button>
+                          <!-- settings/more dropdown button overlay content -->
+                          <ng-template
+                            cdkConnectedOverlay
+                            [cdkConnectedOverlayOrigin]="trigger"
+                            [cdkConnectedOverlayOpen]="settingDropdownOpen"
+                            (overlayOutsideClick)="toggleSettingDropdown()"
+                            >
+                            <ul
+                              class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                              >
+                              <!-- holidays -->
+                              @if (HQRole.Staff | inRole | async) {
+                                <li>
+                                  <a
+                                    routerLink="/holidays"
+                                    routerLinkActive="text-orange-500 active"
+                                    class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+                                    (click)="toggleSettingDropdown()"
+                                    >Holidays</a
+                                    >
+                                  </li>
+                                }
+                                <!-- charge codes -->
+                                @if (HQRole.Staff | inRole | async) {
+                                  <li>
+                                    <a
+                                      routerLink="/chargecodes"
+                                      routerLinkActive="text-orange-500"
+                                      class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+                                      (click)="toggleSettingDropdown()"
+                                      >Charge codes</a
+                                      >
+                                    </li>
+                                  }
+                                  <!-- time -->
+                                  <!-- <li *ngIf="HQRole.Staff | inRole | async">
+                                  <a
+                                    routerLink="/times"
+                                    routerLinkActive="text-orange-500"
+                                    class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+                                    (click)="settingDropdownOpen = false"
+                                    >Time</a
+                                    >
+                                  </li> -->
+                                  <!-- users -->
+                                  @if (HQRole.Administrator | inRole | async) {
+                                    <li>
+                                      <a
+                                        routerLink="/users"
+                                        routerLinkActive="text-orange-500"
+                                        class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+                                        (click)="toggleSettingDropdown()"
+                                        >Users</a
+                                        >
+                                      </li>
+                                    }
+                                    @if (HQRole.Administrator | inRole | async) {
+                                      <li>
+                                        <a
+                                          routerLink="/staff-admin"
+                                          routerLinkActive="text-orange-500"
+                                          class="block px-4 py-2 text-gray-700 hover:text-gray-500"
+                                          (click)="toggleSettingDropdown()"
+                                          >Staff Admin</a
+                                          >
+                                        </li>
+                                      }
+                                    </ul>
+                                  </ng-template>
+                                </div>
+                              </nav>
+                              <!-- col three -->
+                              <div class="flex column justify-end items-center ml-auto pl-[1.125rem]">
+                                <!-- my account dropdown menu -->
+                                <div class="pe-0 xl:pe-10">
+                                  <!-- user dropdown button -->
+                                  <button
+                                    (click)="dropdownOpen = !dropdownOpen"
+                                    routerLinkActive="active"
         [ngClass]="
           dropdownOpen ? 'text-orange-500 h-[30px] text-xs' : 'h-[30px] text-xs'
         "
-        type="button"
-        cdkOverlayOrigin
-        #triggerDropdown="cdkOverlayOrigin"
-      >
-        {{ userName$ | async }}
-        <span>
-          <i class="bi bi-caret-down-fill text-[8px]"></i>
-        </span>
-      </button>
-      <!-- settings/more dropdown button overlay content -->
-      <ng-template
-        cdkConnectedOverlay
-        [cdkConnectedOverlayOrigin]="triggerDropdown"
-        [cdkConnectedOverlayOpen]="dropdownOpen"
+                                    type="button"
+                                    cdkOverlayOrigin
+                                    #triggerDropdown="cdkOverlayOrigin"
+                                    >
+                                    {{ userName$ | async }}
+                                    <span>
+                                      <i class="bi bi-caret-down-fill text-[8px]"></i>
+                                    </span>
+                                  </button>
+                                  <!-- settings/more dropdown button overlay content -->
+                                  <ng-template
+                                    cdkConnectedOverlay
+                                    [cdkConnectedOverlayOrigin]="triggerDropdown"
+                                    [cdkConnectedOverlayOpen]="dropdownOpen"
         [cdkConnectedOverlayPositions]="[
           {
             originX: 'start',
@@ -246,47 +265,49 @@
             overlayY: 'top',
           },
         ]"
-        (overlayOutsideClick)="dropdownOpen = false"
-      >
-        <ul
-          class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-        >
-          <!-- sign out -->
-          <li *ngIf="HQRole.Staff | inRole | async">
-            <button
-              (click)="logout()"
-              class="block px-4 py-2 text-gray-700"
-              role="menuitem"
-              tabindex="-1"
-              id="user-menu-item-1"
-            >
-              Sign out
-            </button>
-          </li>
-        </ul>
-      </ng-template>
-    </div>
-  </div>
-  <!-- desktop logo -->
-  <div class="hidden xl:inline-block">
-    <a routerLink="/"
-      ><img
-        src="/assets/logo.svg"
-        alt="Sanctuary Software Studio, Inc."
-        style="height: 30px"
-    /></a>
-  </div>
-</header>
+                                    (overlayOutsideClick)="dropdownOpen = false"
+                                    >
+                                    <ul
+                                      class="w-48 rounded-sm bg-white py-1 mt-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                      >
+                                      <!-- sign out -->
+                                      @if (HQRole.Staff | inRole | async) {
+                                        <li>
+                                          <button
+                                            (click)="logout()"
+                                            class="block px-4 py-2 text-gray-700"
+                                            role="menuitem"
+                                            tabindex="-1"
+                                            id="user-menu-item-1"
+                                            >
+                                            Sign out
+                                          </button>
+                                        </li>
+                                      }
+                                    </ul>
+                                  </ng-template>
+                                </div>
+                              </div>
+                              <!-- desktop logo -->
+                              <div class="hidden xl:inline-block">
+                                <a routerLink="/"
+                                  ><img
+                                  src="/assets/logo.svg"
+                                  alt="Sanctuary Software Studio, Inc."
+                                  style="height: 30px"
+                                /></a>
+                              </div>
+                            </header>
 
-<!-- router-outlet -->
-<div class="flex-1">
-  <ng-content></ng-content>
-</div>
+                            <!-- router-outlet -->
+                            <div class="flex-1">
+                              <ng-content></ng-content>
+                            </div>
 
-<!-- footer -->
-<footer class="py-2 px-5">
-  <div class="flex justify-between text-xs text-gray-50">
-    <div>&copy;Sanctuary Software Studio Inc.</div>
-    <div>v{{ appSettingsService.version$ | async }}</div>
-  </div>
-</footer>
+                            <!-- footer -->
+                            <footer class="py-2 px-5">
+                              <div class="flex justify-between text-xs text-gray-50">
+                                <div>&copy;Sanctuary Software Studio Inc.</div>
+                                <div>v{{ appSettingsService.version$ | async }}</div>
+                              </div>
+                            </footer>

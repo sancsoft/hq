@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
@@ -25,13 +25,12 @@ interface Form {
 @Component({
     selector: 'hq-client-edit',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterLink,
-        ButtonComponent,
-        TextInputComponent,
-        ValidationErrorDirective,
-    ],
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonComponent,
+    TextInputComponent,
+    ValidationErrorDirective
+],
     templateUrl: './client-edit.component.html'
 })
 export class ClientEditComponent implements OnInit {

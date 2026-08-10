@@ -22,7 +22,7 @@ import {
   CdkDragDrop,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 import { ButtonComponent } from '../../core/components/button/button.component';
@@ -63,14 +63,13 @@ export interface DialogData {
 @Component({
     selector: 'hq-planning-points-modal',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        StaffDashboardPlanningPointComponent,
-        MonacoEditorModule,
-        CdkDropList,
-        CdkDrag,
-        ButtonComponent,
-    ],
+    ReactiveFormsModule,
+    StaffDashboardPlanningPointComponent,
+    MonacoEditorModule,
+    CdkDropList,
+    CdkDrag,
+    ButtonComponent
+],
     templateUrl: './planning-points-modal.component.html'
 })
 export class PlanningPointsModalComponent implements OnInit, OnDestroy {

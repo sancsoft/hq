@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   FormControl,
   FormGroup,
@@ -31,12 +31,11 @@ interface Form {
 @Component({
     selector: 'hq-staff-view',
     imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        RouterLink,
-        ButtonComponent,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonComponent
+],
     templateUrl: './staff-view.component.html'
 })
 export class StaffViewComponent implements OnInit {

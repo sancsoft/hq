@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import {
   FormControl,
@@ -25,13 +25,12 @@ interface Form {
 @Component({
     selector: 'hq-client-create',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterLink,
-        ButtonComponent,
-        TextInputComponent,
-        ValidationErrorDirective,
-    ],
+    ReactiveFormsModule,
+    RouterLink,
+    ButtonComponent,
+    TextInputComponent,
+    ValidationErrorDirective
+],
     templateUrl: './client-create.component.html'
 })
 export class ClientCreateComponent {

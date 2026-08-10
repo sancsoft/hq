@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import {
   FormsModule,
@@ -24,12 +24,11 @@ interface Form {
 @Component({
     selector: 'hq-holiday-create',
     imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ErrorDisplayComponent,
-        RouterLink,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    ErrorDisplayComponent,
+    RouterLink
+],
     templateUrl: './holiday-create.component.html'
 })
 export class HolidayCreateComponent {

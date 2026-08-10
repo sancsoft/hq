@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import {
   FormsModule,
@@ -31,12 +31,11 @@ interface Form {
 @Component({
     selector: 'hq-staff-create',
     imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ErrorDisplayComponent,
-        RouterLink,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    ErrorDisplayComponent,
+    RouterLink
+],
     templateUrl: './staff-create.component.html'
 })
 export class StaffCreateComponent {

@@ -10,7 +10,7 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
-import { CommonModule } from '@angular/common';
+
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
 import { ToastService } from '../../services/toast.service';
 import { Jurisdiciton } from '../../enums/jurisdiciton';
@@ -24,12 +24,11 @@ interface Form {
 @Component({
     selector: 'hq-holiday-edit',
     imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ErrorDisplayComponent,
-        RouterLink,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    ErrorDisplayComponent,
+    RouterLink
+],
     templateUrl: './holiday-edit.component.html'
 })
 export class HolidayEditComponent implements OnInit {

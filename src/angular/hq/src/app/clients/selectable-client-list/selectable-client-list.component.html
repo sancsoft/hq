@@ -87,8 +87,7 @@
           <td class="border-b border-black py-2 pl-5">{{ client.name }}</td>
           <td class="border-b border-black py-2">
             {{
-              client.hourlyRate
-                | currency: "USD" : "symbol" : "1.2-2" : "en-US" || "None"
+              (client.hourlyRate | currency: "USD" : "symbol" : "1.2-2" : "en-US") || "None"
             }}
           </td>
           <td class="border-b border-black py-2">
