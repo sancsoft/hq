@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -34,14 +39,15 @@ interface Form {
   Description: FormControl<string | null>;
 }
 @Component({
-    selector: 'hq-charge-code-edit',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ErrorDisplayComponent,
-    ],
-    templateUrl: './charge-code-edit.component.html'
+  selector: 'hq-charge-code-edit',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ErrorDisplayComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './charge-code-edit.component.html',
 })
 export class ChargeCodeEditComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];

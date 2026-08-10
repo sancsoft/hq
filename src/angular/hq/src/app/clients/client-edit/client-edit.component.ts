@@ -1,5 +1,4 @@
-
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -23,15 +22,16 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-client-edit',
-    imports: [
+  selector: 'hq-client-edit',
+  imports: [
     ReactiveFormsModule,
     RouterLink,
     ButtonComponent,
     TextInputComponent,
-    ValidationErrorDirective
-],
-    templateUrl: './client-edit.component.html'
+    ValidationErrorDirective,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './client-edit.component.html',
 })
 export class ClientEditComponent implements OnInit {
   clientId?: string;

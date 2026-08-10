@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'hq-progress-bar',
-    imports: [CommonModule],
-    templateUrl: './progress-bar.component.html'
+  selector: 'hq-progress-bar',
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './progress-bar.component.html',
 })
 export class ProgressBarComponent {
   @Input()

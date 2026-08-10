@@ -13,6 +13,7 @@ import {
   OnInit,
   QueryList,
   ViewChildren,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormControl,
@@ -59,17 +60,18 @@ import { StaffDashboardService } from '../service/staff-dashboard.service';
 import { GetPlanRequestV1 } from '../../models/Plan/get-plan-v1';
 
 @Component({
-    selector: 'hq-staff-dashboard-planning',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        StaffDashboardPlanningPointComponent,
-        MonacoEditorModule,
-        CdkDropList,
-        CdkDrag,
-        ButtonComponent,
-    ],
-    templateUrl: './staff-dashboard-planning.component.html'
+  selector: 'hq-staff-dashboard-planning',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    StaffDashboardPlanningPointComponent,
+    MonacoEditorModule,
+    CdkDropList,
+    CdkDrag,
+    ButtonComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-dashboard-planning.component.html',
 })
 export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
   @ViewChildren(StaffDashboardPlanningPointComponent)

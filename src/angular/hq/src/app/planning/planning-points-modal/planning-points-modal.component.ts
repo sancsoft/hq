@@ -7,6 +7,7 @@ import {
   OnInit,
   QueryList,
   ViewChildren,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
@@ -61,16 +62,17 @@ export interface DialogData {
   date: string;
 }
 @Component({
-    selector: 'hq-planning-points-modal',
-    imports: [
+  selector: 'hq-planning-points-modal',
+  imports: [
     ReactiveFormsModule,
     StaffDashboardPlanningPointComponent,
     MonacoEditorModule,
     CdkDropList,
     CdkDrag,
-    ButtonComponent
-],
-    templateUrl: './planning-points-modal.component.html'
+    ButtonComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './planning-points-modal.component.html',
 })
 export class PlanningPointsModalComponent implements OnInit, OnDestroy {
   @ViewChildren(StaffDashboardPlanningPointComponent)

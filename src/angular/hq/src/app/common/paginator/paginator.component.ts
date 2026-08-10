@@ -4,12 +4,14 @@ import {
   Input,
   OnChanges,
   Output,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
-    selector: 'hq-paginator',
-    imports: [],
-    templateUrl: './paginator.component.html'
+  selector: 'hq-paginator',
+  imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './paginator.component.html',
 })
 export class PaginatorComponent implements OnChanges {
   paginationLength = 5;

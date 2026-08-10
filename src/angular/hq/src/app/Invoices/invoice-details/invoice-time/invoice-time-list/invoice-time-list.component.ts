@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -40,23 +40,24 @@ import { InRolePipe } from '../../../../pipes/in-role.pipe';
 import FileSaver from 'file-saver';
 
 @Component({
-    selector: 'hq-invoice-time-list',
-    imports: [
-        CommonModule,
-        CoreModule,
-        RouterLink,
-        FormsModule,
-        ReactiveFormsModule,
-        InvoiceNewTimeEntryComponent,
-        InRolePipe,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: TimeListService,
-        },
-    ],
-    templateUrl: './invoice-time-list.component.html'
+  selector: 'hq-invoice-time-list',
+  imports: [
+    CommonModule,
+    CoreModule,
+    RouterLink,
+    FormsModule,
+    ReactiveFormsModule,
+    InvoiceNewTimeEntryComponent,
+    InRolePipe,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: TimeListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './invoice-time-list.component.html',
 })
 export class InvoiceTimeListComponent implements OnDestroy {
   sortColumn = SortColumn;

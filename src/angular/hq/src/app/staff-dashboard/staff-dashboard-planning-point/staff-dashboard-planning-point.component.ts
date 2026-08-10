@@ -6,6 +6,7 @@ import {
   OnDestroy,
   SimpleChanges,
   OnChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
@@ -37,15 +38,16 @@ export interface PointForm {
 }
 
 @Component({
-    selector: 'tr[hq-staff-dashboard-planning-point]',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        CdkDragHandle,
-        SelectInputOptionDirective,
-        SelectInputComponent,
-    ],
-    templateUrl: './staff-dashboard-planning-point.component.html'
+  selector: 'tr[hq-staff-dashboard-planning-point]',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CdkDragHandle,
+    SelectInputOptionDirective,
+    SelectInputComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-dashboard-planning-point.component.html',
 })
 export class StaffDashboardPlanningPointComponent
   implements OnInit, OnDestroy, OnChanges

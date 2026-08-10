@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable, filter, map, switchMap } from 'rxjs';
 import { HQService } from '../../../services/hq.service';
@@ -6,9 +6,10 @@ import { CommonModule } from '@angular/common';
 import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
 
 @Component({
-    selector: 'hq-project-psr-details',
-    imports: [CommonModule],
-    templateUrl: './project-psr-details.component.html'
+  selector: 'hq-project-psr-details',
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-psr-details.component.html',
 })
 export class ProjectPsrDetailsComponent {
   psr$: Observable<GetPSRRecordV1 | null>;

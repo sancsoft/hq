@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
@@ -35,14 +35,15 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-charge-code-create',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ErrorDisplayComponent,
-    ],
-    templateUrl: './charge-code-create.component.html'
+  selector: 'hq-charge-code-create',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ErrorDisplayComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './charge-code-create.component.html',
 })
 export class ChargeCodeCreateComponent implements OnDestroy {
   apiErrors: string[] = [];

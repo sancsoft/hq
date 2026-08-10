@@ -1,11 +1,12 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { ModalData } from '../../services/modal.service';
 
 @Component({
-    selector: 'hq-prompt-modal',
-    imports: [],
-    templateUrl: './prompt-modal.component.html'
+  selector: 'hq-prompt-modal',
+  imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './prompt-modal.component.html',
 })
 export class PromptModalComponent {
   constructor(

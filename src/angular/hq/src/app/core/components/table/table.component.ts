@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   Input,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { PagedResponseV1 } from '../../../models/common/paged-response-v1';
 import { BaseListService } from '../../services/base-list.service';
@@ -12,9 +13,10 @@ import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 
 @Component({
-    selector: 'hq-table',
-    imports: [FormsModule, ReactiveFormsModule, CommonModule, PaginatorComponent],
-    templateUrl: './table.component.html'
+  selector: 'hq-table',
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, PaginatorComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './table.component.html',
 })
 export class TableComponent<
   TResponse extends PagedResponseV1<TRecord>,

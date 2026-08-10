@@ -1,6 +1,6 @@
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
   ActivatedRoute,
   Router,
@@ -59,15 +59,16 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-project-view',
-    imports: [
-        CommonModule,
-        RouterLink,
-        CoreModule,
-        ReactiveFormsModule,
-        InRolePipe,
-    ],
-    templateUrl: './project-view.component.html'
+  selector: 'hq-project-view',
+  imports: [
+    CommonModule,
+    RouterLink,
+    CoreModule,
+    ReactiveFormsModule,
+    InRolePipe,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-view.component.html',
 })
 export class ProjectViewComponent implements OnDestroy {
   projectManagers$: Observable<GetStaffV1Record[]>;

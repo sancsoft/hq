@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -31,15 +31,16 @@ interface quoteFormGroup {
   pdf: FormControl<File | null>;
 }
 @Component({
-    selector: 'hq-quotes-create',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        RouterLink,
-        CoreModule,
-    ],
-    templateUrl: './quotes-create.component.html'
+  selector: 'hq-quotes-create',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink,
+    CoreModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './quotes-create.component.html',
 })
 export class QuotesCreateComponent implements OnInit {
   quoteStatus = ProjectStatus;

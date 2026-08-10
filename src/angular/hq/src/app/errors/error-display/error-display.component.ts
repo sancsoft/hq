@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    selector: 'hq-error-display',
-    imports: [],
-    templateUrl: './error-display.component.html'
+  selector: 'hq-error-display',
+  imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './error-display.component.html',
 })
 export class ErrorDisplayComponent {
   @Input() errors: string[] = [];

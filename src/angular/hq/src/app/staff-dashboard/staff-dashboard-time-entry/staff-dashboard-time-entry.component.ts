@@ -13,6 +13,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { GetDashboardTimeV1TimeForDateTimes } from '../../models/staff-dashboard/get-dashboard-time-v1';
 import { StaffDashboardService } from '../service/staff-dashboard.service';
@@ -78,14 +79,15 @@ interface Form {
 }
 
 @Component({
-    selector: 'tr[hq-staff-dashboard-time-entry]',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        SelectInputOptionDirective,
-        SelectInputComponent,
-    ],
-    templateUrl: './staff-dashboard-time-entry.component.html'
+  selector: 'tr[hq-staff-dashboard-time-entry]',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    SelectInputOptionDirective,
+    SelectInputComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-dashboard-time-entry.component.html',
 })
 export class StaffDashboardTimeEntryComponent
   implements OnInit, OnChanges, OnDestroy

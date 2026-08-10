@@ -1,5 +1,5 @@
 import { GetStaffV1Record } from './../../models/staff-members/get-staff-member-v1';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -34,9 +34,10 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-users-create',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
-    templateUrl: './users-create.component.html'
+  selector: 'hq-users-create',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './users-create.component.html',
 })
 export class UsersCreateComponent implements OnDestroy {
   apiErrors: string[] = [];

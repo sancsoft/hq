@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
 import { SortColumn } from '../../models/clients/get-client-v1';
@@ -19,21 +19,22 @@ export interface ClientNameId {
 }
 
 @Component({
-    selector: 'hq-client-list',
-    imports: [
-        CommonModule,
-        RouterLink,
-        ReactiveFormsModule,
-        InRolePipe,
-        CoreModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: ClientListService,
-        },
-    ],
-    templateUrl: './client-list.component.html'
+  selector: 'hq-client-list',
+  imports: [
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    InRolePipe,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: ClientListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './client-list.component.html',
 })
 export class ClientListComponent {
   HQRole = HQRole;

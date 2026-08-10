@@ -8,7 +8,7 @@
       class="border-b border-black w-4"
       [title]="point?.completed ? 'Completed' : 'Uncompleted'"
       [ngClass]="{
-        'bg-green-600': point?.completed,
+        'bg-green-600': $safeNavigationMigration(point?.completed),
         'bg-gray-600': !point?.completed,
       }"
     ></td>

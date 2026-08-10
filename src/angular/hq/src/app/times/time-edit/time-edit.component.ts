@@ -1,6 +1,11 @@
 import { skip, startWith } from 'rxjs';
 /* eslint-disable rxjs-angular/prefer-async-pipe */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -55,17 +60,18 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-time-edit',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ErrorDisplayComponent,
-        RouterLink,
-        RouterLinkActive,
-        CoreModule,
-    ],
-    templateUrl: './time-edit.component.html'
+  selector: 'hq-time-edit',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ErrorDisplayComponent,
+    RouterLink,
+    RouterLinkActive,
+    CoreModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './time-edit.component.html',
 })
 export class TimeEditComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];

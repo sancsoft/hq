@@ -1,6 +1,6 @@
 import { SortColumn } from './../../models/Invoices/get-invoices-v1';
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
@@ -15,22 +15,23 @@ import { BaseListService } from '../../core/services/base-list.service';
 import { InvoiceSearchFilterComponent } from '../invoice-search-filter/invoice-search-filter.component';
 
 @Component({
-    selector: 'hq-invoices-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        InRolePipe,
-        CoreModule,
-        InvoiceSearchFilterComponent,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: InvoiceListService,
-        },
-    ],
-    templateUrl: './invoices-list.component.html'
+  selector: 'hq-invoices-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    InRolePipe,
+    CoreModule,
+    InvoiceSearchFilterComponent,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: InvoiceListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './invoices-list.component.html',
 })
 export class InvoicesListComponent {
   apiErrors: string[] = [];

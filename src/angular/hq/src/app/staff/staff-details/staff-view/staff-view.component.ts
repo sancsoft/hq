@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import {
   FormControl,
@@ -29,14 +29,10 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-staff-view',
-    imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    RouterLink,
-    ButtonComponent
-],
-    templateUrl: './staff-view.component.html'
+  selector: 'hq-staff-view',
+  imports: [FormsModule, ReactiveFormsModule, RouterLink, ButtonComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-view.component.html',
 })
 export class StaffViewComponent implements OnInit {
   staffId?: string;

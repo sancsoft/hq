@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
 import {
@@ -28,15 +34,16 @@ export interface ClientNameId {
 }
 
 @Component({
-    selector: 'hq-selectable-client-list',
-    imports: [
-        CommonModule,
-        RouterLink,
-        ReactiveFormsModule,
-        PaginatorComponent,
-        SortIconComponent,
-    ],
-    templateUrl: './selectable-client-list.component.html'
+  selector: 'hq-selectable-client-list',
+  imports: [
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    PaginatorComponent,
+    SortIconComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './selectable-client-list.component.html',
 })
 export class SelectableClientListComponent {
   @Input() showViewButtons: boolean = true;

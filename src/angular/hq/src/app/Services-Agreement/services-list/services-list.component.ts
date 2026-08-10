@@ -1,5 +1,5 @@
 import { ClientDetailsSearchFilterComponent } from './../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -26,17 +26,18 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 import { ProjectStatus } from '../../enums/project-status';
 
 @Component({
-    selector: 'hq-services-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        PaginatorComponent,
-        ReactiveFormsModule,
-        SortIconComponent,
-        ClientDetailsSearchFilterComponent,
-        InRolePipe,
-    ],
-    templateUrl: './services-list.component.html'
+  selector: 'hq-services-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    PaginatorComponent,
+    ReactiveFormsModule,
+    SortIconComponent,
+    ClientDetailsSearchFilterComponent,
+    InRolePipe,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './services-list.component.html',
 })
 export class ServicesListComponent {
   clientId?: string;

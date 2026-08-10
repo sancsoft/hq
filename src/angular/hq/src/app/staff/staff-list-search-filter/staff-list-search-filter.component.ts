@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { StaffListService } from '../staff-list/staff-list.service';
 
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -7,14 +7,15 @@ import { SelectInputComponent } from '../../core/components/select-input/select-
 import { StaffStatus } from '../../enums/staff-status';
 
 @Component({
-    selector: 'hq-staff-list-search-filter',
-    imports: [
+  selector: 'hq-staff-list-search-filter',
+  imports: [
     ReactiveFormsModule,
     FormsModule,
     SelectInputOptionDirective,
-    SelectInputComponent
-],
-    templateUrl: './staff-list-search-filter.component.html'
+    SelectInputComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-list-search-filter.component.html',
 })
 export class StaffListSearchFilterComponent {
   staffStatus = StaffStatus;

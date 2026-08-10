@@ -1,7 +1,7 @@
 /* eslint-disable rxjs-angular/prefer-takeuntil */
 /* eslint-disable rxjs-angular/prefer-async-pipe */
 import { ClientDetailsSearchFilterComponent } from './client-details-search-filter/client-details-search-filter.component';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   ActivatedRoute,
   RouterLink,
@@ -16,20 +16,21 @@ import { ClientQuoteListService } from './client-quote-list/client-quote-list.se
 import { ClientProjectListService } from './client-project-list/client-project-list.service';
 
 @Component({
-    selector: 'hq-client-details',
-    imports: [
-        RouterOutlet,
-        RouterLink,
-        ClientDetailsSummaryComponent,
-        ClientDetailsSearchFilterComponent,
-        TabComponent,
-    ],
-    templateUrl: './client-details.component.html',
-    providers: [
-        ClientDetailsService,
-        ClientQuoteListService,
-        ClientProjectListService,
-    ]
+  selector: 'hq-client-details',
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    ClientDetailsSummaryComponent,
+    ClientDetailsSearchFilterComponent,
+    TabComponent,
+  ],
+  templateUrl: './client-details.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  providers: [
+    ClientDetailsService,
+    ClientQuoteListService,
+    ClientProjectListService,
+  ],
 })
 export class ClientDetailsComponent {
   private subscriptions: Subscription[] = [];

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -15,22 +15,23 @@ import { BaseListService } from '../../../core/services/base-list.service';
 import { ClientDetailsService } from '../client-details.service';
 import FileSaver from 'file-saver';
 @Component({
-    selector: 'hq-client-quote-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        InRolePipe,
-        ButtonComponent,
-        CoreModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: ClientQuoteListService,
-        },
-    ],
-    templateUrl: './client-quote-list.component.html'
+  selector: 'hq-client-quote-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    InRolePipe,
+    ButtonComponent,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: ClientQuoteListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './client-quote-list.component.html',
 })
 export class ClientQuoteListComponent {
   HQRole = HQRole;

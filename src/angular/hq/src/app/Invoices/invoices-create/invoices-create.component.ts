@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -27,15 +32,16 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-invoices-create',
-    imports: [
-        RouterLink,
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        CoreModule,
-    ],
-    templateUrl: './invoices-create.component.html'
+  selector: 'hq-invoices-create',
+  imports: [
+    RouterLink,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CoreModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './invoices-create.component.html',
 })
 export class InvoicesCreateComponent implements OnInit, OnDestroy {
   clients$: Observable<GetClientRecordV1[]>;

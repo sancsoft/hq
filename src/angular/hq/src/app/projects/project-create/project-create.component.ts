@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   Observable,
   Subject,
@@ -61,14 +66,10 @@ interface Form {
   requireTask: FormControl<boolean | null>;
 }
 @Component({
-    selector: 'hq-project-create',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        CoreModule,
-    ],
-    templateUrl: './project-create.component.html'
+  selector: 'hq-project-create',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, CoreModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-create.component.html',
 })
 export class ProjectCreateComponent implements OnDestroy, OnInit {
   projectManagers$: Observable<GetStaffV1Record[]>;

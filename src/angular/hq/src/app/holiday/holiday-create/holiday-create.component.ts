@@ -1,5 +1,4 @@
-
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -22,14 +21,15 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-holiday-create',
-    imports: [
+  selector: 'hq-holiday-create',
+  imports: [
     FormsModule,
     ReactiveFormsModule,
     ErrorDisplayComponent,
-    RouterLink
-],
-    templateUrl: './holiday-create.component.html'
+    RouterLink,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './holiday-create.component.html',
 })
 export class HolidayCreateComponent {
   apiErrors: string[] = [];

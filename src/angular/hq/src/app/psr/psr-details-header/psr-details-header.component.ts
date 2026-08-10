@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   Observable,
   combineLatest,
@@ -16,9 +16,10 @@ import { Period } from '../../enums/period';
 import { PsrRefreshService } from '../Services/psr-refresh.service';
 
 @Component({
-    selector: 'hq-psr-details-header',
-    imports: [CommonModule, RouterLink],
-    templateUrl: './psr-details-header.component.html'
+  selector: 'hq-psr-details-header',
+  imports: [CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './psr-details-header.component.html',
 })
 export class PsrDetailsHeaderComponent {
   projectReportStatus$: Observable<GetPSRRecordV1>;

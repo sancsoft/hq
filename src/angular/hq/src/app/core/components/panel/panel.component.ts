@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { AngularSplitModule, SplitDirection } from 'angular-split';
 
 export enum PanelDirection {
@@ -9,9 +14,10 @@ export enum PanelDirection {
 export type CollapseItem = 'first' | 'second';
 
 @Component({
-    selector: 'hq-panel',
-    imports: [AngularSplitModule, CommonModule],
-    templateUrl: './panel.component.html'
+  selector: 'hq-panel',
+  imports: [AngularSplitModule, CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './panel.component.html',
 })
 export class PanelComponent implements OnInit {
   @Input()

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -22,14 +22,15 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-holiday-edit',
-    imports: [
+  selector: 'hq-holiday-edit',
+  imports: [
     FormsModule,
     ReactiveFormsModule,
     ErrorDisplayComponent,
-    RouterLink
-],
-    templateUrl: './holiday-edit.component.html'
+    RouterLink,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './holiday-edit.component.html',
 })
 export class HolidayEditComponent implements OnInit {
   holidayId?: string;

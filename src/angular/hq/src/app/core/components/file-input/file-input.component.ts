@@ -7,6 +7,7 @@ import {
   QueryList,
   Self,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormLabelComponent } from '../form-label/form-label.component';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
@@ -15,9 +16,10 @@ import { generateUniqueInputId } from '../../functions/generate-unique-input-id'
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'hq-file-input',
-    imports: [CommonModule, FormLabelComponent],
-    templateUrl: './file-input.component.html'
+  selector: 'hq-file-input',
+  imports: [CommonModule, FormLabelComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './file-input.component.html',
 })
 export class FileInputComponent implements ControlValueAccessor {
   @ViewChild('input')

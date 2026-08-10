@@ -1,6 +1,6 @@
 import { SortColumn } from './../../models/staff-members/get-staff-member-v1';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
@@ -15,22 +15,23 @@ import { BaseListService } from '../../core/services/base-list.service';
 import { TableComponent } from '../../core/components/table/table.component';
 
 @Component({
-    selector: 'hq-users-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        CoreModule,
-        TableComponent,
-        FormsModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: UserListService,
-        },
-    ],
-    templateUrl: './users-list.component.html'
+  selector: 'hq-users-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    CoreModule,
+    TableComponent,
+    FormsModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: UserListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './users-list.component.html',
 })
 export class UsersListComponent {
   sortColumn = SortColumn;

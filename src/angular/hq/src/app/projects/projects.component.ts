@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-    selector: 'hq-projects',
-    imports: [RouterOutlet],
-    templateUrl: './projects.component.html'
+  selector: 'hq-projects',
+  imports: [RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './projects.component.html',
 })
 export class ProjectsComponent {}

@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { StaffDashboardComponent } from '../staff-dashboard/staff-dashboard.component';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'hq-dashboard',
-    imports: [StaffDashboardComponent, CommonModule],
-    templateUrl: './dashboard.component.html'
+  selector: 'hq-dashboard',
+  imports: [StaffDashboardComponent, CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
   staffId$: Observable<string>;

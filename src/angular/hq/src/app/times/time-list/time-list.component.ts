@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -27,22 +27,23 @@ import { APIError } from '../../errors/apierror';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-    selector: 'hq-time-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        TimeSearchFilterComponent,
-        InRolePipe,
-        CoreModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: TimeListService,
-        },
-    ],
-    templateUrl: './time-list.component.html'
+  selector: 'hq-time-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    TimeSearchFilterComponent,
+    InRolePipe,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: TimeListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './time-list.component.html',
 })
 export class TimeListComponent implements OnDestroy {
   apiErrors: string[] = [];

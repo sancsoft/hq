@@ -1,11 +1,12 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { ModalData } from '../../services/modal.service';
 
 @Component({
-    selector: 'hq-alert-modal',
-    imports: [],
-    templateUrl: './alert-modal.component.html'
+  selector: 'hq-alert-modal',
+  imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './alert-modal.component.html',
 })
 export class AlertModalComponent {
   constructor(

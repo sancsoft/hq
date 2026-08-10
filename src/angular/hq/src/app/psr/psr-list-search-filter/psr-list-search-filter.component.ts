@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PsrListService } from '../psrlist/psrList.service';
 import { Period } from '../../enums/period';
 
 @Component({
-    selector: 'hq-psr-list-search-filter',
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
-    templateUrl: './psr-list-search-filter.component.html'
+  selector: 'hq-psr-list-search-filter',
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './psr-list-search-filter.component.html',
 })
 export class PsrListSearchFilterComponent {
   constructor(public psrListService: PsrListService) {}

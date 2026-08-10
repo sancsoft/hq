@@ -1,6 +1,12 @@
 import { HQService } from './../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
@@ -39,21 +45,22 @@ import { PanelComponent } from '../../core/components/panel/panel.component';
 import { CoreModule } from '../../core/core.module';
 
 @Component({
-    selector: 'hq-psrreport',
-    imports: [
-        ReactiveFormsModule,
-        CommonModule,
-        MonacoEditorModule,
-        HQMarkdownComponent,
-        InRolePipe,
-        PSRTimeListComponent,
-        AngularSplitModule,
-        PsrSearchFilterComponent,
-        PanelComponent,
-        CoreModule,
-    ],
-    templateUrl: './psrreport.component.html',
-    encapsulation: ViewEncapsulation.None
+  selector: 'hq-psrreport',
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    MonacoEditorModule,
+    HQMarkdownComponent,
+    InRolePipe,
+    PSRTimeListComponent,
+    AngularSplitModule,
+    PsrSearchFilterComponent,
+    PanelComponent,
+    CoreModule,
+  ],
+  templateUrl: './psrreport.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  encapsulation: ViewEncapsulation.None,
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<object>;

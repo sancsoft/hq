@@ -1,5 +1,5 @@
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
@@ -12,12 +12,10 @@ export interface ChargeCodeViewModel {
 }
 
 @Component({
-    selector: 'hq-psrdetails',
-    imports: [
-    PsrDetailsHeaderComponent,
-    RouterOutlet
-],
-    templateUrl: './psrdetails.component.html'
+  selector: 'hq-psrdetails',
+  imports: [PsrDetailsHeaderComponent, RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './psrdetails.component.html',
 })
 export class PSRDetailsComponent {
   constructor() {}

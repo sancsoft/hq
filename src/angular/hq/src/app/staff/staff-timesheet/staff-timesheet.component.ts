@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { StaffDashboardComponent } from '../../staff-dashboard/staff-dashboard.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'hq-staff-timesheet',
-    imports: [StaffDashboardComponent, CommonModule],
-    templateUrl: './staff-timesheet.component.html'
+  selector: 'hq-staff-timesheet',
+  imports: [StaffDashboardComponent, CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-timesheet.component.html',
 })
 export class StaffTimesheetComponent {
   staffId$: Observable<string | null>;

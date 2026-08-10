@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { GetPSRRecordV1, SortColumn } from '../../../models/PSR/get-PSR-v1';
 import {
   ActivatedRoute,
@@ -20,13 +20,10 @@ import { SortDirection } from '../../../models/common/sort-direction';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 
 @Component({
-    selector: 'hq-project-psr-list',
-    imports: [
-        CommonModule,
-        RouterLink,
-        SortIconComponent,
-    ],
-    templateUrl: './project-psr-list.component.html'
+  selector: 'hq-project-psr-list',
+  imports: [CommonModule, RouterLink, SortIconComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-psr-list.component.html',
 })
 export class ProjectPsrListComponent {
   PSRWorkWeeks?: Observable<GetPSRRecordV1[]> | null;

@@ -5,23 +5,24 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { map, ReplaySubject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { StatDisplayComponent } from '../../core/components/stat-display/stat-display.component';
 import { ButtonComponent } from '../../core/components/button/button.component';
 
 @Component({
-    selector: 'hq-staff-details',
-    imports: [
-        RouterOutlet,
-        RouterLink,
-        RouterLinkActive,
-        CommonModule,
-        StatDisplayComponent,
-        ButtonComponent,
-    ],
-    templateUrl: './staff-details.component.html'
+  selector: 'hq-staff-details',
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    CommonModule,
+    StatDisplayComponent,
+    ButtonComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-details.component.html',
 })
 export class StaffDetailsComponent implements OnDestroy {
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);

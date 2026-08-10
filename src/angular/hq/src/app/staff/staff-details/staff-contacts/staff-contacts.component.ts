@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { StaffDetailsService } from './../staff-details.service';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    selector: 'hq-staff-contacts',
-    imports: [CommonModule],
-    templateUrl: './staff-contacts.component.html'
+  selector: 'hq-staff-contacts',
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-contacts.component.html',
 })
 export class StaffContactsComponent {
   constructor(public staffDetailsService: StaffDetailsService) {}

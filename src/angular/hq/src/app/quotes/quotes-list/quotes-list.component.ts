@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { HQService } from '../../services/hq.service';
@@ -15,21 +15,22 @@ import { BaseListService } from '../../core/services/base-list.service';
 import FileSaver from 'file-saver';
 
 @Component({
-    selector: 'hq-quotes-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        InRolePipe,
-        CoreModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: QuoteListService,
-        },
-    ],
-    templateUrl: './quotes-list.component.html'
+  selector: 'hq-quotes-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    InRolePipe,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: QuoteListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './quotes-list.component.html',
 })
 export class QuotesListComponent {
   HQRole = HQRole;

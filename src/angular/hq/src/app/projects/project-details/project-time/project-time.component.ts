@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   BehaviorSubject,
@@ -17,9 +17,10 @@ import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component
 import { TimeStatus } from '../../../enums/time-status';
 
 @Component({
-    selector: 'hq-project-time',
-    imports: [CommonModule, RouterLink, SortIconComponent],
-    templateUrl: './project-time.component.html'
+  selector: 'hq-project-time',
+  imports: [CommonModule, RouterLink, SortIconComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-time.component.html',
 })
 export class ProjectTimeComponent {
   psrTimes$?: Observable<[GetPSRTimeRecordV1] | null>;

@@ -1,5 +1,4 @@
-
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -23,15 +22,16 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-client-create',
-    imports: [
+  selector: 'hq-client-create',
+  imports: [
     ReactiveFormsModule,
     RouterLink,
     ButtonComponent,
     TextInputComponent,
-    ValidationErrorDirective
-],
-    templateUrl: './client-create.component.html'
+    ValidationErrorDirective,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './client-create.component.html',
 })
 export class ClientCreateComponent {
   apiErrors: string[] = [];

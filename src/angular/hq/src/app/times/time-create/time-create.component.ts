@@ -1,5 +1,5 @@
 /* eslint-disable rxjs-angular/prefer-async-pipe */
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -60,17 +60,18 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-time-create',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ErrorDisplayComponent,
-        RouterLink,
-        RouterLinkActive,
-        CoreModule,
-    ],
-    templateUrl: './time-create.component.html'
+  selector: 'hq-time-create',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ErrorDisplayComponent,
+    RouterLink,
+    RouterLinkActive,
+    CoreModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './time-create.component.html',
 })
 export class TimeCreateComponent implements OnDestroy {
   apiErrors: string[] = [];

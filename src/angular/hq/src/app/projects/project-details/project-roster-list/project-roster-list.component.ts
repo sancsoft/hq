@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ProjectDetailsService } from '../project-details.service';
 import {
   FormControl,
@@ -28,15 +28,16 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-project-roster-list',
-    imports: [
-        CoreModule,
-        ReactiveFormsModule,
-        FormsModule,
-        CommonModule,
-        InRolePipe,
-    ],
-    templateUrl: './project-roster-list.component.html'
+  selector: 'hq-project-roster-list',
+  imports: [
+    CoreModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    InRolePipe,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-roster-list.component.html',
 })
 export class ProjectRosterListComponent {
   projectMembers$: Observable<GetStaffV1Record[]>;

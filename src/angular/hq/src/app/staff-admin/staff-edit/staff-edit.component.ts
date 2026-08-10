@@ -1,7 +1,12 @@
 /* eslint-disable rxjs-angular/prefer-takeuntil */
 /* eslint-disable rxjs-angular/prefer-async-pipe */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -34,14 +39,10 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-staff-edit',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ButtonComponent,
-    ],
-    templateUrl: './staff-edit.component.html'
+  selector: 'hq-staff-edit',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-edit.component.html',
 })
 export class StaffEditComponent implements OnDestroy, OnInit {
   staffId?: string;

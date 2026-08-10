@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
 import { HQMarkdownComponent } from '../../../common/markdown/markdown.component';
 import { HQService } from '../../../services/hq.service';
@@ -7,9 +7,10 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'hq-project-report',
-    imports: [CommonModule, HQMarkdownComponent],
-    templateUrl: './project-report.component.html'
+  selector: 'hq-project-report',
+  imports: [CommonModule, HQMarkdownComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-report.component.html',
 })
 export class ProjectReportComponent {
   psr$?: Observable<GetPSRRecordV1 | null>;

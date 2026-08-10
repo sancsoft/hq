@@ -1,5 +1,5 @@
 import { ChargeCodeListService } from './ChargeCodeList.service';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { SortColumn } from '../../models/charge-codes/get-chargecodes-v1';
@@ -15,21 +15,22 @@ import { CoreModule } from '../../core/core.module';
 import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
-    selector: 'hq-charge-code-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        InRolePipe,
-        CoreModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: ChargeCodeListService,
-        },
-    ],
-    templateUrl: './charge-code-list.component.html'
+  selector: 'hq-charge-code-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    InRolePipe,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: ChargeCodeListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './charge-code-list.component.html',
 })
 export class ChargeCodeListComponent {
   apiErrors: string[] = [];

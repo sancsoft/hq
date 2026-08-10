@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
@@ -13,21 +13,22 @@ import { ProjectListService } from './project-list.service';
 import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
-    selector: 'hq-project-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        InRolePipe,
-        CoreModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: ProjectListService,
-        },
-    ],
-    templateUrl: './project-list.component.html'
+  selector: 'hq-project-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    InRolePipe,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: ProjectListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-list.component.html',
 })
 export class ProjectListComponent {
   HQRole = HQRole;

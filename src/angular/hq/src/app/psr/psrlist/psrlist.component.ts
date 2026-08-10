@@ -1,5 +1,5 @@
 import { PsrListSearchFilterComponent } from './../psr-list-search-filter/psr-list-search-filter.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -18,21 +18,22 @@ import { CoreModule } from '../../core/core.module';
 import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
-    selector: 'hq-psrlist',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        PsrListSearchFilterComponent,
-        CoreModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: PsrListService,
-        },
-    ],
-    templateUrl: './psrlist.component.html'
+  selector: 'hq-psrlist',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    PsrListSearchFilterComponent,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: PsrListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './psrlist.component.html',
 })
 export class PSRListComponent implements OnInit {
   apiErrors: string[] = [];

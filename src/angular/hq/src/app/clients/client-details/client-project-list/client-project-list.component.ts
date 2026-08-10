@@ -1,5 +1,5 @@
 import { SortIconComponent } from './../../../common/sort-icon/sort-icon.component';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SortColumn } from '../../../models/projects/get-project-v1';
@@ -16,22 +16,23 @@ import { CoreModule } from '../../../core/core.module';
 import { BaseListService } from '../../../core/services/base-list.service';
 
 @Component({
-    selector: 'hq-client-project-list',
-    imports: [
-        RouterModule,
-        CommonModule,
-        ReactiveFormsModule,
-        InRolePipe,
-        ButtonComponent,
-        CoreModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: ClientProjectListService,
-        },
-    ],
-    templateUrl: './client-project-list.component.html'
+  selector: 'hq-client-project-list',
+  imports: [
+    RouterModule,
+    CommonModule,
+    ReactiveFormsModule,
+    InRolePipe,
+    ButtonComponent,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: ClientProjectListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './client-project-list.component.html',
 })
 export class ClientProjectListComponent {
   sortColumn = SortColumn;

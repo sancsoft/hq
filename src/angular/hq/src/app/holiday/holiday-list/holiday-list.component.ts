@@ -1,5 +1,5 @@
 import { SortColumn } from './../../models/holiday/get-holiday-v1';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
@@ -16,21 +16,22 @@ import { HolidayListService } from './holiday-list.service';
 import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
-    selector: 'hq-holiday-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        InRolePipe,
-        CoreModule,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: HolidayListService,
-        },
-    ],
-    templateUrl: './holiday-list.component.html'
+  selector: 'hq-holiday-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    InRolePipe,
+    CoreModule,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: HolidayListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './holiday-list.component.html',
 })
 export class HolidayListComponent {
   apiErrors: string[] = [];

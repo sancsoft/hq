@@ -11,6 +11,7 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
@@ -81,23 +82,24 @@ export interface PointForm {
 }
 
 @Component({
-    selector: 'hq-staff-dashboard',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        StaffDashboardTimeEntryComponent,
-        StaffDashboardSearchFilterComponent,
-        StaffDashboardDateRangeComponent,
-        StaffDashboardPlanningComponent,
-        PanelComponent,
-        MonacoEditorModule,
-        HQMarkdownComponent,
-        StaffDashboardMonthViewComponent,
-        SortIconComponent,
-        InRolePipe,
-    ],
-    providers: [StaffDashboardService],
-    templateUrl: './staff-dashboard.component.html'
+  selector: 'hq-staff-dashboard',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    StaffDashboardTimeEntryComponent,
+    StaffDashboardSearchFilterComponent,
+    StaffDashboardDateRangeComponent,
+    StaffDashboardPlanningComponent,
+    PanelComponent,
+    MonacoEditorModule,
+    HQMarkdownComponent,
+    StaffDashboardMonthViewComponent,
+    SortIconComponent,
+    InRolePipe,
+  ],
+  providers: [StaffDashboardService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-dashboard.component.html',
 })
 export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   Period = Period;

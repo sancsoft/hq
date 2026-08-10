@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -31,15 +31,16 @@ interface quoteFormGroup {
 }
 
 @Component({
-    selector: 'hq-quote-edit',
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        RouterLink,
-        CoreModule,
-    ],
-    templateUrl: './quotes-edit.component.html'
+  selector: 'hq-quote-edit',
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink,
+    CoreModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './quotes-edit.component.html',
 })
 export class QuotesEditComponent implements OnInit {
   quoteStatus = ProjectStatus;

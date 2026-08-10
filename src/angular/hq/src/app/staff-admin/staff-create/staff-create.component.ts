@@ -1,5 +1,4 @@
-
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -29,14 +28,15 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-staff-create',
-    imports: [
+  selector: 'hq-staff-create',
+  imports: [
     FormsModule,
     ReactiveFormsModule,
     ErrorDisplayComponent,
-    RouterLink
-],
-    templateUrl: './staff-create.component.html'
+    RouterLink,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-create.component.html',
 })
 export class StaffCreateComponent {
   apiErrors: string[] = [];

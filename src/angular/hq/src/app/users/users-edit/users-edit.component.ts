@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -33,9 +38,10 @@ interface Form {
   isAdministrator: FormControl<boolean | null>;
 }
 @Component({
-    selector: 'hq-users-edit',
-    imports: [ReactiveFormsModule, CommonModule, RouterLink],
-    templateUrl: './users-edit.component.html'
+  selector: 'hq-users-edit',
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './users-edit.component.html',
 })
 export class UsersEditComponent implements OnInit, OnDestroy {
   userId?: string;

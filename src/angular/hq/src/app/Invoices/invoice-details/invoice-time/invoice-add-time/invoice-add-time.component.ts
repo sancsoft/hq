@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
 import {
   firstValueFrom,
@@ -40,21 +40,22 @@ interface InvoiceTimeEntry {
 }
 
 @Component({
-    selector: 'hq-invoice-add-time',
-    imports: [
-        CommonModule,
-        CoreModule,
-        RouterLink,
-        InRolePipe,
-        InvoiceTimeSearchFilterComponent,
-    ],
-    providers: [
-        {
-            provide: BaseListService,
-            useExisting: TimeListService,
-        },
-    ],
-    templateUrl: './invoice-add-time.component.html'
+  selector: 'hq-invoice-add-time',
+  imports: [
+    CommonModule,
+    CoreModule,
+    RouterLink,
+    InRolePipe,
+    InvoiceTimeSearchFilterComponent,
+  ],
+  providers: [
+    {
+      provide: BaseListService,
+      useExisting: TimeListService,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './invoice-add-time.component.html',
 })
 export class InvoiceAddTimeComponent implements OnDestroy {
   sortColumn = SortColumn;

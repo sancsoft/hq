@@ -3,7 +3,13 @@ import { SelectInputOptionDirective } from './../../core/directives/select-input
 import { HQConfirmationModalService } from './../../common/confirmation-modal/services/hq-confirmation-modal-service';
 import { HQSnackBarService } from './../../common/hq-snack-bar/services/hq-snack-bar-service';
 import { PsrDetailsHeaderComponent } from './../psr-details-header/psr-details-header.component';
-import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { SortDirection } from '../../models/common/sort-direction';
 import {
   GetPSRTimeRecordV1,
@@ -54,16 +60,17 @@ export interface ChargeCodeViewModel {
 }
 
 @Component({
-    selector: 'hq-psrtime-list',
-    imports: [
-        CommonModule,
-        SortIconComponent,
-        FormsModule,
-        SelectInputOptionDirective,
-        SelectInputComponent,
-    ],
-    styleUrls: ['./psrtime-list.component.scss'],
-    templateUrl: './psrtime-list.component.html'
+  selector: 'hq-psrtime-list',
+  imports: [
+    CommonModule,
+    SortIconComponent,
+    FormsModule,
+    SelectInputOptionDirective,
+    SelectInputComponent,
+  ],
+  styleUrls: ['./psrtime-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './psrtime-list.component.html',
 })
 export class PSRTimeListComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];

@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   ActivatedRoute,
   Router,
@@ -64,13 +69,10 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-project-edit',
-    imports: [
-        CommonModule,
-        CoreModule,
-        ReactiveFormsModule,
-    ],
-    templateUrl: './project-edit.component.html'
+  selector: 'hq-project-edit',
+  imports: [CommonModule, CoreModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-edit.component.html',
 })
 export class ProjectEditComponent implements OnInit, OnDestroy {
   psrId$: Observable<string | null>;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -25,17 +25,18 @@ import { ClientDetailsService } from '../client-details.service';
 import { ButtonComponent } from '../../../core/components/button/button.component';
 
 @Component({
-    selector: 'hq-client-invoices-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        PaginatorComponent,
-        SortIconComponent,
-        InRolePipe,
-        ButtonComponent,
-    ],
-    templateUrl: './client-invoices.list.component.html'
+  selector: 'hq-client-invoices-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    PaginatorComponent,
+    SortIconComponent,
+    InRolePipe,
+    ButtonComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './client-invoices.list.component.html',
 })
 export class ClientInvoicesComponent {
   clientId?: string;

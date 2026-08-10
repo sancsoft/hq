@@ -16,7 +16,10 @@
         </button>
 
         <span>
-          {{ (planningPoints$ | async)?.displayDate | date: "MM/dd/yyyy" }}
+          {{
+            $safeNavigationMigration((planningPoints$ | async)?.displayDate)
+              | date: "MM/dd/yyyy"
+          }}
         </span>
         <button
           title="Next plan"

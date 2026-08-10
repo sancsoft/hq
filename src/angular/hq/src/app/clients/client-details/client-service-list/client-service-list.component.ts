@@ -1,5 +1,5 @@
 import { SortIconComponent } from './../../../common/sort-icon/sort-icon.component';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -26,17 +26,18 @@ import { ClientDetailsService } from '../client-details.service';
 import { ButtonComponent } from '../../../core/components/button/button.component';
 
 @Component({
-    selector: 'hq-client-service-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        PaginatorComponent,
-        ReactiveFormsModule,
-        SortIconComponent,
-        InRolePipe,
-        ButtonComponent,
-    ],
-    templateUrl: './client-service-list.component.html'
+  selector: 'hq-client-service-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    PaginatorComponent,
+    ReactiveFormsModule,
+    SortIconComponent,
+    InRolePipe,
+    ButtonComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './client-service-list.component.html',
 })
 export class ClientServiceListComponent {
   clientId?: string;

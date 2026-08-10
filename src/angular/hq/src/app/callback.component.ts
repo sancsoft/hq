@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    selector: 'hq-callback',
-    imports: [],
-    template: ``
+  selector: 'hq-callback',
+  imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: ``,
 })
 export class CallbackComponent {}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { FormLabelComponent } from '../form-label/form-label.component';
 import {
@@ -20,15 +20,16 @@ import { HQService } from '../../../services/hq.service';
 import { ProjectType } from '../../../enums/project-type';
 
 @Component({
-    selector: 'hq-kitchen-sink',
-    imports: [
-        SearchInputComponent,
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        CoreModule,
-    ],
-    templateUrl: './kitchen-sink.component.html'
+  selector: 'hq-kitchen-sink',
+  imports: [
+    SearchInputComponent,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CoreModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './kitchen-sink.component.html',
 })
 export class KitchenSinkComponent {
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;

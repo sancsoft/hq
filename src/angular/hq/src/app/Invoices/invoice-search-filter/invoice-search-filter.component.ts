@@ -3,18 +3,19 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Period } from '../../enums/period';
 import { InvoiceListService } from '../invoices-list/invoices-list.service';
 import { CoreModule } from '../../core/core.module';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    selector: 'hq-invoice-search-filter',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        CommonModule,
-        CoreModule,
-    ],
-    templateUrl: './invoice-search-filter.component.html'
+  selector: 'hq-invoice-search-filter',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    CoreModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './invoice-search-filter.component.html',
 })
 export class InvoiceSearchFilterComponent {
   constructor(public invoiceService: InvoiceListService) {}

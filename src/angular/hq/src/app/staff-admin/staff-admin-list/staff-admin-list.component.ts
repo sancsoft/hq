@@ -1,5 +1,5 @@
 import { SortColumn } from './../../models/staff-members/get-staff-member-v1';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -26,18 +26,19 @@ import { StaffListSearchFilterComponent } from '../../staff/staff-list-search-fi
 import { StaffListService } from '../../staff/staff-list/staff-list.service';
 
 @Component({
-    selector: 'hq-staff-admin-list',
-    imports: [
-        RouterLink,
-        CommonModule,
-        ReactiveFormsModule,
-        PaginatorComponent,
-        SortIconComponent,
-        RouterLink,
-        InRolePipe,
-        StaffListSearchFilterComponent,
-    ],
-    templateUrl: './staff-admin-list.component.html'
+  selector: 'hq-staff-admin-list',
+  imports: [
+    RouterLink,
+    CommonModule,
+    ReactiveFormsModule,
+    PaginatorComponent,
+    SortIconComponent,
+    RouterLink,
+    InRolePipe,
+    StaffListSearchFilterComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './staff-admin-list.component.html',
 })
 export class StaffAdminListComponent {
   apiErrors: string[] = [];

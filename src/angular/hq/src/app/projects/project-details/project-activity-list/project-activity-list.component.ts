@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ProjectDetailsService } from '../project-details.service';
 import {
   FormControl,
@@ -24,15 +24,16 @@ interface Form {
 }
 
 @Component({
-    selector: 'hq-project-activity-list',
-    imports: [
-        CoreModule,
-        ReactiveFormsModule,
-        FormsModule,
-        CommonModule,
-        InRolePipe,
-    ],
-    templateUrl: './project-activity-list.component.html'
+  selector: 'hq-project-activity-list',
+  imports: [
+    CoreModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    InRolePipe,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-activity-list.component.html',
 })
 export class ProjectActivityListComponent {
   form = new FormGroup<Form>({

@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-    selector: 'hq-dual-panel',
-    imports: [CommonModule],
-    templateUrl: './dual-panel.component.html'
+  selector: 'hq-dual-panel',
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './dual-panel.component.html',
 })
 export class DualPanelComponent {
   sideBarCollapsed = false;

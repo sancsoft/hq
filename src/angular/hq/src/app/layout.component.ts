@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Observable, filter, firstValueFrom, map } from 'rxjs';
 import { AppSettingsService } from './app-settings.service';
@@ -10,16 +15,17 @@ import { HQRole } from './enums/hqrole';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 @Component({
-    selector: 'hq-layout',
-    imports: [
-        CommonModule,
-        FormsModule,
-        RouterLink,
-        RouterLinkActive,
-        InRolePipe,
-        OverlayModule,
-    ],
-    templateUrl: './layout.component.html'
+  selector: 'hq-layout',
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    RouterLinkActive,
+    InRolePipe,
+    OverlayModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './layout.component.html',
 })
 export class LayoutComponent {
   title = 'HQ';

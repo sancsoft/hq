@@ -2,7 +2,7 @@
 /* eslint-disable rxjs-angular/prefer-async-pipe */
 import { ProjectPsrDetailsComponent } from './project-psr-details/project-psr-details.component';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   ActivatedRoute,
   Router,
@@ -18,19 +18,20 @@ import { PanelComponent } from '../../core/components/panel/panel.component';
 import { ProjectDetailsService } from './project-details.service';
 
 @Component({
-    selector: 'hq-project-details',
-    imports: [
-        CommonModule,
-        RouterOutlet,
-        RouterLink,
-        RouterLinkActive,
-        ProjectPsrListComponent,
-        ProjectPsrDetailsComponent,
-        CoreModule,
-        PanelComponent,
-    ],
-    providers: [ProjectDetailsService],
-    templateUrl: './project-details.component.html'
+  selector: 'hq-project-details',
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    ProjectPsrListComponent,
+    ProjectPsrDetailsComponent,
+    CoreModule,
+    PanelComponent,
+  ],
+  providers: [ProjectDetailsService],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './project-details.component.html',
 })
 export class ProjectDetailsComponent {
   constructor(

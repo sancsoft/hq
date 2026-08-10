@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClientDetailsService } from '../client-details.service';
@@ -9,16 +9,17 @@ import { enumToArrayObservable } from '../../../core/functions/enum-to-array';
 import { ProjectStatus } from '../../../enums/project-status';
 
 @Component({
-    selector: 'hq-client-details-search-filter',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        SearchInputComponent,
-        SelectInputComponent,
-        SelectInputOptionDirective,
-    ],
-    templateUrl: './client-details-search-filter.component.html'
+  selector: 'hq-client-details-search-filter',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    SearchInputComponent,
+    SelectInputComponent,
+    SelectInputOptionDirective,
+  ],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  templateUrl: './client-details-search-filter.component.html',
 })
 export class ClientDetailsSearchFilterComponent {
   public projectStatusEnum$ = enumToArrayObservable(ProjectStatus);
