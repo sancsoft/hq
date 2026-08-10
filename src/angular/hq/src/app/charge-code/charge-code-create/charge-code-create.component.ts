@@ -35,15 +35,14 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-charge-code-create',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-  ],
-  templateUrl: './charge-code-create.component.html',
+    selector: 'hq-charge-code-create',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ErrorDisplayComponent,
+    ],
+    templateUrl: './charge-code-create.component.html'
 })
 export class ChargeCodeCreateComponent implements OnDestroy {
   apiErrors: string[] = [];

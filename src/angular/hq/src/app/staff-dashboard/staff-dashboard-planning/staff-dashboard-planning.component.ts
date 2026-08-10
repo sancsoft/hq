@@ -59,26 +59,25 @@ import { StaffDashboardService } from '../service/staff-dashboard.service';
 import { GetPlanRequestV1 } from '../../models/Plan/get-plan-v1';
 
 @Component({
-  selector: 'hq-staff-dashboard-planning',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    StaffDashboardTimeEntryComponent,
-    StaffDashboardSearchFilterComponent,
-    StaffDashboardDateRangeComponent,
-    StatDisplayComponent,
-    PanelComponent,
-    MonacoEditorModule,
-    HQMarkdownComponent,
-    CdkDropList,
-    CdkDrag,
-    CdkDragPlaceholder,
-    StaffDashboardPlanningPointComponent,
-    ButtonComponent,
-    StaffDashboardPlanningComponent,
-  ],
-  templateUrl: './staff-dashboard-planning.component.html',
+    selector: 'hq-staff-dashboard-planning',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        StaffDashboardTimeEntryComponent,
+        StaffDashboardSearchFilterComponent,
+        StaffDashboardDateRangeComponent,
+        StatDisplayComponent,
+        PanelComponent,
+        MonacoEditorModule,
+        HQMarkdownComponent,
+        CdkDropList,
+        CdkDrag,
+        CdkDragPlaceholder,
+        StaffDashboardPlanningPointComponent,
+        ButtonComponent,
+        StaffDashboardPlanningComponent,
+    ],
+    templateUrl: './staff-dashboard-planning.component.html'
 })
 export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
   @ViewChildren(StaffDashboardPlanningPointComponent)

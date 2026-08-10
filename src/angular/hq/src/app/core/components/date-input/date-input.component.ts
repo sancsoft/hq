@@ -17,10 +17,9 @@ import { generateUniqueInputId } from '../../functions/generate-unique-input-id'
 import { FormLabelComponent } from '../form-label/form-label.component';
 
 @Component({
-  selector: 'hq-date-input',
-  standalone: true,
-  imports: [FormsModule, CommonModule, FormLabelComponent],
-  templateUrl: './date-input.component.html',
+    selector: 'hq-date-input',
+    imports: [FormsModule, CommonModule, FormLabelComponent],
+    templateUrl: './date-input.component.html'
 })
 export class DateInputComponent {
   @ViewChild('input')

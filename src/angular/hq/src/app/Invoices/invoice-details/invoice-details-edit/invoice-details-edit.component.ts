@@ -33,19 +33,18 @@ interface invoiceFormGroup {
 }
 
 @Component({
-  selector: 'hq-invoice-details-edit',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    ButtonComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    CoreModule,
-    InRolePipe,
-  ],
-  templateUrl: './invoice-details-edit.component.html',
+    selector: 'hq-invoice-details-edit',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        ButtonComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        CoreModule,
+        InRolePipe,
+    ],
+    templateUrl: './invoice-details-edit.component.html'
 })
 export class InvoiceDetailsEditComponent implements OnDestroy {
   HQRole = HQRole;

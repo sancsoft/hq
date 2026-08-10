@@ -29,17 +29,16 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-staff-view',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-    RouterLink,
-    ButtonComponent,
-  ],
-  templateUrl: './staff-view.component.html',
+    selector: 'hq-staff-view',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ErrorDisplayComponent,
+        RouterLink,
+        ButtonComponent,
+    ],
+    templateUrl: './staff-view.component.html'
 })
 export class StaffViewComponent implements OnInit {
   staffId?: string;

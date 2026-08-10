@@ -3,10 +3,9 @@ import { Component, Inject } from '@angular/core';
 import { ModalData } from '../../services/modal.service';
 
 @Component({
-  selector: 'hq-confirm-modal',
-  standalone: true,
-  imports: [],
-  templateUrl: './confirm-modal.component.html',
+    selector: 'hq-confirm-modal',
+    imports: [],
+    templateUrl: './confirm-modal.component.html'
 })
 export class ConfirmModalComponent {
   constructor(

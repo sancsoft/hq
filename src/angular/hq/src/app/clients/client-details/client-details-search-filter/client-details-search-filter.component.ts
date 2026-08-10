@@ -9,17 +9,16 @@ import { enumToArrayObservable } from '../../../core/functions/enum-to-array';
 import { ProjectStatus } from '../../../enums/project-status';
 
 @Component({
-  selector: 'hq-client-details-search-filter',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    SearchInputComponent,
-    SelectInputComponent,
-    SelectInputOptionDirective,
-  ],
-  templateUrl: './client-details-search-filter.component.html',
+    selector: 'hq-client-details-search-filter',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        SearchInputComponent,
+        SelectInputComponent,
+        SelectInputOptionDirective,
+    ],
+    templateUrl: './client-details-search-filter.component.html'
 })
 export class ClientDetailsSearchFilterComponent {
   public projectStatusEnum$ = enumToArrayObservable(ProjectStatus);

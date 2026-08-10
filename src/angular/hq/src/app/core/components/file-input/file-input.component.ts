@@ -15,10 +15,9 @@ import { generateUniqueInputId } from '../../functions/generate-unique-input-id'
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'hq-file-input',
-  standalone: true,
-  imports: [CommonModule, FormLabelComponent],
-  templateUrl: './file-input.component.html',
+    selector: 'hq-file-input',
+    imports: [CommonModule, FormLabelComponent],
+    templateUrl: './file-input.component.html'
 })
 export class FileInputComponent implements ControlValueAccessor {
   @ViewChild('input')

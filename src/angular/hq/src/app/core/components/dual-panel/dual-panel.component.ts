@@ -2,10 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'hq-dual-panel',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './dual-panel.component.html',
+    selector: 'hq-dual-panel',
+    imports: [CommonModule],
+    templateUrl: './dual-panel.component.html'
 })
 export class DualPanelComponent {
   sideBarCollapsed = false;

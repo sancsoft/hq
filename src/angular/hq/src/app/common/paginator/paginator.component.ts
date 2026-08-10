@@ -7,10 +7,9 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'hq-paginator',
-  standalone: true,
-  imports: [],
-  templateUrl: './paginator.component.html',
+    selector: 'hq-paginator',
+    imports: [],
+    templateUrl: './paginator.component.html'
 })
 export class PaginatorComponent implements OnChanges {
   paginationLength = 5;

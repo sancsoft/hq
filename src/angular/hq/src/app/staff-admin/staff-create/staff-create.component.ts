@@ -29,17 +29,15 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-staff-create',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-    RouterLink,
-  ],
-
-  templateUrl: './staff-create.component.html',
+    selector: 'hq-staff-create',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ErrorDisplayComponent,
+        RouterLink,
+    ],
+    templateUrl: './staff-create.component.html'
 })
 export class StaffCreateComponent {
   apiErrors: string[] = [];

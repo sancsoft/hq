@@ -3,10 +3,9 @@ import { Component, Inject } from '@angular/core';
 import { ModalData } from '../../services/modal.service';
 
 @Component({
-  selector: 'hq-prompt-modal',
-  standalone: true,
-  imports: [],
-  templateUrl: './prompt-modal.component.html',
+    selector: 'hq-prompt-modal',
+    imports: [],
+    templateUrl: './prompt-modal.component.html'
 })
 export class PromptModalComponent {
   constructor(

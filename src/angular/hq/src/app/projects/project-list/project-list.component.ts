@@ -13,25 +13,24 @@ import { ProjectListService } from './project-list.service';
 import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
-  selector: 'hq-project-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    PsrSearchFilterComponent,
-    InRolePipe,
-    CoreModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: ProjectListService,
-    },
-  ],
-  templateUrl: './project-list.component.html',
+    selector: 'hq-project-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        PsrSearchFilterComponent,
+        InRolePipe,
+        CoreModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: ProjectListService,
+        },
+    ],
+    templateUrl: './project-list.component.html'
 })
 export class ProjectListComponent {
   HQRole = HQRole;

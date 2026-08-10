@@ -17,10 +17,9 @@ import { FormLabelComponent } from '../form-label/form-label.component';
 import { generateUniqueInputId } from '../../functions/generate-unique-input-id';
 
 @Component({
-  selector: 'hq-search-input',
-  standalone: true,
-  imports: [FormsModule, CommonModule, FormLabelComponent],
-  templateUrl: './search-input.component.html',
+    selector: 'hq-search-input',
+    imports: [FormsModule, CommonModule, FormLabelComponent],
+    templateUrl: './search-input.component.html'
 })
 export class SearchInputComponent implements ControlValueAccessor {
   @ViewChild('input')

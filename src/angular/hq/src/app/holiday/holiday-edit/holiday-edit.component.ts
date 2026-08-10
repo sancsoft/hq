@@ -22,16 +22,15 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-holiday-edit',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-    RouterLink,
-  ],
-  templateUrl: './holiday-edit.component.html',
+    selector: 'hq-holiday-edit',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ErrorDisplayComponent,
+        RouterLink,
+    ],
+    templateUrl: './holiday-edit.component.html'
 })
 export class HolidayEditComponent implements OnInit {
   holidayId?: string;

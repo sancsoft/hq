@@ -31,18 +31,17 @@ interface quoteFormGroup {
 }
 
 @Component({
-  selector: 'hq-quote-edit',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-    RouterLink,
-    SelectableClientListComponent,
-    CoreModule,
-  ],
-  templateUrl: './quotes-edit.component.html',
+    selector: 'hq-quote-edit',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ErrorDisplayComponent,
+        RouterLink,
+        SelectableClientListComponent,
+        CoreModule,
+    ],
+    templateUrl: './quotes-edit.component.html'
 })
 export class QuotesEditComponent implements OnInit {
   quoteStatus = ProjectStatus;

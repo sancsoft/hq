@@ -3,10 +3,9 @@ import { RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'hq-invoice-time',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './invoice-time.component.html',
+    selector: 'hq-invoice-time',
+    imports: [RouterOutlet],
+    templateUrl: './invoice-time.component.html'
 })
 export class InvoiceTimeComponent implements OnDestroy {
   constructor() {}

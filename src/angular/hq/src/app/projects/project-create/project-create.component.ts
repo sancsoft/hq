@@ -61,17 +61,16 @@ interface Form {
   requireTask: FormControl<boolean | null>;
 }
 @Component({
-  selector: 'hq-project-create',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SelectableClientListComponent,
-    PdfViewerComponent,
-    CoreModule,
-  ],
-  templateUrl: './project-create.component.html',
+    selector: 'hq-project-create',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SelectableClientListComponent,
+        PdfViewerComponent,
+        CoreModule,
+    ],
+    templateUrl: './project-create.component.html'
 })
 export class ProjectCreateComponent implements OnDestroy, OnInit {
   projectManagers$: Observable<GetStaffV1Record[]>;

@@ -33,10 +33,9 @@ interface Form {
   isAdministrator: FormControl<boolean | null>;
 }
 @Component({
-  selector: 'hq-users-edit',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
-  templateUrl: './users-edit.component.html',
+    selector: 'hq-users-edit',
+    imports: [ReactiveFormsModule, CommonModule, RouterLink],
+    templateUrl: './users-edit.component.html'
 })
 export class UsersEditComponent implements OnInit, OnDestroy {
   userId?: string;

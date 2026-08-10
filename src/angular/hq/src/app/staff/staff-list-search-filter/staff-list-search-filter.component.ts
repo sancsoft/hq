@@ -7,16 +7,15 @@ import { SelectInputComponent } from '../../core/components/select-input/select-
 import { StaffStatus } from '../../enums/staff-status';
 
 @Component({
-  selector: 'hq-staff-list-search-filter',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    SelectInputOptionDirective,
-    SelectInputComponent,
-  ],
-  templateUrl: './staff-list-search-filter.component.html',
+    selector: 'hq-staff-list-search-filter',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        SelectInputOptionDirective,
+        SelectInputComponent,
+    ],
+    templateUrl: './staff-list-search-filter.component.html'
 })
 export class StaffListSearchFilterComponent {
   staffStatus = StaffStatus;

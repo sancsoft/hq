@@ -22,17 +22,15 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-holiday-create',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-    RouterLink,
-  ],
-
-  templateUrl: './holiday-create.component.html',
+    selector: 'hq-holiday-create',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ErrorDisplayComponent,
+        RouterLink,
+    ],
+    templateUrl: './holiday-create.component.html'
 })
 export class HolidayCreateComponent {
   apiErrors: string[] = [];

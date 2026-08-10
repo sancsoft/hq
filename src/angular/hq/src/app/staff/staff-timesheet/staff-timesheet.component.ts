@@ -5,10 +5,9 @@ import { StaffDashboardComponent } from '../../staff-dashboard/staff-dashboard.c
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'hq-staff-timesheet',
-  standalone: true,
-  imports: [StaffDashboardComponent, CommonModule],
-  templateUrl: './staff-timesheet.component.html',
+    selector: 'hq-staff-timesheet',
+    imports: [StaffDashboardComponent, CommonModule],
+    templateUrl: './staff-timesheet.component.html'
 })
 export class StaffTimesheetComponent {
   staffId$: Observable<string | null>;

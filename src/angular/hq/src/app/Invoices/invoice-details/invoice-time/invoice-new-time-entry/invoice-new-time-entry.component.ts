@@ -75,15 +75,14 @@ interface Form {
 }
 
 @Component({
-  selector: 'tr[hq-invoice-new-time-entry]',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    SelectInputOptionDirective,
-    SelectInputComponent,
-  ],
-  templateUrl: './invoice-new-time-entry.component.html',
+    selector: 'tr[hq-invoice-new-time-entry]',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        SelectInputOptionDirective,
+        SelectInputComponent,
+    ],
+    templateUrl: './invoice-new-time-entry.component.html'
 })
 export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
   @Input()

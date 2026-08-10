@@ -37,17 +37,16 @@ export interface PointForm {
 }
 
 @Component({
-  selector: 'tr[hq-staff-dashboard-planning-point]',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    CdkDragHandle,
-    CdkDrag,
-    SelectInputOptionDirective,
-    SelectInputComponent,
-  ],
-  templateUrl: './staff-dashboard-planning-point.component.html',
+    selector: 'tr[hq-staff-dashboard-planning-point]',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        CdkDragHandle,
+        CdkDrag,
+        SelectInputOptionDirective,
+        SelectInputComponent,
+    ],
+    templateUrl: './staff-dashboard-planning-point.component.html'
 })
 export class StaffDashboardPlanningPointComponent
   implements OnInit, OnDestroy, OnChanges

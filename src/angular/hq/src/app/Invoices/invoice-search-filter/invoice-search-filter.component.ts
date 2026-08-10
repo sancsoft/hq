@@ -6,16 +6,15 @@ import { CoreModule } from '../../core/core.module';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'hq-invoice-search-filter',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule,
-    CoreModule,
-  ],
-  templateUrl: './invoice-search-filter.component.html',
+    selector: 'hq-invoice-search-filter',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        CommonModule,
+        CoreModule,
+    ],
+    templateUrl: './invoice-search-filter.component.html'
 })
 export class InvoiceSearchFilterComponent {
   constructor(public invoiceService: InvoiceListService) {}

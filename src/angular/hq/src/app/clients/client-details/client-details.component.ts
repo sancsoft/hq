@@ -16,22 +16,21 @@ import { ClientQuoteListService } from './client-quote-list/client-quote-list.se
 import { ClientProjectListService } from './client-project-list/client-project-list.service';
 
 @Component({
-  selector: 'hq-client-details',
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    ClientDetailsSummaryComponent,
-    ClientDetailsSearchFilterComponent,
-    TabComponent,
-  ],
-  templateUrl: './client-details.component.html',
-  providers: [
-    ClientDetailsService,
-    ClientQuoteListService,
-    ClientProjectListService,
-  ],
+    selector: 'hq-client-details',
+    imports: [
+        RouterOutlet,
+        RouterLink,
+        RouterLinkActive,
+        ClientDetailsSummaryComponent,
+        ClientDetailsSearchFilterComponent,
+        TabComponent,
+    ],
+    templateUrl: './client-details.component.html',
+    providers: [
+        ClientDetailsService,
+        ClientQuoteListService,
+        ClientProjectListService,
+    ]
 })
 export class ClientDetailsComponent {
   private subscriptions: Subscription[] = [];

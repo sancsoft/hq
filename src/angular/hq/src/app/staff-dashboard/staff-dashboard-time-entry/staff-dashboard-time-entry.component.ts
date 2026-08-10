@@ -78,16 +78,15 @@ interface Form {
 }
 
 @Component({
-  selector: 'tr[hq-staff-dashboard-time-entry]',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    DateInputComponent,
-    SelectInputOptionDirective,
-    SelectInputComponent,
-  ],
-  templateUrl: './staff-dashboard-time-entry.component.html',
+    selector: 'tr[hq-staff-dashboard-time-entry]',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        DateInputComponent,
+        SelectInputOptionDirective,
+        SelectInputComponent,
+    ],
+    templateUrl: './staff-dashboard-time-entry.component.html'
 })
 export class StaffDashboardTimeEntryComponent
   implements OnInit, OnChanges, OnDestroy

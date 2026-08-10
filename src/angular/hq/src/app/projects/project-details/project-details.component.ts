@@ -18,21 +18,20 @@ import { PanelComponent } from '../../core/components/panel/panel.component';
 import { ProjectDetailsService } from './project-details.service';
 
 @Component({
-  selector: 'hq-project-details',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    ProjectPsrListComponent,
-    ProjectPsrDetailsComponent,
-    CoreModule,
-    PanelComponent,
-    DualPanelComponent,
-  ],
-  providers: [ProjectDetailsService],
-  templateUrl: './project-details.component.html',
+    selector: 'hq-project-details',
+    imports: [
+        CommonModule,
+        RouterOutlet,
+        RouterLink,
+        RouterLinkActive,
+        ProjectPsrListComponent,
+        ProjectPsrDetailsComponent,
+        CoreModule,
+        PanelComponent,
+        DualPanelComponent,
+    ],
+    providers: [ProjectDetailsService],
+    templateUrl: './project-details.component.html'
 })
 export class ProjectDetailsComponent {
   constructor(

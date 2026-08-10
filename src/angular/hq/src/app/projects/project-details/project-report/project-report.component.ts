@@ -7,10 +7,9 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'hq-project-report',
-  standalone: true,
-  imports: [CommonModule, HQMarkdownComponent],
-  templateUrl: './project-report.component.html',
+    selector: 'hq-project-report',
+    imports: [CommonModule, HQMarkdownComponent],
+    templateUrl: './project-report.component.html'
 })
 export class ProjectReportComponent {
   psr$?: Observable<GetPSRRecordV1 | null>;

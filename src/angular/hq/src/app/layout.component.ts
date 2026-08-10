@@ -10,18 +10,17 @@ import { HQRole } from './enums/hqrole';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 @Component({
-  selector: 'hq-layout',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    FormsModule,
-    RouterLink,
-    RouterLinkActive,
-    InRolePipe,
-    OverlayModule,
-  ],
-  templateUrl: './layout.component.html',
+    selector: 'hq-layout',
+    imports: [
+        CommonModule,
+        RouterOutlet,
+        FormsModule,
+        RouterLink,
+        RouterLinkActive,
+        InRolePipe,
+        OverlayModule,
+    ],
+    templateUrl: './layout.component.html'
 })
 export class LayoutComponent {
   title = 'HQ';

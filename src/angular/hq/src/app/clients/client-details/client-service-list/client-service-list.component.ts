@@ -26,18 +26,17 @@ import { ClientDetailsService } from '../client-details.service';
 import { ButtonComponent } from '../../../core/components/button/button.component';
 
 @Component({
-  selector: 'hq-client-service-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    PaginatorComponent,
-    ReactiveFormsModule,
-    SortIconComponent,
-    InRolePipe,
-    ButtonComponent,
-  ],
-  templateUrl: './client-service-list.component.html',
+    selector: 'hq-client-service-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        PaginatorComponent,
+        ReactiveFormsModule,
+        SortIconComponent,
+        InRolePipe,
+        ButtonComponent,
+    ],
+    templateUrl: './client-service-list.component.html'
 })
 export class ClientServiceListComponent {
   clientId?: string;

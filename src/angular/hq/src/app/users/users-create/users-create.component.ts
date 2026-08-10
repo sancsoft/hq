@@ -34,10 +34,9 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-users-create',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './users-create.component.html',
+    selector: 'hq-users-create',
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+    templateUrl: './users-create.component.html'
 })
 export class UsersCreateComponent implements OnDestroy {
   apiErrors: string[] = [];

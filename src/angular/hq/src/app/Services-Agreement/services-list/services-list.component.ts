@@ -26,18 +26,17 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 import { ProjectStatus } from '../../enums/project-status';
 
 @Component({
-  selector: 'hq-services-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    PaginatorComponent,
-    ReactiveFormsModule,
-    SortIconComponent,
-    ClientDetailsSearchFilterComponent,
-    InRolePipe,
-  ],
-  templateUrl: './services-list.component.html',
+    selector: 'hq-services-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        PaginatorComponent,
+        ReactiveFormsModule,
+        SortIconComponent,
+        ClientDetailsSearchFilterComponent,
+        InRolePipe,
+    ],
+    templateUrl: './services-list.component.html'
 })
 export class ServicesListComponent {
   clientId?: string;

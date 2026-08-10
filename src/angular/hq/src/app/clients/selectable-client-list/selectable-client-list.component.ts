@@ -28,16 +28,15 @@ export interface ClientNameId {
 }
 
 @Component({
-  selector: 'hq-selectable-client-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-  ],
-  templateUrl: './selectable-client-list.component.html',
+    selector: 'hq-selectable-client-list',
+    imports: [
+        CommonModule,
+        RouterLink,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+    ],
+    templateUrl: './selectable-client-list.component.html'
 })
 export class SelectableClientListComponent {
   @Input() showViewButtons: boolean = true;

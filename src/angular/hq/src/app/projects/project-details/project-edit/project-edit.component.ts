@@ -64,16 +64,15 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-project-edit',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    CoreModule,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './project-edit.component.html',
+    selector: 'hq-project-edit',
+    imports: [
+        CommonModule,
+        RouterLink,
+        RouterLinkActive,
+        CoreModule,
+        ReactiveFormsModule,
+    ],
+    templateUrl: './project-edit.component.html'
 })
 export class ProjectEditComponent implements OnInit, OnDestroy {
   psrId$: Observable<string | null>;

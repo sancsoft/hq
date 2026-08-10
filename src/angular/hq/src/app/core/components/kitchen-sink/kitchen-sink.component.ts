@@ -20,17 +20,16 @@ import { HQService } from '../../../services/hq.service';
 import { ProjectType } from '../../../enums/project-type';
 
 @Component({
-  selector: 'hq-kitchen-sink',
-  standalone: true,
-  imports: [
-    SearchInputComponent,
-    FormLabelComponent,
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CoreModule,
-  ],
-  templateUrl: './kitchen-sink.component.html',
+    selector: 'hq-kitchen-sink',
+    imports: [
+        SearchInputComponent,
+        FormLabelComponent,
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        CoreModule,
+    ],
+    templateUrl: './kitchen-sink.component.html'
 })
 export class KitchenSinkComponent {
   chargeCodes$: Observable<GetChargeCodeRecordV1[]>;

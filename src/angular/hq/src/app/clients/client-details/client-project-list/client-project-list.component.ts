@@ -16,25 +16,24 @@ import { CoreModule } from '../../../core/core.module';
 import { BaseListService } from '../../../core/services/base-list.service';
 
 @Component({
-  selector: 'hq-client-project-list',
-  standalone: true,
-  imports: [
-    RouterModule,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    InRolePipe,
-    ButtonComponent,
-    CoreModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: ClientProjectListService,
-    },
-  ],
-  templateUrl: './client-project-list.component.html',
+    selector: 'hq-client-project-list',
+    imports: [
+        RouterModule,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        InRolePipe,
+        ButtonComponent,
+        CoreModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: ClientProjectListService,
+        },
+    ],
+    templateUrl: './client-project-list.component.html'
 })
 export class ClientProjectListComponent {
   sortColumn = SortColumn;

@@ -39,22 +39,21 @@ import { PanelComponent } from '../../core/components/panel/panel.component';
 import { CoreModule } from '../../core/core.module';
 
 @Component({
-  selector: 'hq-psrreport',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    CommonModule,
-    MonacoEditorModule,
-    HQMarkdownComponent,
-    InRolePipe,
-    PSRTimeListComponent,
-    AngularSplitModule,
-    PsrSearchFilterComponent,
-    PanelComponent,
-    CoreModule,
-  ],
-  templateUrl: './psrreport.component.html',
-  encapsulation: ViewEncapsulation.None,
+    selector: 'hq-psrreport',
+    imports: [
+        ReactiveFormsModule,
+        CommonModule,
+        MonacoEditorModule,
+        HQMarkdownComponent,
+        InRolePipe,
+        PSRTimeListComponent,
+        AngularSplitModule,
+        PsrSearchFilterComponent,
+        PanelComponent,
+        CoreModule,
+    ],
+    templateUrl: './psrreport.component.html',
+    encapsulation: ViewEncapsulation.None
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
   editorOptions$: Observable<object>;

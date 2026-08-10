@@ -1,6 +1,6 @@
 <div>
-  @if (this.errors) {
-    @for (error of this.errors; track $index) {
+  @if (errors) {
+    @for (error of errors; track $index) {
       <div class="text-red-700 text-xs leading-normal inline-block">
         {{ error }}
       </div>

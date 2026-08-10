@@ -19,24 +19,23 @@ export interface ClientNameId {
 }
 
 @Component({
-  selector: 'hq-client-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    InRolePipe,
-    CoreModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: ClientListService,
-    },
-  ],
-  templateUrl: './client-list.component.html',
+    selector: 'hq-client-list',
+    imports: [
+        CommonModule,
+        RouterLink,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        InRolePipe,
+        CoreModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: ClientListService,
+        },
+    ],
+    templateUrl: './client-list.component.html'
 })
 export class ClientListComponent {
   HQRole = HQRole;

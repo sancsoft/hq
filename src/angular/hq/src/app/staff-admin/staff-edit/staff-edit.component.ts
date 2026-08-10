@@ -34,17 +34,16 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-staff-edit',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-    RouterLink,
-    ButtonComponent,
-  ],
-  templateUrl: './staff-edit.component.html',
+    selector: 'hq-staff-edit',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ErrorDisplayComponent,
+        RouterLink,
+        ButtonComponent,
+    ],
+    templateUrl: './staff-edit.component.html'
 })
 export class StaffEditComponent implements OnDestroy, OnInit {
   staffId?: string;

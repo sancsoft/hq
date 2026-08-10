@@ -9,10 +9,9 @@ export enum PanelDirection {
 export type CollapseItem = 'first' | 'second';
 
 @Component({
-  selector: 'hq-panel',
-  standalone: true,
-  imports: [AngularSplitModule, CommonModule],
-  templateUrl: './panel.component.html',
+    selector: 'hq-panel',
+    imports: [AngularSplitModule, CommonModule],
+    templateUrl: './panel.component.html'
 })
 export class PanelComponent implements OnInit {
   @Input()

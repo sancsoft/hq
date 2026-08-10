@@ -15,23 +15,22 @@ import { BaseListService } from '../../core/services/base-list.service';
 import { InvoiceSearchFilterComponent } from '../invoice-search-filter/invoice-search-filter.component';
 
 @Component({
-  selector: 'hq-invoices-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    InRolePipe,
-    CoreModule,
-    InvoiceSearchFilterComponent,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: InvoiceListService,
-    },
-  ],
-  templateUrl: './invoices-list.component.html',
+    selector: 'hq-invoices-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        InRolePipe,
+        CoreModule,
+        InvoiceSearchFilterComponent,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: InvoiceListService,
+        },
+    ],
+    templateUrl: './invoices-list.component.html'
 })
 export class InvoicesListComponent {
   apiErrors: string[] = [];

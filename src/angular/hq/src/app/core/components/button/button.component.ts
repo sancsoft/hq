@@ -3,10 +3,9 @@ import { Component, Input } from '@angular/core';
 import { Params, RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'hq-button',
-  standalone: true,
-  imports: [RouterLink, CommonModule],
-  templateUrl: './button.component.html',
+    selector: 'hq-button',
+    imports: [RouterLink, CommonModule],
+    templateUrl: './button.component.html'
 })
 export class ButtonComponent {
   @Input()

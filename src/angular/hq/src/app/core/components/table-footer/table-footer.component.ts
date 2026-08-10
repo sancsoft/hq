@@ -7,16 +7,15 @@ import { CommonModule } from '@angular/common';
 import { PagedResponseV1 } from '../../../models/common/paged-response-v1';
 
 @Component({
-  selector: 'hq-table-footer',
-  standalone: true,
-  imports: [
-    CoreModule,
-    ReactiveFormsModule,
-    FormsModule,
-    PaginatorComponent,
-    CommonModule,
-  ],
-  templateUrl: './table-footer.component.html',
+    selector: 'hq-table-footer',
+    imports: [
+        CoreModule,
+        ReactiveFormsModule,
+        FormsModule,
+        PaginatorComponent,
+        CommonModule,
+    ],
+    templateUrl: './table-footer.component.html'
 })
 export class TableFooterComponent<
   TResponse extends PagedResponseV1<TRecord>,

@@ -54,20 +54,19 @@ export interface ChargeCodeViewModel {
 }
 
 @Component({
-  selector: 'hq-psrtime-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    PsrDetailsHeaderComponent,
-    SortIconComponent,
-    PsrSearchFilterComponent,
-    FormsModule,
-    InRolePipe,
-    SelectInputOptionDirective,
-    SelectInputComponent,
-  ],
-  styleUrls: ['./psrtime-list.component.scss'],
-  templateUrl: './psrtime-list.component.html',
+    selector: 'hq-psrtime-list',
+    imports: [
+        CommonModule,
+        PsrDetailsHeaderComponent,
+        SortIconComponent,
+        PsrSearchFilterComponent,
+        FormsModule,
+        InRolePipe,
+        SelectInputOptionDirective,
+        SelectInputComponent,
+    ],
+    styleUrls: ['./psrtime-list.component.scss'],
+    templateUrl: './psrtime-list.component.html'
 })
 export class PSRTimeListComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];

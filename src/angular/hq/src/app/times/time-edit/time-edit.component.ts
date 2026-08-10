@@ -55,19 +55,17 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-time-edit',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-    RouterLink,
-    RouterLinkActive,
-    CoreModule,
-  ],
-
-  templateUrl: './time-edit.component.html',
+    selector: 'hq-time-edit',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ErrorDisplayComponent,
+        RouterLink,
+        RouterLinkActive,
+        CoreModule,
+    ],
+    templateUrl: './time-edit.component.html'
 })
 export class TimeEditComponent implements OnInit, OnDestroy {
   apiErrors: string[] = [];

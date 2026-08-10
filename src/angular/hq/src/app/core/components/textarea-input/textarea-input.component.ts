@@ -14,10 +14,9 @@ import { ValidationErrorDirective } from '../../directives/validation-error.dire
 import { generateUniqueInputId } from '../../functions/generate-unique-input-id';
 
 @Component({
-  selector: 'hq-textarea-input',
-  standalone: true,
-  imports: [FormsModule, CommonModule],
-  templateUrl: './textarea-input.component.html',
+    selector: 'hq-textarea-input',
+    imports: [FormsModule, CommonModule],
+    templateUrl: './textarea-input.component.html'
 })
 export class TextareaInputComponent {
   @ViewChild('input')

@@ -23,17 +23,16 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-client-create',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterLink,
-    ButtonComponent,
-    TextInputComponent,
-    ValidationErrorDirective,
-  ],
-  templateUrl: './client-create.component.html',
+    selector: 'hq-client-create',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterLink,
+        ButtonComponent,
+        TextInputComponent,
+        ValidationErrorDirective,
+    ],
+    templateUrl: './client-create.component.html'
 })
 export class ClientCreateComponent {
   apiErrors: string[] = [];

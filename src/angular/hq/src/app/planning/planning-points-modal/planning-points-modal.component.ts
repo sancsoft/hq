@@ -61,26 +61,25 @@ export interface DialogData {
   date: string;
 }
 @Component({
-  selector: 'hq-planning-points-modal',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    StaffDashboardTimeEntryComponent,
-    StaffDashboardSearchFilterComponent,
-    StaffDashboardDateRangeComponent,
-    StatDisplayComponent,
-    PanelComponent,
-    MonacoEditorModule,
-    HQMarkdownComponent,
-    CdkDropList,
-    CdkDrag,
-    CdkDragPlaceholder,
-    StaffDashboardPlanningPointComponent,
-    ButtonComponent,
-    StaffDashboardPlanningComponent,
-  ],
-  templateUrl: './planning-points-modal.component.html',
+    selector: 'hq-planning-points-modal',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        StaffDashboardTimeEntryComponent,
+        StaffDashboardSearchFilterComponent,
+        StaffDashboardDateRangeComponent,
+        StatDisplayComponent,
+        PanelComponent,
+        MonacoEditorModule,
+        HQMarkdownComponent,
+        CdkDropList,
+        CdkDrag,
+        CdkDragPlaceholder,
+        StaffDashboardPlanningPointComponent,
+        ButtonComponent,
+        StaffDashboardPlanningComponent,
+    ],
+    templateUrl: './planning-points-modal.component.html'
 })
 export class PlanningPointsModalComponent implements OnInit, OnDestroy {
   @ViewChildren(StaffDashboardPlanningPointComponent)

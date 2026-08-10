@@ -31,18 +31,17 @@ interface quoteFormGroup {
   pdf: FormControl<File | null>;
 }
 @Component({
-  selector: 'hq-quotes-create',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SelectableClientListComponent,
-    PdfViewerComponent,
-    RouterLink,
-    CoreModule,
-  ],
-  templateUrl: './quotes-create.component.html',
+    selector: 'hq-quotes-create',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SelectableClientListComponent,
+        PdfViewerComponent,
+        RouterLink,
+        CoreModule,
+    ],
+    templateUrl: './quotes-create.component.html'
 })
 export class QuotesCreateComponent implements OnInit {
   quoteStatus = ProjectStatus;

@@ -40,24 +40,23 @@ import { InRolePipe } from '../../../../pipes/in-role.pipe';
 import FileSaver from 'file-saver';
 
 @Component({
-  selector: 'hq-invoice-time-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    CoreModule,
-    RouterLink,
-    FormsModule,
-    ReactiveFormsModule,
-    InvoiceNewTimeEntryComponent,
-    InRolePipe,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: TimeListService,
-    },
-  ],
-  templateUrl: './invoice-time-list.component.html',
+    selector: 'hq-invoice-time-list',
+    imports: [
+        CommonModule,
+        CoreModule,
+        RouterLink,
+        FormsModule,
+        ReactiveFormsModule,
+        InvoiceNewTimeEntryComponent,
+        InRolePipe,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: TimeListService,
+        },
+    ],
+    templateUrl: './invoice-time-list.component.html'
 })
 export class InvoiceTimeListComponent implements OnDestroy {
   sortColumn = SortColumn;

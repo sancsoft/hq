@@ -5,10 +5,9 @@ import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'th[hq-sort-header]',
-  standalone: true,
-  imports: [SortIconComponent, CommonModule],
-  templateUrl: './sort-header.component.html',
+    selector: 'th[hq-sort-header]',
+    imports: [SortIconComponent, CommonModule],
+    templateUrl: './sort-header.component.html'
 })
 export class SortHeaderComponent<
   TResponse extends PagedResponseV1<TRecord>,

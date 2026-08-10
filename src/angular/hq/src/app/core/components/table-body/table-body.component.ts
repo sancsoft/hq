@@ -5,10 +5,9 @@ import { CommonModule } from '@angular/common';
 import { TableComponent } from '../table/table.component';
 
 @Component({
-  selector: 'tbody[hq-table-body]',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './table-body.component.html',
+    selector: 'tbody[hq-table-body]',
+    imports: [CommonModule],
+    templateUrl: './table-body.component.html'
 })
 export class TableBodyComponent<
   TResponse extends PagedResponseV1<TRecord>,

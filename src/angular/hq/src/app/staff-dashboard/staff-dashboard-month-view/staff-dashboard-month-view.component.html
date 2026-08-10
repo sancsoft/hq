@@ -91,7 +91,7 @@
   <tbody>
     @for (date of dashboard.dates; track date.date) {
       @if (
-        (this.staffDashboardService.canEdit$ | async) && date.canCreateTime
+        (staffDashboardService.canEdit$ | async) && date.canCreateTime
       ) {
         <tr
           hq-staff-dashboard-time-entry

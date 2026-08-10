@@ -41,18 +41,17 @@ import {
 import { chargeCodeToColor } from '../../../common/functions/charge-code-to-color';
 
 @Component({
-  selector: 'hq-select-input',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    FormLabelComponent,
-    CdkConnectedOverlay,
-    SearchInputComponent,
-    FormLabelComponent,
-  ],
-  templateUrl: './select-input.component.html',
+    selector: 'hq-select-input',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        FormLabelComponent,
+        CdkConnectedOverlay,
+        SearchInputComponent,
+        FormLabelComponent,
+    ],
+    templateUrl: './select-input.component.html'
 })
 export class SelectInputComponent<T>
   implements AfterViewInit, AfterContentChecked

@@ -16,26 +16,25 @@ import { CoreModule } from '../../core/core.module';
 import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
-  selector: 'hq-staff-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    RouterLink,
-    InRolePipe,
-    StaffListSearchFilterComponent,
-    CoreModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: StaffListService,
-    },
-  ],
-  templateUrl: './staff-list.component.html',
+    selector: 'hq-staff-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        RouterLink,
+        InRolePipe,
+        StaffListSearchFilterComponent,
+        CoreModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: StaffListService,
+        },
+    ],
+    templateUrl: './staff-list.component.html'
 })
 export class StaffListComponent {
   apiErrors: string[] = [];

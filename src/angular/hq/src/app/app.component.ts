@@ -13,16 +13,15 @@ import { ToastComponent } from './common/toast/toast.component';
 import { ToastService } from './services/toast.service';
 
 @Component({
-  selector: 'hq-root',
-  standalone: true,
-  imports: [
-    CommonModule,
-    LayoutComponent,
-    RouterOutlet,
-    HqSnackBarComponent,
-    ConfirmationModalComponent,
-  ],
-  templateUrl: './app.component.html',
+    selector: 'hq-root',
+    imports: [
+        CommonModule,
+        LayoutComponent,
+        RouterOutlet,
+        HqSnackBarComponent,
+        ConfirmationModalComponent,
+    ],
+    templateUrl: './app.component.html'
 })
 export class AppComponent implements OnDestroy {
   title = 'HQ';

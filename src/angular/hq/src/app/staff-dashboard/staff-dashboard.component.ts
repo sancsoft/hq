@@ -81,30 +81,29 @@ export interface PointForm {
 }
 
 @Component({
-  selector: 'hq-staff-dashboard',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    StaffDashboardTimeEntryComponent,
-    StaffDashboardSearchFilterComponent,
-    StaffDashboardDateRangeComponent,
-    StatDisplayComponent,
-    PanelComponent,
-    MonacoEditorModule,
-    HQMarkdownComponent,
-    CdkDropList,
-    CdkDrag,
-    CdkDragPlaceholder,
-    StaffDashboardPlanningPointComponent,
-    ButtonComponent,
-    StaffDashboardPlanningComponent,
-    StaffDashboardMonthViewComponent,
-    SortIconComponent,
-    InRolePipe,
-  ],
-  providers: [StaffDashboardService],
-  templateUrl: './staff-dashboard.component.html',
+    selector: 'hq-staff-dashboard',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        StaffDashboardTimeEntryComponent,
+        StaffDashboardSearchFilterComponent,
+        StaffDashboardDateRangeComponent,
+        StatDisplayComponent,
+        PanelComponent,
+        MonacoEditorModule,
+        HQMarkdownComponent,
+        CdkDropList,
+        CdkDrag,
+        CdkDragPlaceholder,
+        StaffDashboardPlanningPointComponent,
+        ButtonComponent,
+        StaffDashboardPlanningComponent,
+        StaffDashboardMonthViewComponent,
+        SortIconComponent,
+        InRolePipe,
+    ],
+    providers: [StaffDashboardService],
+    templateUrl: './staff-dashboard.component.html'
 })
 export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   Period = Period;

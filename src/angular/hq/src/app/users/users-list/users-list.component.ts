@@ -15,29 +15,27 @@ import { BaseListService } from '../../core/services/base-list.service';
 import { TableComponent } from '../../core/components/table/table.component';
 
 @Component({
-  selector: 'hq-users-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    ClientDetailsSearchFilterComponent,
-    RouterLink,
-    CoreModule,
-    TableComponent,
-    ReactiveFormsModule,
-    FormsModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: UserListService,
-    },
-  ],
-
-  templateUrl: './users-list.component.html',
+    selector: 'hq-users-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        ClientDetailsSearchFilterComponent,
+        RouterLink,
+        CoreModule,
+        TableComponent,
+        ReactiveFormsModule,
+        FormsModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: UserListService,
+        },
+    ],
+    templateUrl: './users-list.component.html'
 })
 export class UsersListComponent {
   sortColumn = SortColumn;

@@ -32,18 +32,17 @@ import { InRolePipe } from '../../pipes/in-role.pipe';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 
 @Component({
-  selector: 'hq-planning-points',
-  standalone: true,
-  imports: [
-    CommonModule,
-    CoreModule,
-    RouterLink,
-    InRolePipe,
-    FormsModule,
-    ReactiveFormsModule,
-    SelectInputComponent,
-  ],
-  templateUrl: './planning-points.component.html',
+    selector: 'hq-planning-points',
+    imports: [
+        CommonModule,
+        CoreModule,
+        RouterLink,
+        InRolePipe,
+        FormsModule,
+        ReactiveFormsModule,
+        SelectInputComponent,
+    ],
+    templateUrl: './planning-points.component.html'
 })
 export class PlanningPointsComponent implements OnDestroy {
   search = new FormControl<string | null>(null);

@@ -27,25 +27,24 @@ import { APIError } from '../../errors/apierror';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'hq-time-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    TimeSearchFilterComponent,
-    InRolePipe,
-    CoreModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: TimeListService,
-    },
-  ],
-  templateUrl: './time-list.component.html',
+    selector: 'hq-time-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        TimeSearchFilterComponent,
+        InRolePipe,
+        CoreModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: TimeListService,
+        },
+    ],
+    templateUrl: './time-list.component.html'
 })
 export class TimeListComponent implements OnDestroy {
   apiErrors: string[] = [];

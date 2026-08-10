@@ -6,16 +6,15 @@ import { Period } from '../../../../enums/period';
 import { InvoiceDetaisService } from '../../../service/invoice-details.service';
 
 @Component({
-  selector: 'hq-invoice-time-search-filter',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule,
-    CoreModule,
-  ],
-  templateUrl: './invoice-time-search-filter.component.html',
+    selector: 'hq-invoice-time-search-filter',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        CommonModule,
+        CoreModule,
+    ],
+    templateUrl: './invoice-time-search-filter.component.html'
 })
 export class InvoiceTimeSearchFilterComponent {
   constructor(public invoiceDetailsService: InvoiceDetaisService) {}

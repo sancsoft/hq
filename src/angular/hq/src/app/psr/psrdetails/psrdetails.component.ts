@@ -12,18 +12,17 @@ export interface ChargeCodeViewModel {
 }
 
 @Component({
-  selector: 'hq-psrdetails',
-  standalone: true,
-  imports: [
-    CommonModule,
-    PsrDetailsHeaderComponent,
-    PsrSearchFilterComponent,
-    RouterLink,
-    RouterLinkActive,
-    RouterOutlet,
-    TabComponent,
-  ],
-  templateUrl: './psrdetails.component.html',
+    selector: 'hq-psrdetails',
+    imports: [
+        CommonModule,
+        PsrDetailsHeaderComponent,
+        PsrSearchFilterComponent,
+        RouterLink,
+        RouterLinkActive,
+        RouterOutlet,
+        TabComponent,
+    ],
+    templateUrl: './psrdetails.component.html'
 })
 export class PSRDetailsComponent {
   constructor() {}

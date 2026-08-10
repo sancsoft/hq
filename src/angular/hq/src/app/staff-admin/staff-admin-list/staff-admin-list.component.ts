@@ -26,19 +26,18 @@ import { StaffListSearchFilterComponent } from '../../staff/staff-list-search-fi
 import { StaffListService } from '../../staff/staff-list/staff-list.service';
 
 @Component({
-  selector: 'hq-staff-admin-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    RouterLink,
-    InRolePipe,
-    StaffListSearchFilterComponent,
-  ],
-  templateUrl: './staff-admin-list.component.html',
+    selector: 'hq-staff-admin-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        RouterLink,
+        InRolePipe,
+        StaffListSearchFilterComponent,
+    ],
+    templateUrl: './staff-admin-list.component.html'
 })
 export class StaffAdminListComponent {
   apiErrors: string[] = [];

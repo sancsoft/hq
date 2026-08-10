@@ -60,19 +60,17 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-time-create',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-    RouterLink,
-    RouterLinkActive,
-    CoreModule,
-  ],
-
-  templateUrl: './time-create.component.html',
+    selector: 'hq-time-create',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ErrorDisplayComponent,
+        RouterLink,
+        RouterLinkActive,
+        CoreModule,
+    ],
+    templateUrl: './time-create.component.html'
 })
 export class TimeCreateComponent implements OnDestroy {
   apiErrors: string[] = [];

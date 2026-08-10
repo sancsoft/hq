@@ -23,17 +23,16 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-client-edit',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterLink,
-    ButtonComponent,
-    TextInputComponent,
-    ValidationErrorDirective,
-  ],
-  templateUrl: './client-edit.component.html',
+    selector: 'hq-client-edit',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterLink,
+        ButtonComponent,
+        TextInputComponent,
+        ValidationErrorDirective,
+    ],
+    templateUrl: './client-edit.component.html'
 })
 export class ClientEditComponent implements OnInit {
   clientId?: string;

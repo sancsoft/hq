@@ -6,10 +6,9 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DateInputComponent } from '../../core/components/date-input/date-input.component';
 
 @Component({
-  selector: 'hq-date-modal',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DateInputComponent],
-  templateUrl: './date-modal.component.html',
+    selector: 'hq-date-modal',
+    imports: [CommonModule, ReactiveFormsModule, DateInputComponent],
+    templateUrl: './date-modal.component.html'
 })
 export class DateModalComponent {
   dateFormControl = new FormControl<string | null>(null, {

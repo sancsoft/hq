@@ -22,10 +22,9 @@ import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { localISODate } from '../../common/functions/local-iso-date';
 
 @Component({
-  selector: 'hq-staff-dashboard-month-view',
-  standalone: true,
-  imports: [CommonModule, StaffDashboardTimeEntryComponent, SortIconComponent],
-  templateUrl: './staff-dashboard-month-view.component.html',
+    selector: 'hq-staff-dashboard-month-view',
+    imports: [CommonModule, StaffDashboardTimeEntryComponent, SortIconComponent],
+    templateUrl: './staff-dashboard-month-view.component.html'
 })
 export class StaffDashboardMonthViewComponent implements OnDestroy {
   @Input() dashboard!: GetDashboardTimeV1Response;

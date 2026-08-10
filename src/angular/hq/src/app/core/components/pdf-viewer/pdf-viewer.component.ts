@@ -3,10 +3,9 @@ import { Component, Input } from '@angular/core';
 import { PDFDocumentProxy, PdfViewerModule } from 'ng2-pdf-viewer';
 
 @Component({
-  selector: 'hq-pdf-viewer',
-  standalone: true,
-  imports: [CommonModule, PdfViewerModule],
-  templateUrl: './pdf-viewer.component.html',
+    selector: 'hq-pdf-viewer',
+    imports: [CommonModule, PdfViewerModule],
+    templateUrl: './pdf-viewer.component.html'
 })
 export class PdfViewerComponent {
   @Input() pdfURL?: string | null;

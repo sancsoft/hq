@@ -40,22 +40,21 @@ interface InvoiceTimeEntry {
 }
 
 @Component({
-  selector: 'hq-invoice-add-time',
-  standalone: true,
-  imports: [
-    CommonModule,
-    CoreModule,
-    RouterLink,
-    InRolePipe,
-    InvoiceTimeSearchFilterComponent,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: TimeListService,
-    },
-  ],
-  templateUrl: './invoice-add-time.component.html',
+    selector: 'hq-invoice-add-time',
+    imports: [
+        CommonModule,
+        CoreModule,
+        RouterLink,
+        InRolePipe,
+        InvoiceTimeSearchFilterComponent,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: TimeListService,
+        },
+    ],
+    templateUrl: './invoice-add-time.component.html'
 })
 export class InvoiceAddTimeComponent implements OnDestroy {
   sortColumn = SortColumn;

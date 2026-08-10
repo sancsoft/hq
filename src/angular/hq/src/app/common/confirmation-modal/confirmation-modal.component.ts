@@ -4,10 +4,9 @@ import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'hq-confirmation-modal',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './confirmation-modal.component.html',
+    selector: 'hq-confirmation-modal',
+    imports: [CommonModule],
+    templateUrl: './confirmation-modal.component.html'
 })
 export class ConfirmationModalComponent {
   message: Observable<string | null>;

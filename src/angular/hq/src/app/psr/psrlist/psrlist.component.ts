@@ -18,24 +18,23 @@ import { CoreModule } from '../../core/core.module';
 import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
-  selector: 'hq-psrlist',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    PsrListSearchFilterComponent,
-    CoreModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: PsrListService,
-    },
-  ],
-  templateUrl: './psrlist.component.html',
+    selector: 'hq-psrlist',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        PsrListSearchFilterComponent,
+        CoreModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: PsrListService,
+        },
+    ],
+    templateUrl: './psrlist.component.html'
 })
 export class PSRListComponent implements OnInit {
   apiErrors: string[] = [];

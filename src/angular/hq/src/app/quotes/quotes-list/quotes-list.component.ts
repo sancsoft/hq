@@ -15,25 +15,24 @@ import { BaseListService } from '../../core/services/base-list.service';
 import FileSaver from 'file-saver';
 
 @Component({
-  selector: 'hq-quotes-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    ClientDetailsSearchFilterComponent,
-    InRolePipe,
-    CoreModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: QuoteListService,
-    },
-  ],
-  templateUrl: './quotes-list.component.html',
+    selector: 'hq-quotes-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        ClientDetailsSearchFilterComponent,
+        InRolePipe,
+        CoreModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: QuoteListService,
+        },
+    ],
+    templateUrl: './quotes-list.component.html'
 })
 export class QuotesListComponent {
   HQRole = HQRole;

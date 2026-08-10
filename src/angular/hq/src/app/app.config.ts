@@ -1,8 +1,4 @@
-import {
-  APP_INITIALIZER,
-  ApplicationConfig,
-  importProvidersFrom,
-} from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer } from '@angular/core';
 import { TitleStrategy, provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -31,13 +27,11 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([authInterceptor(), badRequestInterceptor]),
     ),
     provideAuth(authConfig),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (appSettingsService: AppSettingsService) => () =>
-        appSettingsService.appSettings$,
-      multi: true,
-      deps: [AppSettingsService],
-    },
+    provideAppInitializer(() => {
+        const initializerFn = ((appSettingsService: AppSettingsService) => () =>
+        appSettingsService.appSettings$)(inject(AppSettingsService));
+        return initializerFn();
+      }),
     {
       provide: AbstractSecurityStorage,
       useClass: AuthStorageService,

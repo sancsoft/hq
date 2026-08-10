@@ -7,10 +7,9 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'hq-hq-snack-bar',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './hq-snack-bar.component.html',
+    selector: 'hq-hq-snack-bar',
+    imports: [CommonModule],
+    templateUrl: './hq-snack-bar.component.html'
 })
 export class HqSnackBarComponent {
   message$: Observable<IHQSnackbarMessage | null>;

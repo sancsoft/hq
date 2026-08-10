@@ -4,10 +4,9 @@ import { firstValueFrom, Subject } from 'rxjs';
 
 import { InvoiceDetaisService } from '../service/invoice-details.service';
 @Component({
-  selector: 'hq-invoice-details',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './invoice-details.component.html',
+    selector: 'hq-invoice-details',
+    imports: [RouterOutlet],
+    templateUrl: './invoice-details.component.html'
 })
 export class InvoiceDetailsComponent implements OnDestroy, OnInit {
   constructor(

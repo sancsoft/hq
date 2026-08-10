@@ -15,10 +15,9 @@ import { FormLabelComponent } from '../form-label/form-label.component';
 import { generateUniqueInputId } from '../../functions/generate-unique-input-id';
 
 @Component({
-  selector: 'hq-text-input',
-  standalone: true,
-  imports: [FormsModule, CommonModule, FormLabelComponent],
-  templateUrl: './text-input.component.html',
+    selector: 'hq-text-input',
+    imports: [FormsModule, CommonModule, FormLabelComponent],
+    templateUrl: './text-input.component.html'
 })
 export class TextInputComponent {
   @ViewChild('input')

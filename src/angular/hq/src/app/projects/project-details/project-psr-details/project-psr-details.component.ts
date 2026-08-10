@@ -6,10 +6,9 @@ import { CommonModule } from '@angular/common';
 import { GetPSRRecordV1 } from '../../../models/PSR/get-PSR-v1';
 
 @Component({
-  selector: 'hq-project-psr-details',
-  standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: './project-psr-details.component.html',
+    selector: 'hq-project-psr-details',
+    imports: [CommonModule, RouterLink],
+    templateUrl: './project-psr-details.component.html'
 })
 export class ProjectPsrDetailsComponent {
   psr$: Observable<GetPSRRecordV1 | null>;

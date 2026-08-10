@@ -5,10 +5,9 @@ import { map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'hq-dashboard',
-  standalone: true,
-  imports: [StaffDashboardComponent, CommonModule],
-  templateUrl: './dashboard.component.html',
+    selector: 'hq-dashboard',
+    imports: [StaffDashboardComponent, CommonModule],
+    templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {
   staffId$: Observable<string>;

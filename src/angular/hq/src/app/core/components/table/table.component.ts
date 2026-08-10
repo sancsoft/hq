@@ -12,10 +12,9 @@ import { CommonModule } from '@angular/common';
 import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 
 @Component({
-  selector: 'hq-table',
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, PaginatorComponent],
-  templateUrl: './table.component.html',
+    selector: 'hq-table',
+    imports: [FormsModule, ReactiveFormsModule, CommonModule, PaginatorComponent],
+    templateUrl: './table.component.html'
 })
 export class TableComponent<
   TResponse extends PagedResponseV1<TRecord>,

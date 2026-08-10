@@ -59,18 +59,17 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-project-view',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    PdfViewerComponent,
-    CoreModule,
-    ReactiveFormsModule,
-    InRolePipe,
-  ],
-  templateUrl: './project-view.component.html',
+    selector: 'hq-project-view',
+    imports: [
+        CommonModule,
+        RouterLink,
+        RouterLinkActive,
+        PdfViewerComponent,
+        CoreModule,
+        ReactiveFormsModule,
+        InRolePipe,
+    ],
+    templateUrl: './project-view.component.html'
 })
 export class ProjectViewComponent implements OnDestroy {
   projectManagers$: Observable<GetStaffV1Record[]>;

@@ -6,7 +6,7 @@
     </tr>
   </thead>
   <tbody class="hq-table-body">
-    @for (staff of this.projectMembers$ | async; track staff.id) {
+    @for (staff of projectMembers$ | async; track staff.id) {
       <tr>
         <td>{{ staff.name }}</td>
         <td class="text-right divide-x divide-teal-200">

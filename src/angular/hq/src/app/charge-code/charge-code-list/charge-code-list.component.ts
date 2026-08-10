@@ -15,24 +15,23 @@ import { CoreModule } from '../../core/core.module';
 import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
-  selector: 'hq-charge-code-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    InRolePipe,
-    CoreModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: ChargeCodeListService,
-    },
-  ],
-  templateUrl: './charge-code-list.component.html',
+    selector: 'hq-charge-code-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        InRolePipe,
+        CoreModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: ChargeCodeListService,
+        },
+    ],
+    templateUrl: './charge-code-list.component.html'
 })
 export class ChargeCodeListComponent {
   apiErrors: string[] = [];

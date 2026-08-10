@@ -24,16 +24,15 @@ interface Form {
 }
 
 @Component({
-  selector: 'hq-project-activity-list',
-  standalone: true,
-  imports: [
-    CoreModule,
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule,
-    InRolePipe,
-  ],
-  templateUrl: './project-activity-list.component.html',
+    selector: 'hq-project-activity-list',
+    imports: [
+        CoreModule,
+        ReactiveFormsModule,
+        FormsModule,
+        CommonModule,
+        InRolePipe,
+    ],
+    templateUrl: './project-activity-list.component.html'
 })
 export class ProjectActivityListComponent {
   form = new FormGroup<Form>({

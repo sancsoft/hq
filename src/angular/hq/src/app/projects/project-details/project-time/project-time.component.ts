@@ -17,10 +17,9 @@ import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component
 import { TimeStatus } from '../../../enums/time-status';
 
 @Component({
-  selector: 'hq-project-time',
-  standalone: true,
-  imports: [CommonModule, RouterLink, SortIconComponent],
-  templateUrl: './project-time.component.html',
+    selector: 'hq-project-time',
+    imports: [CommonModule, RouterLink, SortIconComponent],
+    templateUrl: './project-time.component.html'
 })
 export class ProjectTimeComponent {
   psrTimes$?: Observable<[GetPSRTimeRecordV1] | null>;

@@ -12,17 +12,16 @@ import { StatDisplayComponent } from '../../core/components/stat-display/stat-di
 import { ButtonComponent } from '../../core/components/button/button.component';
 
 @Component({
-  selector: 'hq-staff-details',
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    CommonModule,
-    StatDisplayComponent,
-    ButtonComponent,
-  ],
-  templateUrl: './staff-details.component.html',
+    selector: 'hq-staff-details',
+    imports: [
+        RouterOutlet,
+        RouterLink,
+        RouterLinkActive,
+        CommonModule,
+        StatDisplayComponent,
+        ButtonComponent,
+    ],
+    templateUrl: './staff-details.component.html'
 })
 export class StaffDetailsComponent implements OnDestroy {
   private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);

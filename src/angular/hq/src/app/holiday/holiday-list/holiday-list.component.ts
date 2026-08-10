@@ -16,25 +16,24 @@ import { HolidayListService } from './holiday-list.service';
 import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
-  selector: 'hq-holiday-list',
-  standalone: true,
-  imports: [
-    RouterLink,
-    CommonModule,
-    ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    RouterLink,
-    InRolePipe,
-    CoreModule,
-  ],
-  providers: [
-    {
-      provide: BaseListService,
-      useExisting: HolidayListService,
-    },
-  ],
-  templateUrl: './holiday-list.component.html',
+    selector: 'hq-holiday-list',
+    imports: [
+        RouterLink,
+        CommonModule,
+        ReactiveFormsModule,
+        PaginatorComponent,
+        SortIconComponent,
+        RouterLink,
+        InRolePipe,
+        CoreModule,
+    ],
+    providers: [
+        {
+            provide: BaseListService,
+            useExisting: HolidayListService,
+        },
+    ],
+    templateUrl: './holiday-list.component.html'
 })
 export class HolidayListComponent {
   apiErrors: string[] = [];
