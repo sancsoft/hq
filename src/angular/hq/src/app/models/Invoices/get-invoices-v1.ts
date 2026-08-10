@@ -37,5 +37,4 @@ export interface GetInvoicesRecordsV1 {
   total: number | null;
 }
 
-export interface GetInvoicesResponseV1
-  extends PagedResponseV1<GetInvoicesRecordV1> {}
+export interface GetInvoicesResponseV1 extends PagedResponseV1<GetInvoicesRecordV1> {}

@@ -22,8 +22,7 @@ export class TableComponent<
   TResponse extends PagedResponseV1<TRecord>,
   TRecord,
   TSort,
-> implements AfterViewChecked
-{
+> implements AfterViewChecked {
   @Input() withPagination = true;
   public columnCount: number = 0;
 

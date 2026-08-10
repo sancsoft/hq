@@ -6,12 +6,12 @@
         <td [colSpan]="999">
           <div
             class="justify-between items-center grid grid-cols-3 py-3 px-5 bg-blue-900 border-y border-steel-blue-600"
-            >
+          >
             <div>
               <select
                 class="bg-black-alt border border-gray-300 rounded py-1 px-2 mr-2"
                 [formControl]="$any(listService).itemsPerPage"
-                >
+              >
                 <option [ngValue]="10">10</option>
                 <option [ngValue]="15">15</option>
                 <option [ngValue]="20">25</option>
@@ -29,7 +29,7 @@
             ></hq-paginator>
             <div class="flex justify-end text-xs">
               {{ $any(listService).skipDisplay$ | async }}-{{
-              $any(listService).takeToDisplay$ | async
+                $any(listService).takeToDisplay$ | async
               }}
               / {{ $any(listService).totalRecords$ | async }} items
             </div>

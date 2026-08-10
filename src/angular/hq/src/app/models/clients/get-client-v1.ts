@@ -25,5 +25,4 @@ export interface GetClientRecordV1 {
   hourlyRate?: number;
 }
 
-export interface GetClientResponseV1
-  extends PagedResponseV1<GetClientRecordV1> {}
+export interface GetClientResponseV1 extends PagedResponseV1<GetClientRecordV1> {}

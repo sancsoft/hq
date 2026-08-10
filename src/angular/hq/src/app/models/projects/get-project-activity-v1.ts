@@ -15,5 +15,4 @@ export interface GetProjectActivityRecordsV1 {
   total: number | null;
 }
 
-export interface GetProjectActivitiesResponseV1
-  extends PagedResponseV1<GetProjectActivityRecordV1> {}
+export interface GetProjectActivitiesResponseV1 extends PagedResponseV1<GetProjectActivityRecordV1> {}

@@ -54,5 +54,4 @@ export interface Activity {
 }
 
 // Interface for the response containing a list of charge code records
-export interface GetChargeCodesResponseV1
-  extends PagedResponseV1<GetChargeCodeRecordV1> {}
+export interface GetChargeCodesResponseV1 extends PagedResponseV1<GetChargeCodeRecordV1> {}

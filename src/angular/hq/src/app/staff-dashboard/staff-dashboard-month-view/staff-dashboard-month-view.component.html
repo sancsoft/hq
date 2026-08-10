@@ -90,9 +90,7 @@
   </thead>
   <tbody>
     @for (date of dashboard.dates; track date.date) {
-      @if (
-        (staffDashboardService.canEdit$ | async) && date.canCreateTime
-      ) {
+      @if ((staffDashboardService.canEdit$ | async) && date.canCreateTime) {
         <tr
           hq-staff-dashboard-time-entry
           (hqTimeChange)="upsertTime($event)"
