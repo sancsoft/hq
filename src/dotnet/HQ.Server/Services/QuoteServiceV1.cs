@@ -65,7 +65,7 @@ public class QuoteServiceV1
                     _context.Quotes.Add(quote);
                 }
 
-                var latestQuoteNumber = await _context.Quotes.Where(t => t.Id != request.Id).MaxAsync((q) => q.QuoteNumber, ct);
+                var latestQuoteNumber = await _context.Quotes.Where(t => t.Id != request.Id).MaxAsync(q => (int?)q.QuoteNumber, ct) ?? 0;
                 var nextQuoteNumber = latestQuoteNumber + 1;
 
                 if (request.QuoteNumber.HasValue)
