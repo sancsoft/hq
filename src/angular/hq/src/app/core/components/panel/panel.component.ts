@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { AngularSplitModule, ISplitDirection } from 'angular-split';
+import { AngularSplitModule, SplitDirection } from 'angular-split';
 
 export enum PanelDirection {
   Horizontal,
@@ -16,7 +16,7 @@ export type CollapseItem = 'first' | 'second';
 })
 export class PanelComponent implements OnInit {
   @Input()
-  Direction: ISplitDirection = 'horizontal';
+  Direction: SplitDirection = 'horizontal';
   @Input()
   CSizes: number[] = [50, 50];
   @Input()
