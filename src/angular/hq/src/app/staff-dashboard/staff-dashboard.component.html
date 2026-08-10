@@ -438,7 +438,7 @@
               <ngx-monaco-editor
                 first
                 [ngStyle]="{ height: '100%' }"
-                [options]="editorOptions$ | async"
+                [options]="(editorOptions$ | async) || defaultEditorOptions"
                 [formControl]="plan"
                 (onInit)="onEditorInit($event)"
               ></ngx-monaco-editor>

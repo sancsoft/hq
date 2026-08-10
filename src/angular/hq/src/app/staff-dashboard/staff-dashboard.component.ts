@@ -2,6 +2,7 @@ import { SortIconComponent } from './../common/sort-icon/sort-icon.component';
 /* eslint-disable rxjs-angular/prefer-async-pipe */
 import { StaffDashboardPlanningPointComponent } from './staff-dashboard-planning-point/staff-dashboard-planning-point.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import type { editor } from 'monaco-editor';
 import { PanelComponent } from './../core/components/panel/panel.component';
 import {
   Component,
@@ -110,7 +111,13 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;
   timeStatus = TimeStatus;
-  editorOptions$: Observable<object>;
+  editorOptions$: Observable<editor.IStandaloneEditorConstructionOptions>;
+  defaultEditorOptions: editor.IStandaloneEditorConstructionOptions = {
+    theme: 'vs-dark',
+    language: 'markdown',
+    readOnly: true,
+    domReadOnly: true,
+  };
   status = new FormControl<string | null>(null);
   plan = new FormControl<string | null>(null);
   plan$ = this.plan.valueChanges;
@@ -311,7 +318,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
           automaticLayout: true,
           readOnly: !canEdit,
           domReadOnly: !canEdit,
-          wordWrap: 'on',
+          wordWrap: 'on' as const,
         };
       }),
     );

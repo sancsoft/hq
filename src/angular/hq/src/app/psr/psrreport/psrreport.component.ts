@@ -8,6 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import type { editor } from 'monaco-editor';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
 
@@ -63,7 +64,13 @@ import { CoreModule } from '../../core/core.module';
   encapsulation: ViewEncapsulation.None,
 })
 export class PSRReportComponent implements OnInit, OnDestroy {
-  editorOptions$: Observable<object>;
+  editorOptions$: Observable<editor.IStandaloneEditorConstructionOptions>;
+  defaultEditorOptions: editor.IStandaloneEditorConstructionOptions = {
+    theme: 'vs-dark',
+    language: 'markdown',
+    readOnly: true,
+    domReadOnly: true,
+  };
   report = new FormControl<string | null>(null);
   previousReport: string | null = null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -171,7 +178,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
           automaticLayout: true,
           readOnly: !canManageProjectStatusReport,
           domReadOnly: !canManageProjectStatusReport,
-          wordWrap: 'on',
+          wordWrap: 'on' as const,
         };
       }),
       startWith({
@@ -179,7 +186,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         language: 'markdown',
         readOnly: true,
         domReadOnly: true,
-      }),
+      } as editor.IStandaloneEditorConstructionOptions),
     );
 
     const request$ = canManageProjectStatusReport$.pipe(
