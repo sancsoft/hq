@@ -12,8 +12,6 @@ import { SortColumn } from '../../models/times/get-time-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { TimeListService } from './TimeList.service';
 import { TimeSearchFilterComponent } from '../search-filter/time-search-filter/time-search-filter.component';
 import FileSaver from 'file-saver';

@@ -7,8 +7,6 @@ import { SortColumn } from '../../models/PSR/get-PSR-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { PsrListService } from './psrList.service';
 import { ProjectStatus } from '../../enums/project-status';

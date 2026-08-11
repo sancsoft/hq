@@ -5,8 +5,6 @@ import { SortColumn } from '../../models/clients/get-client-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { ClientListService } from './client-list.service';

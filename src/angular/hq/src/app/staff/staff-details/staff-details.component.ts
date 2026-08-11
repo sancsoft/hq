@@ -33,7 +33,7 @@ export class StaffDetailsComponent implements OnDestroy {
   ) {
     const staffId$ = route.paramMap.pipe(map((t) => t.get('staffId')));
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
     staffId$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (staffId) => this.staffDetailsService.setStaffId(staffId),
       error: console.error,

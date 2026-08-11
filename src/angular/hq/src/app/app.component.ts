@@ -44,7 +44,7 @@ export class AppComponent implements OnDestroy {
     this.oidcSecurityService
       .checkAuth()
       .pipe(takeUntil(this.destroy))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: () => {},
         error: (error: unknown) => {

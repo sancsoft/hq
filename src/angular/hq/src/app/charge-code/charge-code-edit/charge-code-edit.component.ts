@@ -127,7 +127,7 @@ export class ChargeCodeEditComponent implements OnInit, OnDestroy {
 
     this.form.controls.Activity.valueChanges
       .pipe(takeUntil(this.destroy))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (chargeCodeActivity) => {
           this.form.controls.ProjectId.setValue(null);

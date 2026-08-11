@@ -1,4 +1,4 @@
-/* eslint-disable rxjs-angular/prefer-async-pipe */
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
 import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormGroup,
@@ -183,6 +183,7 @@ export class TimeCreateComponent implements OnDestroy {
         }
         taskCtrl.updateValueAndValidity({ emitEvent: false });
       },
+      error: console.error,
     });
 
     this.activities$ = combineLatest([

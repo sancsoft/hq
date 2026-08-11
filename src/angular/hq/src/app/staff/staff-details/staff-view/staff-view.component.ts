@@ -8,7 +8,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ErrorDisplayComponent } from '../../../errors/error-display/error-display.component';
 import { Jurisdiciton } from '../../../enums/jurisdiciton';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../../errors/apierror';

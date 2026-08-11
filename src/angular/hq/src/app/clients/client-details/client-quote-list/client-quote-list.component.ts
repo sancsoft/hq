@@ -2,8 +2,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { ButtonComponent } from '../../../core/components/button/button.component';
 import { ClientQuoteListService } from './client-quote-list.service';

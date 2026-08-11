@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable rxjs/no-implicit-any-catch */
+
 import {
   BehaviorSubject,
   Observable,

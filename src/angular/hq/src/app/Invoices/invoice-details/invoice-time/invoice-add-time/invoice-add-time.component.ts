@@ -261,7 +261,7 @@ export class InvoiceAddTimeComponent implements OnDestroy {
         await this.router.navigate(['../'], {
           relativeTo: this.route,
         });
-      } catch (err) {
+      } catch {
         this.toastService.show('Error', 'An unexpected error occurred.');
       }
     }

@@ -36,11 +36,9 @@ import {
 } from '../../models/quotes/get-quotes-v1';
 import { APIError } from '../../errors/apierror';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
-import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { Period } from '../../enums/period';
-import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
 import { CoreModule } from '../../core/core.module';
 import { enumToArray } from '../../core/functions/enum-to-array';
 import { ProjectStatus } from '../../enums/project-status';
@@ -143,7 +141,7 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
 
     projectType$
       .pipe(takeUntil(this.destroy))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (type) => {
           switch (type) {
@@ -212,7 +210,7 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
         filter(() => this.form.value.type == ProjectType.Quote),
         takeUntil(this.destroy),
       )
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (quote) => {
           if (quote) {
@@ -231,7 +229,7 @@ export class ProjectCreateComponent implements OnDestroy, OnInit {
         filter(() => this.form.value.type == ProjectType.Quote),
         takeUntil(this.destroy),
       )
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (client) => {
           if (client) {

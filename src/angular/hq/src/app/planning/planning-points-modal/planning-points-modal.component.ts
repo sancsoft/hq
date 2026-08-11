@@ -1,4 +1,4 @@
-/* eslint-disable rxjs-angular/prefer-async-pipe */
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
 import {
   ChangeDetectorRef,
   Component,
@@ -19,24 +19,16 @@ import {
 import {
   CdkDropList,
   CdkDrag,
-  CdkDragPlaceholder,
   CdkDragDrop,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 import { ButtonComponent } from '../../core/components/button/button.component';
-import { PanelComponent } from '../../core/components/panel/panel.component';
-import { StatDisplayComponent } from '../../core/components/stat-display/stat-display.component';
-import { StaffDashboardDateRangeComponent } from '../../staff-dashboard/staff-dashboard-date-range/staff-dashboard-date-range.component';
 import {
   PointForm,
   StaffDashboardPlanningPointComponent,
 } from '../../staff-dashboard/staff-dashboard-planning-point/staff-dashboard-planning-point.component';
-import { StaffDashboardPlanningComponent } from '../../staff-dashboard/staff-dashboard-planning/staff-dashboard-planning.component';
-import { StaffDashboardSearchFilterComponent } from '../../staff-dashboard/staff-dashboard-search-filter/staff-dashboard-search-filter.component';
-import { StaffDashboardTimeEntryComponent } from '../../staff-dashboard/staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import {
   BehaviorSubject,
   firstValueFrom,
@@ -198,6 +190,7 @@ export class PlanningPointsModalComponent implements OnInit, OnDestroy {
         next: (records) => {
           this.chargeCodes = records;
         },
+        error: console.error,
       });
   }
   async savePointsAction() {

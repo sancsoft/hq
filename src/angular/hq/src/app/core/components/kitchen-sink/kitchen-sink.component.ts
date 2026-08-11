@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SearchInputComponent } from '../search-input/search-input.component';
-import { FormLabelComponent } from '../form-label/form-label.component';
 import {
   FormControl,
   FormGroup,

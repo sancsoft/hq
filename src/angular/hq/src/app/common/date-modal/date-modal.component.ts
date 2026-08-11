@@ -3,7 +3,6 @@ import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { DateModalData } from '../../services/modal.service';
 
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DateInputComponent } from '../../core/components/date-input/date-input.component';
 
 @Component({
   selector: 'hq-date-modal',

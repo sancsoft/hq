@@ -125,7 +125,7 @@ export class PlanningPointsComponent implements OnDestroy {
       },
     });
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
     dialogRef.closed.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (result) => {
         console.log('The dialog was closed', result);

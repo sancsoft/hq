@@ -11,8 +11,6 @@ import { Observable, firstValueFrom, map } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
-import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { ToastService } from '../../services/toast.service';
 import { ProjectStatus } from '../../enums/project-status';

@@ -1,13 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { GetPSRRecordV1, SortColumn } from '../../../models/PSR/get-PSR-v1';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HQService } from '../../../services/hq.service';
 import {
   BehaviorSubject,

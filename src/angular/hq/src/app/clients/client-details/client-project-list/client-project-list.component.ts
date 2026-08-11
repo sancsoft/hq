@@ -1,11 +1,9 @@
-import { SortIconComponent } from './../../../common/sort-icon/sort-icon.component';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SortColumn } from '../../../models/projects/get-project-v1';
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { HQRole } from '../../../enums/hqrole';

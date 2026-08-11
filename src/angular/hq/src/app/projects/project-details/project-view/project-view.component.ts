@@ -1,12 +1,7 @@
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   Observable,
   Subject,
@@ -15,7 +10,6 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { PdfViewerComponent } from '../../../core/components/pdf-viewer/pdf-viewer.component';
 import { Period } from '../../../enums/period';
 import {
   FormControl,
@@ -139,7 +133,7 @@ export class ProjectViewComponent implements OnDestroy {
     );
     this.projectDetailService.project$
       .pipe(takeUntil(this.destroy$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (project) => {
           this.form.patchValue({

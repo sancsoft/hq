@@ -1,4 +1,4 @@
-/* eslint-disable rxjs-angular/prefer-async-pipe */
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
 import { SelectInputComponent } from './../../core/components/select-input/select-input.component';
 import { SelectInputOptionDirective } from './../../core/directives/select-input-option.directive';
 import {
@@ -42,7 +42,6 @@ import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter
 import { chargeCodeToColor } from '../../common/functions/charge-code-to-color';
 import { ModalService } from '../../services/modal.service';
 import { TimeStatus } from '../../enums/time-status';
-import { DateInputComponent } from '../../core/components/date-input/date-input.component';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
 
@@ -155,7 +154,7 @@ export class StaffDashboardTimeEntryComponent
   ngOnInit(): void {
     this.staffDashboardService.canEdit$
       .pipe(takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs/no-ignored-error
+      // eslint-disable-next-line rxjs-x/no-ignored-error
       .subscribe((canEdit) => {
         canEdit
           ? this.form.enable({ emitEvent: false })

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable rxjs/no-implicit-any-catch */
+
 import { GetTimeRecordsV1, SortColumn } from '../../models/times/get-time-v1';
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';

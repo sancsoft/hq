@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, filter, map, switchMap } from 'rxjs';
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';

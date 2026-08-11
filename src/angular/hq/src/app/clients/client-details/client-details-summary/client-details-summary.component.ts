@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ErrorDisplayComponent } from '../../../errors/error-display/error-display.component';
 import { RouterLink } from '@angular/router';
 import { ClientDetailsService } from '../client-details.service';
 import { StatDisplayComponent } from '../../../core/components/stat-display/stat-display.component';

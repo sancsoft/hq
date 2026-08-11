@@ -1,5 +1,5 @@
 import { skip, startWith } from 'rxjs';
-/* eslint-disable rxjs-angular/prefer-async-pipe */
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
 import {
   Component,
   OnDestroy,
@@ -187,6 +187,7 @@ export class TimeEditComponent implements OnInit, OnDestroy {
         }
         taskCtrl.updateValueAndValidity({ emitEvent: false });
       },
+      error: console.error,
     });
 
     this.activities$ = combineLatest([

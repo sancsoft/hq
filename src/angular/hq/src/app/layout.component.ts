@@ -9,7 +9,7 @@ import { Observable, filter, firstValueFrom, map } from 'rxjs';
 import { AppSettingsService } from './app-settings.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { InRolePipe } from './pipes/in-role.pipe';
 import { HQRole } from './enums/hqrole';
 import { OverlayModule } from '@angular/cdk/overlay';

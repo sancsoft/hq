@@ -1,7 +1,6 @@
 import {
   CdkDropList,
   CdkDrag,
-  CdkDragPlaceholder,
   CdkDragDrop,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
@@ -22,14 +21,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { HQMarkdownComponent } from '../../common/markdown/markdown.component';
 import { ButtonComponent } from '../../core/components/button/button.component';
-import { PanelComponent } from '../../core/components/panel/panel.component';
-import { StatDisplayComponent } from '../../core/components/stat-display/stat-display.component';
-import { StaffDashboardDateRangeComponent } from '../staff-dashboard-date-range/staff-dashboard-date-range.component';
 import { StaffDashboardPlanningPointComponent } from '../staff-dashboard-planning-point/staff-dashboard-planning-point.component';
-import { StaffDashboardSearchFilterComponent } from '../staff-dashboard-search-filter/staff-dashboard-search-filter.component';
-import { StaffDashboardTimeEntryComponent } from '../staff-dashboard-time-entry/staff-dashboard-time-entry.component';
 import {
   BehaviorSubject,
   catchError,
@@ -113,7 +106,7 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
 
     this.staffDashboardService.refresh$
       .pipe(takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe,
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe,
       .subscribe({
         next: () => {
           this.planningPointsRequestTrigger$.next();
@@ -137,7 +130,7 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       }),
     );
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
     this.planningPoints$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (response) => {
         if (response) {
@@ -147,7 +140,7 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       error: console.error,
     });
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
     this.editPlanButton$.pipe(skip(1), takeUntil(this.destroyed$)).subscribe({
       next: (val) => {
         if (val == false) {

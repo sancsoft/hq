@@ -1,13 +1,8 @@
-/* eslint-disable rxjs-angular/prefer-takeuntil */
-/* eslint-disable rxjs-angular/prefer-async-pipe */
+/* eslint-disable rxjs-angular-x/prefer-takeuntil */
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
 import { ClientDetailsSearchFilterComponent } from './client-details-search-filter/client-details-search-filter.component';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import {
-  ActivatedRoute,
-  RouterLink,
-  RouterLinkActive,
-  RouterOutlet,
-} from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { ClientDetailsSummaryComponent } from './client-details-summary/client-details-summary.component';
 import { map, Subscription } from 'rxjs';
 import { ClientDetailsService } from './client-details.service';

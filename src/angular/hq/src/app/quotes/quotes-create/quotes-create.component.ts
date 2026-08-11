@@ -7,7 +7,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable, firstValueFrom, map } from 'rxjs';
 import { APIError } from '../../errors/apierror';
@@ -16,7 +15,6 @@ import { HQService } from '../../services/hq.service';
 import { ToastService } from '../../services/toast.service';
 import { localISODate } from '../../common/functions/local-iso-date';
 import { ProjectStatus } from '../../enums/project-status';
-import { PdfViewerComponent } from '../../core/components/pdf-viewer/pdf-viewer.component';
 import { CoreModule } from '../../core/core.module';
 import { enumToArray } from '../../core/functions/enum-to-array';
 

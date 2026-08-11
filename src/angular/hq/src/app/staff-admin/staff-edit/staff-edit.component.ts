@@ -1,5 +1,4 @@
-/* eslint-disable rxjs-angular/prefer-takeuntil */
-/* eslint-disable rxjs-angular/prefer-async-pipe */
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
 
 import {
   Component,
@@ -14,12 +13,11 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, firstValueFrom, Subject, takeUntil } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
 import { Jurisdiciton } from '../../enums/jurisdiciton';
 import { ButtonComponent } from '../../core/components/button/button.component';
 import { ToastService } from '../../services/toast.service';

@@ -1,5 +1,5 @@
-/* eslint-disable rxjs-angular/prefer-takeuntil */
-/* eslint-disable rxjs-angular/prefer-async-pipe */
+/* eslint-disable rxjs-angular-x/prefer-takeuntil */
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
 import { ProjectPsrDetailsComponent } from './project-psr-details/project-psr-details.component';
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
@@ -12,7 +12,6 @@ import {
 } from '@angular/router';
 import { map } from 'rxjs';
 import { ProjectPsrListComponent } from './project-psr-list/project-psr-list.component';
-import { DualPanelComponent } from '../../core/components/dual-panel/dual-panel.component';
 import { CoreModule } from '../../core/core.module';
 import { PanelComponent } from '../../core/components/panel/panel.component';
 import { ProjectDetailsService } from './project-details.service';
