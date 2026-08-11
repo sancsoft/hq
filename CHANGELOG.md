@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-08-11
+
+### Changed
+
+- **Angular 22 upgrade** — Upgraded Angular framework and all related packages from v17 to v22
+  - Migrated to new Angular control flow syntax (`@if`, `@for`) replacing `*ngIf`, `*ngFor`
+  - Switched build system from `@angular-devkit/build-angular` to `@angular/build`
+  - Updated TypeScript from v5 to v6 with `bundler` module resolution
+  - Adopted `provideAppInitializer` and `provideZoneChangeDetection` for app configuration
+  - Set `ChangeDetectionStrategy.Eager` on components and removed explicit `standalone: true`
+- **ESLint flat config migration** — Replaced `.eslintrc.json` with `eslint.config.js` flat config format, upgraded ESLint from v8 to v10, and migrated to `rxjs-x`/`rxjs-angular-x` plugins
+- **Node.js 24** — CI/CD workflows updated to use Node.js 24
+
+### Fixed
+
+- Project number generation — Handle nullable max when no other projects exist
+- Quote number generation — Handle nullable max when no other quotes exist
+
 ## [0.6.2] - 2026-08-06
 
 ### Fixed
@@ -839,7 +857,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.6.2...HEAD
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.6.3...HEAD
+[0.6.2]: https://github.com/sancsoft/hq/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/sancsoft/hq/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/sancsoft/hq/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/sancsoft/hq/compare/v0.5.9...v0.6.0
