@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -10,7 +10,7 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
-import { CommonModule } from '@angular/common';
+
 import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
 import { ToastService } from '../../services/toast.service';
 import { Jurisdiciton } from '../../enums/jurisdiciton';
@@ -23,14 +23,13 @@ interface Form {
 
 @Component({
   selector: 'hq-holiday-edit',
-  standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     ErrorDisplayComponent,
     RouterLink,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './holiday-edit.component.html',
 })
 export class HolidayEditComponent implements OnInit {

@@ -1,13 +1,11 @@
 import { SortColumn } from './../../models/holiday/get-holiday-v1';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { Jurisdiciton } from '../../enums/jurisdiciton';
@@ -17,14 +15,10 @@ import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
   selector: 'hq-holiday-list',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
     ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    RouterLink,
     InRolePipe,
     CoreModule,
   ],
@@ -34,6 +28,7 @@ import { BaseListService } from '../../core/services/base-list.service';
       useExisting: HolidayListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './holiday-list.component.html',
 })
 export class HolidayListComponent {

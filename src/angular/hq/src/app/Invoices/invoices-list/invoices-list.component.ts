@@ -1,6 +1,6 @@
 import { SortColumn } from './../../models/Invoices/get-invoices-v1';
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
@@ -16,7 +16,6 @@ import { InvoiceSearchFilterComponent } from '../invoice-search-filter/invoice-s
 
 @Component({
   selector: 'hq-invoices-list',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
@@ -31,6 +30,7 @@ import { InvoiceSearchFilterComponent } from '../invoice-search-filter/invoice-s
       useExisting: InvoiceListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './invoices-list.component.html',
 })
 export class InvoicesListComponent {

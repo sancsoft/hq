@@ -10,7 +10,11 @@
           class="w-[100%] max-w-[220px] block text-[14px] px-2 py-1 appearance-none focus:outline-none placeholder:text-gray-100 bg-blue-900 rounded h-[36px]"
           placeholder="Status"
           formControlName="name"
-          [value]="(staffDetailsService.staff$ | async)?.status"
+          [value]="
+            $safeNavigationMigration(
+              (staffDetailsService.staff$ | async)?.status
+            )
+          "
           readonly
         />
       </div>

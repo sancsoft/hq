@@ -1,4 +1,10 @@
-import { Component, HostBinding, HostListener, Input } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  HostListener,
+  Input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { BaseListService } from '../../services/base-list.service';
 import { PagedResponseV1 } from '../../../models/common/paged-response-v1';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
@@ -6,8 +12,8 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'th[hq-sort-header]',
-  standalone: true,
   imports: [SortIconComponent, CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './sort-header.component.html',
 })
 export class SortHeaderComponent<
@@ -21,7 +27,7 @@ export class SortHeaderComponent<
   @HostBinding('class.cursor-pointer')
   cursorPointer: boolean = true;
 
-  @HostListener('click', ['$event']) onClick() {
+  @HostListener('click') onClick() {
     if (this.sortColumn) {
       this.listService.onSortClick(this.sortColumn);
     }

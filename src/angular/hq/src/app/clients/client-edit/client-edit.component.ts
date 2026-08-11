@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -24,15 +23,14 @@ interface Form {
 
 @Component({
   selector: 'hq-client-edit',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterLink,
     ButtonComponent,
     TextInputComponent,
     ValidationErrorDirective,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './client-edit.component.html',
 })
 export class ClientEditComponent implements OnInit {

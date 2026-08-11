@@ -1,12 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { HQService } from '../../services/hq.service';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
-import { ClientDetailsSearchFilterComponent } from '../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { CoreModule } from '../../core/core.module';
@@ -16,14 +13,10 @@ import FileSaver from 'file-saver';
 
 @Component({
   selector: 'hq-quotes-list',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
     ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
-    ClientDetailsSearchFilterComponent,
     InRolePipe,
     CoreModule,
   ],
@@ -33,6 +26,7 @@ import FileSaver from 'file-saver';
       useExisting: QuoteListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './quotes-list.component.html',
 })
 export class QuotesListComponent {

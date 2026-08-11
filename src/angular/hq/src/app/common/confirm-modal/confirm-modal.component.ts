@@ -1,11 +1,11 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { ModalData } from '../../services/modal.service';
 
 @Component({
   selector: 'hq-confirm-modal',
-  standalone: true,
   imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './confirm-modal.component.html',
 })
 export class ConfirmModalComponent {

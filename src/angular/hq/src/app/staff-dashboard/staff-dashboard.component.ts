@@ -1,7 +1,7 @@
 import { SortIconComponent } from './../common/sort-icon/sort-icon.component';
-/* eslint-disable rxjs-angular/prefer-async-pipe */
-import { StaffDashboardPlanningPointComponent } from './staff-dashboard-planning-point/staff-dashboard-planning-point.component';
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import type { editor } from 'monaco-editor';
 import { PanelComponent } from './../core/components/panel/panel.component';
 import {
   Component,
@@ -11,16 +11,11 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { StaffDashboardService } from './service/staff-dashboard.service';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import {
-  CdkDropList,
-  CdkDrag,
-  CdkDragPlaceholder,
-} from '@angular/cdk/drag-drop';
-
 import {
   HQTimeChangeEvent,
   HQTimeDeleteEvent,
@@ -53,7 +48,6 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TimeStatus } from '../enums/time-status';
 import { Period } from '../enums/period';
-import { StatDisplayComponent } from '../core/components/stat-display/stat-display.component';
 import { HQRole } from '../enums/hqrole';
 import { InRolePipe } from '../pipes/in-role.pipe';
 import { HQMarkdownComponent } from '../common/markdown/markdown.component';
@@ -61,7 +55,6 @@ import { GetPlanResponseV1 } from '../models/Plan/get-plan-v1';
 import { localISODate } from '../common/functions/local-iso-date';
 import { GetStatusResponseV1 } from '../models/status/get-status-v1';
 
-import { ButtonComponent } from '../core/components/button/button.component';
 import { StaffDashboardPlanningComponent } from './staff-dashboard-planning/staff-dashboard-planning.component';
 import { GetPrevPlanResponseV1 } from '../models/Plan/get-previous-PSR-v1';
 import { ButtonState } from '../enums/button-state';
@@ -82,28 +75,22 @@ export interface PointForm {
 
 @Component({
   selector: 'hq-staff-dashboard',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
     StaffDashboardTimeEntryComponent,
     StaffDashboardSearchFilterComponent,
     StaffDashboardDateRangeComponent,
-    StatDisplayComponent,
+    StaffDashboardPlanningComponent,
     PanelComponent,
     MonacoEditorModule,
     HQMarkdownComponent,
-    CdkDropList,
-    CdkDrag,
-    CdkDragPlaceholder,
-    StaffDashboardPlanningPointComponent,
-    ButtonComponent,
-    StaffDashboardPlanningComponent,
     StaffDashboardMonthViewComponent,
     SortIconComponent,
     InRolePipe,
   ],
   providers: [StaffDashboardService],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './staff-dashboard.component.html',
 })
 export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
@@ -115,7 +102,13 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorInstance: any;
   timeStatus = TimeStatus;
-  editorOptions$: Observable<object>;
+  editorOptions$: Observable<editor.IStandaloneEditorConstructionOptions>;
+  defaultEditorOptions: editor.IStandaloneEditorConstructionOptions = {
+    theme: 'vs-dark',
+    language: 'markdown',
+    readOnly: true,
+    domReadOnly: true,
+  };
   status = new FormControl<string | null>(null);
   plan = new FormControl<string | null>(null);
   plan$ = this.plan.valueChanges;
@@ -147,7 +140,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
 
     this.staffDashboardService.canEdit$
       .pipe(takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+
       .subscribe({
         next: (canEdit) => {
           if (canEdit && prevPlan && prevPlan.body) {
@@ -289,7 +282,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
         }),
         takeUntil(this.destroyed$),
       )
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe,
+
       .subscribe({
         next: () => {
           this.toastService.show('Success', 'Plan saved successfully');
@@ -316,7 +309,7 @@ export class StaffDashboardComponent implements OnInit, OnDestroy, OnChanges {
           automaticLayout: true,
           readOnly: !canEdit,
           domReadOnly: !canEdit,
-          wordWrap: 'on',
+          wordWrap: 'on' as const,
         };
       }),
     );

@@ -1,12 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
 import { SortColumn } from '../../models/clients/get-client-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { ClientListService } from './client-list.service';
@@ -20,13 +18,10 @@ export interface ClientNameId {
 
 @Component({
   selector: 'hq-client-list',
-  standalone: true,
   imports: [
     CommonModule,
     RouterLink,
     ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
     InRolePipe,
     CoreModule,
   ],
@@ -36,6 +31,7 @@ export interface ClientNameId {
       useExisting: ClientListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './client-list.component.html',
 })
 export class ClientListComponent {

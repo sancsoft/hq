@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   BehaviorSubject,
@@ -18,8 +18,8 @@ import { TimeStatus } from '../../../enums/time-status';
 
 @Component({
   selector: 'hq-project-time',
-  standalone: true,
   imports: [CommonModule, RouterLink, SortIconComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './project-time.component.html',
 })
 export class ProjectTimeComponent {

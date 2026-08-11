@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -26,7 +26,6 @@ import { ButtonComponent } from '../../../core/components/button/button.componen
 
 @Component({
   selector: 'hq-client-invoices-list',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
@@ -36,6 +35,7 @@ import { ButtonComponent } from '../../../core/components/button/button.componen
     InRolePipe,
     ButtonComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './client-invoices.list.component.html',
 })
 export class ClientInvoicesComponent {

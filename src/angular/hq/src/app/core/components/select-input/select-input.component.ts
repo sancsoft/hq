@@ -13,6 +13,7 @@ import {
   QueryList,
   Self,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormControl,
@@ -42,7 +43,6 @@ import { chargeCodeToColor } from '../../../common/functions/charge-code-to-colo
 
 @Component({
   selector: 'hq-select-input',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -52,6 +52,7 @@ import { chargeCodeToColor } from '../../../common/functions/charge-code-to-colo
     SearchInputComponent,
     FormLabelComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './select-input.component.html',
 })
 export class SelectInputComponent<T>

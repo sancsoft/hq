@@ -5,7 +5,7 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { map, ReplaySubject, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { StatDisplayComponent } from '../../core/components/stat-display/stat-display.component';
@@ -13,7 +13,6 @@ import { ButtonComponent } from '../../core/components/button/button.component';
 
 @Component({
   selector: 'hq-staff-details',
-  standalone: true,
   imports: [
     RouterOutlet,
     RouterLink,
@@ -22,6 +21,7 @@ import { ButtonComponent } from '../../core/components/button/button.component';
     StatDisplayComponent,
     ButtonComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './staff-details.component.html',
 })
 export class StaffDetailsComponent implements OnDestroy {
@@ -33,7 +33,7 @@ export class StaffDetailsComponent implements OnDestroy {
   ) {
     const staffId$ = route.paramMap.pipe(map((t) => t.get('staffId')));
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
     staffId$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (staffId) => this.staffDetailsService.setStaffId(staffId),
       error: console.error,

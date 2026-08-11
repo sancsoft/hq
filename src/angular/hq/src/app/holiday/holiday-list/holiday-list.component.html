@@ -86,9 +86,15 @@
         </td>
 
         <td class="border-b border-black py-2 pl-5">
-          <div [ngSwitch]="member.jurisdiciton">
-            <div *ngSwitchCase="Jurisdiction.USA">USA</div>
-            <div *ngSwitchCase="Jurisdiction.Colombia">Colombia</div>
+          <div>
+            @switch (member.jurisdiciton) {
+              @case (Jurisdiction.USA) {
+                <div>USA</div>
+              }
+              @case (Jurisdiction.Colombia) {
+                <div>Colombia</div>
+              }
+            }
           </div>
         </td>
 

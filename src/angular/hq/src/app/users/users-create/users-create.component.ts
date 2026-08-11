@@ -1,5 +1,5 @@
 import { GetStaffV1Record } from './../../models/staff-members/get-staff-member-v1';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -35,8 +35,8 @@ interface Form {
 
 @Component({
   selector: 'hq-users-create',
-  standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './users-create.component.html',
 })
 export class UsersCreateComponent implements OnDestroy {
@@ -98,7 +98,7 @@ export class UsersCreateComponent implements OnDestroy {
 
     this.form.controls.isStaff.valueChanges
       .pipe(takeUntil(this.destroy))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (value) => {
           this.showStaffMembers$.next(value);

@@ -222,7 +222,7 @@
               (click)="showRejectionNotes()"
             >
               <i
-                [title]="time?.rejectionNotes"
+                [title]="$safeNavigationMigration(time?.rejectionNotes)"
                 class="bi bi-exclamation-diamond-fill text-yellow-550"
               ></i>
             </button>

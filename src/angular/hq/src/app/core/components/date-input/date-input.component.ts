@@ -10,6 +10,7 @@ import {
   ContentChildren,
   Optional,
   Self,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormGroup, FormsModule, NgControl } from '@angular/forms';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
@@ -18,8 +19,8 @@ import { FormLabelComponent } from '../form-label/form-label.component';
 
 @Component({
   selector: 'hq-date-input',
-  standalone: true,
   imports: [FormsModule, CommonModule, FormLabelComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './date-input.component.html',
 })
 export class DateInputComponent {

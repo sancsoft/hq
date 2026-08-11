@@ -1,11 +1,16 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'hq-markdown',
-  standalone: true,
   imports: [MarkdownModule],
   templateUrl: './markdown.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.Emulated,
 })
 export class HQMarkdownComponent {

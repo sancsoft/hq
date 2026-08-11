@@ -1,11 +1,9 @@
-import { SortIconComponent } from './../../../common/sort-icon/sort-icon.component';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SortColumn } from '../../../models/projects/get-project-v1';
 import { HQService } from '../../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../../common/paginator/paginator.component';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { HQRole } from '../../../enums/hqrole';
@@ -17,13 +15,10 @@ import { BaseListService } from '../../../core/services/base-list.service';
 
 @Component({
   selector: 'hq-client-project-list',
-  standalone: true,
   imports: [
     RouterModule,
     CommonModule,
     ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
     InRolePipe,
     ButtonComponent,
     CoreModule,
@@ -34,6 +29,7 @@ import { BaseListService } from '../../../core/services/base-list.service';
       useExisting: ClientProjectListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './client-project-list.component.html',
 })
 export class ClientProjectListComponent {

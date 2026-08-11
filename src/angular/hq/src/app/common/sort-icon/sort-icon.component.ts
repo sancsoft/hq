@@ -1,10 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SortDirection } from '../../models/common/sort-direction';
 
 @Component({
   selector: 'hq-sort-icon',
-  standalone: true,
   imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './sort-icon.component.html',
 })
 export class SortIconComponent<TSort> {

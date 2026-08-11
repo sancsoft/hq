@@ -24,5 +24,4 @@ export interface GetHolidayV1Record {
   date?: Date;
 }
 
-export interface GetHolidayV1Response
-  extends PagedResponseV1<GetHolidayV1Record> {}
+export interface GetHolidayV1Response extends PagedResponseV1<GetHolidayV1Record> {}

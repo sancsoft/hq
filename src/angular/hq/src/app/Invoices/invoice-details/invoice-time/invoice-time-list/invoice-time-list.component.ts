@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -41,7 +41,6 @@ import FileSaver from 'file-saver';
 
 @Component({
   selector: 'hq-invoice-time-list',
-  standalone: true,
   imports: [
     CommonModule,
     CoreModule,
@@ -57,6 +56,7 @@ import FileSaver from 'file-saver';
       useExisting: TimeListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './invoice-time-list.component.html',
 })
 export class InvoiceTimeListComponent implements OnDestroy {

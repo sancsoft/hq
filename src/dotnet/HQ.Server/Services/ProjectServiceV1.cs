@@ -97,7 +97,7 @@ public class ProjectServiceV1
                         }
                         break;
                     case ProjectType.Ongoing:
-                        var latestProjectNumber = await _context.Projects.Where(t => t.Id != request.Id).MaxAsync((q) => q.ProjectNumber, ct);
+                        var latestProjectNumber = await _context.Projects.Where(t => t.Id != request.Id).MaxAsync((q) => (int?)q.ProjectNumber, ct) ?? 0;
                         var nextProjectNumber = latestProjectNumber + 1;
 
                         if (request.ProjectNumber.HasValue)

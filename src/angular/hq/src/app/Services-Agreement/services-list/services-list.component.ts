@@ -1,5 +1,5 @@
 import { ClientDetailsSearchFilterComponent } from './../../clients/client-details/client-details-search-filter/client-details-search-filter.component';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -27,7 +27,6 @@ import { ProjectStatus } from '../../enums/project-status';
 
 @Component({
   selector: 'hq-services-list',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
@@ -37,6 +36,7 @@ import { ProjectStatus } from '../../enums/project-status';
     ClientDetailsSearchFilterComponent,
     InRolePipe,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './services-list.component.html',
 })
 export class ServicesListComponent {

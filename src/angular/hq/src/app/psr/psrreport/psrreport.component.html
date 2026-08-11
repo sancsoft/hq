@@ -27,7 +27,10 @@
     class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
   >
     <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
-      {{ (psr$ | async)?.submittedAt | date: "EEEE MM/dd/yyyy" }}
+      {{
+        $safeNavigationMigration((psr$ | async)?.submittedAt)
+          | date: "EEEE MM/dd/yyyy"
+      }}
     </div>
     <div class="flex ml-aut float-right gap-2">
       <button
@@ -50,7 +53,7 @@
       <ngx-monaco-editor
         first
         [ngStyle]="{ height: '100%' }"
-        [options]="editorOptions$ | async"
+        [options]="(editorOptions$ | async) || defaultEditorOptions"
         [formControl]="report"
         (onInit)="onEditorInit($event)"
       ></ngx-monaco-editor>

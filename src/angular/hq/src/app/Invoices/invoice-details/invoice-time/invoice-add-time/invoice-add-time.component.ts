@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CoreModule } from '../../../../core/core.module';
 import {
   firstValueFrom,
@@ -41,7 +41,6 @@ interface InvoiceTimeEntry {
 
 @Component({
   selector: 'hq-invoice-add-time',
-  standalone: true,
   imports: [
     CommonModule,
     CoreModule,
@@ -55,6 +54,7 @@ interface InvoiceTimeEntry {
       useExisting: TimeListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './invoice-add-time.component.html',
 })
 export class InvoiceAddTimeComponent implements OnDestroy {
@@ -261,7 +261,7 @@ export class InvoiceAddTimeComponent implements OnDestroy {
         await this.router.navigate(['../'], {
           relativeTo: this.route,
         });
-      } catch (err) {
+      } catch {
         this.toastService.show('Error', 'An unexpected error occurred.');
       }
     }

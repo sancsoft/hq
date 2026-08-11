@@ -131,7 +131,9 @@
                 <input
                   class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
                   [value]="
-                    (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    $safeNavigationMigration(
+                      (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    )
                   "
                   (change)="updateBillableHours(time.id, $event)"
                   type="number"
@@ -290,7 +292,9 @@
                 <input
                   class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right appearance-none"
                   [value]="
-                    (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    $safeNavigationMigration(
+                      (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    )
                   "
                   (change)="updateBillableHours(time.id, $event)"
                   type="number"
@@ -440,7 +444,9 @@
                 <input
                   class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right"
                   [value]="
-                    (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    $safeNavigationMigration(
+                      (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    )
                   "
                   disabled
                 />
@@ -492,7 +498,9 @@
                 <input
                   class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right"
                   [value]="
-                    (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    $safeNavigationMigration(
+                      (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    )
                   "
                   disabled
                 />
@@ -566,7 +574,9 @@
                 <input
                   class="w-full bg-blue-900 border border-black rounded py-1 px-2 mr-2 text-right"
                   [value]="
-                    (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    $safeNavigationMigration(
+                      (time.billableHours | number: '1.2-2')?.replace(',', '')
+                    )
                   "
                   (change)="updateBillableHours(time.id, $event)"
                 />
@@ -737,7 +747,11 @@
           <td class="border-b border-black py-2 pl-3 pr-2">
             <input
               class="w-full bg-transparent border border-transparent rounded py-1 px-2 mr-2 text-right"
-              [value]="(time.billableHours | number: '1.2-2')?.replace(',', '')"
+              [value]="
+                $safeNavigationMigration(
+                  (time.billableHours | number: '1.2-2')?.replace(',', '')
+                )
+              "
               disabled
             />
           </td>

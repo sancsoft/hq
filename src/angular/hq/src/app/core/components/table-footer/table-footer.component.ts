@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { BaseListService } from '../../services/base-list.service';
 import { CoreModule } from '../../core.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -8,7 +8,6 @@ import { PagedResponseV1 } from '../../../models/common/paged-response-v1';
 
 @Component({
   selector: 'hq-table-footer',
-  standalone: true,
   imports: [
     CoreModule,
     ReactiveFormsModule,
@@ -16,6 +15,7 @@ import { PagedResponseV1 } from '../../../models/common/paged-response-v1';
     PaginatorComponent,
     CommonModule,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './table-footer.component.html',
 })
 export class TableFooterComponent<

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CoreModule } from '../../core/core.module';
 import {
   BehaviorSubject,
@@ -33,7 +33,6 @@ import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1
 
 @Component({
   selector: 'hq-planning-points',
-  standalone: true,
   imports: [
     CommonModule,
     CoreModule,
@@ -43,6 +42,7 @@ import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1
     ReactiveFormsModule,
     SelectInputComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './planning-points.component.html',
 })
 export class PlanningPointsComponent implements OnDestroy {
@@ -125,7 +125,7 @@ export class PlanningPointsComponent implements OnDestroy {
       },
     });
 
-    // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+    // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
     dialogRef.closed.pipe(takeUntil(this.destroyed$)).subscribe({
       next: (result) => {
         console.log('The dialog was closed', result);

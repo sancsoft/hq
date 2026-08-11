@@ -3,13 +3,13 @@ import {
   HQSnackBarService,
   IHQSnackbarMessage,
 } from './services/hq-snack-bar-service';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'hq-hq-snack-bar',
-  standalone: true,
   imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './hq-snack-bar.component.html',
 })
 export class HqSnackBarComponent {

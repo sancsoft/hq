@@ -1,13 +1,11 @@
 import { ChargeCodeListService } from './ChargeCodeList.service';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { SortColumn } from '../../models/charge-codes/get-chargecodes-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { HQRole } from '../../enums/hqrole';
 import { InRolePipe } from '../../pipes/in-role.pipe';
 import { ProjectStatus } from '../../enums/project-status';
@@ -16,13 +14,10 @@ import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
   selector: 'hq-charge-code-list',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
     ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
     InRolePipe,
     CoreModule,
   ],
@@ -32,6 +27,7 @@ import { BaseListService } from '../../core/services/base-list.service';
       useExisting: ChargeCodeListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './charge-code-list.component.html',
 })
 export class ChargeCodeListComponent {

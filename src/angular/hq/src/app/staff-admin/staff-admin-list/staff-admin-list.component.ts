@@ -1,5 +1,5 @@
 import { SortColumn } from './../../models/staff-members/get-staff-member-v1';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
@@ -27,7 +27,6 @@ import { StaffListService } from '../../staff/staff-list/staff-list.service';
 
 @Component({
   selector: 'hq-staff-admin-list',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
@@ -38,6 +37,7 @@ import { StaffListService } from '../../staff/staff-list/staff-list.service';
     InRolePipe,
     StaffListSearchFilterComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './staff-admin-list.component.html',
 })
 export class StaffAdminListComponent {

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+
 import {
   FormControl,
   FormGroup,
@@ -8,7 +8,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ErrorDisplayComponent } from '../../../errors/error-display/error-display.component';
 import { Jurisdiciton } from '../../../enums/jurisdiciton';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { APIError } from '../../../errors/apierror';
@@ -30,15 +29,8 @@ interface Form {
 
 @Component({
   selector: 'hq-staff-view',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ErrorDisplayComponent,
-    RouterLink,
-    ButtonComponent,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, RouterLink, ButtonComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './staff-view.component.html',
 })
 export class StaffViewComponent implements OnInit {

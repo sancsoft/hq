@@ -1,5 +1,5 @@
 import { PsrListSearchFilterComponent } from './../psr-list-search-filter/psr-list-search-filter.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -7,8 +7,6 @@ import { SortColumn } from '../../models/PSR/get-PSR-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { PsrListService } from './psrList.service';
 import { ProjectStatus } from '../../enums/project-status';
@@ -19,13 +17,10 @@ import { BaseListService } from '../../core/services/base-list.service';
 
 @Component({
   selector: 'hq-psrlist',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
     ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
     PsrListSearchFilterComponent,
     CoreModule,
   ],
@@ -35,6 +30,7 @@ import { BaseListService } from '../../core/services/base-list.service';
       useExisting: PsrListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './psrlist.component.html',
 })
 export class PSRListComponent implements OnInit {

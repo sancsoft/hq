@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -12,8 +12,6 @@ import { SortColumn } from '../../models/times/get-time-v1';
 import { SortDirection } from '../../models/common/sort-direction';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { TimeListService } from './TimeList.service';
 import { TimeSearchFilterComponent } from '../search-filter/time-search-filter/time-search-filter.component';
 import FileSaver from 'file-saver';
@@ -28,13 +26,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'hq-time-list',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
     ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
     TimeSearchFilterComponent,
     InRolePipe,
     CoreModule,
@@ -45,6 +40,7 @@ import { HttpErrorResponse } from '@angular/common/http';
       useExisting: TimeListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './time-list.component.html',
 })
 export class TimeListComponent implements OnDestroy {

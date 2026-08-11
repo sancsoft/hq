@@ -85,9 +85,15 @@
           {{ member.vacationHours }}
         </td>
         <td class="border-b border-black py-2">
-          <div [ngSwitch]="member.jurisdiciton">
-            <div *ngSwitchCase="Jurisdiction.USA">USA</div>
-            <div *ngSwitchCase="Jurisdiction.Colombia">Colombia</div>
+          <div>
+            @switch (member.jurisdiciton) {
+              @case (Jurisdiction.USA) {
+                <div>USA</div>
+              }
+              @case (Jurisdiction.Colombia) {
+                <div>Colombia</div>
+              }
+            }
           </div>
         </td>
         <td class="border-b border-black py-2 capitalize">
@@ -106,15 +112,15 @@
               [routerLink]="[member.id]"
               class="text-teal-200 hover:text-teal-300 pl-3"
               >View</a
-            > -->
+              > -->
           </div>
           <!-- @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
             <a
               [routerLink]="['edit', member.id]"
               class="text-teal-200 hover:text-teal-300 cursor-pointer"
               >EDIT</a
-            >
-          } -->
+              >
+              } -->
         </td>
       </tr>
     }

@@ -11,6 +11,7 @@ import {
   Output,
   SimpleChanges,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import {
   FormControl,
@@ -76,13 +77,13 @@ interface Form {
 
 @Component({
   selector: 'tr[hq-invoice-new-time-entry]',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
     SelectInputOptionDirective,
     SelectInputComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './invoice-new-time-entry.component.html',
 })
 export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {

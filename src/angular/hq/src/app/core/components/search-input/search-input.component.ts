@@ -10,6 +10,7 @@ import {
   QueryList,
   Self,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
@@ -18,8 +19,8 @@ import { generateUniqueInputId } from '../../functions/generate-unique-input-id'
 
 @Component({
   selector: 'hq-search-input',
-  standalone: true,
   imports: [FormsModule, CommonModule, FormLabelComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './search-input.component.html',
 })
 export class SearchInputComponent implements ControlValueAccessor {

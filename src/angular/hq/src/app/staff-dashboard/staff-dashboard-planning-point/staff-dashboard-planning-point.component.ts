@@ -6,10 +6,11 @@ import {
   OnDestroy,
   SimpleChanges,
   OnChanges,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
-import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import { SelectInputOptionDirective } from '../../core/directives/select-input-option.directive';
 import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
 import { HQService } from '../../services/hq.service';
@@ -38,15 +39,14 @@ export interface PointForm {
 
 @Component({
   selector: 'tr[hq-staff-dashboard-planning-point]',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
     CdkDragHandle,
-    CdkDrag,
     SelectInputOptionDirective,
     SelectInputComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './staff-dashboard-planning-point.component.html',
 })
 export class StaffDashboardPlanningPointComponent
@@ -74,7 +74,7 @@ export class StaffDashboardPlanningPointComponent
   constructor(private hqService: HQService) {
     this.form.controls.chargeCodeId.valueChanges
       .pipe(skip(1), takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (t) => {
           this.point!.projectName = this.chargeCodes?.find(

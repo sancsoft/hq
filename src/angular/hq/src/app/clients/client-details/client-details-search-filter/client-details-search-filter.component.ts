@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClientDetailsService } from '../client-details.service';
@@ -10,7 +10,6 @@ import { ProjectStatus } from '../../../enums/project-status';
 
 @Component({
   selector: 'hq-client-details-search-filter',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -19,6 +18,7 @@ import { ProjectStatus } from '../../../enums/project-status';
     SelectInputComponent,
     SelectInputOptionDirective,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './client-details-search-filter.component.html',
 })
 export class ClientDetailsSearchFilterComponent {

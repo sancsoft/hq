@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -24,15 +23,14 @@ interface Form {
 
 @Component({
   selector: 'hq-client-create',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterLink,
     ButtonComponent,
     TextInputComponent,
     ValidationErrorDirective,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './client-create.component.html',
 })
 export class ClientCreateComponent {

@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Params, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'hq-button',
-  standalone: true,
   imports: [RouterLink, CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './button.component.html',
 })
 export class ButtonComponent {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   Observable,
   combineLatest,
@@ -17,8 +17,8 @@ import { PsrRefreshService } from '../Services/psr-refresh.service';
 
 @Component({
   selector: 'hq-psr-details-header',
-  standalone: true,
   imports: [CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './psr-details-header.component.html',
 })
 export class PsrDetailsHeaderComponent {

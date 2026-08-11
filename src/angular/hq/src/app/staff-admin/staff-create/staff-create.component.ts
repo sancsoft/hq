@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -30,15 +29,13 @@ interface Form {
 
 @Component({
   selector: 'hq-staff-create',
-  standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     ErrorDisplayComponent,
     RouterLink,
   ],
-
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './staff-create.component.html',
 })
 export class StaffCreateComponent {

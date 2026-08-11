@@ -1,9 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PaginatorComponent } from '../../../common/paginator/paginator.component';
-import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
 import { ButtonComponent } from '../../../core/components/button/button.component';
 import { ClientQuoteListService } from './client-quote-list.service';
@@ -16,13 +14,10 @@ import { ClientDetailsService } from '../client-details.service';
 import FileSaver from 'file-saver';
 @Component({
   selector: 'hq-client-quote-list',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
     ReactiveFormsModule,
-    PaginatorComponent,
-    SortIconComponent,
     InRolePipe,
     ButtonComponent,
     CoreModule,
@@ -33,6 +28,7 @@ import FileSaver from 'file-saver';
       useExisting: ClientQuoteListService,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './client-quote-list.component.html',
 })
 export class ClientQuoteListComponent {

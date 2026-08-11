@@ -29,8 +29,8 @@
         </span>
       </div>
       <!-- <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
-        {{ (staffStatus$ | async)?.status ?? "Work from Office" }}
-      </div> -->
+      {{ (staffStatus$ | async)?.status ?? "Work from Office" }}
+    </div> -->
     </div>
     <div class="flex space-x-8 p-4">
       <div class="text-center text-white">
@@ -146,50 +146,54 @@
             }
 
             <!-- allow admin to: unsubmit all times in view only if the status is submitted (day, week or month) -->
-            <button
-              *ngIf="([HQRole.Administrator] | inRole | async) && admin"
-              [title]="
-                (staffDashboardService.canUnsubmit$ | async)
-                  ? 'UnSubmit all submitted time entries for the shown date period'
-                  : 'No time entries to be unsubmitted '
-              "
-              [disabled]="
-                (staffDashboardService.canUnsubmit$ | async) === false
-              "
-              [ngClass]="{
-                'text-gray-50 border-gray-500 bg-gray-500 ':
-                  (staffDashboardService.canUnsubmit$ | async) === false,
-                'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                  (staffDashboardService.canUnsubmit$ | async),
-              }"
-              class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
-              type="button"
-              (click)="unSubmitTimes()"
-            >
-              Unsubmit
-            </button>
+            @if (([HQRole.Administrator] | inRole | async) && admin) {
+              <button
+                [title]="
+                  (staffDashboardService.canUnsubmit$ | async)
+                    ? 'UnSubmit all submitted time entries for the shown date period'
+                    : 'No time entries to be unsubmitted '
+                "
+                [disabled]="
+                  (staffDashboardService.canUnsubmit$ | async) === false
+                "
+                [ngClass]="{
+                  'text-gray-50 border-gray-500 bg-gray-500 ':
+                    (staffDashboardService.canUnsubmit$ | async) === false,
+                  'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+                    (staffDashboardService.canUnsubmit$ | async),
+                }"
+                class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
+                type="button"
+                (click)="unSubmitTimes()"
+              >
+                Unsubmit
+              </button>
+            }
 
             <!-- allow admin to: set the staff time entry cut off date to the start date of the selected (day, week or month) -->
-            <button
-              *ngIf="([HQRole.Administrator] | inRole | async) && admin"
-              [title]="
-                (staffDashboardService.canUnlock$ | async)
-                  ? 'Unloack all time entries for the shown date period'
-                  : 'No time entries to be unlocked '
-              "
-              [disabled]="(staffDashboardService.canUnlock$ | async) === false"
-              [ngClass]="{
-                'text-gray-50 border-gray-500 bg-gray-500 ':
-                  (staffDashboardService.canUnlock$ | async) === false,
-                'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                  (staffDashboardService.canUnlock$ | async),
-              }"
-              class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
-              type="button"
-              (click)="unlockTimes()"
-            >
-              Unlock
-            </button>
+            @if (([HQRole.Administrator] | inRole | async) && admin) {
+              <button
+                [title]="
+                  (staffDashboardService.canUnlock$ | async)
+                    ? 'Unloack all time entries for the shown date period'
+                    : 'No time entries to be unlocked '
+                "
+                [disabled]="
+                  (staffDashboardService.canUnlock$ | async) === false
+                "
+                [ngClass]="{
+                  'text-gray-50 border-gray-500 bg-gray-500 ':
+                    (staffDashboardService.canUnlock$ | async) === false,
+                  'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+                    (staffDashboardService.canUnlock$ | async),
+                }"
+                class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal"
+                type="button"
+                (click)="unlockTimes()"
+              >
+                Unlock
+              </button>
+            }
 
             <!-- allow admin to: submit all entries -->
             <button
@@ -251,9 +255,9 @@
 
       <div class="w-full h-[calc(100dvh-345px)]">
         <!-- @if (
-    staffDashboardService.period.value === Period.Week ||
-    (staffDashboardService.showAllRejectedTimes$ | async)
-  ) { -->
+            staffDashboardService.period.value === Period.Week ||
+            (staffDashboardService.showAllRejectedTimes$ | async)
+            ) { -->
         <div
           [hidden]="
             staffDashboardService.period.value === Period.Today &&
@@ -403,11 +407,11 @@
               </div>
               <div class="flex ml-aut float-right gap-2">
                 <!-- <button>
-            <i
-              title="Download report"
-              class="bi bi-cloud-download-fill text-white"
-            ></i>
-          </button> -->
+                    <i
+                      title="Download report"
+                      class="bi bi-cloud-download-fill text-white"
+                    ></i>
+                  </button> -->
                 <button
                   title="Insert Previous Report"
                   [disabled]="prevPSRReportButtonState === ButtonState.Disabled"
@@ -436,7 +440,7 @@
               <ngx-monaco-editor
                 first
                 [ngStyle]="{ height: '100%' }"
-                [options]="editorOptions$ | async"
+                [options]="(editorOptions$ | async) || defaultEditorOptions"
                 [formControl]="plan"
                 (onInit)="onEditorInit($event)"
               ></ngx-monaco-editor>

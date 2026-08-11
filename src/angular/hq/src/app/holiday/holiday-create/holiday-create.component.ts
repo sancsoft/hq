@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -23,15 +22,13 @@ interface Form {
 
 @Component({
   selector: 'hq-holiday-create',
-  standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     ErrorDisplayComponent,
     RouterLink,
   ],
-
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './holiday-create.component.html',
 })
 export class HolidayCreateComponent {

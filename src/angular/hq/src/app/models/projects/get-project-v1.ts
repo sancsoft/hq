@@ -77,5 +77,4 @@ export interface GetProjectRecordV1 {
   requireTask: boolean;
 }
 
-export interface GetProjectResponseV1
-  extends PagedResponseV1<GetProjectRecordV1> {}
+export interface GetProjectResponseV1 extends PagedResponseV1<GetProjectRecordV1> {}

@@ -1,14 +1,19 @@
 import {
-  APP_INITIALIZER,
   ApplicationConfig,
   importProvidersFrom,
+  inject,
+  provideAppInitializer,
 } from '@angular/core';
 import { TitleStrategy, provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppSettingsService } from './app-settings.service';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptors,
+  withXhr,
+} from '@angular/common/http';
 import {
   AbstractSecurityStorage,
   authInterceptor,
@@ -28,16 +33,17 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(MonacoEditorModule.forRoot(), MarkdownModule.forRoot()),
     provideMarkdown(),
     provideHttpClient(
+      withXhr(),
       withInterceptors([authInterceptor(), badRequestInterceptor]),
     ),
     provideAuth(authConfig),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (appSettingsService: AppSettingsService) => () =>
-        appSettingsService.appSettings$,
-      multi: true,
-      deps: [AppSettingsService],
-    },
+    provideAppInitializer(() => {
+      const initializerFn = (
+        (appSettingsService: AppSettingsService) => () =>
+          appSettingsService.appSettings$
+      )(inject(AppSettingsService));
+      return initializerFn();
+    }),
     {
       provide: AbstractSecurityStorage,
       useClass: AuthStorageService,

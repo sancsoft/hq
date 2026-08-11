@@ -4,12 +4,13 @@ import {
   Input,
   OnChanges,
   Output,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'hq-paginator',
-  standalone: true,
   imports: [],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './paginator.component.html',
 })
 export class PaginatorComponent implements OnChanges {

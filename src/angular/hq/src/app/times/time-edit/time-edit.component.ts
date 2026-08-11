@@ -1,6 +1,11 @@
 import { skip, startWith } from 'rxjs';
-/* eslint-disable rxjs-angular/prefer-async-pipe */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -56,7 +61,6 @@ interface Form {
 
 @Component({
   selector: 'hq-time-edit',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -66,7 +70,7 @@ interface Form {
     RouterLinkActive,
     CoreModule,
   ],
-
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './time-edit.component.html',
 })
 export class TimeEditComponent implements OnInit, OnDestroy {
@@ -183,6 +187,7 @@ export class TimeEditComponent implements OnInit, OnDestroy {
         }
         taskCtrl.updateValueAndValidity({ emitEvent: false });
       },
+      error: console.error,
     });
 
     this.activities$ = combineLatest([

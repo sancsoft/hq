@@ -8,6 +8,7 @@ import {
   QueryList,
   Self,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule, NgControl } from '@angular/forms';
 import { ValidationErrorDirective } from '../../directives/validation-error.directive';
@@ -15,8 +16,8 @@ import { generateUniqueInputId } from '../../functions/generate-unique-input-id'
 
 @Component({
   selector: 'hq-textarea-input',
-  standalone: true,
   imports: [FormsModule, CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './textarea-input.component.html',
 })
 export class TextareaInputComponent {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -11,8 +11,6 @@ import { Observable, firstValueFrom, map } from 'rxjs';
 import { APIError } from '../../errors/apierror';
 import { HQService } from '../../services/hq.service';
 import { CommonModule } from '@angular/common';
-import { ErrorDisplayComponent } from '../../errors/error-display/error-display.component';
-import { SelectableClientListComponent } from '../../clients/selectable-client-list/selectable-client-list.component';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
 import { ToastService } from '../../services/toast.service';
 import { ProjectStatus } from '../../enums/project-status';
@@ -32,16 +30,14 @@ interface quoteFormGroup {
 
 @Component({
   selector: 'hq-quote-edit',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ErrorDisplayComponent,
     RouterLink,
-    SelectableClientListComponent,
     CoreModule,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './quotes-edit.component.html',
 })
 export class QuotesEditComponent implements OnInit {

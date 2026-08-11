@@ -6,6 +6,7 @@ import {
   Input,
   OnDestroy,
   Output,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 import { GetDashboardTimeV1Response } from '../../models/staff-dashboard/get-dashboard-time-v1';
@@ -23,8 +24,8 @@ import { localISODate } from '../../common/functions/local-iso-date';
 
 @Component({
   selector: 'hq-staff-dashboard-month-view',
-  standalone: true,
   imports: [CommonModule, StaffDashboardTimeEntryComponent, SortIconComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './staff-dashboard-month-view.component.html',
 })
 export class StaffDashboardMonthViewComponent implements OnDestroy {

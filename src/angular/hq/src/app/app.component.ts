@@ -1,6 +1,11 @@
 import { ConfirmationModalComponent } from './common/confirmation-modal/confirmation-modal.component';
 import { HqSnackBarComponent } from './common/hq-snack-bar/hq-snack-bar.component';
-import { Component, OnDestroy, inject } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AppSettingsService } from './app-settings.service';
 import { CommonModule } from '@angular/common';
@@ -14,7 +19,6 @@ import { ToastService } from './services/toast.service';
 
 @Component({
   selector: 'hq-root',
-  standalone: true,
   imports: [
     CommonModule,
     LayoutComponent,
@@ -22,6 +26,7 @@ import { ToastService } from './services/toast.service';
     HqSnackBarComponent,
     ConfirmationModalComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnDestroy {
@@ -39,7 +44,7 @@ export class AppComponent implements OnDestroy {
     this.oidcSecurityService
       .checkAuth()
       .pipe(takeUntil(this.destroy))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: () => {},
         error: (error: unknown) => {

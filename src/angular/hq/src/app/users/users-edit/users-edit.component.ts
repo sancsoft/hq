@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -34,8 +39,8 @@ interface Form {
 }
 @Component({
   selector: 'hq-users-edit',
-  standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './users-edit.component.html',
 })
 export class UsersEditComponent implements OnInit, OnDestroy {
@@ -60,7 +65,7 @@ export class UsersEditComponent implements OnInit, OnDestroy {
 
     this.form.controls.isStaff.valueChanges
       .pipe(takeUntil(this.destroy))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (value) => {
           this.showStaffMembers$.next(value);

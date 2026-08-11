@@ -1,5 +1,5 @@
-/* eslint-disable rxjs-angular/prefer-async-pipe */
-import { Component, OnDestroy } from '@angular/core';
+/* eslint-disable rxjs-angular-x/prefer-async-pipe */
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -61,7 +61,6 @@ interface Form {
 
 @Component({
   selector: 'hq-time-create',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -71,7 +70,7 @@ interface Form {
     RouterLinkActive,
     CoreModule,
   ],
-
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './time-create.component.html',
 })
 export class TimeCreateComponent implements OnDestroy {
@@ -184,6 +183,7 @@ export class TimeCreateComponent implements OnDestroy {
         }
         taskCtrl.updateValueAndValidity({ emitEvent: false });
       },
+      error: console.error,
     });
 
     this.activities$ = combineLatest([

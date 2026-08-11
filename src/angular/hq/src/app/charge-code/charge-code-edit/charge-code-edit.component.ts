@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -35,14 +40,13 @@ interface Form {
 }
 @Component({
   selector: 'hq-charge-code-edit',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     ErrorDisplayComponent,
   ],
-
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './charge-code-edit.component.html',
 })
 export class ChargeCodeEditComponent implements OnInit, OnDestroy {
@@ -123,7 +127,7 @@ export class ChargeCodeEditComponent implements OnInit, OnDestroy {
 
     this.form.controls.Activity.valueChanges
       .pipe(takeUntil(this.destroy))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (chargeCodeActivity) => {
           this.form.controls.ProjectId.setValue(null);

@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
 import {
@@ -29,7 +35,6 @@ export interface ClientNameId {
 
 @Component({
   selector: 'hq-selectable-client-list',
-  standalone: true,
   imports: [
     CommonModule,
     RouterLink,
@@ -37,6 +42,7 @@ export interface ClientNameId {
     PaginatorComponent,
     SortIconComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './selectable-client-list.component.html',
 })
 export class SelectableClientListComponent {

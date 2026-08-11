@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -34,7 +34,6 @@ interface invoiceFormGroup {
 
 @Component({
   selector: 'hq-invoice-details-edit',
-  standalone: true,
   imports: [
     RouterLink,
     CommonModule,
@@ -45,6 +44,7 @@ interface invoiceFormGroup {
     CoreModule,
     InRolePipe,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './invoice-details-edit.component.html',
 })
 export class InvoiceDetailsEditComponent implements OnDestroy {

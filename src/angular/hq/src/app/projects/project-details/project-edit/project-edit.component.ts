@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
-  ActivatedRoute,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-} from '@angular/router';
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   Observable,
   Subject,
@@ -65,14 +65,8 @@ interface Form {
 
 @Component({
   selector: 'hq-project-edit',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    CoreModule,
-    ReactiveFormsModule,
-  ],
+  imports: [CommonModule, CoreModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './project-edit.component.html',
 })
 export class ProjectEditComponent implements OnInit, OnDestroy {
@@ -159,7 +153,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
 
     projectType$
       .pipe(takeUntil(this.destroy))
-      // eslint-disable-next-line rxjs-angular/prefer-async-pipe
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (type) => {
           switch (type) {

@@ -79,7 +79,11 @@
                     false,
                 }"
                 readonly
-                [value]="(staffDashboardService.time$ | async)?.endDate"
+                [value]="
+                  $safeNavigationMigration(
+                    (staffDashboardService.time$ | async)?.endDate
+                  )
+                "
                 type="date"
                 id="endDate"
                 class="w-full block text-[14px] px-2 py-1 border row-start-1 col-start-1 self-center justify-self-end border-black appearance-none focus:outline-none placeholder:text-gray-100 rounded h-[36px] uppercase"
