@@ -22,13 +22,14 @@
       [inline]="true"
     >
       <ng-template [hqSelectInputOption]="null">Chrge</ng-template>
-      @for (code of chargeCodes; track code.id) {
+      @for (code of getFilteredChargeCodes(); track code.id) {
         <ng-template
           [hqSelectInputOption]="code.id"
           [hqSelectInputOptionSelectedDisplay]="code.code"
           [hqSelectInputOptionSearch]="
             code.code + ': ' + code.clientName + ': ' + code.projectName
           "
+          [hqSelectInputOptionDisabled]="!code.active"
           ><span [ngClass]="{ 'text-gray-400': !code.isProjectMember }">{{
             code.code + ": " + code.clientName + ": " + code.projectName
           }}</span></ng-template

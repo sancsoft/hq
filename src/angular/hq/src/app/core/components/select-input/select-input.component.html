@@ -12,7 +12,7 @@
     }}"
     (focus)="onFocus()"
     [style.background-color]="
-      variant === 'pill' ? (chargeCodeColor$ | async) : null
+      (variant === 'pill' && ngControl?.invalid && ngControl?.touched) ? '#222222' : (variant === 'pill' ? (chargeCodeColor$ | async) : null)
     "
     [ngClass]="{
       'border-red-500 text-white': ngControl?.invalid && ngControl?.touched,
@@ -94,7 +94,10 @@
                 [ngClass]="{
                   'bg-blue-800 selected':
                     option.value === (selectedOption$ | async)?.value,
+                  'cursor-not-allowed':
+                    option.disabled,
                 }"
+                [disabled]="option.disabled"
                 (mousedown)="selectOption(option, true)"
                 (touchstart)="selectOption(option, true)"
               >

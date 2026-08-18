@@ -89,6 +89,21 @@ export class StaffDashboardPlanningPointComponent
   ngOnInit(): void {
     console.log('ngOnit planning point');
   }
+  
+  chargeCodes = input<GetChargeCodeRecordV1[] | null>([]);
+
+  filteredChargeCodes = computed<GetChargeCodeRecordV1[]>(() => {
+    const list = this.chargeCodes() || [];
+    const currentValue = this.form?.get('chargeCodeId')?.value;
+
+    return list.filter((code: GetChargeCodeRecordV1): boolean => {
+      const isActive = code.active === true;
+      const isSelected = currentValue !== null && currentValue !== undefined && code.id == currentValue;
+      
+      return isActive || isSelected;
+    });
+  });
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['point'] && changes['point'].currentValue) {
       this.form.patchValue(changes['point'].currentValue);

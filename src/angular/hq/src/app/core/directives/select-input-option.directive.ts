@@ -14,5 +14,8 @@ export class SelectInputOptionDirective<T> {
   @Input('hqSelectInputOptionSelectedDisplay')
   selectedDisplay?: string;
 
+  @Input('hqSelectInputOptionDisabled')
+  disabled?: boolean;
+
   constructor(public templateRef: TemplateRef<unknown>) {}
 }

@@ -106,7 +106,6 @@ export class StaffDashboardService implements OnDestroy {
     const chargeCodeResponse$ = this.staffId$.pipe(
       switchMap((staffId) =>
         this.hqService.getChargeCodeseV1({
-          active: true,
           staffId,
           sortBy: ChargeCodeSortColumn.IsProjectMember,
         }),
