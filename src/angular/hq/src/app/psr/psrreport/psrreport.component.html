@@ -1,17 +1,61 @@
 <div class="px-5 py-2">
   <div
-    class="flex flex-col xl:flex-row justify-between items-center gap-4 sm:flex-row"
+    class="flex flex-col xl:flex-row justify-between items-center gap-4 sm:flex-row mt-3"
   >
     <div>
       <hq-psr-search-filter></hq-psr-search-filter>
     </div>
-    <div class="flex divide-x ml-aut float-right mt-3">
+    
+    <div class="inline-flex gap-[20px] mb-[8px] ml-auto xl:mb-0 flex-1">
+      <!-- TODO: hook up status select dropdown -->
+      <div class="w-full max-w-[220px] ml-auto">
+        <hq-select-input
+          label="&nbsp;"
+          //[formControl]=""
+          [autocomplete]="true"
+          [enableSearch]="true"
+          variant="status"
+        >
+          <ng-template
+            [hqSelectInputOption]="2"
+            [hqSelectInputOptionSelectedDisplay]="'At Risk'"
+            [hqSelectInputOptionSearch]="'At Risk'"
+            >At Risk</ng-template
+          >
+          <ng-template
+            [hqSelectInputOption]="3"
+            [hqSelectInputOptionSelectedDisplay]="'On Time'"
+            [hqSelectInputOptionSearch]="'On Time'"
+            >On Time</ng-template
+          >
+          <ng-template
+            [hqSelectInputOption]="4"
+            [hqSelectInputOptionSelectedDisplay]="'On Time'"
+            [hqSelectInputOptionSearch]="'On Time'"
+            >On Time</ng-template
+          >
+          <ng-template
+            [hqSelectInputOption]="5"
+            [hqSelectInputOptionSelectedDisplay]="'On Time'"
+            [hqSelectInputOptionSearch]="'On Time'"
+            >On Time</ng-template
+          >
+          <ng-template
+            [hqSelectInputOption]="6"
+            [hqSelectInputOptionSelectedDisplay]="'On Time'"
+            [hqSelectInputOptionSearch]="'On Time'"
+            >On Time</ng-template
+          >
+        </hq-select-input>
+      </div>
+
       @if (
         [HQRole.Manager, HQRole.Partner, HQRole.Administrator] | inRole | async
       ) {
         <hq-button
           [disabled]="submitButtonState === ButtonState.Disabled"
           (click)="onReportSubmit()"
+          class="mt-auto"
         >
           Submit
         </hq-button>
@@ -19,47 +63,178 @@
     </div>
   </div>
 </div>
-<div
-  class="bg-black-alt border-steel-blue-600 border-t sticky top-0 z-50"
-></div>
-<div class="bg-black-alt">
-  <div
-    class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
-  >
-    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
-      {{
-        $safeNavigationMigration((psr$ | async)?.submittedAt)
-          | date: "EEEE MM/dd/yyyy"
-      }}
-    </div>
-    <div class="flex ml-aut float-right gap-2">
-      <button
-        title="Insert Previous Report"
-        [disabled]="prevPSRReportButtonState === ButtonState.Disabled"
-        [ngClass]="{
-          'text-gray-50 ': prevPSRReportButtonState === ButtonState.Disabled,
-        }"
-        (click)="insertTextAtCursor()"
-      >
-        <i title="Insert" class="bi bi-file-earmark-plus-fill"></i>
-      </button>
-    </div>
-  </div>
-</div>
-
+<div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 z-50"></div>
 <div class="h-[calc(100dvh-286px)] w-full bg-black-alt">
-  <hq-panel CollapseItem="first" Direction="vertical" [CSizes]="[30, 70]">
-    <hq-panel first Direction="horizontal" [CSizes]="[100, 0]">
+  <hq-panel CollapseItem="first" Direction="vertical" [CSizes]="[50, 50]">
+    <hq-panel first Direction="horizontal" [CSizes]="[70, 30]">
+      <div class="bg-black-alt  sticky top-0 z-50" first>
+        <div
+          class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
+        >
+          <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
+            {{
+              $safeNavigationMigration((psr$ | async)?.submittedAt)
+                | date: "EEEE MM/dd/yyyy"
+            }}
+          </div>
+          <div class="flex ml-auto float-right gap-5">
+            <!-- TODO: toggle preview -->
+            <div class="inline-flex items-center">
+              <div class="inline-flex items-center">
+                <div class="text-[12px] mr-[10px] leading-none text-nowrap">
+                  Preview
+                </div>
+                <label class="relative inline-flex cursor-pointer items-center">
+                  <input
+                    id="switch"
+                    type="checkbox"
+                    class="peer sr-only"
+                    //[formControl]=""
+                    checked
+                  />
+                  <label for="switch" class="hidden"></label>
+                  <div
+                    class="peer h-[15px] w-[33px] rounded-full border bg-black border-white after:absolute after:left-[4px] after:top-[3px] after:h-[8px] after:w-[8px] after:rounded-full after:bg-white peer-checked:after:bg-white after:transition-all after:content-[''] peer-checked:bg-steel-blue-600 peer-checked:after:translate-x-full peer-checked:after:right-[12px] peer-checked:after:left-auto peer-checked:border-steel-blue-600"
+                  ></div>
+                </label>
+                <div class="text-xs ml-[6px]">On</div>
+              </div>
+            </div>
+
+            <button
+              title="Insert Previous Report"
+              [disabled]="prevPSRReportButtonState === ButtonState.Disabled"
+              [ngClass]="{
+                'text-gray-50 ': prevPSRReportButtonState === ButtonState.Disabled,
+              }"
+              (click)="insertTextAtCursor()"
+            >
+              <i title="Insert" class="bi bi-file-earmark-plus-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
       <ngx-monaco-editor
         first
         [ngStyle]="{ height: '100%' }"
         [options]="(editorOptions$ | async) || defaultEditorOptions"
         [formControl]="report"
         (onInit)="onEditorInit($event)"
-      ></ngx-monaco-editor>
+      >
+      </ngx-monaco-editor>
+      <div class="bg-black-alt h-full px-3 overflow-y-auto h-[calc(100dvh-(306px))] mt-[28px]" first>
+        <hq-markdown class="bg-black-alt" [data]="report$ | async"></hq-markdown>
+      </div>
 
+      <!-- TODO: piont summary totals, staff list w/sort and status colors -->
       <div class="bg-black-alt h-full" second>
-        <hq-markdown [data]="report$ | async"></hq-markdown>
+        <table class="min-w-full border-spacing-0 border-separate py-2">
+          <tr>
+            <th scope="col" class="text-nowrap w-3">&nbsp;</th>
+            <td width="275" scope="col" class="px-3 min-w-[275px]"><div class="font-semibold text-base">Point Summary</div><div>Totals</div></td>
+            <td scope="col" class="border-l-[3px] border-steel-blue-600 px-3 min-w-[120px] text-4xl font-rajdhani font-semibold">40</td>
+            <td scope="col" class="border-l-[3px] border-steel-blue-600 px-3 min-w-[120px] text-4xl font-rajdhani font-semibold">30</td>
+          </tr>
+        </table>
+
+        <table class="min-w-full border-spacing-0 border-separate">
+          <thead>
+            <tr class="sticky top-0 text-left">
+              <th scope="col" class="bg-blue-900 border-b border-steel-blue-600 text-nowrap w-3">&nbsp;</th>
+              <th
+                width="275"
+                scope="col"
+                class="bg-blue-900 border-steel-blue-600 border-b border-r-bg-blue-900 py-3 px-3 pl-0 min-w-[275px]"
+              >
+                Staff <i class="bi bi-sort-up-alt text-[12px] ml-2"></i>
+              </th>
+              <th
+                scope="col"
+                class="bg-blue-900 border-steel-blue-600 border-b py-3 px-3 min-w-[120px]"
+              >
+                Allocated <i class="bi bi-sort-up-alt text-[12px] ml-2"></i>
+              </th>
+              <th
+                scope="col"
+                class="bg-blue-900 border-steel-blue-600 border-b py-3 px-3 min-w-[120px]"
+              >
+                Utilized <i class="bi bi-sort-up-alt text-[12px] ml-2"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr
+                [ngClass]="'even:bg-gray-850 odd:bg-black-alt'"
+              >
+                <td
+                  class="border-b border-black w-3"
+                  [title]="''"
+                  [ngClass]="
+                    'bg-gray-300'
+                  "
+                >&nbsp;</td>
+                <td class="border-b border-r border-black py-2 px-3">nkcamachocabrera</td>
+                <td class="border-b border-black py-2 px-3">2</td>
+                <td class="border-b border-black py-2 px-3">2</td>
+              </tr>
+              <tr
+                [ngClass]="'even:bg-gray-850 odd:bg-black-alt'"
+              >
+                <td
+                  class="border-b border-black w-3"
+                  [title]="''"
+                  [ngClass]="
+                    'bg-gray-300'
+                  "
+                >&nbsp;</td>
+                <td class="border-b border-r border-black py-2 px-3">alauro</td>
+                <td class="border-b border-black py-2 px-3">1</td>
+                <td class="border-b border-black py-2 px-3">1</td>
+              </tr>
+              <tr
+                [ngClass]="'even:bg-gray-850 odd:bg-black-alt'"
+              >
+                <td
+                  class="border-b border-black w-3"
+                  [title]="''"
+                  [ngClass]="
+                    'bg-gray-300'
+                  "
+                >&nbsp;</td>
+                <td class="border-b border-r border-black py-2 px-3">ncross</td>
+                <td class="border-b border-black py-2 px-3">3</td>
+                <td class="border-b border-black py-2 px-3">3</td>
+              </tr>
+              <tr
+                [ngClass]="'even:bg-gray-850 odd:bg-black-alt'"
+              >
+                <td
+                  class="border-b border-black w-3"
+                  [title]="''"
+                  [ngClass]="
+                    'bg-gray-300'
+                  "
+                >&nbsp;</td>
+                <td class="border-b border-r border-black py-2 px-3">ncross</td>
+                <td class="border-b border-black py-2 px-3">3</td>
+                <td class="border-b border-black py-2 px-3">3</td>
+              </tr>
+              <tr
+                [ngClass]="'even:bg-gray-850 odd:bg-black-alt'"
+              >
+                <td
+                  class="border-b border-black w-3"
+                  [title]="''"
+                  [ngClass]="
+                    'bg-gray-300'
+                  "
+                >&nbsp;</td>
+                <td class="border-b border-r border-black py-2 px-3">ncross</td>
+                <td class="border-b border-black py-2 px-3">3</td>
+                <td class="border-b border-black py-2 px-3">3</td>
+              </tr>
+          </tbody>
+        </table>
       </div>
     </hq-panel>
     <hq-psrtime-list second></hq-psrtime-list>

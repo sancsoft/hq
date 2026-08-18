@@ -30,6 +30,7 @@
 <hq-table class="min-w-full border-spacing-0 border-separate table-fixed">
   <thead>
     <tr class="sticky top-0 text-left select-none">
+      <th width="15" scope="col" class="bg-blue-900 border-steel-blue-600 !pl-0 border-y text-nowrap"></th>
       <th
         width="100"
         scope="col"
@@ -120,6 +121,15 @@
           'text-gray-50': report.isCurrentPsrPeriod,
         }"
       >
+      <!-- TODO: hook up status indicators -->
+        <td
+          width="15"
+          class="border-b border-black !pl-0"
+          [title]="''"
+          [ngClass]="
+            'bg-gray-300'
+          "
+        ></td>
         <td class="border-b border-black py-2 pl-5">{{ report.chargeCode }}</td>
         <td class="border-b border-black py-2">{{ report.startDate }}</td>
         <td class="border-b border-black py-2">{{ report.endDate }}</td>
