@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import type { editor } from 'monaco-editor';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
 
 import {
@@ -51,6 +51,7 @@ import { CoreModule } from '../../core/core.module';
     ReactiveFormsModule,
     CommonModule,
     MonacoEditorModule,
+    FormsModule,
     HQMarkdownComponent,
     InRolePipe,
     PSRTimeListComponent,
@@ -93,6 +94,8 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   ButtonState = ButtonState;
   HQRole = HQRole;
   currentDate = new Date();
+
+  togglePreview: boolean = false;
 
   async ngOnInit() {
     this.psrService.resetFilter();

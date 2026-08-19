@@ -17,34 +17,28 @@
           variant="status"
         >
           <ng-template
+            [hqSelectInputOption]="1"
+            [hqSelectInputOptionSelectedDisplay]="'On Track'"
+            [hqSelectInputOptionSearch]="'On Track'"
+            >On Track</ng-template
+          >
+          <ng-template
             [hqSelectInputOption]="2"
             [hqSelectInputOptionSelectedDisplay]="'At Risk'"
             [hqSelectInputOptionSearch]="'At Risk'"
             >At Risk</ng-template
           >
           <ng-template
-            [hqSelectInputOption]="3"
-            [hqSelectInputOptionSelectedDisplay]="'On Time'"
-            [hqSelectInputOptionSearch]="'On Time'"
-            >On Time</ng-template
-          >
-          <ng-template
             [hqSelectInputOption]="4"
-            [hqSelectInputOptionSelectedDisplay]="'On Time'"
-            [hqSelectInputOptionSearch]="'On Time'"
-            >On Time</ng-template
+            [hqSelectInputOptionSelectedDisplay]="'Critical'"
+            [hqSelectInputOptionSearch]="'Critical'"
+            >Critical</ng-template
           >
           <ng-template
             [hqSelectInputOption]="5"
-            [hqSelectInputOptionSelectedDisplay]="'On Time'"
-            [hqSelectInputOptionSearch]="'On Time'"
-            >On Time</ng-template
-          >
-          <ng-template
-            [hqSelectInputOption]="6"
-            [hqSelectInputOptionSelectedDisplay]="'On Time'"
-            [hqSelectInputOptionSearch]="'On Time'"
-            >On Time</ng-template
+            [hqSelectInputOptionSelectedDisplay]="'Inactive'"
+            [hqSelectInputOptionSearch]="'Inactive'"
+            >Inactive</ng-template
           >
         </hq-select-input>
       </div>
@@ -64,7 +58,7 @@
   </div>
 </div>
 <div class="bg-black-alt border-steel-blue-600 border-t sticky top-0 z-50"></div>
-<div class="h-[calc(100dvh-286px)] w-full bg-black-alt">
+<div class="h-[calc(100dvh-300px)] w-full bg-black-alt">
   <hq-panel CollapseItem="first" Direction="vertical" [CSizes]="[50, 50]">
     <hq-panel first Direction="horizontal" [CSizes]="[70, 30]">
       <div class="bg-black-alt  sticky top-0 z-50" first>
@@ -89,15 +83,14 @@
                     id="switch"
                     type="checkbox"
                     class="peer sr-only"
-                    //[formControl]=""
-                    checked
+                    [(ngModel)]="togglePreview"
                   />
                   <label for="switch" class="hidden"></label>
                   <div
                     class="peer h-[15px] w-[33px] rounded-full border bg-black border-white after:absolute after:left-[4px] after:top-[3px] after:h-[8px] after:w-[8px] after:rounded-full after:bg-white peer-checked:after:bg-white after:transition-all after:content-[''] peer-checked:bg-steel-blue-600 peer-checked:after:translate-x-full peer-checked:after:right-[12px] peer-checked:after:left-auto peer-checked:border-steel-blue-600"
                   ></div>
                 </label>
-                <div class="text-xs ml-[6px]">On</div>
+                <div class="text-xs ml-[6px]">{{ togglePreview ? 'On' : 'Off' }}</div>
               </div>
             </div>
 
@@ -114,15 +107,16 @@
           </div>
         </div>
       </div>
-      <ngx-monaco-editor
-        first
-        [ngStyle]="{ height: '100%' }"
-        [options]="(editorOptions$ | async) || defaultEditorOptions"
-        [formControl]="report"
-        (onInit)="onEditorInit($event)"
-      >
-      </ngx-monaco-editor>
-      <div class="bg-black-alt h-full px-3 overflow-y-auto h-[calc(100dvh-(306px))] mt-[28px]" first>
+      <div [hidden]="togglePreview" class="h-[calc(100%-40px)]" first>
+        <ngx-monaco-editor
+          [ngStyle]="{ height: '100%' }"
+          [options]="(editorOptions$ | async) || defaultEditorOptions"
+          [formControl]="report"
+          (onInit)="onEditorInit($event)"
+        >
+        </ngx-monaco-editor>
+      </div>
+      <div [hidden]="!togglePreview"  class="bg-black-alt px-3 overflow-y-auto h-[calc(100%-40px)]" first>
         <hq-markdown class="bg-black-alt" [data]="report$ | async"></hq-markdown>
       </div>
 
