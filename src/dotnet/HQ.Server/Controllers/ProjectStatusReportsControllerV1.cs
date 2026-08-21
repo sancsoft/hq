@@ -41,6 +41,13 @@ namespace HQ.Server.Controllers
             _ProjectStatusReportService.GenerateWeeklyProjectStatusReportsV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Manager)]
+        [HttpPost(nameof(UpdateProjectStatusReportColorStatusV1))]
+        [ProducesResponseType<UpdateProjectStatusReportColorStatusV1.Response>(StatusCodes.Status201Created)]
+        public Task<ActionResult> UpdateProjectStatusReportColorStatusV1([FromBody] UpdateProjectStatusReportColorStatusV1.Request request, CancellationToken ct = default) =>
+            _ProjectStatusReportService.UpdateProjectStatusReportColorStatusV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
         [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(AutoSubmitWeeklyProjectStatusReportsV1))]
         [ProducesResponseType<AutoSubmitWeeklyProjectStatusReportsV1.Response>(StatusCodes.Status200OK)]

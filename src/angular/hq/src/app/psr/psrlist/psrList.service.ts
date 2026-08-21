@@ -51,6 +51,7 @@ export class PsrListService extends BaseListService<
   startDate = new FormControl<Date | null>(null);
   endDate = new FormControl<Date | null>(null);
   selectedPeriod = new FormControl<Period | null>(Period.LastWeek);
+  activeOnly = new FormControl<boolean>(false);
   Period = Period;
 
   ProjectStatus = ProjectStatus;
@@ -143,6 +144,9 @@ export class PsrListService extends BaseListService<
       startWith(this.endDate.value),
       map((date) => date ?? null),
     );
+    const activeOnly$ = this.activeOnly.valueChanges.pipe(
+      startWith(this.activeOnly.value ?? false),
+    );
     return combineLatest({
       search: this.search$,
       skip: this.skip$,
@@ -154,6 +158,7 @@ export class PsrListService extends BaseListService<
       startDate: startDate$ ?? null,
       endDate: endDate$ ?? null,
       period: period$ ?? null,
+      activeOnly: activeOnly$,
     }).pipe(
       debounceTime(500),
       tap(() => this.loadingSubject.next(true)),

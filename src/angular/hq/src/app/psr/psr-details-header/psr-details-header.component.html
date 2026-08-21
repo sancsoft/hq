@@ -4,9 +4,8 @@
     <div
       class="h-full w-3 me-3"
       [title]="''"
-      [ngClass]="
-        'bg-yellow-550'
-    "></div>
+      [ngClass]="'bg-' + projectStatusToClass(psr.colorStatus)"
+    ></div>
     <div class="pe-5 flex-row">
       <h1 class="font-rajdhani font-semibold text-3xl">
         {{ psr.chargeCode }}:

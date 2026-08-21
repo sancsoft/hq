@@ -25,6 +25,7 @@ public class GetProjectStatusReportsV1
         public SortColumn SortBy { get; set; } = SortColumn.ChargeCode;
         public SortDirection SortDirection { get; set; } = SortDirection.Asc;
         public Period? Period { get; set; }
+        public bool ActiveOnly { get; set; }
     }
 
     public enum SortColumn
@@ -117,5 +118,6 @@ public class GetProjectStatusReportsV1
         public decimal? SummaryPercentCompleteSort { get; set; }
         public bool IsCurrentPsrPeriod { get; set; }
         public ProjectType ProjectType { get; set; }
+        public ProjectColorStatus ColorStatus { get; set; }
     }
 }

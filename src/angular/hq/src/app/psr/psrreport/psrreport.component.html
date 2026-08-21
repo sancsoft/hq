@@ -7,39 +7,23 @@
     </div>
     
     <div class="inline-flex gap-[20px] mb-[8px] ml-auto xl:mb-0 flex-1">
-      <!-- TODO: hook up status select dropdown -->
       <div class="w-full max-w-[220px] ml-auto">
         <hq-select-input
-          label="&nbsp;"
-          //[formControl]=""
+          label="Status"
+          [formControl]="colorStatus"
           [autocomplete]="true"
-          [enableSearch]="true"
+          [enableSearch]="false"
           variant="status"
         >
+        @for (colorStatus of projectColorStatuses; track colorStatus.id) {
           <ng-template
-            [hqSelectInputOption]="1"
-            [hqSelectInputOptionSelectedDisplay]="'On Track'"
-            [hqSelectInputOptionSearch]="'On Track'"
-            >On Track</ng-template
+            [hqSelectInputOption]="colorStatus.id"
+            [hqSelectInputOptionSearch]="colorStatus.displayName"
+            >
+            <div class="inline-block h-[15px] w-[15px] rounded-full me-2 bg-{{ projectStatusToClass(colorStatus.id) }}"></div>
+            {{ colorStatus.displayName }}</ng-template
           >
-          <ng-template
-            [hqSelectInputOption]="2"
-            [hqSelectInputOptionSelectedDisplay]="'At Risk'"
-            [hqSelectInputOptionSearch]="'At Risk'"
-            >At Risk</ng-template
-          >
-          <ng-template
-            [hqSelectInputOption]="4"
-            [hqSelectInputOptionSelectedDisplay]="'Critical'"
-            [hqSelectInputOptionSearch]="'Critical'"
-            >Critical</ng-template
-          >
-          <ng-template
-            [hqSelectInputOption]="5"
-            [hqSelectInputOptionSelectedDisplay]="'Inactive'"
-            [hqSelectInputOptionSearch]="'Inactive'"
-            >Inactive</ng-template
-          >
+        }
         </hq-select-input>
       </div>
 
@@ -72,7 +56,6 @@
             }}
           </div>
           <div class="flex ml-auto float-right gap-5">
-            <!-- TODO: toggle preview -->
             <div class="inline-flex items-center">
               <div class="inline-flex items-center">
                 <div class="text-[12px] mr-[10px] leading-none text-nowrap">

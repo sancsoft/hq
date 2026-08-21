@@ -7,6 +7,10 @@ import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
+import { 
+  updatePSRColorStatusRequestV1,
+  UpdatePSRColorStatusResponseV1 
+} from '../models/PSR/update-psr-color-status';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
@@ -403,6 +407,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpdatePSRTimeResponseV1>(
           `${apiUrl}/v1/ProjectStatusReports/UpdateProjectStatusReportTimeV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  updatePSRColorStatusV1(request: Partial<updatePSRColorStatusRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdatePSRColorStatusResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/UpdateProjectStatusReportColorStatusV1`,
           request,
         ),
       ),

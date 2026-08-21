@@ -121,14 +121,11 @@
           'text-gray-50': report.isCurrentPsrPeriod,
         }"
       >
-      <!-- TODO: hook up status indicators -->
         <td
           width="15"
           class="border-b border-black !pl-0"
           [title]="''"
-          [ngClass]="
-            'bg-gray-300'
-          "
+          [ngClass]="'bg-' + projectStatusToClass(report.colorStatus)"
         ></td>
         <td class="border-b border-black py-2 pl-5">{{ report.chargeCode }}</td>
         <td class="border-b border-black py-2">{{ report.startDate }}</td>

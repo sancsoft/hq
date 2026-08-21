@@ -3,6 +3,8 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PsrListService } from '../psrlist/psrList.service';
 import { Period } from '../../enums/period';
+import { ProjectStatus } from '../../enums/project-status';
+import { ProjectColorStatus } from '../../enums/project-color-status';
 
 @Component({
   selector: 'hq-psr-list-search-filter',

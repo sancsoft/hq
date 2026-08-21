@@ -35,14 +35,6 @@
     <div class="w-full flex items-center">
       @if (selectedOption$ | async; as selectedOption) {
         @if (selectedOption.selectedDisplay) {
-          <!-- TODO get the selected variant status color -->
-          @if(variant === 'status')
-          {
-            <div class="inline-block h-[15px] w-[15px] rounded-full bg-green-600 me-2"></div> <!-- on track -->
-            <div class="inline-block h-[15px] w-[15px] rounded-full bg-yellow-550 me-2"></div>  <!-- at risk -->
-            <div class="inline-block h-[15px] w-[15px] rounded-full bg-red-600 me-2"></div> <!-- critical -->
-            <div class="inline-block h-[15px] w-[15px] rounded-full bg-gray-450 me-2"></div> <!-- inactive -->
-          }
           {{ selectedOption.selectedDisplay }}
         } @else {
           <ng-container
@@ -112,14 +104,6 @@
                 <ng-container
                   [ngTemplateOutlet]="option.templateRef"
                 >
-                <!-- TODO get the variant status colors and list out all statuses -->
-                @if(variant === 'status')
-                {
-                  <div class="inline-block h-[15px] w-[15px] rounded-full bg-green-600 me-2"></div> <!-- on track -->
-                  <div class="inline-block h-[15px] w-[15px] rounded-full bg-yellow-550 me-2"></div>  <!-- at risk -->
-                  <div class="inline-block h-[15px] w-[15px] rounded-full bg-red-600 me-2"></div> <!-- critical -->
-                  <div class="inline-block h-[15px] w-[15px] rounded-full bg-gray-450 me-2"></div> <!-- inactive -->
-                }
                 </ng-container>
               </button>
             }

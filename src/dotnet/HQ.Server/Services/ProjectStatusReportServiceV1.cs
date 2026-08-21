@@ -138,6 +138,7 @@ public class ProjectStatusReportServiceV1
             psr.ProjectManagerId = project.ProjectManagerId;
             psr.BookingPeriod = project.BookingPeriod;
             psr.Status = project.Status;
+            psr.ColorStatus = project.ColorStatus;
 
             switch (project.BookingPeriod)
             {
@@ -175,6 +176,25 @@ public class ProjectStatusReportServiceV1
         };
     }
 
+    public async Task<Result<UpdateProjectStatusReportColorStatusV1.Response>> UpdateProjectStatusReportColorStatusV1(UpdateProjectStatusReportColorStatusV1.Request request, CancellationToken ct = default)
+    {
+        var projectStatusReport = await _context.ProjectStatusReports.Include(t => t.Project).SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId);
+        if (projectStatusReport == null)
+        {
+            return Result.Fail("Unable to find project status report.");
+        }
+
+        projectStatusReport.ColorStatus = request.ProjectColorStatus;
+        projectStatusReport.Project.ColorStatus = request.ProjectColorStatus;
+
+        await _context.SaveChangesAsync(ct);
+
+        return new UpdateProjectStatusReportColorStatusV1.Response()
+        {
+            ProjectStatusReportId = projectStatusReport.Id
+        };
+    }
+
     public async Task<Result<GetProjectStatusReportsV1.Response>> GetProjectStatusReportsV1(GetProjectStatusReportsV1.Request request, CancellationToken ct = default)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
@@ -208,6 +228,11 @@ public class ProjectStatusReportServiceV1
                 t.Project.ChargeCode!.Code.ToLower().Contains(request.Search.ToLower()) ||
                 t.Project.ProjectManager!.Name.ToLower().Contains(request.Search.ToLower())
             );
+        }
+
+        if(request.ActiveOnly)
+        {
+            records = records.Where(t => (t.Project.Status == ProjectStatus.InProduction || t.Project.Status == ProjectStatus.Ongoing) && t.ColorStatus != ProjectColorStatus.Gray);
         }
 
         if (request.Id.HasValue)
@@ -261,6 +286,7 @@ public class ProjectStatusReportServiceV1
                 Status = t.Row.Project.Status,
                 IsLate = t.Row.SubmittedAt == null,
                 ProjectType = t.Row.Project.Type,
+                ColorStatus = t.Row.ColorStatus,
 
                 ThisHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Unsubmitted && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours),
                 ThisPendingHours = t.Row.Project.ChargeCode!.Times.Where(x => x.Status != TimeStatus.Unsubmitted && x.Status != TimeStatus.Accepted && x.Status != TimeStatus.Rejected && x.Date >= t.Row.StartDate && x.Date <= t.Row.EndDate).Sum(x => x.HoursApproved ?? x.Hours),
@@ -299,6 +325,7 @@ public class ProjectStatusReportServiceV1
                 Status = t.Status,
                 IsLate = t.IsLate,
                 ProjectType = t.ProjectType,
+                ColorStatus = t.ColorStatus,
 
                 ThisHours = t.ThisHours,
                 ThisPendingHours = t.ThisPendingHours,
