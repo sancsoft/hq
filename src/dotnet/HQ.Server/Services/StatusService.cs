@@ -7,6 +7,7 @@ using HQ.Server.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace HQ.Server.Services;
+
 public class StatusServiceV1
 {
     private readonly HQDbContext _context;

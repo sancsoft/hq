@@ -3,6 +3,7 @@ using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
 namespace HQ.Abstractions.Projects;
+
 public class UpsertProjectActivityV1
 {
     public class Request

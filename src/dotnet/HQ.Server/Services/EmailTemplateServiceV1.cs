@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Mjml.Net;
 
 namespace HQ.Server.Services;
+
 public class EmailTemplateServiceV1
 {
     private readonly HQDbContext _context;
