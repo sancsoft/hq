@@ -121,7 +121,7 @@ public class ProjectServiceV1
                             project.ChargeCode.Activity = ChargeCodeActivity.Project;
                         }
 
-                        project.ChargeCode.Code = "P" + project.ProjectNumber.Value;
+                        project.ChargeCode.Code = "P" + project.ProjectNumber;
 
                         break;
                     case ProjectType.Quote:
