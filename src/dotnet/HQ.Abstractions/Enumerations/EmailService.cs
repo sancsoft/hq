@@ -4,5 +4,6 @@ public enum EmailServiceType
 {
     Logger,
     SMTP,
-    Mailgun
+    Mailgun,
+    SMTP2GO
 }
