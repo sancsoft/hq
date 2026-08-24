@@ -99,6 +99,13 @@ namespace HQ.Server
 
                     // TODO: Register scoped service and add configuration options
                     break;
+                case EmailServiceType.SMTP2GO:
+                    services.AddHttpClient<IEmailService, SMTP2GOEmailService>();
+                    services.AddOptions<SMTP2GOEmailService.Options>()
+                        .Bind(configuration.GetSection("SMTP2GO"))
+                        .ValidateDataAnnotations()
+                        .ValidateOnStart();
+                    break;
             }
 
             var storageServiceType = configuration.GetValue<StorageService?>("StorageService") ?? StorageService.Database;
