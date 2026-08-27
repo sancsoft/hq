@@ -700,4 +700,69 @@ public class ProjectStatusReportServiceV1
             Report = previousPsr.Report
         };
     }
+    
+    public async Task<Result<GetProjectStatusReportPointSummaryV1.Response>> GetProjectStatusReportPointSummaryV1(GetProjectStatusReportPointSummaryV1.Request request, CancellationToken ct = default)
+    {
+        var psr = await _context.ProjectStatusReports
+            .AsNoTracking()
+            .Include(t => t.Project)
+            .ThenInclude(t => t.ChargeCode)
+            .SingleOrDefaultAsync(t => t.Id == request.ProjectStatusReportId, ct);
+
+        if (psr == null)
+        {
+            return Result.Fail("Unable to find project status report.");
+        }
+
+        if (psr.Project?.ChargeCode == null)
+        {
+            return Result.Fail("Project has no charge code.");
+        }
+
+        var startDate = psr.StartDate;
+        var endDate = psr.EndDate;
+        var chargeCodeId = psr.Project.ChargeCode.Id;
+
+        var allocatedPoints = await _context.Points
+            .AsNoTracking()
+            .Where(t => t.ChargeCodeId == chargeCodeId && t.Date >= startDate && t.Date <= endDate)
+            .GroupBy(t => t.StaffId)
+            .Select(t => new
+            {
+                StaffId = t.Key,
+                AllocatedPoints = t.Count(),
+            })
+            .ToDictionaryAsync(t => t.StaffId, ct);
+
+        var utilizedPoints = await _context.Times
+            .AsNoTracking()
+            .Where(t => t.ChargeCodeId == chargeCodeId && t.Date >= startDate && t.Date <= endDate && t.Status != TimeStatus.Unsubmitted)
+            .GroupBy(t => t.StaffId)
+            .Select(t => new
+            {
+                StaffId = t.Key,
+                UtilizedPoints = t.Sum(x => (x.Hours)) / 4m
+            })
+            .ToDictionaryAsync(t => t.StaffId, ct);
+
+        var allStaffIds = allocatedPoints.Keys.Union(utilizedPoints.Keys).ToList();
+
+        var staffRecords = await _context.Staff
+            .AsNoTracking()
+            .Where(t => allStaffIds.Contains(t.Id))
+            .Select(t => new GetProjectStatusReportPointSummaryV1.PointSummaryStaffRecord()
+            {
+                StaffId = t.Id,
+                StaffName = t.Name,
+                AllocatedPoints = allocatedPoints.ContainsKey(t.Id) ? allocatedPoints[t.Id].AllocatedPoints : 0,
+                UtilizedPoints = utilizedPoints.ContainsKey(t.Id) ? utilizedPoints[t.Id].UtilizedPoints : 0,
+            })
+            .OrderBy(t => t.StaffName)
+            .ToListAsync(ct);
+
+        return new GetProjectStatusReportPointSummaryV1.Response()
+        {
+            Staff = staffRecords,
+        };
+    }
 }

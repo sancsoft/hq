@@ -45,6 +45,10 @@ import {
   GetPSRTimeRequestV1,
 } from '../models/PSR/get-psr-time-v1';
 import {
+  GetPSRPointSummaryV1,
+  GetPSRPointSummaryRequestV1,
+} from '../models/PSR/get-psr-point-summary-v1';
+import {
   ApprovePSRTimeRequestV1,
   ApprovePSRTimeResponseV1,
 } from '../models/PSR/approve-psr-time-v1';
@@ -363,6 +367,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<GetPSRTimeRecordsV1>(
           `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportTimeV1`,
+          request,
+        ),
+      ),
+    );
+  }
+  
+  getPSRPointSummaryV1(request: Partial<GetPSRPointSummaryRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPSRPointSummaryV1>(
+          `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportPointSummaryV1`,
           request,
         ),
       ),

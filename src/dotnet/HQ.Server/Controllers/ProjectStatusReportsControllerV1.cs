@@ -76,6 +76,13 @@ namespace HQ.Server.Controllers
             _ProjectStatusReportService.GetProjectStatusReportTimeV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetProjectStatusReportPointSummaryV1))]
+        [ProducesResponseType<GetProjectStatusReportPointSummaryV1.Response>(StatusCodes.Status200OK)]
+        public Task<ActionResult> GetProjectStatusReportPointSummaryV1([FromBody] GetProjectStatusReportPointSummaryV1.Request request, CancellationToken ct = default) =>
+            _ProjectStatusReportService.GetProjectStatusReportPointSummaryV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
         [Authorize(HQAuthorizationPolicies.Manager)]
         [HttpPost(nameof(ApproveProjectStatusReportTimeRequestV1))]
         [ProducesResponseType<ApproveProjectStatusReportTimeRequestV1.Response>(StatusCodes.Status200OK)]

@@ -182,10 +182,19 @@ export class SelectInputComponent<T>
       }
     }
 
-    if (click) {
-      this.ignoreFocus = true;
-      this.button?.nativeElement?.focus();
-      this.onBlur();
+    if(this.variant == 'status')
+    {
+      if (click) {
+        this.onBlur();
+      }
+    }
+    else
+    {
+      if (click) {
+        this.ignoreFocus = true;
+        this.button?.nativeElement?.focus();
+        this.onBlur();
+      }
     }
   }
 

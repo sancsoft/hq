@@ -11,6 +11,8 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import type { editor } from 'monaco-editor';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
+import { PsrPointSummaryListComponent } from '../psr-point-summary-list/psr-point-summary-list.component';
+import { PsrRefreshService } from '../Services/psr-refresh.service';
 
 import {
   Observable,
@@ -61,6 +63,7 @@ import { projectStatusToClass } from '../../common/functions/project-status-to-c
     PsrSearchFilterComponent,
     PanelComponent,
     CoreModule,
+    PsrPointSummaryListComponent,
   ],
   templateUrl: './psrreport.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -163,6 +166,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
     private oidcSecurityService: OidcSecurityService,
     private toastService: ToastService,
+    private psrRefreshService: PsrRefreshService,
   ) {
     this.psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId']),
@@ -275,6 +279,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.toastService.show('Success', 'Project Report Status successfully updated.');
+          this.psrRefreshService.triggerRefresh();
         },
         error: console.error,
       });
