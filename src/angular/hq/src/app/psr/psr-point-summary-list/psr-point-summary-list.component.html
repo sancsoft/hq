@@ -13,7 +13,7 @@
     <td
       class="border-l-[3px] border-steel-blue-600 px-3 min-w-[120px] text-4xl font-rajdhani font-semibold"
     >
-      {{ (pointSummary$ | async)?.totalUtilized ?? 0 | number: "1.0-2" }}
+      {{ (pointSummary$ | async)?.totalUtilized ?? 0 | number: "1.0-0" }}
     </td>
   </tr>
 </table>
@@ -96,7 +96,7 @@
             'text-blue-400': record.utilizedPoints > record.allocatedPoints,
           }"
         >
-          {{ record.utilizedPoints | number: "1.0-2" }}
+          {{ record.utilizedPoints | number: "1.0-0" }}
         </td>
       </tr>
     }
