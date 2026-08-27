@@ -1,4 +1,4 @@
-import { ProjectColorStatus } from "../../enums/project-color-status";
+import { ProjectColorStatus } from '../../enums/project-color-status';
 
 export interface updatePSRColorStatusRequestV1 {
   projectStatusReportId: string;

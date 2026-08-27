@@ -46,7 +46,10 @@ import { AngularSplitModule } from 'angular-split';
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import { PanelComponent } from '../../core/components/panel/panel.component';
 import { CoreModule } from '../../core/core.module';
-import { ProjectColorStatus, ProjectColorStatusLabels } from '../../enums/project-color-status';
+import {
+  ProjectColorStatus,
+  ProjectColorStatusLabels,
+} from '../../enums/project-color-status';
 import { projectStatusToClass } from '../../common/functions/project-status-to-class';
 
 @Component({
@@ -94,12 +97,12 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
   projectStatusToClass = projectStatusToClass;
   projectColorStatus = ProjectColorStatus;
-  projectColorStatuses = Object.keys(ProjectColorStatusLabels).map(key => {
+  projectColorStatuses = Object.keys(ProjectColorStatusLabels).map((key) => {
     const numericKey = Number(key) as ProjectColorStatus;
     return {
       id: numericKey,
       name: ProjectColorStatus[numericKey],
-      displayName: ProjectColorStatusLabels[numericKey]
+      displayName: ProjectColorStatusLabels[numericKey],
     };
   });
   colorStatus = new FormControl<ProjectColorStatus | null>(null);
@@ -139,15 +142,12 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     this.prevPSRReportButtonState =
       prevPsr && prevPsr.report ? ButtonState.Enabled : ButtonState.Disabled;
 
-
     const currentColorStatus = this.projectColorStatuses.find(
-      colorStatus => colorStatus.id === psr.colorStatus
+      (colorStatus) => colorStatus.id === psr.colorStatus,
     );
     if (currentColorStatus) {
       this.colorStatus.setValue(currentColorStatus.id, { emitEvent: false });
-    }
-    else
-    {
+    } else {
       this.colorStatus.setValue(ProjectColorStatus.Gray, { emitEvent: false });
     }
   }
@@ -278,7 +278,10 @@ export class PSRReportComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: () => {
-          this.toastService.show('Success', 'Project Report Status successfully updated.');
+          this.toastService.show(
+            'Success',
+            'Project Report Status successfully updated.',
+          );
           this.psrRefreshService.triggerRefresh();
         },
         error: console.error,

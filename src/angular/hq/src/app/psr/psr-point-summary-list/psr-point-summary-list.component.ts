@@ -16,8 +16,12 @@ import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter
 
 export type SortColumn = 'staffName' | 'allocatedPoints' | 'utilizedPoints';
 
-const SortColumnKeys = ['StaffName', 'AllocatedPoints', 'UtilizedPoints'] as const;
-type SortColumnKeys = typeof SortColumnKeys[number];
+const SortColumnKeys = [
+  'StaffName',
+  'AllocatedPoints',
+  'UtilizedPoints',
+] as const;
+type SortColumnKeys = (typeof SortColumnKeys)[number];
 
 @Component({
   selector: 'hq-psr-point-summary-list',
@@ -26,7 +30,11 @@ type SortColumnKeys = typeof SortColumnKeys[number];
   templateUrl: './psr-point-summary-list.component.html',
 })
 export class PsrPointSummaryListComponent implements OnInit {
-  pointSummary$: Observable<{ records: GetPSRPointSummaryRecordV1[]; totalAllocated: number; totalUtilized: number }>;
+  pointSummary$: Observable<{
+    records: GetPSRPointSummaryRecordV1[];
+    totalAllocated: number;
+    totalUtilized: number;
+  }>;
   psrId$: Observable<string | null>;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
@@ -42,14 +50,20 @@ export class PsrPointSummaryListComponent implements OnInit {
     private route: ActivatedRoute,
     private hqService: HQService,
   ) {
-      this.psrId$ = new BehaviorSubject<string | null>(null);
-      this.pointSummary$ = new BehaviorSubject<{ records: GetPSRPointSummaryRecordV1[]; totalAllocated: number; totalUtilized: number }>({ records: [], totalAllocated: 0, totalUtilized: 0 });
-      this.sortOption$ = new BehaviorSubject<SortColumn>('staffName');
-      this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
+    this.psrId$ = new BehaviorSubject<string | null>(null);
+    this.pointSummary$ = new BehaviorSubject<{
+      records: GetPSRPointSummaryRecordV1[];
+      totalAllocated: number;
+      totalUtilized: number;
+    }>({ records: [], totalAllocated: 0, totalUtilized: 0 });
+    this.sortOption$ = new BehaviorSubject<SortColumn>('staffName');
+    this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
   }
 
   ngOnInit() {
-    this.psrId$ = this.route.parent!.params.pipe(map((params) => params['psrId']));
+    this.psrId$ = this.route.parent!.params.pipe(
+      map((params) => params['psrId']),
+    );
 
     const request$ = combineLatest({
       psrId: this.psrId$,
@@ -88,8 +102,14 @@ export class PsrPointSummaryListComponent implements OnInit {
           return 0;
         });
 
-        const totalAllocated = records.reduce((sum, r) => sum + r.allocatedPoints, 0);
-        const totalUtilized = records.reduce((sum, r) => sum + r.utilizedPoints, 0);
+        const totalAllocated = records.reduce(
+          (sum, r) => sum + r.allocatedPoints,
+          0,
+        );
+        const totalUtilized = records.reduce(
+          (sum, r) => sum + r.utilizedPoints,
+          0,
+        );
 
         return { records, totalAllocated, totalUtilized };
       }),

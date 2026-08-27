@@ -230,7 +230,7 @@ public class ProjectStatusReportServiceV1
             );
         }
 
-        if(request.ActiveOnly)
+        if (request.ActiveOnly)
         {
             records = records.Where(t => (t.Project.Status == ProjectStatus.InProduction || t.Project.Status == ProjectStatus.Ongoing) && t.ColorStatus != ProjectColorStatus.Gray);
         }
@@ -700,7 +700,7 @@ public class ProjectStatusReportServiceV1
             Report = previousPsr.Report
         };
     }
-    
+
     public async Task<Result<GetProjectStatusReportPointSummaryV1.Response>> GetProjectStatusReportPointSummaryV1(GetProjectStatusReportPointSummaryV1.Request request, CancellationToken ct = default)
     {
         var psr = await _context.ProjectStatusReports

@@ -182,14 +182,11 @@ export class SelectInputComponent<T>
       }
     }
 
-    if(this.variant == 'status')
-    {
+    if (this.variant == 'status') {
       if (click) {
         this.onBlur();
       }
-    }
-    else
-    {
+    } else {
       if (click) {
         this.ignoreFocus = true;
         this.button?.nativeElement?.focus();
