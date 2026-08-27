@@ -44,6 +44,8 @@ export class PsrPointSummaryListComponent implements OnInit {
     UtilizedPoints: 'utilizedPoints',
   };
 
+  protected readonly round = Math.round;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,

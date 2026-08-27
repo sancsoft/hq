@@ -74,12 +74,13 @@
           [title]="''"
           [ngClass]="{
             'bg-gray-300':
-              record.utilizedPoints < record.allocatedPoints &&
+              round(record.utilizedPoints) < record.allocatedPoints &&
               record.allocatedPoints > 0,
-            'bg-green-450':
-              record.utilizedPoints >= record.allocatedPoints &&
+            'bg-green-600':
+              round(record.utilizedPoints) >= record.allocatedPoints &&
               record.allocatedPoints > 0,
-            'bg-steel-blue-500': record.utilizedPoints > record.allocatedPoints,
+            'bg-steel-blue-500':
+              round(record.utilizedPoints) > record.allocatedPoints,
           }"
         >
           &nbsp;
@@ -93,7 +94,8 @@
         <td
           class="border-b border-black py-2 px-3"
           [ngClass]="{
-            'text-blue-400': record.utilizedPoints > record.allocatedPoints,
+            'text-blue-400':
+              round(record.utilizedPoints) > record.allocatedPoints,
           }"
         >
           {{ record.utilizedPoints | number: "1.0-0" }}
