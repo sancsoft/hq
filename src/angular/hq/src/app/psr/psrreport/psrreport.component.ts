@@ -276,6 +276,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         }),
         takeUntil(this.destroyed$),
       )
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: () => {
           this.toastService.show(

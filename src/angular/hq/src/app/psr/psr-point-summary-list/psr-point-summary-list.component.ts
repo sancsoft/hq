@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HQService } from '../../services/hq.service';
 import {
   BehaviorSubject,
@@ -12,7 +12,6 @@ import {
 import { SortDirection } from '../../models/common/sort-direction';
 import { SortIconComponent } from '../../common/sort-icon/sort-icon.component';
 import { GetPSRPointSummaryRecordV1 } from '../../models/PSR/get-psr-point-summary-v1';
-import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 
 export type SortColumn = 'staffName' | 'allocatedPoints' | 'utilizedPoints';
 
@@ -78,7 +77,7 @@ export class PsrPointSummaryListComponent implements OnInit {
     this.pointSummary$ = request$.pipe(
       switchMap((request) => this.hqService.getPSRPointSummaryV1(request)),
       map((response) => {
-        let records = [...response.staff];
+        const records = [...response.staff];
         const sortBy = this.sortOption$.value;
         const sortDir = this.sortDirection$.value;
 

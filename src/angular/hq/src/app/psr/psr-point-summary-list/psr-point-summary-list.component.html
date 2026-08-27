@@ -1,18 +1,16 @@
 <table class="min-w-full border-spacing-0 border-separate py-2">
   <tr>
-    <th scope="col" class="text-nowrap w-3">&nbsp;</th>
-    <td width="275" scope="col" class="px-3 min-w-[275px]">
+    <td class="text-nowrap w-3">&nbsp;</td>
+    <td width="275" class="px-3 min-w-[275px]">
       <div class="font-semibold text-base">Point Summary</div>
       <div>Totals</div>
     </td>
     <td
-      scope="col"
       class="border-l-[3px] border-steel-blue-600 px-3 min-w-[120px] text-4xl font-rajdhani font-semibold"
     >
       {{ (pointSummary$ | async)?.totalAllocated ?? 0 }}
     </td>
     <td
-      scope="col"
       class="border-l-[3px] border-steel-blue-600 px-3 min-w-[120px] text-4xl font-rajdhani font-semibold"
     >
       {{ (pointSummary$ | async)?.totalUtilized ?? 0 | number: "1.0-2" }}
