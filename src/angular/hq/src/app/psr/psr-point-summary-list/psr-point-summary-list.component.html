@@ -43,11 +43,11 @@
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-b py-3 px-3 min-w-[120px] cursor-pointer"
-        (click)="onSortClick(sortColumn.UtilizedPoints)"
+        (click)="onSortClick(sortColumn.AllocatedPoints)"
       >
         Allocated
         <hq-sort-icon
-          [column]="sortColumn.UtilizedPoints"
+          [column]="sortColumn.AllocatedPoints"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
@@ -55,11 +55,11 @@
       <th
         scope="col"
         class="bg-blue-900 border-steel-blue-600 border-b py-3 px-3 min-w-[120px] cursor-pointer"
-        (click)="onSortClick(sortColumn.AllocatedPoints)"
+        (click)="onSortClick(sortColumn.UtilizedPoints)"
       >
         Utilized
         <hq-sort-icon
-          [column]="sortColumn.AllocatedPoints"
+          [column]="sortColumn.UtilizedPoints"
           [activeColumn]="sortOption$ | async"
           [activeSortDirection]="sortDirection$ | async"
         />
