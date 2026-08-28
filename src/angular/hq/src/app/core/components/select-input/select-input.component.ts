@@ -71,7 +71,7 @@ export class SelectInputComponent<T>
   label: string | null = null;
 
   @Input()
-  variant: 'primary' | 'secondary' | 'pill' = 'primary';
+  variant: 'primary' | 'secondary' | 'status' | 'pill' = 'primary';
 
   @Input()
   enableSearch: boolean = true;
@@ -182,10 +182,16 @@ export class SelectInputComponent<T>
       }
     }
 
-    if (click) {
-      this.ignoreFocus = true;
-      this.button?.nativeElement?.focus();
-      this.onBlur();
+    if (this.variant == 'status') {
+      if (click) {
+        this.onBlur();
+      }
+    } else {
+      if (click) {
+        this.ignoreFocus = true;
+        this.button?.nativeElement?.focus();
+        this.onBlur();
+      }
     }
   }
 

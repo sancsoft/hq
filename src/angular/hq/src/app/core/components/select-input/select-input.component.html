@@ -9,7 +9,7 @@
     type="button"
     class="flex items-center border justify-between bg-blue-900 rounded select-none overflow-hidden px-1 {{
       variant !== 'pill' ? 'h-[' + btnHeightOverride + 'px]' : ''
-    }}"
+    }} {{ variant === 'status' ? 'pl-2' : '' }}"
     (focus)="onFocus()"
     [style.background-color]="
       variant === 'pill' ? (chargeCodeColor$ | async) : null
@@ -17,7 +17,8 @@
     [ngClass]="{
       'border-red-500 text-white': ngControl?.invalid && ngControl?.touched,
       'border-steel-blue-600 text-white':
-        !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
+        !(ngControl?.invalid && ngControl?.touched) &&
+        (variant === 'primary' || variant === 'status'),
       'border-black text-white':
         !(ngControl?.invalid && ngControl?.touched) && variant === 'secondary',
       'border-transparent':
@@ -30,14 +31,13 @@
       'border-gray-450 text-gray-450': disabled,
     }"
   >
-    <div class="w-full">
+    <div class="w-full flex items-center">
       @if (selectedOption$ | async; as selectedOption) {
         @if (selectedOption.selectedDisplay) {
           {{ selectedOption.selectedDisplay }}
         } @else {
-          <ng-container
-            [ngTemplateOutlet]="selectedOption.templateRef"
-          ></ng-container>
+          <ng-container [ngTemplateOutlet]="selectedOption.templateRef">
+          </ng-container>
         }
       }
     </div>
@@ -90,7 +90,7 @@
               <button
                 type="button"
                 [tabIndex]="-1"
-                class="px-2 py-1 hover:bg-blue-800 w-full text-left"
+                class="px-2 py-1 hover:bg-blue-800 w-full text-left flex items-center"
                 [ngClass]="{
                   'bg-blue-800 selected':
                     option.value === (selectedOption$ | async)?.value,
@@ -98,9 +98,8 @@
                 (mousedown)="selectOption(option, true)"
                 (touchstart)="selectOption(option, true)"
               >
-                <ng-container
-                  [ngTemplateOutlet]="option.templateRef"
-                ></ng-container>
+                <ng-container [ngTemplateOutlet]="option.templateRef">
+                </ng-container>
               </button>
             }
           }

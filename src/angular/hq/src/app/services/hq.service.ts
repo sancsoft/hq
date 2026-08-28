@@ -7,6 +7,10 @@ import {
   updatePSRTimeRequestV1,
   UpdatePSRTimeResponseV1,
 } from './../models/PSR/update-psr-time-v1';
+import {
+  updatePSRColorStatusRequestV1,
+  UpdatePSRColorStatusResponseV1,
+} from '../models/PSR/update-psr-color-status';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
@@ -40,6 +44,10 @@ import {
   GetPSRTimeRecordsV1,
   GetPSRTimeRequestV1,
 } from '../models/PSR/get-psr-time-v1';
+import {
+  GetPSRPointSummaryV1,
+  GetPSRPointSummaryRequestV1,
+} from '../models/PSR/get-psr-point-summary-v1';
 import {
   ApprovePSRTimeRequestV1,
   ApprovePSRTimeResponseV1,
@@ -365,6 +373,17 @@ export class HQService {
     );
   }
 
+  getPSRPointSummaryV1(request: Partial<GetPSRPointSummaryRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<GetPSRPointSummaryV1>(
+          `${apiUrl}/v1/ProjectStatusReports/GetProjectStatusReportPointSummaryV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
   approvePSRTimeV1(request: Partial<ApprovePSRTimeRequestV1>) {
     return this.appSettings.apiUrl$.pipe(
       switchMap((apiUrl) =>
@@ -403,6 +422,17 @@ export class HQService {
       switchMap((apiUrl) =>
         this.http.post<UpdatePSRTimeResponseV1>(
           `${apiUrl}/v1/ProjectStatusReports/UpdateProjectStatusReportTimeV1`,
+          request,
+        ),
+      ),
+    );
+  }
+
+  updatePSRColorStatusV1(request: Partial<updatePSRColorStatusRequestV1>) {
+    return this.appSettings.apiUrl$.pipe(
+      switchMap((apiUrl) =>
+        this.http.post<UpdatePSRColorStatusResponseV1>(
+          `${apiUrl}/v1/ProjectStatusReports/UpdateProjectStatusReportColorStatusV1`,
           request,
         ),
       ),

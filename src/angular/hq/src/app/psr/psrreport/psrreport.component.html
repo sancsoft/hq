@@ -1,17 +1,43 @@
 <div class="px-5 py-2">
   <div
-    class="flex flex-col xl:flex-row justify-between items-center gap-4 sm:flex-row"
+    class="flex flex-col xl:flex-row justify-between items-center gap-4 sm:flex-row mt-3"
   >
     <div>
       <hq-psr-search-filter></hq-psr-search-filter>
     </div>
-    <div class="flex divide-x ml-aut float-right mt-3">
+
+    <div class="inline-flex gap-[20px] mb-[8px] ml-auto xl:mb-0 flex-1">
+      <div class="w-full max-w-[220px] ml-auto">
+        <hq-select-input
+          label="Status"
+          [formControl]="colorStatus"
+          [autocomplete]="true"
+          [enableSearch]="false"
+          variant="status"
+        >
+          @for (colorStatus of projectColorStatuses; track colorStatus.id) {
+            <ng-template
+              [hqSelectInputOption]="colorStatus.id"
+              [hqSelectInputOptionSearch]="colorStatus.displayName"
+            >
+              <div
+                class="inline-block h-[15px] w-[15px] rounded-full me-2 bg-{{
+                  projectStatusToClass(colorStatus.id)
+                }}"
+              ></div>
+              {{ colorStatus.displayName }}</ng-template
+            >
+          }
+        </hq-select-input>
+      </div>
+
       @if (
         [HQRole.Manager, HQRole.Partner, HQRole.Administrator] | inRole | async
       ) {
         <hq-button
           [disabled]="submitButtonState === ButtonState.Disabled"
           (click)="onReportSubmit()"
+          class="mt-auto"
         >
           Submit
         </hq-button>
@@ -22,44 +48,81 @@
 <div
   class="bg-black-alt border-steel-blue-600 border-t sticky top-0 z-50"
 ></div>
-<div class="bg-black-alt">
-  <div
-    class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
-  >
-    <div class="font-open-sans text-nav-disabled text-xs font-bold uppercase">
-      {{
-        $safeNavigationMigration((psr$ | async)?.submittedAt)
-          | date: "EEEE MM/dd/yyyy"
-      }}
-    </div>
-    <div class="flex ml-aut float-right gap-2">
-      <button
-        title="Insert Previous Report"
-        [disabled]="prevPSRReportButtonState === ButtonState.Disabled"
-        [ngClass]="{
-          'text-gray-50 ': prevPSRReportButtonState === ButtonState.Disabled,
-        }"
-        (click)="insertTextAtCursor()"
-      >
-        <i title="Insert" class="bi bi-file-earmark-plus-fill"></i>
-      </button>
-    </div>
-  </div>
-</div>
+<div class="h-[calc(100dvh-300px)] w-full bg-black-alt">
+  <hq-panel CollapseItem="first" Direction="vertical" [CSizes]="[50, 50]">
+    <hq-panel first Direction="horizontal" [CSizes]="[70, 30]">
+      <div class="bg-black-alt sticky top-0 z-50" first>
+        <div
+          class="flex flex-col xl:flex-row justify-between items-end gap-4 sm:flex-row px-3 py-1"
+        >
+          <div
+            class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+          >
+            {{
+              $safeNavigationMigration((psr$ | async)?.submittedAt)
+                | date: "EEEE MM/dd/yyyy"
+            }}
+          </div>
+          <div class="flex ml-auto float-right gap-5">
+            <div class="inline-flex items-center">
+              <div class="inline-flex items-center">
+                <div class="text-[12px] mr-[10px] leading-none text-nowrap">
+                  Preview
+                </div>
+                <label class="relative inline-flex cursor-pointer items-center">
+                  <input
+                    id="switch"
+                    type="checkbox"
+                    class="peer sr-only"
+                    [(ngModel)]="togglePreview"
+                  />
+                  <label for="switch" class="hidden"></label>
+                  <div
+                    class="peer h-[15px] w-[33px] rounded-full border bg-black border-white after:absolute after:left-[4px] after:top-[3px] after:h-[8px] after:w-[8px] after:rounded-full after:bg-white peer-checked:after:bg-white after:transition-all after:content-[''] peer-checked:bg-steel-blue-600 peer-checked:after:translate-x-full peer-checked:after:right-[12px] peer-checked:after:left-auto peer-checked:border-steel-blue-600"
+                  ></div>
+                </label>
+                <div class="text-xs ml-[6px]">
+                  {{ togglePreview ? "On" : "Off" }}
+                </div>
+              </div>
+            </div>
 
-<div class="h-[calc(100dvh-286px)] w-full bg-black-alt">
-  <hq-panel CollapseItem="first" Direction="vertical" [CSizes]="[30, 70]">
-    <hq-panel first Direction="horizontal" [CSizes]="[100, 0]">
-      <ngx-monaco-editor
+            <button
+              title="Insert Previous Report"
+              [disabled]="prevPSRReportButtonState === ButtonState.Disabled"
+              [ngClass]="{
+                'text-gray-50 ':
+                  prevPSRReportButtonState === ButtonState.Disabled,
+              }"
+              (click)="insertTextAtCursor()"
+            >
+              <i title="Insert" class="bi bi-file-earmark-plus-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div [hidden]="togglePreview" class="h-[calc(100%-40px)]" first>
+        <ngx-monaco-editor
+          [ngStyle]="{ height: '100%' }"
+          [options]="(editorOptions$ | async) || defaultEditorOptions"
+          [formControl]="report"
+          (onInit)="onEditorInit($event)"
+        >
+        </ngx-monaco-editor>
+      </div>
+      <div
+        [hidden]="!togglePreview"
+        class="bg-black-alt px-3 overflow-y-auto h-[calc(100%-40px)]"
         first
-        [ngStyle]="{ height: '100%' }"
-        [options]="(editorOptions$ | async) || defaultEditorOptions"
-        [formControl]="report"
-        (onInit)="onEditorInit($event)"
-      ></ngx-monaco-editor>
+      >
+        <hq-markdown
+          class="bg-black-alt"
+          [data]="report$ | async"
+        ></hq-markdown>
+      </div>
 
       <div class="bg-black-alt h-full" second>
-        <hq-markdown [data]="report$ | async"></hq-markdown>
+        <hq-psr-point-summary-list></hq-psr-point-summary-list>
       </div>
     </hq-panel>
     <hq-psrtime-list second></hq-psrtime-list>

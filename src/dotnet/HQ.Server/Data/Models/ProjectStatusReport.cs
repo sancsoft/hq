@@ -19,4 +19,5 @@ public class ProjectStatusReport : Base
     public DateOnly BookingEndDate { get; set; }
     public Period BookingPeriod { get; set; }
     public DateTime? SubmittedAt { get; set; }
+    public ProjectColorStatus ColorStatus { get; set; }
 }
