@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using HQ.Abstractions.Common;
@@ -37,5 +38,11 @@ public class GetClientsV1
         public string? OfficialName { get; set; }
         public string? BillingEmail { get; set; }
         public decimal? HourlyRate { get; set; }
+        [JsonIgnore]
+        public string NameLower { get; set; } = null!;
+        [JsonIgnore]
+        public string? OfficialNameLower { get; set; }
+        [JsonIgnore]
+        public string? BillingEmailLower { get; set; }
     }
 }

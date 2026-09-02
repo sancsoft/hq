@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using HQ.Abstractions.Common;
@@ -36,5 +37,7 @@ public class GetHolidayV1
         public string Name { get; set; } = null!;
         public Jurisdiciton Jurisdiciton { get; set; }
         public DateOnly Date { get; set; }
+        [JsonIgnore]
+        public string NameLower { get; set; } = null!;
     }
 }

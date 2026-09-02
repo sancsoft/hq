@@ -1,5 +1,9 @@
 
 
+
+
+using System.Text.Json.Serialization;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
@@ -39,6 +43,10 @@ namespace HQ.Abstractions.Invoices
             public decimal Total { get; set; }
             public decimal TotalApprovedHours { get; set; }
             public DateOnly CreatedAt { get; set; }
+            [JsonIgnore]
+            public string ClientNameLower { get; set; } = null!;
+            [JsonIgnore]
+            public string? InvoiceNumberLower { get; set; }
         }
     }
 }

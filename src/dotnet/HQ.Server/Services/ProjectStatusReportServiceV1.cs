@@ -324,7 +324,11 @@ public class ProjectStatusReportServiceV1
                 SummaryHoursAvailable = t.ProjectType == ProjectType.Ongoing ? t.BookingAvailableHours : t.TotalAvailableHours,
                 SummaryPercentComplete = t.ProjectType == ProjectType.Ongoing ? t.BookingPercentComplete : t.TotalPercentComplete,
                 SummaryPercentCompleteSort = t.ProjectType == ProjectType.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
-                IsCurrentPsrPeriod = thisWeekStart == t.StartDate
+                IsCurrentPsrPeriod = thisWeekStart == t.StartDate,
+                ChargeCodeLower = t.ChargeCode != null ? t.ChargeCode.ToLower() : null,
+                ProjectNameLower = t.ProjectName.ToLower(),
+                ClientNameLower = t.ClientName.ToLower(),
+                ProjectManagerNameLower = t.ProjectManagerName != null ? t.ProjectManagerName.ToLower() : null,
             });
 
         if (request.IsSubmitted != null)
@@ -346,10 +350,10 @@ public class ProjectStatusReportServiceV1
         {
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.StartDate, "StartDate" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.EndDate, "EndDate" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectName, "ProjectName" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectManagerName, "ProjectManagerName" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ChargeCode, "ChargeCodeLower" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectName, "ProjectNameLower" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ClientName, "ClientNameLower" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectManagerName, "ProjectManagerNameLower" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.Status, "Status" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPeriod, "BookingPeriod" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingStartDate, "BookingStartDate" },
@@ -449,6 +453,9 @@ public class ProjectStatusReportServiceV1
                 ActivityId = t.ActivityId,
                 ActivityName = t.Activity != null ? t.Activity.Name : null,
                 CreatedAt = t.CreatedAt,
+                ChargeCodeLower = t.ChargeCode.Code.ToLower(),
+                StaffNameLower = t.Staff.Name.ToLower(),
+                ActivityNameLower = t.Activity != null ? t.Activity.Name.ToLower() : null,
             });
 
         var total = await mapped.CountAsync(ct);
@@ -467,9 +474,9 @@ public class ProjectStatusReportServiceV1
             { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.BillableHours, "BillableHours" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Hours, "Hours" },
             { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Date, "Date" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.StaffName, "StaffName" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Activity, "Activity" }
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.ChargeCode, "ChargeCodeLower" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.StaffName, "StaffNameLower" },
+            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Activity, "ActivityNameLower" }
         };
 
         var sortProperty = sortMap[request.SortBy];

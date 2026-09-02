@@ -681,17 +681,21 @@ namespace HQ.Server.Services
                 ActivityId = t.ActivityId,
                 ActivityName = t.Activity != null ? t.Activity.Name : null,
                 CreatedAt = t.CreatedAt,
+                ChargeCodeLower = t.ChargeCode.Code.ToLower(),
+                ClientNameLower = t.ChargeCode.Project != null ? t.ChargeCode.Project.Client.Name.ToLower() : null,
+                ProjectNameLower = t.ChargeCode.Project != null ? t.ChargeCode.Project.Name.ToLower() : null,
+                StaffNameLower = t.Staff.Name.ToLower(),
             });
 
             var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
             {
                 { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
                 { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCodeLower" },
                 { Abstractions.Times.GetTimesV1.SortColumn.Billable, "Billable" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
-                { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "ClientNameLower" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectNameLower" },
+                { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffNameLower" },
                 { Abstractions.Times.GetTimesV1.SortColumn.HoursApproved, "HoursApproved" }
             };
 
@@ -850,7 +854,10 @@ namespace HQ.Server.Services
                     TimeStatus = t.Status,
                     RejectionNotes = t.RejectionNotes,
                     ProjectId = t.ChargeCode.ProjectId,
-                    ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null
+                    ClientId = t.ChargeCode.Project != null ? t.ChargeCode.Project.ClientId : null,
+                    ChargeCodeLower = t.ChargeCode.Code.ToLower(),
+                    ClientNameLower = t.ChargeCode.Project != null ? t.ChargeCode.Project.Client.Name.ToLower() : null,
+                    ProjectNameLower = t.ChargeCode.Project != null ? t.ChargeCode.Project.Name.ToLower() : null
                 });
 
 
@@ -858,9 +865,9 @@ namespace HQ.Server.Services
             {
                 { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
                 { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "ClientName" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCodeLower" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "ClientNameLower" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectNameLower" },
             };
 
             if (request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.Date)

@@ -96,31 +96,6 @@ public class ClientServiceV1
 
         var total = await records.CountAsync(ct);
 
-        var sortMap = new Dictionary<GetClientsV1.SortColumn, string>()
-        {
-            { Abstractions.Clients.GetClientsV1.SortColumn.CreatedAt, "CreatedAt" },
-            { Abstractions.Clients.GetClientsV1.SortColumn.Name, "Name" },
-            { Abstractions.Clients.GetClientsV1.SortColumn.HourlyRate, "HourlyRate" },
-            { Abstractions.Clients.GetClientsV1.SortColumn.BillingEmail, "BillingEmail" },
-            { Abstractions.Clients.GetClientsV1.SortColumn.OfficialName, "OfficialName" },
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        records = request.SortDirection == SortDirection.Asc ?
-            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
-
-        if (request.Skip.HasValue)
-        {
-            records = records.Skip(request.Skip.Value);
-        }
-
-        if (request.Take.HasValue)
-        {
-            records = records.Take(request.Take.Value);
-        }
-
         var mapped = records.Select(t => new GetClientsV1.Record()
         {
             Id = t.Id,
@@ -128,7 +103,35 @@ public class ClientServiceV1
             OfficialName = t.OfficialName,
             BillingEmail = t.BillingEmail,
             HourlyRate = t.HourlyRate,
+            NameLower = t.Name.ToLower(),
+            OfficialNameLower = t.OfficialName != null ? t.OfficialName.ToLower() : null,
+            BillingEmailLower = t.BillingEmail != null ? t.BillingEmail.ToLower() : null,
         });
+
+        var sortMap = new Dictionary<GetClientsV1.SortColumn, string>()
+        {
+            { Abstractions.Clients.GetClientsV1.SortColumn.CreatedAt, "CreatedAt" },
+            { Abstractions.Clients.GetClientsV1.SortColumn.Name, "NameLower" },
+            { Abstractions.Clients.GetClientsV1.SortColumn.HourlyRate, "HourlyRate" },
+            { Abstractions.Clients.GetClientsV1.SortColumn.BillingEmail, "BillingEmailLower" },
+            { Abstractions.Clients.GetClientsV1.SortColumn.OfficialName, "OfficialNameLower" },
+        };
+
+        var sortProperty = sortMap[request.SortBy];
+
+        mapped = request.SortDirection == SortDirection.Asc ?
+            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+
+        if (request.Skip.HasValue)
+        {
+            mapped = mapped.Skip(request.Skip.Value);
+        }
+
+        if (request.Take.HasValue)
+        {
+            mapped = mapped.Take(request.Take.Value);
+        }
 
         var response = new GetClientsV1.Response()
         {

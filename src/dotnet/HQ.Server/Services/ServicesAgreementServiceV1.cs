@@ -64,15 +64,12 @@ namespace HQ.Server.Services
                 ChargeCodeDescription = (t.ChargeCode != null) ? t.ChargeCode.Description : null,
                 ProjectStatus = (int?)(t.Quote != null ? t.Quote.Status : (ProjectStatus)1),
 
-
-
             });
-
 
             var sortMap = new Dictionary<GetServicesAgreementV1.SortColumn, string>()
         {
-            { GetServicesAgreementV1.SortColumn.Name, "Name" },
-            { GetServicesAgreementV1.SortColumn.chargeCode, "ChargeCode" },
+            { GetServicesAgreementV1.SortColumn.Name, "NameLower" },
+            { GetServicesAgreementV1.SortColumn.chargeCode, "ChargeCodeLower" },
             { GetServicesAgreementV1.SortColumn.StartDate, "StartDate" },
             { GetServicesAgreementV1.SortColumn.EndDate, "EndDate" },
             { GetServicesAgreementV1.SortColumn.Cost, "CostValue" },
@@ -99,9 +96,30 @@ namespace HQ.Server.Services
 
             var total = await records.CountAsync(ct);
 
+            var mappedWithLower = mapped.Select(t => new GetServicesAgreementV1.Record()
+            {
+                Id = t.Id,
+                ClientId = t.ClientId,
+                Name = t.Name,
+                ServiceNumber = t.ServiceNumber,
+                Description = t.Description,
+                QuoteId = t.QuoteId,
+                CostValue = t.CostValue,
+                CostPeriod = t.CostPeriod,
+                PriceValue = t.PriceValue,
+                PricePeriod = t.PricePeriod,
+                StartDate = t.StartDate,
+                EndDate = t.EndDate,
+                ChargeCode = t.ChargeCode,
+                ChargeCodeDescription = t.ChargeCodeDescription,
+                ProjectStatus = t.ProjectStatus,
+                NameLower = t.Name.ToLower(),
+                ChargeCodeLower = t.ChargeCode != null ? t.ChargeCode.ToLower() : null,
+            });
+
             var response = new GetServicesAgreementV1.Response()
             {
-                Records = await mapped.ToListAsync(ct),
+                Records = await mappedWithLower.ToListAsync(ct),
                 Total = total
             };
 

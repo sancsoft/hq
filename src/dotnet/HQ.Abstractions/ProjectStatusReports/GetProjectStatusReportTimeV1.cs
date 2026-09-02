@@ -1,4 +1,6 @@
-﻿using HQ.Abstractions.Common;
+﻿using System.Text.Json.Serialization;
+
+using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
 namespace HQ.Abstractions.ProjectStatusReports;
@@ -54,5 +56,12 @@ public class GetProjectStatusReportTimeV1
         public string? ActivityName { get; set; }
         public string? Description { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
+
+        [JsonIgnore]
+        public string ChargeCodeLower { get; set; } = null!;
+        [JsonIgnore]
+        public string StaffNameLower { get; set; } = null!;
+        [JsonIgnore]
+        public string? ActivityNameLower { get; set; }
     }
 }

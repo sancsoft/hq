@@ -117,5 +117,14 @@ public class GetProjectsV1
         public decimal? ProjectTotalHours { get; set; }
         public bool RequireTask { get; set; }
 
+        [JsonIgnore]
+        public string NameLower { get; set; } = null!;
+        [JsonIgnore]
+        public string ClientNameLower { get; set; } = null!;
+        [JsonIgnore]
+        public string? ProjectManagerNameLower { get; set; }
+        [JsonIgnore]
+        public string? ChargeCodeLower { get; set; }
+
     }
 }
