@@ -63,7 +63,7 @@ public class GetStaffV1
         public DateOnly? TimeEntryCutoffDate { get; set; }
 
         [JsonIgnore]
-        public string NameLower { get; set; } = null!;
+        public string? NameLower { get; set; }
         [JsonIgnore]
         public string? FirstNameLower { get; set; }
         [JsonIgnore]
