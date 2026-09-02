@@ -290,6 +290,10 @@ public class ProjectServiceV1
             TotalPercentCompleteSort = !t.TotalHours.HasValue || t.TotalHours == 0 ? -1 : t.ChargeCode!.Times.Sum(x => x.HoursApproved ?? x.Hours) / t.TotalHours.Value,
             TotalStartDate = t.ChargeCode.Times.Min(t => t.Date),
             TotalEndDate = t.ChargeCode.Times.Max(t => t.Date),
+            NameLower = t.Name.ToLower(),
+            ClientNameLower = t.Client.Name.ToLower(),
+            ProjectManagerNameLower = t.ProjectManager != null ? t.ProjectManager.Name.ToLower() : null,
+            ChargeCodeLower = t.ChargeCode != null ? t.ChargeCode.Code.ToLower() : null,
         })
         .Select(t => new GetProjectsV1.Record()
         {
@@ -317,6 +321,10 @@ public class ProjectServiceV1
             Billable = t.Billable,
             ProjectTotalHours = t.ProjectTotalHours,
             RequireTask = t.RequireTask,
+            NameLower = t.NameLower,
+            ClientNameLower = t.ClientNameLower,
+            ProjectManagerNameLower = t.ProjectManagerNameLower,
+            ChargeCodeLower = t.ChargeCodeLower,
 
             BookingStartDate = t.BookingStartDate,
             BookingEndDate = t.BookingEndDate,
@@ -339,12 +347,12 @@ public class ProjectServiceV1
 
         var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
         {
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectName, "Name" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectManagerName, "ProjectManagerName" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectName, "NameLower" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectManagerName, "ProjectManagerNameLower" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.StartDate, "StartDate" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.EndDate, "EndDate" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode, "ChargeCode" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ClientName, "ClientNameLower" },
+            { Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode, "ChargeCodeLower" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.Status, "ProjectStatus" },
              { Abstractions.Projects.GetProjectsV1.SortColumn.BookingPeriod, "BookingPeriod" },
             { Abstractions.Projects.GetProjectsV1.SortColumn.BookingStartDate, "BookingStartDate" },
