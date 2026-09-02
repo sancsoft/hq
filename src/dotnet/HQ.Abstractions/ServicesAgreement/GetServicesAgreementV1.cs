@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
