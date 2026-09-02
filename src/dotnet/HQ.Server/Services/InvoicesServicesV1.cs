@@ -82,15 +82,17 @@ namespace HQ.Server.Invoices
                 Date = t.Date,
                 InvoiceNumber = t.InvoiceNumber,
                 Total = t.Total,
-                TotalApprovedHours = t.TotalApprovedHours
+                TotalApprovedHours = t.TotalApprovedHours,
+                ClientNameLower = t.Client.Name.ToLower(),
+                InvoiceNumberLower = t.InvoiceNumber != null ? t.InvoiceNumber.ToLower() : null,
             });
 
             var sortMap = new Dictionary<GetInvoicesV1.SortColumn, string>() {
-                { Abstractions.Invoices.GetInvoicesV1.SortColumn.ClientName, "ClientName" },
+                { Abstractions.Invoices.GetInvoicesV1.SortColumn.ClientName, "ClientNameLower" },
                 { Abstractions.Invoices.GetInvoicesV1.SortColumn.Total, "Total" },
                 { Abstractions.Invoices.GetInvoicesV1.SortColumn.TotalApprovedHours, "TotalApprovedHours" },
                 { Abstractions.Invoices.GetInvoicesV1.SortColumn.Date, "Date" },
-                { Abstractions.Invoices.GetInvoicesV1.SortColumn.InvoiceNumber, "InvoiceNumber" }
+                { Abstractions.Invoices.GetInvoicesV1.SortColumn.InvoiceNumber, "InvoiceNumberLower" }
             };
             var sortProperty = sortMap[request.SortBy];
 

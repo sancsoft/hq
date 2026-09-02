@@ -138,9 +138,18 @@ public class HolidayServiceV1
 
         var total = await records.CountAsync(ct);
 
+        var mapped = records.Select(t => new GetHolidayV1.Record()
+        {
+            Id = t.Id,
+            Name = t.Name,
+            Jurisdiciton = t.Jurisdiciton,
+            Date = t.Date,
+            NameLower = t.Name.ToLower(),
+        });
+
         var sortMap = new Dictionary<GetHolidayV1.SortColumn, string>()
         {
-            { Abstractions.Holiday.GetHolidayV1.SortColumn.Name, "Name" },
+            { Abstractions.Holiday.GetHolidayV1.SortColumn.Name, "NameLower" },
             { Abstractions.Holiday.GetHolidayV1.SortColumn.Date, "Date" },
             { Abstractions.Holiday.GetHolidayV1.SortColumn.Jurisdiciton, "Jurisdiction" },
 
@@ -148,28 +157,19 @@ public class HolidayServiceV1
 
         var sortProperty = sortMap[request.SortBy];
 
-        records = request.SortDirection == SortDirection.Asc ?
-            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+        mapped = request.SortDirection == SortDirection.Asc ?
+            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
+            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
 
         if (request.Skip.HasValue)
         {
-            records = records.Skip(request.Skip.Value);
+            mapped = mapped.Skip(request.Skip.Value);
         }
 
         if (request.Take.HasValue)
         {
-            records = records.Take(request.Take.Value);
+            mapped = mapped.Take(request.Take.Value);
         }
-
-        var mapped = records.Select(t => new GetHolidayV1.Record()
-        {
-            Id = t.Id,
-            Name = t.Name,
-            Jurisdiciton = t.Jurisdiciton,
-            Date = t.Date,
-
-        });
 
         var response = new GetHolidayV1.Response()
         {

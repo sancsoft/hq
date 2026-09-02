@@ -164,15 +164,18 @@ public class QuoteServiceV1
             Status = t.Status,
             Date = t.Date,
             HasPDF = t.HasPDF,
-            HasProject = t.ChargeCode!.ProjectId != null
+            HasProject = t.ChargeCode!.ProjectId != null,
+            NameLower = t.Name.ToLower(),
+            ClientNameLower = t.Client.Name.ToLower(),
+            ChargeCodeLower = t.ChargeCode != null ? t.ChargeCode.Code.ToLower() : null,
         });
 
         var sortMap = new Dictionary<GetQuotesV1.SortColumn, string>()
         {
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteName, "Name" },
+            { Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteName, "NameLower" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteNumber, "QuoteNumber" },
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.ChargeCode, "ChargeCode" },
+            { Abstractions.Quotes.GetQuotesV1.SortColumn.ClientName, "ClientNameLower" },
+            { Abstractions.Quotes.GetQuotesV1.SortColumn.ChargeCode, "ChargeCodeLower" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.Value, "Value" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.Status, "Status" },
             { Abstractions.Quotes.GetQuotesV1.SortColumn.Date, "Date" },

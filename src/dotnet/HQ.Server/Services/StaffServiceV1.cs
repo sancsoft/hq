@@ -209,19 +209,44 @@ public class StaffServiceV1
             FirstName = t.FirstName,
             LastName = t.LastName,
             Email = t.Email,
-            TimeEntryCutoffDate = t.TimeEntryCutoffDate
+            TimeEntryCutoffDate = t.TimeEntryCutoffDate,
+            NameLower = t.Name != null ? t.Name.ToLower() : t.Name.ToLower(),
+            FirstNameLower = t.FirstName != null ? t.FirstName.ToLower() : null,
+            LastNameLower = t.LastName != null ? t.LastName.ToLower() : null,
+            StatusLower = t.Plans.Where(t => t.Date == today).Select(x => x.Status).SingleOrDefault()
+        }).Select(t => new GetStaffV1.Record()
+        {
+            Id = t.Id,
+            Name = t.Name,
+            WorkHours = t.WorkHours,
+            VacationHours = t.VacationHours,
+            Jurisdiciton = t.Jurisdiciton,
+            StartDate = t.StartDate,
+            EndDate = t.EndDate,
+            Status = t.Status,
+            Hrs = t.Hrs,
+            BillableHrs = t.BillableHrs,
+            HrsThisMonth = t.HrsThisMonth,
+            FirstName = t.FirstName,
+            LastName = t.LastName,
+            Email = t.Email,
+            TimeEntryCutoffDate = t.TimeEntryCutoffDate,
+            NameLower = t.NameLower,
+            FirstNameLower = t.FirstNameLower,
+            LastNameLower = t.LastNameLower,
+            StatusLower = t.Status != null ? t.Status.ToLower() : null,
         });
 
 
         var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
         {
-            { Abstractions.Staff.GetStaffV1.SortColumn.Name, "Name" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.FirstName, "FirstName" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.Name, "NameLower" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.FirstName, "FirstNameLower" },
             { Abstractions.Staff.GetStaffV1.SortColumn.Hrs, "Hrs" },
             { Abstractions.Staff.GetStaffV1.SortColumn.BillableHrs, "BillableHrs" },
             { Abstractions.Staff.GetStaffV1.SortColumn.Jurisdiciton, "Jurisdiciton" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.Status, "Status" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.LastName, "LastName" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.Status, "StatusLower" },
+            { Abstractions.Staff.GetStaffV1.SortColumn.LastName, "LastNameLower" },
             { Abstractions.Staff.GetStaffV1.SortColumn.StartDate, "StartDate" },
             { Abstractions.Staff.GetStaffV1.SortColumn.EndDate, "EndDate" },
             { Abstractions.Staff.GetStaffV1.SortColumn.VacationHours, "VacationHours" },

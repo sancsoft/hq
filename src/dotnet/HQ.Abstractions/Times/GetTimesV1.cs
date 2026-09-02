@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Text.Json.Serialization;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
@@ -84,6 +86,15 @@ namespace HQ.Abstractions.Times
             public string? Description { get; set; } = null!;
             public DateTime CreatedAt { get; set; }
             public bool Billable { get; set; }
+
+            [JsonIgnore]
+            public string ChargeCodeLower { get; set; } = null!;
+            [JsonIgnore]
+            public string? ClientNameLower { get; set; }
+            [JsonIgnore]
+            public string? ProjectNameLower { get; set; }
+            [JsonIgnore]
+            public string? StaffNameLower { get; set; }
         }
     }
 }

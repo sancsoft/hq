@@ -166,17 +166,21 @@ public class ChargeCodeServiceV1
     }).ToList()
     : new List<GetChargeCodesV1.Activity>(),
             IsProjectMember = !request.StaffId.HasValue ? null : t.Project!.ProjectMembers.Any(x => x.StaffId == request.StaffId.Value),
-            IsProjectMemberSort = !request.StaffId.HasValue ? 1 : (t.Project!.ProjectMembers.Any(x => x.StaffId == request.StaffId.Value)) ? 0 : 1
+            IsProjectMemberSort = !request.StaffId.HasValue ? 1 : (t.Project!.ProjectMembers.Any(x => x.StaffId == request.StaffId.Value)) ? 0 : 1,
+            CodeLower = t.Code.ToLower(),
+            ProjectNameLower = t.Project != null ? t.Project.Name.ToLower() : null,
+            QuoteNameLower = t.Quote != null ? t.Quote.Name.ToLower() : null,
+            ServiceAgreementNameLower = t.ServiceAgreement != null ? t.ServiceAgreement.Name.ToLower() : null,
         });
 
         var sortMap = new Dictionary<GetChargeCodesV1.SortColumn, string>()
         {
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code, "Code" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code, "CodeLower" },
             { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Billable, "Billable" },
             { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Active, "Active" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName, "ProjectName" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName, "QuoteName" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName, "ServiceAgreementName" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName, "ProjectNameLower" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName, "QuoteNameLower" },
+            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName, "ServiceAgreementNameLower" },
             { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.IsProjectMember, "IsProjectMemberSort" },
         };
 

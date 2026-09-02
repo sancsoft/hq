@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Text.Json.Serialization;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
@@ -60,5 +62,14 @@ public class GetStaffV1
         public string? LastName { get; set; }
         public string? Email { get; set; }
         public DateOnly? TimeEntryCutoffDate { get; set; }
+
+        [JsonIgnore]
+        public string NameLower { get; set; } = null!;
+        [JsonIgnore]
+        public string? FirstNameLower { get; set; }
+        [JsonIgnore]
+        public string? LastNameLower { get; set; }
+        [JsonIgnore]
+        public string? StatusLower { get; set; }
     }
 }

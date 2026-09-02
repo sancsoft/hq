@@ -1,5 +1,7 @@
 
 
+using System.Text.Json.Serialization;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
@@ -43,6 +45,12 @@ namespace HQ.Abstractions.Quotes
             public ProjectStatus Status { get; set; }
             public bool HasPDF { get; set; }
             public bool HasProject { get; set; }
+            [JsonIgnore]
+            public string NameLower { get; set; } = null!;
+            [JsonIgnore]
+            public string ClientNameLower { get; set; } = null!;
+            [JsonIgnore]
+            public string? ChargeCodeLower { get; set; }
         }
     }
 }

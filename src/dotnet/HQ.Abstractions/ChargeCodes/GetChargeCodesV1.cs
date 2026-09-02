@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Text.Json.Serialization;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
@@ -59,6 +61,15 @@ namespace HQ.Abstractions.ChargeCodes
             public bool? IsProjectMember { get; set; }
             public int IsProjectMemberSort { get; set; }
             public bool? RequireTask { get; set; }
+
+            [JsonIgnore]
+            public string CodeLower { get; set; } = null!;
+            [JsonIgnore]
+            public string? ProjectNameLower { get; set; }
+            [JsonIgnore]
+            public string? QuoteNameLower { get; set; }
+            [JsonIgnore]
+            public string? ServiceAgreementNameLower { get; set; }
         }
         public class Activity
         {

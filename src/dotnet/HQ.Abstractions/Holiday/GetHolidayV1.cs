@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Text.Json.Serialization;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
@@ -36,5 +38,7 @@ public class GetHolidayV1
         public string Name { get; set; } = null!;
         public Jurisdiciton Jurisdiciton { get; set; }
         public DateOnly Date { get; set; }
+        [JsonIgnore]
+        public string NameLower { get; set; } = null!;
     }
 }

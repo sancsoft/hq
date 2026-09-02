@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using System.Text.Json.Serialization;
+
 using HQ.Abstractions.Common;
 using HQ.Abstractions.Enumerations;
 
@@ -47,6 +49,10 @@ namespace HQ.Abstractions.ServicesAgreement
             public string? ChargeCode { get; set; }
             public string? ChargeCodeDescription { get; set; }
             public int? ProjectStatus { get; set; }
+            [JsonIgnore]
+            public string NameLower { get; set; } = null!;
+            [JsonIgnore]
+            public string? ChargeCodeLower { get; set; }
         }
     }
 }

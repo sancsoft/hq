@@ -73,5 +73,12 @@ public class GetDashboardTimeV1
         public TimeStatus TimeStatus { get; set; }
         public string ChargeCode { get; set; } = null!;
         public string? RejectionNotes { get; set; }
+
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string ChargeCodeLower { get; set; } = null!;
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string? ClientNameLower { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string? ProjectNameLower { get; set; }
     }
 }

@@ -117,5 +117,14 @@ public class GetProjectStatusReportsV1
         public decimal? SummaryPercentCompleteSort { get; set; }
         public bool IsCurrentPsrPeriod { get; set; }
         public ProjectType ProjectType { get; set; }
+
+        [JsonIgnore]
+        public string? ChargeCodeLower { get; set; }
+        [JsonIgnore]
+        public string ProjectNameLower { get; set; } = null!;
+        [JsonIgnore]
+        public string ClientNameLower { get; set; } = null!;
+        [JsonIgnore]
+        public string? ProjectManagerNameLower { get; set; }
     }
 }
