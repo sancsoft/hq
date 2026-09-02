@@ -210,7 +210,7 @@ public class StaffServiceV1
             LastName = t.LastName,
             Email = t.Email,
             TimeEntryCutoffDate = t.TimeEntryCutoffDate,
-            NameLower = t.Name != null ? t.Name.ToLower() : t.Name.ToLower(),
+            NameLower = t.Name != null ? t.Name.ToLower() : null,
             FirstNameLower = t.FirstName != null ? t.FirstName.ToLower() : null,
             LastNameLower = t.LastName != null ? t.LastName.ToLower() : null,
             StatusLower = t.Plans.Where(t => t.Date == today).Select(x => x.Status).SingleOrDefault()
