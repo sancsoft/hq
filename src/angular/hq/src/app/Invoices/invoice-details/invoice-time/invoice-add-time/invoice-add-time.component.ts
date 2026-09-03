@@ -135,8 +135,12 @@ export class InvoiceAddTimeComponent implements OnDestroy {
   }
 
   updateTimeSelection(time: GetTimeRecordV1) {
-    const input = document.getElementById('invoice_hrs_' + time.id) as HTMLInputElement;
-    const hrs = input ? (parseFloat(input.value) || 0) : (time.hoursInvoiced ?? time.hoursApproved ?? time.hours);
+    const input = document.getElementById(
+      'invoice_hrs_' + time.id,
+    ) as HTMLInputElement;
+    const hrs = input
+      ? parseFloat(input.value) || 0
+      : (time.hoursInvoiced ?? time.hoursApproved ?? time.hours);
 
     if (
       (document.getElementById('time_checkbox_' + time.id) as HTMLInputElement)
@@ -197,9 +201,10 @@ export class InvoiceAddTimeComponent implements OnDestroy {
         if (!Array.isArray(entries)) return;
 
         entries.forEach((time: InvoiceTimeEntry) => {
-
           const t = time.record;
-          const input = document.getElementById('invoice_hrs_' + t.id) as HTMLInputElement;
+          const input = document.getElementById(
+            'invoice_hrs_' + t.id,
+          ) as HTMLInputElement;
           const hrs = input ? parseFloat(input.value) : 0;
 
           if (shouldSelectAll) {
@@ -264,7 +269,7 @@ export class InvoiceAddTimeComponent implements OnDestroy {
           this.hqService.upsertTimeHoursInvoicedV1({
             id: timeId,
             hoursInvoiced: hrs,
-          })
+          }),
         );
       }
 

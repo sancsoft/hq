@@ -16,11 +16,13 @@
     "
     [ngClass]="{
       'border-red-500 text-white': ngControl?.invalid && ngControl?.touched,
-      'border-red-700 text-white': ngControl?.invalid && ngControl?.touched && variant === 'tertiary',
+      'border-red-700 text-white':
+        ngControl?.invalid && ngControl?.touched && variant === 'tertiary',
       'border-steel-blue-600 text-white':
         !(ngControl?.invalid && ngControl?.touched) && variant === 'primary',
       'border-black text-white':
-        !(ngControl?.invalid && ngControl?.touched) && (variant === 'secondary' || variant === 'tertiary'),
+        !(ngControl?.invalid && ngControl?.touched) &&
+        (variant === 'secondary' || variant === 'tertiary'),
       'border-transparent':
         !(ngControl?.invalid && ngControl?.touched) && variant === 'pill',
       'border-white text-white': focused && variant !== 'pill',
