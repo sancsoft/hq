@@ -154,10 +154,12 @@ export class InvoiceTimeListComponent implements OnDestroy {
       if (event.id) {
         this.toastService.show('Success', 'Time entry successfully updated.');
         this.invoiceDetailsService.refresh();
+        this.invoiceDetailsService.invoiceRefresh();
         // this.planningPointsRequestTrigger$.next(); // TODO: Trigger this
       } else {
         this.toastService.show('Success', 'Time entry successfully created.');
         this.invoiceDetailsService.refresh();
+        this.invoiceDetailsService.invoiceRefresh();
         // this.planningPointsRequestTrigger$.next();
       }
     } catch (err) {
