@@ -295,6 +295,7 @@
               </td>
               <td class="border-b border-black px-2 py-2">
                 <input
+                  id="invoice_hrs_{{ time.record.id }}" 
                   title="invoiced hours"
                   class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12"
                   [value]="
@@ -302,7 +303,7 @@
                     time.record.hoursApproved ??
                     time.record.hours
                   "
-                  (change)="updateInvoicedHours(time.record, $event)"
+                  (input)="updateInvoicedHours(time.record, $event)"
                   type="number"
                   step="0.25"
                   min="0"

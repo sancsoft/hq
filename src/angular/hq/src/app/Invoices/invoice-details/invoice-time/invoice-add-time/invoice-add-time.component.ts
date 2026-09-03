@@ -135,7 +135,9 @@ export class InvoiceAddTimeComponent implements OnDestroy {
   }
 
   updateTimeSelection(time: GetTimeRecordV1) {
-    const hrs = time.hoursInvoiced ?? time.hoursApproved ?? time.hours;
+    const input = document.getElementById('invoice_hrs_' + time.id) as HTMLInputElement;
+    const hrs = input ? (parseFloat(input.value) || 0) : (time.hoursInvoiced ?? time.hoursApproved ?? time.hours);
+
     if (
       (document.getElementById('time_checkbox_' + time.id) as HTMLInputElement)
         .checked
@@ -195,8 +197,10 @@ export class InvoiceAddTimeComponent implements OnDestroy {
         if (!Array.isArray(entries)) return;
 
         entries.forEach((time: InvoiceTimeEntry) => {
+
           const t = time.record;
-          const hrs = t.hoursInvoiced ?? t.hoursApproved ?? t.hours ?? 0;
+          const input = document.getElementById('invoice_hrs_' + t.id) as HTMLInputElement;
+          const hrs = input ? parseFloat(input.value) : 0;
 
           if (shouldSelectAll) {
             this.selectedTimes.set(t.id, hrs);
@@ -254,6 +258,15 @@ export class InvoiceAddTimeComponent implements OnDestroy {
           hoursInvoiced: hrs,
         });
       });
+
+      for (const [timeId, hrs] of this.selectedTimes.entries()) {
+        await firstValueFrom(
+          this.hqService.upsertTimeHoursInvoicedV1({
+            id: timeId,
+            hoursInvoiced: hrs,
+          })
+        );
+      }
 
       try {
         await firstValueFrom(this.hqService.addTimesToInvoiceV1(request));
