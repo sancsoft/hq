@@ -134,27 +134,34 @@ export class TimeListService extends BaseListService<
   protected override getResponse(): Observable<GetTimeRecordsV1> {
     const projectId$ = this.project.valueChanges.pipe(
       startWith(this.project.value),
+      tap(() => this.goToPage(1)),
     );
     const staffMemberId$ = this.staffMember.valueChanges.pipe(
       startWith(this.staffMember.value),
+      tap(() => this.goToPage(1)),
     );
     const startDate$ = this.startDate.valueChanges.pipe(
       startWith(this.startDate.value),
+      tap(() => this.goToPage(1)),
     );
     const endDate$ = this.endDate.valueChanges.pipe(
       startWith(this.endDate.value),
     );
     const period$ = this.selectedPeriod.valueChanges.pipe(
       startWith(this.selectedPeriod.value),
+      tap(() => this.goToPage(1)),
     );
     const invoiced$ = this.invoiced.valueChanges.pipe(
       startWith(this.invoiced.value),
+      tap(() => this.goToPage(1)),
     );
     const timeStatus$ = this.timeStatus.valueChanges.pipe(
       startWith(this.timeStatus.value),
+      tap(() => this.goToPage(1)),
     );
     const billable$ = this.billable.valueChanges.pipe(
       startWith(this.billable.value),
+      tap(() => this.goToPage(1)),
     );
     const combinedParams = {
       search: this.search$,
