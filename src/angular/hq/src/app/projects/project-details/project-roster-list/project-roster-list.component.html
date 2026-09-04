@@ -10,9 +10,7 @@
       <tr>
         <td>{{ staff.name }}</td>
         <td class="text-right divide-x divide-teal-200">
-          @if (
-            (projectDetailsService.canManageProjectStatusReport$ | async)
-          ) {
+          @if (projectDetailsService.canManageProjectStatusReport$ | async) {
             <button
               type="button"
               class="text-teal-200 hover:text-teal-300 pl-3 uppercase"
@@ -26,9 +24,7 @@
     }
   </tbody>
 </table>
-@if (
-  (projectDetailsService.canManageProjectStatusReport$ | async)
-) {
+@if (projectDetailsService.canManageProjectStatusReport$ | async) {
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-5">
     <div class="border-b border-black pb-1 px-1 font-bold">
       Add Staff Member
