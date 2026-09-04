@@ -14,7 +14,6 @@
         <td>{{ activity.name }}</td>
         <td class="text-right divide-x divide-teal-200">
           @if (
-            ([HQRole.Executive, HQRole.Administrator] | inRole | async) ||
             (projectDetailsService.canManageProjectStatusReport$ | async)
           ) {
             <button
@@ -38,7 +37,6 @@
   </tbody>
 </table>
 @if (
-  ([HQRole.Executive, HQRole.Administrator] | inRole | async) ||
   (projectDetailsService.canManageProjectStatusReport$ | async)
 ) {
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-5">
