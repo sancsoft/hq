@@ -29,7 +29,6 @@ import {
 import { BaseListService } from '../../core/services/base-list.service';
 import { SortDirection } from '../../models/common/sort-direction';
 import { FormControl } from '@angular/forms';
-import { formControlChanges } from '../../core/functions/form-control-changes';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Injectable({
@@ -125,23 +124,30 @@ export class PsrListService extends BaseListService<
   }
 
   protected override getResponse(): Observable<GetPSRRecordsV1> {
-    const staffMemberId$ = formControlChanges(this.staffMember);
+    const staffMemberId$ = this.staffMember.valueChanges.pipe(
+      startWith(this.staffMember.value),
+      tap(() => this.goToPage(1)),
+    );
 
     const period$ = this.selectedPeriod.valueChanges.pipe(
       startWith(this.selectedPeriod.value),
       tap((date) => date || new Date()),
+      tap(() => this.goToPage(1)),
     );
 
     const isSubmitted$ = this.isSubmitted.valueChanges.pipe(
       startWith(this.isSubmitted.value),
+      tap(() => this.goToPage(1)),
     );
     const startDate$ = this.startDate.valueChanges.pipe(
       startWith(this.startDate.value),
       map((date) => date ?? null),
+      tap(() => this.goToPage(1)),
     );
     const endDate$ = this.endDate.valueChanges.pipe(
       startWith(this.endDate.value),
       map((date) => date ?? null),
+      tap(() => this.goToPage(1)),
     );
     return combineLatest({
       search: this.search$,
