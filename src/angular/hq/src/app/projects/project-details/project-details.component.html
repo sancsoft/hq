@@ -127,7 +127,9 @@
               #rlaReport="routerLinkActive"
               [ngClass]="[
                 rlaReport.isActive ? 'border-gray-100' : 'border-transparent',
-                (projectDetailService.psrId$ | async) ? '' : 'text-gray-500 pointer-events-none cursor-not-allowed cursor-not-allowed no-underline'
+                (projectDetailService.psrId$ | async)
+                  ? ''
+                  : 'text-gray-500 pointer-events-none cursor-not-allowed cursor-not-allowed no-underline',
               ]"
               class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
               >PM Report</a
@@ -139,7 +141,9 @@
               #rlaTime="routerLinkActive"
               [ngClass]="[
                 rlaTime.isActive ? 'border-gray-100' : 'border-transparent',
-                (projectDetailService.psrId$ | async) ? '' : 'text-gray-500 pointer-events-none cursor-not-allowed cursor-not-allowed no-underline'
+                (projectDetailService.psrId$ | async)
+                  ? ''
+                  : 'text-gray-500 pointer-events-none cursor-not-allowed cursor-not-allowed no-underline',
               ]"
               class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
               >PSR</a
