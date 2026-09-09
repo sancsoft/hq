@@ -120,31 +120,30 @@
               class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
               >Roster</a
             >
-
-            @if (projectDetailService.psrId$ | async) {
-              <a
-                routerLink="report"
-                [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
-                routerLinkActive
-                #rlaReport="routerLinkActive"
-                [ngClass]="
-                  rlaReport.isActive ? 'border-gray-100' : 'border-transparent'
-                "
-                class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
-                >PM Report</a
-              >
-              <a
-                routerLink="time"
-                [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
-                routerLinkActive
-                #rlaTime="routerLinkActive"
-                [ngClass]="
-                  rlaTime.isActive ? 'border-gray-100' : 'border-transparent'
-                "
-                class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
-                >PSR</a
-              >
-            }
+            <a
+              routerLink="report"
+              [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
+              routerLinkActive
+              #rlaReport="routerLinkActive"
+              [ngClass]="[
+                rlaReport.isActive ? 'border-gray-100' : 'border-transparent',
+                (projectDetailService.psrId$ | async) ? '' : 'text-gray-500 pointer-events-none cursor-not-allowed cursor-not-allowed no-underline'
+              ]"
+              class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+              >PM Report</a
+            >
+            <a
+              routerLink="time"
+              [queryParams]="{ psrId: projectDetailService.psrId$ | async }"
+              routerLinkActive
+              #rlaTime="routerLinkActive"
+              [ngClass]="[
+                rlaTime.isActive ? 'border-gray-100' : 'border-transparent',
+                (projectDetailService.psrId$ | async) ? '' : 'text-gray-500 pointer-events-none cursor-not-allowed cursor-not-allowed no-underline'
+              ]"
+              class="min-w-[120px] text-center whitespace-nowrap px-3 py-1 font-bold cursor-pointer border-b hover:border-gray-100"
+              >PSR</a
+            >
           </div>
         </div>
         <router-outlet></router-outlet>
