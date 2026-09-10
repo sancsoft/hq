@@ -11,10 +11,12 @@ import { Observable } from 'rxjs';
 import { SortColumn } from '../../../models/PSR/get-psr-time-v1';
 import { HQService } from '../../../services/hq.service';
 import { GetPSRTimeRecordV1 } from '../../../models/PSR/get-psr-time-v1';
+import { GetPSRTimeRequestV1 } from '../../../models/PSR/get-psr-time-v1';
 import { CommonModule } from '@angular/common';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
 import { TimeStatus } from '../../../enums/time-status';
+import { ProjectDetailsSearchService } from '../project-details-search.service';
 
 @Component({
   selector: 'hq-project-time',
@@ -35,6 +37,7 @@ export class ProjectTimeComponent {
   constructor(
     private hqService: HQService,
     private route: ActivatedRoute,
+    private searchService: ProjectDetailsSearchService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.Date);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -44,10 +47,21 @@ export class ProjectTimeComponent {
       projectStatusReportId: this.psrId$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
+      search: this.searchService.searchTermDebounced$,
     });
     const apiResponse$ = request$.pipe(
       debounceTime(500),
-      switchMap((request) => this.hqService.getPSRTimeV1(request)),
+      switchMap(({ projectStatusReportId, sortBy, sortDirection, search }) => {
+        const params: Partial<GetPSRTimeRequestV1> = {
+          ProjectStatusReportId: projectStatusReportId!,
+          sortBy,
+          sortDirection,
+        };
+        if (search) {
+          params.search = search;
+        }
+        return this.hqService.getPSRTimeV1(params);
+      }),
     );
     this.psrTimes$ = apiResponse$.pipe(map((response) => response.records));
   }

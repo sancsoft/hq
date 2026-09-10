@@ -35,23 +35,45 @@
   <div class="px-5 mb-[8px]">
     <div class="flex flex-col lg:flex-row justify-between items-start">
       <div class="flex items-end order-2 lg:order-1 gap-[20px]">
-        <!-- search bar -->
-        <div
-          class="relative flex items-stretch border border-steel-blue-600 text-gray-100 bg-blue-900 rounded h-[36px] w-[395px]"
-        >
-          <span
-            class="relative flex items-center justify-center text-center whitespace-nowrap w-[36px] hover:cursor-pointer after:block after:w-[1px] after:absolute after:right-[1px] after:top-[6px] after:bottom-[6px] after:bg-gray-100"
+        <!-- search bars -->
+        <div class="relative">
+          <label
+            for="searchPSRWeekOf"
+            class="font-open-sans text-nav-disabled text-xs font-bold uppercase"
+            >PSR Week of</label
           >
-            <i class="bi bi-search text-[14px]"></i>
-          </span>
-          <input
-            type="text"
-            class="w-[100%] block text-[14px] px-2 py-1 appearance-none focus:outline-none hover:cursor-pointer font-medium bg-inherit rounded"
-            name=""
-          />
+          <div class="grid relative w-full">
+            <input
+              #datePicker
+              class="w-full h-[36px] pl-2 border-steel-blue-600 appearance-none focus:outline-none font-medium row-start-1 col-start-1 border focus:border-white text-gray-100 bg-blue-900 rounded"
+              type="date"
+              id="searchPSRWeekOf"
+              name="searchPSRWeekOf"
+              (change)="searchService.setWeekOf($event.target.value)"
+              [value]="(searchService.selectedWeekOf$ | async) ?? ''"
+            />
+            <button
+              type="button"
+              title="Change date"
+              [disabled]="false"
+              (click)="datePicker.showPicker()"
+              class="flex items-center justify-center h-full pointer-events-auto cursor-pointer z-10 right-0 relative col-start-1 row-start-1 self-center justify-self-end w-[36px] after:block after:w-[1px] after:absolute after:left-[1px] after:top-[7px] after:bottom-[7px] after:bg-gray-100"
+            >
+              <i class="bi bi-calendar text-[14px] bg-blue-900"></i>
+            </button>
+          </div>
+        </div>
+        <div>
+          <hq-search-input
+            class="w-[350px]"
+            label="PSR Time"
+            [(ngModel)]="searchService.searchTerm"
+          >
+            >
+          </hq-search-input>
         </div>
 
-        <div class="pl-[5vw]">
+        <div class="pl-[8vw]">
           <div>
             <div
               class="text-xs text-right uppercase font-bold tracking-[.06em]"
