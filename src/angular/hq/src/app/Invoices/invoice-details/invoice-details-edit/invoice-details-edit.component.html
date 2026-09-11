@@ -98,7 +98,23 @@
             </div>
             @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
               <div class="flex flex-column justify-center items-center">
-                <hq-button (click)="onSubmit()" type="submit">Save</hq-button>
+                <hq-button
+                  (click)="onSubmit()"
+                  type="submit"
+                  [disabled]="
+                    !invoiceFormGroup.dirty || invoiceFormGroup.invalid
+                  "
+                  [ngClass]="{
+                    'text-gray-50 border-gray-500 bg-gray-500':
+                      this.invoiceFormGroup.touched &&
+                      this.invoiceFormGroup.dirty,
+                    '':
+                      !this.invoiceFormGroup.touched &&
+                      !this.invoiceFormGroup.dirty,
+                  }"
+                >
+                  Save
+                </hq-button>
               </div>
             }
           </div>
