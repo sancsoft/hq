@@ -692,7 +692,9 @@ namespace HQ.Server.Services
                 { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
                 { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
                 { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" },
-                { Abstractions.Times.GetTimesV1.SortColumn.HoursApproved, "HoursApproved" }
+                { Abstractions.Times.GetTimesV1.SortColumn.HoursApproved, "HoursApproved" },
+                { Abstractions.Times.GetTimesV1.SortColumn.ActivityName, "ActivityName" },
+                { Abstractions.Times.GetTimesV1.SortColumn.Task, "Task" }
             };
 
 

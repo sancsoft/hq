@@ -172,14 +172,18 @@
           <th
             width="190px"
             scope="col"
-            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
+            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
+            [hq-sort-header]="sortColumn.ProjectName"
+            (click)="onSortClick(sortColumn.ProjectName)"
           >
             Project
           </th>
           <th
             width="120px"
             scope="col"
-            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
+            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
+            [hq-sort-header]="sortColumn.ActivityName"
+            (click)="onSortClick(sortColumn.ActivityName)"
           >
             Activity
           </th>
@@ -187,6 +191,8 @@
             width="80px"
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
+            [hq-sort-header]="sortColumn.Task"
+            (click)="onSortClick(sortColumn.Task)"
           >
             Task
           </th>
