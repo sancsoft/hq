@@ -145,6 +145,26 @@
             +Time
           </button>
         }
+        @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+          <button
+            type="button"
+            [title]="
+              deleteBtnDisabled
+                ? 'No time entries selected to remove from invoice'
+                : 'Remove time entrie(s) from invoice'
+            "
+            [disabled]="deleteBtnDisabled"
+            [ngClass]="{
+              'text-gray-50 border-gray-500 bg-gray-500 ': deleteBtnDisabled,
+              'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
+                !deleteBtnDisabled,
+            }"
+            class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white"
+            (click)="deleteFromInvoice()"
+          >
+            Remove Time
+          </button>
+        }
       </div>
     </div>
   </div>
@@ -186,7 +206,19 @@
       <thead>
         <tr class="sticky top-0 text-left">
           <th width="15px" style="padding: 0px"></th>
-          <th width="30px"></th>
+          <th width="30px">
+            <div class="flex justify-center py-2 pl-2">
+              @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+                <input
+                  id="all_time_checkbox"
+                  title="Select All"
+                  [checked]="isAllChecked$ | async"
+                  type="checkbox"
+                  (change)="toggleAllEntries($event)"
+                />
+              }
+            </div>
+          </th>
           <th
             scope="col"
             width="120px"
@@ -276,7 +308,7 @@
           hq-invoice-new-time-entry
           [chargeCodes]="invoiceDetailsService.chargeCodes$ | async"
           (hqInvoiceTimeChange)="upsertTime($event)"
-          class="sticky top-[39px] bg-black-alt border-spacing-0 border-separate text-left"
+          class="sticky top-[47px] bg-black-alt border-spacing-0 border-separate text-left"
         ></tr>
       }
       <!-- Invoice time entry list -->
@@ -306,7 +338,7 @@
             </td>
           </tr>
         } @else {
-          @for (time of times; track $index) {
+          @for (time of times; track time.id) {
             <tr
               class="even:bg-gray-850 odd:bg-black-alt {{
                 time.status === 1 ? 'text-gray-450' : 'text-gray-100'
@@ -324,7 +356,21 @@
                 }}
                 "
               ></td>
-              <td class="border-b border-black py-2 pl-2"></td>
+              <td class="border-b border-black py-2 pl-2">
+                <div class="flex justify-center">
+                  @if (
+                    [HQRole.Executive, HQRole.Administrator] | inRole | async
+                  ) {
+                    <input
+                      id="time_checkbox_{{ time.id }}"
+                      title="Select Entry"
+                      [checked]="isChecked(time.id)"
+                      type="checkbox"
+                      (click)="updateTimeSelection(time)"
+                    />
+                  }
+                </div>
+              </td>
               <td class="border-b px-3 border-black py-2">
                 {{ time.staffName }}
               </td>
@@ -358,6 +404,9 @@
                   "
                   [value]="time.hoursInvoiced"
                   (change)="updateInvoicedHours(time, $event)"
+                  (focus)="
+                    $event.target.classList.remove('focus:border-red-700')
+                  "
                   type="number"
                   step="0.25"
                   min="0"
@@ -367,14 +416,18 @@
                 {{ time.description }}
               </td>
               <td class="border-b border-black px-3 py-2 justify-center">
-                <button
-                  type="button"
-                  class="h-[30px] px-2 py-2 rounded w-full"
-                  title="Delete Entry from Invoice"
-                  (click)="openRemoveTimeModal(time.id)"
-                >
-                  <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
-                </button>
+                @if (
+                  [HQRole.Executive, HQRole.Administrator] | inRole | async
+                ) {
+                  <button
+                    type="button"
+                    class="h-[30px] px-2 py-2 rounded w-full"
+                    title="Delete Entry from Invoice"
+                    (click)="openRemoveTimeModal(time.id)"
+                  >
+                    <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
+                  </button>
+                }
               </td>
             </tr>
           }
