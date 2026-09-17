@@ -139,7 +139,6 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       },
       error: console.error,
     });
-
   }
   onDrop(event: CdkDragDrop<FormGroup[]>): void {
     moveItemInArray(this.points, event.previousIndex, event.currentIndex);
