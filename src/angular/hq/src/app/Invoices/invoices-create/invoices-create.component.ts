@@ -23,6 +23,7 @@ import { APIError } from '../../errors/apierror';
 import { CoreModule } from '../../core/core.module';
 import { CreateInvoiceRequestV1 } from '../../models/Invoices/create-invoice-v1';
 import { ToastService } from '../../services/toast.service';
+import { InvoiceListService } from '../invoices-list/invoices-list.service';
 
 interface Form {
   clientId: FormControl<string | null>;
@@ -65,6 +66,7 @@ export class InvoicesCreateComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private toastService: ToastService,
+    private invoiceListService: InvoiceListService,
   ) {
     this.clients$ = this.hqService.getClientsV1({}).pipe(
       map((t) => t.records),
@@ -100,6 +102,7 @@ export class InvoicesCreateComponent implements OnInit, OnDestroy {
           relativeTo: this.route,
         });
         this.toastService.show('Accepted', 'Invoice has been created.');
+        this.invoiceListService.refresh();
       } else {
         this.apiErrors.length = 0;
         this.apiErrors.push(

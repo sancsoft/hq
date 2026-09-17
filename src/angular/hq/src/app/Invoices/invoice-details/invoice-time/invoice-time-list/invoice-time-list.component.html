@@ -352,6 +352,9 @@
                   "
                   [value]="time.hoursInvoiced"
                   (change)="updateInvoicedHours(time, $event)"
+                  (focus)="
+                    $event.target.classList.remove('focus:border-red-700')
+                  "
                   type="number"
                   step="0.25"
                   min="0"
@@ -361,14 +364,18 @@
                 {{ time.description }}
               </td>
               <td class="border-b border-black px-3 py-2 justify-center">
-                <button
-                  type="button"
-                  class="h-[30px] px-2 py-2 rounded w-full"
-                  title="Delete Entry from Invoice"
-                  (click)="openRemoveTimeModal(time.id)"
-                >
-                  <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
-                </button>
+                @if (
+                  [HQRole.Executive, HQRole.Administrator] | inRole | async
+                ) {
+                  <button
+                    type="button"
+                    class="h-[30px] px-2 py-2 rounded w-full"
+                    title="Delete Entry from Invoice"
+                    (click)="openRemoveTimeModal(time.id)"
+                  >
+                    <i class="bi bi-trash text-red-600 hover:text-red-700"></i>
+                  </button>
+                }
               </td>
             </tr>
           }

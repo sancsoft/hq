@@ -103,17 +103,39 @@ export class InvoiceTimeListComponent implements OnDestroy {
   }
 
   async updateInvoicedHours(time: GetTimeRecordV1, event: Event) {
+    const inputInvoicedHours = event.target as HTMLInputElement;
     const invoicedHours = (event.target as HTMLInputElement).value;
-    const roundedInvoicedHours = roundToNextQuarter(invoicedHours);
+    let roundedInvoicedHours = roundToNextQuarter(invoicedHours);
+    const numInvoicedHours = parseFloat(invoicedHours);
 
-    if (!time || invoicedHours == '') {
+    if (!time || invoicedHours == '' || numInvoicedHours < 0) {
       await firstValueFrom(
         this.modalService.alert(
           'Error',
           'Please Add a time to your invoiced hours',
         ),
       );
-      return;
+
+      inputInvoicedHours.value = '0';
+      roundedInvoicedHours = 0;
+
+      inputInvoicedHours.classList.remove('border-black');
+      inputInvoicedHours.classList.add(
+        'rounded-none',
+        'border-red-700',
+        'focus:border-red-700',
+        'focus:outline-none',
+      );
+
+      inputInvoicedHours.select();
+    } else {
+      inputInvoicedHours.classList.add('border-black');
+      inputInvoicedHours.classList.remove(
+        'rounded-none',
+        'border-red-700',
+        'focus:border-red-700',
+        'focus:outline-none',
+      );
     }
 
     const request = {
