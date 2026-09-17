@@ -683,25 +683,10 @@ namespace HQ.Server.Services
                 CreatedAt = t.CreatedAt,
             });
 
-            var sortMap = new Dictionary<GetTimesV1.SortColumn, string>()
-            {
-                { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
-                { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
-                { Abstractions.Times.GetTimesV1.SortColumn.Billable, "Billable" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "Client" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
-                { Abstractions.Times.GetTimesV1.SortColumn.StaffName, "StaffName" },
-                { Abstractions.Times.GetTimesV1.SortColumn.HoursApproved, "HoursApproved" }
-            };
-
-
-            var sortProperty = sortMap[request.SortBy];
-
             // HoursApproved has to sort differently since the Hours column displayed on invoice time list pages technically use
             // a records HoursApproved value only if the record has been approved, and otherwise uses the records Hours value
             // Sorting this way should prevent null values throwing off the time orders like with the standard OrderBy column name approach
-            if (sortProperty == "HoursApproved")
+            if (request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.HoursApproved)
             {
                 var tempMapped = mapped.Select(t => new { Record = t, FunctionalHours = t.HoursApproved ?? t.Hours });
 
@@ -711,23 +696,45 @@ namespace HQ.Server.Services
 
                 sorted = sorted
                     .ThenBy(t => t.Record.Date)
-                    .ThenBy(t => t.Record.StaffName)
-                    .ThenBy(t => t.Record.ClientName)
-                    .ThenBy(t => t.Record.ProjectName);
+                    .ThenBy(t => t.Record.StaffName!.ToLower())
+                    .ThenBy(t => t.Record.ClientName!.ToLower())
+                    .ThenBy(t => t.Record.ProjectName!.ToLower());
 
                 mapped = sorted.Select(t => t.Record);
             }
             else
             {
-                var sorted = request.SortDirection == SortDirection.Asc ?
-                    mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-                    mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+                var sorted = request.SortDirection == SortDirection.Asc
+                    ? request.SortBy switch
+                    {
+                        Abstractions.Times.GetTimesV1.SortColumn.Hours => mapped.OrderBy(t => t.Hours),
+                        Abstractions.Times.GetTimesV1.SortColumn.Date => mapped.OrderBy(t => t.Date),
+                        Abstractions.Times.GetTimesV1.SortColumn.ChargeCode => mapped.OrderBy(t => t.ChargeCode.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.Billable => mapped.OrderBy(t => t.Billable),
+                        Abstractions.Times.GetTimesV1.SortColumn.ClientName => mapped.OrderBy(t => t.ClientName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.ProjectName => mapped.OrderBy(t => t.ProjectName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.StaffName => mapped.OrderBy(t => t.StaffName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.HoursApproved => mapped.OrderBy(t => t.HoursApproved),
+                        _ => mapped.OrderBy(t => t.Id),
+                    }
+                    : request.SortBy switch
+                    {
+                        Abstractions.Times.GetTimesV1.SortColumn.Hours => mapped.OrderByDescending(t => t.Hours),
+                        Abstractions.Times.GetTimesV1.SortColumn.Date => mapped.OrderByDescending(t => t.Date),
+                        Abstractions.Times.GetTimesV1.SortColumn.ChargeCode => mapped.OrderByDescending(t => t.ChargeCode.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.Billable => mapped.OrderByDescending(t => t.Billable),
+                        Abstractions.Times.GetTimesV1.SortColumn.ClientName => mapped.OrderByDescending(t => t.ClientName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.ProjectName => mapped.OrderByDescending(t => t.ProjectName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.StaffName => mapped.OrderByDescending(t => t.StaffName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.HoursApproved => mapped.OrderByDescending(t => t.HoursApproved),
+                        _ => mapped.OrderByDescending(t => t.Id),
+                    };
 
                 sorted = sorted
                     .ThenBy(t => t.Date)
-                    .ThenBy(t => t.StaffName)
-                    .ThenBy(t => t.ClientName)
-                    .ThenBy(t => t.ProjectName);
+                    .ThenBy(t => t.StaffName!.ToLower())
+                    .ThenBy(t => t.ClientName!.ToLower())
+                    .ThenBy(t => t.ProjectName!.ToLower());
 
                 mapped = sorted;
             }
@@ -854,15 +861,6 @@ namespace HQ.Server.Services
                 });
 
 
-            var sortMap = new Dictionary<Abstractions.Times.GetTimesV1.SortColumn, string>()
-            {
-                { Abstractions.Times.GetTimesV1.SortColumn.Hours, "Hours" },
-                { Abstractions.Times.GetTimesV1.SortColumn.Date, "Date" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ChargeCode, "ChargeCode" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ClientName, "ClientName" },
-                { Abstractions.Times.GetTimesV1.SortColumn.ProjectName, "ProjectName" },
-            };
-
             if (request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.Date)
             {
                 if (request.SortDirection == SortDirection.Desc)
@@ -878,13 +876,25 @@ namespace HQ.Server.Services
                         .ThenBy(t => t.CreatedAt);
                 }
             }
-            else if (sortMap.ContainsKey(request.SortBy))
+            else
             {
-                var sortProperty = sortMap[request.SortBy];
-
                 times = request.SortDirection == SortDirection.Asc
-                    ? times.OrderBy(t => EF.Property<object>(t, sortProperty))
-                    : times.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+                    ? request.SortBy switch
+                    {
+                        Abstractions.Times.GetTimesV1.SortColumn.Hours => times.OrderBy(t => t.Hours),
+                        Abstractions.Times.GetTimesV1.SortColumn.ChargeCode => times.OrderBy(t => t.ChargeCode.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.ClientName => times.OrderBy(t => t.ClientName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.ProjectName => times.OrderBy(t => t.ProjectName!.ToLower()),
+                        _ => times,
+                    }
+                    : request.SortBy switch
+                    {
+                        Abstractions.Times.GetTimesV1.SortColumn.Hours => times.OrderByDescending(t => t.Hours),
+                        Abstractions.Times.GetTimesV1.SortColumn.ChargeCode => times.OrderByDescending(t => t.ChargeCode.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.ClientName => times.OrderByDescending(t => t.ClientName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.ProjectName => times.OrderByDescending(t => t.ProjectName!.ToLower()),
+                        _ => times,
+                    };
             }
 
             var timeEntriesList = await times.ToListAsync(ct);

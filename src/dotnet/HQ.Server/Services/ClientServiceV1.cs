@@ -96,20 +96,25 @@ public class ClientServiceV1
 
         var total = await records.CountAsync(ct);
 
-        var sortMap = new Dictionary<GetClientsV1.SortColumn, string>()
-        {
-            { Abstractions.Clients.GetClientsV1.SortColumn.CreatedAt, "CreatedAt" },
-            { Abstractions.Clients.GetClientsV1.SortColumn.Name, "Name" },
-            { Abstractions.Clients.GetClientsV1.SortColumn.HourlyRate, "HourlyRate" },
-            { Abstractions.Clients.GetClientsV1.SortColumn.BillingEmail, "BillingEmail" },
-            { Abstractions.Clients.GetClientsV1.SortColumn.OfficialName, "OfficialName" },
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        records = request.SortDirection == SortDirection.Asc ?
-            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+        records = request.SortDirection == SortDirection.Asc
+            ? request.SortBy switch
+            {
+                Abstractions.Clients.GetClientsV1.SortColumn.CreatedAt => records.OrderBy(t => t.CreatedAt),
+                Abstractions.Clients.GetClientsV1.SortColumn.Name => records.OrderBy(t => t.Name.ToLower()),
+                Abstractions.Clients.GetClientsV1.SortColumn.HourlyRate => records.OrderBy(t => t.HourlyRate),
+                Abstractions.Clients.GetClientsV1.SortColumn.BillingEmail => records.OrderBy(t => t.BillingEmail!.ToLower()),
+                Abstractions.Clients.GetClientsV1.SortColumn.OfficialName => records.OrderBy(t => t.OfficialName!.ToLower()),
+                _ => records,
+            }
+            : request.SortBy switch
+            {
+                Abstractions.Clients.GetClientsV1.SortColumn.CreatedAt => records.OrderByDescending(t => t.CreatedAt),
+                Abstractions.Clients.GetClientsV1.SortColumn.Name => records.OrderByDescending(t => t.Name.ToLower()),
+                Abstractions.Clients.GetClientsV1.SortColumn.HourlyRate => records.OrderByDescending(t => t.HourlyRate),
+                Abstractions.Clients.GetClientsV1.SortColumn.BillingEmail => records.OrderByDescending(t => t.BillingEmail!.ToLower()),
+                Abstractions.Clients.GetClientsV1.SortColumn.OfficialName => records.OrderByDescending(t => t.OfficialName!.ToLower()),
+                _ => records,
+            };
 
         if (request.Skip.HasValue)
         {
