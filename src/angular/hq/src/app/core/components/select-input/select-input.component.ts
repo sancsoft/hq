@@ -82,6 +82,11 @@ export class SelectInputComponent<T>
   @Input()
   pillCode?: string | null = null;
 
+  // Displayed when the current value does not match any option (e.g. a charge
+  // code whose project has been closed and is no longer in the options list).
+  @Input()
+  displayValue?: string | null = null;
+
   chargeCodeToColor = chargeCodeToColor;
 
   @Input()

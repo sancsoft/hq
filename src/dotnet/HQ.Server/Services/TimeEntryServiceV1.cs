@@ -51,7 +51,7 @@ namespace HQ.Server.Services
 
 
             var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
-
+            var previousStatus = timeEntry?.Status;
 
             if (timeEntry == null)
             {
@@ -79,6 +79,16 @@ namespace HQ.Server.Services
                 {
                     return Result.Fail($"The Charge code: {request.ChargeCode} not found");
                 }
+            }
+
+            // A time entry cannot be submitted if its charge code is not active (e.g. the
+            // project has been closed). Only validate when the entry is actually being
+            // submitted so that editing an already submitted entry is still allowed.
+            var isSubmitting = (request.Status == TimeStatus.Submitted || request.Status == TimeStatus.Resubmitted)
+                && previousStatus != request.Status;
+            if (isSubmitting && !chargeCode.Active)
+            {
+                return Result.Fail($"The charge code {chargeCode.Code} is not active. The time entry cannot be submitted.");
             }
 
 
@@ -361,12 +371,33 @@ namespace HQ.Server.Services
                 return Result.Fail("Time Id is required.");
             }
 
+            var timeEntriesList = await timeEntries
+                .Include(t => t.ChargeCode)
+                .ToListAsync(ct);
+
+            // A time entry cannot be submitted if its charge code is not active (e.g. the
+            // project has been closed).
+            var timesToSubmit = timeEntriesList
+                .Where(t => t.Status == TimeStatus.Unsubmitted || t.Status == TimeStatus.Rejected)
+                .ToList();
+            var invalidTimes = timesToSubmit
+                .Where(t => t.ChargeCode == null || !t.ChargeCode.Active)
+                .ToList();
+            if (invalidTimes.Count > 0)
+            {
+                var codes = invalidTimes
+                    .Select(t => t.ChargeCode?.Code ?? "unknown")
+                    .Distinct()
+                    .ToList();
+                return Result.Fail($"Cannot submit time entries with inactive charge codes: {string.Join(", ", codes)}");
+            }
+
             var chargeCodesWithActivities = await _context.ChargeCodes
                 .Where(t => t.Project!.Activities.Any())
                 .Select(t => t.Id)
                 .ToListAsync(ct);
 
-            foreach (var time in timeEntries)
+            foreach (var time in timeEntriesList)
             {
                 if (time.Hours == 0 || String.IsNullOrEmpty(time.Notes))
                 {

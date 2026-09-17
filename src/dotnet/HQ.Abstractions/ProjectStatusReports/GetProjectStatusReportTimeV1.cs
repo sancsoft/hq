@@ -47,6 +47,7 @@ public class GetProjectStatusReportTimeV1
         public string? RejectionNotes { get; set; } = null!;
         public DateOnly Date { get; set; }
         public string ChargeCode { get; set; } = null!;
+        public Guid ChargeCodeId { get; set; }
         public Guid StaffId { get; set; }
         public string StaffName { get; set; } = null!;
         public string? Task { get; set; }

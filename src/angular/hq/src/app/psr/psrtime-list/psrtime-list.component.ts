@@ -445,7 +445,10 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     }
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+        map(
+          (c) =>
+            c.find((x) => x.code == time.chargeCode)?.id ?? time.chargeCodeId,
+        ),
       ),
     );
 
@@ -483,7 +486,10 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     }
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+        map(
+          (c) =>
+            c.find((x) => x.code == time.chargeCode)?.id ?? time.chargeCodeId,
+        ),
       ),
     );
 
@@ -607,7 +613,10 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     }
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+        map(
+          (c) =>
+            c.find((x) => x.code == time.chargeCode)?.id ?? time.chargeCodeId,
+        ),
       ),
     );
 
@@ -649,7 +658,10 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     }
     const chargecodeId = await firstValueFrom(
       this.chargeCodes$.pipe(
-        map((c) => c.find((x) => x.code == time.chargeCode)?.id),
+        map(
+          (c) =>
+            c.find((x) => x.code == time.chargeCode)?.id ?? time.chargeCodeId,
+        ),
       ),
     );
 

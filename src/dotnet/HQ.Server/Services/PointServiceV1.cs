@@ -124,6 +124,30 @@ public class PointServiceV1
                     return validationResult;
                 }
 
+                // A charge code is invalid when it is not active (e.g. its project has been
+                // closed). Saving a plan is not allowed if any of the assigned charge codes
+                // are invalid.
+                var chargeCodeIds = request.Points!
+                    .Where(p => p.ChargeCodeId.HasValue)
+                    .Select(p => p.ChargeCodeId!.Value)
+                    .Distinct()
+                    .ToList();
+                if (chargeCodeIds.Count > 0)
+                {
+                    var chargeCodes = await _context.ChargeCodes
+                        .Where(t => chargeCodeIds.Contains(t.Id))
+                        .ToListAsync(ct);
+                    var invalidChargeCodes = chargeCodes
+                        .Where(t => !t.Active)
+                        .Select(t => t.Code)
+                        .Distinct()
+                        .ToList();
+                    if (invalidChargeCodes.Count > 0)
+                    {
+                        return Result.Fail($"The following charge codes are not active: {string.Join(", ", invalidChargeCodes)}");
+                    }
+                }
+
                 var pointIds = new List<Guid>();
                 var startDate = request.Date.GetPeriodStartDate(Period.Week);
                 var points = await _context.Points

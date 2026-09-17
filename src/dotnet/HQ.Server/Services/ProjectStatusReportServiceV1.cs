@@ -464,6 +464,7 @@ public class ProjectStatusReportServiceV1
                 Hours = t.Hours,
                 BillableHours = t.HoursApproved.HasValue ? t.HoursApproved.Value : t.Hours,
                 ChargeCode = t.ChargeCode.Code,
+                ChargeCodeId = t.ChargeCodeId,
                 Date = t.Date,
                 Description = t.Notes,
                 StaffId = t.Staff.Id,
@@ -627,7 +628,13 @@ public class ProjectStatusReportServiceV1
         time.Notes = request.Notes;
         time.Task = request.Task;
         time.ActivityId = request.ActivityId;
-        time.ChargeCodeId = request.ChargeCodeId;
+        // Only update the charge code when a valid id is provided so that the
+        // association is never cleared (e.g. when the charge code is not in the
+        // list of active charge codes and the client could not resolve its id).
+        if (request.ChargeCodeId != Guid.Empty)
+        {
+            time.ChargeCodeId = request.ChargeCodeId;
+        }
 
         await _context.SaveChangesAsync(ct);
 

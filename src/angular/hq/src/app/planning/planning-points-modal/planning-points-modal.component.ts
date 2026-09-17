@@ -47,6 +47,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { HQService } from '../../services/hq.service';
 import { ModalService } from '../../services/modal.service';
 import { ToastService } from '../../services/toast.service';
+import { APIError } from '../../errors/apierror';
 
 export interface DialogData {
   title: string;
@@ -147,7 +148,7 @@ export class PlanningPointsModalComponent implements OnInit, OnDestroy {
     });
   }
 
-  async upsertPoints() {
+  async upsertPoints(): Promise<boolean> {
     try {
       const date = this.data.date;
       const staffId = this.data.staffId;
@@ -169,8 +170,15 @@ export class PlanningPointsModalComponent implements OnInit, OnDestroy {
 
       // Trigger the refresh of planning points
       this.planningPointsRequestTrigger$.next();
+      return true;
     } catch (error) {
       console.error('Error upserting planning points:', error);
+      if (error instanceof APIError) {
+        this.toastService.show('Error', error.errors.join('\n'));
+      } else {
+        this.toastService.show('Error', 'An unexpected error has occurred.');
+      }
+      return false;
     }
   }
 
@@ -194,7 +202,9 @@ export class PlanningPointsModalComponent implements OnInit, OnDestroy {
       });
   }
   async savePointsAction() {
-    await this.upsertPoints();
-    this.dialogRef.close(true);
+    const success = await this.upsertPoints();
+    if (success) {
+      this.dialogRef.close(true);
+    }
   }
 }
