@@ -7,15 +7,10 @@
   <td class="border-y border-white py-2">
     <div class="w-26 px-2">
       <hq-select-input
-        [ngClass]="{
-          'border-red-700 focus:border-red-700':
-            form.controls.staffId.errors && form.touched,
-          'border-black': !form.controls.staffId.errors || !form.touched,
-        }"
         (hqBlur)="save()"
         [formControlName]="'staffId'"
         [autocomplete]="true"
-        variant="secondary"
+        variant="tertiary"
         [inline]="true"
         [btnHeightOverride]="30"
       >
