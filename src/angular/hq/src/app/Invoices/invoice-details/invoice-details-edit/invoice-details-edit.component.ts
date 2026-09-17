@@ -23,6 +23,7 @@ import { GetChargeCodeRecordV1 } from '../../../models/charge-codes/get-chargeco
 import { InvoiceDetaisService } from '../../service/invoice-details.service';
 import { GetInvoiceDetailsRecordV1 } from '../../../models/Invoices/get-invoice-details-v1';
 import { ModalService } from '../../../services/modal.service';
+import { ToastService } from '../../../services/toast.service';
 
 interface invoiceFormGroup {
   clientId: FormControl<string | null>;
@@ -77,6 +78,7 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
     private route: ActivatedRoute,
     private invoiceDetailsService: InvoiceDetaisService,
     private modalService: ModalService,
+    private toastService: ToastService,
   ) {
     this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
       map((i) => {
@@ -119,6 +121,9 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
         if (this.invoiceFormGroup.touched && this.invoiceFormGroup.dirty) {
           await firstValueFrom(this.hqService.updateInvoiceV1(request));
           this.invoiceDetailsService.invoiceRefresh();
+          this.invoiceFormGroup.reset();
+          this.invoiceFormGroup.markAsPristine();
+          this.toastService.show('Updated', 'Invoice has been updated');
         }
       } else {
         this.apiErrors.length = 0;
