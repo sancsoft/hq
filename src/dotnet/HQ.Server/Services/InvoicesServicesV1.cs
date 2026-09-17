@@ -85,18 +85,25 @@ namespace HQ.Server.Invoices
                 TotalApprovedHours = t.TotalApprovedHours
             });
 
-            var sortMap = new Dictionary<GetInvoicesV1.SortColumn, string>() {
-                { Abstractions.Invoices.GetInvoicesV1.SortColumn.ClientName, "ClientName" },
-                { Abstractions.Invoices.GetInvoicesV1.SortColumn.Total, "Total" },
-                { Abstractions.Invoices.GetInvoicesV1.SortColumn.TotalApprovedHours, "TotalApprovedHours" },
-                { Abstractions.Invoices.GetInvoicesV1.SortColumn.Date, "Date" },
-                { Abstractions.Invoices.GetInvoicesV1.SortColumn.InvoiceNumber, "InvoiceNumber" }
-            };
-            var sortProperty = sortMap[request.SortBy];
-
-            mapped = request.SortDirection == Abstractions.Enumerations.SortDirection.Asc ?
-                mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-                mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+            mapped = request.SortDirection == Abstractions.Enumerations.SortDirection.Asc
+                ? request.SortBy switch
+                {
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.ClientName => mapped.OrderBy(t => t.ClientName.ToLower()),
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.InvoiceNumber => mapped.OrderBy(t => t.InvoiceNumber!.ToLower()),
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.Total => mapped.OrderBy(t => t.Total),
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.TotalApprovedHours => mapped.OrderBy(t => t.TotalApprovedHours),
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.Date => mapped.OrderBy(t => t.Date),
+                    _ => mapped,
+                }
+                : request.SortBy switch
+                {
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.ClientName => mapped.OrderByDescending(t => t.ClientName.ToLower()),
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.InvoiceNumber => mapped.OrderByDescending(t => t.InvoiceNumber!.ToLower()),
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.Total => mapped.OrderByDescending(t => t.Total),
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.TotalApprovedHours => mapped.OrderByDescending(t => t.TotalApprovedHours),
+                    Abstractions.Invoices.GetInvoicesV1.SortColumn.Date => mapped.OrderByDescending(t => t.Date),
+                    _ => mapped,
+                };
 
             if (request.Skip.HasValue)
             {

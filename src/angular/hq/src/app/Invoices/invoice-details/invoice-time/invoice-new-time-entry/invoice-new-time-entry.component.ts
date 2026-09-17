@@ -228,6 +228,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
   }
 
   async save() {
+    this.form.markAllAsTouched();
     if (this.form.valid && this.form.dirty) {
       this.hqInvoiceTimeChange.emit(this.form.value);
       this.form.reset();

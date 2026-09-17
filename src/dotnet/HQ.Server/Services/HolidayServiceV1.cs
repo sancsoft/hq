@@ -138,19 +138,21 @@ public class HolidayServiceV1
 
         var total = await records.CountAsync(ct);
 
-        var sortMap = new Dictionary<GetHolidayV1.SortColumn, string>()
-        {
-            { Abstractions.Holiday.GetHolidayV1.SortColumn.Name, "Name" },
-            { Abstractions.Holiday.GetHolidayV1.SortColumn.Date, "Date" },
-            { Abstractions.Holiday.GetHolidayV1.SortColumn.Jurisdiciton, "Jurisdiction" },
-
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        records = request.SortDirection == SortDirection.Asc ?
-            records.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            records.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+        records = request.SortDirection == SortDirection.Asc
+            ? request.SortBy switch
+            {
+                Abstractions.Holiday.GetHolidayV1.SortColumn.Name => records.OrderBy(t => t.Name.ToLower()),
+                Abstractions.Holiday.GetHolidayV1.SortColumn.Date => records.OrderBy(t => t.Date),
+                Abstractions.Holiday.GetHolidayV1.SortColumn.Jurisdiciton => records.OrderBy(t => t.Jurisdiciton),
+                _ => records,
+            }
+            : request.SortBy switch
+            {
+                Abstractions.Holiday.GetHolidayV1.SortColumn.Name => records.OrderByDescending(t => t.Name.ToLower()),
+                Abstractions.Holiday.GetHolidayV1.SortColumn.Date => records.OrderByDescending(t => t.Date),
+                Abstractions.Holiday.GetHolidayV1.SortColumn.Jurisdiciton => records.OrderByDescending(t => t.Jurisdiciton),
+                _ => records,
+            };
 
         if (request.Skip.HasValue)
         {
