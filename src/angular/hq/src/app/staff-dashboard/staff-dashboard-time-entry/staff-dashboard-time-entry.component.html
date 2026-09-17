@@ -80,6 +80,7 @@
         <hq-select-input
           (hqBlur)="save()"
           [formControlName]="'chargeCodeId'"
+          [displayValue]="time?.chargeCode"
           [autocomplete]="true"
           variant="pill"
           [inline]="true"

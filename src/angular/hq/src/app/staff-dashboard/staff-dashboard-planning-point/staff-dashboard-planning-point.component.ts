@@ -77,10 +77,17 @@ export class StaffDashboardPlanningPointComponent
       // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
       .subscribe({
         next: (t) => {
-          this.point!.projectName = this.chargeCodes?.find(
-            (c) => c.id === t,
-          )?.projectName;
           this.point!.chargeCodeId = t;
+          if (!t) {
+            this.point!.chargeCode = null;
+            this.point!.projectName = null;
+            return;
+          }
+          const chargeCode = this.chargeCodes?.find((c) => c.id === t);
+          if (chargeCode) {
+            this.point!.chargeCode = chargeCode.code;
+            this.point!.projectName = chargeCode.projectName;
+          }
         },
         error: console.error,
       });

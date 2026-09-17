@@ -33,7 +33,6 @@ import {
   of,
   ReplaySubject,
   shareReplay,
-  skip,
   startWith,
   Subject,
   switchMap,
@@ -51,6 +50,7 @@ import { ModalService } from '../../services/modal.service';
 import { ToastService } from '../../services/toast.service';
 import { StaffDashboardService } from '../service/staff-dashboard.service';
 import { GetPlanRequestV1 } from '../../models/Plan/get-plan-v1';
+import { APIError } from '../../errors/apierror';
 
 @Component({
   selector: 'hq-staff-dashboard-planning',
@@ -140,20 +140,6 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
       error: console.error,
     });
 
-    // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
-    this.editPlanButton$.pipe(skip(1), takeUntil(this.destroyed$)).subscribe({
-      next: (val) => {
-        if (val == false) {
-          // means save plan triggered
-          try {
-            void this.upsertPoints();
-          } catch (error) {
-            console.error('Error upserting planning points:', error);
-          }
-        }
-      },
-      error: console.error,
-    });
   }
   onDrop(event: CdkDragDrop<FormGroup[]>): void {
     moveItemInArray(this.points, event.previousIndex, event.currentIndex);
@@ -189,7 +175,7 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
     });
   }
 
-  async upsertPoints() {
+  async upsertPoints(): Promise<boolean> {
     try {
       const date = this.staffDashboardService.planningPointdateForm.value;
       const staffId = await firstValueFrom(this.staffDashboardService.staffId$);
@@ -212,8 +198,17 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
 
       // Trigger the refresh of planning points
       this.planningPointsRequestTrigger$.next();
+      this.editPlanButtonSubject.next(false);
+      return true;
     } catch (error) {
       console.error('Error upserting planning points:', error);
+      if (error instanceof APIError) {
+        this.toastService.show('Error', error.errors.join('\n'));
+      } else {
+        this.toastService.show('Error', 'An unexpected error has occurred.');
+      }
+      this.editPlanButtonSubject.next(true);
+      return false;
     }
   }
 
@@ -234,6 +229,10 @@ export class StaffDashboardPlanningComponent implements OnInit, OnDestroy {
     }
   }
   toggleButtonValue() {
-    this.editPlanButtonSubject.next(!this.editPlanButtonSubject.value);
+    if (this.editPlanButtonSubject.value) {
+      void this.upsertPoints();
+    } else {
+      this.editPlanButtonSubject.next(true);
+    }
   }
 }

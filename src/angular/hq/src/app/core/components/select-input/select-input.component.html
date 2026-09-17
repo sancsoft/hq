@@ -42,6 +42,12 @@
             [ngTemplateOutlet]="selectedOption.templateRef"
           ></ng-container>
         }
+      } @else {
+        @if (displayValue) {
+          {{ displayValue }}
+        } @else if (value) {
+          {{ value }}
+        }
       }
     </div>
     @if (!readonly) {
