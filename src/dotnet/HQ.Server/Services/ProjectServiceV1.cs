@@ -337,37 +337,57 @@ public class ProjectServiceV1
             SummaryPercentCompleteSort = t.Type == ProjectType.Ongoing ? t.BookingPercentComplete : t.TotalPercentCompleteSort,
         });
 
-        var sortMap = new Dictionary<GetProjectsV1.SortColumn, string>()
-        {
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectName, "Name" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ProjectManagerName, "ProjectManagerName" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.StartDate, "StartDate" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.EndDate, "EndDate" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.Status, "ProjectStatus" },
-             { Abstractions.Projects.GetProjectsV1.SortColumn.BookingPeriod, "BookingPeriod" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingStartDate, "BookingStartDate" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingEndDate, "BookingEndDate" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.TotalHours, "TotalHours" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.TotalAvailableHours, "TotalAvailableHours" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ThisHours, "ThisHours" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.ThisPendingHours, "ThisPendingHours" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.LastHours, "LastHours" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingHours, "BookingHours" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingAvailableHours, "BookingAvailableHours" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.TotalPercentComplete, "TotalPercentCompleteSort" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.BookingPercentComplete, "BookingPercentComplete" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursTotal, "SummaryHoursTotal" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursAvailable, "SummaryHoursAvailable" },
-            { Abstractions.Projects.GetProjectsV1.SortColumn.SummaryPercentComplete, "SummaryPercentCompleteSort" },
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        mapped = request.SortDirection == SortDirection.Asc ?
-            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+        mapped = request.SortDirection == SortDirection.Asc
+            ? request.SortBy switch
+            {
+                Abstractions.Projects.GetProjectsV1.SortColumn.ProjectName => mapped.OrderBy(t => t.Name.ToLower()),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ProjectManagerName => mapped.OrderBy(t => t.ProjectManagerName!.ToLower()),
+                Abstractions.Projects.GetProjectsV1.SortColumn.StartDate => mapped.OrderBy(t => t.StartDate),
+                Abstractions.Projects.GetProjectsV1.SortColumn.EndDate => mapped.OrderBy(t => t.EndDate),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ClientName => mapped.OrderBy(t => t.ClientName.ToLower()),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode => mapped.OrderBy(t => t.ChargeCode!.ToLower()),
+                Abstractions.Projects.GetProjectsV1.SortColumn.Status => mapped.OrderBy(t => t.ProjectStatus),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingPeriod => mapped.OrderBy(t => t.BookingPeriod),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingStartDate => mapped.OrderBy(t => t.BookingStartDate),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingEndDate => mapped.OrderBy(t => t.BookingEndDate),
+                Abstractions.Projects.GetProjectsV1.SortColumn.TotalHours => mapped.OrderBy(t => t.TotalHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.TotalAvailableHours => mapped.OrderBy(t => t.TotalAvailableHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ThisHours => mapped.OrderBy(t => t.ThisHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ThisPendingHours => mapped.OrderBy(t => t.ThisPendingHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingHours => mapped.OrderBy(t => t.BookingHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingAvailableHours => mapped.OrderBy(t => t.BookingAvailableHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.TotalPercentComplete => mapped.OrderBy(t => t.TotalPercentCompleteSort),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingPercentComplete => mapped.OrderBy(t => t.BookingPercentComplete),
+                Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursTotal => mapped.OrderBy(t => t.SummaryHoursTotal),
+                Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursAvailable => mapped.OrderBy(t => t.SummaryHoursAvailable),
+                Abstractions.Projects.GetProjectsV1.SortColumn.SummaryPercentComplete => mapped.OrderBy(t => t.SummaryPercentCompleteSort),
+                _ => mapped,
+            }
+            : request.SortBy switch
+            {
+                Abstractions.Projects.GetProjectsV1.SortColumn.ProjectName => mapped.OrderByDescending(t => t.Name.ToLower()),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ProjectManagerName => mapped.OrderByDescending(t => t.ProjectManagerName!.ToLower()),
+                Abstractions.Projects.GetProjectsV1.SortColumn.StartDate => mapped.OrderByDescending(t => t.StartDate),
+                Abstractions.Projects.GetProjectsV1.SortColumn.EndDate => mapped.OrderByDescending(t => t.EndDate),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ClientName => mapped.OrderByDescending(t => t.ClientName.ToLower()),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ChargeCode => mapped.OrderByDescending(t => t.ChargeCode!.ToLower()),
+                Abstractions.Projects.GetProjectsV1.SortColumn.Status => mapped.OrderByDescending(t => t.ProjectStatus),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingPeriod => mapped.OrderByDescending(t => t.BookingPeriod),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingStartDate => mapped.OrderByDescending(t => t.BookingStartDate),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingEndDate => mapped.OrderByDescending(t => t.BookingEndDate),
+                Abstractions.Projects.GetProjectsV1.SortColumn.TotalHours => mapped.OrderByDescending(t => t.TotalHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.TotalAvailableHours => mapped.OrderByDescending(t => t.TotalAvailableHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ThisHours => mapped.OrderByDescending(t => t.ThisHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.ThisPendingHours => mapped.OrderByDescending(t => t.ThisPendingHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingHours => mapped.OrderByDescending(t => t.BookingHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingAvailableHours => mapped.OrderByDescending(t => t.BookingAvailableHours),
+                Abstractions.Projects.GetProjectsV1.SortColumn.TotalPercentComplete => mapped.OrderByDescending(t => t.TotalPercentCompleteSort),
+                Abstractions.Projects.GetProjectsV1.SortColumn.BookingPercentComplete => mapped.OrderByDescending(t => t.BookingPercentComplete),
+                Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursTotal => mapped.OrderByDescending(t => t.SummaryHoursTotal),
+                Abstractions.Projects.GetProjectsV1.SortColumn.SummaryHoursAvailable => mapped.OrderByDescending(t => t.SummaryHoursAvailable),
+                Abstractions.Projects.GetProjectsV1.SortColumn.SummaryPercentComplete => mapped.OrderByDescending(t => t.SummaryPercentCompleteSort),
+                _ => mapped,
+            };
 
         if (request.Skip.HasValue)
         {

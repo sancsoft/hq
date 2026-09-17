@@ -342,42 +342,64 @@ public class ProjectStatusReportServiceV1
         var totalHours = await mapped.SumAsync(t => t.TotalHours, ct);
         var total = await mapped.CountAsync(ct);
 
-        var sortMap = new Dictionary<GetProjectStatusReportsV1.SortColumn, string>()
-        {
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.StartDate, "StartDate" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.EndDate, "EndDate" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectName, "ProjectName" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectManagerName, "ProjectManagerName" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.Status, "Status" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPeriod, "BookingPeriod" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingStartDate, "BookingStartDate" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingEndDate, "BookingEndDate" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalHours, "TotalHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalAvailableHours, "TotalAvailableHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ThisHours, "ThisHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ThisPendingHours, "ThisPendingHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.LastHours, "LastHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingHours, "BookingHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingAvailableHours, "BookingAvailableHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalPercentComplete, "TotalPercentCompleteSort" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPercentComplete, "BookingPercentComplete" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryHoursTotal, "SummaryHoursTotal" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryHoursAvailable, "SummaryHoursAvailable" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryPercentComplete, "SummaryPercentCompleteSort" },
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        var sorted = request.SortDirection == SortDirection.Asc ?
-            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+        var sorted = request.SortDirection == SortDirection.Asc
+            ? request.SortBy switch
+            {
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.StartDate => mapped.OrderBy(t => t.StartDate),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.EndDate => mapped.OrderBy(t => t.EndDate),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ChargeCode => mapped.OrderBy(t => t.ChargeCode!.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectName => mapped.OrderBy(t => t.ProjectName.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ClientName => mapped.OrderBy(t => t.ClientName.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectManagerName => mapped.OrderBy(t => t.ProjectManagerName!.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.Status => mapped.OrderBy(t => t.Status),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPeriod => mapped.OrderBy(t => t.BookingPeriod),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingStartDate => mapped.OrderBy(t => t.BookingStartDate),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingEndDate => mapped.OrderBy(t => t.BookingEndDate),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalHours => mapped.OrderBy(t => t.TotalHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalAvailableHours => mapped.OrderBy(t => t.TotalAvailableHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ThisHours => mapped.OrderBy(t => t.ThisHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ThisPendingHours => mapped.OrderBy(t => t.ThisPendingHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.LastHours => mapped.OrderBy(t => t.LastHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingHours => mapped.OrderBy(t => t.BookingHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingAvailableHours => mapped.OrderBy(t => t.BookingAvailableHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalPercentComplete => mapped.OrderBy(t => t.TotalPercentCompleteSort),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPercentComplete => mapped.OrderBy(t => t.BookingPercentComplete),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryHoursTotal => mapped.OrderBy(t => t.SummaryHoursTotal),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryHoursAvailable => mapped.OrderBy(t => t.SummaryHoursAvailable),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryPercentComplete => mapped.OrderBy(t => t.SummaryPercentCompleteSort),
+                _ => mapped.OrderBy(t => t.Id),
+            }
+            : request.SortBy switch
+            {
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.StartDate => mapped.OrderByDescending(t => t.StartDate),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.EndDate => mapped.OrderByDescending(t => t.EndDate),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ChargeCode => mapped.OrderByDescending(t => t.ChargeCode!.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectName => mapped.OrderByDescending(t => t.ProjectName.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ClientName => mapped.OrderByDescending(t => t.ClientName.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ProjectManagerName => mapped.OrderByDescending(t => t.ProjectManagerName!.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.Status => mapped.OrderByDescending(t => t.Status),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPeriod => mapped.OrderByDescending(t => t.BookingPeriod),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingStartDate => mapped.OrderByDescending(t => t.BookingStartDate),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingEndDate => mapped.OrderByDescending(t => t.BookingEndDate),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalHours => mapped.OrderByDescending(t => t.TotalHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalAvailableHours => mapped.OrderByDescending(t => t.TotalAvailableHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ThisHours => mapped.OrderByDescending(t => t.ThisHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.ThisPendingHours => mapped.OrderByDescending(t => t.ThisPendingHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.LastHours => mapped.OrderByDescending(t => t.LastHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingHours => mapped.OrderByDescending(t => t.BookingHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingAvailableHours => mapped.OrderByDescending(t => t.BookingAvailableHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.TotalPercentComplete => mapped.OrderByDescending(t => t.TotalPercentCompleteSort),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.BookingPercentComplete => mapped.OrderByDescending(t => t.BookingPercentComplete),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryHoursTotal => mapped.OrderByDescending(t => t.SummaryHoursTotal),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryHoursAvailable => mapped.OrderByDescending(t => t.SummaryHoursAvailable),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportsV1.SortColumn.SummaryPercentComplete => mapped.OrderByDescending(t => t.SummaryPercentCompleteSort),
+                _ => mapped.OrderByDescending(t => t.Id),
+            };
 
         sorted = sorted
             .ThenBy(t => t.StartDate)
-            .ThenBy(t => t.ClientName)
-            .ThenBy(t => t.ProjectName);
+            .ThenBy(t => t.ClientName.ToLower())
+            .ThenBy(t => t.ProjectName.ToLower());
 
         mapped = sorted;
 
@@ -462,25 +484,31 @@ public class ProjectStatusReportServiceV1
             .OrderBy(t => t.Name);
 
 
-        var sortMap = new Dictionary<GetProjectStatusReportTimeV1.SortColumn, string>()
-        {
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.BillableHours, "BillableHours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Hours, "Hours" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Date, "Date" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.StaffName, "StaffName" },
-            { Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Activity, "Activity" }
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        var sorted = request.SortDirection == SortDirection.Asc ?
-            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+        var sorted = request.SortDirection == SortDirection.Asc
+            ? request.SortBy switch
+            {
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.BillableHours => mapped.OrderBy(t => t.BillableHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Hours => mapped.OrderBy(t => t.Hours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Date => mapped.OrderBy(t => t.Date),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.ChargeCode => mapped.OrderBy(t => t.ChargeCode.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.StaffName => mapped.OrderBy(t => t.StaffName.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Activity => mapped.OrderBy(t => t.ActivityName!.ToLower()),
+                _ => mapped.OrderBy(t => t.Id),
+            }
+            : request.SortBy switch
+            {
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.BillableHours => mapped.OrderByDescending(t => t.BillableHours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Hours => mapped.OrderByDescending(t => t.Hours),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Date => mapped.OrderByDescending(t => t.Date),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.ChargeCode => mapped.OrderByDescending(t => t.ChargeCode.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.StaffName => mapped.OrderByDescending(t => t.StaffName.ToLower()),
+                Abstractions.ProjectStatusReports.GetProjectStatusReportTimeV1.SortColumn.Activity => mapped.OrderByDescending(t => t.ActivityName!.ToLower()),
+                _ => mapped.OrderByDescending(t => t.Id),
+            };
 
         sorted = sorted
             .ThenBy(t => t.Date)
-            .ThenBy(t => t.StaffName)
+            .ThenBy(t => t.StaffName.ToLower())
             .ThenBy(t => t.CreatedAt);
 
         var response = new GetProjectStatusReportTimeV1.Response()

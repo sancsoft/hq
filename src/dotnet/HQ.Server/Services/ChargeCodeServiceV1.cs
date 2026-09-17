@@ -169,22 +169,35 @@ public class ChargeCodeServiceV1
             IsProjectMemberSort = !request.StaffId.HasValue ? 1 : (t.Project!.ProjectMembers.Any(x => x.StaffId == request.StaffId.Value)) ? 0 : 1
         });
 
-        var sortMap = new Dictionary<GetChargeCodesV1.SortColumn, string>()
-        {
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code, "Code" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Billable, "Billable" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Active, "Active" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName, "ProjectName" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName, "QuoteName" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName, "ServiceAgreementName" },
-            { Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.IsProjectMember, "IsProjectMemberSort" },
-        };
+        IOrderedQueryable<GetChargeCodesV1.Record> sorted = request.SortDirection == SortDirection.Asc
+            ? request.SortBy switch
+            {
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code => mapped.OrderBy(t => t.Code.ToLower()),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Billable => mapped.OrderBy(t => t.Billable),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Active => mapped.OrderBy(t => t.Active),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName => mapped.OrderBy(t => t.ProjectName!.ToLower()),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName => mapped.OrderBy(t => t.QuoteName!.ToLower()),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName => mapped.OrderBy(t => t.ServiceAgreementName!.ToLower()),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.IsProjectMember => mapped.OrderBy(t => t.IsProjectMemberSort),
+                _ => mapped.OrderBy(t => t.Id),
+            }
+            : request.SortBy switch
+            {
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Code => mapped.OrderByDescending(t => t.Code.ToLower()),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Billable => mapped.OrderByDescending(t => t.Billable),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.Active => mapped.OrderByDescending(t => t.Active),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ProjectName => mapped.OrderByDescending(t => t.ProjectName!.ToLower()),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.QuoteName => mapped.OrderByDescending(t => t.QuoteName!.ToLower()),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.ServiceAgreementName => mapped.OrderByDescending(t => t.ServiceAgreementName!.ToLower()),
+                Abstractions.ChargeCodes.GetChargeCodesV1.SortColumn.IsProjectMember => mapped.OrderByDescending(t => t.IsProjectMemberSort),
+                _ => mapped.OrderByDescending(t => t.Id),
+            };
 
-        var sortProperty = sortMap[request.SortBy];
+        sorted = request.SortDirection == SortDirection.Asc
+            ? sorted.ThenBy(t => t.Code.ToLower())
+            : sorted.ThenByDescending(t => t.Code.ToLower());
 
-        mapped = request.SortDirection == SortDirection.Asc ?
-            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)).ThenBy(t => t.Code) :
-            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty)).ThenByDescending(t => t.Code);
+        mapped = sorted;
 
         if (request.Skip.HasValue)
         {

@@ -167,22 +167,29 @@ public class QuoteServiceV1
             HasProject = t.ChargeCode!.ProjectId != null
         });
 
-        var sortMap = new Dictionary<GetQuotesV1.SortColumn, string>()
-        {
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteName, "Name" },
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteNumber, "QuoteNumber" },
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.ClientName, "ClientName" },
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.ChargeCode, "ChargeCode" },
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.Value, "Value" },
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.Status, "Status" },
-            { Abstractions.Quotes.GetQuotesV1.SortColumn.Date, "Date" },
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        mapped = request.SortDirection == Abstractions.Enumerations.SortDirection.Asc ?
-            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+        mapped = request.SortDirection == Abstractions.Enumerations.SortDirection.Asc
+            ? request.SortBy switch
+            {
+                Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteName => mapped.OrderBy(t => t.Name.ToLower()),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteNumber => mapped.OrderBy(t => t.QuoteNumber),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.ClientName => mapped.OrderBy(t => t.ClientName.ToLower()),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.ChargeCode => mapped.OrderBy(t => t.ChargeCode!.ToLower()),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.Value => mapped.OrderBy(t => t.Value),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.Status => mapped.OrderBy(t => t.Status),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.Date => mapped.OrderBy(t => t.Date),
+                _ => mapped,
+            }
+            : request.SortBy switch
+            {
+                Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteName => mapped.OrderByDescending(t => t.Name.ToLower()),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.QuoteNumber => mapped.OrderByDescending(t => t.QuoteNumber),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.ClientName => mapped.OrderByDescending(t => t.ClientName.ToLower()),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.ChargeCode => mapped.OrderByDescending(t => t.ChargeCode!.ToLower()),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.Value => mapped.OrderByDescending(t => t.Value),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.Status => mapped.OrderByDescending(t => t.Status),
+                Abstractions.Quotes.GetQuotesV1.SortColumn.Date => mapped.OrderByDescending(t => t.Date),
+                _ => mapped,
+            };
 
         if (request.Skip.HasValue)
         {
