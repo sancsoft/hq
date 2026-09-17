@@ -228,13 +228,15 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
   }
 
   async save() {
+    this.form.markAllAsTouched();
     if (this.form.valid && this.form.dirty) {
       this.hqInvoiceTimeChange.emit(this.form.value);
       this.form.reset();
       this.form.markAsPristine();
-      if (!this.form.value.id) {
+      // removed focus on the hrs row so that when you click on the page it doesnt cause validation
+      /*if (!this.form.value.id) {
         this.hoursInput?.nativeElement?.focus();
-      }
+      }*/
     }
   }
 

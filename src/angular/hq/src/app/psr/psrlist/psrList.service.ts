@@ -126,23 +126,29 @@ export class PsrListService extends BaseListService<
   }
 
   protected override getResponse(): Observable<GetPSRRecordsV1> {
-    const staffMemberId$ = formControlChanges(this.staffMember);
+    const staffMemberId$ = formControlChanges(this.staffMember).pipe(
+      tap(() => this.goToPage(1)),
+    );
 
     const period$ = this.selectedPeriod.valueChanges.pipe(
       startWith(this.selectedPeriod.value),
       tap((date) => date || new Date()),
+      tap(() => this.goToPage(1)),
     );
 
     const isSubmitted$ = this.isSubmitted.valueChanges.pipe(
       startWith(this.isSubmitted.value),
+      tap(() => this.goToPage(1)),
     );
     const startDate$ = this.startDate.valueChanges.pipe(
       startWith(this.startDate.value),
       map((date) => date ?? null),
+      tap(() => this.goToPage(1)),
     );
     const endDate$ = this.endDate.valueChanges.pipe(
       startWith(this.endDate.value),
       map((date) => date ?? null),
+      tap(() => this.goToPage(1)),
     );
     const activeOnly$ = this.activeOnly.valueChanges.pipe(
       startWith(this.activeOnly.value ?? false),

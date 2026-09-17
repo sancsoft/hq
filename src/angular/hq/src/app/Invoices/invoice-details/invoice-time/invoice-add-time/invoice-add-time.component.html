@@ -172,14 +172,18 @@
           <th
             width="190px"
             scope="col"
-            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
+            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
+            [hq-sort-header]="sortColumn.ProjectName"
+            (click)="onSortClick(sortColumn.ProjectName)"
           >
             Project
           </th>
           <th
             width="120px"
             scope="col"
-            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
+            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer whitespace-nowrap"
+            [hq-sort-header]="sortColumn.ActivityName"
+            (click)="onSortClick(sortColumn.ActivityName)"
           >
             Activity
           </th>
@@ -187,6 +191,8 @@
             width="80px"
             scope="col"
             class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 whitespace-nowrap"
+            [hq-sort-header]="sortColumn.Task"
+            (click)="onSortClick(sortColumn.Task)"
           >
             Task
           </th>
@@ -295,6 +301,7 @@
               </td>
               <td class="border-b border-black px-2 py-2">
                 <input
+                  id="invoice_hrs_{{ time.record.id }}"
                   title="invoiced hours"
                   class="bg-blue-900 text-gray-100 placeholder-gray-100 border border-black px-1 w-12"
                   [value]="
@@ -302,7 +309,7 @@
                     time.record.hoursApproved ??
                     time.record.hours
                   "
-                  (change)="updateInvoicedHours(time.record, $event)"
+                  (input)="updateInvoicedHours(time.record, $event)"
                   type="number"
                   step="0.25"
                   min="0"

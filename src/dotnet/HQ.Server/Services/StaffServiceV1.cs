@@ -213,27 +213,37 @@ public class StaffServiceV1
         });
 
 
-        var sortMap = new Dictionary<GetStaffV1.SortColumn, string>()
-        {
-            { Abstractions.Staff.GetStaffV1.SortColumn.Name, "Name" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.FirstName, "FirstName" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.Hrs, "Hrs" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.BillableHrs, "BillableHrs" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.Jurisdiciton, "Jurisdiciton" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.Status, "Status" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.LastName, "LastName" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.StartDate, "StartDate" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.EndDate, "EndDate" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.VacationHours, "VacationHours" },
-            { Abstractions.Staff.GetStaffV1.SortColumn.WorkHours, "WorkHours" },
-
-        };
-
-        var sortProperty = sortMap[request.SortBy];
-
-        mapped = request.SortDirection == SortDirection.Asc ?
-            mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-            mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+        mapped = request.SortDirection == SortDirection.Asc
+            ? request.SortBy switch
+            {
+                Abstractions.Staff.GetStaffV1.SortColumn.Name => mapped.OrderBy(t => t.Name.ToLower()),
+                Abstractions.Staff.GetStaffV1.SortColumn.FirstName => mapped.OrderBy(t => t.FirstName!.ToLower()),
+                Abstractions.Staff.GetStaffV1.SortColumn.LastName => mapped.OrderBy(t => t.LastName!.ToLower()),
+                Abstractions.Staff.GetStaffV1.SortColumn.StartDate => mapped.OrderBy(t => t.StartDate),
+                Abstractions.Staff.GetStaffV1.SortColumn.EndDate => mapped.OrderBy(t => t.EndDate),
+                Abstractions.Staff.GetStaffV1.SortColumn.WorkHours => mapped.OrderBy(t => t.WorkHours),
+                Abstractions.Staff.GetStaffV1.SortColumn.VacationHours => mapped.OrderBy(t => t.VacationHours),
+                Abstractions.Staff.GetStaffV1.SortColumn.Hrs => mapped.OrderBy(t => t.Hrs),
+                Abstractions.Staff.GetStaffV1.SortColumn.BillableHrs => mapped.OrderBy(t => t.BillableHrs),
+                Abstractions.Staff.GetStaffV1.SortColumn.Status => mapped.OrderBy(t => t.Status!.ToLower()),
+                Abstractions.Staff.GetStaffV1.SortColumn.Jurisdiciton => mapped.OrderBy(t => t.Jurisdiciton),
+                _ => mapped,
+            }
+            : request.SortBy switch
+            {
+                Abstractions.Staff.GetStaffV1.SortColumn.Name => mapped.OrderByDescending(t => t.Name.ToLower()),
+                Abstractions.Staff.GetStaffV1.SortColumn.FirstName => mapped.OrderByDescending(t => t.FirstName!.ToLower()),
+                Abstractions.Staff.GetStaffV1.SortColumn.LastName => mapped.OrderByDescending(t => t.LastName!.ToLower()),
+                Abstractions.Staff.GetStaffV1.SortColumn.StartDate => mapped.OrderByDescending(t => t.StartDate),
+                Abstractions.Staff.GetStaffV1.SortColumn.EndDate => mapped.OrderByDescending(t => t.EndDate),
+                Abstractions.Staff.GetStaffV1.SortColumn.WorkHours => mapped.OrderByDescending(t => t.WorkHours),
+                Abstractions.Staff.GetStaffV1.SortColumn.VacationHours => mapped.OrderByDescending(t => t.VacationHours),
+                Abstractions.Staff.GetStaffV1.SortColumn.Hrs => mapped.OrderByDescending(t => t.Hrs),
+                Abstractions.Staff.GetStaffV1.SortColumn.BillableHrs => mapped.OrderByDescending(t => t.BillableHrs),
+                Abstractions.Staff.GetStaffV1.SortColumn.Status => mapped.OrderByDescending(t => t.Status!.ToLower()),
+                Abstractions.Staff.GetStaffV1.SortColumn.Jurisdiciton => mapped.OrderByDescending(t => t.Jurisdiciton),
+                _ => mapped,
+            };
 
         if (request.Skip.HasValue)
         {

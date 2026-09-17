@@ -71,7 +71,7 @@ export class SelectInputComponent<T>
   label: string | null = null;
 
   @Input()
-  variant: 'primary' | 'secondary' | 'status' | 'pill' = 'primary';
+  variant: 'primary' | 'secondary' | 'tertiary' | 'status' | 'pill' = 'primary';
 
   @Input()
   enableSearch: boolean = true;

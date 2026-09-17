@@ -3,6 +3,7 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
+  distinctUntilChanged,
   filter,
   firstValueFrom,
   map,
@@ -14,6 +15,7 @@ import {
   startWith,
   Subject,
   switchMap,
+  take,
   takeUntil,
   takeWhile,
   tap,
@@ -52,6 +54,9 @@ export class InvoiceDetaisService extends BaseListService<
   public rawInvoiceId$: Observable<string | null> = of();
   invoiceId$: Observable<string>;
   invoice$: Observable<GetInvoiceDetailsRecordV1>;
+  private invoiceSubject =
+    new BehaviorSubject<GetInvoiceDetailsRecordV1 | null>(null);
+  private patchSubject = new Subject<Partial<GetInvoiceDetailsRecordV1>>();
   invoiced$ = new BehaviorSubject<boolean | null>(null);
 
   clientId$: Observable<string>;
@@ -112,7 +117,7 @@ export class InvoiceDetaisService extends BaseListService<
 
     this.invoiceId$ = merge(invoiceId$, refreshInvoiceId$);
 
-    this.invoice$ = this.invoiceId$.pipe(
+    const invoiceApi$ = this.invoiceId$.pipe(
       switchMap((invoiceId) => {
         try {
           return this.hqService.getInvoiceDetailsV1({ id: invoiceId });
@@ -121,10 +126,32 @@ export class InvoiceDetaisService extends BaseListService<
           return of();
         }
       }),
+      tap((invoice) => {
+        if (invoice) this.invoiceSubject.next(invoice);
+      }),
+    );
+
+    const patchedInvoice$ = this.patchSubject.pipe(
+      switchMap((patch) =>
+        this.invoiceSubject.pipe(
+          take(1),
+          map((current) => (current ? { ...current, ...patch } : null)),
+        ),
+      ),
+    );
+
+    this.invoice$ = merge(invoiceApi$, patchedInvoice$).pipe(
+      filter((invoice): invoice is GetInvoiceDetailsRecordV1 => !!invoice),
+      tap((invoice) => {
+        this.invoiceSubject.next(invoice);
+      }),
       shareReplay({ bufferSize: 1, refCount: false }),
     );
 
-    this.clientId$ = this.invoice$.pipe(map((invoice) => invoice.clientId));
+    this.clientId$ = this.invoice$.pipe(
+      map((invoice) => invoice.clientId),
+      distinctUntilChanged(),
+    );
 
     this.client$ = this.clientId$.pipe(
       switchMap((clientId) => this.hqService.getClientsV1({ id: clientId })),
@@ -309,6 +336,10 @@ export class InvoiceDetaisService extends BaseListService<
     await firstValueFrom(
       this.modalService.alert('Error', 'Invoice details could not be found.'),
     );
+  }
+
+  patchInvoice(patch: Partial<GetInvoiceDetailsRecordV1>) {
+    this.patchSubject.next(patch);
   }
 
   invoiceRefresh() {

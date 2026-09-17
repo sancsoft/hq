@@ -22,8 +22,9 @@ public class ProjectsAuthorizationHandler : AuthorizationHandler<OperationAuthor
         var isStaff = context.User.IsInRole("staff");
         var isExecutive = context.User.IsInRole("executive");
         var isAdmin = context.User.IsInRole("administrator");
+        var isPartner = context.User.IsInRole("partner");
 
-        if (isExecutive || isAdmin)
+        if (isExecutive || isAdmin || isPartner)
         {
             context.Succeed(requirement);
             return;

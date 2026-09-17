@@ -69,23 +69,29 @@ namespace HQ.Server.Services
             });
 
 
-            var sortMap = new Dictionary<GetServicesAgreementV1.SortColumn, string>()
-        {
-            { GetServicesAgreementV1.SortColumn.Name, "Name" },
-            { GetServicesAgreementV1.SortColumn.chargeCode, "ChargeCode" },
-            { GetServicesAgreementV1.SortColumn.StartDate, "StartDate" },
-            { GetServicesAgreementV1.SortColumn.EndDate, "EndDate" },
-            { GetServicesAgreementV1.SortColumn.Cost, "CostValue" },
-            { GetServicesAgreementV1.SortColumn.Price, "PriceValue" },
-            { GetServicesAgreementV1.SortColumn.Status, "ProjectStatus" }
-
-        };
-
-            var sortProperty = sortMap[request.SortBy];
-
-            mapped = request.SortDirection == Abstractions.Enumerations.SortDirection.Asc ?
-                mapped.OrderBy(t => EF.Property<object>(t, sortProperty)) :
-                mapped.OrderByDescending(t => EF.Property<object>(t, sortProperty));
+            mapped = request.SortDirection == Abstractions.Enumerations.SortDirection.Asc
+                ? request.SortBy switch
+                {
+                    GetServicesAgreementV1.SortColumn.Name => mapped.OrderBy(t => t.Name.ToLower()),
+                    GetServicesAgreementV1.SortColumn.chargeCode => mapped.OrderBy(t => t.ChargeCode!.ToLower()),
+                    GetServicesAgreementV1.SortColumn.StartDate => mapped.OrderBy(t => t.StartDate),
+                    GetServicesAgreementV1.SortColumn.EndDate => mapped.OrderBy(t => t.EndDate),
+                    GetServicesAgreementV1.SortColumn.Cost => mapped.OrderBy(t => t.CostValue),
+                    GetServicesAgreementV1.SortColumn.Price => mapped.OrderBy(t => t.PriceValue),
+                    GetServicesAgreementV1.SortColumn.Status => mapped.OrderBy(t => t.ProjectStatus),
+                    _ => mapped,
+                }
+                : request.SortBy switch
+                {
+                    GetServicesAgreementV1.SortColumn.Name => mapped.OrderByDescending(t => t.Name.ToLower()),
+                    GetServicesAgreementV1.SortColumn.chargeCode => mapped.OrderByDescending(t => t.ChargeCode!.ToLower()),
+                    GetServicesAgreementV1.SortColumn.StartDate => mapped.OrderByDescending(t => t.StartDate),
+                    GetServicesAgreementV1.SortColumn.EndDate => mapped.OrderByDescending(t => t.EndDate),
+                    GetServicesAgreementV1.SortColumn.Cost => mapped.OrderByDescending(t => t.CostValue),
+                    GetServicesAgreementV1.SortColumn.Price => mapped.OrderByDescending(t => t.PriceValue),
+                    GetServicesAgreementV1.SortColumn.Status => mapped.OrderByDescending(t => t.ProjectStatus),
+                    _ => mapped,
+                };
 
             if (request.Skip.HasValue)
             {
