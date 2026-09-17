@@ -715,6 +715,8 @@ namespace HQ.Server.Services
                         Abstractions.Times.GetTimesV1.SortColumn.ProjectName => mapped.OrderBy(t => t.ProjectName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.StaffName => mapped.OrderBy(t => t.StaffName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.HoursApproved => mapped.OrderBy(t => t.HoursApproved),
+                        Abstractions.Times.GetTimesV1.SortColumn.ActivityName => mapped.OrderBy(t => t.ActivityName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.Task => mapped.OrderBy(t => t.Task!.ToLower()),
                         _ => mapped.OrderBy(t => t.Id),
                     }
                     : request.SortBy switch
@@ -727,6 +729,8 @@ namespace HQ.Server.Services
                         Abstractions.Times.GetTimesV1.SortColumn.ProjectName => mapped.OrderByDescending(t => t.ProjectName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.StaffName => mapped.OrderByDescending(t => t.StaffName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.HoursApproved => mapped.OrderByDescending(t => t.HoursApproved),
+                        Abstractions.Times.GetTimesV1.SortColumn.ActivityName => mapped.OrderByDescending(t => t.ActivityName!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.Task => mapped.OrderByDescending(t => t.Task!.ToLower()),
                         _ => mapped.OrderByDescending(t => t.Id),
                     };
 
