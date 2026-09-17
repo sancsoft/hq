@@ -124,8 +124,7 @@ export class PsrListService extends BaseListService<
   }
 
   protected override getResponse(): Observable<GetPSRRecordsV1> {
-    const staffMemberId$ = this.staffMember.valueChanges.pipe(
-      startWith(this.staffMember.value),
+    const staffMemberId$ = formControlChanges(this.staffMember).pipe(
       tap(() => this.goToPage(1)),
     );
 
