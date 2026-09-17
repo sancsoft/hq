@@ -14,7 +14,9 @@ import { map } from 'rxjs';
 import { ProjectPsrListComponent } from './project-psr-list/project-psr-list.component';
 import { CoreModule } from '../../core/core.module';
 import { PanelComponent } from '../../core/components/panel/panel.component';
+import { FormsModule } from '@angular/forms';
 import { ProjectDetailsService } from './project-details.service';
+import { ProjectDetailsSearchService } from './project-details-search.service';
 
 @Component({
   selector: 'hq-project-details',
@@ -27,8 +29,9 @@ import { ProjectDetailsService } from './project-details.service';
     ProjectPsrDetailsComponent,
     CoreModule,
     PanelComponent,
+    FormsModule,
   ],
-  providers: [ProjectDetailsService],
+  providers: [ProjectDetailsService, ProjectDetailsSearchService],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './project-details.component.html',
 })
@@ -37,6 +40,7 @@ export class ProjectDetailsComponent {
     private router: Router,
     private route: ActivatedRoute,
     public projectDetailService: ProjectDetailsService,
+    public searchService: ProjectDetailsSearchService,
   ) {
     const projectId$ = this.route.paramMap.pipe(
       map((params) => params.get('projectId')),

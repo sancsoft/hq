@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { GetPSRRecordV1, SortColumn } from '../../../models/PSR/get-PSR-v1';
+import {
+  GetPSRRecordV1,
+  GetPSRRequestV1,
+  SortColumn,
+} from '../../../models/PSR/get-PSR-v1';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HQService } from '../../../services/hq.service';
 import {
@@ -12,6 +16,7 @@ import {
 } from 'rxjs';
 import { SortDirection } from '../../../models/common/sort-direction';
 import { SortIconComponent } from '../../../common/sort-icon/sort-icon.component';
+import { ProjectDetailsSearchService } from '../project-details-search.service';
 
 @Component({
   selector: 'hq-project-psr-list',
@@ -33,6 +38,7 @@ export class ProjectPsrListComponent {
     private router: Router,
     private route: ActivatedRoute,
     private hqService: HQService,
+    private searchService: ProjectDetailsSearchService,
   ) {
     this.sortOption$ = new BehaviorSubject<SortColumn>(SortColumn.StartDate);
     this.sortDirection$ = new BehaviorSubject<SortDirection>(SortDirection.Asc);
@@ -43,9 +49,21 @@ export class ProjectPsrListComponent {
       projectId: this.projectId$,
       sortBy: this.sortOption$,
       sortDirection: this.sortDirection$,
+      weekOf: this.searchService.selectedWeekDateString$,
     });
     const apiResponse$ = request$.pipe(
-      switchMap((request) => this.hqService.getPSRV1(request)),
+      switchMap(({ projectId, sortBy, sortDirection, weekOf }) => {
+        const params: Partial<GetPSRRequestV1> = {
+          projectId,
+          sortBy,
+          sortDirection,
+        };
+        if (weekOf) {
+          params.startDate = weekOf as unknown as Date;
+          params.endDate = weekOf as unknown as Date;
+        }
+        return this.hqService.getPSRV1(params);
+      }),
     );
     this.PSRWorkWeeks = apiResponse$.pipe(map((response) => response.records));
   }

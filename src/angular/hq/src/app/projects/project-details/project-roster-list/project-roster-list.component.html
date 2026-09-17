@@ -6,6 +6,13 @@
     </tr>
   </thead>
   <tbody class="hq-table-body">
+    @if ((projectMembers$ | async)?.length === 0) {
+      <tr>
+        <td colspan="2">
+          <div class="text-center font-bold">No records found</div>
+        </td>
+      </tr>
+    }
     @for (staff of projectMembers$ | async; track staff.id) {
       <tr>
         <td>{{ staff.name }}</td>

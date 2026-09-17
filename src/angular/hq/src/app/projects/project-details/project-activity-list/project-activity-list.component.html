@@ -6,6 +6,13 @@
     </tr>
   </thead>
   <tbody class="hq-table-body">
+    @if ((projectDetailsService.activities$ | async)?.length === 0) {
+      <tr>
+        <td colspan="2">
+          <div class="text-center font-bold">No records found</div>
+        </td>
+      </tr>
+    }
     @for (
       activity of projectDetailsService.activities$ | async;
       track activity.id
