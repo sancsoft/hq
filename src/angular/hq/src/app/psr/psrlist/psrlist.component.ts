@@ -14,6 +14,7 @@ import { Period } from '../../enums/period';
 import { ProjectType } from '../../enums/project-type';
 import { CoreModule } from '../../core/core.module';
 import { BaseListService } from '../../core/services/base-list.service';
+import { projectStatusToClass } from '../../common/functions/project-status-to-class';
 
 @Component({
   selector: 'hq-psrlist',
@@ -43,6 +44,8 @@ export class PSRListComponent implements OnInit {
   sortDirection = SortDirection;
   ProjectStatus = ProjectStatus;
   ProjectType = ProjectType;
+
+  projectStatusToClass = projectStatusToClass;
 
   async ngOnInit() {
     await this.listService.initStaffId();

@@ -9,8 +9,10 @@ import {
 } from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import type { editor } from 'monaco-editor';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PsrService } from '../psr-service';
+import { PsrPointSummaryListComponent } from '../psr-point-summary-list/psr-point-summary-list.component';
+import { PsrRefreshService } from '../Services/psr-refresh.service';
 
 import {
   Observable,
@@ -44,6 +46,11 @@ import { AngularSplitModule } from 'angular-split';
 import { PsrSearchFilterComponent } from '../psr-search-filter/psr-search-filter.component';
 import { PanelComponent } from '../../core/components/panel/panel.component';
 import { CoreModule } from '../../core/core.module';
+import {
+  ProjectColorStatus,
+  ProjectColorStatusLabels,
+} from '../../enums/project-color-status';
+import { projectStatusToClass } from '../../common/functions/project-status-to-class';
 
 @Component({
   selector: 'hq-psrreport',
@@ -51,6 +58,7 @@ import { CoreModule } from '../../core/core.module';
     ReactiveFormsModule,
     CommonModule,
     MonacoEditorModule,
+    FormsModule,
     HQMarkdownComponent,
     InRolePipe,
     PSRTimeListComponent,
@@ -58,6 +66,7 @@ import { CoreModule } from '../../core/core.module';
     PsrSearchFilterComponent,
     PanelComponent,
     CoreModule,
+    PsrPointSummaryListComponent,
   ],
   templateUrl: './psrreport.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -86,6 +95,18 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
   savedStatus?: string;
 
+  projectStatusToClass = projectStatusToClass;
+  projectColorStatus = ProjectColorStatus;
+  projectColorStatuses = Object.keys(ProjectColorStatusLabels).map((key) => {
+    const numericKey = Number(key) as ProjectColorStatus;
+    return {
+      id: numericKey,
+      name: ProjectColorStatus[numericKey],
+      displayName: ProjectColorStatusLabels[numericKey],
+    };
+  });
+  colorStatus = new FormControl<ProjectColorStatus | null>(null);
+
   submitButtonState: ButtonState = ButtonState.Enabled;
   prevPSRReportButtonState: ButtonState = ButtonState.Disabled;
 
@@ -93,6 +114,8 @@ export class PSRReportComponent implements OnInit, OnDestroy {
   ButtonState = ButtonState;
   HQRole = HQRole;
   currentDate = new Date();
+
+  togglePreview: boolean = false;
 
   async ngOnInit() {
     this.psrService.resetFilter();
@@ -118,6 +141,15 @@ export class PSRReportComponent implements OnInit, OnDestroy {
 
     this.prevPSRReportButtonState =
       prevPsr && prevPsr.report ? ButtonState.Enabled : ButtonState.Disabled;
+
+    const currentColorStatus = this.projectColorStatuses.find(
+      (colorStatus) => colorStatus.id === psr.colorStatus,
+    );
+    if (currentColorStatus) {
+      this.colorStatus.setValue(currentColorStatus.id, { emitEvent: false });
+    } else {
+      this.colorStatus.setValue(ProjectColorStatus.Gray, { emitEvent: false });
+    }
   }
 
   ngOnDestroy(): void {
@@ -134,6 +166,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
     private oidcSecurityService: OidcSecurityService,
     private toastService: ToastService,
+    private psrRefreshService: PsrRefreshService,
   ) {
     this.psrId$ = this.route.parent!.params.pipe(
       map((params) => params['psrId']),
@@ -152,6 +185,7 @@ export class PSRReportComponent implements OnInit, OnDestroy {
         ),
       ),
     );
+
     const canManageProjectStatusReport$ = combineLatest({
       userData: oidcSecurityService.userData$.pipe(map((t) => t.userData)),
       psr: this.psr$,
@@ -228,6 +262,30 @@ export class PSRReportComponent implements OnInit, OnDestroy {
             ),
           );
         },
+      });
+
+    const colorStatus$ = this.colorStatus.valueChanges;
+    const updateColorStatusRequest$ = combineLatest({
+      projectStatusReportId: this.psrId$,
+      projectColorStatus: colorStatus$,
+    });
+    updateColorStatusRequest$
+      .pipe(
+        switchMap((request) => {
+          return this.hqService.updatePSRColorStatusV1(request);
+        }),
+        takeUntil(this.destroyed$),
+      )
+      // eslint-disable-next-line rxjs-angular-x/prefer-async-pipe
+      .subscribe({
+        next: () => {
+          this.toastService.show(
+            'Success',
+            'Project Report Status successfully updated.',
+          );
+          this.psrRefreshService.triggerRefresh();
+        },
+        error: console.error,
       });
   }
 

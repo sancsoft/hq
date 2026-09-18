@@ -1,0 +1,106 @@
+<table class="min-w-full border-spacing-0 border-separate py-2">
+  <tr>
+    <td class="text-nowrap w-3">&nbsp;</td>
+    <td width="275" class="px-3 min-w-[275px]">
+      <div class="font-semibold text-base">Point Summary</div>
+      <div>Totals</div>
+    </td>
+    <td
+      class="border-l-[3px] border-steel-blue-600 px-3 min-w-[120px] text-4xl font-rajdhani font-semibold"
+    >
+      {{ (pointSummary$ | async)?.totalAllocated ?? 0 }}
+    </td>
+    <td
+      class="border-l-[3px] border-steel-blue-600 px-3 min-w-[120px] text-4xl font-rajdhani font-semibold"
+    >
+      {{ (pointSummary$ | async)?.totalUtilized ?? 0 | number: "1.0-0" }}
+    </td>
+  </tr>
+</table>
+
+<table class="min-w-full border-spacing-0 border-separate">
+  <thead>
+    <tr class="sticky top-0 text-left">
+      <th
+        scope="col"
+        class="bg-blue-900 border-b border-steel-blue-600 text-nowrap w-3"
+      >
+        &nbsp;
+      </th>
+      <th
+        width="275"
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-b border-r-bg-blue-900 py-3 px-3 pl-0 min-w-[275px] cursor-pointer"
+        (click)="onSortClick(sortColumn.StaffName)"
+      >
+        Staff
+        <hq-sort-icon
+          [column]="sortColumn.StaffName"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-b py-3 px-3 min-w-[120px] cursor-pointer"
+        (click)="onSortClick(sortColumn.AllocatedPoints)"
+      >
+        Allocated
+        <hq-sort-icon
+          [column]="sortColumn.AllocatedPoints"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+      <th
+        scope="col"
+        class="bg-blue-900 border-steel-blue-600 border-b py-3 px-3 min-w-[120px] cursor-pointer"
+        (click)="onSortClick(sortColumn.UtilizedPoints)"
+      >
+        Utilized
+        <hq-sort-icon
+          [column]="sortColumn.UtilizedPoints"
+          [activeColumn]="sortOption$ | async"
+          [activeSortDirection]="sortDirection$ | async"
+        />
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (record of (pointSummary$ | async)?.records; track record.staffId) {
+      <tr [ngClass]="'even:bg-gray-850 odd:bg-black-alt'">
+        <td
+          class="border-b border-black w-3"
+          [title]="''"
+          [ngClass]="{
+            'bg-gray-300':
+              round(record.utilizedPoints) < record.allocatedPoints &&
+              record.allocatedPoints > 0,
+            'bg-green-600':
+              round(record.utilizedPoints) >= record.allocatedPoints &&
+              record.allocatedPoints > 0,
+            'bg-steel-blue-500':
+              round(record.utilizedPoints) > record.allocatedPoints,
+          }"
+        >
+          &nbsp;
+        </td>
+        <td class="border-b border-r border-black py-2 px-3">
+          {{ record.staffName }}
+        </td>
+        <td class="border-b border-black py-2 px-3">
+          {{ record.allocatedPoints }}
+        </td>
+        <td
+          class="border-b border-black py-2 px-3"
+          [ngClass]="{
+            'text-blue-400':
+              round(record.utilizedPoints) > record.allocatedPoints,
+          }"
+        >
+          {{ record.utilizedPoints | number: "1.0-0" }}
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

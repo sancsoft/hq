@@ -14,6 +14,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HQService } from '../../services/hq.service';
 import { Period } from '../../enums/period';
 import { PsrRefreshService } from '../Services/psr-refresh.service';
+import { projectStatusToClass } from '../../common/functions/project-status-to-class';
 
 @Component({
   selector: 'hq-psr-details-header',
@@ -24,6 +25,8 @@ import { PsrRefreshService } from '../Services/psr-refresh.service';
 export class PsrDetailsHeaderComponent {
   projectReportStatus$: Observable<GetPSRRecordV1>;
   projectReportId$: Observable<string | null>;
+
+  public projectStatusToClass = projectStatusToClass;
 
   constructor(
     private activatedRoute: ActivatedRoute,
