@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.5] - 2026-09-17
+
+### Fixed
+
+- **Closed Charge Code Handling** — Charge codes for closed projects (inactive) are now handled gracefully
+  - Timesheet, planning points, and PSR time entries display the charge code even when it is no longer in the active charge code list
+  - Time entries cannot be submitted and plans cannot be saved when the assigned charge code is inactive, with a clear error
+  - Editing a PSR time entry no longer clears the charge code when it cannot be resolved from the active list
+  - Plan save failures show an error toast and keep the dialog open until the save succeeds
+
+### Added
+
+- **Invoice Time Management** —
+  - Bulk delete of time entries from an invoice (select all and per-row checkboxes with a Remove Time button)
+  - Sorting by project, activity, and task on the invoice add time page
+  - Toast notifications on invoice create/edit; save button disabled until the form is modified
+  - Invoiced hours updates reflected in the invoice total without a full page refresh
+- **Project Details Search** — PSR week of date picker and PSR time search on the project details page
+- "No records found" text on project activity and roster tables
+
+### Changed
+
+- Case insensitive sorting — String sorts on list APIs now use a case insensitive `ToLower` approach instead of `EF.Property`
+- PM Report and PSR tabs on the project details page are disabled until a weekly PSR record is selected
+
+### Fixed
+
+- Pagination breaking when changing filters on the PSR list and time list while on a page beyond the new result count (filters now reset to the first page)
+- 25 per page table option now correctly selects 25 items
+- Add activity and add staff member forms on the project view page — partner role can now submit
+- Form validation on the staff dropdown of the new time record row on invoice details
+
+## [0.6.4] - 2026-09-17
+
+### Added
+
+- **SMTP2GO Email Service** — New email provider that sends via the SMTP2GO API using an API key
+
 ## [0.6.3] - 2026-08-11
 
 ### Changed
@@ -857,8 +895,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
-[unreleased]: https://github.com/sancsoft/hq/compare/v0.6.3...HEAD
-[0.6.2]: https://github.com/sancsoft/hq/compare/v0.6.2...v0.6.3
+[unreleased]: https://github.com/sancsoft/hq/compare/v0.6.5...HEAD
+[0.6.5]: https://github.com/sancsoft/hq/compare/v0.6.4...v0.6.5
+[0.6.4]: https://github.com/sancsoft/hq/compare/v0.6.3...v0.6.4
+[0.6.3]: https://github.com/sancsoft/hq/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/sancsoft/hq/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/sancsoft/hq/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/sancsoft/hq/compare/v0.5.9...v0.6.0
