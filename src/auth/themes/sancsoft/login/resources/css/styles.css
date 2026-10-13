@@ -1,15 +1,58 @@
+html, body {
+    height: 100% !important;
+    margin: 0;
+    padding: 0;
+}
+
+.login-pf-page {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    height: 100vh !important;
+    padding-top: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.login-pf-page .login-pf-header,
+.login-pf-page #kc-container {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.card-pf {
+   width:100%;
+}
+
 .login-pf body {
     background-image: url('../img/splash_bg.png');
     background-size: cover;
     background-position: top right;
 }
 
-div.kc-logo-text {
-    background-image: url(../img/logo.png);
+.styles-hidden {
+    display: none !important;
+}
+
+.card-header-with-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 15px;
+}
+
+.card-header-with-logo::before {
+    content: "";
+    display: block;
+    width: 75px; 
+    height: 75px;
+    margin-bottom: 15px;
+    background-image: url('../img/HQ_logo.png');
+    background-size: contain;
     background-repeat: no-repeat;
-    height: 68px;
-    width: 327px;
-    margin: 0 auto;
+    background-position: center;
 }
 
 :root {

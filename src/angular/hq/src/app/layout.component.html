@@ -1,11 +1,11 @@
 <!-- header -->
-<header class="flex flex-wrap xl:flex-nowrap items-end py-4 pr-3 xl:pr-5">
+<header class="flex flex-wrap xl:flex-nowrap items-end mb-4 pr-3 xl:pr-5 bg-gray-850">
   <div class="flex w-[100%] xl:hidden">
     <!-- pad logo -->
-    <div class="pb-4 px-5 w-[100%] text-center">
+    <div class="py-3 px-5 w-[100%] text-center">
       <a routerLink="/" class="inline-block"
         ><img
-          src="/assets/logo.svg"
+          src="/assets/HQ_logo.svg"
           alt="Sanctuary Software Studio, Inc."
           style="height: 30px; margin: 0 auto"
       /></a>
@@ -17,7 +17,7 @@
       <div class="min-w-[50px] xl:min-w-[100px]">
         <a
           routerLink="/dashboard"
-          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+          routerLinkActive="text-gray-100 border-b border-b-orange-500/100 font-bold"
           class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
           >Home</a
         >
@@ -27,7 +27,7 @@
       <div class="min-w-[50px] xl:min-w-[100px]">
         <a
           routerLink="/psr"
-          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+          routerLinkActive="text-gray-100 border-b border-b-orange-500/100 font-bold"
           class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
           >PSR</a
         >
@@ -48,7 +48,7 @@
       <div class="min-w-[50px] xl:min-w-[100px]">
         <a
           routerLink="/planning/points"
-          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+          routerLinkActive="text-gray-100 border-b border-b-orange-500/100 font-bold"
           class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
           aria-disabled="true"
           >Points</a
@@ -59,7 +59,7 @@
       <div class="min-w-[50px] xl:min-w-[100px]">
         <a
           routerLink="/clients"
-          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+          routerLinkActive="text-gray-100 border-b border-b-orange-500/100 font-bold"
           class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
           >Clients</a
         >
@@ -69,7 +69,7 @@
       <div class="min-w-[50px] xl:min-w-[100px]">
         <a
           routerLink="/projects"
-          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+          routerLinkActive="text-gray-100 border-b border-b-orange-500/100 font-bold"
           class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
           >Projects</a
         >
@@ -79,7 +79,7 @@
       <div class="min-w-[50px] xl:min-w-[100px]">
         <a
           routerLink="/quotes"
-          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+          routerLinkActive="text-gray-100 border-b border-b-orange-500/100 font-bold"
           class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
           aria-disabled="true"
           >Quotes</a
@@ -90,7 +90,7 @@
       <div>
         <a
           routerLink="/times"
-          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+          routerLinkActive="text-gray-100 border-b border-b-orange-500/100 font-bold"
           class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
           aria-disabled="true"
           >Time</a
@@ -101,7 +101,7 @@
       <div>
         <a
           routerLink="/invoices"
-          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+          routerLinkActive="text-gray-100 border-b border-b-orange-500/100 font-bold"
           class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
           aria-disabled="true"
           >Invoices</a
@@ -109,23 +109,26 @@
       </div>
     }
     <!--<div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
-                      <a
-                        routerLink="/services"
-                        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-                        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-                        >Services</a
-                        >
-                      </div>
-                      <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
-                        <a
-                          routerLink="/invoices"
-                          routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
-                          class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
-                          >Invoices</a
-                          >
-                        </div>-->
+    <a
+      routerLink="/services"
+      routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+      class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+      >Services</a
+      >
+    </div>
+    <div *ngIf="HQRole.Staff | inRole | async" class="min-w-[50px] xl:min-w-[100px]">
+      <a
+        routerLink="/invoices"
+        routerLinkActive="text-gray-100 border-b border-b-orange-500/100"
+        class="block text-center whitespace-nowrap text-gray-100 border-b border-b-orange-500/0 px-3 py-1 hover:text-gray-200"
+        >Invoices</a
+        >
+      </div>-->
+  </nav>
+  <!-- col three -->
+  <div class="flex column justify-end items-center ml-auto pl-[1.125rem] py-2">
     <div
-      class="flex items-center ml-auto pr-[1.125rem] border-r border-r-black-alt"
+      class="flex items-center ml-auto pr-[1.125rem] border-r border-r-black-alt mr-3"
     >
       <!-- settings/more dropdown button -->
       <button
@@ -211,9 +214,6 @@
         </ul>
       </ng-template>
     </div>
-  </nav>
-  <!-- col three -->
-  <div class="flex column justify-end items-center ml-auto pl-[1.125rem]">
     <!-- my account dropdown menu -->
     <div class="pe-0 xl:pe-10">
       <!-- user dropdown button -->
@@ -273,15 +273,15 @@
         </ul>
       </ng-template>
     </div>
-  </div>
-  <!-- desktop logo -->
-  <div class="hidden xl:inline-block">
-    <a routerLink="/"
-      ><img
-        src="/assets/logo.svg"
-        alt="Sanctuary Software Studio, Inc."
-        style="height: 30px"
-    /></a>
+    <!-- desktop logo -->
+    <div class="hidden xl:inline-block">
+      <a routerLink="/"
+        ><img
+          src="/assets/HQ_logo.svg"
+          alt="Sanctuary Software Studio, Inc."
+          style="height: 30px"
+      /></a>
+    </div>
   </div>
 </header>
 
