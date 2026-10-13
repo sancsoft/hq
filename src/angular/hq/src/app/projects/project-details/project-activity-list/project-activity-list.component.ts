@@ -131,6 +131,7 @@ export class ProjectActivityListComponent {
         );
         this.projectDetailsService.refresh();
         this.form.controls.name.setValue('');
+        this.form.controls.name.markAsUntouched();
       } else {
         this.apiErrors.length = 0;
         this.apiErrors.push(
