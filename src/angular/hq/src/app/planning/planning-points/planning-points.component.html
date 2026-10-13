@@ -83,6 +83,13 @@
       </tr>
     </thead>
     <tbody class="hq-table-body hq-table-body-condensed">
+      @if (summary.staff.length === 0) {
+        <tr>
+          <td colspan="13" class="bg-black-alt">
+            <h1 class="text-center py-4 font-bold">No matching records found</h1>
+          </td>
+        </tr>
+      }
       @for (staff of summary.staff; track staff.staffId) {
         <tr>
           <td
