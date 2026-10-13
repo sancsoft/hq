@@ -78,7 +78,7 @@
     }
     @for (member of listService.records$ | async; track $index) {
       <tr class="even:bg-gray-850 odd:bg-black-alt">
-        <td class="border-b border-black py-2">
+        <td class="border-b border-black py-2 whitespace-nowrap">
           {{ member.date }}
         </td>
         <td class="border-b border-black py-2 pl-5">
