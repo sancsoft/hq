@@ -30,23 +30,39 @@
     </tr>
   </thead>
   <tbody>
-    @for (psrWeek of PSRWorkWeeks | async; track $index) {
-      <tr
-        [ngClass]="
-          psrWeek.id === (psrId$ | async)
-            ? 'bg-blue-900'
-            : 'even:bg-gray-850 odd:bg-black-alt'
-        "
-      >
-        <td class="border-b border-black whitespace-nowrap  py-2 pl-5">{{ psrWeek.startDate }}</td>
-        <td class="border-b border-black py-2">{{ psrWeek.thisHours }}</td>
-        <td class="border-b border-black py-2 text-right pr-5">
-          <a
-            class="text-teal-200 hover:text-teal-300"
-            [routerLink]="[]"
-            [queryParams]="{ psrId: psrWeek.id }"
-            >VIEW</a
+    @if (PSRWorkWeeks | async; as records) {
+      @if (records.length === 0) {
+        <tr>
+          <td [colSpan]="3" class="bg-black-alt">
+            <h1 class="text-center py-4 font-bold">No records found</h1>
+          </td>
+        </tr>
+      } @else {
+        @for (psrWeek of records; track psrWeek.id) {
+          <tr
+            [ngClass]="
+              psrWeek.id === (psrId$ | async)
+                ? 'bg-blue-900'
+                : 'even:bg-gray-850 odd:bg-black-alt'
+            "
           >
+            <td class="border-b border-black whitespace-nowrap  py-2 pl-5">{{ psrWeek.startDate }}</td>
+            <td class="border-b border-black py-2">{{ psrWeek.thisHours }}</td>
+            <td class="border-b border-black py-2 text-right pr-5">
+              <a
+                class="text-teal-200 hover:text-teal-300"
+                [routerLink]="[]"
+                [queryParams]="{ psrId: psrWeek.id }"
+                >VIEW</a
+              >
+            </td>
+          </tr>
+        }
+      }
+    } @else if (loading | async) {
+      <tr>
+        <td [colSpan]="3" class="bg-black-alt">
+          <h1 class="text-center py-4 font-bold">Loading...</h1>
         </td>
       </tr>
     }

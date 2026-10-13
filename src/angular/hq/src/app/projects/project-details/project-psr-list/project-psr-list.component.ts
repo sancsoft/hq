@@ -11,6 +11,9 @@ import {
   BehaviorSubject,
   Observable,
   combineLatest,
+  tap,
+  defer,
+  finalize,
   map,
   switchMap,
 } from 'rxjs';
@@ -31,6 +34,7 @@ export class ProjectPsrListComponent {
   sortDirection$: BehaviorSubject<SortDirection>;
   psrId$: Observable<string | null>;
 
+  loading = new BehaviorSubject<boolean>(true);
   sortColumn = SortColumn;
   sortDirection = SortDirection;
 
@@ -64,8 +68,9 @@ export class ProjectPsrListComponent {
         }
         return this.hqService.getPSRV1(params);
       }),
+      finalize(() => this.loading.next(false)),
     );
-    this.PSRWorkWeeks = apiResponse$.pipe(map((response) => response.records));
+    this.PSRWorkWeeks = apiResponse$.pipe(tap(() => this.loading.next(true)), map((response) => response.records));
   }
   onSortClick(sortColumn: SortColumn) {
     if (this.sortOption$.value == sortColumn) {

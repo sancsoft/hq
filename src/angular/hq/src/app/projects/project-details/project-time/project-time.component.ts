@@ -4,8 +4,10 @@ import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
+  finalize,
   map,
   switchMap,
+  tap,
 } from 'rxjs';
 import { Observable } from 'rxjs';
 import { SortColumn } from '../../../models/PSR/get-psr-time-v1';
@@ -25,12 +27,13 @@ import { ProjectDetailsSearchService } from '../project-details-search.service';
   templateUrl: './project-time.component.html',
 })
 export class ProjectTimeComponent {
-  psrTimes$?: Observable<[GetPSRTimeRecordV1] | null>;
+  psrTimes$?: Observable<GetPSRTimeRecordV1[] | null>;
   psrId$: Observable<string | null>;
   timeStatus = TimeStatus;
   sortOption$: BehaviorSubject<SortColumn>;
   sortDirection$: BehaviorSubject<SortDirection>;
 
+  loading = new BehaviorSubject<boolean>(true);
   sortColumn = SortColumn;
   sortDirection = SortDirection;
 
@@ -51,6 +54,8 @@ export class ProjectTimeComponent {
     });
     const apiResponse$ = request$.pipe(
       debounceTime(500),
+      tap(() => this.loading.next(true)),
+      tap(() => console.log('Request params:', arguments)),
       switchMap(({ projectStatusReportId, sortBy, sortDirection, search }) => {
         const params: Partial<GetPSRTimeRequestV1> = {
           ProjectStatusReportId: projectStatusReportId!,
@@ -62,8 +67,15 @@ export class ProjectTimeComponent {
         }
         return this.hqService.getPSRTimeV1(params);
       }),
+      map((response) => {
+        console.log('Response received, setting loading false');
+        this.loading.next(false);
+        return response;
+      }),
     );
-    this.psrTimes$ = apiResponse$.pipe(map((response) => response.records));
+    this.psrTimes$ = apiResponse$.pipe(
+      map((response) => response.records),
+    );
   }
   onSortClick(sortColumn: SortColumn) {
     if (this.sortOption$.value == sortColumn) {

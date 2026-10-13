@@ -1,5 +1,4 @@
 <!-- psr content -->
-@if (psrTimes$ | async; as times) {
   <div class="relative">
     <div class="flex-auto">
       <table class="min-w-full border-spacing-0 border-separate">
@@ -87,46 +86,66 @@
           </tr>
         </thead>
         <tbody>
-          @for (time of times; track $index) {
-            <!-- Default -->
-            <tr class="even:bg-gray-850 odd:bg-black-alt">
-              @switch (time.status) {
-                @case (timeStatus.Accepted) {
-                  <td class="border-b border-black py-2 bg-green-600 w-3"></td>
-                }
-                @case (timeStatus.Submitted) {
-                  <td class="border-b border-black py-2 bg-green-500 w-3"></td>
-                }
-                @case (timeStatus.Unsubmitted) {
-                  <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
-                }
-                @case (timeStatus.Rejected) {
-                  <td class="border-b border-black py-2 bg-red-600 w-3"></td>
-                }
+          @if (psrTimes$ | async; as times)
+          {
+            @if (times.length === 0) {
+              <tr>
+                <td [colSpan]="9" class="bg-black-alt">
+                  <h1 class="text-center py-4 font-bold">No records found</h1>
+                </td>
+              </tr>
+            }
+            @else
+            {
+              @for (time of times; track time.id)
+              {
+                <!-- Default -->
+                <tr class="even:bg-gray-850 odd:bg-black-alt">
+                  @switch (time.status) {
+                    @case (timeStatus.Accepted) {
+                      <td class="border-b border-black py-2 bg-green-600 w-3"></td>
+                    }
+                    @case (timeStatus.Submitted) {
+                      <td class="border-b border-black py-2 bg-green-500 w-3"></td>
+                    }
+                    @case (timeStatus.Unsubmitted) {
+                      <td class="border-b border-black py-2 bg-gray-450 w-3"></td>
+                    }
+                    @case (timeStatus.Rejected) {
+                      <td class="border-b border-black py-2 bg-red-600 w-3"></td>
+                    }
+                  }
+                  <td class="border-b border-black py-2 pl-3 pr-2">
+                    {{ time.billableHours }}
+                  </td>
+                  <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
+                  <td class="border-b border-black whitespace-nowrap py-2 px-2">{{ time.date }}</td>
+                  <td class="border-b border-black py-2 px-2">
+                    {{ time.chargeCode }}
+                  </td>
+                  <td class="border-b border-black py-2 px-2">
+                    {{ time.staffName }}
+                  </td>
+                  <td class="border-b border-black py-2 px-2">
+                    {{ time.activityName }}
+                  </td>
+                  <td class="border-b border-black py-2 px-2">
+                    {{ time.task }}
+                  </td>
+                  <td class="border-b border-black py-2 px-2 w-full">
+                    <input
+                      class="w-full bg-transparent border border-transparent rounded px-2 mr-2"
+                      [value]="time.description"
+                      disabled
+                    />
+                  </td>
+                </tr>
               }
-              <td class="border-b border-black py-2 pl-3 pr-2">
-                {{ time.billableHours }}
-              </td>
-              <td class="border-b border-black py-2 px-2">{{ time.hours }}</td>
-              <td class="border-b border-black whitespace-nowrap py-2 px-2">{{ time.date }}</td>
-              <td class="border-b border-black py-2 px-2">
-                {{ time.chargeCode }}
-              </td>
-              <td class="border-b border-black py-2 px-2">
-                {{ time.staffName }}
-              </td>
-              <td class="border-b border-black py-2 px-2">
-                {{ time.activityName }}
-              </td>
-              <td class="border-b border-black py-2 px-2">
-                {{ time.task }}
-              </td>
-              <td class="border-b border-black py-2 px-2 w-full">
-                <input
-                  class="w-full bg-transparent border border-transparent rounded px-2 mr-2"
-                  [value]="time.description"
-                  disabled
-                />
+            }
+          } @else if (loading | async) {
+            <tr>
+              <td [colSpan]="9" class="bg-black-alt">
+                <h1 class="text-center py-4 font-bold">Loading...</h1>
               </td>
             </tr>
           }
@@ -134,4 +153,3 @@
       </table>
     </div>
   </div>
-}
