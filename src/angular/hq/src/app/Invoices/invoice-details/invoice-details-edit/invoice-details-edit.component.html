@@ -10,18 +10,27 @@
             @if (invoice$ | async; as invoice) {
               <div class="text-gray-50">
                 {{ invoice?.invoiceNumber }}
+                @if (currentClient$ | async; as client) {
+                |
+                <a [routerLink]="['/clients', client.id]" class="underline">{{
+                  client.name
+                }}</a>
+                }
               </div>
             }
             @if (currentClient$ | async; as client) {
               <div class="text-gray-50">
                 Client Email: {{ client.billingEmail || "None" }}
               </div>
-              <div class="text-gray-50">
-                Official Client Name -
-                <a [routerLink]="['/clients', client.id]" class="underline">{{
-                  client.officialName
-                }}</a>
-              </div>
+              @if(client.officialName)
+              {
+                <div class="text-gray-50">
+                  Official Client Name -
+                  <a [routerLink]="['/clients', client.id]" class="underline">{{
+                    client.officialName
+                  }}</a>
+                </div>
+              }
             }
           </div>
         </div>
@@ -89,12 +98,13 @@
                 class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
                 >Details</a
               >
+              <!-- 
               <a
                 href="#"
                 routerLink="../time"
                 class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold hover:border-gray-100"
                 >Time</a
-              >
+              > -->
             </div>
             @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
               <div class="flex flex-column justify-center items-center">

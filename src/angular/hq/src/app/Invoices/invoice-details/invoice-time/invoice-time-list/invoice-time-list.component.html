@@ -1,7 +1,7 @@
 <div class="h-[calc(100dvh-106px)] fixed top-70 left-0 w-full flex flex-col">
   <div class="flex justify-between gap-[20px]">
     <div class="pb-3 px-5">
-      <h1 class="font-rajdhani font-semibold text-3xl">Invoice Details</h1>
+      <h1 class="font-rajdhani font-semibold text-3xl">Invoice Time</h1>
       <div>
         <div
           class="flex flex-col xl:flex-row xl:justify-between xl:items-center"
@@ -10,18 +10,27 @@
             @if (invoice$ | async; as invoice) {
               <div class="text-gray-50">
                 {{ invoice.invoiceNumber }}
+                @if (currentClient$ | async; as client) {
+                |
+                <a [routerLink]="['/clients', client.id]" class="underline">{{
+                  client.name
+                }}</a>
+                }
               </div>
             }
             @if (currentClient$ | async; as client) {
               <div class="text-gray-50">
                 Client Email: {{ client.billingEmail || "None" }}
               </div>
-              <div class="text-gray-50">
-                Official Client Name -
-                <a [routerLink]="['/clients', client.id]" class="underline">{{
-                  client.officialName
-                }}</a>
-              </div>
+              @if(client.officialName)
+              {
+                <div class="text-gray-50">
+                  Official Client Name -
+                  <a [routerLink]="['/clients', client.id]" class="underline">{{
+                    client.officialName
+                  }}</a>
+                </div>
+              }
             }
           </div>
         </div>
@@ -169,6 +178,7 @@
     </div>
   </div>
 
+  <!-- 
   <div class="grid gap-0 relative">
     <main class="flex flex-col bg-black-alt overflow-y-auto">
       <div
@@ -196,6 +206,7 @@
       </div>
     </main>
   </div>
+   -->
   <div class="overflow-scroll flex-auto bg-black-alt">
     <hq-table
       [withPagination]="false"

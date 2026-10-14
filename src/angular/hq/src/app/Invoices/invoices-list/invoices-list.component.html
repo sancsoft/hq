@@ -71,9 +71,16 @@
         <td class="whitespace-nowrap">{{ invoice.date }}</td>
         <td class="text-right">
           <div class="text-nowrap divide-x divide-teal-200">
+            @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
+              <a
+                [routerLink]="[invoice.id, 'details']"
+                class="text-teal-200 hover:text-teal-300 pr-3"
+                >EDIT</a
+              >
+            }
             <a
-              class="text-teal-200 hover:text-teal-300"
-              [routerLink]="[invoice.id, 'details']"
+              class="text-teal-200 hover:text-teal-300 pl-3"
+              [routerLink]="[invoice.id, 'time']"
               >VIEW
             </a>
           </div>
