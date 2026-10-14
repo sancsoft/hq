@@ -100,6 +100,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
   class = 'even:bg-gray-850 odd:bg-black-alt';
 
   private destroyed$ = new Subject<void>();
+  private chargeCodeSelected = new Subject<void>();
 
   chargeCodeToColor = chargeCodeToColor;
 
@@ -216,6 +217,26 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
       }),
       takeUntil(this.destroyed$),
     );
+
+    this.chargeCodeSelected.pipe(
+      switchMap(() => this.filteredActivities$),
+      takeUntil(this.destroyed$)
+    ).subscribe(activities => {
+      if (activities.length === 0 && this.form.valid && this.form.dirty) {
+        this.hqInvoiceTimeChange.emit(this.form.value);
+        this.form.reset();
+        this.form.markAsPristine();
+      }
+    });
+
+    this.requireTask$.pipe(takeUntil(this.destroyed$)).subscribe(isRequired => {
+      const taskControl = this.form.controls.task;
+      if (isRequired) {
+        taskControl.enable();
+      } else {
+        taskControl.disable();
+      }
+    });
   }
 
   async onEnter(target: EventTarget | null) {
@@ -233,6 +254,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
       this.hqInvoiceTimeChange.emit(this.form.value);
       this.form.reset();
       this.form.markAsPristine();
+      this.form.markAsUntouched();
       // removed focus on the hrs row so that when you click on the page it doesnt cause validation
       /*if (!this.form.value.id) {
         this.hoursInput?.nativeElement?.focus();
@@ -255,6 +277,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
         taskControl.addValidators(Validators.required);
       } else {
         taskControl.removeValidators(Validators.required);
+        this.requireTask$.next(false); 
       }
       taskControl.updateValueAndValidity({ emitEvent: false });
       if (chargeCode) {
@@ -266,6 +289,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
           activityId: null,
         });
       } else {
+        this.requireTask$.next(false);  
         this.form.patchValue({
           clientId: null,
           projectId: null,
@@ -275,14 +299,18 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
         });
       }
     }
-    if (this.form.valid && this.form.dirty) {
-      this.hqInvoiceTimeChange.emit(this.form.value);
-      this.form.reset();
-      this.form.markAsPristine();
-      if (!this.form.value.id) {
-        this.hoursInput?.nativeElement?.focus();
-      }
+    else
+    {
+      this.requireTask$.next(false);  
+      this.form.patchValue({
+        clientId: null,
+        projectId: null,
+        clientName: null,
+        projectName: null,
+        activityId: null,
+      });
     }
+    this.chargeCodeSelected.next();
   }
 
   ngOnChanges(changes: SimpleChanges) {
