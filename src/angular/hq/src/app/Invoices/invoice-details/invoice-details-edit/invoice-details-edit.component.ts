@@ -28,6 +28,7 @@ import { ToastService } from '../../../services/toast.service';
 interface invoiceFormGroup {
   clientId: FormControl<string | null>;
   invoiceNumber: FormControl<string | null>;
+  date: FormControl<string | null>;
 }
 
 @Component({
@@ -55,6 +56,7 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
     {
       clientId: new FormControl(null, [Validators.required]),
       invoiceNumber: new FormControl(null, [Validators.required]),
+      date: new FormControl<string | null>(null),
     }
   );
 
@@ -106,6 +108,7 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
         const request = {
           id: this.invoiceId,
           invoiceNumber: this.invoiceFormGroup.value.invoiceNumber,
+          date: this.invoiceFormGroup.value.date,
         };
 
         if (this.invoiceFormGroup.touched && this.invoiceFormGroup.dirty) {
@@ -113,6 +116,7 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
           this.invoiceDetailsService.invoiceRefresh();
           this.invoiceFormGroup.reset();
           this.invoiceFormGroup.markAsPristine();
+          this.apiErrors = [];
           this.toastService.show('Updated', 'Invoice has been updated');
         }
       } else {
