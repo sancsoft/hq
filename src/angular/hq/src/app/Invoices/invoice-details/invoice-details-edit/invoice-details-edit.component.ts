@@ -27,10 +27,7 @@ import { ToastService } from '../../../services/toast.service';
 
 interface invoiceFormGroup {
   clientId: FormControl<string | null>;
-  date: FormControl<string | null>;
   invoiceNumber: FormControl<string | null>;
-  total: FormControl<number | null>;
-  totalApprovedHours: FormControl<number | null>;
 }
 
 @Component({
@@ -57,12 +54,8 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
   invoiceFormGroup = new FormGroup<invoiceFormGroup>(
     {
       clientId: new FormControl(null, [Validators.required]),
-      date: new FormControl<string | null>(null, [Validators.required]),
       invoiceNumber: new FormControl(null, [Validators.required]),
-      total: new FormControl(null, [Validators.required]),
-      totalApprovedHours: new FormControl(null, [Validators.required]),
-    },
-    { validators: this.dateRangeValidator },
+    }
   );
 
   clients$: Observable<GetClientRecordV1[]>;
@@ -112,10 +105,7 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
       if (this.invoiceFormGroup.valid) {
         const request = {
           id: this.invoiceId,
-          date: this.invoiceFormGroup.value.date,
           invoiceNumber: this.invoiceFormGroup.value.invoiceNumber,
-          total: this.invoiceFormGroup.value.total,
-          totalApprovedHours: this.invoiceFormGroup.value.totalApprovedHours,
         };
 
         if (this.invoiceFormGroup.touched && this.invoiceFormGroup.dirty) {
@@ -142,38 +132,11 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
     }
   }
 
-  dateRangeValidator(group: AbstractControl): ValidationErrors | null {
-    const startDate = group.get('startDate')?.value;
-    const endDate = group.get('endDate')?.value;
-    return startDate && endDate && startDate > endDate
-      ? { invalidDateRange: true }
-      : null;
-  }
-
   async save() {
     console.log(' Save hit');
     if (this.invoiceFormGroup.valid && this.invoiceFormGroup.dirty) {
-      // this.hqInvoiceTimeChange.emit(this.invoiceFormGroup.value);
       this.invoiceFormGroup.reset();
       this.invoiceFormGroup.markAsPristine();
-      // if (!this.invoiceFormGroup.value.id) {
-      //   this.hoursInput?.nativeElement?.focus();
-      // }
-    }
-  }
-
-  async chooseDate() {
-    const newDate = await firstValueFrom(
-      this.modalService.chooseDate(
-        'Change Date',
-        'Choose a date for a new time entry to be created on.',
-        this.invoiceFormGroup.controls.date.value ?? '',
-      ),
-    );
-    if (newDate) {
-      this.invoiceFormGroup.patchValue({ date: newDate });
-      this.invoiceFormGroup.markAsDirty();
-      await this.save();
     }
   }
 }

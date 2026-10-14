@@ -81,8 +81,8 @@ namespace HQ.Server.Invoices
                 ClientName = t.Client.Name,
                 Date = t.Date,
                 InvoiceNumber = t.InvoiceNumber,
-                Total = t.Total,
-                TotalApprovedHours = t.TotalApprovedHours
+                Total = _context.Times.Where(x => x.InvoiceId == t.Id && x.HoursInvoiced.HasValue).Select(x => x.HoursInvoiced.Value).Sum(),
+                TotalApprovedHours = _context.Times.Where(x => x.InvoiceId == t.Id && x.HoursApproved.HasValue && x.Status == TimeStatus.Accepted).Select(x => x.HoursApproved.Value).Sum()
             });
 
             mapped = request.SortDirection == Abstractions.Enumerations.SortDirection.Asc

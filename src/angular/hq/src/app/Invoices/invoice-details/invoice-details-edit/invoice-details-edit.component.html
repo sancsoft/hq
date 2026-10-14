@@ -98,13 +98,6 @@
                 class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold border-b border-gray-100 hover:border-gray-100"
                 >Details</a
               >
-              <!-- 
-              <a
-                href="#"
-                routerLink="../time"
-                class="w-full min-w-[107px] text-center whitespace-nowrap px-3 py-1 font-bold hover:border-gray-100"
-                >Time</a
-              > -->
             </div>
             @if ([HQRole.Executive, HQRole.Administrator] | inRole | async) {
               <div class="flex flex-column justify-center items-center">
@@ -150,6 +143,25 @@
                 >
                   <!-- column -->
                   <div>
+                    <hq-text-input
+                      type="text"
+                      formControlName="invoiceNumber"
+                      label="Invoice"
+                      variant="secondary"
+                      placeholder="Invoice"
+                    >
+                      <ng-template hqValidationError="required">
+                        Invoice is required.
+                      </ng-template>
+                    </hq-text-input>
+                  </div>
+                </div>
+
+                <div
+                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
+                >
+                  <!-- column -->
+                  <div>
                     <hq-select-input
                       [autocomplete]="true"
                       formControlName="clientId"
@@ -165,73 +177,6 @@
                         >
                       }
                     </hq-select-input>
-                  </div>
-                </div>
-
-                <div
-                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
-                >
-                  <!-- column -->
-                  <div>
-                    <hq-text-input
-                      type="text"
-                      formControlName="invoiceNumber"
-                      label="Invoice Number"
-                      variant="secondary"
-                      placeholder="Invoice Number"
-                    >
-                      <ng-template hqValidationError="required">
-                        Invoice Number is required.
-                      </ng-template>
-                    </hq-text-input>
-                  </div>
-                </div>
-
-                <div
-                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
-                >
-                  <!-- column -->
-                  <div>
-                    <hq-date-input
-                      formControlName="date"
-                      label="Date"
-                      variant="secondary"
-                    >
-                      <ng-template hqValidationError="required">
-                        Date is required.
-                      </ng-template>
-                    </hq-date-input>
-                  </div>
-                </div>
-
-                <div
-                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
-                >
-                  <!-- column -->
-                  <div>
-                    <hq-text-input
-                      type="number"
-                      formControlName="total"
-                      label="Total"
-                      variant="secondary"
-                      placeholder="Total"
-                    >
-                    </hq-text-input>
-                  </div>
-                </div>
-                <div
-                  class="grid gap-[20px] grid-flow-col auto-cols-[minmax(77px,395px)] pr-5"
-                >
-                  <!-- column -->
-                  <div>
-                    <hq-text-input
-                      type="number"
-                      formControlName="totalApprovedHours"
-                      label="Total Approved Hours"
-                      variant="secondary"
-                      placeholder="Total Approved Hours"
-                    >
-                    </hq-text-input>
                   </div>
                 </div>
               </div>

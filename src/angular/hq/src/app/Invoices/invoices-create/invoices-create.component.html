@@ -29,7 +29,7 @@
             </div>
 
             <div class="flex flex-column justify-center items-center">
-              <hq-button (click)="onSubmit()" type="submit">Save</hq-button>
+              <hq-button (click)="onSubmit()" [disabled]="form.invalid" type="submit">Save</hq-button>
             </div>
           </div>
         </div>
@@ -48,12 +48,24 @@
                   }
                 }
 
-                <div class="border-b border-black pb-1 px-1 font-bold">
-                  Project Information
-                </div>
-
                 <!-- row grid -->
                 <div class="grid gap-[20px] grid-cols-3">
+                  <!-- column -->
+                  <div>
+                    <!-- [maxLength]="5"
+                        [minLength]="5" -->
+                    <hq-text-input
+                      type="text"
+                      formControlName="invoiceNumber"
+                      label="Invoice"
+                      variant="secondary"
+                      placeholder="Invoice"
+                    >
+                      <ng-template hqValidationError="required">
+                        Invoice is required.
+                      </ng-template>
+                    </hq-text-input>
+                  </div>
                   <!-- column -->
                   <div>
                     <hq-select-input
@@ -76,66 +88,6 @@
                         >
                       }
                     </hq-select-input>
-                  </div>
-
-                  <!-- column -->
-                  <div>
-                    <!-- [maxLength]="5"
-                        [minLength]="5" -->
-                    <hq-text-input
-                      type="text"
-                      formControlName="invoiceNumber"
-                      label="Invoice Number"
-                      variant="secondary"
-                      placeholder="Invoice Number"
-                    >
-                      <ng-template hqValidationError="required">
-                        Invoice Number is required.
-                      </ng-template>
-                    </hq-text-input>
-                  </div>
-
-                  <!-- column -->
-                  <div>
-                    <hq-date-input
-                      formControlName="date"
-                      label="Date"
-                      variant="secondary"
-                    >
-                    </hq-date-input>
-                  </div>
-                </div>
-
-                <!-- row grid -->
-                <div class="grid gap-[20px] grid-cols-3">
-                  <!-- column -->
-                  <div>
-                    <hq-text-input
-                      type="number"
-                      formControlName="totalApprovedHours"
-                      label="Total Approved Hours"
-                      variant="secondary"
-                      placeholder="Total Approved Hours"
-                    >
-                      <ng-template hqValidationError="required">
-                        Total Approved Hours is required.
-                      </ng-template>
-                    </hq-text-input>
-                  </div>
-
-                  <!-- column -->
-                  <div>
-                    <hq-text-input
-                      type="number"
-                      formControlName="total"
-                      label="Total"
-                      variant="secondary"
-                      placeholder="Total"
-                    >
-                      <ng-template hqValidationError="required">
-                        Invoice Total is required.
-                      </ng-template>
-                    </hq-text-input>
                   </div>
                 </div>
               </div>

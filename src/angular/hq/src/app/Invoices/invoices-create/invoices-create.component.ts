@@ -5,17 +5,15 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, map, shareReplay, Subject, firstValueFrom } from 'rxjs';
-
+import { localISODate } from '../../common/functions/local-iso-date';
 import { CommonModule } from '@angular/common';
 import { HQService } from '../../services/hq.service';
 import { GetClientRecordV1 } from '../../models/clients/get-client-v1';
@@ -27,10 +25,8 @@ import { InvoiceListService } from '../invoices-list/invoices-list.service';
 
 interface Form {
   clientId: FormControl<string | null>;
-  date: FormControl<string | null>;
   invoiceNumber: FormControl<string | null>;
-  total: FormControl<number | null>;
-  totalApprovedHours: FormControl<number | null>;
+  date: FormControl<string | null>;
 }
 
 @Component({
@@ -54,11 +50,11 @@ export class InvoicesCreateComponent implements OnInit, OnDestroy {
     {
       clientId: new FormControl(null, [Validators.required]),
       invoiceNumber: new FormControl(null, [Validators.required]),
-      totalApprovedHours: new FormControl(null, [Validators.required]),
-      total: new FormControl(null, [Validators.required]),
-      date: new FormControl(null, Validators.required),
-    },
-    { validators: this.dateRangeValidator },
+      date: new FormControl(localISODate(), {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+    }
   );
 
   constructor(
@@ -98,7 +94,7 @@ export class InvoicesCreateComponent implements OnInit, OnDestroy {
           this.hqService.createInvoiceV1(request),
         );
 
-        await this.router.navigate(['../', response.id, 'details'], {
+        await this.router.navigate(['../', response.id, 'time'], {
           relativeTo: this.route,
         });
         this.toastService.show('Accepted', 'Invoice has been created.');
@@ -118,13 +114,5 @@ export class InvoicesCreateComponent implements OnInit, OnDestroy {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
-  }
-
-  dateRangeValidator(group: AbstractControl): ValidationErrors | null {
-    const startDate = group.get('startDate')?.value;
-    const endDate = group.get('endDate')?.value;
-    return startDate && endDate && startDate > endDate
-      ? { invalidDateRange: true }
-      : null;
   }
 }
