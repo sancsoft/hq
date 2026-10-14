@@ -237,6 +237,17 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
         taskControl.disable();
       }
     });
+
+    this.form.controls.hours.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(hours => {
+        if (hours != null && hours > 0) {
+          this.form.controls.invoicedHours.setValue(
+            roundToNextQuarter(hours),
+            { emitEvent: false }
+          );
+        }
+    });
   }
 
   async onEnter(target: EventTarget | null) {

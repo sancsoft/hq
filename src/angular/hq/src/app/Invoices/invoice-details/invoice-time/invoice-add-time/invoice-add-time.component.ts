@@ -33,6 +33,7 @@ import {
 import { ToastService } from '../../../../services/toast.service';
 import { ModalService } from '../../../../services/modal.service';
 import { InvoiceTimeSearchFilterComponent } from '../invoice-time-search-filter/invoice-time-search-filter.component';
+import { SortIconComponent } from '../../../../common/sort-icon/sort-icon.component';
 
 interface InvoiceTimeEntry {
   record: GetTimeRecordV1;
@@ -47,6 +48,7 @@ interface InvoiceTimeEntry {
     RouterLink,
     InRolePipe,
     InvoiceTimeSearchFilterComponent,
+    SortIconComponent,
   ],
   providers: [
     {
@@ -89,6 +91,13 @@ export class InvoiceAddTimeComponent implements OnDestroy {
     private modalService: ModalService,
   ) {
     this.invoiceDetailsService.invoiced$.next(false);
+    this.invoiceDetailsService.sortOption$.subscribe(v => {
+      this.timeService.sortOption$.next(v);
+    });
+    this.invoiceDetailsService.sortDirection$.subscribe(v => {
+      this.timeService.sortDirection$.next(v);
+    });
+    this.invoiceDetailsService.refresh();
     this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
       map((invoice) => invoice),
       takeUntil(this.destroy),

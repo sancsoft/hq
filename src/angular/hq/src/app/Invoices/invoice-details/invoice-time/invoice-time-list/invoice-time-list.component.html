@@ -265,9 +265,11 @@
             Hrs
           </th>
           <th
-            width="100px"
+            width="140px"
             scope="col"
-            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 min-w-[100px]"
+            class="bg-blue-900 border-steel-blue-600 border-y px-3 py-3 cursor-pointer min-w-[140px]"
+            [hq-sort-header]="sortColumn.HoursInvoiced"
+            (click)="onSortClick(sortColumn.HoursInvoiced)"
           >
             Invoice Hrs
           </th>

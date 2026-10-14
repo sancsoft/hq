@@ -717,9 +717,11 @@ namespace HQ.Server.Services
             // HoursApproved has to sort differently since the Hours column displayed on invoice time list pages technically use
             // a records HoursApproved value only if the record has been approved, and otherwise uses the records Hours value
             // Sorting this way should prevent null values throwing off the time orders like with the standard OrderBy column name approach
-            if (request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.HoursApproved)
+            if (request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.HoursInvoiced || request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.HoursApproved)
             {
-                var tempMapped = mapped.Select(t => new { Record = t, FunctionalHours = t.HoursApproved ?? t.Hours });
+               var tempMapped = request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.HoursInvoiced
+                    ? mapped.Select(t => new { Record = t, FunctionalHours = t.HoursInvoiced ?? t.HoursApproved ?? t.Hours })
+                    : mapped.Select(t => new { Record = t, FunctionalHours = t.HoursApproved ?? t.Hours });
 
                 var sorted = request.SortDirection == SortDirection.Asc ?
                     tempMapped.OrderBy(t => EF.Property<object>(t, "FunctionalHours")) :
@@ -745,7 +747,6 @@ namespace HQ.Server.Services
                         Abstractions.Times.GetTimesV1.SortColumn.ClientName => mapped.OrderBy(t => t.ClientName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.ProjectName => mapped.OrderBy(t => t.ProjectName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.StaffName => mapped.OrderBy(t => t.StaffName!.ToLower()),
-                        Abstractions.Times.GetTimesV1.SortColumn.HoursApproved => mapped.OrderBy(t => t.HoursApproved),
                         Abstractions.Times.GetTimesV1.SortColumn.ActivityName => mapped.OrderBy(t => t.ActivityName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.Task => mapped.OrderBy(t => t.Task!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.CreatedAt => mapped.OrderBy(t => t.CreatedAt),
@@ -760,7 +761,6 @@ namespace HQ.Server.Services
                         Abstractions.Times.GetTimesV1.SortColumn.ClientName => mapped.OrderByDescending(t => t.ClientName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.ProjectName => mapped.OrderByDescending(t => t.ProjectName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.StaffName => mapped.OrderByDescending(t => t.StaffName!.ToLower()),
-                        Abstractions.Times.GetTimesV1.SortColumn.HoursApproved => mapped.OrderByDescending(t => t.HoursApproved),
                         Abstractions.Times.GetTimesV1.SortColumn.ActivityName => mapped.OrderByDescending(t => t.ActivityName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.Task => mapped.OrderByDescending(t => t.Task!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.CreatedAt => mapped.OrderByDescending(t => t.CreatedAt),

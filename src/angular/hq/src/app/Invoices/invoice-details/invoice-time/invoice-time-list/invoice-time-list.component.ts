@@ -104,14 +104,12 @@ export class InvoiceTimeListComponent implements OnDestroy {
     this.invoiceDetailsService.timeStatus.setValue(null);
     this.invoiceDetailsService.billable.setValue(null);
     this.invoiceDetailsService.selectedPeriod.setValue(2);
-
-    // Sync sort state between services so icons show the active state
-this.invoiceDetailsService.sortOption$.subscribe(v => {
-  this.timeListService.sortOption$.next(v);
-});
-this.invoiceDetailsService.sortDirection$.subscribe(v => {
-  this.timeListService.sortDirection$.next(v);
-});
+    this.invoiceDetailsService.sortOption$.subscribe(v => {
+      this.timeListService.sortOption$.next(v);
+    });
+    this.invoiceDetailsService.sortDirection$.subscribe(v => {
+      this.timeListService.sortDirection$.next(v);
+    });
     this.invoiceDetailsService.refresh();
 
     this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
