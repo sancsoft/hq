@@ -58,7 +58,7 @@ export class InvoiceDetailsEditComponent implements OnDestroy {
     {
       clientId: new FormControl(null, [Validators.required]),
       date: new FormControl<string | null>(null, [Validators.required]),
-      invoiceNumber: new FormControl(null),
+      invoiceNumber: new FormControl(null, [Validators.required]),
       total: new FormControl(null, [Validators.required]),
       totalApprovedHours: new FormControl(null, [Validators.required]),
     },
