@@ -90,6 +90,7 @@ export class InvoiceTimeListComponent implements OnDestroy {
     private confirmModalService: HQConfirmationModalService,
     private modalService: ModalService,
     private toastService: ToastService,
+    private timeListService: TimeListService,
   ) {
     this.invoiceDetailsService.invoiced$.next(true);
     this.invoiceDetailsService.sortOption$.next(SortColumn.Date);
@@ -103,6 +104,14 @@ export class InvoiceTimeListComponent implements OnDestroy {
     this.invoiceDetailsService.timeStatus.setValue(null);
     this.invoiceDetailsService.billable.setValue(null);
     this.invoiceDetailsService.selectedPeriod.setValue(2);
+
+    // Sync sort state between services so icons show the active state
+this.invoiceDetailsService.sortOption$.subscribe(v => {
+  this.timeListService.sortOption$.next(v);
+});
+this.invoiceDetailsService.sortDirection$.subscribe(v => {
+  this.timeListService.sortDirection$.next(v);
+});
     this.invoiceDetailsService.refresh();
 
     this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
@@ -218,6 +227,8 @@ export class InvoiceTimeListComponent implements OnDestroy {
         // this.planningPointsRequestTrigger$.next(); // TODO: Trigger this
       } else {
         this.toastService.show('Success', 'Time entry successfully created.');
+        this.invoiceDetailsService.sortOption$.next(SortColumn.CreatedAt);
+        this.invoiceDetailsService.sortDirection$.next(SortDirection.Desc);
         this.invoiceDetailsService.refresh();
         this.invoiceDetailsService.invoiceRefresh();
         // this.planningPointsRequestTrigger$.next();

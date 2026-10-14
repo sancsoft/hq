@@ -47,6 +47,7 @@ namespace HQ.Abstractions.Times
             HoursApproved = 8,
             ActivityName = 9,
             Task = 10,
+            CreatedAt = 11,
         }
 
         public class Response : PagedResponseV1<Record>

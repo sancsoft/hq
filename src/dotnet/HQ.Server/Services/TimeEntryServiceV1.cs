@@ -748,6 +748,7 @@ namespace HQ.Server.Services
                         Abstractions.Times.GetTimesV1.SortColumn.HoursApproved => mapped.OrderBy(t => t.HoursApproved),
                         Abstractions.Times.GetTimesV1.SortColumn.ActivityName => mapped.OrderBy(t => t.ActivityName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.Task => mapped.OrderBy(t => t.Task!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.CreatedAt => mapped.OrderBy(t => t.CreatedAt),
                         _ => mapped.OrderBy(t => t.Id),
                     }
                     : request.SortBy switch
@@ -762,6 +763,7 @@ namespace HQ.Server.Services
                         Abstractions.Times.GetTimesV1.SortColumn.HoursApproved => mapped.OrderByDescending(t => t.HoursApproved),
                         Abstractions.Times.GetTimesV1.SortColumn.ActivityName => mapped.OrderByDescending(t => t.ActivityName!.ToLower()),
                         Abstractions.Times.GetTimesV1.SortColumn.Task => mapped.OrderByDescending(t => t.Task!.ToLower()),
+                        Abstractions.Times.GetTimesV1.SortColumn.CreatedAt => mapped.OrderByDescending(t => t.CreatedAt),
                         _ => mapped.OrderByDescending(t => t.Id),
                     };
 

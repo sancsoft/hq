@@ -33,6 +33,7 @@ export enum SortColumn {
   HoursApproved = 8,
   ActivityName = 9,
   Task = 10,
+  CreatedAt = 11,
 }
 
 export interface GetTimeRecordV1 {
