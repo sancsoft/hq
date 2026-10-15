@@ -112,6 +112,7 @@ export class KitchenSinkComponent {
     summaryPercentComplete: null!,
     isCurrentPsrPeriod: false,
     projectType: ProjectType.Ongoing,
+    colorStatus: 1,
   };
   public second_report: GetPSRRecordV1 = {
     id: '9f8f375f-0b7d-4452-946c-b78b220d95d7',
@@ -143,6 +144,7 @@ export class KitchenSinkComponent {
     summaryPercentComplete: 0.25037878787878787,
     isCurrentPsrPeriod: true,
     projectType: ProjectType.Ongoing,
+    colorStatus: 1,
   };
 
   third_report: GetPSRRecordV1 = {
@@ -181,6 +183,7 @@ export class KitchenSinkComponent {
     summaryPercentComplete: 4.770833333333333,
     isCurrentPsrPeriod: false,
     projectType: ProjectType.Ongoing,
+    colorStatus: 1,
   };
   fourth_report: GetPSRRecordV1 = {
     id: '74d6274a-9c01-44b3-8f4e-b893b6fe4a4c',
@@ -217,6 +220,7 @@ export class KitchenSinkComponent {
     summaryPercentComplete: 1.79375,
     isCurrentPsrPeriod: true,
     projectType: ProjectType.Ongoing,
+    colorStatus: 1,
   };
 
   toggleDisabled() {

@@ -41,6 +41,13 @@ namespace HQ.Server.Controllers
             _ProjectStatusReportService.GenerateWeeklyProjectStatusReportsV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
+        [Authorize(HQAuthorizationPolicies.Manager)]
+        [HttpPost(nameof(UpdateProjectStatusReportColorStatusV1))]
+        [ProducesResponseType<UpdateProjectStatusReportColorStatusV1.Response>(StatusCodes.Status201Created)]
+        public Task<ActionResult> UpdateProjectStatusReportColorStatusV1([FromBody] UpdateProjectStatusReportColorStatusV1.Request request, CancellationToken ct = default) =>
+            _ProjectStatusReportService.UpdateProjectStatusReportColorStatusV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
         [Authorize(HQAuthorizationPolicies.Administrator)]
         [HttpPost(nameof(AutoSubmitWeeklyProjectStatusReportsV1))]
         [ProducesResponseType<AutoSubmitWeeklyProjectStatusReportsV1.Response>(StatusCodes.Status200OK)]
@@ -67,6 +74,13 @@ namespace HQ.Server.Controllers
         [ProducesResponseType<GetProjectStatusReportTimeV1.Response>(StatusCodes.Status200OK)]
         public Task<ActionResult> GetProjectStatusReportTimeV1([FromBody] GetProjectStatusReportTimeV1.Request request, CancellationToken ct = default) =>
             _ProjectStatusReportService.GetProjectStatusReportTimeV1(request, ct)
+            .ToActionResult(new HQResultEndpointProfile());
+
+        [Authorize(HQAuthorizationPolicies.Staff)]
+        [HttpPost(nameof(GetProjectStatusReportPointSummaryV1))]
+        [ProducesResponseType<GetProjectStatusReportPointSummaryV1.Response>(StatusCodes.Status200OK)]
+        public Task<ActionResult> GetProjectStatusReportPointSummaryV1([FromBody] GetProjectStatusReportPointSummaryV1.Request request, CancellationToken ct = default) =>
+            _ProjectStatusReportService.GetProjectStatusReportPointSummaryV1(request, ct)
             .ToActionResult(new HQResultEndpointProfile());
 
         [Authorize(HQAuthorizationPolicies.Manager)]

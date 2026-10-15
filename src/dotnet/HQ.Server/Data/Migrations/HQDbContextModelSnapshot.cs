@@ -17,7 +17,7 @@ namespace HQ.Server.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -468,6 +468,10 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("client_id");
 
+                    b.Property<int>("ColorStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("color_status");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -644,6 +648,10 @@ namespace HQ.Server.Data.Migrations
                     b.Property<DateOnly>("BookingStartDate")
                         .HasColumnType("date")
                         .HasColumnName("booking_start_date");
+
+                    b.Property<int>("ColorStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("color_status");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")

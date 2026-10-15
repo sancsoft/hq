@@ -1,23 +1,28 @@
 @if (projectReportStatus$ | async; as psr) {
-  <div class="px-5">
-    <h1 class="font-rajdhani font-semibold text-3xl">
-      {{ psr.chargeCode }}:
-      <a
-        class="text-teal-200 hover:text-teal-300"
-        [routerLink]="['/projects', psr.projectId]"
-        target="_blank"
-        >{{ psr.projectName }}</a
-      >
-    </h1>
-  </div>
-
-  <div
-    class="px-5 flex flex-col xl:flex-row xl:justify-between xl:items-center"
-  >
-    <div class="pt-[2px]">
-      <div class="text-gray-50">{{ psr.clientName }}</div>
+  <div class="flex flex-row w-full xl:w-auto">
+    <div
+      class="h-full w-3 me-3"
+      [title]="''"
+      [ngClass]="'bg-' + projectStatusToClass(psr.colorStatus)"
+    ></div>
+    <div class="pe-5 flex-row">
+      <h1 class="font-rajdhani font-semibold text-3xl">
+        {{ psr.chargeCode }}:
+        <a
+          class="text-teal-200 hover:text-teal-300"
+          [routerLink]="['/projects', psr.projectId]"
+          target="_blank"
+          >{{ psr.projectName }}</a
+        >
+      </h1>
+      <div class="pt-[2px]">
+        <div class="text-gray-50">{{ psr.clientName }}</div>
+      </div>
     </div>
-
+  </div>
+  <div
+    class="px-5 flex flex-col xl:flex-row xl:justify-between xl:items-end flex-0 mt-0 xl:mt-3"
+  >
     <div
       class="flex flex-row auto-cols-min gap-[2.983rem] pt-3 justify-end xl:pt-0"
     >
