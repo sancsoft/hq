@@ -48,7 +48,6 @@ interface InvoiceTimeEntry {
     RouterLink,
     InRolePipe,
     InvoiceTimeSearchFilterComponent,
-    SortIconComponent,
   ],
   providers: [
     {
@@ -97,7 +96,6 @@ export class InvoiceAddTimeComponent implements OnDestroy {
     this.invoiceDetailsService.sortDirection$.subscribe(v => {
       this.timeService.sortDirection$.next(v);
     });
-    this.invoiceDetailsService.refresh();
     this.invoice$ = this.invoiceDetailsService.invoice$.pipe(
       map((invoice) => invoice),
       takeUntil(this.destroy),
@@ -149,7 +147,7 @@ export class InvoiceAddTimeComponent implements OnDestroy {
     ) as HTMLInputElement;
     const hrs = input
       ? parseFloat(input.value) || 0
-      : (time.hoursInvoiced ?? time.hoursApproved ?? time.hours);
+      : (time.hoursApproved ?? time.hours);
 
     if (
       (document.getElementById('time_checkbox_' + time.id) as HTMLInputElement)
@@ -168,40 +166,6 @@ export class InvoiceAddTimeComponent implements OnDestroy {
     this.selectionTrigger$.next();
   }
 
-  async updateInvoicedHours(time: GetTimeRecordV1, event: Event) {
-    const invoicedHours = (event.target as HTMLInputElement).value;
-    const roundedInvoicedHours = roundToNextQuarter(invoicedHours);
-
-    if (!time || invoicedHours == '') {
-      await firstValueFrom(
-        this.modalService.alert(
-          'Error',
-          'Please Add a time to your invoiced hours',
-        ),
-      );
-      return;
-    }
-
-    const request = {
-      id: time.id,
-      hoursInvoiced: roundedInvoicedHours,
-    };
-    //  Call API
-    const newTime = await firstValueFrom(
-      this.hqService.upsertTimeHoursInvoicedV1(request),
-    );
-    if (this.selectedTimes.has(newTime.id)) {
-      this.selectedTimes.set(newTime.id, newTime.hoursInvoiced);
-      let hrsSum = 0;
-      this.selectedTimes.forEach((t) => {
-        hrsSum += t;
-        console.log(hrsSum);
-      });
-      this.selectedHrs = hrsSum;
-    }
-    this.toastService.show('Updated', 'Invoiced hours have been updated.');
-  }
-
   toggleAllEntries(event: Event): void {
     const shouldSelectAll = (event.target as HTMLInputElement).checked;
 
@@ -209,12 +173,14 @@ export class InvoiceAddTimeComponent implements OnDestroy {
       .then((entries: InvoiceTimeEntry[]) => {
         if (!Array.isArray(entries)) return;
 
-        entries.forEach((time: InvoiceTimeEntry) => {
+        entries.forEach((time: InvoiceTimeEntry) => {  
           const t = time.record;
           const input = document.getElementById(
             'invoice_hrs_' + t.id,
           ) as HTMLInputElement;
-          const hrs = input ? parseFloat(input.value) : 0;
+          const hrs = input
+            ? parseFloat(input.value) || 0
+            : (t.hoursApproved ?? t.hours);
 
           if (shouldSelectAll) {
             this.selectedTimes.set(t.id, hrs);
