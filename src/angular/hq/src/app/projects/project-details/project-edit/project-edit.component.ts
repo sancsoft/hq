@@ -43,6 +43,7 @@ import {
 import { HQService } from '../../../services/hq.service';
 import { GetProjectRecordV1 } from '../../../models/projects/get-project-v1';
 import { ProjectDetailsService } from '../project-details.service';
+import { TaskRequirement } from '../../../enums/task-requirement';
 
 interface Form {
   clientId: FormControl<string | null>;
@@ -60,7 +61,7 @@ interface Form {
   totalHours: FormControl<number | null>;
   projectNumber: FormControl<number | null>;
   timeEntryMaxHours: FormControl<number | null>;
-  requireTask: FormControl<boolean | null>;
+  requireTask: FormControl<TaskRequirement | null>;
 }
 
 @Component({
@@ -104,7 +105,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       billable: new FormControl(true, { nonNullable: true }),
       bookingHours: new FormControl(null, [Validators.required]),
       projectNumber: new FormControl(null),
-      requireTask: new FormControl(false, { nonNullable: true }),
+      requireTask: new FormControl(TaskRequirement.Optional, { nonNullable: true }),
     },
     { validators: this.dateRangeValidator },
   );
@@ -205,7 +206,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       billable: project.billable,
       bookingHours: project.projectBookingHours,
       projectNumber: project.projectNumber,
-      requireTask: project.requireTask,
+      requireTask: project.taskRequirement,
     });
 
     this.form.controls.quoteId.disable();
@@ -227,7 +228,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       if (this.form.valid) {
         const request = this.form.getRawValue();
         await firstValueFrom(
-          this.hqService.upsertProjectV1({ id: project.id, ...request }),
+          this.hqService.upsertProjectV1({ id: project.id, ...request, taskRequirement: request.requireTask }),
         );
 
         this.projectDetailsService.refresh();

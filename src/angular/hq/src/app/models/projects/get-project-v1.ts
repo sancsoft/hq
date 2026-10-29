@@ -4,6 +4,7 @@ import { ProjectType } from '../../enums/project-type';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
+import { TaskRequirement } from '../../enums/task-requirement';
 
 export interface GetProjectRequestV1 extends PagedRequestV1 {
   search?: string | null;
@@ -74,7 +75,7 @@ export interface GetProjectRecordV1 {
   billable: boolean;
   projectTotalHours: number | null;
   projectBookingHours: number | null;
-  requireTask: boolean;
+  taskRequirement: TaskRequirement;
 }
 
 export interface GetProjectResponseV1 extends PagedResponseV1<GetProjectRecordV1> {}

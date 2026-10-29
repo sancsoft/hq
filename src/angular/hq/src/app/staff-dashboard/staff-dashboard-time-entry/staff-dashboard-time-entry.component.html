@@ -154,27 +154,21 @@
       }
     </td>
     <td class="border-b border-black py-2 pl-2">
-      @if (requireTask$ | async; as requireTask) {
-        <input
-          [ngClass]="{
-            'border-red-700 focus:border-red-700':
-              form.controls.task.errors && form.touched,
-            'border-black': !form.controls.task.errors || !form.touched,
-          }"
-          class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-          type="text"
-          aria-label="Task"
-          formControlName="task"
-          (blur)="save()"
-          (keydown.enter)="onEnter($event.target)"
-        />
-      } @else {
-        <input
-          class="w-[100%] block text-[14px] px-2 py-1 border appearance-none focus:outline-none border-gray-450 text-gray-450 focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
-          type="text"
-          [disabled]="true"
-        />
-      }
+      <input
+        [ngClass]="{
+          'border-gray-500 text-gray-450': form.controls.task.disabled,
+          'border-red-700 focus:border-red-700':
+            !form.controls.task.disabled && form.controls.task.errors && form.touched,
+          'focus:border-white placeholder:text-gray-100':
+            !form.controls.task.disabled && (!form.controls.task.errors || !form.touched),
+        }"
+        class="w-[100%] block text-[14px] px-2 py-1 border border-black appearance-none focus:outline-none focus:border-white placeholder:text-gray-100 bg-blue-900 rounded h-[30px]"
+        type="text"
+        aria-label="Task"
+        formControlName="task"
+        (blur)="save()"
+        (keydown.enter)="onEnter($event.target)"
+      />
     </td>
     <td class="border-b border-black py-2 pl-2">
       <input

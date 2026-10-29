@@ -17,7 +17,7 @@ namespace HQ.Server.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "10.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -497,10 +497,6 @@ namespace HQ.Server.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("quote_id");
 
-                    b.Property<bool>("RequireTask")
-                        .HasColumnType("boolean")
-                        .HasColumnName("require_task");
-
                     b.Property<DateOnly?>("StartDate")
                         .HasColumnType("date")
                         .HasColumnName("start_date");
@@ -508,6 +504,10 @@ namespace HQ.Server.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer")
                         .HasColumnName("status");
+
+                    b.Property<int>("TaskRequirement")
+                        .HasColumnType("integer")
+                        .HasColumnName("task_requirement");
 
                     b.Property<decimal>("TimeEntryMaxHours")
                         .HasColumnType("numeric")

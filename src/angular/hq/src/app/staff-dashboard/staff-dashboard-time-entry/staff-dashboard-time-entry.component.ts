@@ -44,6 +44,7 @@ import { ModalService } from '../../services/modal.service';
 import { TimeStatus } from '../../enums/time-status';
 import { GetChargeCodeRecordV1 } from '../../models/charge-codes/get-chargecodes-v1';
 import { GetProjectActivityRecordV1 } from '../../models/projects/get-project-activity-v1';
+import { TaskRequirement } from '../../enums/task-requirement';
 
 export interface HQTimeChangeEvent {
   id?: string | null;
@@ -110,6 +111,7 @@ export class StaffDashboardTimeEntryComponent
   class = 'even:bg-gray-850 odd:bg-black-alt';
 
   private destroyed$ = new Subject<void>();
+  private lastTaskRequirement = TaskRequirement.Disabled;
 
   chargeCodeToColor = chargeCodeToColor;
 
@@ -149,17 +151,21 @@ export class StaffDashboardTimeEntryComponent
   projectName$: Observable<string | null | undefined>;
   clientName$: Observable<string | null | undefined>;
   timeStatus = TimeStatus;
+  taskRequirement = TaskRequirement;
   filteredActivities$: Observable<GetProjectActivityRecordV1[]>;
-  requireTask$ = new BehaviorSubject<boolean>(false);
+  requireTask$ = new BehaviorSubject<TaskRequirement>(TaskRequirement.Disabled);
+
   ngOnInit(): void {
     this.staffDashboardService.canEdit$
-      .pipe(takeUntil(this.destroyed$))
-      // eslint-disable-next-line rxjs-x/no-ignored-error
-      .subscribe((canEdit) => {
-        canEdit
-          ? this.form.enable({ emitEvent: false })
-          : this.form.disable({ emitEvent: false });
-      });
+    .pipe(takeUntil(this.destroyed$))
+    .subscribe((canEdit) => {
+      if (canEdit) {
+        this.form.enable({ emitEvent: false });
+      } else {
+        this.form.disable({ emitEvent: false });
+      }
+      this.applyTaskState();
+    });
     console.log(this.form);
 
     this.form.controls.chargeCodeId.valueChanges
@@ -169,8 +175,7 @@ export class StaffDashboardTimeEntryComponent
           const chargeCode = this.chargeCodes?.find((t) => t.id === id);
           const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
           this.setMaximumHours(maxTimeEntryHours);
-          // set requireTask to true if the charge code project requires a task
-          this.requireTask$.next(chargeCode?.requireTask ?? false);
+          this.requireTask$.next( chargeCode ? (chargeCode.taskRequirement ?? TaskRequirement.Optional) : TaskRequirement.Disabled, );
           if (chargeCode) {
             this.form.patchValue(
               {
@@ -198,19 +203,14 @@ export class StaffDashboardTimeEntryComponent
         error: console.error,
       });
 
-    this.requireTask$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: (isRequired) => {
-        const taskControl = this.form.controls.task;
-        if (isRequired) {
-          taskControl.addValidators(Validators.required);
-        } else {
-          taskControl.removeValidators(Validators.required);
-        }
-        taskControl.updateValueAndValidity({ emitEvent: false });
-      },
-      error: console.error,
-    });
+      this.requireTask$
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((requirement) => {
+          this.lastTaskRequirement = requirement;
+          this.applyTaskState();
+      });
   }
+
   constructor(
     public staffDashboardService: StaffDashboardService,
     private modalService: ModalService,
@@ -303,8 +303,8 @@ export class StaffDashboardTimeEntryComponent
         const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
         this.setMaximumHours(maxTimeEntryHours);
         // set requireTask to true if the charge code project requires a task
-        this.requireTask$.next(chargeCode?.requireTask ?? false);
-        console.log(chargeCode?.requireTask);
+        this.requireTask$.next( chargeCode ? (chargeCode?.taskRequirement ?? TaskRequirement.Optional) : TaskRequirement.Disabled, );
+        console.log(chargeCode?.taskRequirement);
       }
       if (this.form.value.id) {
         // Force validation to run and highlight invalid fields red
@@ -390,5 +390,21 @@ export class StaffDashboardTimeEntryComponent
       ]);
       this.form.controls.hours.updateValueAndValidity();
     }
+  }
+
+  private applyTaskState(): void {
+    const task = this.form.controls.task;
+    if (this.lastTaskRequirement === TaskRequirement.Required) {
+      task.addValidators(Validators.required);
+      task.enable({ emitEvent: false });
+    } else if (this.lastTaskRequirement === TaskRequirement.Disabled) {
+      task.removeValidators(Validators.required);
+      task.disable({ emitEvent: false });
+    } else {
+      // Optional
+      task.removeValidators(Validators.required);
+      task.enable({ emitEvent: false });
+    }
+    task.updateValueAndValidity({ emitEvent: false });
   }
 }

@@ -297,13 +297,13 @@
                 <!-- column -->
                 <div>
                   <hq-select-input
-                    [autocomplete]="true"
                     formControlName="requireTask"
-                    label="Require Task"
+                    label="Task Requirement"
                     variant="secondary"
                   >
-                    <ng-template [hqSelectInputOption]="false">No</ng-template>
-                    <ng-template [hqSelectInputOption]="true">Yes</ng-template>
+                    <ng-template [hqSelectInputOption]="0">Disabled</ng-template>
+                    <ng-template [hqSelectInputOption]="1">Optional</ng-template>
+                    <ng-template [hqSelectInputOption]="2">Required</ng-template>
                   </hq-select-input>
                 </div>
               </div>

@@ -46,6 +46,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter';
 import { ChargeCodeActivity } from '../../enums/charge-code-activity';
 import { CoreModule } from '../../core/core.module';
+import { TaskRequirement } from '../../enums/task-requirement';
 
 interface Form {
   ProjectId: FormControl<string | null>;
@@ -86,12 +87,15 @@ export class TimeEditComponent implements OnInit, OnDestroy {
   showProjects$ = new BehaviorSubject<boolean | null>(null);
   showQuotes$ = new BehaviorSubject<boolean | null>(null);
   showServices$ = new BehaviorSubject<boolean | null>(null);
-  requireTask$ = new BehaviorSubject<boolean>(false);
+  requireTask$ = new BehaviorSubject<TaskRequirement>(TaskRequirement.Disabled);
 
   activities$: Observable<Activity[] | null>;
   public timeStatusValues = enumToArray(TimeStatus);
 
   private destroyed$ = new Subject<void>();
+  private lastTaskRequirement = TaskRequirement.Disabled;
+
+  taskRequirement = TaskRequirement;
 
   form = new FormGroup<Form>({
     ProjectId: new FormControl<string | null>(null, {
@@ -125,6 +129,7 @@ export class TimeEditComponent implements OnInit, OnDestroy {
       validators: [Validators.required],
     }),
   });
+
   async ngOnInit() {
     this.timeId =
       (await (
@@ -132,6 +137,7 @@ export class TimeEditComponent implements OnInit, OnDestroy {
       ).get('timeId')) ?? undefined;
     await this.getTime();
   }
+
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();
@@ -176,16 +182,7 @@ export class TimeEditComponent implements OnInit, OnDestroy {
     chargeCodeSelection$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: ([chargeCodes, code]) => {
         const chargeCode = chargeCodes.find((t) => t.code === code);
-        const mustTask = chargeCode?.requireTask ?? false;
-        this.requireTask$.next(mustTask);
-
-        const taskCtrl = this.form.controls.Task;
-        if (mustTask) {
-          taskCtrl.addValidators(Validators.required);
-        } else {
-          taskCtrl.clearValidators();
-        }
-        taskCtrl.updateValueAndValidity({ emitEvent: false });
+        this.requireTask$.next( chargeCode ? (chargeCode.taskRequirement ?? TaskRequirement.Optional) : TaskRequirement.Disabled, );
       },
       error: console.error,
     });
@@ -217,6 +214,13 @@ export class TimeEditComponent implements OnInit, OnDestroy {
         }
       },
       error: console.error,
+    });
+
+    this.requireTask$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((requirement) => {
+        this.lastTaskRequirement = requirement;
+        this.applyTaskState();
     });
   }
 
@@ -272,5 +276,21 @@ export class TimeEditComponent implements OnInit, OnDestroy {
         this.apiErrors = ['An unexpected error has occurred.'];
       }
     }
+  }
+
+  private applyTaskState(): void {
+    const task = this.form.controls.Task;
+    if (this.lastTaskRequirement === TaskRequirement.Required) {
+      task.addValidators(Validators.required);
+      task.enable({ emitEvent: false });
+    } else if (this.lastTaskRequirement === TaskRequirement.Disabled) {
+      task.removeValidators(Validators.required);
+      task.disable({ emitEvent: false });
+    } else {
+      // Optional
+      task.removeValidators(Validators.required);
+      task.enable({ emitEvent: false });
+    }
+    task.updateValueAndValidity({ emitEvent: false });
   }
 }

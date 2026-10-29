@@ -1,3 +1,5 @@
+import { TaskRequirement } from '../../enums/task-requirement';
+
 export interface UpsertProjectRequestV1 {
   id?: string;
   clientId: string | null;
@@ -10,7 +12,7 @@ export interface UpsertProjectRequestV1 {
   startDate: string | null;
   endDate: string | null;
   timeEntryMaxHours: number | null;
-  requireTask: boolean | null;
+  taskRequirement: TaskRequirement | null;
 }
 
 export interface UpsertProjectResponsetV1 {

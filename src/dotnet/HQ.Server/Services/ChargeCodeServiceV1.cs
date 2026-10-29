@@ -157,7 +157,7 @@ public class ChargeCodeServiceV1
             QuoteId = t.QuoteId != null ? t.QuoteId : null,
             ServiceAgreementId = t.ServiceAgreementId != null ? t.ServiceAgreementId : null,
             Description = t.Description,
-            RequireTask = t.Project != null ? t.Project.RequireTask : false,
+            TaskRequirement = t.Project != null ? t.Project.TaskRequirement : TaskRequirement.Optional,
             Activities = t.Project != null && t.Project.Activities != null
     ? t.Project.Activities.Select(a => new GetChargeCodesV1.Activity
     {

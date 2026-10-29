@@ -58,7 +58,7 @@ namespace HQ.Abstractions.ChargeCodes
             public string? Description { get; set; }
             public bool? IsProjectMember { get; set; }
             public int IsProjectMemberSort { get; set; }
-            public bool? RequireTask { get; set; }
+            public TaskRequirement? TaskRequirement { get; set; }
         }
         public class Activity
         {

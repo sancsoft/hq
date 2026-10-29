@@ -45,6 +45,7 @@ import { CoreModule } from '../../core/core.module';
 import { GetStaffV1Record } from '../../models/staff-members/get-staff-member-v1';
 import { ToastService } from '../../services/toast.service';
 import { localISODate } from '../../common/functions/local-iso-date';
+import { TaskRequirement } from '../../enums/task-requirement';
 
 interface Form {
   ProjectId: FormControl<string | null>;
@@ -89,8 +90,11 @@ export class TimeCreateComponent implements OnDestroy {
   showProjects$ = new BehaviorSubject<boolean | null>(null);
   showQuotes$ = new BehaviorSubject<boolean | null>(null);
   showServices$ = new BehaviorSubject<boolean | null>(null);
-  requireTask$ = new BehaviorSubject<boolean>(false);
+  requireTask$ = new BehaviorSubject<TaskRequirement>(TaskRequirement.Disabled);
   private destroyed$ = new Subject<void>();
+  private lastTaskRequirement = TaskRequirement.Disabled;
+
+  taskRequirement = TaskRequirement;
 
   form = new FormGroup<Form>({
     ProjectId: new FormControl<string | null>(null, {
@@ -172,16 +176,7 @@ export class TimeCreateComponent implements OnDestroy {
     chargeCodeSelection$.pipe(takeUntil(this.destroyed$)).subscribe({
       next: ([chargeCodes, code]) => {
         const chargeCode = chargeCodes.find((t) => t.code === code);
-        const mustTask = chargeCode?.requireTask ?? false;
-        this.requireTask$.next(mustTask);
-
-        const taskCtrl = this.form.controls.Task;
-        if (mustTask) {
-          taskCtrl.addValidators(Validators.required);
-        } else {
-          taskCtrl.clearValidators();
-        }
-        taskCtrl.updateValueAndValidity({ emitEvent: false });
+        this.requireTask$.next( chargeCode ? (chargeCode.taskRequirement ?? TaskRequirement.Optional) : TaskRequirement.Disabled, );
       },
       error: console.error,
     });
@@ -234,7 +229,15 @@ export class TimeCreateComponent implements OnDestroy {
       },
       error: console.error,
     });
+
+    this.requireTask$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((requirement) => {
+        this.lastTaskRequirement = requirement;
+        this.applyTaskState();
+    });
   }
+  
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();
@@ -265,6 +268,7 @@ export class TimeCreateComponent implements OnDestroy {
       }
     }
   }
+  
   updateHours(event: Event) {
     const hours = (event.target as HTMLInputElement).value;
     const roundedHours = roundToNextQuarter(hours);
@@ -282,6 +286,22 @@ export class TimeCreateComponent implements OnDestroy {
       ]);
       this.form.controls.Hours.updateValueAndValidity();
     }
+  }
+
+  private applyTaskState(): void {
+    const task = this.form.controls.Task;
+    if (this.lastTaskRequirement === TaskRequirement.Required) {
+      task.addValidators(Validators.required);
+      task.enable({ emitEvent: false });
+    } else if (this.lastTaskRequirement === TaskRequirement.Disabled) {
+      task.removeValidators(Validators.required);
+      task.disable({ emitEvent: false });
+    } else {
+      // Optional
+      task.removeValidators(Validators.required);
+      task.enable({ emitEvent: false });
+    }
+    task.updateValueAndValidity({ emitEvent: false });
   }
   // private async getTime() {
   //   try {

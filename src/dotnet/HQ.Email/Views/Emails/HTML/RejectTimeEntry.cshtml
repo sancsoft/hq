@@ -1,3 +1,4 @@
+@using HQ.Abstractions.Enumerations;
 @model HQ.Abstractions.Emails.RejectTimeEntryEmail
 @{
     Layout = "_LayoutEmailNotificationHTML";
@@ -13,7 +14,7 @@
     {
         <div><strong>Activity:</strong> @Model.Activity</div>
     }
-    @if (Model.RequireTask)
+    @if ((Model.RequireTask == TaskRequirement.Required || Model.RequireTask == TaskRequirement.Optional) && !String.IsNullOrEmpty(Model.Task))
     {
         <div><strong>Task:</strong> @Model.Task</div>
     }

@@ -32,6 +32,7 @@ import { CoreModule } from '../../../core/core.module';
 import { ProjectDetailsService } from '../project-details.service';
 import { HQRole } from '../../../enums/hqrole';
 import { InRolePipe } from '../../../pipes/in-role.pipe';
+import { TaskRequirement } from '../../../enums/task-requirement';
 
 interface Form {
   clientId: FormControl<string | null>;
@@ -49,7 +50,7 @@ interface Form {
   status: FormControl<ProjectStatus | null>;
   totalHours: FormControl<number | null>;
   projectNumber: FormControl<number | null>;
-  requireTask: FormControl<boolean | null>;
+  requireTask: FormControl<TaskRequirement | null>;
 }
 
 @Component({
@@ -99,7 +100,7 @@ export class ProjectViewComponent implements OnDestroy {
     billable: new FormControl(true, { nonNullable: true }),
     bookingHours: new FormControl(null, [Validators.required]),
     projectNumber: new FormControl(null),
-    requireTask: new FormControl(false),
+    requireTask: new FormControl(TaskRequirement.Optional),
   });
 
   constructor(
@@ -152,13 +153,12 @@ export class ProjectViewComponent implements OnDestroy {
             billable: project.billable,
             bookingHours: project.projectBookingHours,
             projectNumber: project.projectNumber,
-            requireTask: project.requireTask,
+            requireTask: project.taskRequirement,
           });
+          this.form.disable();
         },
         error: console.error,
       });
-
-    this.form.disable();
   }
 
   ngOnDestroy() {

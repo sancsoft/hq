@@ -43,6 +43,7 @@ import { GetProjectActivityRecordV1 } from '../../../../models/projects/get-proj
 import { GetDashboardTimeV1TimeForDateTimes } from '../../../../models/staff-dashboard/get-dashboard-time-v1';
 import { InvoiceDetaisService } from '../../../service/invoice-details.service';
 import { HQService } from '../../../../services/hq.service';
+import { TaskRequirement } from '../../../../enums/task-requirement';
 
 export interface HQInvoiceTimeChangeEvent {
   id?: string | null;
@@ -101,6 +102,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
 
   private destroyed$ = new Subject<void>();
   private chargeCodeSelected = new Subject<void>();
+  private lastTaskRequirement = TaskRequirement.Disabled;
 
   chargeCodeToColor = chargeCodeToColor;
 
@@ -150,8 +152,9 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
   projectName$: Observable<string | null | undefined>;
   clientName$: Observable<string | null | undefined>;
   timeStatus = TimeStatus;
+  taskRequirement = TaskRequirement;
   filteredActivities$: Observable<GetProjectActivityRecordV1[]>;
-  requireTask$ = new BehaviorSubject<boolean>(false);
+  requireTask$ = new BehaviorSubject<TaskRequirement>(TaskRequirement.Disabled);
 
   constructor(
     public invoiceDetailsService: InvoiceDetaisService,
@@ -222,6 +225,10 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
       switchMap(() => this.filteredActivities$),
       takeUntil(this.destroyed$)
     ).subscribe(activities => {
+      const chargeCode = this.chargeCodes?.find(
+        (c) => c.id === this.form.value.chargeCodeId,
+      );
+      this.requireTask$.next( chargeCode ? (chargeCode.taskRequirement ?? TaskRequirement.Optional) : TaskRequirement.Disabled, );
       if (activities.length === 0 && this.form.valid && this.form.dirty) {
         this.hqInvoiceTimeChange.emit(this.form.value);
         this.form.reset();
@@ -229,13 +236,11 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
       }
     });
 
-    this.requireTask$.pipe(takeUntil(this.destroyed$)).subscribe(isRequired => {
-      const taskControl = this.form.controls.task;
-      if (isRequired) {
-        taskControl.enable();
-      } else {
-        taskControl.disable();
-      }
+    this.requireTask$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((requirement) => {
+        this.lastTaskRequirement = requirement;
+        this.applyTaskState();
     });
 
     this.form.controls.hours.valueChanges
@@ -266,10 +271,6 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
       this.form.reset();
       this.form.markAsPristine();
       this.form.markAsUntouched();
-      // removed focus on the hrs row so that when you click on the page it doesnt cause validation
-      /*if (!this.form.value.id) {
-        this.hoursInput?.nativeElement?.focus();
-      }*/
     }
   }
 
@@ -281,14 +282,13 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
       );
       const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
       this.setMaximumHours(maxTimeEntryHours);
-      // set requireTask to true if the charge code project requires a task
-      this.requireTask$.next(chargeCode?.requireTask ?? false);
+      this.requireTask$.next( chargeCode ? (chargeCode?.taskRequirement ?? TaskRequirement.Optional) : TaskRequirement.Disabled, );
       const taskControl = this.form.controls.task;
-      if (chargeCode?.requireTask ?? false) {
+      if (chargeCode?.taskRequirement === TaskRequirement.Required) {
         taskControl.addValidators(Validators.required);
       } else {
         taskControl.removeValidators(Validators.required);
-        this.requireTask$.next(false); 
+        this.requireTask$.next(TaskRequirement.Disabled);
       }
       taskControl.updateValueAndValidity({ emitEvent: false });
       if (chargeCode) {
@@ -300,7 +300,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
           activityId: null,
         });
       } else {
-        this.requireTask$.next(false);  
+        this.requireTask$.next(TaskRequirement.Disabled); 
         this.form.patchValue({
           clientId: null,
           projectId: null,
@@ -312,7 +312,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
     }
     else
     {
-      this.requireTask$.next(false);  
+      this.requireTask$.next(TaskRequirement.Disabled); 
       this.form.patchValue({
         clientId: null,
         projectId: null,
@@ -332,8 +332,7 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
         const chargeCode = this.chargeCodes?.find((t) => t.id === id);
         const maxTimeEntryHours = chargeCode?.maximumTimeEntryHours ?? 4;
         this.setMaximumHours(maxTimeEntryHours);
-        // set requireTask to true if the charge code project requires a task
-        this.requireTask$.next(chargeCode?.requireTask ?? false);
+        this.requireTask$.next( chargeCode ? (chargeCode?.taskRequirement ?? TaskRequirement.Optional) : TaskRequirement.Disabled, );
       }
       if (this.form.value.id) {
         // Force validation to run and highlight invalid fields red
@@ -392,5 +391,21 @@ export class InvoiceNewTimeEntryComponent implements OnChanges, OnDestroy {
         emitEvent: false,
       });
     }
+  }
+
+  private applyTaskState(): void {
+    const task = this.form.controls.task;
+    if (this.lastTaskRequirement === TaskRequirement.Required) {
+      task.addValidators(Validators.required);
+      task.enable({ emitEvent: false });
+    } else if (this.lastTaskRequirement === TaskRequirement.Disabled) {
+      task.removeValidators(Validators.required);
+      task.disable({ emitEvent: false });
+    } else {
+      // Optional
+      task.removeValidators(Validators.required);
+      task.enable({ emitEvent: false });
+    }
+    task.updateValueAndValidity({ emitEvent: false });
   }
 }

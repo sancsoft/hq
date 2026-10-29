@@ -232,7 +232,7 @@
                 }
               </td>
               <td class="border-b border-black py-2 px-2">
-                @if (requireTask$ | async) {
+                @if ((requireTask$ | async) !== taskRequirement.Disabled) {
                   <input
                     class="w-[60px] bg-blue-900 border border-black rounded py-1 px-2 mr-2"
                     [value]="time.task"
@@ -393,7 +393,7 @@
                 }
               </td>
               <td class="border-b border-black py-2 px-2">
-                @if (requireTask$ | async) {
+                @if ((requireTask$ | async) !== taskRequirement.Disabled) {
                   <input
                     class="w-[60px] bg-blue-900 border border-black rounded py-1 px-2 mr-2"
                     [value]="time.task"
@@ -672,7 +672,7 @@
                 }
               </td>
               <td class="border-b border-black py-2 px-2">
-                @if (requireTask$ | async) {
+                @if ((requireTask$ | async) !== taskRequirement.Disabled) {
                   <input
                     class="w-[60px] bg-blue-900 border border-black rounded py-1 px-2 mr-2"
                     [value]="time.task"

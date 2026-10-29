@@ -50,6 +50,7 @@ import { roundToNextQuarter } from '../../common/functions/round-to-next-quarter
 import { SelectInputComponent } from '../../core/components/select-input/select-input.component';
 import { TimeStatus } from '../../enums/time-status';
 import { ButtonState } from '../../enums/button-state';
+import { TaskRequirement } from '../../enums/task-requirement';
 
 export interface ChargeCodeViewModel {
   id: string;
@@ -92,12 +93,12 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   lastSelectedTime$ = new BehaviorSubject<string | null>(null);
   shiftKey$ = new BehaviorSubject<boolean>(false);
 
-  requireTask$: Observable<boolean> = this.projectId$.pipe(
+  requireTask$: Observable<TaskRequirement> = this.projectId$.pipe(
     filter((id): id is string => id != null),
     switchMap((id) =>
       this.hqService
         .getProjectsV1({ id })
-        .pipe(map((response) => response.records[0]?.requireTask ?? false)),
+        .pipe(map((response) => response.records[0]?.taskRequirement ?? TaskRequirement.Optional)),
     ),
     shareReplay({ bufferSize: 1, refCount: false }),
   );
@@ -105,6 +106,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
   sortDirection = SortDirection;
   timeStatus = TimeStatus;
   HQRole = HQRole;
+  taskRequirement = TaskRequirement;
 
   acceptButtonState = ButtonState.Enabled;
   acceptAllButtonState = ButtonState.Enabled;
@@ -440,7 +442,6 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       await firstValueFrom(
         this.modalService.alert('Error', 'Please Enter a description'),
       );
-      // TODO: Alert the users
       return;
     }
     const chargecodeId = await firstValueFrom(
@@ -470,6 +471,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
 
   async updateTask(timeId: string, event: Event) {
     const task = (event.target as HTMLInputElement).value;
+    const requireTask = (await firstValueFrom(this.requireTask$)) ?? TaskRequirement.Optional;
     const psrId = await firstValueFrom(this.psrId$);
     const time = await firstValueFrom(
       this.time$.pipe(map((times) => times.find((x) => x.id == timeId))),
@@ -478,7 +480,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
     if (!time) {
       return;
     }
-    if (task.length < 1) {
+    if (requireTask === TaskRequirement.Required && task.length < 1) {
       await firstValueFrom(
         this.modalService.alert('Error', 'Please Enter a task'),
       );
@@ -497,7 +499,7 @@ export class PSRTimeListComponent implements OnInit, OnDestroy {
       projectStatusReportId: psrId,
       timeId: timeId,
       billableHours: time.billableHours,
-      task: task,
+      task: task.length > 0 ? task : null,
       notes: time.description,
       chargeCodeId: chargecodeId,
       activityId: time.activityId,

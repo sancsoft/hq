@@ -102,7 +102,7 @@ namespace HQ.Server.Services
             {
                 return Result.Fail("Project not found for the given charge code.");
             }
-            if (project.RequireTask && string.IsNullOrEmpty(request.Task))
+            if (project.TaskRequirement == TaskRequirement.Required && string.IsNullOrEmpty(request.Task))
             {
                 return Result.Fail("Task is required for this project.");
             }
@@ -207,7 +207,7 @@ namespace HQ.Server.Services
             {
                 return Result.Fail("Project not found for the given charge code.");
             }
-            if (project.RequireTask && string.IsNullOrEmpty(request.Task))
+            if (project.TaskRequirement == TaskRequirement.Required && string.IsNullOrEmpty(request.Task))
             {
                 return Result.Fail("Task is required for this project.");
             }
@@ -719,9 +719,9 @@ namespace HQ.Server.Services
             // Sorting this way should prevent null values throwing off the time orders like with the standard OrderBy column name approach
             if (request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.HoursInvoiced || request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.HoursApproved)
             {
-               var tempMapped = request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.HoursInvoiced
-                    ? mapped.Select(t => new { Record = t, FunctionalHours = t.HoursInvoiced ?? t.HoursApproved ?? t.Hours })
-                    : mapped.Select(t => new { Record = t, FunctionalHours = t.HoursApproved ?? t.Hours });
+                var tempMapped = request.SortBy == Abstractions.Times.GetTimesV1.SortColumn.HoursInvoiced
+                     ? mapped.Select(t => new { Record = t, FunctionalHours = t.HoursInvoiced ?? t.HoursApproved ?? t.Hours })
+                     : mapped.Select(t => new { Record = t, FunctionalHours = t.HoursApproved ?? t.Hours });
 
                 var sorted = request.SortDirection == SortDirection.Asc ?
                     tempMapped.OrderBy(t => EF.Property<object>(t, "FunctionalHours")) :

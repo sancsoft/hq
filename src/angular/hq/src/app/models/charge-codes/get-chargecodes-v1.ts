@@ -2,6 +2,7 @@ import { ChargeCodeActivity } from '../../enums/charge-code-activity';
 import { PagedRequestV1 } from '../common/paged-request-v1';
 import { PagedResponseV1 } from '../common/paged-response-v1';
 import { SortDirection } from '../common/sort-direction';
+import { TaskRequirement } from '../../enums/task-requirement';
 
 // Interface for the paged request with sorting and optional filters specific to charge codes
 export interface GetChargeCodesRequestV1 extends PagedRequestV1 {
@@ -46,7 +47,7 @@ export interface GetChargeCodeRecordV1 {
   maximumTimeEntryHours: number;
   serviceAgreementId?: string;
   isProjectMember: boolean | null;
-  requireTask: boolean;
+  taskRequirement: TaskRequirement;
 }
 export interface Activity {
   id: string;

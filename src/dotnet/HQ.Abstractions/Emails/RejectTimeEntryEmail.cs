@@ -1,3 +1,5 @@
+using HQ.Abstractions.Enumerations;
+
 namespace HQ.Abstractions.Emails
 {
     public class RejectTimeEntryEmail : NotificationEmail
@@ -11,7 +13,7 @@ namespace HQ.Abstractions.Emails
         public string? Activity { get; set; }
         public Boolean RequireActivity { get; set; } = false;
         public string? Task { get; set; }
-        public Boolean RequireTask { get; set; } = false;
+        public TaskRequirement RequireTask { get; set; } = TaskRequirement.Optional;
         public string? Description { get; set; }
         public string? ReasonForRejection { get; set; }
         public string? RejectedBy { get; set; }

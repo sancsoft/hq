@@ -1,3 +1,4 @@
+@using HQ.Abstractions.Enumerations;
 @model HQ.Abstractions.Emails.RejectTimeEntryEmail
 @if (!String.IsNullOrEmpty(Model.Heading))
 {
@@ -24,7 +25,7 @@ Project: @Model.Project
 {
 <text>Activity: @Model.Activity</text>
 }
-@if (Model.RequireTask)
+@if ((Model.RequireTask == TaskRequirement.Required || Model.RequireTask == TaskRequirement.Optional) && !String.IsNullOrEmpty(Model.Task))
 {
 <text>Task: @Model.Task</text>
 }
