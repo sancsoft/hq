@@ -139,7 +139,13 @@
           <button
             type="button"
             (click)="toAddTime()"
-            class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white"
+            [disabled]="isRemovingTimes"
+            [ngClass]="{
+              'border-gray-500 bg-gray-500': isRemovingTimes,
+              'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600':
+                !isRemovingTimes,
+            }"
+            class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal text-white"
             title="Add new time entries"
           >
             +Time
@@ -153,16 +159,17 @@
                 ? 'No time entries selected to remove from invoice'
                 : 'Remove time entrie(s) from invoice'
             "
-            [disabled]="deleteBtnDisabled"
+            [disabled]="deleteBtnDisabled || isRemovingTimes"
             [ngClass]="{
-              'text-gray-50 border-gray-500 bg-gray-500 ': deleteBtnDisabled,
+              'text-gray-50 border-gray-500 bg-gray-500 ':
+                deleteBtnDisabled || isRemovingTimes,
               'border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white':
-                !deleteBtnDisabled,
+                !deleteBtnDisabled && !isRemovingTimes,
             }"
             class="inline-block text-center px-2 py-2 border rounded min-w-[120px] font-normal border-orange-500 bg-orange-500 hover:bg-orange-600 hover:border-orange-600 text-white"
             (click)="deleteFromInvoice()"
           >
-            Remove Time
+            {{ isRemovingTimes ? "Removing..." : "Remove Time" }}
           </button>
         }
       </div>
@@ -213,6 +220,7 @@
                   id="all_time_checkbox"
                   title="Select All"
                   [checked]="isAllChecked$ | async"
+                  [disabled]="isRemovingTimes"
                   type="checkbox"
                   (change)="toggleAllEntries($event)"
                 />
@@ -365,6 +373,7 @@
                       id="time_checkbox_{{ time.id }}"
                       title="Select Entry"
                       [checked]="isChecked(time.id)"
+                      [disabled]="isRemovingTimes"
                       type="checkbox"
                       (click)="updateTimeSelection(time)"
                     />
@@ -421,6 +430,7 @@
                 ) {
                   <button
                     type="button"
+                    [disabled]="isRemovingTimes"
                     class="h-[30px] px-2 py-2 rounded w-full"
                     title="Delete Entry from Invoice"
                     (click)="openRemoveTimeModal(time.id)"
