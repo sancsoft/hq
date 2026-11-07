@@ -330,3 +330,5 @@ ASALocalRun/
 
 .env
 hq\src\angular\hq\src\config\settings.json
+.DS_Store
+src/.DS_Store

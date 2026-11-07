@@ -14,5 +14,6 @@ export interface AddTimesToInvoiceRequestV1 {
 }
 
 export interface RemoveTimeFromInvoiceRequestV1 {
-  id: string;
+  id?: string;
+  ids?: string[];
 }

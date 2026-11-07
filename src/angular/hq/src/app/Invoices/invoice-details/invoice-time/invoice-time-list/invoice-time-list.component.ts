@@ -81,6 +81,7 @@ export class InvoiceTimeListComponent implements OnDestroy {
   isAllChecked$: Observable<boolean>;
   selectedTimes: Map<string, number> = new Map<string, number>();
   deleteBtnDisabled: boolean = true;
+  isRemovingTimes: boolean = false;
 
   constructor(
     private hqService: HQService,
@@ -237,6 +238,8 @@ export class InvoiceTimeListComponent implements OnDestroy {
   }
 
   async toAddTime() {
+    if (this.isRemovingTimes) return;
+
     await this.router.navigate(['add'], {
       relativeTo: this.route,
     });
@@ -344,10 +347,29 @@ export class InvoiceTimeListComponent implements OnDestroy {
 
       if (confirmed) {
         const timeIds = Array.from(this.selectedTimes.keys());
-        await Promise.all(timeIds.map((id) => this.removeTime(id)));
-        this.selectedTimes.clear();
-        this.deleteBtnDisabled = true;
-        this.selectionTrigger$.next();
+        this.isRemovingTimes = true;
+
+        try {
+          await firstValueFrom(
+            this.hqService.removeTimeFromInvoiceV1({ ids: timeIds }),
+          );
+          this.selectedTimes.clear();
+          this.deleteBtnDisabled = true;
+          this.selectionTrigger$.next();
+          this.invoiceDetailsService.invoiceRefresh();
+          this.toastService.show(
+            'Success',
+            `${timeIds.length} time entr${timeIds.length === 1 ? 'y' : 'ies'} removed from the invoice.`,
+          );
+        } catch (error) {
+          console.error('Bulk time removal error:', error);
+          this.toastService.show(
+            'Error',
+            'The selected time entries could not be removed from the invoice.',
+          );
+        } finally {
+          this.isRemovingTimes = false;
+        }
       }
     } catch (error) {
       console.error('Modal confirmation error:', error);

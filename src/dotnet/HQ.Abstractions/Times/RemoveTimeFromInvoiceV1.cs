@@ -5,6 +5,7 @@ namespace HQ.Abstractions.Times
         public class Request
         {
             public Guid Id { get; set; }
+            public IReadOnlyCollection<Guid> Ids { get; set; } = [];
         }
     }
 }

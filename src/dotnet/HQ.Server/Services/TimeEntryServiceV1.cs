@@ -532,30 +532,41 @@ namespace HQ.Server.Services
 
         public async Task<Result> RemoveTimeFromInvoiceV1(RemoveTimeFromInvoiceV1.Request request, CancellationToken ct = default)
         {
-            if (request.Id == Guid.Empty)
-            {
-                return Result.Fail("Time entry Id can't be null or empty");
-            }
-            var timeEntry = _context.Times.FirstOrDefault(t => t.Id == request.Id);
+            var timeEntryIds = (request.Ids ?? [])
+                .Where(t => t != Guid.Empty)
+                .ToHashSet();
 
-
-            if (timeEntry == null)
+            if (request.Id != Guid.Empty)
             {
-                return Result.Fail("Time entry could not be found.");
+                timeEntryIds.Add(request.Id);
             }
-            var invoice = await _context.Invoices.Where(t => t.Id == timeEntry.InvoiceId).FirstOrDefaultAsync();
 
-            if (invoice != null)
+            if (timeEntryIds.Count == 0)
             {
-                timeEntry.InvoiceId = null;
-                timeEntry.HoursInvoiced = null;
+                return Result.Fail("At least one time entry Id is required.");
             }
-            else
+
+            var timeEntries = await _context.Times
+                .Where(t => timeEntryIds.Contains(t.Id))
+                .Select(t => new { t.Id, t.InvoiceId })
+                .ToListAsync(ct);
+
+            if (timeEntries.Count != timeEntryIds.Count)
+            {
+                return Result.Fail("Times entries could not be found.");
+            }
+
+            if (timeEntries.Any(t => t.InvoiceId == null))
             {
                 return Result.Fail("This time entry was not invoiced.");
             }
 
-            await _context.SaveChangesAsync(ct);
+            await _context.Times
+                .Where(t => timeEntryIds.Contains(t.Id))
+                .ExecuteUpdateAsync(t => t
+                    .SetProperty(x => x.InvoiceId, (Guid?)null)
+                    .SetProperty(x => x.HoursInvoiced, (decimal?)null), ct);
+
             return Result.Ok();
         }
 
